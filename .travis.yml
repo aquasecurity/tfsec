@@ -1,8 +1,6 @@
 language: go
 go:
 - 1.11
-before_deploy:
-  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${TRAVIS_TAG}^")..$TRAVIS_TAG --pretty=format:'<li> <a href="http://github.com/liamg/tfsec/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
 script:
   - scripts/build.sh
 deploy:
@@ -11,7 +9,6 @@ deploy:
     api_key:
       secure: "XV66oNaDzDnTOOqpWkRuPvBxGSb9b+LdMksyFW/Du8ttw+Bge/ltq/R+XcsPHIr3DIpXYnGXNKV9WNwMm0AzrDg2RdGso1FJUbvIpb0ILY/URLWcWfn0woax1jeHyEOl/36EZEOc21DoGmwo1jJaJw4p7h5YZV8a9AC9UsYqsmBSSPjatDxp8xyfrOk89tjr06mhb39J48SEmQwOB+mj4sdStEgIlBL83qCuJPxP/64R6YRkFA1e8bAFDDimbISem2BXMGWZch+9G/Nv6+MRnBNmKjgFmA0qENLRm89lYwge3qSxi3dgrFgcLs8n2HpJ1usA0QtBBEDjHxfT5NLd0TTBv/tZuARStELSwDRX+cUIIks+6uXkOTR7f0G5LINiiKDEbo32tfWldcqPVp8cA9I2U53pJjxFUvuYIbqHTStMY19L2ztiYSPZ5hmzIgeS+VUDImOKs6XUe1W8WrN7ginPmA8XUNAIo/2AAt0i8qbvFwBGkxxnZOn4VKPyxVck8hs6FXUw3wZj95TLTftmIjyMFlnnREHE0l0pHcQSXe4VGD+eZXWmgfgtqJ+y0Q5fouEVHOMgW0Mf2v7e2pVIg60F7+FLHM961pQUJZGIM0lOm/k/En/wjb22kONptGtxAp05rFeX2g50ajxfIIYj1T5g6iCHKuBpTMKVDU3uMeo="
     name: "tfsec $TRAVIS_TAG"
-    body: ${CHANGELOG}
     file:
       - bin/darwin-amd64/tfsec
       - bin/linux-amd64/tfsec
