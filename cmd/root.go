@@ -8,14 +8,27 @@ import (
 	"strings"
 
 	"github.com/liamg/tfsec/scanner"
+	"github.com/liamg/tfsec/version"
 	"github.com/spf13/cobra"
 )
+
+var showVersion = false
+
+func init() {
+	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
+}
 
 var rootCmd = &cobra.Command{
 	Use:   "tfsec [directory]",
 	Short: "tfsec is a terraform security scanner",
 	Long:  `tfsec is a simple tool to detect potential security vulnerabilities in your terraformed infrastructure.`,
 	Run: func(cmd *cobra.Command, args []string) {
+
+		if showVersion {
+			fmt.Println(version.Version)
+			os.Exit(0)
+		}
+
 		var dir string
 		if len(args) == 1 {
 			dir = args[0]
