@@ -4,6 +4,41 @@
 
 tfsec uses static analysis of your terraform templates to spot potential security issues.
 
+## Installation
+
+Grab the binary for your system from the [releases page](https://github.com/liamg/tfsec/releases).
+
+Alternatively, install with Go:
+
+```bash
+go get -u github.com/liamg/tfsec
+```
+
+## Usage
+
+tfsec will recursively scan the specified directory. If no directory is specified, the current working directory will be used.
+
+The exit status will be non zero if problems are found, otherwise the exit status will be zero.
+
+```bash
+tfsec .
+```
+
+### Ignoring Warnings
+
+You may wish to ignore some warnings. If you'd like to do so, you can simply add a comment containing `tfsec:ignore` to the offending line in your templates. You can also ignore warnings for an entire resource by adding a comment to the line above the resource block, or the line containing the `resource` directive.
+
+For example, to ignore any warnings about an open security group rule:
+
+```hcl
+resource "aws_security_group_rule" "my-rule" {
+    type = "ingress"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore
+}
+```
+
+If you're not sure which line to add the comment on, just check the tfsec output for the line number of the discovered problem.
+
 ## Included Checks
 
 Currently, checks are limited to AWS, though this may change in future.
@@ -40,20 +75,7 @@ Checks for insecure SSL policies on `aws_alb_listener`.
 
 ### Missing Encryption
 
-Checks for use of HTTP/port 80 on `aws_lb_listener`.
-
-## Ignoring Warnings
-
-You may wish to ignore some warnings. If you'd like to do so, you can simply add a comment containing `tfsec:ignore` to the offending line in your templates. You can also ignore warnings for an entire resource by adding a comment to the line above the resource block, or the line containing the `resource` directive.
-
-For example, to ignore any warnings about the open security group rule:
-
-```hcl
-resource "aws_security_group_rule" "my-rule" {
-    type = "ingress"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore
-}
-```
+Checks for use of HTTP/port 80 on `aws_alb_listener`.
 
 ## What doesn't work yet?
 

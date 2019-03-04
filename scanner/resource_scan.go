@@ -18,8 +18,8 @@ var resourceChecks = map[string][]checkFunc{
 	"aws_instance":                   []checkFunc{checkAWSHasNoPublicIP},
 	"aws_launch_configuration":       []checkFunc{checkAWSHasNoPublicIP, checkAWSUnencryptedBlockDevices},
 	"aws_s3_bucket":                  []checkFunc{checkAWSACL},
-	"aws_lb_listener":                []checkFunc{checkAWSNotUsingHTTP, checkAWSNotUsingPort80},
-	"aws_alb_listener":               []checkFunc{checkAWSOutdatedSSLPolicy},
+	"aws_lb_listener":                []checkFunc{checkAWSOutdatedSSLPolicy, checkAWSNotUsingHTTP, checkAWSNotUsingPort80},
+	"aws_alb_listener":               []checkFunc{checkAWSOutdatedSSLPolicy, checkAWSNotUsingHTTP, checkAWSNotUsingPort80},
 }
 
 func scanResource(resource Resource) []Result {
