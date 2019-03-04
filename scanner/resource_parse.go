@@ -141,11 +141,19 @@ func ParseResource(item *ast.ObjectItem) (Resource, error) {
 	}
 
 	res.pos = item.Keys[0].Token.Pos
-	for _, comment := range item.LeadComment.List {
-		res.comment += comment.Text + " "
+	if item.LeadComment != nil {
+		if item.LeadComment.List != nil {
+			for _, comment := range item.LeadComment.List {
+				res.comment += comment.Text + " "
+			}
+		}
 	}
-	for _, comment := range item.LineComment.List {
-		res.comment += comment.Text + " "
+	if item.LineComment != nil {
+		if item.LineComment.List != nil {
+			for _, comment := range item.LineComment.List {
+				res.comment += comment.Text + " "
+			}
+		}
 	}
 
 	return res, nil
@@ -162,11 +170,19 @@ func parseParam(item *ast.ObjectItem) (Parameter, error) {
 		pos:  item.Keys[0].Token.Pos,
 	}
 
-	for _, comment := range item.LeadComment.List {
-		param.comment += comment.Text + " "
+	if item.LeadComment != nil {
+		if item.LeadComment.List != nil {
+			for _, comment := range item.LeadComment.List {
+				param.comment += comment.Text + " "
+			}
+		}
 	}
-	for _, comment := range item.LineComment.List {
-		param.comment += comment.Text + " "
+	if item.LineComment != nil {
+		if item.LineComment.List != nil {
+			for _, comment := range item.LineComment.List {
+				param.comment += comment.Text + " "
+			}
+		}
 	}
 
 	var err error
