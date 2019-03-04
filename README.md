@@ -1,5 +1,7 @@
 # tfsec
 
+[![Travis Build Status](https://travis-ci.org/liamg/tfsec.svg?branch=master)](https://travis-ci.org/liamg/tfsec)
+
 tfsec uses static analysis of your terraform templates to spot potential security issues.
 
 ## Included Checks
