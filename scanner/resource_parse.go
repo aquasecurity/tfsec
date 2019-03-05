@@ -134,7 +134,7 @@ func ParseResource(item *ast.ObjectItem) (Resource, error) {
 		if len(item.Keys) == 1 {
 			param, err := parseParam(item)
 			if err != nil {
-				return res, err
+				continue
 			}
 			res.parameters = append(res.parameters, param)
 		}
@@ -195,7 +195,7 @@ func parseParam(item *ast.ObjectItem) (Parameter, error) {
 			if len(item.Keys) == 1 {
 				v, err := parseParam(item)
 				if err != nil {
-					return param, err
+					continue
 				}
 				childParams = append(childParams, v)
 			}
