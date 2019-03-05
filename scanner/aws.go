@@ -15,12 +15,16 @@ func checkAWSEC2ClassicUsage(resource Resource) *Result {
 func checkAWSUnencryptedBlockDevices(resource Resource) *Result {
 
 	if bd, err := resource.Get("ebs_block_device"); err == nil {
-		if enc, err := bd.Get("encrypted"); err != nil || strings.ToLower(enc.String()) == "false" || strings.ToLower(enc.String()) == "0" {
+		if enc, err := bd.Get("encrypted"); strings.ToLower(enc.String()) == "false" || strings.ToLower(enc.String()) == "0" {
 			return NewResult(
 				enc.pos,
 				fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", resource.String()),
 			)
-
+		} else if err != nil {
+			return NewResult(
+				bd.pos,
+				fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", resource.String()),
+			)
 		}
 	}
 
