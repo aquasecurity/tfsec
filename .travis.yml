@@ -1,17 +1,12 @@
 language: go
 go:
 - 1.11
-before_deploy:
-- export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${TRAVIS_TAG}^" --always)..$TRAVIS_TAG
-  --pretty=format:'<li> <a href="http://github.com/liamg/tfsec/commit/%H">view commit
-  &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
 script:
 - scripts/build.sh
 deploy:
   provider: releases
   skip_cleanup: true
   name: "tfsec $TRAVIS_TAG"
-  body: ${CHANGELOG}
   file:
     - bin/darwin/tfsec-darwin-amd64
     - bin/linux/tfsec-linux-amd64
