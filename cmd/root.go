@@ -30,20 +30,20 @@ var rootCmd = &cobra.Command{
 		}
 
 		var dir string
+		var err error
 		if len(args) == 1 {
-			dir = args[0]
+			dir, err = filepath.Abs(args[0])
 		} else {
-			var err error
 			dir, err = os.Getwd()
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
+		}
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
 		}
 
 		problems := 0
 
-		err := filepath.Walk(dir,
+		err = filepath.Walk(dir,
 			func(path string, info os.FileInfo, err error) error {
 				if info.IsDir() || !strings.HasSuffix(path, ".tf") {
 					return nil
@@ -83,7 +83,12 @@ var rootCmd = &cobra.Command{
 						code += fmt.Sprintf("% 6d | \033[0m %s\n", i+1, line)
 					}
 
-					fmt.Printf("[%s:%d] %s\n%s\n", info.Name(), result.Line(), result.Description(), code)
+					rel := path
+					if strings.HasPrefix(rel, dir) {
+						rel = rel[len(dir)+1:]
+					}
+
+					fmt.Printf("[%s:%d] %s\n%s\n", rel, result.Line(), result.Description(), code)
 					problems++
 				}
 
