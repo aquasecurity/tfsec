@@ -18,7 +18,6 @@ deploy:
     - bin/windows-amd64/tfsec
   api_key:
     secure: lSWOIa90AV0XRjgwJhu4j8cPZTOe4Hg5NQP2pYkfwV2jdNg5LT995UaaDy05X0PAcbtyXo63QKbqbhMTkOmLzrb0PX0t1MdKO22xwBYEZLTrQnjIuZFzgYwJaXDiXWaRpM4yBzxOLeuKPdowIk6rgqbhiRAe9fMU8AQde2wKriplpi4VdwlsHLvcONI8QxicTdPAY1JSeandtIBy8vnnQOHgF5ajS21cE1TNj867B++c1wpyemxwo6Z50KHONiG+UBQTqe45d4UXiTEroI8G4Yqcd28q5AGptJJOSrB9JR4zO8d1CrfI1ppHd2vbowNCxdzpL367aYtKxTAdfzFhf1lm79+69bQjkeQKY10edbPlfA+6OeN+AdkVib7XRk4bhoegwX1Y2cpk3iGe8WKnh6+JDclqk4VamcQCbDGSh2Y9FGFOCIji/rO2EjFCg2cmISRqYR42oWt+Szo7Z9V3eucEy3ErdKiTg+5yLQHKrNlhJz0rus1MIxw52K+8JfP+OiYmLh/OXfBvtxl5EaNnHE4Hv2sdvkolRi3RUW1pffn3nc4JQNJX4wOCoDXZzfLza0nLiMjwFCjBucjxHfrcZ7aDrLvroQJ03CbpcsIrYc2dT37mdKksZzYSAHP8k4So/0R6ItzxWf6jUy+RriCCzX/3a4pUe3fJLBRDAg9h7GU=
-  file: test
   on:
     repo: liamg/tfsec
     tags: true
