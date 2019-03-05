@@ -2,7 +2,7 @@ language: go
 go:
 - 1.11
 before_deploy:
-- export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${TRAVIS_TAG}^")..$TRAVIS_TAG
+- export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${TRAVIS_TAG}^" --always)..$TRAVIS_TAG
   --pretty=format:'<li> <a href="http://github.com/liamg/tfsec/commit/%H">view commit
   &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
 script:
