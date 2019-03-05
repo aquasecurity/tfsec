@@ -2,20 +2,23 @@ language: go
 go:
 - 1.11
 before_deploy:
-  - export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${TRAVIS_TAG}^")..$TRAVIS_TAG --pretty=format:'<li> <a href="http://github.com/liamg/tfsec/commit/%H">view commit &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
+- export CHANGELOG=$(git log $(git describe --abbrev=0 --tags "${TRAVIS_TAG}^")..$TRAVIS_TAG
+  --pretty=format:'<li> <a href="http://github.com/liamg/tfsec/commit/%H">view commit
+  &bull;</a> %s</li> ' --reverse | while read line; do echo -n "$line "; done)
 script:
-  - scripts/build.sh
+- scripts/build.sh
 deploy:
-  - provider: releases
-    skip_cleanup: true
-    api_key:
-      secure: "XV66oNaDzDnTOOqpWkRuPvBxGSb9b+LdMksyFW/Du8ttw+Bge/ltq/R+XcsPHIr3DIpXYnGXNKV9WNwMm0AzrDg2RdGso1FJUbvIpb0ILY/URLWcWfn0woax1jeHyEOl/36EZEOc21DoGmwo1jJaJw4p7h5YZV8a9AC9UsYqsmBSSPjatDxp8xyfrOk89tjr06mhb39J48SEmQwOB+mj4sdStEgIlBL83qCuJPxP/64R6YRkFA1e8bAFDDimbISem2BXMGWZch+9G/Nv6+MRnBNmKjgFmA0qENLRm89lYwge3qSxi3dgrFgcLs8n2HpJ1usA0QtBBEDjHxfT5NLd0TTBv/tZuARStELSwDRX+cUIIks+6uXkOTR7f0G5LINiiKDEbo32tfWldcqPVp8cA9I2U53pJjxFUvuYIbqHTStMY19L2ztiYSPZ5hmzIgeS+VUDImOKs6XUe1W8WrN7ginPmA8XUNAIo/2AAt0i8qbvFwBGkxxnZOn4VKPyxVck8hs6FXUw3wZj95TLTftmIjyMFlnnREHE0l0pHcQSXe4VGD+eZXWmgfgtqJ+y0Q5fouEVHOMgW0Mf2v7e2pVIg60F7+FLHM961pQUJZGIM0lOm/k/En/wjb22kONptGtxAp05rFeX2g50ajxfIIYj1T5g6iCHKuBpTMKVDU3uMeo="
-    name: "tfsec $TRAVIS_TAG"
-    body: ${CHANGELOG}
-    file:
-      - bin/darwin-amd64/tfsec
-      - bin/linux-amd64/tfsec
-      - bin/windows-amd64/tfsec
-    on:
-      repo: liamg/tfsec
-      tags: true
+  provider: releases
+  skip_cleanup: true
+  name: "tfsec $TRAVIS_TAG"
+  body: ${CHANGELOG}
+  file:
+    - bin/darwin-amd64/tfsec
+    - bin/linux-amd64/tfsec
+    - bin/windows-amd64/tfsec
+  api_key:
+    secure: lSWOIa90AV0XRjgwJhu4j8cPZTOe4Hg5NQP2pYkfwV2jdNg5LT995UaaDy05X0PAcbtyXo63QKbqbhMTkOmLzrb0PX0t1MdKO22xwBYEZLTrQnjIuZFzgYwJaXDiXWaRpM4yBzxOLeuKPdowIk6rgqbhiRAe9fMU8AQde2wKriplpi4VdwlsHLvcONI8QxicTdPAY1JSeandtIBy8vnnQOHgF5ajS21cE1TNj867B++c1wpyemxwo6Z50KHONiG+UBQTqe45d4UXiTEroI8G4Yqcd28q5AGptJJOSrB9JR4zO8d1CrfI1ppHd2vbowNCxdzpL367aYtKxTAdfzFhf1lm79+69bQjkeQKY10edbPlfA+6OeN+AdkVib7XRk4bhoegwX1Y2cpk3iGe8WKnh6+JDclqk4VamcQCbDGSh2Y9FGFOCIji/rO2EjFCg2cmISRqYR42oWt+Szo7Z9V3eucEy3ErdKiTg+5yLQHKrNlhJz0rus1MIxw52K+8JfP+OiYmLh/OXfBvtxl5EaNnHE4Hv2sdvkolRi3RUW1pffn3nc4JQNJX4wOCoDXZzfLza0nLiMjwFCjBucjxHfrcZ7aDrLvroQJ03CbpcsIrYc2dT37mdKksZzYSAHP8k4So/0R6ItzxWf6jUy+RriCCzX/3a4pUe3fJLBRDAg9h7GU=
+  file: test
+  on:
+    repo: liamg/tfsec
+    tags: true

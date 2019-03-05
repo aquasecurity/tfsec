@@ -98,6 +98,7 @@ var rootCmd = &cobra.Command{
 			fmt.Printf("\033[32m No problems detected.\033[0m\n")
 		} else {
 			fmt.Printf("\033[31m %d problem(s) detected. See above for details. If you wish to ignore a warning, add #tfsec:ignore to the line in question.\033[0m\n", problems)
+			os.Exit(1)
 		}
 
 	},
