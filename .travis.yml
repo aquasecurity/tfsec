@@ -7,8 +7,6 @@ jobs:
       name: Run tests
       script:
         - make test
-      after_failure:
-        - cat ./internal/app/gocardless-gateway/logs/pact.log
     - stage: build
       script:
         - make build
