@@ -2,7 +2,9 @@
 
 [![Travis Build Status](https://travis-ci.org/liamg/tfsec.svg?branch=master)](https://travis-ci.org/liamg/tfsec)
 
-tfsec uses static analysis of your terraform templates to spot potential security issues.
+tfsec uses static analysis of your terraform templates to spot potential security issues. Now with terraform v0.12+ support.
+
+![](demo.png)
 
 ## Installation
 
@@ -24,9 +26,13 @@ The exit status will be non zero if problems are found, otherwise the exit statu
 tfsec .
 ```
 
+## Support for older terraform versions
+
+If you need to support versions of terraform which use HCL v1 (terraform <0.12), you can use `v0.1.3` of tfsec.
+
 ### Ignoring Warnings
 
-You may wish to ignore some warnings. If you'd like to do so, you can simply add a comment containing `tfsec:ignore` to the offending line in your templates. You can also ignore warnings for an entire resource by adding a comment to the line above the resource block, or the line containing the `resource` directive.
+You may wish to ignore some warnings. If you'd like to do so, you can simply add a comment containing `tfsec:ignore` to the offending line in your templates.
 
 For example, to ignore any warnings about an open security group rule:
 
@@ -75,8 +81,4 @@ Checks for insecure SSL policies on `aws_alb_listener`.
 
 ### Missing Encryption
 
-Checks for use of HTTP/port 80 on `aws_alb_listener`.
-
-## What doesn't work yet?
-
-We don't *currently* evaluate string interpolation. Only hardcoded parameter values will be warned on.
+Checks for use of plain HTTP on `aws_alb_listener`.
