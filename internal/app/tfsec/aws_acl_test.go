@@ -18,6 +18,7 @@ func Test_AWSACL(t *testing.T) {
 			source: `
 resource "aws_s3_bucket" "my-bucket" {
 	acl = "public-read"
+	logging = {}
 }`,
 			expectsResults: true,
 		},
@@ -26,6 +27,7 @@ resource "aws_s3_bucket" "my-bucket" {
 			source: `
 resource "aws_s3_bucket" "my-bucket" {
 	acl = "public-read-write"
+	logging = {}
 }`,
 			expectsResults: true,
 		},
@@ -34,6 +36,7 @@ resource "aws_s3_bucket" "my-bucket" {
 			source: `
 resource "aws_s3_bucket" "my-bucket" {
 	acl = "website"
+	logging = {}
 }`,
 			expectsResults: true,
 		},
@@ -42,6 +45,7 @@ resource "aws_s3_bucket" "my-bucket" {
 			source: `
 resource "aws_s3_bucket" "my-bucket" {
 	acl = "private"
+	logging = {}
 }`,
 			expectsResults: false,
 		},
