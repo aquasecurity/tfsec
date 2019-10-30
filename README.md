@@ -74,11 +74,11 @@ Currently, checks are mostly limited to AWS/Azure resources, though support for 
 | AWS012  | aws      | A resource has a public IP address.
 | AWS013  | aws      | Task definition defines sensitive environment variable(s).
 | AWS014  | aws      | Launch configuration with unencrypted block device.
-| AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`
-| AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`
-| AZU003  | azurerm  | Unencrypted managed disk
-| AZU004  | azurerm  | Unencrypted data lake store
- 
+| AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`.
+| AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`.
+| AZU003  | azurerm  | Unencrypted managed disk.
+| AZU004  | azurerm  | Unencrypted data lake store.
+| AZU005  | azurerm  | Password authentication in use instead of SSH keys.
 
 ## Support for older terraform versions
 
