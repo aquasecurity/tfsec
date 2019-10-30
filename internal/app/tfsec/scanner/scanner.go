@@ -25,9 +25,10 @@ func (scanner *Scanner) Scan(blocks hcl.Blocks, ctx *hcl.EvalContext) []models.R
 				for _, result := range check.Run(block, ctx) {
 					if result.Range == nil {
 						result.Range = &models.Range{
-							Filename:  block.DefRange.Filename,
-							StartLine: block.DefRange.Start.Line,
-							EndLine:   block.DefRange.End.Line,
+							Filename:    block.DefRange.Filename,
+							StartLine:   block.DefRange.Start.Line,
+							EndLine:     block.DefRange.End.Line,
+							NonSpecific: true,
 						}
 					}
 					if !scanner.checkRangeIgnored(result.Range) {
