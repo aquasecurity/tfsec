@@ -1,12 +1,14 @@
 # tfsec
 
 [![Travis Build Status](https://travis-ci.org/liamg/tfsec.svg?branch=master)](https://travis-ci.org/liamg/tfsec)
-[![Open Source Helpers](https://www.codetriage.com/liamg/tfsec/badges/users.svg)](https://www.codetriage.com/liamg/tfsec)
 [![GoReportCard](https://goreportcard.com/badge/github.com/liamg/tfsec)](https://goreportcard.com/report/github.com/liamg/tfsec)
+[![Open Source Helpers](https://www.codetriage.com/liamg/tfsec/badges/users.svg)](https://www.codetriage.com/liamg/tfsec)
+[![Github Release](https://img.shields.io/github/release/liamg/tfsec.svg)](https://github.com/liamg/tfsec/releases)
+[![GitHub All Releases](https://img.shields.io/github/downloads/liamg/tfsec/total)](https://github.com/liamg/tfsec/releases)
 
 tfsec uses static analysis of your terraform templates to spot potential security issues. Now with terraform v0.12+ support.
 
-![](example.png)
+![Example screenshot](example.png)
 
 ## Installation
 
