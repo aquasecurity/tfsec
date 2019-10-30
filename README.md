@@ -60,6 +60,8 @@ Currently, checks are mostly limited to AWS/Azure resources, though support for 
 | Code    | Provider | Description |
 |---------|----------|-------------|
 | GEN001  | *        | Potentially sensitive data stored in "default" value of variable.
+| GEN002  | *        | Potentially sensitive data stored in local value.
+| GEN003  | *        | Potentially sensitive data stored in block attribute.
 | AWS001  | aws      | S3 Bucket has an ACL defined which allows public access.
 | AWS002  | aws      | S3 Bucket does not have logging enabled.
 | AWS003  | aws      | AWS Classic resource usage.
