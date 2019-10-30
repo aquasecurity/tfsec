@@ -7,9 +7,11 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AzureOpenInboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
 const AzureOpenInboundNetworkSecurityGroupRule Code = "AZU001"
-const AzureOpenOutboundNetworkSecurityGroupRule Code = "AZU002"
 
+// AzureOpenOutboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
+const AzureOpenOutboundNetworkSecurityGroupRule Code = "AZU002"
 
 func init() {
 	RegisterCheck(Check{
@@ -49,7 +51,7 @@ func init() {
 
 			if prefixesVal, prefixesRange, exists := getAttribute(block, ctx, checkAttribute+"es"); exists {
 				for _, prefix := range prefixesVal.AsValueSlice() {
-					if strings.HasSuffix(prefix.AsString(), "/0") || prefix.AsString() == "*"{
+					if strings.HasSuffix(prefix.AsString(), "/0") || prefix.AsString() == "*" {
 						results = append(results,
 							NewResult(
 								code,

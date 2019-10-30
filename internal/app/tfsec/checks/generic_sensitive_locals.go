@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// GenericSensitiveLocals See https://github.com/liamg/tfsec#included-checks for check info
 const GenericSensitiveLocals Code = "GEN002"
 
 func init() {

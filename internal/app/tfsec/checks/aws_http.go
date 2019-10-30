@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AWSPlainHTTP See https://github.com/liamg/tfsec#included-checks for check info
 const AWSPlainHTTP Code = "AWS004"
 
 func init() {

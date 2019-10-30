@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AWSTaskDefinitionWithSensitiveEnvironmentVariables See https://github.com/liamg/tfsec#included-checks for check info
 const AWSTaskDefinitionWithSensitiveEnvironmentVariables Code = "AWS013"
 
 func init() {

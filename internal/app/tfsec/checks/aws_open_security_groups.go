@@ -7,7 +7,10 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AWSOpenIngressSecurityGroupInlineRule See https://github.com/liamg/tfsec#included-checks for check info
 const AWSOpenIngressSecurityGroupInlineRule Code = "AWS008"
+
+// AWSOpenEgressSecurityGroupInlineRule See https://github.com/liamg/tfsec#included-checks for check info
 const AWSOpenEgressSecurityGroupInlineRule Code = "AWS009"
 
 func init() {

@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AWSOutdatedSSLPolicy See https://github.com/liamg/tfsec#included-checks for check info
 const AWSOutdatedSSLPolicy Code = "AWS010"
 
 var outdatedSSLPolicies = []string{

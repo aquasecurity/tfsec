@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AWSResourceHasPublicIP See https://github.com/liamg/tfsec#included-checks for check info
 const AWSResourceHasPublicIP Code = "AWS012"
 
 func init() {

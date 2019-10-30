@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AWSBadBucketACL See https://github.com/liamg/tfsec#included-checks for check info
 const AWSBadBucketACL Code = "AWS001"
 
 func init() {

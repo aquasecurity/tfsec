@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AWSNoBucketLogging See https://github.com/liamg/tfsec#included-checks for check info
 const AWSNoBucketLogging Code = "AWS002"
 
 func init() {

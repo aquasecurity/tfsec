@@ -46,7 +46,7 @@ func (parser *Parser) ParseDirectory(path string) (hcl.Blocks, *hcl.EvalContext,
 	return blocks, parser.buildEvaluationContext(blocks), nil
 }
 
-// ParseDirectory recursively the terraform file at the given path
+// ParseFile recursively the terraform file at the given path
 func (parser *Parser) ParseFile(path string) (hcl.Blocks, *hcl.EvalContext, error) {
 	parsedFile, diagnostics := parser.hclParser.ParseHCLFile(path)
 	if diagnostics != nil && diagnostics.HasErrors() {

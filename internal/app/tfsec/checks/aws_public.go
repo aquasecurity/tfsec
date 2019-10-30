@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AWSPubliclyAccessibleResource See https://github.com/liamg/tfsec#included-checks for check info
 const AWSPubliclyAccessibleResource Code = "AWS011"
 
 func init() {

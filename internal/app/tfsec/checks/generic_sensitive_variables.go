@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// GenericSensitiveVariables See https://github.com/liamg/tfsec#included-checks for check info
 const GenericSensitiveVariables Code = "GEN001"
 
 func init() {

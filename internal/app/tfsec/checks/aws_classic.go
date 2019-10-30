@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AWSClassicUsage See https://github.com/liamg/tfsec#included-checks for check info
 const AWSClassicUsage Code = "AWS003"
 
 func init() {
