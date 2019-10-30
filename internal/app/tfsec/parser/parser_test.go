@@ -16,6 +16,10 @@ func Test_BasicParsing(t *testing.T) {
 
 	path := createTestFile("test.tf", `
 
+locals {
+	proxy = var.cats_mother
+}
+
 variable "cats_mother" {
 	default = "boots"
 }
@@ -35,7 +39,7 @@ resource "cats_kitten" "the-great-destroyer" {
 }
 
 data "cats_cat" "the-cats-mother" {
-	name = var.cats_mother
+	name = local.proxy
 }
 
 

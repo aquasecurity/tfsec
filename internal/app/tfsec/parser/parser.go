@@ -168,7 +168,13 @@ func (parser *Parser) addToContextByBlockType(ctx *hcl.EvalContext, blocks hcl.B
 			}
 		case "locals":
 			alias = "local"
-			fallthrough
+			localValues, partialSuccess := parser.readValues(ctx, block)
+			if !partialSuccess {
+				success = false
+			}
+			for key, val := range localValues.AsValueMap() {
+				values[key] = val
+			}
 		case "provider", "module":
 			if len(block.Labels) < 1 {
 				continue
