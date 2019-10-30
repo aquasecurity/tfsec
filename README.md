@@ -59,7 +59,7 @@ Currently, checks are mostly limited to AWS/Azure resources, though support for 
 
 | Code    | Provider | Description |
 |---------|----------|-------------|
-| GEN001  |          | Potentially sensitive data stored in "default" value of variable.
+| GEN001  | *        | Potentially sensitive data stored in "default" value of variable.
 | AWS001  | aws      | S3 Bucket has an ACL defined which allows public access.
 | AWS002  | aws      | S3 Bucket does not have logging enabled.
 | AWS003  | aws      | AWS Classic resource usage.
@@ -77,6 +77,8 @@ Currently, checks are mostly limited to AWS/Azure resources, though support for 
 | AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`
 | AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`
 | AZU003  | azurerm  | Unencrypted managed disk
+| AZU004  | azurerm  | Unencrypted data lake store
+ 
 
 ## Support for older terraform versions
 
