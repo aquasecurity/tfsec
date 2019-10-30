@@ -9,9 +9,10 @@ import (
 func Test_AWSSensitiveAttributes(t *testing.T) {
 
 	var tests = []struct {
-		name               string
-		source             string
-		expectedResultCode checks.Code
+		name                  string
+		source                string
+		mustIncludeResultCode checks.Code
+		mustExcludeResultCode checks.Code
 	}{
 		{
 			name: "check sensitive attribute",
@@ -19,7 +20,7 @@ func Test_AWSSensitiveAttributes(t *testing.T) {
 resource "evil_corp" "virtual_machine" {
 	root_password = "secret"
 }`,
-			expectedResultCode: checks.GenericSensitiveAttributes,
+			mustIncludeResultCode: checks.GenericSensitiveAttributes,
 		},
 		{
 			name: "check non-sensitive local",
@@ -27,15 +28,14 @@ resource "evil_corp" "virtual_machine" {
 resource "evil_corp" "virtual_machine" {
 	memory = 512
 }`,
-			expectedResultCode: checks.None,
+			mustExcludeResultCode: checks.GenericSensitiveAttributes,
 		},
-
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assertCheckCodeExists(t, test.expectedResultCode, results)
+			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 

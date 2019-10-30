@@ -9,9 +9,10 @@ import (
 func Test_AzureUnencryptedDataLakeStore(t *testing.T) {
 
 	var tests = []struct {
-		name               string
-		source             string
-		expectedResultCode checks.Code
+		name                  string
+		source                string
+		mustIncludeResultCode checks.Code
+		mustExcludeResultCode checks.Code
 	}{
 		{
 			name: "check azurerm_data_lake_store with encryption disabled",
@@ -19,7 +20,7 @@ func Test_AzureUnencryptedDataLakeStore(t *testing.T) {
 resource "azurerm_data_lake_store" "my-lake-store" {
 	encryption_state = "Disabled"
 }`,
-			expectedResultCode: checks.AzureUnencryptedDataLakeStore,
+			mustIncludeResultCode: checks.AzureUnencryptedDataLakeStore,
 		},
 		{
 			name: "check azurerm_data_lake_store with encryption enabled",
@@ -27,7 +28,7 @@ resource "azurerm_data_lake_store" "my-lake-store" {
 resource "azurerm_data_lake_store" "my-lake-store" {
 	encryption_state = "Enabled"
 }`,
-			expectedResultCode: checks.None,
+			mustExcludeResultCode: checks.AzureUnencryptedDataLakeStore,
 		},
 		{
 			name: "check azurerm_data_lake_store with encryption enabled by default",
@@ -35,15 +36,14 @@ resource "azurerm_data_lake_store" "my-lake-store" {
 resource "azurerm_data_lake_store" "my-lake-store" {
 	
 }`,
-			expectedResultCode: checks.None,
+			mustExcludeResultCode: checks.AzureUnencryptedDataLakeStore,
 		},
-
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assertCheckCodeExists(t, test.expectedResultCode, results)
+			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 

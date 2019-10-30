@@ -14,7 +14,7 @@ func init() {
 		RequiredLabels: []string{"aws_launch_configuration"},
 		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
 
-			val, attrRange, exists := getAttribute(block, ctx, "ebs_block_device")
+			deviceBlock, exists := getBlock(block, "ebs_block_device")
 			if !exists {
 				return []Result{
 					NewResult(
@@ -25,8 +25,7 @@ func init() {
 				}
 			}
 
-			values := val.AsValueMap()
-			encrypted, exists := values["encrypted"]
+			encrypted, encryptedRange, exists := getAttribute(deviceBlock, ctx, "encrypted")
 			if !exists {
 				return []Result{
 					NewResult(
@@ -42,7 +41,7 @@ func init() {
 					NewResult(
 						AWSLaunchConfigurationWithUnencryptedBlockDevice,
 						fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", getBlockName(block)),
-						attrRange,
+						encryptedRange,
 					),
 				}
 			}

@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/hashicorp/hcl/v2"
 )
 
@@ -13,7 +14,7 @@ func init() {
 		RequiredLabels: []string{"azurerm_managed_disk"},
 		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
 
-			encryptionSettingsVal, encryptionSettingsRange, exists := getAttribute(block, ctx, "encryption_settings");
+			encryptionSettingsBlock, exists := getBlock(block, "encryption_settings")
 			if !exists {
 				return []Result{
 					NewResult(
@@ -27,12 +28,7 @@ func init() {
 				}
 			}
 
-			settings := encryptionSettingsVal.AsValueMap()
-			if settings == nil {
-				return nil
-			}
-
-			if enabled, ok := settings["enabled"]; ok && enabled.False() {
+			if enabled, enabledRange, ok := getAttribute(encryptionSettingsBlock, ctx, "enabled"); ok && enabled.False() {
 				return []Result{
 					NewResult(
 						AzureUnencryptedManagedDisk,
@@ -40,7 +36,7 @@ func init() {
 							"Resource '%s' defines an unencrypted managed disk.",
 							getBlockName(block),
 						),
-						encryptionSettingsRange,
+						enabledRange,
 					),
 				}
 			}

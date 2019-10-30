@@ -9,9 +9,10 @@ import (
 func Test_AWSTaskDefinitionIncludesSensitiveData(t *testing.T) {
 
 	var tests = []struct {
-		name               string
-		source             string
-		expectedResultCode checks.Code
+		name                  string
+		source                string
+		mustIncludeResultCode checks.Code
+		mustExcludeResultCode checks.Code
 	}{
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are included",
@@ -32,7 +33,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			expectedResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+			mustIncludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are not included",
@@ -53,7 +54,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			expectedResultCode: checks.None,
+			mustExcludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are included but ignored",
@@ -75,14 +76,14 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			expectedResultCode: checks.None,
+			mustExcludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assertCheckCodeExists(t, test.expectedResultCode, results)
+			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 

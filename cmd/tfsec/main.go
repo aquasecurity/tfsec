@@ -83,9 +83,6 @@ var rootCmd = &cobra.Command{
 
 // highlight the lines of code which caused a problem, if available
 func highlightCode(result checks.Result) {
-	if result.Range.NonSpecific {
-		return
-	}
 
 	data, err := ioutil.ReadFile(result.Range.Filename)
 	if err != nil {

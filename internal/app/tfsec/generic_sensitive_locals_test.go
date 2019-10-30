@@ -9,9 +9,10 @@ import (
 func Test_AWSSensitiveLocals(t *testing.T) {
 
 	var tests = []struct {
-		name               string
-		source             string
-		expectedResultCode checks.Code
+		name                  string
+		source                string
+		mustIncludeResultCode checks.Code
+		mustExcludeResultCode checks.Code
 	}{
 		{
 			name: "check sensitive local with value",
@@ -19,7 +20,7 @@ func Test_AWSSensitiveLocals(t *testing.T) {
 locals {
 	password = "secret"
 }`,
-			expectedResultCode: checks.GenericSensitiveLocals,
+			mustIncludeResultCode: checks.GenericSensitiveLocals,
 		},
 		{
 			name: "check non-sensitive local",
@@ -27,15 +28,14 @@ locals {
 locals {
 	something = "something"
 }`,
-			expectedResultCode: checks.None,
+			mustExcludeResultCode: checks.GenericSensitiveLocals,
 		},
-
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assertCheckCodeExists(t, test.expectedResultCode, results)
+			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 

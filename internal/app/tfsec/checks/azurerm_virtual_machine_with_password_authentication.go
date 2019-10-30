@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/hashicorp/hcl/v2"
 )
 
@@ -13,9 +14,8 @@ func init() {
 		RequiredLabels: []string{"azurerm_virtual_machine"},
 		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
 
-			if linuxConfigVal, linuxConfigRange, exists := getAttribute(block, ctx, "os_profile_linux_config"); exists {
-				valueMap := linuxConfigVal.AsValueMap()
-				if passwordAuthDisabled, found := valueMap["disable_password_authentication"]; found && passwordAuthDisabled.False() {
+			if linuxConfigBlock, exists := getBlock(block, "os_profile_linux_config"); exists {
+				if passwordAuthDisabled, disabledRange, found := getAttribute(linuxConfigBlock, ctx, "disable_password_authentication"); found && passwordAuthDisabled.False() {
 					return []Result{
 						NewResult(
 							AzureVMWithPasswordAuthentication,
@@ -23,7 +23,7 @@ func init() {
 								"Resource '%s' has password authentication enabled. Use SSH keys instead.",
 								getBlockName(block),
 							),
-							linuxConfigRange,
+							disabledRange,
 						),
 					}
 				}

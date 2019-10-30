@@ -9,9 +9,10 @@ import (
 func Test_AWSPlainHTTP(t *testing.T) {
 
 	var tests = []struct {
-		name               string
-		source             string
-		expectedResultCode checks.Code
+		name                  string
+		source                string
+		mustIncludeResultCode checks.Code
+		mustExcludeResultCode checks.Code
 	}{
 		{
 			name: "check aws_alb_listener using plain HTTP",
@@ -19,14 +20,14 @@ func Test_AWSPlainHTTP(t *testing.T) {
 resource "aws_alb_listener" "my-listener" {
 	protocol = "HTTP"
 }`,
-			expectedResultCode: checks.AWSPlainHTTP,
+			mustIncludeResultCode: checks.AWSPlainHTTP,
 		},
 		{
 			name: "check aws_alb_listener using plain HTTP (via non specification)",
 			source: `
 resource "aws_alb_listener" "my-listener" {
 }`,
-			expectedResultCode: checks.AWSPlainHTTP,
+			mustIncludeResultCode: checks.AWSPlainHTTP,
 		},
 		{
 			name: "check aws_alb_listener using HTTPS",
@@ -34,14 +35,31 @@ resource "aws_alb_listener" "my-listener" {
 resource "aws_alb_listener" "my-listener" {
 	protocol = "HTTPS"
 }`,
-			expectedResultCode: checks.None,
+			mustExcludeResultCode: checks.AWSPlainHTTP,
+		},
+		{
+			name: "check aws_alb_listener using HTTP as redirect to HTTPS",
+			source: `
+resource "aws_alb_listener" "my-listener" {
+	protocol = "HTTP"
+	default_action {
+		type = "redirect"
+
+		redirect {
+			port        = "443"
+			protocol    = "HTTPS"
+			status_code = "HTTP_301"
+		}
+	}
+}`,
+			mustExcludeResultCode: checks.AWSPlainHTTP,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assertCheckCodeExists(t, test.expectedResultCode, results)
+			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 

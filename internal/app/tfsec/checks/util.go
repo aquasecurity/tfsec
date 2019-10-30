@@ -3,15 +3,15 @@ package checks
 import (
 	"strings"
 
+	"github.com/hashicorp/hcl/v2/hclsyntax"
+
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 )
 
 func getAttribute(block *hcl.Block, ctx *hcl.EvalContext, name string) (cty.Value, *Range, bool) {
-	attributes, diagnostics := block.Body.JustAttributes()
-	if diagnostics != nil && diagnostics.HasErrors() {
-		return cty.NilVal, nil, false
-	}
+
+	attributes, _ := block.Body.JustAttributes()
 
 	for _, attribute := range attributes {
 		if attribute.Name == name {
@@ -24,6 +24,19 @@ func getAttribute(block *hcl.Block, ctx *hcl.EvalContext, name string) (cty.Valu
 	}
 
 	return cty.NilVal, nil, false
+}
+
+func getBlock(block *hcl.Block, name string) (*hcl.Block, bool) {
+	hclBody, ok := block.Body.(*hclsyntax.Body)
+	if !ok {
+		return nil, false
+	}
+	for _, hclBlock := range hclBody.Blocks {
+		if hclBlock.Type == name {
+			return hclBlock.AsHCLBlock(), true
+		}
+	}
+	return nil, false
 }
 
 func getBlockName(block *hcl.Block) string {
