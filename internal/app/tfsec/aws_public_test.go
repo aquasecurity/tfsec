@@ -3,15 +3,15 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSPublic(t *testing.T) {
 
 	var tests = []struct {
-		name           string
-		source         string
-		expectsResults bool
+		name               string
+		source             string
+		expectedResultCode checks.Code
 	}{
 		{
 			name: "check aws_db_instance when publicly exposed",
@@ -19,7 +19,7 @@ func Test_AWSPublic(t *testing.T) {
 resource "aws_db_instance" "my-resource" {
 	publicly_accessible = true
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_dms_replication_instance when publicly exposed",
@@ -27,7 +27,7 @@ resource "aws_db_instance" "my-resource" {
 resource "aws_dms_replication_instance" "my-resource" {
 	publicly_accessible = true
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_rds_cluster_instance when publicly exposed",
@@ -35,7 +35,7 @@ resource "aws_dms_replication_instance" "my-resource" {
 resource "aws_rds_cluster_instance" "my-resource" {
 	publicly_accessible = true
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_redshift_cluster when publicly exposed",
@@ -43,7 +43,7 @@ resource "aws_rds_cluster_instance" "my-resource" {
 resource "aws_redshift_cluster" "my-resource" {
 	publicly_accessible = true
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_redshift_cluster when not publicly exposed",
@@ -51,14 +51,14 @@ resource "aws_redshift_cluster" "my-resource" {
 resource "aws_redshift_cluster" "my-resource" {
 	publicly_accessible = false
 }`,
-			expectsResults: false,
+			expectedResultCode: checks.None,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assert.Equal(t, test.expectsResults, len(results) > 0)
+			assertCheckCodeExists(t, test.expectedResultCode, results)
 		})
 	}
 

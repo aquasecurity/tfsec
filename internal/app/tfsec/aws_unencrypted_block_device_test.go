@@ -3,15 +3,15 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSUnencryptedBlockDevice(t *testing.T) {
 
 	var tests = []struct {
-		name           string
-		source         string
-		expectsResults bool
+		name               string
+		source             string
+		expectedResultCode checks.Code
 	}{
 		{
 			name: "check no ebs_block_device configured in launch configuration",
@@ -19,7 +19,7 @@ func Test_AWSUnencryptedBlockDevice(t *testing.T) {
 resource "aws_launch_configuration" "my-launch-config" {
 	
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check no encryption configured for ebs_block_device",
@@ -27,7 +27,7 @@ resource "aws_launch_configuration" "my-launch-config" {
 resource "aws_launch_configuration" "my-launch-config" {
 	ebs_block_device = {}
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check encryption disabled for ebs_block_device",
@@ -37,7 +37,7 @@ resource "aws_launch_configuration" "my-launch-config" {
 		encrypted = false
 	}
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check encryption enabled for ebs_block_device",
@@ -47,14 +47,14 @@ resource "aws_launch_configuration" "my-launch-config" {
 		encrypted = true
 	}
 }`,
-			expectsResults: false,
+			expectedResultCode: checks.None,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assert.Equal(t, test.expectsResults, len(results) > 0)
+			assertCheckCodeExists(t, test.expectedResultCode, results)
 		})
 	}
 

@@ -3,15 +3,15 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSACL(t *testing.T) {
 
 	var tests = []struct {
-		name           string
-		source         string
-		expectsResults bool
+		name               string
+		source             string
+		expectedResultCode checks.Code
 	}{
 		{
 			name: "check aws_s3_bucket with acl=public-read",
@@ -20,7 +20,7 @@ resource "aws_s3_bucket" "my-bucket" {
 	acl = "public-read"
 	logging = {}
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSBadBucketACL,
 		},
 		{
 			name: "check aws_s3_bucket with acl=public-read-write",
@@ -29,7 +29,7 @@ resource "aws_s3_bucket" "my-bucket" {
 	acl = "public-read-write"
 	logging = {}
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSBadBucketACL,
 		},
 		{
 			name: "check aws_s3_bucket with acl=website",
@@ -38,7 +38,7 @@ resource "aws_s3_bucket" "my-bucket" {
 	acl = "website"
 	logging = {}
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSBadBucketACL,
 		},
 		{
 			name: "check aws_s3_bucket with acl=private",
@@ -47,14 +47,14 @@ resource "aws_s3_bucket" "my-bucket" {
 	acl = "private"
 	logging = {}
 }`,
-			expectsResults: false,
+			expectedResultCode: checks.None,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assert.Equal(t, test.expectsResults, len(results) > 0)
+			assertCheckCodeExists(t, test.expectedResultCode, results)
 		})
 	}
 

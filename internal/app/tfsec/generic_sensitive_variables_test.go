@@ -3,15 +3,15 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSSensitiveVariables(t *testing.T) {
 
 	var tests = []struct {
-		name           string
-		source         string
-		expectsResults bool
+		name               string
+		source             string
+		expectedResultCode checks.Code
 	}{
 		{
 			name: "check sensitive variable with value",
@@ -19,7 +19,7 @@ func Test_AWSSensitiveVariables(t *testing.T) {
 variable "db_password" {
 	default = "something"
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.GenericSensitiveVariables,
 		},
 		{
 			name: "check sensitive variable without value",
@@ -27,14 +27,14 @@ variable "db_password" {
 variable "db_password" {
 	default = ""
 }`,
-			expectsResults: false,
+			expectedResultCode: checks.None,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assert.Equal(t, test.expectsResults, len(results) > 0)
+			assertCheckCodeExists(t, test.expectedResultCode, results)
 		})
 	}
 

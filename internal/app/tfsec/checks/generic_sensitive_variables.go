@@ -6,13 +6,14 @@ import (
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/liamg/tfsec/internal/app/tfsec/models"
 )
+
+const GenericSensitiveVariables Code = "GEN001"
 
 func init() {
 	RegisterCheck(Check{
 		RequiredTypes: []string{"variable"},
-		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []models.Result {
+		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
 
 			if len(block.Labels) == 0 {
 				return nil
@@ -22,7 +23,7 @@ func init() {
 				return nil
 			}
 
-			var results []models.Result
+			var results []Result
 
 			attributes, _ := block.Body.JustAttributes()
 			for _, attribute := range attributes {
@@ -35,9 +36,11 @@ func init() {
 						continue
 					}
 					if val.AsString() != "" {
-						results = append(results, models.Result{
-							Description: fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", getBlockName(block)),
-						})
+						results = append(results, NewResult(
+							GenericSensitiveVariables,
+							fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", getBlockName(block)),
+							nil,
+						))
 					}
 				}
 			}

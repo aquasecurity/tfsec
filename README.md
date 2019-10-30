@@ -6,7 +6,7 @@
 
 tfsec uses static analysis of your terraform templates to spot potential security issues. Now with terraform v0.12+ support.
 
-![](screenshot.png)
+![](example.png)
 
 ## Installation
 
@@ -28,11 +28,7 @@ The exit status will be non zero if problems are found, otherwise the exit statu
 tfsec .
 ```
 
-## Support for older terraform versions
-
-If you need to support versions of terraform which use HCL v1 (terraform <0.12), you can use `v0.1.3` of tfsec.
-
-### Ignoring Warnings
+## Ignoring Warnings
 
 You may wish to ignore some warnings. If you'd like to do so, you can simply add a comment containing `tfsec:ignore` to the offending line in your templates. If the problem refers to a block of code, such as a multiline string, you can add the comment on the line above the block, by itself.
 
@@ -45,42 +41,40 @@ resource "aws_security_group_rule" "my-rule" {
 }
 ```
 
+...or...
+
+```hcl
+resource "aws_security_group_rule" "my-rule" {
+    type = "ingress"
+    #tfsec:ignore
+    cidr_blocks = ["0.0.0.0/0"] 
+}
+```
+
 If you're not sure which line to add the comment on, just check the tfsec output for the line number of the discovered problem.
 
 ## Included Checks
 
-Currently, checks are limited to AWS, though this may change in future.
+Currently, checks are mostly limited to AWS resources, though support for more common providers will be added in the coming weeks.
 
-### Open Security Group Rules
+| Code    | Provider | Description |
+|---------|----------|-------------|
+| GEN001  |          | Potentially sensitive data stored in "default" value of variable.
+| AWS001  | aws      | S3 Bucket has an ACL defined which allows public access.
+| AWS002  | aws      | S3 Bucket does not have logging enabled.
+| AWS003  | aws      | AWS Classic resource usage.
+| AWS004  | aws      | Use of plain HTTP.
+| AWS005  | aws      | Load balancer is exposed to the internet.
+| AWS006  | aws      | An ingress security group rule allows traffic from `/0`.
+| AWS007  | aws      | An egress security group rule allows traffic to `/0`.
+| AWS008  | aws      | An inline ingress security group rule allows traffic from `/0`.
+| AWS009  | aws      | An inline egress security group rule allows traffic to `/0`.
+| AWS010  | aws      | An outdated SSL policy is in use by a load balancer.
+| AWS011  | aws      | A resource is marked as publicly accessible.
+| AWS012  | aws      | A resource has a public IP address.
+| AWS013  | aws      | Task definition defines sensitive environment variable(s).
+| AWS014  | aws      | Launch configuration with unencrypted block device.
 
-Checks `aws_security_group` and `aws_security_group_rule` for ingress rules allowing traffic from "0.0.0.0/0".
+## Support for older terraform versions
 
-### EC2 Classic Usage
-
-Checks for usage of EC2 Classic resources, including:
-
-- `aws_db_security_group`
-- `aws_redshift_security_group`
-- `aws_elasticache_security_group`
-
-### Assorted Public Exposure
-
-Checks for public exposure of the following resources:
-
-- `aws_db_instance`
-- `aws_dms_replication_instance`
-- `aws_rds_cluster_instance`    
-- `aws_redshift_cluster`        
-- `aws_instance`
-- `aws_launch_configuration`
-- `aws_s3_bucket`
-- `aws_alb`/`aws_lb` 
-- `aws_elb`
-
-### Outdated SSL Policies
-
-Checks for insecure SSL policies on `aws_alb_listener`.
-
-### Missing Encryption
-
-Checks for use of plain HTTP on `aws_alb_listener`.
+If you need to support versions of terraform which use HCL v1 (terraform <0.12), you can use `v0.1.3` of tfsec, though support is very limited and has fewer checks.
