@@ -31,7 +31,7 @@ resource "cats_cat" "mittens" {
 
 resource "cats_kitten" "the-great-destroyer" {
 	name = "the great destroyer"
-    parent = resource.cats_cat.mittens.name
+    parent = cats_cat.mittens.name
 }
 
 data "cats_cat" "the-cats-mother" {
