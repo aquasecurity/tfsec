@@ -8,9 +8,10 @@ type Result struct {
 }
 
 type Range struct {
-	Filename  string
-	StartLine int
-	EndLine   int
+	Filename    string
+	StartLine   int
+	EndLine     int
+	NonSpecific bool
 }
 
 func (r *Range) String() string {
