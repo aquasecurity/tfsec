@@ -178,7 +178,10 @@ func (parser *Parser) addToContextByBlockType(ctx *hcl.EvalContext, blocks hcl.B
 			if !partialSuccess {
 				success = false
 			}
-		case "resource", "data":
+		case "resource":
+			alias = ""
+			fallthrough
+		case "data":
 
 			if len(block.Labels) < 2 {
 				continue
@@ -205,15 +208,21 @@ func (parser *Parser) addToContextByBlockType(ctx *hcl.EvalContext, blocks hcl.B
 
 	}
 
-	existing, exists := ctx.Variables[alias]
-	if exists {
-		existingMap := existing.AsValueMap()
+	if alias == "" {
 		for key, val := range values {
-			existingMap[key] = val
+			ctx.Variables[key] = val
 		}
-		ctx.Variables[alias] = cty.ObjectVal(existingMap)
 	} else {
-		ctx.Variables[alias] = cty.ObjectVal(values)
+		existing, exists := ctx.Variables[alias]
+		if exists {
+			existingMap := existing.AsValueMap()
+			for key, val := range values {
+				existingMap[key] = val
+			}
+			ctx.Variables[alias] = cty.ObjectVal(existingMap)
+		} else {
+			ctx.Variables[alias] = cty.ObjectVal(values)
+		}
 	}
 	return success
 }
