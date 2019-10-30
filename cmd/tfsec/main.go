@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/liamg/tml"
+	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/models"
+	"github.com/liamg/tml"
 
 	"github.com/liamg/clinch/terminal"
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
@@ -70,10 +70,10 @@ var rootCmd = &cobra.Command{
 		for i, result := range results {
 			terminal.PrintErrorf("<underline>Problem %d</underline>\n", i+1)
 			_ = tml.Printf(`
+  <blue>[</blue>%s<blue>]</blue> %s
   <blue>%s</blue>
-  %s
 
-`, result.Range.String(), result.Description)
+`, result.Code, result.Description, result.Range.String())
 			highlightCode(result)
 		}
 
@@ -82,7 +82,7 @@ var rootCmd = &cobra.Command{
 }
 
 // highlight the lines of code which caused a problem, if available
-func highlightCode(result models.Result) {
+func highlightCode(result checks.Result) {
 	if result.Range.NonSpecific {
 		return
 	}

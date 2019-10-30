@@ -3,15 +3,15 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSTaskDefinitionIncludesSensitiveData(t *testing.T) {
 
 	var tests = []struct {
-		name           string
-		source         string
-		expectsResults bool
+		name               string
+		source             string
+		expectedResultCode checks.Code
 	}{
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are included",
@@ -32,7 +32,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are not included",
@@ -53,7 +53,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			expectsResults: false,
+			expectedResultCode: checks.None,
 		},
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are included but ignored",
@@ -75,14 +75,14 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			expectsResults: false,
+			expectedResultCode: checks.None,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assert.Equal(t, test.expectsResults, len(results) > 0)
+			assertCheckCodeExists(t, test.expectedResultCode, results)
 		})
 	}
 

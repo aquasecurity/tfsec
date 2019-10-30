@@ -3,15 +3,15 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSPlainHTTP(t *testing.T) {
 
 	var tests = []struct {
-		name           string
-		source         string
-		expectsResults bool
+		name               string
+		source             string
+		expectedResultCode checks.Code
 	}{
 		{
 			name: "check aws_alb_listener using plain HTTP",
@@ -19,14 +19,14 @@ func Test_AWSPlainHTTP(t *testing.T) {
 resource "aws_alb_listener" "my-listener" {
 	protocol = "HTTP"
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSPlainHTTP,
 		},
 		{
 			name: "check aws_alb_listener using plain HTTP (via non specification)",
 			source: `
 resource "aws_alb_listener" "my-listener" {
 }`,
-			expectsResults: true,
+			expectedResultCode: checks.AWSPlainHTTP,
 		},
 		{
 			name: "check aws_alb_listener using HTTPS",
@@ -34,14 +34,14 @@ resource "aws_alb_listener" "my-listener" {
 resource "aws_alb_listener" "my-listener" {
 	protocol = "HTTPS"
 }`,
-			expectsResults: false,
+			expectedResultCode: checks.None,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assert.Equal(t, test.expectsResults, len(results) > 0)
+			assertCheckCodeExists(t, test.expectedResultCode, results)
 		})
 	}
 

@@ -5,13 +5,12 @@ import (
 	"sync"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/liamg/tfsec/internal/app/tfsec/models"
 )
 
 type Check struct {
 	RequiredTypes  []string
 	RequiredLabels []string
-	CheckFunc      func(*hcl.Block, *hcl.EvalContext) []models.Result
+	CheckFunc      func(*hcl.Block, *hcl.EvalContext) []Result
 }
 
 var checkLock sync.Mutex
@@ -27,7 +26,7 @@ func GetRegisteredChecks() []Check {
 	return registeredChecks
 }
 
-func (check *Check) Run(block *hcl.Block, ctx *hcl.EvalContext) []models.Result {
+func (check *Check) Run(block *hcl.Block, ctx *hcl.EvalContext) []Result {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Printf("WARNING: fatal error running check: %s\n", err)

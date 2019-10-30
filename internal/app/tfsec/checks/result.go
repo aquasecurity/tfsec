@@ -1,10 +1,19 @@
-package models
+package checks
 
 import "fmt"
 
 type Result struct {
+	Code        Code
 	Range       *Range
 	Description string
+}
+
+func NewResult(code Code, description string, r *Range) Result {
+	return Result{
+		Code:        code,
+		Description: description,
+		Range:       r,
+	}
 }
 
 type Range struct {

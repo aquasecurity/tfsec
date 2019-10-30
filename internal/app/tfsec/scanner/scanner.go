@@ -6,7 +6,6 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/liamg/tfsec/internal/app/tfsec/checks"
-	"github.com/liamg/tfsec/internal/app/tfsec/models"
 )
 
 type Scanner struct {
@@ -17,14 +16,14 @@ func New() *Scanner {
 }
 
 // Scan takes all available hcl blocks and an optional context, and returns a slice of results. Each result indicates a potential security problem.
-func (scanner *Scanner) Scan(blocks hcl.Blocks, ctx *hcl.EvalContext) []models.Result {
-	var results []models.Result
+func (scanner *Scanner) Scan(blocks hcl.Blocks, ctx *hcl.EvalContext) []checks.Result {
+	var results []checks.Result
 	for _, block := range blocks {
 		for _, check := range checks.GetRegisteredChecks() {
 			if check.IsRequiredForBlock(block) {
 				for _, result := range check.Run(block, ctx) {
 					if result.Range == nil {
-						result.Range = &models.Range{
+						result.Range = &checks.Range{
 							Filename:    block.DefRange.Filename,
 							StartLine:   block.DefRange.Start.Line,
 							EndLine:     block.DefRange.End.Line,
@@ -41,7 +40,7 @@ func (scanner *Scanner) Scan(blocks hcl.Blocks, ctx *hcl.EvalContext) []models.R
 	return results
 }
 
-func (scanner *Scanner) checkRangeIgnored(r *models.Range) bool {
+func (scanner *Scanner) checkRangeIgnored(r *checks.Range) bool {
 	raw, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return false
