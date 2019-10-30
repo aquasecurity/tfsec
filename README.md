@@ -32,7 +32,7 @@ If you need to support versions of terraform which use HCL v1 (terraform <0.12),
 
 ### Ignoring Warnings
 
-You may wish to ignore some warnings. If you'd like to do so, you can simply add a comment containing `tfsec:ignore` to the offending line in your templates.
+You may wish to ignore some warnings. If you'd like to do so, you can simply add a comment containing `tfsec:ignore` to the offending line in your templates. If the problem refers to a block of code, such as a multiline string, you can add the comment on the line above the block, by itself.
 
 For example, to ignore any warnings about an open security group rule:
 

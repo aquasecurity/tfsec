@@ -22,7 +22,7 @@ func (scanner *Scanner) Scan(blocks hcl.Blocks, ctx *hcl.EvalContext) []models.R
 	for _, block := range blocks {
 		for _, check := range checks.GetRegisteredChecks() {
 			if check.IsRequiredForBlock(block) {
-				if result := check.Run(block, ctx); result != nil {
+				for _, result := range check.Run(block, ctx) {
 					if result.Range == nil {
 						result.Range = &models.Range{
 							Filename:  block.DefRange.Filename,
@@ -31,7 +31,7 @@ func (scanner *Scanner) Scan(blocks hcl.Blocks, ctx *hcl.EvalContext) []models.R
 						}
 					}
 					if !scanner.checkRangeIgnored(result.Range) {
-						results = append(results, *result)
+						results = append(results, result)
 					}
 				}
 			}
@@ -51,6 +51,14 @@ func (scanner *Scanner) checkRangeIgnored(r *models.Range) bool {
 			continue
 		}
 		if strings.Contains(lines[number], "tfsec:ignore") {
+			return true
+		}
+	}
+
+	if r.StartLine-1 > 0 {
+		line := lines[r.StartLine-1]
+		line = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(line, "//", ""), "#", ""))
+		if line == "tfsec:ignore" {
 			return true
 		}
 	}
