@@ -25,16 +25,15 @@ func init() {
 					code = AWSOpenEgressSecurityGroupInlineRule
 				}
 
-				if directionVal, directionRange, exists := getAttribute(block, ctx, direction); exists {
-					directionMap := directionVal.AsValueMap()
-					if cidrBlocksVal, exists := directionMap["cidr_blocks"]; exists {
+				if directionBlock, exists := getBlock(block, direction); exists {
+					if cidrBlocksVal, cidrRange, exists := getAttribute(directionBlock, ctx, "cidr_blocks"); exists {
 						for _, cidr := range cidrBlocksVal.AsValueSlice() {
 							if strings.HasSuffix(cidr.AsString(), "/0") {
 								results = append(results,
 									NewResult(
 										code,
 										fmt.Sprintf("Resource '%s' defines a fully open %s security group.", getBlockName(block), direction),
-										directionRange,
+										cidrRange,
 									),
 								)
 							}

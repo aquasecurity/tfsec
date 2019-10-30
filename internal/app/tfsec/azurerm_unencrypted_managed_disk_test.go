@@ -9,9 +9,10 @@ import (
 func Test_AzureUnencryptedManagedDisk(t *testing.T) {
 
 	var tests = []struct {
-		name               string
-		source             string
-		expectedResultCode checks.Code
+		name                  string
+		source                string
+		mustIncludeResultCode checks.Code
+		mustExcludeResultCode checks.Code
 	}{
 		{
 			name: "check azurerm_managed_disk with no encryption_settings",
@@ -19,34 +20,34 @@ func Test_AzureUnencryptedManagedDisk(t *testing.T) {
 resource "azurerm_managed_disk" "my-disk" {
 	
 }`,
-			expectedResultCode: checks.AzureUnencryptedManagedDisk,
+			mustIncludeResultCode: checks.AzureUnencryptedManagedDisk,
 		},
 		{
 			name: "check azurerm_managed_disk with encryption disabled",
 			source: `
 resource "azurerm_managed_disk" "my-disk" {
-	encryption_settings = {
+	encryption_settings {
 		enabled = false
 	}
 }`,
-			expectedResultCode: checks.AzureUnencryptedManagedDisk,
+			mustIncludeResultCode: checks.AzureUnencryptedManagedDisk,
 		},
 		{
 			name: "check azurerm_managed_disk with encryption enabled",
 			source: `
 resource "azurerm_managed_disk" "my-disk" {
-	encryption_settings = {
+	encryption_settings {
 		enabled = true
 	}
 }`,
-			expectedResultCode: checks.None,
+			mustExcludeResultCode: checks.AzureUnencryptedManagedDisk,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assertCheckCodeExists(t, test.expectedResultCode, results)
+			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 

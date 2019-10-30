@@ -13,7 +13,7 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_s3_bucket"},
 		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
-			if _, _, exists := getAttribute(block, ctx, "logging"); !exists {
+			if _, exists := getBlock(block, "logging"); !exists {
 				return []Result{
 					NewResult(
 						AWSNoBucketLogging,

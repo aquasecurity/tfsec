@@ -41,16 +41,22 @@ func createTestFile(filename, contents string) string {
 	return path
 }
 
-func assertCheckCodeExists(t *testing.T, code checks.Code, results []checks.Result) {
-	if code == checks.None {
-		return
-	}
-	var found bool
+func assertCheckCode(t *testing.T, includeCode checks.Code, excludeCode checks.Code, results []checks.Result) {
+
+	var foundInclude bool
+	var foundExclude bool
+
 	for _, result := range results {
-		if result.Code == code {
-			found = true
-			break
+		if result.Code == excludeCode {
+			foundExclude = true
+		}
+		if result.Code == includeCode {
+			foundInclude = true
 		}
 	}
-	assert.True(t, found, fmt.Sprintf("result with code '%s' was not found", code))
+
+	assert.False(t, foundExclude, fmt.Sprintf("result with code '%s' was found but should not have been", excludeCode))
+	if includeCode != checks.None {
+		assert.True(t, foundInclude, fmt.Sprintf("result with code '%s' was not found but should have been", includeCode))
+	}
 }

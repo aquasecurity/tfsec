@@ -9,9 +9,10 @@ import (
 func Test_AWSPublic(t *testing.T) {
 
 	var tests = []struct {
-		name               string
-		source             string
-		expectedResultCode checks.Code
+		name                  string
+		source                string
+		mustIncludeResultCode checks.Code
+		mustExcludeResultCode checks.Code
 	}{
 		{
 			name: "check aws_db_instance when publicly exposed",
@@ -19,7 +20,7 @@ func Test_AWSPublic(t *testing.T) {
 resource "aws_db_instance" "my-resource" {
 	publicly_accessible = true
 }`,
-			expectedResultCode: checks.AWSPubliclyAccessibleResource,
+			mustIncludeResultCode: checks.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_dms_replication_instance when publicly exposed",
@@ -27,7 +28,7 @@ resource "aws_db_instance" "my-resource" {
 resource "aws_dms_replication_instance" "my-resource" {
 	publicly_accessible = true
 }`,
-			expectedResultCode: checks.AWSPubliclyAccessibleResource,
+			mustIncludeResultCode: checks.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_rds_cluster_instance when publicly exposed",
@@ -35,7 +36,7 @@ resource "aws_dms_replication_instance" "my-resource" {
 resource "aws_rds_cluster_instance" "my-resource" {
 	publicly_accessible = true
 }`,
-			expectedResultCode: checks.AWSPubliclyAccessibleResource,
+			mustIncludeResultCode: checks.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_redshift_cluster when publicly exposed",
@@ -43,7 +44,7 @@ resource "aws_rds_cluster_instance" "my-resource" {
 resource "aws_redshift_cluster" "my-resource" {
 	publicly_accessible = true
 }`,
-			expectedResultCode: checks.AWSPubliclyAccessibleResource,
+			mustIncludeResultCode: checks.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_redshift_cluster when not publicly exposed",
@@ -51,14 +52,14 @@ resource "aws_redshift_cluster" "my-resource" {
 resource "aws_redshift_cluster" "my-resource" {
 	publicly_accessible = false
 }`,
-			expectedResultCode: checks.None,
+			mustExcludeResultCode: checks.AWSPubliclyAccessibleResource,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assertCheckCodeExists(t, test.expectedResultCode, results)
+			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 

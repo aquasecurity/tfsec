@@ -9,9 +9,10 @@ import (
 func Test_AWSNotInternal(t *testing.T) {
 
 	var tests = []struct {
-		name               string
-		source             string
-		expectedResultCode checks.Code
+		name                  string
+		source                string
+		mustIncludeResultCode checks.Code
+		mustExcludeResultCode checks.Code
 	}{
 		{
 			name: "check aws_alb when not internal",
@@ -19,7 +20,7 @@ func Test_AWSNotInternal(t *testing.T) {
 resource "aws_alb" "my-resource" {
 	internal = false
 }`,
-			expectedResultCode: checks.AWSExternallyExposedLoadBalancer,
+			mustIncludeResultCode: checks.AWSExternallyExposedLoadBalancer,
 		},
 		{
 			name: "check aws_elb when not internal",
@@ -27,7 +28,7 @@ resource "aws_alb" "my-resource" {
 resource "aws_elb" "my-resource" {
 	internal = false
 }`,
-			expectedResultCode: checks.AWSExternallyExposedLoadBalancer,
+			mustIncludeResultCode: checks.AWSExternallyExposedLoadBalancer,
 		},
 		{
 			name: "check aws_lb when not internal",
@@ -35,14 +36,14 @@ resource "aws_elb" "my-resource" {
 resource "aws_lb" "my-resource" {
 	internal = false
 }`,
-			expectedResultCode: checks.AWSExternallyExposedLoadBalancer,
+			mustIncludeResultCode: checks.AWSExternallyExposedLoadBalancer,
 		},
 		{
 			name: "check aws_lb when not explicitly marked as internal",
 			source: `
 resource "aws_lb" "my-resource" {
 }`,
-			expectedResultCode: checks.AWSExternallyExposedLoadBalancer,
+			mustIncludeResultCode: checks.AWSExternallyExposedLoadBalancer,
 		},
 		{
 			name: "check aws_lb when explicitly marked as internal",
@@ -50,14 +51,14 @@ resource "aws_lb" "my-resource" {
 resource "aws_lb" "my-resource" {
 	internal = true
 }`,
-			expectedResultCode: checks.None,
+			mustExcludeResultCode: checks.AWSExternallyExposedLoadBalancer,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assertCheckCodeExists(t, test.expectedResultCode, results)
+			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 

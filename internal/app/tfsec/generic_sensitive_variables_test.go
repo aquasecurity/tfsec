@@ -9,9 +9,10 @@ import (
 func Test_AWSSensitiveVariables(t *testing.T) {
 
 	var tests = []struct {
-		name               string
-		source             string
-		expectedResultCode checks.Code
+		name                  string
+		source                string
+		mustIncludeResultCode checks.Code
+		mustExcludeResultCode checks.Code
 	}{
 		{
 			name: "check sensitive variable with value",
@@ -19,7 +20,7 @@ func Test_AWSSensitiveVariables(t *testing.T) {
 variable "db_password" {
 	default = "something"
 }`,
-			expectedResultCode: checks.GenericSensitiveVariables,
+			mustIncludeResultCode: checks.GenericSensitiveVariables,
 		},
 		{
 			name: "check sensitive variable without value",
@@ -27,14 +28,14 @@ variable "db_password" {
 variable "db_password" {
 	default = ""
 }`,
-			expectedResultCode: checks.None,
+			mustExcludeResultCode: checks.GenericSensitiveVariables,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assertCheckCodeExists(t, test.expectedResultCode, results)
+			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 
