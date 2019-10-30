@@ -55,7 +55,7 @@ If you're not sure which line to add the comment on, just check the tfsec output
 
 ## Included Checks
 
-Currently, checks are mostly limited to AWS resources, though support for more common providers will be added in the coming weeks.
+Currently, checks are mostly limited to AWS/Azure resources, though support for more common providers will be added in the coming weeks.
 
 | Code    | Provider | Description |
 |---------|----------|-------------|
@@ -74,6 +74,8 @@ Currently, checks are mostly limited to AWS resources, though support for more c
 | AWS012  | aws      | A resource has a public IP address.
 | AWS013  | aws      | Task definition defines sensitive environment variable(s).
 | AWS014  | aws      | Launch configuration with unencrypted block device.
+| AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`
+| AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`
 
 ## Support for older terraform versions
 
