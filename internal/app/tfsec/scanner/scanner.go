@@ -8,9 +8,11 @@ import (
 	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
+// Scanner scans HCL blocks by running all registered checks against them
 type Scanner struct {
 }
 
+// New creates a new Scanner
 func New() *Scanner {
 	return &Scanner{}
 }

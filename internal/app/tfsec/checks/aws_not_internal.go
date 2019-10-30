@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AWSExternallyExposedLoadBalancer See https://github.com/liamg/tfsec#included-checks for check info
 const AWSExternallyExposedLoadBalancer Code = "AWS005"
 
 func init() {

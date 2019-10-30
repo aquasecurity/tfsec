@@ -7,6 +7,8 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// Check is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.
+// "resource", and the labels to run on e.g. "aws_s3_bucket".
 type Check struct {
 	RequiredTypes  []string
 	RequiredLabels []string
@@ -16,16 +18,20 @@ type Check struct {
 var checkLock sync.Mutex
 var registeredChecks []Check
 
+// RegisterCheck registers a new Check which should be run on future scans
 func RegisterCheck(check Check) {
 	checkLock.Lock()
 	defer checkLock.Unlock()
 	registeredChecks = append(registeredChecks, check)
 }
 
+// GetRegisteredChecks provides all Checks which have been registered with this package
 func GetRegisteredChecks() []Check {
 	return registeredChecks
 }
 
+// Run runs the check against the provided HCL block, including the hclEvalContext to evaluate expressions if it is
+// provided.
 func (check *Check) Run(block *hcl.Block, ctx *hcl.EvalContext) []Result {
 	defer func() {
 		if err := recover(); err != nil {
@@ -35,6 +41,7 @@ func (check *Check) Run(block *hcl.Block, ctx *hcl.EvalContext) []Result {
 	return check.CheckFunc(block, ctx)
 }
 
+// IsRequiredForBlock returns true if the Check should be applied to the given HCL block
 func (check *Check) IsRequiredForBlock(block *hcl.Block) bool {
 
 	if check.CheckFunc == nil {

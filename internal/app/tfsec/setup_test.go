@@ -56,7 +56,7 @@ func assertCheckCode(t *testing.T, includeCode checks.Code, excludeCode checks.C
 	}
 
 	assert.False(t, foundExclude, fmt.Sprintf("result with code '%s' was found but should not have been", excludeCode))
-	if includeCode != checks.None {
+	if includeCode != checks.Code("") {
 		assert.True(t, foundInclude, fmt.Sprintf("result with code '%s' was not found but should have been", includeCode))
 	}
 }

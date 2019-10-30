@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AWSLaunchConfigurationWithUnencryptedBlockDevice See https://github.com/liamg/tfsec#included-checks for check info
 const AWSLaunchConfigurationWithUnencryptedBlockDevice Code = "AWS014"
 
 func init() {

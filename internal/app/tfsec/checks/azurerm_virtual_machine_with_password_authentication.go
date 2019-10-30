@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// AzureVMWithPasswordAuthentication See https://github.com/liamg/tfsec#included-checks for check info
 const AzureVMWithPasswordAuthentication Code = "AZU005"
 
 func init() {

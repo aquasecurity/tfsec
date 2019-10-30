@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
+// GenericSensitiveAttributes See https://github.com/liamg/tfsec#included-checks for check info
 const GenericSensitiveAttributes Code = "GEN003"
 
 func init() {

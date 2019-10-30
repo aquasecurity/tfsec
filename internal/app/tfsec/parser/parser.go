@@ -14,16 +14,19 @@ import (
 
 const maxContextIterations = 32
 
+// Parser is a tool for parsing terraform templates at a given file system location
 type Parser struct {
 	hclParser *hclparse.Parser
 }
 
+// New creates a new Parser
 func New() *Parser {
 	return &Parser{
 		hclParser: hclparse.NewParser(),
 	}
 }
 
+// ParseDirectory recursively parses all terraform files within a given directory
 func (parser *Parser) ParseDirectory(path string) (hcl.Blocks, *hcl.EvalContext, error) {
 
 	if err := parser.recursivelyParseDirectory(path); err != nil {
@@ -43,6 +46,7 @@ func (parser *Parser) ParseDirectory(path string) (hcl.Blocks, *hcl.EvalContext,
 	return blocks, parser.buildEvaluationContext(blocks), nil
 }
 
+// ParseFile recursively the terraform file at the given path
 func (parser *Parser) ParseFile(path string) (hcl.Blocks, *hcl.EvalContext, error) {
 	parsedFile, diagnostics := parser.hclParser.ParseHCLFile(path)
 	if diagnostics != nil && diagnostics.HasErrors() {
