@@ -17,10 +17,9 @@ func NewResult(code Code, description string, r *Range) Result {
 }
 
 type Range struct {
-	Filename    string
-	StartLine   int
-	EndLine     int
-	NonSpecific bool
+	Filename  string
+	StartLine int
+	EndLine   int
 }
 
 func (r *Range) String() string {
