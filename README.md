@@ -4,7 +4,7 @@
 
 tfsec uses static analysis of your terraform templates to spot potential security issues. Now with terraform v0.12+ support.
 
-![](demo.png?x)
+![](demo.png)
 
 ## Installation
 
