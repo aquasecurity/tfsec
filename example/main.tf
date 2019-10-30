@@ -12,3 +12,9 @@ resource "aws_alb_listener" "my-alb-listener"{
 resource "aws_db_security_group" "my-group" {
 
 }
+
+resource "azurerm_managed_disk" "source" {
+    encryption_settings = {
+        enabled = false
+    }
+}

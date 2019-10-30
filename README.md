@@ -76,6 +76,7 @@ Currently, checks are mostly limited to AWS/Azure resources, though support for 
 | AWS014  | aws      | Launch configuration with unencrypted block device.
 | AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`
 | AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`
+| AZU003  | azurerm  | Unencrypted managed disk
 
 ## Support for older terraform versions
 
