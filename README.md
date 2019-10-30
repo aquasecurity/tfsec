@@ -55,7 +55,7 @@ If you're not sure which line to add the comment on, just check the tfsec output
 
 ## Included Checks
 
-Currently, checks are mostly limited to AWS resources, though will change in the coming weeks.
+Currently, checks are mostly limited to AWS resources, though support for more common providers will be added in the coming weeks.
 
 | Code    | Provider | Description |
 |---------|----------|-------------|
