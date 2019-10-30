@@ -7,8 +7,6 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-// TODO move these to util package
-
 func getAttribute(block *hcl.Block, ctx *hcl.EvalContext, name string) (cty.Value, *Range, bool) {
 	attributes, diagnostics := block.Body.JustAttributes()
 	if diagnostics != nil && diagnostics.HasErrors() {
