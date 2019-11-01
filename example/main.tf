@@ -14,7 +14,7 @@ resource "aws_db_security_group" "my-group" {
 }
 
 resource "azurerm_managed_disk" "source" {
-    encryption_settings = {
+    encryption_settings {
         enabled = false
     }
 }
