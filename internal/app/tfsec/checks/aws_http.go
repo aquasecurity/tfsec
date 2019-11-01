@@ -28,11 +28,15 @@ func init() {
 						}
 					}
 				}
+				reportRange := block.Range()
+				if protocolAttr != nil {
+					reportRange = protocolAttr.Range()
+				}
 				return []Result{
 					NewResult(
 						AWSPlainHTTP,
 						fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.Name()),
-						protocolAttr.Range(),
+						reportRange,
 					),
 				}
 			}
