@@ -54,13 +54,13 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		blocks, ctx, err := parser.New().ParseDirectory(dir)
+		blocks, err := parser.New().ParseDirectory(dir)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		results := scanner.New().Scan(blocks, ctx)
+		results := scanner.New().Scan(blocks)
 		if len(results) == 0 {
 			terminal.PrintSuccessf("\nNo problems detected!\n")
 			os.Exit(0)

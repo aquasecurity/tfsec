@@ -3,7 +3,9 @@ package checks
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/v2"
+	"github.com/zclconf/go-cty/cty"
+
+	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AzureUnencryptedManagedDisk See https://github.com/liamg/tfsec#included-checks for check info
@@ -13,31 +15,32 @@ func init() {
 	RegisterCheck(Check{
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_managed_disk"},
-		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
+		CheckFunc: func(block *parser.Block) []Result {
 
-			encryptionSettingsBlock, exists := getBlock(block, "encryption_settings")
-			if !exists {
+			encryptionSettingsBlock := block.GetBlock("encryption_settings")
+			if encryptionSettingsBlock == nil {
 				return []Result{
 					NewResult(
 						AzureUnencryptedManagedDisk,
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted managed disk.",
-							getBlockName(block),
+							block.Name(),
 						),
-						nil,
+						block.Range(),
 					),
 				}
 			}
 
-			if enabled, enabledRange, ok := getAttribute(encryptionSettingsBlock, ctx, "enabled"); ok && enabled.False() {
+			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
+			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
 				return []Result{
 					NewResult(
 						AzureUnencryptedManagedDisk,
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted managed disk.",
-							getBlockName(block),
+							block.Name(),
 						),
-						enabledRange,
+						enabledAttr.Range(),
 					),
 				}
 			}

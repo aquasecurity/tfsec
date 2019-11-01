@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/hashicorp/hcl/v2"
+	"github.com/zclconf/go-cty/cty"
+
+	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AWSTaskDefinitionWithSensitiveEnvironmentVariables See https://github.com/liamg/tfsec#included-checks for check info
@@ -14,12 +16,12 @@ func init() {
 	RegisterCheck(Check{
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecs_task_definition"},
-		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
+		CheckFunc: func(block *parser.Block) []Result {
 
 			var results []Result
 
-			if definitionsVal, attrRange, exists := getAttribute(block, ctx, "container_definitions"); exists {
-				rawJSON := []byte(definitionsVal.AsString())
+			if definitionsAttr := block.GetAttribute("container_definitions"); definitionsAttr != nil && definitionsAttr.Type() == cty.String {
+				rawJSON := []byte(definitionsAttr.Value().AsString())
 
 				var definitions []struct {
 					EnvVars []struct {
@@ -37,8 +39,8 @@ func init() {
 						if isSensitiveName(env.Name) && env.Value != "" {
 							results = append(results, NewResult(
 								AWSTaskDefinitionWithSensitiveEnvironmentVariables,
-								fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", getBlockName(block), env.Name),
-								attrRange,
+								fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", block.Name(), env.Name),
+								definitionsAttr.Range(),
 							))
 						}
 					}

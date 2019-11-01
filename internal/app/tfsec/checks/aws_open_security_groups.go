@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/hcl/v2"
+	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AWSOpenIngressSecurityGroupInlineRule See https://github.com/liamg/tfsec#included-checks for check info
@@ -17,7 +17,7 @@ func init() {
 	RegisterCheck(Check{
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group"},
-		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
+		CheckFunc: func(block *parser.Block) []Result {
 
 			var results []Result
 
@@ -28,15 +28,20 @@ func init() {
 					code = AWSOpenEgressSecurityGroupInlineRule
 				}
 
-				if directionBlock, exists := getBlock(block, direction); exists {
-					if cidrBlocksVal, cidrRange, exists := getAttribute(directionBlock, ctx, "cidr_blocks"); exists {
-						for _, cidr := range cidrBlocksVal.AsValueSlice() {
+				if directionBlock := block.GetBlock(direction); directionBlock != nil {
+					if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
+
+						if cidrBlocksAttr.Value().LengthInt() == 0 {
+							return nil
+						}
+
+						for _, cidr := range cidrBlocksAttr.Value().AsValueSlice() {
 							if strings.HasSuffix(cidr.AsString(), "/0") {
 								results = append(results,
 									NewResult(
 										code,
-										fmt.Sprintf("Resource '%s' defines a fully open %s security group.", getBlockName(block), direction),
-										cidrRange,
+										fmt.Sprintf("Resource '%s' defines a fully open %s security group.", block.Name(), direction),
+										cidrBlocksAttr.Range(),
 									),
 								)
 							}

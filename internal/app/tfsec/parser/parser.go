@@ -27,10 +27,10 @@ func New() *Parser {
 }
 
 // ParseDirectory recursively parses all terraform files within a given directory
-func (parser *Parser) ParseDirectory(path string) (hcl.Blocks, *hcl.EvalContext, error) {
+func (parser *Parser) ParseDirectory(path string) (Blocks, error) {
 
 	if err := parser.recursivelyParseDirectory(path); err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	var blocks []*hcl.Block
@@ -38,27 +38,41 @@ func (parser *Parser) ParseDirectory(path string) (hcl.Blocks, *hcl.EvalContext,
 	for _, file := range parser.hclParser.Files() {
 		fileBlocks, err := parser.parseFile(file)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 		blocks = append(blocks, fileBlocks...)
 	}
 
-	return blocks, parser.buildEvaluationContext(blocks), nil
+	ctx := parser.buildEvaluationContext(blocks)
+
+	var localBlocks []*Block
+	for _, block := range blocks {
+		localBlocks = append(localBlocks, NewBlock(block, ctx))
+	}
+
+	return localBlocks, nil
 }
 
 // ParseFile recursively the terraform file at the given path
-func (parser *Parser) ParseFile(path string) (hcl.Blocks, *hcl.EvalContext, error) {
+func (parser *Parser) ParseFile(path string) (Blocks, error) {
 	parsedFile, diagnostics := parser.hclParser.ParseHCLFile(path)
 	if diagnostics != nil && diagnostics.HasErrors() {
-		return nil, nil, diagnostics
+		return nil, diagnostics
 	}
 
 	blocks, err := parser.parseFile(parsedFile)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return blocks, parser.buildEvaluationContext(blocks), nil
+	ctx := parser.buildEvaluationContext(blocks)
+
+	var localBlocks []*Block
+	for _, block := range blocks {
+		localBlocks = append(localBlocks, NewBlock(block, ctx))
+	}
+
+	return localBlocks, nil
 }
 
 func (parser *Parser) parseFile(file *hcl.File) (hcl.Blocks, error) {

@@ -3,7 +3,9 @@ package checks
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/v2"
+	"github.com/zclconf/go-cty/cty"
+
+	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AWSLaunchConfigurationWithUnencryptedBlockDevice See https://github.com/liamg/tfsec#included-checks for check info
@@ -13,36 +15,36 @@ func init() {
 	RegisterCheck(Check{
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_launch_configuration"},
-		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
+		CheckFunc: func(block *parser.Block) []Result {
 
-			deviceBlock, exists := getBlock(block, "ebs_block_device")
-			if !exists {
+			deviceBlock := block.GetBlock("ebs_block_device")
+			if deviceBlock == nil {
 				return []Result{
 					NewResult(
 						AWSLaunchConfigurationWithUnencryptedBlockDevice,
-						fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", getBlockName(block)),
-						nil,
+						fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", block.Name()),
+						block.Range(),
 					),
 				}
 			}
 
-			encrypted, encryptedRange, exists := getAttribute(deviceBlock, ctx, "encrypted")
-			if !exists {
+			encryptedAttr := deviceBlock.GetAttribute("encrypted")
+			if encryptedAttr == nil {
 				return []Result{
 					NewResult(
 						AWSLaunchConfigurationWithUnencryptedBlockDevice,
-						fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", getBlockName(block)),
-						nil,
+						fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", block.Name()),
+						deviceBlock.Range(),
 					),
 				}
 			}
 
-			if encrypted.False() {
+			if encryptedAttr.Type() == cty.Bool && encryptedAttr.Value().False() {
 				return []Result{
 					NewResult(
 						AWSLaunchConfigurationWithUnencryptedBlockDevice,
-						fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", getBlockName(block)),
-						encryptedRange,
+						fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", block.Name()),
+						encryptedAttr.Range(),
 					),
 				}
 			}

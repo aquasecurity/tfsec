@@ -3,7 +3,9 @@ package checks
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/v2"
+	"github.com/zclconf/go-cty/cty"
+
+	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AWSOutdatedSSLPolicy See https://github.com/liamg/tfsec#included-checks for check info
@@ -20,16 +22,16 @@ func init() {
 	RegisterCheck(Check{
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_lb_listener", "aws_alb_listener"},
-		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
+		CheckFunc: func(block *parser.Block) []Result {
 
-			if val, attrRange, exists := getAttribute(block, ctx, "ssl_policy"); exists {
+			if sslPolicyAttr := block.GetAttribute("ssl_policy"); sslPolicyAttr != nil && sslPolicyAttr.Type() == cty.String {
 				for _, policy := range outdatedSSLPolicies {
-					if policy == val.AsString() {
+					if policy == sslPolicyAttr.Value().AsString() {
 						return []Result{
 							NewResult(
 								AWSOutdatedSSLPolicy,
-								fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", getBlockName(block)),
-								attrRange,
+								fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", block.Name()),
+								sslPolicyAttr.Range(),
 							),
 						}
 					}

@@ -3,7 +3,9 @@ package checks
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/v2"
+	"github.com/zclconf/go-cty/cty"
+
+	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AWSExternallyExposedLoadBalancer See https://github.com/liamg/tfsec#included-checks for check info
@@ -13,21 +15,21 @@ func init() {
 	RegisterCheck(Check{
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_alb", "aws_elb", "aws_lb"},
-		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
-			if val, attrRange, exists := getAttribute(block, ctx, "internal"); !exists {
+		CheckFunc: func(block *parser.Block) []Result {
+			if internalAttr := block.GetAttribute("internal"); internalAttr == nil {
 				return []Result{
 					NewResult(
 						AWSExternallyExposedLoadBalancer,
-						fmt.Sprintf("Resource '%s' is exposed publicly.", getBlockName(block)),
-						nil,
+						fmt.Sprintf("Resource '%s' is exposed publicly.", block.Name()),
+						block.Range(),
 					),
 				}
-			} else if val.False() {
+			} else if internalAttr.Type() == cty.Bool && internalAttr.Value().False() {
 				return []Result{
 					NewResult(
 						AWSExternallyExposedLoadBalancer,
-						fmt.Sprintf("Resource '%s' is exposed publicly.", getBlockName(block)),
-						attrRange,
+						fmt.Sprintf("Resource '%s' is exposed publicly.", block.Name()),
+						internalAttr.Range(),
 					),
 				}
 			}

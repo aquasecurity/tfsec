@@ -4,7 +4,8 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/hashicorp/hcl/v2"
+	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+
 	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
@@ -18,19 +19,12 @@ func New() *Scanner {
 }
 
 // Scan takes all available hcl blocks and an optional context, and returns a slice of results. Each result indicates a potential security problem.
-func (scanner *Scanner) Scan(blocks hcl.Blocks, ctx *hcl.EvalContext) []checks.Result {
+func (scanner *Scanner) Scan(blocks []*parser.Block) []checks.Result {
 	var results []checks.Result
 	for _, block := range blocks {
 		for _, check := range checks.GetRegisteredChecks() {
 			if check.IsRequiredForBlock(block) {
-				for _, result := range check.Run(block, ctx) {
-					if result.Range == nil {
-						result.Range = &checks.Range{
-							Filename:  block.DefRange.Filename,
-							StartLine: block.DefRange.Start.Line,
-							EndLine:   block.DefRange.End.Line,
-						}
-					}
+				for _, result := range check.Run(block) {
 					if !scanner.checkRangeIgnored(result.Range) {
 						results = append(results, result)
 					}
@@ -41,7 +35,7 @@ func (scanner *Scanner) Scan(blocks hcl.Blocks, ctx *hcl.EvalContext) []checks.R
 	return results
 }
 
-func (scanner *Scanner) checkRangeIgnored(r *checks.Range) bool {
+func (scanner *Scanner) checkRangeIgnored(r parser.Range) bool {
 	raw, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return false

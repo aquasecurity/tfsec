@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/hcl/v2"
+	"github.com/zclconf/go-cty/cty"
+
+	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AzureOpenInboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
@@ -17,31 +19,31 @@ func init() {
 	RegisterCheck(Check{
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_rule"},
-		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
+		CheckFunc: func(block *parser.Block) []Result {
 
-			directionVal, _, exists := getAttribute(block, ctx, "direction")
-			if !exists {
+			directionAttr := block.GetAttribute("direction")
+			if directionAttr == nil || directionAttr.Type() != cty.String {
 				return nil
 			}
 
 			code := AzureOpenInboundNetworkSecurityGroupRule
 			checkAttribute := "source_address_prefix"
-			if directionVal.AsString() == "Outbound" {
+			if directionAttr.Value().AsString() == "Outbound" {
 				code = AzureOpenOutboundNetworkSecurityGroupRule
 				checkAttribute = "destination_address_prefix"
 			}
 
-			if prefix, prefixRange, exists := getAttribute(block, ctx, checkAttribute); exists {
-				if strings.HasSuffix(prefix.AsString(), "/0") || prefix.AsString() == "*" {
+			if prefixAttr := block.GetAttribute(checkAttribute); prefixAttr != nil && prefixAttr.Type() == cty.String {
+				if strings.HasSuffix(prefixAttr.Value().AsString(), "/0") || prefixAttr.Value().AsString() == "*" {
 					return []Result{
 						NewResult(
 							code,
 							fmt.Sprintf(
 								"Resource '%s' defines a fully open %s network security group rule.",
-								getBlockName(block),
-								strings.ToLower(directionVal.AsString()),
+								block.Name(),
+								strings.ToLower(directionAttr.Value().AsString()),
 							),
-							prefixRange,
+							prefixAttr.Range(),
 						),
 					}
 				}
@@ -49,14 +51,14 @@ func init() {
 
 			var results []Result
 
-			if prefixesVal, prefixesRange, exists := getAttribute(block, ctx, checkAttribute+"es"); exists {
-				for _, prefix := range prefixesVal.AsValueSlice() {
+			if prefixesAttr := block.GetAttribute(checkAttribute + "es"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
+				for _, prefix := range prefixesAttr.Value().AsValueSlice() {
 					if strings.HasSuffix(prefix.AsString(), "/0") || prefix.AsString() == "*" {
 						results = append(results,
 							NewResult(
 								code,
-								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", getBlockName(block), prefix.AsString()),
-								prefixesRange,
+								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
+								prefixesAttr.Range(),
 							),
 						)
 					}

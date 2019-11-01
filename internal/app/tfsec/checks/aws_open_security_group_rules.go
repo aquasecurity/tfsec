@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/hcl/v2"
+	"github.com/zclconf/go-cty/cty"
+
+	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AWSOpenIngressSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
@@ -17,27 +19,31 @@ func init() {
 	RegisterCheck(Check{
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group_rule"},
-		CheckFunc: func(block *hcl.Block, ctx *hcl.EvalContext) []Result {
+		CheckFunc: func(block *parser.Block) []Result {
 
-			typeVal, _, exists := getAttribute(block, ctx, "type")
-			if !exists {
+			typeAttr := block.GetAttribute("type")
+			if typeAttr == nil || typeAttr.Type() != cty.String {
 				return nil
 			}
 
 			code := AWSOpenIngressSecurityGroupRule
-			if typeVal.AsString() == "egress" {
+			if typeAttr.Value().AsString() == "egress" {
 				code = AWSOpenEgressSecurityGroupRule
 			}
 
-			if cidrBlocksVal, cidrRange, exists := getAttribute(block, ctx, "cidr_blocks"); exists {
+			if cidrBlocksAttr := block.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
-				for _, cidr := range cidrBlocksVal.AsValueSlice() {
+				if cidrBlocksAttr.Value().LengthInt() == 0 {
+					return nil
+				}
+
+				for _, cidr := range cidrBlocksAttr.Value().AsValueSlice() {
 					if strings.HasSuffix(cidr.AsString(), "/0") {
 						return []Result{
 							NewResult(
 								code,
-								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", getBlockName(block), typeVal.AsString()),
-								cidrRange,
+								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), typeAttr.Value().AsString()),
+								cidrBlocksAttr.Range(),
 							),
 						}
 					}
