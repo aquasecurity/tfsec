@@ -3,6 +3,8 @@ package scanner
 import (
 	"fmt"
 
+	"github.com/zclconf/go-cty/cty"
+
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
@@ -74,11 +76,29 @@ func (check *Check) NewResult(description string, r parser.Range) Result {
 	}
 }
 
-func (check *Check) NewResultWithAnnotation(description string, r parser.Range, annotation string) Result {
+func (check *Check) NewResultWithValueAnnotation(description string, r parser.Range, attr *parser.Attribute) Result {
+
+	if attr == nil || attr.IsLiteral() {
+		return check.NewResult(description, r)
+	}
+
+	var raw interface{}
+
+	switch attr.Type() {
+	case cty.String:
+		raw = attr.Value().AsString()
+	case cty.Bool:
+		raw = attr.Value().True()
+	case cty.Number:
+		raw, _ = attr.Value().AsBigFloat().Float64()
+	default:
+		return check.NewResult(description, r)
+	}
+
 	return Result{
 		Code:            check.Code,
 		Description:     description,
 		Range:           r,
-		RangeAnnotation: annotation,
+		RangeAnnotation: fmt.Sprintf("%T %#v", raw, raw),
 	}
 }

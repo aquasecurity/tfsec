@@ -80,9 +80,10 @@ func init() {
 				for _, cidr := range cidrBlocksAttr.Value().AsValueSlice() {
 					if strings.HasSuffix(cidr.AsString(), "/0") {
 						return []scanner.Result{
-							check.NewResult(
+							check.NewResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.Name()),
 								cidrBlocksAttr.Range(),
+								cidrBlocksAttr,
 							),
 						}
 					}

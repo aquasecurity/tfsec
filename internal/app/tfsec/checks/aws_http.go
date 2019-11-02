@@ -36,9 +36,10 @@ func init() {
 					reportRange = protocolAttr.Range()
 				}
 				return []scanner.Result{
-					check.NewResult(
+					check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.Name()),
 						reportRange,
+						protocolAttr,
 					),
 				}
 			}

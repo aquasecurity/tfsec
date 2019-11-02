@@ -23,9 +23,10 @@ func init() {
 				acl := attr.Value().AsString()
 				if acl == "public-read" || acl == "public-read-write" || acl == "website" {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' has an ACL which allows public read access.", block.Name()),
 							attr.Range(),
+							attr,
 						),
 					}
 				}

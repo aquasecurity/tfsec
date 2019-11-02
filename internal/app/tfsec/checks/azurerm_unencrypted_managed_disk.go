@@ -36,12 +36,13 @@ func init() {
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
 			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewResultWithValueAnnotation(
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted managed disk.",
 							block.Name(),
 						),
 						enabledAttr.Range(),
+						enabledAttr,
 					),
 				}
 			}

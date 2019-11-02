@@ -32,13 +32,14 @@ func init() {
 			if prefixAttr := block.GetAttribute("source_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
 				if strings.HasSuffix(prefixAttr.Value().AsString(), "/0") || prefixAttr.Value().AsString() == "*" {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewResultWithValueAnnotation(
 							fmt.Sprintf(
 								"Resource '%s' defines a fully open %s network security group rule.",
 								block.Name(),
 								strings.ToLower(directionAttr.Value().AsString()),
 							),
 							prefixAttr.Range(),
+							prefixAttr,
 						),
 					}
 				}
@@ -50,9 +51,10 @@ func init() {
 				for _, prefix := range prefixesAttr.Value().AsValueSlice() {
 					if strings.HasSuffix(prefix.AsString(), "/0") || prefix.AsString() == "*" {
 						results = append(results,
-							check.NewResult(
+							check.NewResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
 								prefixesAttr.Range(),
+								prefixesAttr,
 							),
 						)
 					}
@@ -78,13 +80,14 @@ func init() {
 			if prefixAttr := block.GetAttribute("destination_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
 				if strings.HasSuffix(prefixAttr.Value().AsString(), "/0") || prefixAttr.Value().AsString() == "*" {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewResultWithValueAnnotation(
 							fmt.Sprintf(
 								"Resource '%s' defines a fully open %s network security group rule.",
 								block.Name(),
 								strings.ToLower(directionAttr.Value().AsString()),
 							),
 							prefixAttr.Range(),
+							prefixAttr,
 						),
 					}
 				}
@@ -96,9 +99,10 @@ func init() {
 				for _, prefix := range prefixesAttr.Value().AsValueSlice() {
 					if strings.HasSuffix(prefix.AsString(), "/0") || prefix.AsString() == "*" {
 						results = append(results,
-							check.NewResult(
+							check.NewResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
 								prefixesAttr.Range(),
+								prefixesAttr,
 							),
 						)
 					}

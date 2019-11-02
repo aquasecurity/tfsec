@@ -42,9 +42,10 @@ func init() {
 
 			if encryptedAttr.Type() == cty.Bool && encryptedAttr.Value().False() {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", block.Name()),
 						encryptedAttr.Range(),
+						encryptedAttr,
 					),
 				}
 			}

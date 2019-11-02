@@ -42,9 +42,10 @@ func init() {
 				for _, definition := range definitions {
 					for _, env := range definition.EnvVars {
 						if security.IsSensitiveAttribute(env.Name) && env.Value != "" {
-							results = append(results, check.NewResult(
+							results = append(results, check.NewResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", block.Name(), env.Name),
 								definitionsAttr.Range(),
+								definitionsAttr,
 							))
 						}
 					}

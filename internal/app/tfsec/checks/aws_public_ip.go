@@ -23,9 +23,10 @@ func init() {
 			if publicAttr := block.GetAttribute("associate_public_ip_address"); publicAttr != nil && publicAttr.Type() == cty.Bool {
 				if publicAttr.Value().True() {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' has a public IP address associated.", block.Name()),
 							publicAttr.Range(),
+							publicAttr,
 						),
 					}
 				}

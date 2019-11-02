@@ -27,9 +27,10 @@ func init() {
 			for _, attribute := range attributes {
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String {
-						results = append(results, check.NewResult(
+						results = append(results, check.NewResultWithValueAnnotation(
 							fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", block.Name()),
 							attribute.Range(),
+							attribute,
 						))
 					}
 

@@ -28,10 +28,10 @@ func init() {
 				}
 			} else if internalAttr.Type() == cty.Bool && internalAttr.Value().False() {
 				return []scanner.Result{
-					check.NewResultWithAnnotation(
+					check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' is exposed publicly.", block.Name()),
 						internalAttr.Range(),
-						"evaluates to false",
+						internalAttr,
 					),
 				}
 			}

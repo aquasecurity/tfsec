@@ -18,6 +18,10 @@ func NewAttribute(attr *hclsyntax.Attribute, ctx *hcl.EvalContext) *Attribute {
 	}
 }
 
+func (attr *Attribute) IsLiteral() bool {
+	return len(attr.hclAttribute.Expr.Variables()) == 0
+}
+
 func (attr *Attribute) Type() cty.Type {
 	return attr.Value().Type()
 }

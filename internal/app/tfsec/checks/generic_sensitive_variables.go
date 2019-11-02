@@ -37,9 +37,10 @@ func init() {
 						continue
 					}
 					if val.AsString() != "" {
-						results = append(results, check.NewResult(
+						results = append(results, check.NewResultWithValueAnnotation(
 							fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", block.Name()),
 							attribute.Range(),
+							attribute,
 						))
 					}
 				}
