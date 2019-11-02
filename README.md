@@ -17,7 +17,7 @@ Grab the binary for your system from the [releases page](https://github.com/liam
 Alternatively, install with Go:
 
 ```bash
-go get -u github.com/liamg/tfsec
+env GO111MODULE=on go get -u github.com/liamg/tfsec/cmd/tfsec
 ```
 
 ## Usage
@@ -35,6 +35,7 @@ tfsec .
 - Checks for sensitive data inclusion across all providers
 - Checks for violations of AWS, Azure and GCP security best practice recommendations
 - Scans modules (currently only local modules are supported) 
+- Evaluates expressions as well as literal values
 
 ## Ignoring Warnings
 
