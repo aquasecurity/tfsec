@@ -1,10 +1,10 @@
-package checks
+package security
 
 import (
 	"strings"
 )
 
-func isSensitiveName(name string) bool {
+func IsSensitiveAttribute(name string) bool {
 
 	// TODO add a whole bunch of regular expressions in here
 

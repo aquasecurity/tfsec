@@ -3,27 +3,32 @@ package checks
 import (
 	"fmt"
 
+	"github.com/liamg/tfsec/internal/app/tfsec/security"
+
+	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 	"github.com/zclconf/go-cty/cty"
 )
 
 // GenericSensitiveVariables See https://github.com/liamg/tfsec#included-checks for check info
-const GenericSensitiveVariables Code = "GEN001"
+const GenericSensitiveVariables scanner.CheckCode = "GEN001"
 
 func init() {
-	RegisterCheck(Check{
+	scanner.RegisterCheck(scanner.Check{
+		Code:          GenericSensitiveVariables,
 		RequiredTypes: []string{"variable"},
-		CheckFunc: func(block *parser.Block) []Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
 
 			if len(block.Labels()) == 0 {
 				return nil
 			}
 
-			if !isSensitiveName(block.Labels()[0]) {
+			if !security.IsSensitiveAttribute(block.Labels()[0]) {
 				return nil
 			}
 
-			var results []Result
+			var results []scanner.Result
 
 			for _, attribute := range block.GetAttributes() {
 				if attribute.Name() == "default" {
@@ -32,10 +37,10 @@ func init() {
 						continue
 					}
 					if val.AsString() != "" {
-						results = append(results, NewResult(
-							GenericSensitiveVariables,
+						results = append(results, check.NewResultWithValueAnnotation(
 							fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", block.Name()),
 							attribute.Range(),
+							attribute,
 						))
 					}
 				}

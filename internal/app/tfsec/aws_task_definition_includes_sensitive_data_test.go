@@ -3,6 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
 	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
@@ -11,8 +13,8 @@ func Test_AWSTaskDefinitionIncludesSensitiveData(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode checks.Code
-		mustExcludeResultCode checks.Code
+		mustIncludeResultCode scanner.CheckCode
+		mustExcludeResultCode scanner.CheckCode
 	}{
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are included",

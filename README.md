@@ -8,7 +8,7 @@
 
 tfsec uses static analysis of your terraform templates to spot potential security issues. Now with terraform v0.12+ support.
 
-![Example screenshot](example.png)
+![Example screenshot](demo.png)
 
 ## Installation
 
@@ -29,6 +29,12 @@ The exit status will be non zero if problems are found, otherwise the exit statu
 ```bash
 tfsec .
 ```
+
+## Features
+
+- Checks for sensitive data inclusion across all providers
+- Checks for violations of AWS and Azure security best practice
+- Scans modules (currently only local modules are supported) 
 
 ## Ignoring Warnings
 

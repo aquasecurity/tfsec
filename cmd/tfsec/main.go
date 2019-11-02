@@ -7,11 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/checks"
-
 	"github.com/liamg/tml"
 
 	"github.com/liamg/clinch/terminal"
+	_ "github.com/liamg/tfsec/internal/app/tfsec/checks"
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
 	"github.com/liamg/tfsec/version"
@@ -82,7 +81,7 @@ var rootCmd = &cobra.Command{
 }
 
 // highlight the lines of code which caused a problem, if available
-func highlightCode(result checks.Result) {
+func highlightCode(result scanner.Result) {
 
 	data, err := ioutil.ReadFile(result.Range.Filename)
 	if err != nil {
@@ -103,7 +102,11 @@ func highlightCode(result checks.Result) {
 	for lineNo := start; lineNo <= end; lineNo++ {
 		_ = tml.Printf("  <blue>% 6d</blue> | ", lineNo)
 		if lineNo >= result.Range.StartLine && lineNo <= result.Range.EndLine {
-			_ = tml.Printf("<bold><red>%s</red></bold>\n", lines[lineNo])
+			if lineNo == result.Range.StartLine && result.RangeAnnotation != "" {
+				_ = tml.Printf("<bold><red>%s</red> <blue>(%s)</blue></bold>\n", lines[lineNo], result.RangeAnnotation)
+			} else {
+				_ = tml.Printf("<bold><red>%s</red></bold>\n", lines[lineNo])
+			}
 		} else {
 			_ = tml.Printf("<yellow>%s</yellow>\n", lines[lineNo])
 		}

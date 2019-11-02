@@ -99,6 +99,56 @@ data "cats_cat" "the-cats-mother" {
 	assert.Equal(t, "boots", dataBlocks[0].GetAttribute("name").Value().AsString())
 }
 
+func Test_Modules(t *testing.T) {
+
+	path := createTestFileWithModule(`
+module "my-mod" {
+	source = "../module"
+	input = "ok"
+}
+
+output "result" {
+	value = module.my-mod.result
+}
+`,
+		`
+variable "input" {
+	default = "?"
+}
+
+output "result" {
+	value = var.input
+}
+`,
+	)
+
+	parser := New()
+
+	blocks, err := parser.ParseDirectory(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	modules := blocks.OfType("module")
+	require.Len(t, modules, 1)
+	module := modules[0]
+	assert.Equal(t, "module", module.Type())
+	assert.Equal(t, "module.my-mod", module.Name())
+	inputAttr := module.GetAttribute("input")
+	require.NotNil(t, inputAttr)
+	require.Equal(t, cty.String, inputAttr.Value().Type())
+	assert.Equal(t, "ok", inputAttr.Value().AsString())
+
+	outputs := blocks.OfType("output")
+	require.Len(t, outputs, 1)
+	output := outputs[0]
+	assert.Equal(t, "output.result", output.Name())
+	valAttr := output.GetAttribute("value")
+	require.NotNil(t, valAttr)
+	require.Equal(t, cty.String, valAttr.Type())
+	assert.Equal(t, "ok", valAttr.Value().AsString())
+}
+
 func createTestFile(filename, contents string) string {
 	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
 	if err != nil {
@@ -109,4 +159,32 @@ func createTestFile(filename, contents string) string {
 		panic(err)
 	}
 	return path
+}
+
+func createTestFileWithModule(contents string, moduleContents string) string {
+	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
+	if err != nil {
+		panic(err)
+	}
+
+	rootPath := filepath.Join(dir, "main")
+	modulePath := filepath.Join(dir, "module")
+
+	if err := os.Mkdir(rootPath, 0755); err != nil {
+		panic(err)
+	}
+
+	if err := os.Mkdir(modulePath, 0755); err != nil {
+		panic(err)
+	}
+
+	if err := ioutil.WriteFile(filepath.Join(rootPath, "main.tf"), []byte(contents), 0755); err != nil {
+		panic(err)
+	}
+
+	if err := ioutil.WriteFile(filepath.Join(modulePath, "main.tf"), []byte(moduleContents), 0755); err != nil {
+		panic(err)
+	}
+
+	return rootPath
 }

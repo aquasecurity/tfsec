@@ -10,6 +10,7 @@ import (
 type Block struct {
 	hclBlock *hcl.Block
 	ctx      *hcl.EvalContext
+	prefix   string
 }
 
 type Blocks []*Block
@@ -17,11 +18,28 @@ type Blocks []*Block
 func (blocks Blocks) OfType(t string) Blocks {
 	var results []*Block
 	for _, block := range blocks {
-		if block.Type() == t {
+		if block.Type() == t && block.prefix == "" {
 			results = append(results, block)
 		}
 	}
 	return results
+}
+
+func (blocks Blocks) RemoveDuplicates() Blocks {
+	var filtered Blocks
+	for _, block := range blocks {
+		var found bool
+		for _, current := range filtered {
+			if current.Range() == block.Range() {
+				found = true
+				break
+			}
+		}
+		if !found {
+			filtered = append(filtered, block)
+		}
+	}
+	return filtered
 }
 
 func NewBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext) *Block {
@@ -93,7 +111,10 @@ func (block *Block) GetAttribute(name string) *Attribute {
 func (block *Block) Name() string {
 	var prefix string
 	if block.Type() != "resource" {
-		prefix = block.Type()
+		prefix = block.Type() + "."
+	}
+	if block.prefix != "" {
+		prefix = block.prefix + "." + prefix
 	}
 	return prefix + strings.Join(block.Labels(), ".")
 }
