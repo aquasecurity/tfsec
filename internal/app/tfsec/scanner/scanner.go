@@ -5,8 +5,6 @@ import (
 	"strings"
 
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
-
-	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
 // Scanner scans HCL blocks by running all registered checks against them
@@ -19,10 +17,10 @@ func New() *Scanner {
 }
 
 // Scan takes all available hcl blocks and an optional context, and returns a slice of results. Each result indicates a potential security problem.
-func (scanner *Scanner) Scan(blocks []*parser.Block) []checks.Result {
-	var results []checks.Result
+func (scanner *Scanner) Scan(blocks []*parser.Block) []Result {
+	var results []Result
 	for _, block := range blocks {
-		for _, check := range checks.GetRegisteredChecks() {
+		for _, check := range GetRegisteredChecks() {
 			if check.IsRequiredForBlock(block) {
 				for _, result := range check.Run(block) {
 					if !scanner.checkRangeIgnored(result.Range) {

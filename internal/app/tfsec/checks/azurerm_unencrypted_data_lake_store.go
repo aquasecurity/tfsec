@@ -3,24 +3,26 @@ package checks
 import (
 	"fmt"
 
+	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 	"github.com/zclconf/go-cty/cty"
 )
 
 // AzureUnencryptedDataLakeStore See https://github.com/liamg/tfsec#included-checks for check info
-const AzureUnencryptedDataLakeStore Code = "AZU004"
+const AzureUnencryptedDataLakeStore scanner.Code = "AZU004"
 
 func init() {
-	RegisterCheck(Check{
+	scanner.RegisterCheck(scanner.Check{
+		Code:           AzureUnencryptedDataLakeStore,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_data_lake_store"},
-		CheckFunc: func(block *parser.Block) []Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
 
 			encryptionStateAttr := block.GetAttribute("encryption_state")
 			if encryptionStateAttr != nil && encryptionStateAttr.Type() == cty.String && encryptionStateAttr.Value().AsString() == "Disabled" {
-				return []Result{
-					NewResult(
-						AzureUnencryptedDataLakeStore,
+				return []scanner.Result{
+					check.NewResult(
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted data lake store.",
 							block.Name(),

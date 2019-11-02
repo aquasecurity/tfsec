@@ -4,40 +4,35 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AzureOpenInboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
-const AzureOpenInboundNetworkSecurityGroupRule Code = "AZU001"
+const AzureOpenInboundNetworkSecurityGroupRule scanner.Code = "AZU001"
 
 // AzureOpenOutboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
-const AzureOpenOutboundNetworkSecurityGroupRule Code = "AZU002"
+const AzureOpenOutboundNetworkSecurityGroupRule scanner.Code = "AZU002"
 
 func init() {
-	RegisterCheck(Check{
+	scanner.RegisterCheck(scanner.Check{
+		Code:           AzureOpenInboundNetworkSecurityGroupRule,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_rule"},
-		CheckFunc: func(block *parser.Block) []Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
 
 			directionAttr := block.GetAttribute("direction")
-			if directionAttr == nil || directionAttr.Type() != cty.String {
+			if directionAttr == nil || directionAttr.Type() != cty.String || directionAttr.Value().AsString() != "Inbound" {
 				return nil
 			}
 
-			code := AzureOpenInboundNetworkSecurityGroupRule
-			checkAttribute := "source_address_prefix"
-			if directionAttr.Value().AsString() == "Outbound" {
-				code = AzureOpenOutboundNetworkSecurityGroupRule
-				checkAttribute = "destination_address_prefix"
-			}
-
-			if prefixAttr := block.GetAttribute(checkAttribute); prefixAttr != nil && prefixAttr.Type() == cty.String {
+			if prefixAttr := block.GetAttribute("source_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
 				if strings.HasSuffix(prefixAttr.Value().AsString(), "/0") || prefixAttr.Value().AsString() == "*" {
-					return []Result{
-						NewResult(
-							code,
+					return []scanner.Result{
+						check.NewResult(
 							fmt.Sprintf(
 								"Resource '%s' defines a fully open %s network security group rule.",
 								block.Name(),
@@ -49,14 +44,59 @@ func init() {
 				}
 			}
 
-			var results []Result
+			var results []scanner.Result
 
-			if prefixesAttr := block.GetAttribute(checkAttribute + "es"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
+			if prefixesAttr := block.GetAttribute("source_address_prefixes"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
 				for _, prefix := range prefixesAttr.Value().AsValueSlice() {
 					if strings.HasSuffix(prefix.AsString(), "/0") || prefix.AsString() == "*" {
 						results = append(results,
-							NewResult(
-								code,
+							check.NewResult(
+								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
+								prefixesAttr.Range(),
+							),
+						)
+					}
+				}
+
+			}
+
+			return results
+		},
+	})
+
+	scanner.RegisterCheck(scanner.Check{
+		Code:           AzureOpenOutboundNetworkSecurityGroupRule,
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"azurerm_network_security_rule"},
+		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+
+			directionAttr := block.GetAttribute("direction")
+			if directionAttr == nil || directionAttr.Type() != cty.String || directionAttr.Value().AsString() != "Outbound" {
+				return nil
+			}
+
+			if prefixAttr := block.GetAttribute("destination_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
+				if strings.HasSuffix(prefixAttr.Value().AsString(), "/0") || prefixAttr.Value().AsString() == "*" {
+					return []scanner.Result{
+						check.NewResult(
+							fmt.Sprintf(
+								"Resource '%s' defines a fully open %s network security group rule.",
+								block.Name(),
+								strings.ToLower(directionAttr.Value().AsString()),
+							),
+							prefixAttr.Range(),
+						),
+					}
+				}
+			}
+
+			var results []scanner.Result
+
+			if prefixesAttr := block.GetAttribute("destination_address_prefixes"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
+				for _, prefix := range prefixesAttr.Value().AsValueSlice() {
+					if strings.HasSuffix(prefix.AsString(), "/0") || prefix.AsString() == "*" {
+						results = append(results,
+							check.NewResult(
 								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
 								prefixesAttr.Range(),
 							),

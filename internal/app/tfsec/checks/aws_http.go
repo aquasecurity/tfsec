@@ -3,18 +3,21 @@ package checks
 import (
 	"fmt"
 
+	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 	"github.com/zclconf/go-cty/cty"
 )
 
 // AWSPlainHTTP See https://github.com/liamg/tfsec#included-checks for check info
-const AWSPlainHTTP Code = "AWS004"
+const AWSPlainHTTP scanner.Code = "AWS004"
 
 func init() {
-	RegisterCheck(Check{
+	scanner.RegisterCheck(scanner.Check{
+		Code:           AWSPlainHTTP,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_lb_listener", "aws_alb_listener"},
-		CheckFunc: func(block *parser.Block) []Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
 			if protocolAttr := block.GetAttribute("protocol"); protocolAttr == nil || (protocolAttr.Type() == cty.String && protocolAttr.Value().AsString() == "HTTP") {
 				// check if this is a redirect to HTTPS - if it is, then no problem
 				if actionBlock := block.GetBlock("default_action"); actionBlock != nil {
@@ -32,9 +35,8 @@ func init() {
 				if protocolAttr != nil {
 					reportRange = protocolAttr.Range()
 				}
-				return []Result{
-					NewResult(
-						AWSPlainHTTP,
+				return []scanner.Result{
+					check.NewResult(
 						fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.Name()),
 						reportRange,
 					),

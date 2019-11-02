@@ -30,6 +30,12 @@ The exit status will be non zero if problems are found, otherwise the exit statu
 tfsec .
 ```
 
+## Features
+
+- Checks for sensitive data inclusion across all providers
+- Checks for violations of AWS and Azure security best practice
+- Scans modules (currently only local modules are supported) 
+
 ## Ignoring Warnings
 
 You may wish to ignore some warnings. If you'd like to do so, you can simply add a comment containing `tfsec:ignore` to the offending line in your templates. If the problem refers to a block of code, such as a multiline string, you can add the comment on the line above the block, by itself.

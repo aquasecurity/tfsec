@@ -4,21 +4,26 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/liamg/tfsec/internal/app/tfsec/security"
+
+	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AWSTaskDefinitionWithSensitiveEnvironmentVariables See https://github.com/liamg/tfsec#included-checks for check info
-const AWSTaskDefinitionWithSensitiveEnvironmentVariables Code = "AWS013"
+const AWSTaskDefinitionWithSensitiveEnvironmentVariables scanner.Code = "AWS013"
 
 func init() {
-	RegisterCheck(Check{
+	scanner.RegisterCheck(scanner.Check{
+		Code:           AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecs_task_definition"},
-		CheckFunc: func(block *parser.Block) []Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
 
-			var results []Result
+			var results []scanner.Result
 
 			if definitionsAttr := block.GetAttribute("container_definitions"); definitionsAttr != nil && definitionsAttr.Type() == cty.String {
 				rawJSON := []byte(definitionsAttr.Value().AsString())
@@ -36,9 +41,8 @@ func init() {
 
 				for _, definition := range definitions {
 					for _, env := range definition.EnvVars {
-						if isSensitiveName(env.Name) && env.Value != "" {
-							results = append(results, NewResult(
-								AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+						if security.IsSensitiveAttribute(env.Name) && env.Value != "" {
+							results = append(results, check.NewResult(
 								fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", block.Name(), env.Name),
 								definitionsAttr.Range(),
 							))

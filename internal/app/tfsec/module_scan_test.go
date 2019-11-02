@@ -5,8 +5,6 @@ import (
 
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_ProblemInModule(t *testing.T) {
@@ -15,8 +13,8 @@ func Test_ProblemInModule(t *testing.T) {
 		name                  string
 		source                string
 		moduleSource          string
-		mustIncludeResultCode checks.Code
-		mustExcludeResultCode checks.Code
+		mustIncludeResultCode scanner.Code
+		mustExcludeResultCode scanner.Code
 	}{
 		{
 			name: "check problem in module",

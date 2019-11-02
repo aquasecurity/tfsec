@@ -3,13 +3,15 @@ package checks
 import (
 	"fmt"
 
+	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AWSOutdatedSSLPolicy See https://github.com/liamg/tfsec#included-checks for check info
-const AWSOutdatedSSLPolicy Code = "AWS010"
+const AWSOutdatedSSLPolicy scanner.Code = "AWS010"
 
 var outdatedSSLPolicies = []string{
 	"ELBSecurityPolicy-2015-05",
@@ -19,17 +21,17 @@ var outdatedSSLPolicies = []string{
 }
 
 func init() {
-	RegisterCheck(Check{
+	scanner.RegisterCheck(scanner.Check{
+		Code:           AWSOutdatedSSLPolicy,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_lb_listener", "aws_alb_listener"},
-		CheckFunc: func(block *parser.Block) []Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
 
 			if sslPolicyAttr := block.GetAttribute("ssl_policy"); sslPolicyAttr != nil && sslPolicyAttr.Type() == cty.String {
 				for _, policy := range outdatedSSLPolicies {
 					if policy == sslPolicyAttr.Value().AsString() {
-						return []Result{
-							NewResult(
-								AWSOutdatedSSLPolicy,
+						return []scanner.Result{
+							check.NewResult(
 								fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", block.Name()),
 								sslPolicyAttr.Range(),
 							),

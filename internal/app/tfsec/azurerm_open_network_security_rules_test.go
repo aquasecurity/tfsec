@@ -3,6 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
 	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 )
 
@@ -11,8 +13,8 @@ func Test_AzureOpenNetworkSecurityGroupRule(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode checks.Code
-		mustExcludeResultCode checks.Code
+		mustIncludeResultCode scanner.Code
+		mustExcludeResultCode scanner.Code
 	}{
 		{
 			name: "check azurerm_network_security_rule inbound on 0.0.0.0/0",

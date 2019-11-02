@@ -1,4 +1,4 @@
-package checks
+package scanner
 
 import (
 	"fmt"
@@ -10,9 +10,10 @@ import (
 // Check is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.
 // "resource", and the labels to run on e.g. "aws_s3_bucket".
 type Check struct {
+	Code           Code
 	RequiredTypes  []string
 	RequiredLabels []string
-	CheckFunc      func(*parser.Block) []Result
+	CheckFunc      func(*Check, *parser.Block) []Result
 }
 
 var checkLock sync.Mutex
@@ -20,6 +21,9 @@ var registeredChecks []Check
 
 // RegisterCheck registers a new Check which should be run on future scans
 func RegisterCheck(check Check) {
+	if check.Code == "" {
+		panic("check code was not set")
+	}
 	checkLock.Lock()
 	defer checkLock.Unlock()
 	registeredChecks = append(registeredChecks, check)
@@ -38,7 +42,7 @@ func (check *Check) Run(block *parser.Block) []Result {
 			fmt.Printf("WARNING: fatal error running check: %s\n", err)
 		}
 	}()
-	return check.CheckFunc(block)
+	return check.CheckFunc(check, block)
 }
 
 // IsRequiredForBlock returns true if the Check should be applied to the given HCL block
@@ -75,4 +79,13 @@ func (check *Check) IsRequiredForBlock(block *parser.Block) bool {
 	}
 
 	return true
+}
+
+// NewResult creates a new Result, containing the given description and range
+func (check *Check) NewResult(description string, r parser.Range) Result {
+	return Result{
+		Code:        check.Code,
+		Description: description,
+		Range:       r,
+	}
 }

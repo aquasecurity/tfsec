@@ -3,21 +3,23 @@ package checks
 import (
 	"fmt"
 
+	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AWSNoBucketLogging See https://github.com/liamg/tfsec#included-checks for check info
-const AWSNoBucketLogging Code = "AWS002"
+const AWSNoBucketLogging scanner.Code = "AWS002"
 
 func init() {
-	RegisterCheck(Check{
+	scanner.RegisterCheck(scanner.Check{
+		Code:           AWSNoBucketLogging,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_s3_bucket"},
-		CheckFunc: func(block *parser.Block) []Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
 			if loggingBlock := block.GetBlock("logging"); loggingBlock == nil {
-				return []Result{
-					NewResult(
-						AWSNoBucketLogging,
+				return []scanner.Result{
+					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not have logging enabled.", block.Name()),
 						block.Range(),
 					),

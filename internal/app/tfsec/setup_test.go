@@ -9,20 +9,20 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/checks"
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
 )
 
-const exampleCheckCode checks.Code = "EXA001"
+const exampleCheckCode scanner.Code = "EXA001"
 
 func TestMain(t *testing.M) {
 
-	checks.RegisterCheck(checks.Check{
+	scanner.RegisterCheck(scanner.Check{
+		Code:           exampleCheckCode,
 		RequiredLabels: []string{"problem"},
-		CheckFunc: func(block *parser.Block) []checks.Result {
-			return []checks.Result{
-				checks.NewResult(exampleCheckCode, "example problem", block.Range()),
+		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+			return []scanner.Result{
+				check.NewResult("example problem", block.Range()),
 			}
 		},
 	})
@@ -30,7 +30,7 @@ func TestMain(t *testing.M) {
 	os.Exit(t.Run())
 }
 
-func scanSource(source string) []checks.Result {
+func scanSource(source string) []scanner.Result {
 	blocks := createBlocksFromSource(source)
 	return scanner.New().Scan(blocks)
 }
@@ -56,7 +56,7 @@ func createTestFile(filename, contents string) string {
 	return path
 }
 
-func assertCheckCode(t *testing.T, includeCode checks.Code, excludeCode checks.Code, results []checks.Result) {
+func assertCheckCode(t *testing.T, includeCode scanner.Code, excludeCode scanner.Code, results []scanner.Result) {
 
 	var foundInclude bool
 	var foundExclude bool
@@ -71,7 +71,7 @@ func assertCheckCode(t *testing.T, includeCode checks.Code, excludeCode checks.C
 	}
 
 	assert.False(t, foundExclude, fmt.Sprintf("result with code '%s' was found but should not have been", excludeCode))
-	if includeCode != checks.Code("") {
+	if includeCode != scanner.Code("") {
 		assert.True(t, foundInclude, fmt.Sprintf("result with code '%s' was not found but should have been", includeCode))
 	}
 }

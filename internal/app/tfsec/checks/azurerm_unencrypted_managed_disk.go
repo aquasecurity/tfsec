@@ -3,25 +3,27 @@ package checks
 import (
 	"fmt"
 
+	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
 // AzureUnencryptedManagedDisk See https://github.com/liamg/tfsec#included-checks for check info
-const AzureUnencryptedManagedDisk Code = "AZU003"
+const AzureUnencryptedManagedDisk scanner.Code = "AZU003"
 
 func init() {
-	RegisterCheck(Check{
+	scanner.RegisterCheck(scanner.Check{
+		Code:           AzureUnencryptedManagedDisk,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_managed_disk"},
-		CheckFunc: func(block *parser.Block) []Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
 
 			encryptionSettingsBlock := block.GetBlock("encryption_settings")
 			if encryptionSettingsBlock == nil {
-				return []Result{
-					NewResult(
-						AzureUnencryptedManagedDisk,
+				return []scanner.Result{
+					check.NewResult(
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted managed disk.",
 							block.Name(),
@@ -33,9 +35,8 @@ func init() {
 
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
 			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
-				return []Result{
-					NewResult(
-						AzureUnencryptedManagedDisk,
+				return []scanner.Result{
+					check.NewResult(
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted managed disk.",
 							block.Name(),

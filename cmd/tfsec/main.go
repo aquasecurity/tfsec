@@ -7,8 +7,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/checks"
-
 	"github.com/liamg/tml"
 
 	"github.com/liamg/clinch/terminal"
@@ -82,7 +80,7 @@ var rootCmd = &cobra.Command{
 }
 
 // highlight the lines of code which caused a problem, if available
-func highlightCode(result checks.Result) {
+func highlightCode(result scanner.Result) {
 
 	data, err := ioutil.ReadFile(result.Range.Filename)
 	if err != nil {
