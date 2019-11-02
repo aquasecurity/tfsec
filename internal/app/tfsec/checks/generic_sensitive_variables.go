@@ -12,7 +12,7 @@ import (
 )
 
 // GenericSensitiveVariables See https://github.com/liamg/tfsec#included-checks for check info
-const GenericSensitiveVariables scanner.Code = "GEN001"
+const GenericSensitiveVariables scanner.CheckCode = "GEN001"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

@@ -12,10 +12,10 @@ import (
 )
 
 // AzureOpenInboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
-const AzureOpenInboundNetworkSecurityGroupRule scanner.Code = "AZU001"
+const AzureOpenInboundNetworkSecurityGroupRule scanner.CheckCode = "AZU001"
 
 // AzureOpenOutboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
-const AzureOpenOutboundNetworkSecurityGroupRule scanner.Code = "AZU002"
+const AzureOpenOutboundNetworkSecurityGroupRule scanner.CheckCode = "AZU002"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

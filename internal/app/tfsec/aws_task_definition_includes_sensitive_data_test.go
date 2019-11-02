@@ -13,8 +13,8 @@ func Test_AWSTaskDefinitionIncludesSensitiveData(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.Code
-		mustExcludeResultCode scanner.Code
+		mustIncludeResultCode scanner.CheckCode
+		mustExcludeResultCode scanner.CheckCode
 	}{
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are included",

@@ -14,7 +14,7 @@ import (
 )
 
 // AWSTaskDefinitionWithSensitiveEnvironmentVariables See https://github.com/liamg/tfsec#included-checks for check info
-const AWSTaskDefinitionWithSensitiveEnvironmentVariables scanner.Code = "AWS013"
+const AWSTaskDefinitionWithSensitiveEnvironmentVariables scanner.CheckCode = "AWS013"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

@@ -10,7 +10,7 @@ import (
 )
 
 // AWSPlainHTTP See https://github.com/liamg/tfsec#included-checks for check info
-const AWSPlainHTTP scanner.Code = "AWS004"
+const AWSPlainHTTP scanner.CheckCode = "AWS004"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

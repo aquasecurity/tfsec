@@ -11,7 +11,7 @@ import (
 )
 
 // AWSBadBucketACL See https://github.com/liamg/tfsec#included-checks for check info
-const AWSBadBucketACL scanner.Code = "AWS001"
+const AWSBadBucketACL scanner.CheckCode = "AWS001"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

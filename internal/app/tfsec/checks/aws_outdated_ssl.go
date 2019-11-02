@@ -11,7 +11,7 @@ import (
 )
 
 // AWSOutdatedSSLPolicy See https://github.com/liamg/tfsec#included-checks for check info
-const AWSOutdatedSSLPolicy scanner.Code = "AWS010"
+const AWSOutdatedSSLPolicy scanner.CheckCode = "AWS010"
 
 var outdatedSSLPolicies = []string{
 	"ELBSecurityPolicy-2015-05",

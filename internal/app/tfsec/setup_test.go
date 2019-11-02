@@ -13,7 +13,7 @@ import (
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
 )
 
-const exampleCheckCode scanner.Code = "EXA001"
+const exampleCheckCode scanner.CheckCode = "EXA001"
 
 func TestMain(t *testing.M) {
 
@@ -56,7 +56,7 @@ func createTestFile(filename, contents string) string {
 	return path
 }
 
-func assertCheckCode(t *testing.T, includeCode scanner.Code, excludeCode scanner.Code, results []scanner.Result) {
+func assertCheckCode(t *testing.T, includeCode scanner.CheckCode, excludeCode scanner.CheckCode, results []scanner.Result) {
 
 	var foundInclude bool
 	var foundExclude bool
@@ -71,7 +71,7 @@ func assertCheckCode(t *testing.T, includeCode scanner.Code, excludeCode scanner
 	}
 
 	assert.False(t, foundExclude, fmt.Sprintf("result with code '%s' was found but should not have been", excludeCode))
-	if includeCode != scanner.Code("") {
+	if includeCode != scanner.CheckCode("") {
 		assert.True(t, foundInclude, fmt.Sprintf("result with code '%s' was not found but should have been", includeCode))
 	}
 }

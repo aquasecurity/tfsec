@@ -13,8 +13,8 @@ func Test_AWSSensitiveLocals(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.Code
-		mustExcludeResultCode scanner.Code
+		mustIncludeResultCode scanner.CheckCode
+		mustExcludeResultCode scanner.CheckCode
 	}{
 		{
 			name: "check sensitive local with value",

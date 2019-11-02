@@ -11,7 +11,7 @@ import (
 )
 
 // AzureVMWithPasswordAuthentication See https://github.com/liamg/tfsec#included-checks for check info
-const AzureVMWithPasswordAuthentication scanner.Code = "AZU005"
+const AzureVMWithPasswordAuthentication scanner.CheckCode = "AZU005"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

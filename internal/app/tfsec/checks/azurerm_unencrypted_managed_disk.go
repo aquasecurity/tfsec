@@ -11,7 +11,7 @@ import (
 )
 
 // AzureUnencryptedManagedDisk See https://github.com/liamg/tfsec#included-checks for check info
-const AzureUnencryptedManagedDisk scanner.Code = "AZU003"
+const AzureUnencryptedManagedDisk scanner.CheckCode = "AZU003"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

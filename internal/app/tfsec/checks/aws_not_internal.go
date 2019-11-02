@@ -11,7 +11,7 @@ import (
 )
 
 // AWSExternallyExposedLoadBalancer See https://github.com/liamg/tfsec#included-checks for check info
-const AWSExternallyExposedLoadBalancer scanner.Code = "AWS005"
+const AWSExternallyExposedLoadBalancer scanner.CheckCode = "AWS005"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -28,9 +28,10 @@ func init() {
 				}
 			} else if internalAttr.Type() == cty.Bool && internalAttr.Value().False() {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewResultWithAnnotation(
 						fmt.Sprintf("Resource '%s' is exposed publicly.", block.Name()),
 						internalAttr.Range(),
+						"evaluates to false",
 					),
 				}
 			}

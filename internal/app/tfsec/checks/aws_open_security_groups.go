@@ -10,10 +10,10 @@ import (
 )
 
 // AWSOpenIngressSecurityGroupInlineRule See https://github.com/liamg/tfsec#included-checks for check info
-const AWSOpenIngressSecurityGroupInlineRule scanner.Code = "AWS008"
+const AWSOpenIngressSecurityGroupInlineRule scanner.CheckCode = "AWS008"
 
 // AWSOpenEgressSecurityGroupInlineRule See https://github.com/liamg/tfsec#included-checks for check info
-const AWSOpenEgressSecurityGroupInlineRule scanner.Code = "AWS009"
+const AWSOpenEgressSecurityGroupInlineRule scanner.CheckCode = "AWS009"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
