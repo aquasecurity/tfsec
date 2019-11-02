@@ -33,7 +33,7 @@ func (parser *Parser) ParseDirectory(path string) (Blocks, error) {
 		return nil, err
 	}
 
-	var blocks []*hcl.Block
+	var blocks hcl.Blocks
 
 	for _, file := range parser.hclParser.Files() {
 		fileBlocks, err := parser.parseFile(file)
@@ -46,14 +46,8 @@ func (parser *Parser) ParseDirectory(path string) (Blocks, error) {
 	inputVars := make(map[string]cty.Value)
 	// TODO add .tfvars values to inputVars
 
-	ctx := parser.buildEvaluationContext(blocks, path, inputVars, true)
-
-	var localBlocks []*Block
-	for _, block := range blocks {
-		localBlocks = append(localBlocks, NewBlock(block, ctx))
-	}
-
-	return localBlocks, nil
+	allBlocks, _ := parser.buildEvaluationContext(blocks, path, inputVars, true)
+	return allBlocks.RemoveDuplicates(), nil
 }
 
 func (parser *Parser) parseFile(file *hcl.File) (hcl.Blocks, error) {
@@ -94,12 +88,14 @@ func (parser *Parser) recursivelyParseDirectory(path string) error {
 }
 
 // BuildEvaluationContext creates an *hcl.EvalContext by parsing values for all terraform variables (where available) then interpolating values into resource, local and data blocks until all possible values can be constructed
-func (parser *Parser) buildEvaluationContext(blocks hcl.Blocks, path string, inputVars map[string]cty.Value, isRoot bool) *hcl.EvalContext {
+func (parser *Parser) buildEvaluationContext(blocks hcl.Blocks, path string, inputVars map[string]cty.Value, isRoot bool) (Blocks, *hcl.EvalContext) {
 	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
 	}
 
 	ctx.Variables["module"] = cty.ObjectVal(make(map[string]cty.Value))
+
+	moduleBlocks := make(map[string]Blocks)
 
 	for i := 0; i < maxContextIterations; i++ {
 		clean := true
@@ -130,7 +126,8 @@ func (parser *Parser) buildEvaluationContext(blocks hcl.Blocks, path string, inp
 			if moduleMap == nil {
 				moduleMap = make(map[string]cty.Value)
 			}
-			moduleMap[moduleBlock.Labels[0]] = parser.parseModule(moduleBlock, ctx, path) // todo return parsed blocks here too
+			moduleName := moduleBlock.Labels[0]
+			moduleBlocks[moduleName], moduleMap[moduleName] = parser.parseModuleBlock(moduleBlock, ctx, path) // todo return parsed blocks here too
 			ctx.Variables["module"] = cty.ObjectVal(moduleMap)
 		}
 
@@ -141,10 +138,26 @@ func (parser *Parser) buildEvaluationContext(blocks hcl.Blocks, path string, inp
 		}
 	}
 
-	return ctx
+	var localBlocks []*Block
+	for _, block := range blocks {
+		localBlocks = append(localBlocks, NewBlock(block, ctx))
+	}
+
+	for moduleName, blocks := range moduleBlocks {
+		for _, block := range blocks {
+			block.prefix = fmt.Sprintf("module.%s", moduleName)
+			localBlocks = append(localBlocks, blocks...)
+		}
+	}
+
+	return localBlocks, ctx
 }
 
-func (parser *Parser) parseModule(block *hcl.Block, parentContext *hcl.EvalContext, rootPath string) cty.Value {
+func (parser *Parser) parseModuleBlock(block *hcl.Block, parentContext *hcl.EvalContext, rootPath string) (Blocks, cty.Value) {
+
+	if len(block.Labels) == 0 {
+		return nil, cty.NilVal
+	}
 
 	inputVars := make(map[string]cty.Value)
 
@@ -163,12 +176,12 @@ func (parser *Parser) parseModule(block *hcl.Block, parentContext *hcl.EvalConte
 	}
 
 	if source == "" {
-		return cty.NilVal
+		return nil, cty.NilVal
 	}
 
 	if !strings.HasPrefix(source, "./") && !strings.HasPrefix(source, "../") {
 		// TODO support module registries/github etc.
-		return cty.NilVal
+		return nil, cty.NilVal
 	}
 
 	path := filepath.Join(rootPath, source)
@@ -176,7 +189,7 @@ func (parser *Parser) parseModule(block *hcl.Block, parentContext *hcl.EvalConte
 	subParser := New()
 
 	if err := subParser.recursivelyParseDirectory(path); err != nil {
-		return cty.NilVal
+		return nil, cty.NilVal
 	}
 
 	var blocks []*hcl.Block
@@ -184,13 +197,14 @@ func (parser *Parser) parseModule(block *hcl.Block, parentContext *hcl.EvalConte
 	for _, file := range subParser.hclParser.Files() {
 		fileBlocks, err := subParser.parseFile(file)
 		if err != nil {
-			return cty.NilVal
+			return nil, cty.NilVal
 		}
 		blocks = append(blocks, fileBlocks...)
 	}
 
-	ctx := subParser.buildEvaluationContext(blocks, path, inputVars, false)
-	return cty.ObjectVal(ctx.Variables)
+	childModules, ctx := subParser.buildEvaluationContext(blocks, path, inputVars, false)
+
+	return childModules, cty.ObjectVal(ctx.Variables)
 }
 
 // returns true if all evaluations were successful

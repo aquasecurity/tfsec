@@ -14,6 +14,22 @@ import (
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
 )
 
+const exampleCheckCode checks.Code = "EXA001"
+
+func TestMain(t *testing.M) {
+
+	checks.RegisterCheck(checks.Check{
+		RequiredLabels: []string{"problem"},
+		CheckFunc: func(block *parser.Block) []checks.Result {
+			return []checks.Result{
+				checks.NewResult(exampleCheckCode, "example problem", block.Range()),
+			}
+		},
+	})
+
+	os.Exit(t.Run())
+}
+
 func scanSource(source string) []checks.Result {
 	blocks := createBlocksFromSource(source)
 	return scanner.New().Scan(blocks)
@@ -58,4 +74,32 @@ func assertCheckCode(t *testing.T, includeCode checks.Code, excludeCode checks.C
 	if includeCode != checks.Code("") {
 		assert.True(t, foundInclude, fmt.Sprintf("result with code '%s' was not found but should have been", includeCode))
 	}
+}
+
+func createTestFileWithModule(contents string, moduleContents string) string {
+	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
+	if err != nil {
+		panic(err)
+	}
+
+	rootPath := filepath.Join(dir, "main")
+	modulePath := filepath.Join(dir, "module")
+
+	if err := os.Mkdir(rootPath, 0755); err != nil {
+		panic(err)
+	}
+
+	if err := os.Mkdir(modulePath, 0755); err != nil {
+		panic(err)
+	}
+
+	if err := ioutil.WriteFile(filepath.Join(rootPath, "main.tf"), []byte(contents), 0755); err != nil {
+		panic(err)
+	}
+
+	if err := ioutil.WriteFile(filepath.Join(modulePath, "main.tf"), []byte(moduleContents), 0755); err != nil {
+		panic(err)
+	}
+
+	return rootPath
 }
