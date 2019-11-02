@@ -103,7 +103,7 @@ func highlightCode(result scanner.Result) {
 		_ = tml.Printf("  <blue>% 6d</blue> | ", lineNo)
 		if lineNo >= result.Range.StartLine && lineNo <= result.Range.EndLine {
 			if lineNo == result.Range.StartLine && result.RangeAnnotation != "" {
-				_ = tml.Printf("<bold><red>%s</red> <blue>(%s)</blue></bold>\n", lines[lineNo], result.RangeAnnotation)
+				_ = tml.Printf("<bold><red>%s</red>    <blue>%s</blue></bold>\n", lines[lineNo], result.RangeAnnotation)
 			} else {
 				_ = tml.Printf("<bold><red>%s</red></bold>\n", lines[lineNo])
 			}
