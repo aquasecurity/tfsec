@@ -35,6 +35,7 @@ tfsec .
 - Checks for sensitive data inclusion across all providers
 - Checks for violations of AWS and Azure security best practice
 - Scans modules (currently only local modules are supported) 
+- Evaluates expressions as well as literal values
 
 ## Ignoring Warnings
 
