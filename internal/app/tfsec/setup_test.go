@@ -21,7 +21,7 @@ func scanSource(source string) []checks.Result {
 
 func createBlocksFromSource(source string) []*parser.Block {
 	path := createTestFile("test.tf", source)
-	blocks, err := parser.New().ParseFile(path)
+	blocks, err := parser.New().ParseDirectory(filepath.Dir(path))
 	if err != nil {
 		panic(err)
 	}

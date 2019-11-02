@@ -93,7 +93,7 @@ func (block *Block) GetAttribute(name string) *Attribute {
 func (block *Block) Name() string {
 	var prefix string
 	if block.Type() != "resource" {
-		prefix = block.Type()
+		prefix = block.Type() + "."
 	}
 	return prefix + strings.Join(block.Labels(), ".")
 }

@@ -43,29 +43,10 @@ func (parser *Parser) ParseDirectory(path string) (Blocks, error) {
 		blocks = append(blocks, fileBlocks...)
 	}
 
-	ctx := parser.buildEvaluationContext(blocks)
+	inputVars := make(map[string]cty.Value)
+	// TODO add .tfvars values to inputVars
 
-	var localBlocks []*Block
-	for _, block := range blocks {
-		localBlocks = append(localBlocks, NewBlock(block, ctx))
-	}
-
-	return localBlocks, nil
-}
-
-// ParseFile recursively the terraform file at the given path
-func (parser *Parser) ParseFile(path string) (Blocks, error) {
-	parsedFile, diagnostics := parser.hclParser.ParseHCLFile(path)
-	if diagnostics != nil && diagnostics.HasErrors() {
-		return nil, diagnostics
-	}
-
-	blocks, err := parser.parseFile(parsedFile)
-	if err != nil {
-		return nil, err
-	}
-
-	ctx := parser.buildEvaluationContext(blocks)
+	ctx := parser.buildEvaluationContext(blocks, path, inputVars, true)
 
 	var localBlocks []*Block
 	for _, block := range blocks {
@@ -113,99 +94,166 @@ func (parser *Parser) recursivelyParseDirectory(path string) error {
 }
 
 // BuildEvaluationContext creates an *hcl.EvalContext by parsing values for all terraform variables (where available) then interpolating values into resource, local and data blocks until all possible values can be constructed
-func (parser *Parser) buildEvaluationContext(blocks hcl.Blocks) *hcl.EvalContext {
-	ctx := hcl.EvalContext{
+func (parser *Parser) buildEvaluationContext(blocks hcl.Blocks, path string, inputVars map[string]cty.Value, isRoot bool) *hcl.EvalContext {
+	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
 	}
+
+	ctx.Variables["module"] = cty.ObjectVal(make(map[string]cty.Value))
+
 	for i := 0; i < maxContextIterations; i++ {
 		clean := true
-		for _, blockType := range orderedBlockTypes {
-			clean = clean && parser.addToContextByBlockType(&ctx, blocks, blockType)
+
+		ctx.Variables["var"] = parser.getValuesByBlockType(ctx, blocks, "variable", inputVars)
+		ctx.Variables["local"] = parser.getValuesByBlockType(ctx, blocks, "locals", nil)
+		ctx.Variables["provider"] = parser.getValuesByBlockType(ctx, blocks, "provider", nil)
+		resources := parser.getValuesByBlockType(ctx, blocks, "resource", nil)
+		for key, resource := range resources.AsValueMap() {
+			ctx.Variables[key] = resource
 		}
+		ctx.Variables["data"] = parser.getValuesByBlockType(ctx, blocks, "data", nil)
+
+		if isRoot {
+			ctx.Variables["output"] = parser.getValuesByBlockType(ctx, blocks, "output", nil)
+		} else {
+			outputs := parser.getValuesByBlockType(ctx, blocks, "output", nil)
+			for key, val := range outputs.AsValueMap() {
+				ctx.Variables[key] = val
+			}
+		}
+
+		for _, moduleBlock := range blocks.OfType("module") {
+			if len(moduleBlock.Labels) == 0 {
+				continue
+			}
+			moduleMap := ctx.Variables["module"].AsValueMap()
+			if moduleMap == nil {
+				moduleMap = make(map[string]cty.Value)
+			}
+			moduleMap[moduleBlock.Labels[0]] = parser.parseModule(moduleBlock, ctx, path) // todo return parsed blocks here too
+			ctx.Variables["module"] = cty.ObjectVal(moduleMap)
+		}
+
+		// todo check of ctx has changed since last iteration
+
 		if clean {
 			break
 		}
 	}
-	return &ctx
+
+	return ctx
+}
+
+func (parser *Parser) parseModule(block *hcl.Block, parentContext *hcl.EvalContext, rootPath string) cty.Value {
+
+	inputVars := make(map[string]cty.Value)
+
+	var source string
+	attrs, _ := block.Body.JustAttributes()
+	for _, attr := range attrs {
+
+		inputVars[attr.Name], _ = attr.Expr.Value(parentContext)
+
+		if attr.Name == "source" {
+			sourceVal, _ := attr.Expr.Value(parentContext)
+			if sourceVal.Type() == cty.String {
+				source = sourceVal.AsString()
+			}
+		}
+	}
+
+	if source == "" {
+		return cty.NilVal
+	}
+
+	if !strings.HasPrefix(source, "./") && !strings.HasPrefix(source, "../") {
+		// TODO support module registries/github etc.
+		return cty.NilVal
+	}
+
+	path := filepath.Join(rootPath, source)
+
+	subParser := New()
+
+	if err := subParser.recursivelyParseDirectory(path); err != nil {
+		return cty.NilVal
+	}
+
+	var blocks []*hcl.Block
+
+	for _, file := range subParser.hclParser.Files() {
+		fileBlocks, err := subParser.parseFile(file)
+		if err != nil {
+			return cty.NilVal
+		}
+		blocks = append(blocks, fileBlocks...)
+	}
+
+	ctx := subParser.buildEvaluationContext(blocks, path, inputVars, false)
+	return cty.ObjectVal(ctx.Variables)
 }
 
 // returns true if all evaluations were successful
-func (parser *Parser) readValues(ctx *hcl.EvalContext, block *hcl.Block) (cty.Value, bool) {
+func (parser *Parser) readValues(ctx *hcl.EvalContext, block *hcl.Block) cty.Value {
 
 	values := make(map[string]cty.Value)
 
 	attributes, diagnostics := block.Body.JustAttributes()
 	if diagnostics != nil && diagnostics.HasErrors() {
-		return cty.ObjectVal(values), false
+		return cty.NilVal
 	}
 
-	success := true
-
 	for _, attribute := range attributes {
-		val, diag := attribute.Expr.Value(ctx)
-		if diag != nil && diag.HasErrors() {
-			success = false
-			continue
-		}
+		val, _ := attribute.Expr.Value(ctx)
 		values[attribute.Name] = val
 	}
 
-	return cty.ObjectVal(values), success
+	return cty.ObjectVal(values)
 }
 
 // returns true if all evaluations were successful
-func (parser *Parser) addToContextByBlockType(ctx *hcl.EvalContext, blocks hcl.Blocks, blockType string) bool {
-
-	success := true
+func (parser *Parser) getValuesByBlockType(ctx *hcl.EvalContext, blocks hcl.Blocks, blockType string, inputVars map[string]cty.Value) cty.Value {
 
 	blocksOfType := blocks.OfType(blockType)
-	alias := blockType
-
 	values := make(map[string]cty.Value)
+
 	for _, block := range blocksOfType {
 
 		switch block.Type {
 		case "variable": // variables are special in that their value comes from the "default" attribute
-			alias = "var"
-			fallthrough
+			if len(block.Labels) < 1 {
+				continue
+			}
+			attributes, _ := block.Body.JustAttributes()
+			if attributes == nil {
+				continue
+			}
+			if override, exists := inputVars[block.Labels[0]]; exists {
+				values[block.Labels[0]] = override
+			} else if def, exists := attributes["default"]; exists {
+				values[block.Labels[0]], _ = def.Expr.Value(ctx)
+			}
 		case "output":
 			if len(block.Labels) < 1 {
 				continue
 			}
-			attributes, diagnostics := block.Body.JustAttributes()
-			if diagnostics != nil && diagnostics.HasErrors() {
-				success = false
+			attributes, _ := block.Body.JustAttributes()
+			if attributes == nil {
 				continue
 			}
-			if def, exists := attributes["default"]; exists {
-				var diag hcl.Diagnostics
-				values[block.Labels[0]], diag = def.Expr.Value(nil)
-				if diag != nil && diag.HasErrors() {
-					success = false
-				}
+			if def, exists := attributes["value"]; exists {
+				values[block.Labels[0]], _ = def.Expr.Value(ctx)
 			}
 		case "locals":
-			alias = "local"
-			localValues, partialSuccess := parser.readValues(ctx, block)
-			if !partialSuccess {
-				success = false
-			}
-			for key, val := range localValues.AsValueMap() {
+			for key, val := range parser.readValues(ctx, block).AsValueMap() {
 				values[key] = val
 			}
 		case "provider", "module":
 			if len(block.Labels) < 1 {
 				continue
 			}
-			var partialSuccess bool
-			values[block.Labels[0]], partialSuccess = parser.readValues(ctx, block)
-			if !partialSuccess {
-				success = false
-			}
-		case "resource":
-			alias = ""
-			fallthrough
-		case "data":
+			values[block.Labels[0]] = parser.readValues(ctx, block)
+		case "resource", "data":
 
 			if len(block.Labels) < 2 {
 				continue
@@ -222,31 +270,12 @@ func (parser *Parser) addToContextByBlockType(ctx *hcl.EvalContext, blocks hcl.B
 				valueMap = make(map[string]cty.Value)
 			}
 
-			var partialSuccess bool
-			valueMap[block.Labels[1]], partialSuccess = parser.readValues(ctx, block)
+			valueMap[block.Labels[1]] = parser.readValues(ctx, block)
 			values[block.Labels[0]] = cty.ObjectVal(valueMap)
-			if !partialSuccess {
-				success = false
-			}
 		}
 
 	}
 
-	if alias == "" {
-		for key, val := range values {
-			ctx.Variables[key] = val
-		}
-	} else {
-		existing, exists := ctx.Variables[alias]
-		if exists {
-			existingMap := existing.AsValueMap()
-			for key, val := range values {
-				existingMap[key] = val
-			}
-			ctx.Variables[alias] = cty.ObjectVal(existingMap)
-		} else {
-			ctx.Variables[alias] = cty.ObjectVal(values)
-		}
-	}
-	return success
+	return cty.ObjectVal(values)
+
 }
