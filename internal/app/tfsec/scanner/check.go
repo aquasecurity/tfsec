@@ -84,13 +84,18 @@ func (check *Check) NewResultWithValueAnnotation(description string, r parser.Ra
 
 	var raw interface{}
 
+	var typeStr string
+
 	switch attr.Type() {
 	case cty.String:
 		raw = attr.Value().AsString()
+		typeStr = "string"
 	case cty.Bool:
 		raw = attr.Value().True()
+		typeStr = "bool"
 	case cty.Number:
 		raw, _ = attr.Value().AsBigFloat().Float64()
+		typeStr = "number"
 	default:
 		return check.NewResult(description, r)
 	}
@@ -99,6 +104,6 @@ func (check *Check) NewResultWithValueAnnotation(description string, r parser.Ra
 		Code:            check.Code,
 		Description:     description,
 		Range:           r,
-		RangeAnnotation: fmt.Sprintf("%T %#v", raw, raw),
+		RangeAnnotation: fmt.Sprintf("[%s] %#v", typeStr, raw),
 	}
 }
