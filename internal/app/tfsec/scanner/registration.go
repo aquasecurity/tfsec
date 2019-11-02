@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"fmt"
 	"sync"
 )
 
@@ -14,6 +15,11 @@ func RegisterCheck(check Check) {
 	}
 	checkLock.Lock()
 	defer checkLock.Unlock()
+	for _, existing := range registeredChecks {
+		if existing.Code == check.Code {
+			panic(fmt.Errorf("check already exists with code '%s'", check.Code))
+		}
+	}
 	registeredChecks = append(registeredChecks, check)
 }
 

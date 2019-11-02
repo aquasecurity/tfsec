@@ -33,7 +33,7 @@ tfsec .
 ## Features
 
 - Checks for sensitive data inclusion across all providers
-- Checks for violations of AWS and Azure security best practice
+- Checks for violations of AWS, Azure and GCP security best practice recommendations
 - Scans modules (currently only local modules are supported) 
 
 ## Ignoring Warnings
@@ -63,7 +63,7 @@ If you're not sure which line to add the comment on, just check the tfsec output
 
 ## Included Checks
 
-Currently, checks are mostly limited to AWS/Azure resources, though support for more common providers will be added in the coming weeks.
+Currently, checks are mostly limited to AWS/Azure/GCP resources, but there are also checks which are provider agnostic.
 
 | Code    | Provider | Description |
 |---------|----------|-------------|
@@ -89,6 +89,8 @@ Currently, checks are mostly limited to AWS/Azure resources, though support for 
 | AZU003  | azurerm  | Unencrypted managed disk.
 | AZU004  | azurerm  | Unencrypted data lake store.
 | AZU005  | azurerm  | Password authentication in use instead of SSH keys.
+| GCP001  | google   | Unencrypted compute disk.
+
 
 ## Support for older terraform versions
 
