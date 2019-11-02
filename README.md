@@ -90,6 +90,8 @@ Currently, checks are mostly limited to AWS/Azure/GCP resources, but there are a
 | AZU004  | azurerm  | Unencrypted data lake store.
 | AZU005  | azurerm  | Password authentication in use instead of SSH keys.
 | GCP001  | google   | Unencrypted compute disk.
+| GCP002  | google   | Unencrypted storage bucket.
+
 
 
 ## Support for older terraform versions
