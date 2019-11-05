@@ -17,18 +17,18 @@ type Check struct {
 	Code           CheckCode
 	RequiredTypes  []string
 	RequiredLabels []string
-	CheckFunc      func(*Check, *parser.Block) []Result
+	CheckFunc      func(*Check, *parser.Block, *Context) []Result
 }
 
 // Run runs the check against the provided HCL block, including the hclEvalContext to evaluate expressions if it is
 // provided.
-func (check *Check) Run(block *parser.Block) []Result {
+func (check *Check) Run(block *parser.Block, context *Context) []Result {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Printf("WARNING: fatal error running check: %s\n", err)
 		}
 	}()
-	return check.CheckFunc(check, block)
+	return check.CheckFunc(check, block, context)
 }
 
 // IsRequiredForBlock returns true if the Check should be applied to the given HCL block

@@ -15,7 +15,7 @@ func init() {
 		Code:           GoogleUnencryptedDisk,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_compute_disk"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			keyBlock := block.GetBlock("disk_encryption_key")
 			if keyBlock == nil {

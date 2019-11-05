@@ -18,7 +18,7 @@ func init() {
 		Code:           AzureUnencryptedManagedDisk,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_managed_disk"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			encryptionSettingsBlock := block.GetBlock("encryption_settings")
 			if encryptionSettingsBlock == nil {

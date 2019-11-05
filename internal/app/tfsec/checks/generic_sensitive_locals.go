@@ -18,7 +18,7 @@ func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:          GenericSensitiveLocals,
 		RequiredTypes: []string{"locals"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			var results []scanner.Result
 

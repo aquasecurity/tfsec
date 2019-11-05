@@ -19,10 +19,11 @@ func New() *Scanner {
 // Scan takes all available hcl blocks and an optional context, and returns a slice of results. Each result indicates a potential security problem.
 func (scanner *Scanner) Scan(blocks []*parser.Block) []Result {
 	var results []Result
+	context := &Context{blocks: blocks}
 	for _, block := range blocks {
 		for _, check := range GetRegisteredChecks() {
 			if check.IsRequiredForBlock(block) {
-				for _, result := range check.Run(block) {
+				for _, result := range check.Run(block, context) {
 					if !scanner.checkRangeIgnored(result.Range) {
 						results = append(results, result)
 					}

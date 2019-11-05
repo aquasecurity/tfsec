@@ -18,7 +18,7 @@ func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:          GenericSensitiveVariables,
 		RequiredTypes: []string{"variable"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			if len(block.Labels()) == 0 {
 				return nil

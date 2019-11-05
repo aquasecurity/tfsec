@@ -16,7 +16,7 @@ func init() {
 		Code:           AWSNoBucketLogging,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_s3_bucket"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if loggingBlock := block.GetBlock("logging"); loggingBlock == nil {
 				return []scanner.Result{
 					check.NewResult(

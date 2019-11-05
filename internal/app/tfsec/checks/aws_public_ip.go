@@ -18,7 +18,7 @@ func init() {
 		Code:           AWSResourceHasPublicIP,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_launch_configuration", "aws_instance"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			if publicAttr := block.GetAttribute("associate_public_ip_address"); publicAttr != nil && publicAttr.Type() == cty.Bool {
 				if publicAttr.Value().True() {

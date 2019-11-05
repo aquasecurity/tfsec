@@ -18,7 +18,7 @@ func init() {
 		Code:           AzureVMWithPasswordAuthentication,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_virtual_machine"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			if linuxConfigBlock := block.GetBlock("os_profile_linux_config"); linuxConfigBlock != nil {
 				passwordAuthDisabledAttr := linuxConfigBlock.GetAttribute("disable_password_authentication")

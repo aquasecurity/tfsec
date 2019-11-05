@@ -20,7 +20,7 @@ func init() {
 		Code:           AWSOpenIngressSecurityGroupInlineRule,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			var results []scanner.Result
 
@@ -52,7 +52,7 @@ func init() {
 		Code:           AWSOpenEgressSecurityGroupInlineRule,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			var results []scanner.Result
 

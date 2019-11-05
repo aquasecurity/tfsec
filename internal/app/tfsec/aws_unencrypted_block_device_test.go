@@ -17,7 +17,7 @@ func Test_AWSUnencryptedBlockDevice(t *testing.T) {
 		mustExcludeResultCode scanner.CheckCode
 	}{
 		{
-			name: "check no ebs_block_device configured in launch configuration",
+			name: "check no root_block_device configured in launch configuration",
 			source: `
 resource "aws_launch_configuration" "my-launch-config" {
 	
@@ -28,7 +28,28 @@ resource "aws_launch_configuration" "my-launch-config" {
 			name: "check no encryption configured for ebs_block_device",
 			source: `
 resource "aws_launch_configuration" "my-launch-config" {
+	root_block_device {}
+}`,
+			mustIncludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+		},
+		{
+			name: "check no encryption configured for ebs_block_device",
+			source: `
+resource "aws_launch_configuration" "my-launch-config" {
+	root_block_device {
+		encrypted = true
+	}
 	ebs_block_device {}
+}`,
+			mustIncludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+		},
+		{
+			name: "check encryption disabled for root_block_device",
+			source: `
+resource "aws_launch_configuration" "my-launch-config" {
+	root_block_device {
+		encrypted = false
+	}
 }`,
 			mustIncludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
@@ -36,6 +57,9 @@ resource "aws_launch_configuration" "my-launch-config" {
 			name: "check encryption disabled for ebs_block_device",
 			source: `
 resource "aws_launch_configuration" "my-launch-config" {
+	root_block_device {
+		encrypted = true
+	}
 	ebs_block_device {
 		encrypted = false
 	}
@@ -43,12 +67,63 @@ resource "aws_launch_configuration" "my-launch-config" {
 			mustIncludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
-			name: "check encryption enabled for ebs_block_device",
+			name: "check encryption enabled for root_block_device",
 			source: `
 resource "aws_launch_configuration" "my-launch-config" {
+	root_block_device {
+		encrypted = true
+	}
+}`,
+			mustExcludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+		},
+		{
+			name: "check encryption enabled for root_block_device and ebs_block_device",
+			source: `
+resource "aws_launch_configuration" "my-launch-config" {
+	root_block_device {
+		encrypted = true
+	}
 	ebs_block_device {
 		encrypted = true
 	}
+}`,
+			mustExcludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+		},
+		{
+			name: "check encryption enabled by default for root_block_device",
+			source: `
+resource "aws_ebs_encryption_by_default" "example" {
+  enabled = true
+}
+
+resource "aws_launch_configuration" "my-launch-config" {
+	root_block_device {
+
+	}
+}`,
+			mustExcludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+		},
+		{
+			name: "check encryption enabled by default for non-specified root_block_device",
+			source: `
+resource "aws_ebs_encryption_by_default" "example" {
+  enabled = true
+}
+
+resource "aws_launch_configuration" "my-launch-config" {
+
+}`,
+			mustExcludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+		},
+		{
+			name: "check encryption enabled by default for non-specified root_block_device and ebs_block_device",
+			source: `
+resource "aws_ebs_encryption_by_default" "example" {
+  enabled = true
+}
+
+resource "aws_launch_configuration" "my-launch-config" {
+	ebs_block_device{}
 }`,
 			mustExcludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},

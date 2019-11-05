@@ -21,7 +21,7 @@ func init() {
 		Code:           AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecs_task_definition"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			var results []scanner.Result
 

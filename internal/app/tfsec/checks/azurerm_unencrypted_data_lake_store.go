@@ -17,7 +17,7 @@ func init() {
 		Code:           AzureUnencryptedDataLakeStore,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_data_lake_store"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			encryptionStateAttr := block.GetAttribute("encryption_state")
 			if encryptionStateAttr != nil && encryptionStateAttr.Type() == cty.String && encryptionStateAttr.Value().AsString() == "Disabled" {
