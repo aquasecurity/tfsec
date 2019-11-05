@@ -31,6 +31,9 @@ func (attr *Attribute) Value() cty.Value {
 		return cty.NilVal
 	}
 	ctyVal, _ := attr.hclAttribute.Expr.Value(attr.ctx)
+	if !ctyVal.IsKnown() {
+		return cty.NilVal
+	}
 	return ctyVal
 }
 
