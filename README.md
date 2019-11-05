@@ -92,7 +92,8 @@ Currently, checks are mostly limited to AWS/Azure/GCP resources, but there are a
 | AZU005  | azurerm  | Password authentication in use instead of SSH keys.
 | GCP001  | google   | Unencrypted compute disk.
 | GCP002  | google   | Unencrypted storage bucket.
-
+| GCP003  | google   | An inbound firewall rule allows traffic from `/0`.
+| GCP004  | google   | An outbound firewall rule allows traffic to `/0`.
 
 
 ## Support for older terraform versions
