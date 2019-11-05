@@ -25,7 +25,7 @@ type Check struct {
 func (check *Check) Run(block *parser.Block, context *Context) []Result {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Printf("WARNING: fatal error running check: %s\n", err)
+			fmt.Printf("WARNING: skipped %s check due to error(s): %s\n", check.Code, err)
 		}
 	}()
 	return check.CheckFunc(check, block, context)
