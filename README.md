@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="463" src="./logo.png">
+</p>
+
 # tfsec
 
 [![Travis Build Status](https://travis-ci.org/liamg/tfsec.svg?branch=master)](https://travis-ci.org/liamg/tfsec)
