@@ -16,7 +16,7 @@ func init() {
 		Code:           AWSClassicUsage,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_db_security_group", "aws_redshift_security_group", "aws_elasticache_security_group"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			return []scanner.Result{
 				check.NewResult(
 					fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", block.Name()),

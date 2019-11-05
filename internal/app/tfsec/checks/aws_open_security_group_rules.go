@@ -22,7 +22,7 @@ func init() {
 		Code:           AWSOpenIngressSecurityGroupRule,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group_rule"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			typeAttr := block.GetAttribute("type")
 			if typeAttr == nil || typeAttr.Type() != cty.String {
@@ -60,7 +60,7 @@ func init() {
 		Code:           AWSOpenEgressSecurityGroupRule,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group_rule"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			typeAttr := block.GetAttribute("type")
 			if typeAttr == nil || typeAttr.Type() != cty.String {

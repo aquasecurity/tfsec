@@ -22,7 +22,7 @@ func init() {
 		Code:           AzureOpenInboundNetworkSecurityGroupRule,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_rule"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			directionAttr := block.GetAttribute("direction")
 			if directionAttr == nil || directionAttr.Type() != cty.String || directionAttr.Value().AsString() != "Inbound" {
@@ -70,7 +70,7 @@ func init() {
 		Code:           AzureOpenOutboundNetworkSecurityGroupRule,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_rule"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			directionAttr := block.GetAttribute("direction")
 			if directionAttr == nil || directionAttr.Type() != cty.String || directionAttr.Value().AsString() != "Outbound" {

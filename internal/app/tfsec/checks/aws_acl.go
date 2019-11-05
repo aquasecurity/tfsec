@@ -18,7 +18,7 @@ func init() {
 		Code:           AWSBadBucketACL,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_s3_bucket"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if attr := block.GetAttribute("acl"); attr != nil && attr.Value().Type() == cty.String {
 				acl := attr.Value().AsString()
 				if acl == "public-read" || acl == "public-read-write" || acl == "website" {

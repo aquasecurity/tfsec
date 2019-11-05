@@ -18,7 +18,7 @@ func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:          GenericSensitiveAttributes,
 		RequiredTypes: []string{"resource", "provider", "module"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			attributes := block.GetAttributes()
 

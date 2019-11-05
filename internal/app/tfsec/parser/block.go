@@ -85,6 +85,19 @@ func (block *Block) GetBlock(name string) *Block {
 	return nil
 }
 
+func (block *Block) GetBlocks(name string) Blocks {
+	if block == nil || block.hclBlock == nil {
+		return nil
+	}
+	var results []*Block
+	for _, child := range block.body().Blocks {
+		if child.Type == name {
+			results = append(results, NewBlock(child.AsHCLBlock(), block.ctx))
+		}
+	}
+	return results
+}
+
 func (block *Block) GetAttributes() []*Attribute {
 	var results []*Attribute
 	if block == nil || block.hclBlock == nil {

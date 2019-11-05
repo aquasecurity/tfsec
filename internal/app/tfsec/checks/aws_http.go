@@ -17,7 +17,7 @@ func init() {
 		Code:           AWSPlainHTTP,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_lb_listener", "aws_alb_listener"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if protocolAttr := block.GetAttribute("protocol"); protocolAttr == nil || (protocolAttr.Type() == cty.String && protocolAttr.Value().AsString() == "HTTP") {
 				// check if this is a redirect to HTTPS - if it is, then no problem
 				if actionBlock := block.GetBlock("default_action"); actionBlock != nil {

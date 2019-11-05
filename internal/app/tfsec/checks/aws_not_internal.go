@@ -18,7 +18,7 @@ func init() {
 		Code:           AWSExternallyExposedLoadBalancer,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_alb", "aws_elb", "aws_lb"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if internalAttr := block.GetAttribute("internal"); internalAttr == nil {
 				return []scanner.Result{
 					check.NewResult(

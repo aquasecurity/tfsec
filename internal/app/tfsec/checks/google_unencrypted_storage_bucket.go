@@ -17,7 +17,7 @@ func init() {
 		Code:           GoogleUnencryptedStorageBucket,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_storage_bucket"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			encryptionBlock := block.GetBlock("encryption")
 			if encryptionBlock == nil {
