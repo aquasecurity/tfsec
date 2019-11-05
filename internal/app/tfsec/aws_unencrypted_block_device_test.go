@@ -127,6 +127,22 @@ resource "aws_launch_configuration" "my-launch-config" {
 }`,
 			mustExcludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
+		{
+			name: "check encryption enabled for one ebs_block_device and not for another",
+			source: `
+resource "aws_launch_configuration" "my-launch-config" {
+	root_block_device {
+		encrypted = true
+	}
+	ebs_block_device{
+		encrypted  = true
+	}
+	ebs_block_device{
+		encrypted  = false
+	}
+}`,
+			mustIncludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+		},
 	}
 
 	for _, test := range tests {
