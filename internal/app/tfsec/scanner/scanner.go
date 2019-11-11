@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"fmt"
 	"io/ioutil"
 	"strings"
 
@@ -24,7 +25,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block) []Result {
 		for _, check := range GetRegisteredChecks() {
 			if check.IsRequiredForBlock(block) {
 				for _, result := range check.Run(block, context) {
-					if !scanner.checkRangeIgnored(result.Range) {
+					if !scanner.checkRangeIgnored(result.Code, result.Range) {
 						results = append(results, result)
 					}
 				}
@@ -34,17 +35,19 @@ func (scanner *Scanner) Scan(blocks []*parser.Block) []Result {
 	return results
 }
 
-func (scanner *Scanner) checkRangeIgnored(r parser.Range) bool {
+func (scanner *Scanner) checkRangeIgnored(code CheckCode, r parser.Range) bool {
 	raw, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return false
 	}
+	ignoreAll := "tfsec:ignore:*"
+	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", code)
 	lines := append([]string{""}, strings.Split(string(raw), "\n")...)
 	for number := r.StartLine; number <= r.EndLine; number++ {
 		if number <= 0 || number >= len(lines) {
 			continue
 		}
-		if strings.Contains(lines[number], "tfsec:ignore") {
+		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) {
 			return true
 		}
 	}
@@ -52,9 +55,13 @@ func (scanner *Scanner) checkRangeIgnored(r parser.Range) bool {
 	if r.StartLine-1 > 0 {
 		line := lines[r.StartLine-1]
 		line = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(line, "//", ""), "#", ""))
-		if line == "tfsec:ignore" {
-			return true
+		segments := strings.Split(line, " ")
+		for _, segment := range segments {
+			if segment == ignoreAll || segment == ignoreCode {
+				return true
+			}
 		}
+
 	}
 
 	return false
