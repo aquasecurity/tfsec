@@ -45,14 +45,14 @@ tfsec .
 
 ## Ignoring Warnings
 
-You may wish to ignore some warnings. If you'd like to do so, you can simply add a comment containing `tfsec:ignore` to the offending line in your templates. If the problem refers to a block of code, such as a multiline string, you can add the comment on the line above the block, by itself.
+You may wish to ignore some warnings. If you'd like to do so, you can simply add a comment containing `tfsec:ignore:<CODE>` to the offending line in your templates. If the problem refers to a block of code, such as a multiline string, you can add the comment on the line above the block, by itself.
 
-For example, to ignore any warnings about an open security group rule:
+For example, to ignore an open security group rule:
 
 ```hcl
 resource "aws_security_group_rule" "my-rule" {
     type = "ingress"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:AWS006
 }
 ```
 
@@ -61,7 +61,7 @@ resource "aws_security_group_rule" "my-rule" {
 ```hcl
 resource "aws_security_group_rule" "my-rule" {
     type = "ingress"
-    #tfsec:ignore
+    #tfsec:ignore:AWS006
     cidr_blocks = ["0.0.0.0/0"] 
 }
 ```

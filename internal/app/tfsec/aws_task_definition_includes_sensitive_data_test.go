@@ -62,7 +62,7 @@ EOF
 			name: "check aws_ecs_task_definition when sensitive env vars are included but ignored",
 			source: `
 resource "aws_ecs_task_definition" "my-task" {
-  #tfsec:ignore
+  #tfsec:ignore:*
   container_definitions = <<EOF
 [
   {
