@@ -1,4 +1,4 @@
-# github.com/agext/levenshtein v1.2.1
+# github.com/agext/levenshtein v1.2.2
 github.com/agext/levenshtein
 # github.com/apparentlymart/go-textseg v1.0.0
 github.com/apparentlymart/go-textseg/textseg
@@ -13,17 +13,17 @@ github.com/hashicorp/hcl/v2/json
 github.com/inconshreveable/mousetrap
 # github.com/liamg/clinch v1.0.0
 github.com/liamg/clinch/terminal
-# github.com/liamg/tml v0.0.0-20190502192031-c30729dfe5e5
+# github.com/liamg/tml v0.2.0
 github.com/liamg/tml
-# github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7
+# github.com/mitchellh/go-wordwrap v1.0.0
 github.com/mitchellh/go-wordwrap
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
-# github.com/spf13/cobra v0.0.3
+# github.com/spf13/cobra v0.0.5
 github.com/spf13/cobra
-# github.com/spf13/pflag v1.0.3
+# github.com/spf13/pflag v1.0.5
 github.com/spf13/pflag
-# github.com/stretchr/testify v1.3.0
+# github.com/stretchr/testify v1.4.0
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
 # github.com/zclconf/go-cty v1.1.0
@@ -42,3 +42,5 @@ golang.org/x/sys/windows
 # golang.org/x/text v0.3.2
 golang.org/x/text/unicode/norm
 golang.org/x/text/transform
+# gopkg.in/yaml.v2 v2.2.4
+gopkg.in/yaml.v2

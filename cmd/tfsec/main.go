@@ -18,8 +18,11 @@ import (
 )
 
 var showVersion = false
+var disableColours = false
 
 func init() {
+	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
+	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
 }
 
@@ -34,12 +37,18 @@ var rootCmd = &cobra.Command{
 	Use:   "tfsec [directory]",
 	Short: "tfsec is a terraform security scanner",
 	Long:  `tfsec is a simple tool to detect potential security vulnerabilities in your terraformed infrastructure.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+
+		if disableColours {
+			tml.DisableFormatting()
+		}
 
 		if showVersion {
 			fmt.Println(version.Version)
 			os.Exit(0)
 		}
+	},
+	Run: func(cmd *cobra.Command, args []string) {
 
 		var dir string
 		var err error

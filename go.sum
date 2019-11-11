@@ -136,6 +136,8 @@ github.com/liamg/tml v0.0.0-20190502192031-c30729dfe5e5 h1:iz+peE7wU1zhq47beJqz1
 github.com/liamg/tml v0.0.0-20190502192031-c30729dfe5e5/go.mod h1:0h4EAV/zBOsqI91EWONedjRpO8O0itjGJVd+wG5eC+E=
 github.com/liamg/tml v0.1.0 h1:PHVrqb4NcgC/e2EK8yLXBUONlbS3n1/NGUDcPQiTwKo=
 github.com/liamg/tml v0.1.0/go.mod h1:0h4EAV/zBOsqI91EWONedjRpO8O0itjGJVd+wG5eC+E=
+github.com/liamg/tml v0.2.0 h1:Ab4Qs+gWfy5TJ0OPk7OSVwgdPZmRD978LIHgsdqg56A=
+github.com/liamg/tml v0.2.0/go.mod h1:0h4EAV/zBOsqI91EWONedjRpO8O0itjGJVd+wG5eC+E=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/magiconair/properties v1.8.1/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
