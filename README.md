@@ -10,7 +10,8 @@
 [![Github Release](https://img.shields.io/github/release/liamg/tfsec.svg)](https://github.com/liamg/tfsec/releases)
 [![GitHub All Releases](https://img.shields.io/github/downloads/liamg/tfsec/total)](https://github.com/liamg/tfsec/releases)
 
-tfsec uses static analysis of your terraform templates to spot potential security issues. Now with terraform v0.12+ support.
+tfsec uses static analysis of your terraform templates to spot potential
+security issues. Now with terraform v0.12+ support.
 
 ## Example Output
 
@@ -28,24 +29,47 @@ env GO111MODULE=on go get -u github.com/liamg/tfsec/cmd/tfsec
 
 ## Usage
 
-tfsec will recursively scan the specified directory. If no directory is specified, the current working directory will be used.
+tfsec will recursively scan the specified directory. If no directory is
+specified, the current working directory will be used.
 
-The exit status will be non zero if problems are found, otherwise the exit status will be zero.
+The exit status will be non zero if problems are found, otherwise the
+exit status will be zero.
 
 ```bash
 tfsec .
+```
+
+## Use with Docker
+
+As an alternative to installing and running tfsec on your system, you may
+run tfsec in a Docker container.
+
+To build:
+
+```sh
+docker build tfsec .
+```
+
+To run:
+
+```sh
+docker run --rm -it -v "$(pwd):/workdir" tfsec .
 ```
 
 ## Features
 
 - Checks for sensitive data inclusion across all providers
 - Checks for violations of AWS, Azure and GCP security best practice recommendations
-- Scans modules (currently only local modules are supported) 
+- Scans modules (currently only local modules are supported)
 - Evaluates expressions as well as literal values
 
 ## Ignoring Warnings
 
-You may wish to ignore some warnings. If you'd like to do so, you can simply add a comment containing `tfsec:ignore:<CODE>` to the offending line in your templates. If the problem refers to a block of code, such as a multiline string, you can add the comment on the line above the block, by itself.
+You may wish to ignore some warnings. If you'd like to do so, you can
+simply add a comment containing `tfsec:ignore:<CODE>` to the offending
+line in your templates. If the problem refers to a block of code, such
+as a multiline string, you can add the comment on the line above the
+block, by itself.
 
 For example, to ignore an open security group rule:
 
@@ -62,15 +86,17 @@ resource "aws_security_group_rule" "my-rule" {
 resource "aws_security_group_rule" "my-rule" {
     type = "ingress"
     #tfsec:ignore:AWS006
-    cidr_blocks = ["0.0.0.0/0"] 
+    cidr_blocks = ["0.0.0.0/0"]
 }
 ```
 
-If you're not sure which line to add the comment on, just check the tfsec output for the line number of the discovered problem.
+If you're not sure which line to add the comment on, just check the
+tfsec output for the line number of the discovered problem.
 
 ## Included Checks
 
-Currently, checks are mostly limited to AWS/Azure/GCP resources, but there are also checks which are provider agnostic.
+Currently, checks are mostly limited to AWS/Azure/GCP resources, but
+there are also checks which are provider agnostic.
 
 | Code    | Provider | Description |
 |---------|----------|-------------|
@@ -103,8 +129,14 @@ Currently, checks are mostly limited to AWS/Azure/GCP resources, but there are a
 
 ## Running in CI
 
-tfsec is designed for running in a CI pipeline. For this reason it will exit with a non-zero exit code if a potential problem is detected. You may wish to run tfsec as part of your build without coloured output. You can do this using `--no-colour` (or `--no-color` for our American friends).
+tfsec is designed for running in a CI pipeline. For this reason it will
+exit with a non-zero exit code if a potential problem is detected.
+You may wish to run tfsec as part of your build without coloured
+output. You can do this using `--no-colour` (or `--no-color` for our
+American friends).
 
 ## Support for older terraform versions
 
-If you need to support versions of terraform which use HCL v1 (terraform <0.12), you can use `v0.1.3` of tfsec, though support is very limited and has fewer checks.
+If you need to support versions of terraform which use HCL v1
+(terraform <0.12), you can use `v0.1.3` of tfsec, though support is
+very limited and has fewer checks.
