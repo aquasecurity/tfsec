@@ -10,7 +10,7 @@ import (
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedSQSQueue See https://github.com/liamg/tfsec#included-checks for check info
+// AWSUnencryptedSNSTopic See https://github.com/liamg/tfsec#included-checks for check info
 const AWSUnencryptedSNSTopic scanner.CheckCode = "AWS016"
 
 func init() {
@@ -28,7 +28,7 @@ func init() {
 						block.Range(),
 					),
 				}
-			} else if kmsKeyIDAttr.Type() != cty.String || kmsKeyIDAttr.Value().AsString() == "" {
+			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.Name()),

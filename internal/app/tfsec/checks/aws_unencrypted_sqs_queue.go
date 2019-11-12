@@ -28,7 +28,7 @@ func init() {
 						block.Range(),
 					),
 				}
-			} else if kmsKeyIDAttr.Type() != cty.String || kmsKeyIDAttr.Value().AsString() == "" {
+			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", block.Name()),

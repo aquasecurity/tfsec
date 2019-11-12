@@ -126,6 +126,7 @@ there are also checks which are provider agnostic.
 | AWS014  | aws      | Launch configuration with unencrypted block device.
 | AWS015  | aws      | Unencrypted SQS queue.
 | AWS016  | aws      | Unencrypted SNS topic.
+| AWS017  | aws      | Unencrypted S3 bucket.
 | AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`.
 | AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`.
 | AZU003  | azurerm  | Unencrypted managed disk.
