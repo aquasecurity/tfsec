@@ -2,4 +2,4 @@
 
 set -eux
 
-env GO111MODULE=on go install ./cmd/tfsec
+env GO111MODULE=on go build ./cmd/tfsec
