@@ -46,13 +46,13 @@ run tfsec in a Docker container.
 
 To build:
 
-```sh
-docker build tfsec .
+```bash
+docker build -t tfsec .
 ```
 
 To run:
 
-```sh
+```bash
 docker run --rm -it -v "$(pwd):/workdir" tfsec .
 ```
 
