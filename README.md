@@ -19,7 +19,14 @@ security issues. Now with terraform v0.12+ support.
 
 ## Installation
 
-Grab the binary for your system from the [releases page](https://github.com/liamg/tfsec/releases).
+Install with brew/linuxbrew:
+
+```bash
+brew tap liamg/tfsec
+brew install liamg/tfsec/tfsec
+```
+
+You can also grab the binary for your system from the [releases page](https://github.com/liamg/tfsec/releases).
 
 Alternatively, install with Go:
 
