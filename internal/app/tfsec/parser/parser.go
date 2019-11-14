@@ -73,6 +73,9 @@ func (parser *Parser) recursivelyParseDirectory(path string) error {
 		return err
 	}
 	for _, file := range files {
+		if strings.HasPrefix(file.Name(), ".") { //ignore dotfiles (including .terraform!)
+			continue
+		}
 		fullPath := filepath.Join(path, file.Name())
 		if exists := parser.files[fullPath]; exists {
 			continue
