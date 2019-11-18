@@ -63,6 +63,10 @@ To run:
 docker run --rm -it -v "$(pwd):/workdir" tfsec .
 ```
 
+## Use as an actions
+
+If you want to run tfsec on your repository as an action, you can use the https://github.com/triat/terraform-security-scan which is using `tfsec` the same way you would in local but with an action that you described on your repository.
+
 ## Features
 
 - Checks for sensitive data inclusion across all providers
