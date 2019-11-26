@@ -107,7 +107,6 @@ func (parser *Parser) buildEvaluationContext(blocks hcl.Blocks, path string, inp
 	moduleBlocks := make(map[string]Blocks)
 
 	for i := 0; i < maxContextIterations; i++ {
-		clean := true
 
 		ctx.Variables["var"] = parser.getValuesByBlockType(ctx, blocks, "variable", inputVars)
 		ctx.Variables["local"] = parser.getValuesByBlockType(ctx, blocks, "locals", nil)
@@ -140,11 +139,7 @@ func (parser *Parser) buildEvaluationContext(blocks hcl.Blocks, path string, inp
 			ctx.Variables["module"] = cty.ObjectVal(moduleMap)
 		}
 
-		// todo check of ctx has changed since last iteration
-
-		if clean {
-			break
-		}
+		// todo check of ctx has changed since last iteration - break if not
 	}
 
 	var localBlocks []*Block
@@ -155,7 +150,7 @@ func (parser *Parser) buildEvaluationContext(blocks hcl.Blocks, path string, inp
 	for moduleName, blocks := range moduleBlocks {
 		for _, block := range blocks {
 			block.prefix = fmt.Sprintf("module.%s", moduleName)
-			localBlocks = append(localBlocks, blocks...)
+			localBlocks = append(localBlocks, block)
 		}
 	}
 
