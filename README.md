@@ -137,6 +137,7 @@ there are also checks which are provider agnostic.
 | GCP002  | google   | Unencrypted storage bucket.
 | GCP003  | google   | An inbound firewall rule allows traffic from `/0`.
 | GCP004  | google   | An outbound firewall rule allows traffic to `/0`.
+| GCP005  | google   | Legacy ABAC permissions are enabled.
 
 ## Running in CI
 
