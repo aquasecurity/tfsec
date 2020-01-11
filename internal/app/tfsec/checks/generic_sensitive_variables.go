@@ -41,6 +41,7 @@ func init() {
 							fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", block.Name()),
 							attribute.Range(),
 							attribute,
+							scanner.SeverityWarning,
 						))
 					}
 				}

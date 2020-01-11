@@ -12,4 +12,13 @@ type Result struct {
 	Range           parser.Range `json:"location"`
 	Description     string       `json:"description"`
 	RangeAnnotation string       `json:"-"`
+	Severity        Severity     `json:"severity"`
 }
+
+type Severity string
+
+const (
+	SeverityError   Severity = "ERROR"
+	SeverityWarning Severity = "WARNING"
+	SeverityInfo    Severity = "INFO"
+)

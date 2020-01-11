@@ -27,6 +27,7 @@ func init() {
 							fmt.Sprintf("Resource '%s' is exposed publicly.", block.Name()),
 							publicAttr.Range(),
 							publicAttr,
+							scanner.SeverityWarning,
 						),
 					}
 				}

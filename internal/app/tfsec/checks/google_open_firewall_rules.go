@@ -34,6 +34,7 @@ func init() {
 							check.NewResult(
 								fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", block.Name()),
 								sourceRanges.Range(),
+								scanner.SeverityWarning,
 							),
 						}
 					}
@@ -63,6 +64,7 @@ func init() {
 							check.NewResult(
 								fmt.Sprintf("Resource '%s' defines a fully open outbound firewall rule.", block.Name()),
 								destinationRanges.Range(),
+								scanner.SeverityWarning,
 							),
 						}
 					}

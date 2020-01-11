@@ -29,6 +29,7 @@ func init() {
 							block.Name(),
 						),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}
@@ -43,6 +44,7 @@ func init() {
 						),
 						enabledAttr.Range(),
 						enabledAttr,
+						scanner.SeverityError,
 					),
 				}
 			}

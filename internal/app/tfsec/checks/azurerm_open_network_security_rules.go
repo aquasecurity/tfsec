@@ -40,6 +40,7 @@ func init() {
 							),
 							prefixAttr.Range(),
 							prefixAttr,
+							scanner.SeverityWarning,
 						),
 					}
 				}
@@ -55,6 +56,7 @@ func init() {
 								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
 								prefixesAttr.Range(),
 								prefixesAttr,
+								scanner.SeverityWarning,
 							),
 						)
 					}
@@ -88,6 +90,7 @@ func init() {
 							),
 							prefixAttr.Range(),
 							prefixAttr,
+							scanner.SeverityWarning,
 						),
 					}
 				}
@@ -103,6 +106,7 @@ func init() {
 								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
 								prefixesAttr.Range(),
 								prefixesAttr,
+								scanner.SeverityWarning,
 							),
 						)
 					}

@@ -38,7 +38,7 @@ func FormatCheckStyle(results []scanner.Result) error {
 			checkstyleResult{
 				Rule:     string(result.RuleID),
 				Line:     result.Range.StartLine,
-				Severity: "warn",
+				Severity: string(result.Severity),
 				Message:  result.Description,
 				Link:     result.Link,
 			},

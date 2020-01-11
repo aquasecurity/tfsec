@@ -22,6 +22,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not have logging enabled.", block.Name()),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}

@@ -27,6 +27,7 @@ func init() {
 							fmt.Sprintf("Resource '%s' has a public IP address associated.", block.Name()),
 							publicAttr.Range(),
 							publicAttr,
+							scanner.SeverityError,
 						),
 					}
 				}

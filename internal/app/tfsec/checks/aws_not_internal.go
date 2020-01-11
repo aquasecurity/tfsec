@@ -24,6 +24,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' is exposed publicly.", block.Name()),
 						block.Range(),
+						scanner.SeverityWarning,
 					),
 				}
 			} else if internalAttr.Type() == cty.Bool && internalAttr.Value().False() {
@@ -32,6 +33,7 @@ func init() {
 						fmt.Sprintf("Resource '%s' is exposed publicly.", block.Name()),
 						internalAttr.Range(),
 						internalAttr,
+						scanner.SeverityWarning,
 					),
 				}
 			}

@@ -37,6 +37,7 @@ func init() {
 								check.NewResult(
 									fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.Name()),
 									cidrBlocksAttr.Range(),
+									scanner.SeverityWarning,
 								),
 							)
 						}
@@ -70,6 +71,7 @@ func init() {
 									fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.Name()),
 									cidrBlocksAttr.Range(),
 									cidrBlocksAttr,
+									scanner.SeverityWarning,
 								),
 							)
 						}

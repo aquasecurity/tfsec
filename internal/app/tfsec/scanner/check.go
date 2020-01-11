@@ -68,18 +68,19 @@ func (check *Check) IsRequiredForBlock(block *parser.Block) bool {
 }
 
 // NewResult creates a new Result, containing the given description and range
-func (check *Check) NewResult(description string, r parser.Range) Result {
+func (check *Check) NewResult(description string, r parser.Range, severity Severity) Result {
 	return Result{
 		RuleID:      check.Code,
 		Description: description,
 		Range:       r,
+		Severity:    severity,
 	}
 }
 
-func (check *Check) NewResultWithValueAnnotation(description string, r parser.Range, attr *parser.Attribute) Result {
+func (check *Check) NewResultWithValueAnnotation(description string, r parser.Range, attr *parser.Attribute, severity Severity) Result {
 
 	if attr == nil || attr.IsLiteral() {
-		return check.NewResult(description, r)
+		return check.NewResult(description, r, severity)
 	}
 
 	var raw interface{}
@@ -97,7 +98,7 @@ func (check *Check) NewResultWithValueAnnotation(description string, r parser.Ra
 		raw, _ = attr.Value().AsBigFloat().Float64()
 		typeStr = "number"
 	default:
-		return check.NewResult(description, r)
+		return check.NewResult(description, r, severity)
 	}
 
 	return Result{

@@ -29,6 +29,7 @@ func init() {
 							fmt.Sprintf("Local '%s' includes a potentially sensitive value which is defined within the project.", block.Name()),
 							attribute.Range(),
 							attribute,
+							scanner.SeverityWarning,
 						))
 					}
 				}

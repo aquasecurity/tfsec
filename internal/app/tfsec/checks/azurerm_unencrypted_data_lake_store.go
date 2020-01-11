@@ -29,6 +29,7 @@ func init() {
 						),
 						encryptionStateAttr.Range(),
 						encryptionStateAttr,
+						scanner.SeverityError,
 					),
 				}
 			}

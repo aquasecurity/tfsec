@@ -24,6 +24,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", block.Name()),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}
@@ -34,6 +35,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", block.Name()),
 						encryptionBlock.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}
@@ -44,6 +46,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", block.Name()),
 						ruleBlock.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}
@@ -53,6 +56,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", block.Name()),
 						applyBlock.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}

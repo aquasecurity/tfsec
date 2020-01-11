@@ -25,6 +25,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted storage bucket.", block.Name()),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}
@@ -34,6 +35,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted storage bucket. You should specify default_kms_key_name to enable encryption.", block.Name()),
 						encryptionBlock.Range(),
+						scanner.SeverityError,
 					),
 				}
 			} else if kmsAttr.Type() != cty.String || kmsAttr.Value().AsString() == "" {
@@ -42,6 +44,7 @@ func init() {
 						fmt.Sprintf("Resource '%s' defines an unencrypted storage bucket. The specified default_kms_key_name is empty.", block.Name()),
 						kmsAttr.Range(),
 						kmsAttr,
+						scanner.SeverityError,
 					),
 				}
 			}

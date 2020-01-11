@@ -21,6 +21,7 @@ func init() {
 				check.NewResult(
 					fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", block.Name()),
 					block.Range(),
+					scanner.SeverityError,
 				),
 			}
 		},

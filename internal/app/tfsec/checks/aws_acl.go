@@ -27,6 +27,7 @@ func init() {
 							fmt.Sprintf("Resource '%s' has an ACL which allows public read access.", block.Name()),
 							attr.Range(),
 							attr,
+							scanner.SeverityWarning,
 						),
 					}
 				}

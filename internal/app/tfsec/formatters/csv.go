@@ -12,7 +12,7 @@ import (
 func FormatCSV(results []scanner.Result) error {
 
 	records := [][]string{
-		{"file", "start_line", "end_line", "rule_id", "description", "link"},
+		{"file", "start_line", "end_line", "rule_id", "severity", "description", "link"},
 	}
 
 	for _, result := range results {
@@ -21,6 +21,7 @@ func FormatCSV(results []scanner.Result) error {
 			strconv.Itoa(result.Range.StartLine),
 			strconv.Itoa(result.Range.EndLine),
 			string(result.RuleID),
+			string(result.Severity),
 			result.Description,
 			result.Link,
 		})

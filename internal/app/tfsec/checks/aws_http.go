@@ -40,6 +40,7 @@ func init() {
 						fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.Name()),
 						reportRange,
 						protocolAttr,
+						scanner.SeverityError,
 					),
 				}
 			}

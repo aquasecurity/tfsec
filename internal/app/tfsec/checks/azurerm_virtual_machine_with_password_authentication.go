@@ -31,6 +31,7 @@ func init() {
 							),
 							passwordAuthDisabledAttr.Range(),
 							passwordAuthDisabledAttr,
+							scanner.SeverityError,
 						),
 					}
 				}

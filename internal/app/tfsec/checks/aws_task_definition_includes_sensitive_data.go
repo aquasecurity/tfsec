@@ -46,6 +46,7 @@ func init() {
 								fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", block.Name(), env.Name),
 								definitionsAttr.Range(),
 								definitionsAttr,
+								scanner.SeverityWarning,
 							))
 						}
 					}

@@ -35,6 +35,7 @@ func init() {
 								fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", block.Name()),
 								sslPolicyAttr.Range(),
 								sslPolicyAttr,
+								scanner.SeverityError,
 							),
 						}
 					}
