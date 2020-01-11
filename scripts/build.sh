@@ -2,7 +2,7 @@
 BINARY=tfsec
 TAG=${TRAVIS_TAG:-development}
 GO111MODULE=on
-CGO_ENABLED=0
+export CGO_ENABLED=0
 mkdir -p bin/darwin
 GOOS=darwin GOARCH=amd64 go build -o bin/darwin/${BINARY}-darwin-amd64 -ldflags "-X github.com/liamg/tfsec/version.Version=${TAG}" ./cmd/tfsec/
 mkdir -p bin/linux
