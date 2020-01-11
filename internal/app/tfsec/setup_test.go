@@ -22,7 +22,7 @@ func TestMain(t *testing.M) {
 		RequiredLabels: []string{"problem"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			return []scanner.Result{
-				check.NewResult("example problem", block.Range()),
+				check.NewResult("example problem", block.Range(), scanner.SeverityError),
 			}
 		},
 	})
