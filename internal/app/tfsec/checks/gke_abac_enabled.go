@@ -8,7 +8,7 @@ import (
 )
 
 // GkeAbacEnabled See https://github.com/liamg/tfsec#included-checks for check info
-const GkeAbacEnabled scanner.CheckCode = "GCP005"
+const GkeAbacEnabled scanner.RuleID = "GCP005"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -23,6 +23,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#leave_abac_disabled_default_for_110", block.Name()),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}

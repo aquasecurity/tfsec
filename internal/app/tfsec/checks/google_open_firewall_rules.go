@@ -10,10 +10,10 @@ import (
 )
 
 // GoogleOpenInboundFirewallRule See https://github.com/liamg/tfsec#included-checks for check info
-const GoogleOpenInboundFirewallRule scanner.CheckCode = "GCP003"
+const GoogleOpenInboundFirewallRule scanner.RuleID = "GCP003"
 
 // GoogleOpenOutboundFirewallRule See https://github.com/liamg/tfsec#included-checks for check info
-const GoogleOpenOutboundFirewallRule scanner.CheckCode = "GCP004"
+const GoogleOpenOutboundFirewallRule scanner.RuleID = "GCP004"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -34,6 +34,7 @@ func init() {
 							check.NewResult(
 								fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", block.Name()),
 								sourceRanges.Range(),
+								scanner.SeverityWarning,
 							),
 						}
 					}
@@ -63,6 +64,7 @@ func init() {
 							check.NewResult(
 								fmt.Sprintf("Resource '%s' defines a fully open outbound firewall rule.", block.Name()),
 								destinationRanges.Range(),
+								scanner.SeverityWarning,
 							),
 						}
 					}

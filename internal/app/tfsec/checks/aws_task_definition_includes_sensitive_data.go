@@ -14,7 +14,7 @@ import (
 )
 
 // AWSTaskDefinitionWithSensitiveEnvironmentVariables See https://github.com/liamg/tfsec#included-checks for check info
-const AWSTaskDefinitionWithSensitiveEnvironmentVariables scanner.CheckCode = "AWS013"
+const AWSTaskDefinitionWithSensitiveEnvironmentVariables scanner.RuleID = "AWS013"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -46,6 +46,7 @@ func init() {
 								fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", block.Name(), env.Name),
 								definitionsAttr.Range(),
 								definitionsAttr,
+								scanner.SeverityWarning,
 							))
 						}
 					}

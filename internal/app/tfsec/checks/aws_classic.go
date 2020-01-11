@@ -9,7 +9,7 @@ import (
 )
 
 // AWSClassicUsage See https://github.com/liamg/tfsec#included-checks for check info
-const AWSClassicUsage scanner.CheckCode = "AWS003"
+const AWSClassicUsage scanner.RuleID = "AWS003"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -21,6 +21,7 @@ func init() {
 				check.NewResult(
 					fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", block.Name()),
 					block.Range(),
+					scanner.SeverityError,
 				),
 			}
 		},

@@ -36,10 +36,11 @@ func FormatCheckStyle(results []scanner.Result) error {
 		fileResults := append(
 			files[result.Range.Filename],
 			checkstyleResult{
-				Rule:     string(result.Code),
+				Rule:     string(result.RuleID),
 				Line:     result.Range.StartLine,
-				Severity: "warn",
+				Severity: string(result.Severity),
 				Message:  result.Description,
+				Link:     result.Link,
 			},
 		)
 		files[result.Range.Filename] = fileResults

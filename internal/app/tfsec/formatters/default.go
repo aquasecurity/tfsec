@@ -16,15 +16,28 @@ func FormatDefault(results []scanner.Result) error {
 		terminal.PrintSuccessf("\nNo problems detected!\n")
 	}
 
+	var severity string
+
 	terminal.PrintErrorf("\n%d potential problems detected:\n\n", len(results))
 	for i, result := range results {
 		terminal.PrintErrorf("<underline>Problem %d</underline>\n", i+1)
+
+		switch result.Severity {
+		case scanner.SeverityError:
+			severity = tml.Sprintf("<red>%s</red>", result.Severity)
+		case scanner.SeverityWarning:
+			severity = tml.Sprintf("<yellow>%s</yellow>", result.Severity)
+		default:
+			severity = tml.Sprintf("<white>%s</white>", result.Severity)
+		}
+
 		_ = tml.Printf(`
-  <blue>[</blue>%s<blue>]</blue> %s
+  <blue>[</blue>%s<blue>]</blue><blue>[</blue>%s<blue>]</blue> %s
   <blue>%s</blue>
 
-`, result.Code, result.Description, result.Range.String())
+`, result.RuleID, severity, result.Description, result.Range.String())
 		highlightCode(result)
+		tml.Printf("  <blue>See %s for more information.</blue>\n\n", result.Link)
 	}
 
 	return nil

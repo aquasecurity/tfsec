@@ -12,10 +12,10 @@ import (
 )
 
 // AzureOpenInboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
-const AzureOpenInboundNetworkSecurityGroupRule scanner.CheckCode = "AZU001"
+const AzureOpenInboundNetworkSecurityGroupRule scanner.RuleID = "AZU001"
 
 // AzureOpenOutboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
-const AzureOpenOutboundNetworkSecurityGroupRule scanner.CheckCode = "AZU002"
+const AzureOpenOutboundNetworkSecurityGroupRule scanner.RuleID = "AZU002"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -40,6 +40,7 @@ func init() {
 							),
 							prefixAttr.Range(),
 							prefixAttr,
+							scanner.SeverityWarning,
 						),
 					}
 				}
@@ -55,6 +56,7 @@ func init() {
 								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
 								prefixesAttr.Range(),
 								prefixesAttr,
+								scanner.SeverityWarning,
 							),
 						)
 					}
@@ -88,6 +90,7 @@ func init() {
 							),
 							prefixAttr.Range(),
 							prefixAttr,
+							scanner.SeverityWarning,
 						),
 					}
 				}
@@ -103,6 +106,7 @@ func init() {
 								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
 								prefixesAttr.Range(),
 								prefixesAttr,
+								scanner.SeverityWarning,
 							),
 						)
 					}

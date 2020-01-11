@@ -12,7 +12,7 @@ import (
 )
 
 // GenericSensitiveAttributes See https://github.com/liamg/tfsec#included-checks for check info
-const GenericSensitiveAttributes scanner.CheckCode = "GEN003"
+const GenericSensitiveAttributes scanner.RuleID = "GEN003"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -31,6 +31,7 @@ func init() {
 							fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", block.Name()),
 							attribute.Range(),
 							attribute,
+							scanner.SeverityWarning,
 						))
 					}
 

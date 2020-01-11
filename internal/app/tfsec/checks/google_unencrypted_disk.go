@@ -8,7 +8,7 @@ import (
 )
 
 // GoogleUnencryptedDisk See https://github.com/liamg/tfsec#included-checks for check info
-const GoogleUnencryptedDisk scanner.CheckCode = "GCP001"
+const GoogleUnencryptedDisk scanner.RuleID = "GCP001"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -23,6 +23,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted disk.", block.Name()),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}
@@ -32,6 +33,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted disk. You should specify raw_key or kms_key_self_link.", block.Name()),
 						keyBlock.Range(),
+						scanner.SeverityError,
 					),
 				}
 

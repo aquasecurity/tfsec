@@ -11,7 +11,7 @@ import (
 )
 
 // AWSPubliclyAccessibleResource See https://github.com/liamg/tfsec#included-checks for check info
-const AWSPubliclyAccessibleResource scanner.CheckCode = "AWS011"
+const AWSPubliclyAccessibleResource scanner.RuleID = "AWS011"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -27,6 +27,7 @@ func init() {
 							fmt.Sprintf("Resource '%s' is exposed publicly.", block.Name()),
 							publicAttr.Range(),
 							publicAttr,
+							scanner.SeverityWarning,
 						),
 					}
 				}
