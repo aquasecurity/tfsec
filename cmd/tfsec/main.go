@@ -76,7 +76,10 @@ var rootCmd = &cobra.Command{
 		}
 
 		results := scanner.New().Scan(blocks)
-		formatter(results)
+		if err := formatter(results); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 
 		if len(results) == 0 {
 			os.Exit(0)
@@ -86,10 +89,16 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func getFormatter() (func([]scanner.Result), error) {
+func getFormatter() (func([]scanner.Result) error, error) {
 	switch format {
 	case "", "default":
 		return formatters.FormatDefault, nil
+	case "json":
+		return formatters.FormatJSON, nil
+	case "csv":
+		return formatters.FormatCSV, nil
+	case "checkstyle":
+		return formatters.FormatCheckStyle, nil
 	default:
 		return nil, fmt.Errorf("invalid format specified: '%s'", format)
 	}

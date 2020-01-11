@@ -147,6 +147,11 @@ You may wish to run tfsec as part of your build without coloured
 output. You can do this using `--no-colour` (or `--no-color` for our
 American friends).
 
+## Output options
+
+You can output tfsec results as JSON, CSV, Checkstyle or just plain old human readable format. Use the `--format` flag 
+to specify your desired format.
+
 ## Support for older terraform versions
 
 If you need to support versions of terraform which use HCL v1

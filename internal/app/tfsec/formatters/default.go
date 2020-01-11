@@ -10,7 +10,7 @@ import (
 	"github.com/liamg/tml"
 )
 
-func FormatDefault(results []scanner.Result) {
+func FormatDefault(results []scanner.Result) error {
 
 	if len(results) == 0 {
 		terminal.PrintSuccessf("\nNo problems detected!\n")
@@ -26,6 +26,8 @@ func FormatDefault(results []scanner.Result) {
 `, result.Code, result.Description, result.Range.String())
 		highlightCode(result)
 	}
+
+	return nil
 
 }
 
