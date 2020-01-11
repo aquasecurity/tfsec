@@ -49,6 +49,6 @@ func Test_IgnoreSpecific(t *testing.T) {
 resource "bad" "my-bad" {} //tfsec:ignore:ABC123
 `)
 	require.Len(t, results, 1)
-	assert.Equal(t, results[0].Code, scanner.CheckCode("DEF456"))
+	assert.Equal(t, results[0].RuleID, scanner.RuleID("DEF456"))
 
 }

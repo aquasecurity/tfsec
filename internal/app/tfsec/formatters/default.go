@@ -23,8 +23,9 @@ func FormatDefault(results []scanner.Result) error {
   <blue>[</blue>%s<blue>]</blue> %s
   <blue>%s</blue>
 
-`, result.Code, result.Description, result.Range.String())
+`, result.RuleID, result.Description, result.Range.String())
 		highlightCode(result)
+		tml.Printf("  <blue>See %s for more information.</blue>\n\n", result.Link)
 	}
 
 	return nil

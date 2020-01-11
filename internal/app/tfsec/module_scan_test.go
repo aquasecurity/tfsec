@@ -13,8 +13,8 @@ func Test_ProblemInModule(t *testing.T) {
 		name                  string
 		source                string
 		moduleSource          string
-		mustIncludeResultCode scanner.CheckCode
-		mustExcludeResultCode scanner.CheckCode
+		mustIncludeResultCode scanner.RuleID
+		mustExcludeResultCode scanner.RuleID
 	}{
 		{
 			name: "check problem in module",

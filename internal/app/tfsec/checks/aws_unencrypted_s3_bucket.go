@@ -9,7 +9,7 @@ import (
 )
 
 // AWSUnencryptedS3Bucket See https://github.com/liamg/tfsec#included-checks for check info
-const AWSUnencryptedS3Bucket scanner.CheckCode = "AWS017"
+const AWSUnencryptedS3Bucket scanner.RuleID = "AWS017"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

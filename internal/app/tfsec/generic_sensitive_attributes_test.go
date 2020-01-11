@@ -13,8 +13,8 @@ func Test_AWSSensitiveAttributes(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.CheckCode
-		mustExcludeResultCode scanner.CheckCode
+		mustIncludeResultCode scanner.RuleID
+		mustExcludeResultCode scanner.RuleID
 	}{
 		{
 			name: "check sensitive attribute",

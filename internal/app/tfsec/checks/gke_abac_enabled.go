@@ -8,7 +8,7 @@ import (
 )
 
 // GkeAbacEnabled See https://github.com/liamg/tfsec#included-checks for check info
-const GkeAbacEnabled scanner.CheckCode = "GCP005"
+const GkeAbacEnabled scanner.RuleID = "GCP005"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

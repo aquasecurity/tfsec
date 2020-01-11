@@ -13,8 +13,8 @@ func Test_AWSOpenSecurityGroupRule(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.CheckCode
-		mustExcludeResultCode scanner.CheckCode
+		mustIncludeResultCode scanner.RuleID
+		mustExcludeResultCode scanner.RuleID
 	}{
 		{
 			name: "check aws_security_group_rule ingress on 0.0.0.0/0",

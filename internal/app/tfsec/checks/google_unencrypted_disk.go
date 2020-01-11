@@ -8,7 +8,7 @@ import (
 )
 
 // GoogleUnencryptedDisk See https://github.com/liamg/tfsec#included-checks for check info
-const GoogleUnencryptedDisk scanner.CheckCode = "GCP001"
+const GoogleUnencryptedDisk scanner.RuleID = "GCP001"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

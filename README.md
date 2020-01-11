@@ -73,7 +73,7 @@ docker run --rm -it -v "$(pwd):/workdir" tfsec .
 ## Ignoring Warnings
 
 You may wish to ignore some warnings. If you'd like to do so, you can
-simply add a comment containing `tfsec:ignore:<CODE>` to the offending
+simply add a comment containing `tfsec:ignore:<RULE>` to the offending
 line in your templates. If the problem refers to a block of code, such
 as a multiline string, you can add the comment on the line above the
 block, by itself.
@@ -105,7 +105,7 @@ tfsec output for the line number of the discovered problem.
 Currently, checks are mostly limited to AWS/Azure/GCP resources, but
 there are also checks which are provider agnostic.
 
-| Code    | Provider | Description |
+| Rule    | Provider | Description |
 |---------|----------|-------------|
 | GEN001  | *        | Potentially sensitive data stored in "default" value of variable.
 | GEN002  | *        | Potentially sensitive data stored in local value.

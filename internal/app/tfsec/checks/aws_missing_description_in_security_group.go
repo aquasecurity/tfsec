@@ -10,7 +10,7 @@ import (
 )
 
 // AWSNoDescriptionInSecurityGroup See https://github.com/liamg/tfsec#included-checks for check info
-const AWSNoDescriptionInSecurityGroup scanner.CheckCode = "AWS018"
+const AWSNoDescriptionInSecurityGroup scanner.RuleID = "AWS018"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

@@ -11,7 +11,7 @@ import (
 )
 
 // AWSExternallyExposedLoadBalancer See https://github.com/liamg/tfsec#included-checks for check info
-const AWSExternallyExposedLoadBalancer scanner.CheckCode = "AWS005"
+const AWSExternallyExposedLoadBalancer scanner.RuleID = "AWS005"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

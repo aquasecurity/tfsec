@@ -11,7 +11,7 @@ import (
 )
 
 // AWSLaunchConfigurationWithUnencryptedBlockDevice See https://github.com/liamg/tfsec#included-checks for check info
-const AWSLaunchConfigurationWithUnencryptedBlockDevice scanner.CheckCode = "AWS014"
+const AWSLaunchConfigurationWithUnencryptedBlockDevice scanner.RuleID = "AWS014"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

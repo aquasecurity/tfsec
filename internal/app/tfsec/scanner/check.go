@@ -8,13 +8,13 @@ import (
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 )
 
-// CheckCode is a unique identifier for a check
-type CheckCode string
+// RuleID is a unique identifier for a check
+type RuleID string
 
 // Check is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.
 // "resource", and the labels to run on e.g. "aws_s3_bucket".
 type Check struct {
-	Code           CheckCode
+	Code           RuleID
 	RequiredTypes  []string
 	RequiredLabels []string
 	CheckFunc      func(*Check, *parser.Block, *Context) []Result
@@ -70,7 +70,7 @@ func (check *Check) IsRequiredForBlock(block *parser.Block) bool {
 // NewResult creates a new Result, containing the given description and range
 func (check *Check) NewResult(description string, r parser.Range) Result {
 	return Result{
-		Code:        check.Code,
+		RuleID:      check.Code,
 		Description: description,
 		Range:       r,
 	}
@@ -101,7 +101,7 @@ func (check *Check) NewResultWithValueAnnotation(description string, r parser.Ra
 	}
 
 	return Result{
-		Code:            check.Code,
+		RuleID:          check.Code,
 		Description:     description,
 		Range:           r,
 		RangeAnnotation: fmt.Sprintf("[%s] %#v", typeStr, raw),

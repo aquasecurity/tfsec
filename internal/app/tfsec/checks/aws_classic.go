@@ -9,7 +9,7 @@ import (
 )
 
 // AWSClassicUsage See https://github.com/liamg/tfsec#included-checks for check info
-const AWSClassicUsage scanner.CheckCode = "AWS003"
+const AWSClassicUsage scanner.RuleID = "AWS003"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
