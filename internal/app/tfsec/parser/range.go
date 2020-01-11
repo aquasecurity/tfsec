@@ -4,9 +4,9 @@ import "fmt"
 
 // Range describes an area of code, including the filename it is present in and the lin numbers the code occupies
 type Range struct {
-	Filename  string
-	StartLine int
-	EndLine   int
+	Filename  string `json:"filename"`
+	StartLine int    `json:"start_line"`
+	EndLine   int    `json:"end_line"`
 }
 
 // String creates a human-readable summary of the range

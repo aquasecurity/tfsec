@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
+
+	"github.com/liamg/tfsec/internal/app/tfsec/formatters"
 
 	"github.com/liamg/tml"
 
-	"github.com/liamg/clinch/terminal"
 	_ "github.com/liamg/tfsec/internal/app/tfsec/checks"
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
@@ -19,11 +18,13 @@ import (
 
 var showVersion = false
 var disableColours = false
+var format string
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
+	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle")
 }
 
 func main() {
@@ -62,6 +63,12 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		formatter, err := getFormatter()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
 		blocks, err := parser.New().ParseDirectory(dir)
 		if err != nil {
 			fmt.Println(err)
@@ -69,58 +76,30 @@ var rootCmd = &cobra.Command{
 		}
 
 		results := scanner.New().Scan(blocks)
-		if len(results) == 0 {
-			terminal.PrintSuccessf("\nNo problems detected!\n")
-			os.Exit(0)
+		if err := formatter(results); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
 		}
 
-		terminal.PrintErrorf("\n%d potential problems detected:\n\n", len(results))
-		for i, result := range results {
-			terminal.PrintErrorf("<underline>Problem %d</underline>\n", i+1)
-			_ = tml.Printf(`
-  <blue>[</blue>%s<blue>]</blue> %s
-  <blue>%s</blue>
-
-`, result.Code, result.Description, result.Range.String())
-			highlightCode(result)
+		if len(results) == 0 {
+			os.Exit(0)
 		}
 
 		os.Exit(1)
 	},
 }
 
-// highlight the lines of code which caused a problem, if available
-func highlightCode(result scanner.Result) {
-
-	data, err := ioutil.ReadFile(result.Range.Filename)
-	if err != nil {
-		return
+func getFormatter() (func([]scanner.Result) error, error) {
+	switch format {
+	case "", "default":
+		return formatters.FormatDefault, nil
+	case "json":
+		return formatters.FormatJSON, nil
+	case "csv":
+		return formatters.FormatCSV, nil
+	case "checkstyle":
+		return formatters.FormatCheckStyle, nil
+	default:
+		return nil, fmt.Errorf("invalid format specified: '%s'", format)
 	}
-
-	lines := append([]string{""}, strings.Split(string(data), "\n")...)
-
-	start := result.Range.StartLine - 3
-	if start <= 0 {
-		start = 1
-	}
-	end := result.Range.EndLine + 3
-	if end >= len(lines) {
-		end = len(lines) - 1
-	}
-
-	for lineNo := start; lineNo <= end; lineNo++ {
-		_ = tml.Printf("  <blue>% 6d</blue> | ", lineNo)
-		if lineNo >= result.Range.StartLine && lineNo <= result.Range.EndLine {
-			if lineNo == result.Range.StartLine && result.RangeAnnotation != "" {
-				_ = tml.Printf("<bold><red>%s</red>    <blue>%s</blue></bold>\n", lines[lineNo], result.RangeAnnotation)
-			} else {
-				_ = tml.Printf("<bold><red>%s</red></bold>\n", lines[lineNo])
-			}
-		} else {
-			_ = tml.Printf("<yellow>%s</yellow>\n", lines[lineNo])
-		}
-	}
-
-	fmt.Println("")
-
 }
