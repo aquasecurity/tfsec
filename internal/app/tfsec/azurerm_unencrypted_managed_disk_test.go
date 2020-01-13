@@ -13,8 +13,8 @@ func Test_AzureUnencryptedManagedDisk(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.CheckCode
-		mustExcludeResultCode scanner.CheckCode
+		mustIncludeResultCode scanner.RuleID
+		mustExcludeResultCode scanner.RuleID
 	}{
 		{
 			name: "check azurerm_managed_disk with no encryption_settings",

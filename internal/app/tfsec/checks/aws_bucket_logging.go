@@ -9,7 +9,7 @@ import (
 )
 
 // AWSNoBucketLogging See https://github.com/liamg/tfsec#included-checks for check info
-const AWSNoBucketLogging scanner.CheckCode = "AWS002"
+const AWSNoBucketLogging scanner.RuleID = "AWS002"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -22,6 +22,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not have logging enabled.", block.Name()),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}

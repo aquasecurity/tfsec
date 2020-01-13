@@ -11,7 +11,7 @@ import (
 )
 
 // AWSBadBucketACL See https://github.com/liamg/tfsec#included-checks for check info
-const AWSBadBucketACL scanner.CheckCode = "AWS001"
+const AWSBadBucketACL scanner.RuleID = "AWS001"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -27,6 +27,7 @@ func init() {
 							fmt.Sprintf("Resource '%s' has an ACL which allows public read access.", block.Name()),
 							attr.Range(),
 							attr,
+							scanner.SeverityWarning,
 						),
 					}
 				}

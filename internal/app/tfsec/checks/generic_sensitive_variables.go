@@ -12,7 +12,7 @@ import (
 )
 
 // GenericSensitiveVariables See https://github.com/liamg/tfsec#included-checks for check info
-const GenericSensitiveVariables scanner.CheckCode = "GEN001"
+const GenericSensitiveVariables scanner.RuleID = "GEN001"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -41,6 +41,7 @@ func init() {
 							fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", block.Name()),
 							attribute.Range(),
 							attribute,
+							scanner.SeverityWarning,
 						))
 					}
 				}

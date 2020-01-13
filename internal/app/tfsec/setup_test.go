@@ -13,7 +13,7 @@ import (
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
 )
 
-const exampleCheckCode scanner.CheckCode = "EXA001"
+const exampleCheckCode scanner.RuleID = "EXA001"
 
 func TestMain(t *testing.M) {
 
@@ -22,7 +22,7 @@ func TestMain(t *testing.M) {
 		RequiredLabels: []string{"problem"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			return []scanner.Result{
-				check.NewResult("example problem", block.Range()),
+				check.NewResult("example problem", block.Range(), scanner.SeverityError),
 			}
 		},
 	})
@@ -56,22 +56,22 @@ func createTestFile(filename, contents string) string {
 	return path
 }
 
-func assertCheckCode(t *testing.T, includeCode scanner.CheckCode, excludeCode scanner.CheckCode, results []scanner.Result) {
+func assertCheckCode(t *testing.T, includeCode scanner.RuleID, excludeCode scanner.RuleID, results []scanner.Result) {
 
 	var foundInclude bool
 	var foundExclude bool
 
 	for _, result := range results {
-		if result.Code == excludeCode {
+		if result.RuleID == excludeCode {
 			foundExclude = true
 		}
-		if result.Code == includeCode {
+		if result.RuleID == includeCode {
 			foundInclude = true
 		}
 	}
 
 	assert.False(t, foundExclude, fmt.Sprintf("result with code '%s' was found but should not have been", excludeCode))
-	if includeCode != scanner.CheckCode("") {
+	if includeCode != scanner.RuleID("") {
 		assert.True(t, foundInclude, fmt.Sprintf("result with code '%s' was not found but should have been", includeCode))
 	}
 }
