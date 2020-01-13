@@ -29,7 +29,7 @@ func init() {
 				}
 			}
 
-			if keyRotationAttr.Type() == cty.String && keyRotationAttr.Value().AsString() != "true" {
+			if keyRotationAttr.Type() == cty.Bool && keyRotationAttr.Value().False() {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.Name()),

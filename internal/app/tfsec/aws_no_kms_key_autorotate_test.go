@@ -24,7 +24,7 @@ func Test_AWSNoKmsKeyAutoRotate(t *testing.T) {
 			name: "check KMS Key with auto-rotation disabled",
 			source: `
 resource "aws_kms_key" "kms_key" {
-	enable_key_rotation = "false"
+	enable_key_rotation = false
 }`,
 			mustIncludeResultCode: checks.AWSNoKMSAutoRotate,
 		},
@@ -32,7 +32,7 @@ resource "aws_kms_key" "kms_key" {
 			name: "check KMS Key with auto-rotation enabled",
 			source: `
 resource "aws_kms_key" "kms_key" {
-	enable_key_rotation = "true"
+	enable_key_rotation = true
 }`,
 			mustExcludeResultCode: checks.AWSNoKMSAutoRotate,
 		},
