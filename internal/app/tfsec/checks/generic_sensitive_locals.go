@@ -12,7 +12,7 @@ import (
 )
 
 // GenericSensitiveLocals See https://github.com/liamg/tfsec#included-checks for check info
-const GenericSensitiveLocals scanner.CheckCode = "GEN002"
+const GenericSensitiveLocals scanner.RuleID = "GEN002"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -29,6 +29,7 @@ func init() {
 							fmt.Sprintf("Local '%s' includes a potentially sensitive value which is defined within the project.", block.Name()),
 							attribute.Range(),
 							attribute,
+							scanner.SeverityWarning,
 						))
 					}
 				}

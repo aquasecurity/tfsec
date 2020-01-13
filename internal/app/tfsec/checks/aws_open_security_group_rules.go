@@ -12,10 +12,10 @@ import (
 )
 
 // AWSOpenIngressSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
-const AWSOpenIngressSecurityGroupRule scanner.CheckCode = "AWS006"
+const AWSOpenIngressSecurityGroupRule scanner.RuleID = "AWS006"
 
 // AWSOpenEgressSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
-const AWSOpenEgressSecurityGroupRule scanner.CheckCode = "AWS007"
+const AWSOpenEgressSecurityGroupRule scanner.RuleID = "AWS007"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -45,6 +45,7 @@ func init() {
 							check.NewResult(
 								fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", block.Name()),
 								cidrBlocksAttr.Range(),
+								scanner.SeverityWarning,
 							),
 						}
 					}
@@ -84,6 +85,7 @@ func init() {
 								fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.Name()),
 								cidrBlocksAttr.Range(),
 								cidrBlocksAttr,
+								scanner.SeverityWarning,
 							),
 						}
 					}

@@ -11,7 +11,7 @@ import (
 )
 
 // AWSOutdatedSSLPolicy See https://github.com/liamg/tfsec#included-checks for check info
-const AWSOutdatedSSLPolicy scanner.CheckCode = "AWS010"
+const AWSOutdatedSSLPolicy scanner.RuleID = "AWS010"
 
 var outdatedSSLPolicies = []string{
 	"ELBSecurityPolicy-2015-05",
@@ -35,6 +35,7 @@ func init() {
 								fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", block.Name()),
 								sslPolicyAttr.Range(),
 								sslPolicyAttr,
+								scanner.SeverityError,
 							),
 						}
 					}

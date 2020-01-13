@@ -11,7 +11,7 @@ import (
 )
 
 // AzureUnencryptedManagedDisk See https://github.com/liamg/tfsec#included-checks for check info
-const AzureUnencryptedManagedDisk scanner.CheckCode = "AZU003"
+const AzureUnencryptedManagedDisk scanner.RuleID = "AZU003"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -29,6 +29,7 @@ func init() {
 							block.Name(),
 						),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}
@@ -43,6 +44,7 @@ func init() {
 						),
 						enabledAttr.Range(),
 						enabledAttr,
+						scanner.SeverityError,
 					),
 				}
 			}

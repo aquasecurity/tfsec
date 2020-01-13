@@ -13,8 +13,8 @@ func Test_GoogleOpenInboundFirewallRule(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.CheckCode
-		mustExcludeResultCode scanner.CheckCode
+		mustIncludeResultCode scanner.RuleID
+		mustExcludeResultCode scanner.RuleID
 	}{
 		{
 			name: "check google_compute_firewall ingress on 0.0.0.0/0",
@@ -48,8 +48,8 @@ func Test_GoogleOpenOutboundFirewallRule(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.CheckCode
-		mustExcludeResultCode scanner.CheckCode
+		mustIncludeResultCode scanner.RuleID
+		mustExcludeResultCode scanner.RuleID
 	}{
 		{
 			name: "check google_compute_firewall egress on 0.0.0.0/0",
