@@ -25,6 +25,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.Name()),
 						block.Range(),
+						scanner.SeverityWarning,
 					),
 				}
 			}
@@ -35,6 +36,7 @@ func init() {
 						fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.Name()),
 						keyRotationAttr.Range(),
 						keyRotationAttr,
+						scanner.SeverityWarning,
 					),
 				}
 			}
