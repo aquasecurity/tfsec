@@ -10,7 +10,7 @@ import (
 )
 
 // AWSNoKMSAutoRotate See https://github.com/liamg/tfsec#included-checks for check info
-const AWSNoKMSAutoRotate scanner.CheckCode = "AWS019"
+const AWSNoKMSAutoRotate scanner.RuleID = "AWS019"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
