@@ -9,7 +9,7 @@ import (
 )
 
 // AWSUnencryptedMSKBroker See https://github.com/liamg/tfsec#included-checks for check info
-const AWSUnencryptedMSKBroker scanner.RuleID = "AWS021"
+const AWSUnencryptedMSKBroker scanner.RuleID = "AWS022"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
