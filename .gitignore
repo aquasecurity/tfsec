@@ -1,3 +1,6 @@
 /tfsec
 /bin
 /.idea
+
+# ignore windows compiled binary
+tfsec.exe

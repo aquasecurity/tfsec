@@ -11,7 +11,7 @@ import (
 )
 
 // AWSResourceHasPublicIP See https://github.com/liamg/tfsec#included-checks for check info
-const AWSResourceHasPublicIP scanner.CheckCode = "AWS012"
+const AWSResourceHasPublicIP scanner.RuleID = "AWS012"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -27,6 +27,7 @@ func init() {
 							fmt.Sprintf("Resource '%s' has a public IP address associated.", block.Name()),
 							publicAttr.Range(),
 							publicAttr,
+							scanner.SeverityError,
 						),
 					}
 				}

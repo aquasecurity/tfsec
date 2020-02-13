@@ -25,7 +25,8 @@ func (scanner *Scanner) Scan(blocks []*parser.Block) []Result {
 		for _, check := range GetRegisteredChecks() {
 			if check.IsRequiredForBlock(block) {
 				for _, result := range check.Run(block, context) {
-					if !scanner.checkRangeIgnored(result.Code, result.Range) {
+					if !scanner.checkRangeIgnored(result.RuleID, result.Range) {
+						result.Link = fmt.Sprintf("https://github.com/liamg/tfsec/wiki/%s", result.RuleID)
 						results = append(results, result)
 					}
 				}
@@ -35,7 +36,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block) []Result {
 	return results
 }
 
-func (scanner *Scanner) checkRangeIgnored(code CheckCode, r parser.Range) bool {
+func (scanner *Scanner) checkRangeIgnored(code RuleID, r parser.Range) bool {
 	raw, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return false
