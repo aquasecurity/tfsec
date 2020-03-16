@@ -19,12 +19,14 @@ import (
 var showVersion = false
 var disableColours = false
 var format string
+var softFail = false
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
 	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle")
+	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "'Runs checks but suppresses error code")
 }
 
 func main() {
@@ -81,7 +83,7 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if len(results) == 0 {
+		if len(results) == 0 || softFail {
 			os.Exit(0)
 		}
 
