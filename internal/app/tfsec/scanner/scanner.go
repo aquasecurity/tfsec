@@ -1,5 +1,4 @@
 package scanner
-package scanner
 
 import (
 	"fmt"

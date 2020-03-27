@@ -84,7 +84,7 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		results := scanner.New().Scan(blocks)
+		results := scanner.New().Scan(blocks, excludedChecksList)
 		if err := formatter(results); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
