@@ -100,6 +100,15 @@ resource "aws_security_group_rule" "my-rule" {
 If you're not sure which line to add the comment on, just check the
 tfsec output for the line number of the discovered problem.
 
+## Disable checks
+
+You may wish to exclude some checks from running. If you'd like to do so, you can
+simply add new argument `-e CHECK1,CHECK2,etc` to your cmd command
+
+```bash
+tfsec . -e GEN001,GCP001,GCP002
+```
+
 ## Included Checks
 
 Currently, checks are mostly limited to AWS/Azure/GCP resources, but
