@@ -12,7 +12,7 @@ import (
 
 // AWSEcrImageScanNotEnabled See https://github.com/liamg/tfsec#included-checks for check info
 const AWSEcrImageScanNotEnabled scanner.RuleID = "AWS023"
-//AWSEcrImageScanNotEnabled
+
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSEcrImageScanNotEnabled,
