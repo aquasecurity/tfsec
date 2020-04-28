@@ -352,7 +352,7 @@ func (p pathBreaker) add(path string) {
 	p[path] = struct{}{}
 }
 
-// haveSeen returns a boolean denoting if we've seen the given path before.
+// hasSeen returns a boolean denoting if we've seen the given path before.
 func (p pathBreaker) hasSeen(path string) bool {
 	_, ok := p[path]
 	return ok
