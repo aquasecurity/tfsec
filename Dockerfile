@@ -1,5 +1,5 @@
 # pinned version of the Alpine-tagged 'go' image
-FROM golang:1.13-alpine
+FROM golang:1.14-alpine
 
 # grab tfsec from GitHub (taken from README.md)
 RUN env GO111MODULE=on go get -u github.com/liamg/tfsec/cmd/tfsec && mkdir /workdir && chown -R nobody /workdir

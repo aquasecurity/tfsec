@@ -1,6 +1,6 @@
 language: go
 go:
-- 1.13
+- 1.14
 jobs:
   include:
     - stage: test
