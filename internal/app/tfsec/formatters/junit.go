@@ -95,7 +95,7 @@ func highlightCodeJunit(result scanner.Result) string {
 		output += fmt.Sprintf("  % 6d | ", lineNo)
 		if lineNo >= result.Range.StartLine && lineNo <= result.Range.EndLine {
 			if lineNo == result.Range.StartLine && result.RangeAnnotation != "" {
-				output += fmt.Sprintf("%    %s\n", lines[lineNo], result.RangeAnnotation)
+				output += fmt.Sprintf("%s    %s\n", lines[lineNo], result.RangeAnnotation)
 			} else {
 				output +=  fmt.Sprintf("%s\n", lines[lineNo])
 			}
