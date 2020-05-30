@@ -20,6 +20,7 @@ import (
 var showVersion = false
 var disableColours = false
 var format string
+var softFail = false
 var excludedChecks string
 
 func init() {
@@ -28,6 +29,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
 	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit")
 	rootCmd.Flags().StringVarP(&excludedChecks, "exclude", "e", excludedChecks, "Provide checks via , without space to exclude from run.")
+  rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "'Runs checks but suppresses error code")
 }
 
 func main() {
@@ -90,7 +92,7 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if len(results) == 0 {
+		if len(results) == 0 || softFail {
 			os.Exit(0)
 		}
 
