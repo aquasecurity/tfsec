@@ -26,6 +26,12 @@ brew tap liamg/tfsec
 brew install liamg/tfsec/tfsec
 ```
 
+Install with Chocolatey:
+
+```cmd
+choco install tfsec
+```
+
 You can also grab the binary for your system from the [releases page](https://github.com/liamg/tfsec/releases).
 
 Alternatively, install with Go:
@@ -62,6 +68,10 @@ To run:
 ```bash
 docker run --rm -it -v "$(pwd):/workdir" tfsec .
 ```
+
+## Use as GitHub Action
+
+If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/triat/terraform-security-scan](https://github.com/triat/terraform-security-scan).
 
 ## Features
 
@@ -153,7 +163,7 @@ American friends).
 
 ## Output options
 
-You can output tfsec results as JSON, CSV, Checkstyle or just plain old human readable format. Use the `--format` flag 
+You can output tfsec results as JSON, CSV, Checkstyle, JUnit or just plain old human readable format. Use the `--format` flag 
 to specify your desired format.
 
 ## Support for older terraform versions
