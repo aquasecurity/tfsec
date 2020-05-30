@@ -151,7 +151,7 @@ there are also checks which are provider agnostic.
 | AWS020  | aws      | CloudFront distribution allows unencrypted (HTTP) communications.
 | AWS021  | aws      | CloudFront distribution uses outdated SSL/TSL protocols.
 | AWS022  | aws      | A MSK cluster allows unencrypted data in transit.
-| AWS023  | aws      | ECR repository has image scans disenabled
+| AWS023  | aws      | ECR repository has image scans disabled
 | AWS024  | aws      | Kinesis stream is unencrypted
 | AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`.
 | AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`.
