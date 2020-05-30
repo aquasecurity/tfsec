@@ -14,6 +14,7 @@ import (
 )
 
 const exampleCheckCode scanner.RuleID = "EXA001"
+var excludedChecksList []string
 
 func TestMain(t *testing.M) {
 
@@ -32,7 +33,7 @@ func TestMain(t *testing.M) {
 
 func scanSource(source string) []scanner.Result {
 	blocks := createBlocksFromSource(source)
-	return scanner.New().Scan(blocks)
+	return scanner.New().Scan(blocks, excludedChecksList)
 }
 
 func createBlocksFromSource(source string) []*parser.Block {

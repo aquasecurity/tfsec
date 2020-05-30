@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/liamg/tfsec/internal/app/tfsec/formatters"
 
@@ -19,12 +20,14 @@ import (
 var showVersion = false
 var disableColours = false
 var format string
+var excludedChecks string
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
 	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit")
+	rootCmd.Flags().StringVarP(&excludedChecks, "exclude", "e", excludedChecks, "Provide checks via , without space to exclude from run.")
 }
 
 func main() {
@@ -53,6 +56,8 @@ var rootCmd = &cobra.Command{
 
 		var dir string
 		var err error
+		var excludedChecksList []string
+
 		if len(args) == 1 {
 			dir, err = filepath.Abs(args[0])
 		} else {
@@ -61,6 +66,10 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
+		}
+
+		if len(excludedChecks) > 0 {
+			excludedChecksList = strings.Split(excludedChecks, ",")
 		}
 
 		formatter, err := getFormatter()
@@ -75,7 +84,7 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		results := scanner.New().Scan(blocks)
+		results := scanner.New().Scan(blocks, excludedChecksList)
 		if err := formatter(results); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
