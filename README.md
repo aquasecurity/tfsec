@@ -26,6 +26,12 @@ brew tap liamg/tfsec
 brew install liamg/tfsec/tfsec
 ```
 
+Install with Chocolatey:
+
+```cmd
+choco install tfsec
+```
+
 You can also grab the binary for your system from the [releases page](https://github.com/liamg/tfsec/releases).
 
 Alternatively, install with Go:
@@ -63,6 +69,10 @@ To run:
 docker run --rm -it -v "$(pwd):/workdir" tfsec .
 ```
 
+## Use as GitHub Action
+
+If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/triat/terraform-security-scan](https://github.com/triat/terraform-security-scan).
+
 ## Features
 
 - Checks for sensitive data inclusion across all providers
@@ -99,6 +109,15 @@ resource "aws_security_group_rule" "my-rule" {
 
 If you're not sure which line to add the comment on, just check the
 tfsec output for the line number of the discovered problem.
+
+## Disable checks
+
+You may wish to exclude some checks from running. If you'd like to do so, you can
+simply add new argument `-e CHECK1,CHECK2,etc` to your cmd command
+
+```bash
+tfsec . -e GEN001,GCP001,GCP002
+```
 
 ## Included Checks
 
@@ -153,7 +172,7 @@ American friends).
 
 ## Output options
 
-You can output tfsec results as JSON, CSV, Checkstyle or just plain old human readable format. Use the `--format` flag 
+You can output tfsec results as JSON, CSV, Checkstyle, JUnit or just plain old human readable format. Use the `--format` flag 
 to specify your desired format.
 
 ## Support for older terraform versions
