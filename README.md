@@ -153,7 +153,7 @@ American friends).
 
 ## Output options
 
-You can output tfsec results as JSON, CSV, Checkstyle or just plain old human readable format. Use the `--format` flag 
+You can output tfsec results as JSON, CSV, Checkstyle, JUnit or just plain old human readable format. Use the `--format` flag 
 to specify your desired format.
 
 ## Support for older terraform versions
