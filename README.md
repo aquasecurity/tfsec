@@ -26,6 +26,12 @@ brew tap liamg/tfsec
 brew install liamg/tfsec/tfsec
 ```
 
+Install with Chocolatey:
+
+```cmd
+choco install tfsec
+```
+
 You can also grab the binary for your system from the [releases page](https://github.com/liamg/tfsec/releases).
 
 Alternatively, install with Go:
