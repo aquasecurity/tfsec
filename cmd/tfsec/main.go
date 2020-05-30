@@ -26,7 +26,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
-	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle")
+	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit")
 	rootCmd.Flags().StringVarP(&excludedChecks, "exclude", "e", excludedChecks, "Provide checks via , without space to exclude from run.")
 }
 
@@ -108,6 +108,8 @@ func getFormatter() (func([]scanner.Result) error, error) {
 		return formatters.FormatCSV, nil
 	case "checkstyle":
 		return formatters.FormatCheckStyle, nil
+	case "junit":
+		return formatters.FormatJUnit, nil
 	default:
 		return nil, fmt.Errorf("invalid format specified: '%s'", format)
 	}
