@@ -16,7 +16,7 @@ func Test_AWSEcrImageScanNotEnabled(t *testing.T) {
 		mustExcludeResultCode scanner.RuleID
 	}{
 		{
-			name:                  "check KMS Key with auto-rotation not set",
+			name:                  "check ECR Image Scan disabled",
 			source:                `resource "aws_ecr_repository" "foo" {}`,
 			mustIncludeResultCode: checks.AWSEcrImageScanNotEnabled,
 		},
