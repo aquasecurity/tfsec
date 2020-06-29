@@ -17,6 +17,8 @@ import (
 type JUnitTestSuite struct {
 	XMLName    xml.Name        `xml:"testsuite"`
 	Name       string          `xml:"name,attr"`
+	Failures   string          `xml:"failures,attr"`
+	Tests      string          `xml:"tests,attr"`
 	TestCases  []JUnitTestCase `xml:"testcase"`
 }
 
@@ -39,7 +41,9 @@ type JUnitFailure struct {
 func FormatJUnit(results []scanner.Result) error {
 
 	output := JUnitTestSuite {
-		Name:"tfsec",
+		Name:     "tfsec",
+		Failures: fmt.Sprintf("%d", len(results)),
+		Tests:    fmt.Sprintf("%d", len(results)),
 	}
 
 	for _, result := range results {
