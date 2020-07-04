@@ -58,6 +58,7 @@ func init() {
 			var results []scanner.Result
 
 			if directionBlock := block.GetBlock("egress"); directionBlock != nil {
+
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 					if cidrBlocksAttr.Value().LengthInt() == 0 {
