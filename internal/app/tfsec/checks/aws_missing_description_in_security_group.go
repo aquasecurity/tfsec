@@ -10,7 +10,7 @@ import (
 )
 
 // AWSNoDescriptionInSecurityGroup See https://github.com/liamg/tfsec#included-checks for check info
-const AWSNoDescriptionInSecurityGroup scanner.CheckCode = "AWS018"
+const AWSNoDescriptionInSecurityGroup scanner.RuleID = "AWS018"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -25,6 +25,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", block.Name()),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}
@@ -35,6 +36,7 @@ func init() {
 						fmt.Sprintf("Resource '%s' should include a non-empty description for auditing purposes.", block.Name()),
 						descriptionAttr.Range(),
 						descriptionAttr,
+						scanner.SeverityError,
 					),
 				}
 			}

@@ -10,7 +10,7 @@ import (
 )
 
 // AWSPlainHTTP See https://github.com/liamg/tfsec#included-checks for check info
-const AWSPlainHTTP scanner.CheckCode = "AWS004"
+const AWSPlainHTTP scanner.RuleID = "AWS004"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -40,6 +40,7 @@ func init() {
 						fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.Name()),
 						reportRange,
 						protocolAttr,
+						scanner.SeverityError,
 					),
 				}
 			}

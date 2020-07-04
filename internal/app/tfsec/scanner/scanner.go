@@ -17,15 +17,27 @@ func New() *Scanner {
 	return &Scanner{}
 }
 
+// Find element in list
+func checkInList(code RuleID, list []string) bool {
+	codeCurrent := fmt.Sprintf("%s", code)
+	for _, codeIgnored := range list {
+		if codeIgnored == codeCurrent {
+			return true
+		}
+	}
+	return false
+}
+
 // Scan takes all available hcl blocks and an optional context, and returns a slice of results. Each result indicates a potential security problem.
-func (scanner *Scanner) Scan(blocks []*parser.Block) []Result {
+func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string) []Result {
 	var results []Result
 	context := &Context{blocks: blocks}
 	for _, block := range blocks {
 		for _, check := range GetRegisteredChecks() {
 			if check.IsRequiredForBlock(block) {
 				for _, result := range check.Run(block, context) {
-					if !scanner.checkRangeIgnored(result.Code, result.Range) {
+					if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
+						result.Link = fmt.Sprintf("https://github.com/liamg/tfsec/wiki/%s", result.RuleID)
 						results = append(results, result)
 					}
 				}
@@ -35,7 +47,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block) []Result {
 	return results
 }
 
-func (scanner *Scanner) checkRangeIgnored(code CheckCode, r parser.Range) bool {
+func (scanner *Scanner) checkRangeIgnored(code RuleID, r parser.Range) bool {
 	raw, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return false

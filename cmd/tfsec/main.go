@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/liamg/tfsec/internal/app/tfsec/formatters"
+
 	"github.com/liamg/tml"
 
-	"github.com/liamg/clinch/terminal"
 	_ "github.com/liamg/tfsec/internal/app/tfsec/checks"
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
@@ -19,11 +19,19 @@ import (
 
 var showVersion = false
 var disableColours = false
+var format string
+var softFail = false
+var excludedChecks string
+var excludeDirectories []string
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
+	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit")
+	rootCmd.Flags().StringVarP(&excludedChecks, "exclude", "e", excludedChecks, "Provide checks via , without space to exclude from run.")
+	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
+	rootCmd.Flags().StringSliceVar(&excludeDirectories, "exclude-dir", []string{}, "Exclude a directory from the scan. You can use this flag multiple times to exclude further directories.")
 }
 
 func main() {
@@ -52,6 +60,8 @@ var rootCmd = &cobra.Command{
 
 		var dir string
 		var err error
+		var excludedChecksList []string
+
 		if len(args) == 1 {
 			dir, err = filepath.Abs(args[0])
 		} else {
@@ -62,65 +72,58 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		blocks, err := parser.New().ParseDirectory(dir)
+		if len(excludedChecks) > 0 {
+			excludedChecksList = strings.Split(excludedChecks, ",")
+		}
+
+		formatter, err := getFormatter()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		results := scanner.New().Scan(blocks)
-		if len(results) == 0 {
-			terminal.PrintSuccessf("\nNo problems detected!\n")
-			os.Exit(0)
+		var absoluteExcludes []string
+		for _, exclude := range excludeDirectories {
+			exDir, err := filepath.Abs(exclude)
+			if err != nil {
+				continue
+			}
+			absoluteExcludes = append(absoluteExcludes, exDir)
 		}
 
-		terminal.PrintErrorf("\n%d potential problems detected:\n\n", len(results))
-		for i, result := range results {
-			terminal.PrintErrorf("<underline>Problem %d</underline>\n", i+1)
-			_ = tml.Printf(`
-  <blue>[</blue>%s<blue>]</blue> %s
-  <blue>%s</blue>
+		blocks, err := parser.New().ParseDirectory(dir, absoluteExcludes)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 
-`, result.Code, result.Description, result.Range.String())
-			highlightCode(result)
+		results := scanner.New().Scan(blocks, excludedChecksList)
+		if err := formatter(results); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		if len(results) == 0 || softFail {
+			os.Exit(0)
 		}
 
 		os.Exit(1)
 	},
 }
 
-// highlight the lines of code which caused a problem, if available
-func highlightCode(result scanner.Result) {
-
-	data, err := ioutil.ReadFile(result.Range.Filename)
-	if err != nil {
-		return
+func getFormatter() (func([]scanner.Result) error, error) {
+	switch format {
+	case "", "default":
+		return formatters.FormatDefault, nil
+	case "json":
+		return formatters.FormatJSON, nil
+	case "csv":
+		return formatters.FormatCSV, nil
+	case "checkstyle":
+		return formatters.FormatCheckStyle, nil
+	case "junit":
+		return formatters.FormatJUnit, nil
+	default:
+		return nil, fmt.Errorf("invalid format specified: '%s'", format)
 	}
-
-	lines := append([]string{""}, strings.Split(string(data), "\n")...)
-
-	start := result.Range.StartLine - 3
-	if start <= 0 {
-		start = 1
-	}
-	end := result.Range.EndLine + 3
-	if end >= len(lines) {
-		end = len(lines) - 1
-	}
-
-	for lineNo := start; lineNo <= end; lineNo++ {
-		_ = tml.Printf("  <blue>% 6d</blue> | ", lineNo)
-		if lineNo >= result.Range.StartLine && lineNo <= result.Range.EndLine {
-			if lineNo == result.Range.StartLine && result.RangeAnnotation != "" {
-				_ = tml.Printf("<bold><red>%s</red>    <blue>%s</blue></bold>\n", lines[lineNo], result.RangeAnnotation)
-			} else {
-				_ = tml.Printf("<bold><red>%s</red></bold>\n", lines[lineNo])
-			}
-		} else {
-			_ = tml.Printf("<yellow>%s</yellow>\n", lines[lineNo])
-		}
-	}
-
-	fmt.Println("")
-
 }

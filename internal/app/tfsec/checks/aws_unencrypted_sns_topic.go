@@ -11,7 +11,7 @@ import (
 )
 
 // AWSUnencryptedSNSTopic See https://github.com/liamg/tfsec#included-checks for check info
-const AWSUnencryptedSNSTopic scanner.CheckCode = "AWS016"
+const AWSUnencryptedSNSTopic scanner.RuleID = "AWS016"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -26,6 +26,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.Name()),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
@@ -34,6 +35,7 @@ func init() {
 						fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.Name()),
 						kmsKeyIDAttr.Range(),
 						kmsKeyIDAttr,
+						scanner.SeverityError,
 					),
 				}
 			}

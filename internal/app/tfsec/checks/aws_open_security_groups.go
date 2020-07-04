@@ -10,10 +10,10 @@ import (
 )
 
 // AWSOpenIngressSecurityGroupInlineRule See https://github.com/liamg/tfsec#included-checks for check info
-const AWSOpenIngressSecurityGroupInlineRule scanner.CheckCode = "AWS008"
+const AWSOpenIngressSecurityGroupInlineRule scanner.RuleID = "AWS008"
 
 // AWSOpenEgressSecurityGroupInlineRule See https://github.com/liamg/tfsec#included-checks for check info
-const AWSOpenEgressSecurityGroupInlineRule scanner.CheckCode = "AWS009"
+const AWSOpenEgressSecurityGroupInlineRule scanner.RuleID = "AWS009"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -24,7 +24,7 @@ func init() {
 
 			var results []scanner.Result
 
-			if directionBlock := block.GetBlock("ingress"); directionBlock != nil {
+			for _, directionBlock := range block.GetBlocks("ingress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 					if cidrBlocksAttr.Value().LengthInt() == 0 {
@@ -37,6 +37,7 @@ func init() {
 								check.NewResult(
 									fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.Name()),
 									cidrBlocksAttr.Range(),
+									scanner.SeverityWarning,
 								),
 							)
 						}
@@ -56,7 +57,7 @@ func init() {
 
 			var results []scanner.Result
 
-			if directionBlock := block.GetBlock("egress"); directionBlock != nil {
+			for _, directionBlock := range block.GetBlocks("egress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 					if cidrBlocksAttr.Value().LengthInt() == 0 {
@@ -70,6 +71,7 @@ func init() {
 									fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.Name()),
 									cidrBlocksAttr.Range(),
 									cidrBlocksAttr,
+									scanner.SeverityWarning,
 								),
 							)
 						}

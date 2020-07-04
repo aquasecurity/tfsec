@@ -11,7 +11,7 @@ import (
 )
 
 // AWSLaunchConfigurationWithUnencryptedBlockDevice See https://github.com/liamg/tfsec#included-checks for check info
-const AWSLaunchConfigurationWithUnencryptedBlockDevice scanner.CheckCode = "AWS014"
+const AWSLaunchConfigurationWithUnencryptedBlockDevice scanner.RuleID = "AWS014"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -37,6 +37,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device. Consider adding <blue>root_block_device{ encrypted = true }</blue>", block.Name()),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				)
 			} else if rootDeviceBlock != nil {
@@ -46,6 +47,7 @@ func init() {
 						check.NewResult(
 							fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device. Consider adding <blue>encrypted = true</blue>", block.Name()),
 							rootDeviceBlock.Range(),
+							scanner.SeverityError,
 						),
 					)
 				} else if encryptedAttr != nil && encryptedAttr.Type() == cty.Bool && encryptedAttr.Value().False() {
@@ -54,6 +56,7 @@ func init() {
 							fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device.", block.Name()),
 							encryptedAttr.Range(),
 							encryptedAttr,
+							scanner.SeverityError,
 						),
 					)
 				}
@@ -67,6 +70,7 @@ func init() {
 						check.NewResult(
 							fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device. Consider adding <blue>encrypted = true</blue>", block.Name()),
 							ebsDeviceBlock.Range(),
+							scanner.SeverityError,
 						),
 					)
 				} else if encryptedAttr != nil && encryptedAttr.Type() == cty.Bool && encryptedAttr.Value().False() {
@@ -75,6 +79,7 @@ func init() {
 							fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", block.Name()),
 							encryptedAttr.Range(),
 							encryptedAttr,
+							scanner.SeverityError,
 						),
 					)
 				}

@@ -8,7 +8,7 @@ import (
 )
 
 // GoogleUnencryptedStorageBucket See https://github.com/liamg/tfsec#included-checks for check info
-const GoogleUnencryptedStorageBucket scanner.CheckCode = "GCP002"
+const GoogleUnencryptedStorageBucket scanner.RuleID = "GCP002"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -23,6 +23,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted storage bucket.", block.Name()),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			}

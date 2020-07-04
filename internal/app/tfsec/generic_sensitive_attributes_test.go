@@ -13,8 +13,8 @@ func Test_AWSSensitiveAttributes(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.CheckCode
-		mustExcludeResultCode scanner.CheckCode
+		mustIncludeResultCode scanner.RuleID
+		mustExcludeResultCode scanner.RuleID
 	}{
 		{
 			name: "check sensitive attribute",
@@ -29,6 +29,14 @@ resource "evil_corp" "virtual_machine" {
 			source: `
 resource "evil_corp" "virtual_machine" {
 	memory = 512
+}`,
+			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+		},
+		{
+			name: "avoid false positive for aws_efs_file_system",
+			source: `
+resource "aws_efs_file_system" "myfs" {
+	creation_token = "something"
 }`,
 			mustExcludeResultCode: checks.GenericSensitiveAttributes,
 		},

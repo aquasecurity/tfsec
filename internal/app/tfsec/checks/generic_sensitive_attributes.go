@@ -12,7 +12,17 @@ import (
 )
 
 // GenericSensitiveAttributes See https://github.com/liamg/tfsec#included-checks for check info
-const GenericSensitiveAttributes scanner.CheckCode = "GEN003"
+const GenericSensitiveAttributes scanner.RuleID = "GEN003"
+
+var sensitiveWhitelist = []struct {
+	Resource  string
+	Attribute string
+}{
+	{
+		Resource:  "aws_efs_file_system",
+		Attribute: "creation_token",
+	},
+}
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -23,14 +33,20 @@ func init() {
 			attributes := block.GetAttributes()
 
 			var results []scanner.Result
-
+		SKIP:
 			for _, attribute := range attributes {
+				for _, whitelisted := range sensitiveWhitelist {
+					if whitelisted.Resource == block.Labels()[0] && whitelisted.Attribute == attribute.Name() {
+						continue SKIP
+					}
+				}
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String && attribute.Value().AsString() != "" {
 						results = append(results, check.NewResultWithValueAnnotation(
 							fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", block.Name()),
 							attribute.Range(),
 							attribute,
+							scanner.SeverityWarning,
 						))
 					}
 

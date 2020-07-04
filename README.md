@@ -26,6 +26,12 @@ brew tap liamg/tfsec
 brew install liamg/tfsec/tfsec
 ```
 
+Install with Chocolatey:
+
+```cmd
+choco install tfsec
+```
+
 You can also grab the binary for your system from the [releases page](https://github.com/liamg/tfsec/releases).
 
 Alternatively, install with Go:
@@ -63,6 +69,10 @@ To run:
 docker run --rm -it -v "$(pwd):/workdir" tfsec .
 ```
 
+## Use as GitHub Action
+
+If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/triat/terraform-security-scan](https://github.com/triat/terraform-security-scan).
+
 ## Features
 
 - Checks for sensitive data inclusion across all providers
@@ -73,7 +83,7 @@ docker run --rm -it -v "$(pwd):/workdir" tfsec .
 ## Ignoring Warnings
 
 You may wish to ignore some warnings. If you'd like to do so, you can
-simply add a comment containing `tfsec:ignore:<CODE>` to the offending
+simply add a comment containing `tfsec:ignore:<RULE>` to the offending
 line in your templates. If the problem refers to a block of code, such
 as a multiline string, you can add the comment on the line above the
 block, by itself.
@@ -100,12 +110,25 @@ resource "aws_security_group_rule" "my-rule" {
 If you're not sure which line to add the comment on, just check the
 tfsec output for the line number of the discovered problem.
 
+## Disable checks
+
+You may wish to exclude some checks from running. If you'd like to do so, you can
+simply add new argument `-e CHECK1,CHECK2,etc` to your cmd command
+
+```bash
+tfsec . -e GEN001,GCP001,GCP002
+```
+
+## Excluding Directories
+
+You can exclude directories from being scanned using the `--exclude-dir [directory]` flag. This can be used multiple times to exclude multiple directories.
+
 ## Included Checks
 
 Currently, checks are mostly limited to AWS/Azure/GCP resources, but
 there are also checks which are provider agnostic.
 
-| Code    | Provider | Description |
+| Rule    | Provider | Description |
 |---------|----------|-------------|
 | GEN001  | *        | Potentially sensitive data stored in "default" value of variable.
 | GEN002  | *        | Potentially sensitive data stored in local value.
@@ -128,6 +151,12 @@ there are also checks which are provider agnostic.
 | AWS016  | aws      | Unencrypted SNS topic.
 | AWS017  | aws      | Unencrypted S3 bucket.
 | AWS018  | aws      | Missing description for security group/security group rule.
+| AWS019  | aws      | A KMS key is not configured to auto-rotate
+| AWS020  | aws      | CloudFront distribution allows unencrypted (HTTP) communications.
+| AWS021  | aws      | CloudFront distribution uses outdated SSL/TSL protocols.
+| AWS022  | aws      | A MSK cluster allows unencrypted data in transit.
+| AWS023  | aws      | ECR repository has image scans disabled
+| AWS024  | aws      | Kinesis stream is unencrypted
 | AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`.
 | AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`.
 | AZU003  | azurerm  | Unencrypted managed disk.
@@ -137,6 +166,7 @@ there are also checks which are provider agnostic.
 | GCP002  | google   | Unencrypted storage bucket.
 | GCP003  | google   | An inbound firewall rule allows traffic from `/0`.
 | GCP004  | google   | An outbound firewall rule allows traffic to `/0`.
+| GCP005  | google   | Legacy ABAC permissions are enabled.
 
 ## Running in CI
 
@@ -145,6 +175,11 @@ exit with a non-zero exit code if a potential problem is detected.
 You may wish to run tfsec as part of your build without coloured
 output. You can do this using `--no-colour` (or `--no-color` for our
 American friends).
+
+## Output options
+
+You can output tfsec results as JSON, CSV, Checkstyle, JUnit or just plain old human readable format. Use the `--format` flag 
+to specify your desired format.
 
 ## Support for older terraform versions
 

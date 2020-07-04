@@ -30,7 +30,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		RequiredLabels: []string{"bad"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			return []scanner.Result{
-				check.NewResult("example problem", block.Range()),
+				check.NewResult("example problem", block.Range(), scanner.SeverityError),
 			}
 		},
 	})
@@ -40,7 +40,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		RequiredLabels: []string{"bad"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			return []scanner.Result{
-				check.NewResult("example problem", block.Range()),
+				check.NewResult("example problem", block.Range(), scanner.SeverityError),
 			}
 		},
 	})
@@ -49,6 +49,6 @@ func Test_IgnoreSpecific(t *testing.T) {
 resource "bad" "my-bad" {} //tfsec:ignore:ABC123
 `)
 	require.Len(t, results, 1)
-	assert.Equal(t, results[0].Code, scanner.CheckCode("DEF456"))
+	assert.Equal(t, results[0].RuleID, scanner.RuleID("DEF456"))
 
 }

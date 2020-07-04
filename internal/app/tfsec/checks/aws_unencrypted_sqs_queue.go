@@ -11,7 +11,7 @@ import (
 )
 
 // AWSUnencryptedSQSQueue See https://github.com/liamg/tfsec#included-checks for check info
-const AWSUnencryptedSQSQueue scanner.CheckCode = "AWS015"
+const AWSUnencryptedSQSQueue scanner.RuleID = "AWS015"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -26,6 +26,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", block.Name()),
 						block.Range(),
+						scanner.SeverityError,
 					),
 				}
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
@@ -34,6 +35,7 @@ func init() {
 						fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", block.Name()),
 						kmsKeyIDAttr.Range(),
 						kmsKeyIDAttr,
+						scanner.SeverityError,
 					),
 				}
 			}
