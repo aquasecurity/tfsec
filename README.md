@@ -119,6 +119,10 @@ simply add new argument `-e CHECK1,CHECK2,etc` to your cmd command
 tfsec . -e GEN001,GCP001,GCP002
 ```
 
+## Excluding Directories
+
+You can exclude directories from being scanned using the `--exclude-dir [directory]` flag. This can be used multiple times to exclude multiple directories.
+
 ## Included Checks
 
 Currently, checks are mostly limited to AWS/Azure/GCP resources, but
