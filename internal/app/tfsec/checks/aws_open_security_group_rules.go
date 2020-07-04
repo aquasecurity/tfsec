@@ -35,7 +35,7 @@ func init() {
 
 			if cidrBlocksAttr := block.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
-				if cidrBlocksAttr.Value().LengthInt() == 0 {
+				if cidrBlocksAttr.Value().IsNull() || cidrBlocksAttr.Value().LengthInt() == 0 {
 					return nil
 				}
 
@@ -74,7 +74,7 @@ func init() {
 
 			if cidrBlocksAttr := block.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
-				if cidrBlocksAttr.Value().LengthInt() == 0 {
+				if cidrBlocksAttr.Value().IsNull() || cidrBlocksAttr.Value().LengthInt() == 0 {
 					return nil
 				}
 

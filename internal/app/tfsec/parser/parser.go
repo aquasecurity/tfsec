@@ -136,6 +136,7 @@ func (parser *Parser) buildEvaluationContext(
 ) (Blocks, *hcl.EvalContext) {
 	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
+		Functions: Functions(path),
 	}
 
 	ctx.Variables["module"] = cty.ObjectVal(make(map[string]cty.Value))

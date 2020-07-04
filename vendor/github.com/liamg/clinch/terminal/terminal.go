@@ -1,6 +1,8 @@
 package terminal
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Reset terminal to it's initial state, destroying scroll buffer
 func Reset() {
@@ -50,6 +52,18 @@ func MoveCursorToColumn(column int) {
 // MoveCursorTo moves the cursor to the given position (zero indexed)
 func MoveCursorTo(column int, row int) {
 	fmt.Printf("\033[%d;%dH", row+1, column+1)
+}
+
+// MoveCursorDown moves the cursor down by the given number of rows
+func MoveCursorDown(rows int) {
+	fmt.Printf("\033[%dB", rows)
+}
+
+// MoveCursorUp moves the cursor up by the given number of rows
+func MoveCursorUp(rows int) {
+	if rows > 0 {
+		fmt.Printf("\033[%dA", rows)
+	}
 }
 
 // ClearLine removes all content from the current line and moves the cursor to the beginning of the line
