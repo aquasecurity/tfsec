@@ -37,7 +37,7 @@ You can also grab the binary for your system from the [releases page](https://gi
 Alternatively, install with Go:
 
 ```bash
-env GO111MODULE=on go get -u github.com/liamg/tfsec/cmd/tfsec
+go get -u github.com/liamg/tfsec/cmd/tfsec
 ```
 
 ## Usage
