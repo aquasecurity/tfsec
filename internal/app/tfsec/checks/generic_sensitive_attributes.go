@@ -22,6 +22,10 @@ var sensitiveWhitelist = []struct {
 		Resource:  "aws_efs_file_system",
 		Attribute: "creation_token",
 	},
+	{
+		Resource:  "aws_instance",
+		Attribute: "get_password_data",
+	},
 }
 
 func init() {
