@@ -104,6 +104,19 @@ resource "aws_security_group" "alb" {
 			`,
 			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
 		},
+		{
+			name: "check aws_security_group multiple ingress on 0.0.0.0/0",
+			source: `
+resource "aws_security_group" "my-group" {
+	ingress {
+		cidr_blocks = ["10.10.0.32/16"]
+	}
+	ingress {
+		cidr_blocks = ["0.0.0.0/0"]
+	}
+}`,
+			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
+		},
 	}
 
 	for _, test := range tests {
