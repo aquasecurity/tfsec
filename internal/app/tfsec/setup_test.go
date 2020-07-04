@@ -39,7 +39,7 @@ func scanSource(source string) []scanner.Result {
 
 func createBlocksFromSource(source string) []*parser.Block {
 	path := createTestFile("test.tf", source)
-	blocks, err := parser.New().ParseDirectory(filepath.Dir(path), nil)
+	blocks, err := parser.New().ParseDirectory(filepath.Dir(path), nil, "")
 	if err != nil {
 		panic(err)
 	}

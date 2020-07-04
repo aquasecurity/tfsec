@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/hashicorp/hcl/v2/hclsyntax"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/hashicorp/hcl/v2"
@@ -33,8 +35,31 @@ type ParseResult struct {
 	cty.Value
 }
 
+func (parser *Parser) readTFVars(filename string) (map[string]cty.Value, error) {
+
+	inputVars := make(map[string]cty.Value)
+
+	if filename == "" {
+		return inputVars, nil
+	}
+
+	src, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	tfvars, _ := hclsyntax.ParseConfig(src, filename, hcl.Pos{Line: 1, Column: 1})
+	attrs, _ := tfvars.Body.JustAttributes()
+
+	for _, attr := range attrs {
+		inputVars[attr.Name], _ = attr.Expr.Value(&hcl.EvalContext{})
+	}
+
+	return inputVars, nil
+}
+
 // ParseDirectory recursively parses all terraform files within a given directory
-func (parser *Parser) ParseDirectory(path string, excludedDirectories []string) (Blocks, error) {
+func (parser *Parser) ParseDirectory(path string, excludedDirectories []string, tfvarsPath string) (Blocks, error) {
 
 	parseCache := newParseCache()
 	if err := parser.recursivelyParseDirectory(path, parseCache, excludedDirectories); err != nil {
@@ -51,7 +76,11 @@ func (parser *Parser) ParseDirectory(path string, excludedDirectories []string) 
 		blocks = append(blocks, fileBlocks...)
 	}
 
-	inputVars := make(map[string]cty.Value)
+	inputVars, err := parser.readTFVars(tfvarsPath)
+	if err != nil {
+		return nil, err
+	}
+
 	// TODO add .tfvars values to inputVars
 
 	allBlocks, _ := parser.buildEvaluationContext(

@@ -23,6 +23,7 @@ var format string
 var softFail = false
 var excludedChecks string
 var excludeDirectories []string
+var tfvarsPath string
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
@@ -32,6 +33,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&excludedChecks, "exclude", "e", excludedChecks, "Provide checks via , without space to exclude from run.")
 	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
 	rootCmd.Flags().StringSliceVar(&excludeDirectories, "exclude-dir", []string{}, "Exclude a directory from the scan. You can use this flag multiple times to exclude further directories.")
+	rootCmd.Flags().StringVar(&tfvarsPath, "tfvars-file", tfvarsPath, "Path to .tfvars file")
 }
 
 func main() {
@@ -91,7 +93,15 @@ var rootCmd = &cobra.Command{
 			absoluteExcludes = append(absoluteExcludes, exDir)
 		}
 
-		blocks, err := parser.New().ParseDirectory(dir, absoluteExcludes)
+		if tfvarsPath != "" {
+			tfvarsPath, err = filepath.Abs(tfvarsPath)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
+
+		blocks, err := parser.New().ParseDirectory(dir, absoluteExcludes, tfvarsPath)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)

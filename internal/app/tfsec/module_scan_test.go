@@ -33,7 +33,7 @@ resource "problem" "uhoh" {}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			path := createTestFileWithModule(test.source, test.moduleSource)
-			blocks, err := parser.New().ParseDirectory(path, nil)
+			blocks, err := parser.New().ParseDirectory(path, nil, "")
 			if err != nil {
 				t.Fatal(err)
 			}
