@@ -32,6 +32,14 @@ resource "evil_corp" "virtual_machine" {
 }`,
 			mustExcludeResultCode: checks.GenericSensitiveAttributes,
 		},
+		{
+			name: "avoid false positive for aws_efs_file_system",
+			source: `
+resource "aws_efs_file_system" "myfs" {
+	creation_token = "something"
+}`,
+			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+		},
 	}
 
 	for _, test := range tests {
