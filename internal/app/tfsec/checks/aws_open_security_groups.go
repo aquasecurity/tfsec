@@ -24,7 +24,7 @@ func init() {
 
 			var results []scanner.Result
 
-			if directionBlock := block.GetBlock("ingress"); directionBlock != nil {
+			for _, directionBlock := range block.GetBlocks("ingress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 					if cidrBlocksAttr.Value().LengthInt() == 0 {
@@ -57,8 +57,7 @@ func init() {
 
 			var results []scanner.Result
 
-			if directionBlock := block.GetBlock("egress"); directionBlock != nil {
-
+			for _, directionBlock := range block.GetBlocks("egress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 					if cidrBlocksAttr.Value().LengthInt() == 0 {
