@@ -119,6 +119,10 @@ simply add new argument `-e CHECK1,CHECK2,etc` to your cmd command
 tfsec . -e GEN001,GCP001,GCP002
 ```
 
+## Including values from .tfvars
+
+You can include values from a tfvars file in the scan,  using, for example: `--tfvars-file terraform.tfvars`.
+
 ## Excluding Directories
 
 You can exclude directories from being scanned using the `--exclude-dir [directory]` flag. This can be used multiple times to exclude multiple directories.
