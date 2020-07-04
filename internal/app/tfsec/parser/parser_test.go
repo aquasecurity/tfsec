@@ -47,7 +47,7 @@ data "cats_cat" "the-cats-mother" {
 
 `)
 
-	blocks, err := parser.ParseDirectory(filepath.Dir(path))
+	blocks, err := parser.ParseDirectory(filepath.Dir(path), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -125,7 +125,7 @@ output "result" {
 
 	parser := New()
 
-	blocks, err := parser.ParseDirectory(path)
+	blocks, err := parser.ParseDirectory(path, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -176,7 +176,7 @@ output "result" {
 
 	parser := New()
 
-	blocks, err := parser.ParseDirectory(path)
+	blocks, err := parser.ParseDirectory(path, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
