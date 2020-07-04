@@ -79,6 +79,7 @@ If you want to run tfsec on your repository as a GitHub Action, you can use [htt
 - Checks for violations of AWS, Azure and GCP security best practice recommendations
 - Scans modules (currently only local modules are supported)
 - Evaluates expressions as well as literal values
+- Evaluates Terraform functions e.g. `concat()`
 
 ## Ignoring Warnings
 
