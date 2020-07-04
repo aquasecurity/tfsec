@@ -34,10 +34,10 @@ type ParseResult struct {
 }
 
 // ParseDirectory recursively parses all terraform files within a given directory
-func (parser *Parser) ParseDirectory(path string) (Blocks, error) {
+func (parser *Parser) ParseDirectory(path string, excludedDirectories []string) (Blocks, error) {
 
 	parseCache := newParseCache()
-	if err := parser.recursivelyParseDirectory(path, parseCache); err != nil {
+	if err := parser.recursivelyParseDirectory(path, parseCache, excludedDirectories); err != nil {
 		return nil, err
 	}
 
@@ -60,6 +60,7 @@ func (parser *Parser) ParseDirectory(path string) (Blocks, error) {
 		inputVars,
 		true,
 		parseCache,
+		excludedDirectories,
 	)
 	return allBlocks.RemoveDuplicates(), nil
 }
@@ -78,13 +79,13 @@ func (parser *Parser) parseFile(file *hcl.File) (hcl.Blocks, error) {
 	return contents.Blocks, nil
 }
 
-func (parser *Parser) recursivelyParseDirectory(path string, pc parseCache) error {
+func (parser *Parser) recursivelyParseDirectory(path string, pc parseCache, excludedDirectories []string) error {
 
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		return err
 	}
-
+FILE:
 	for _, file := range files {
 		if strings.HasPrefix(file.Name(), ".") { //ignore dotfiles (including .terraform!)
 			continue
@@ -96,6 +97,13 @@ func (parser *Parser) recursivelyParseDirectory(path string, pc parseCache) erro
 
 		parser.files[fullPath] = true
 		if file.IsDir() {
+
+			for _, excluded := range excludedDirectories {
+				if fullPath == excluded {
+					continue FILE
+				}
+			}
+
 			// We want local files to be loaded as needed by modules, but
 			// we want to defend against directories being loaded multiple times.
 			if pc.hasSeenPath(fullPath) {
@@ -103,7 +111,7 @@ func (parser *Parser) recursivelyParseDirectory(path string, pc parseCache) erro
 			}
 			pc.addPath(fullPath)
 
-			if err := parser.recursivelyParseDirectory(fullPath, pc); err != nil {
+			if err := parser.recursivelyParseDirectory(fullPath, pc, excludedDirectories); err != nil {
 				return err
 			}
 		} else if strings.HasSuffix(file.Name(), ".tf") {
@@ -124,6 +132,7 @@ func (parser *Parser) buildEvaluationContext(
 	inputVars map[string]cty.Value,
 	isRoot bool,
 	pc parseCache,
+	excludedDirectories []string,
 ) (Blocks, *hcl.EvalContext) {
 	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
@@ -163,7 +172,7 @@ func (parser *Parser) buildEvaluationContext(
 			}
 			moduleName := moduleBlock.Labels[0]
 
-			moduleBlocks[moduleName], moduleMap[moduleName] = parser.parseModuleBlock(moduleBlock, ctx, path, pc) // todo return parsed blocks here too
+			moduleBlocks[moduleName], moduleMap[moduleName] = parser.parseModuleBlock(moduleBlock, ctx, path, pc, excludedDirectories) // todo return parsed blocks here too
 			ctx.Variables["module"] = cty.ObjectVal(moduleMap)
 		}
 
@@ -190,6 +199,7 @@ func (parser *Parser) parseModuleBlock(
 	parentContext *hcl.EvalContext,
 	rootPath string,
 	pc parseCache,
+	excludedDirectories []string,
 ) (Blocks, cty.Value) {
 
 	if len(block.Labels) == 0 {
@@ -238,7 +248,7 @@ func (parser *Parser) parseModuleBlock(
 
 	subParser := New()
 
-	if err := subParser.recursivelyParseDirectory(path, pc); err != nil {
+	if err := subParser.recursivelyParseDirectory(path, pc, excludedDirectories); err != nil {
 		return nil, cty.NilVal
 	}
 
@@ -252,7 +262,7 @@ func (parser *Parser) parseModuleBlock(
 		blocks = append(blocks, fileBlocks...)
 	}
 
-	childModules, ctx := subParser.buildEvaluationContext(blocks, path, inputVars, false, pc)
+	childModules, ctx := subParser.buildEvaluationContext(blocks, path, inputVars, false, pc, excludedDirectories)
 	parseResult := ParseResult{
 		Blocks: childModules.RemoveDuplicates(),
 		Value:  cty.ObjectVal(ctx.Variables),
@@ -355,13 +365,13 @@ func (parser *Parser) getValuesByBlockType(ctx *hcl.EvalContext, blocks hcl.Bloc
 
 type parseCache struct {
 	visitedPaths map[string]struct{}
-	results map[string]ParseResult
+	results      map[string]ParseResult
 }
 
 func newParseCache() parseCache {
 	return parseCache{
 		visitedPaths: make(map[string]struct{}),
-		results: make(map[string]ParseResult),
+		results:      make(map[string]ParseResult),
 	}
 }
 
@@ -381,6 +391,6 @@ func (p parseCache) lookupResult(fullPath string) (ParseResult, bool) {
 	return result, ok
 }
 
-func (p parseCache) storeResult(fullPath string , result ParseResult) {
+func (p parseCache) storeResult(fullPath string, result ParseResult) {
 	p.results[fullPath] = result
 }
