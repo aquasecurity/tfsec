@@ -1,14 +1,18 @@
-# pinned version of the Alpine-tagged 'go' image
-FROM golang:1.13-alpine
+FROM golang:1.14-alpine  AS build-env
 
-# grab tfsec from GitHub (taken from README.md)
-RUN env GO111MODULE=on go get -u github.com/liamg/tfsec/cmd/tfsec && mkdir /workdir && chown -R nobody /workdir
+ARG tfsec_version=0.0.0
+
+COPY . /src
+WORKDIR /src
+RUN go build -ldflags "-X github.com/liamg/tfsec/version.Version=${tfsec_version}" -mod=vendor ./cmd/tfsec
+
+FROM alpine
 
 # use a non-privileged user
 USER nobody
 
 # work somewhere where we can write
-WORKDIR /workdir
+COPY --from=build-env /src/tfsec /usr/bin/tfsec
 
 # set the default entrypoint -- when this container is run, use this command
 ENTRYPOINT [ "tfsec" ]

@@ -57,16 +57,10 @@ tfsec .
 As an alternative to installing and running tfsec on your system, you may
 run tfsec in a Docker container.
 
-To build:
-
-```bash
-docker build -t tfsec .
-```
-
 To run:
 
 ```bash
-docker run --rm -it -v "$(pwd):/workdir" tfsec .
+docker run --rm -it -v "$(pwd):/src" liamg/tfsec /src
 ```
 
 ## Use as GitHub Action
