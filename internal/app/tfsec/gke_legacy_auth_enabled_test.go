@@ -31,6 +31,7 @@ resource "google_container_cluster" "gke" {
 	master_auth {
     username = ""
     password = ""
+	}
 }`,
 			mustExcludeResultCode: checks.GkeLegacyAuthEnabled,
 		},
@@ -44,6 +45,7 @@ resource "google_container_cluster" "gke" {
 		client_certificate_config {
       issue_client_certificate = true
     }
+	}
 }`,
 			mustIncludeResultCode: checks.GkeLegacyAuthEnabled,
 		},
