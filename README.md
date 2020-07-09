@@ -170,6 +170,7 @@ there are also checks which are provider agnostic.
 | GCP007  | google   | Legacy metadata endpoints enabled.
 | GCP008  | google   | Legacy client authentication methods utilized.
 | GCP009  | google   | Pod security policy enforcement not defined.
+| GCP010  | google   | Shielded GKE nodes not enabled.
 
 ## Running in CI
 
