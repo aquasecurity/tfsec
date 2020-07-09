@@ -167,6 +167,7 @@ there are also checks which are provider agnostic.
 | GCP004  | google   | An outbound firewall rule allows traffic to `/0`.
 | GCP005  | google   | Legacy ABAC permissions are enabled.
 | GCP006  | google   | Node metadata value disables metadata concealment.
+| GCP007  | google   | Legacy metadata endpoints enabled.
 
 ## Running in CI
 
