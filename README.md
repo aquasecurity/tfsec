@@ -166,6 +166,7 @@ there are also checks which are provider agnostic.
 | GCP003  | google   | An inbound firewall rule allows traffic from `/0`.
 | GCP004  | google   | An outbound firewall rule allows traffic to `/0`.
 | GCP005  | google   | Legacy ABAC permissions are enabled.
+| GCP006  | google   | Node metadata value disables metadata concealment.
 
 ## Running in CI
 
@@ -177,7 +178,7 @@ American friends).
 
 ## Output options
 
-You can output tfsec results as JSON, CSV, Checkstyle, JUnit or just plain old human readable format. Use the `--format` flag 
+You can output tfsec results as JSON, CSV, Checkstyle, JUnit or just plain old human readable format. Use the `--format` flag
 to specify your desired format.
 
 ## Support for older terraform versions
