@@ -43,7 +43,7 @@ resource "google_container_cluster" "gke" {
   }
 }`,
 			mustExcludeResultCode: checks.GkeEnforcePSP,
-		}
+		},
 	}
 
 	for _, test := range tests {

@@ -40,7 +40,7 @@ resource "google_container_cluster" "gke" {
 
 }`,
 			mustExcludeResultCode: checks.GkeShieldedNodesDisabled,
-		}
+		},
 	}
 
 	for _, test := range tests {
