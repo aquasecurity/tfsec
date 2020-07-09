@@ -169,6 +169,7 @@ there are also checks which are provider agnostic.
 | GCP006  | google   | Node metadata value disables metadata concealment.
 | GCP007  | google   | Legacy metadata endpoints enabled.
 | GCP008  | google   | Legacy client authentication methods utilized.
+| GCP009  | google   | Pod security policy enforcement not defined.
 
 ## Running in CI
 
