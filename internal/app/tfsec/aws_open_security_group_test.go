@@ -143,6 +143,16 @@ variable "cidr_2" {
 `,
 			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupInlineRule,
 		},
+		{
+			name: "check aws_security_group ingress on ::/0",
+			source: `
+		resource "aws_security_group" "my-group" {
+			ingress {
+				ipv6_cidr_blocks = ["0.0.0.0/0"]
+			}
+		}`,
+			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
+		},
 	}
 
 	for _, test := range tests {

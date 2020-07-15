@@ -73,6 +73,15 @@ variable "blocks" {
 `,
 			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
 		},
+		{
+			name: "check aws_security_group_rule ingress on ::/0",
+			source: `
+resource "aws_security_group_rule" "my-rule" {
+	type = "ingress"
+	ipv6_cidr_blocks = ["::/0"]
+}`,
+			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
+		},
 	}
 
 	for _, test := range tests {
