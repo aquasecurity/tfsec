@@ -47,7 +47,7 @@ data "cats_cat" "the-cats-mother" {
 
 `)
 
-	blocks, err := parser.ParseDirectory(filepath.Dir(path))
+	blocks, err := parser.ParseDirectory(filepath.Dir(path), nil, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -120,11 +120,63 @@ output "result" {
 	value = var.input
 }
 `,
+		"module",
 	)
 
 	parser := New()
 
-	blocks, err := parser.ParseDirectory(path)
+	blocks, err := parser.ParseDirectory(path, nil, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	modules := blocks.OfType("module")
+	require.Len(t, modules, 1)
+	module := modules[0]
+	assert.Equal(t, "module", module.Type())
+	assert.Equal(t, "module.my-mod", module.Name())
+	inputAttr := module.GetAttribute("input")
+	require.NotNil(t, inputAttr)
+	require.Equal(t, cty.String, inputAttr.Value().Type())
+	assert.Equal(t, "ok", inputAttr.Value().AsString())
+
+	outputs := blocks.OfType("output")
+	require.Len(t, outputs, 1)
+	output := outputs[0]
+	assert.Equal(t, "output.result", output.Name())
+	valAttr := output.GetAttribute("value")
+	require.NotNil(t, valAttr)
+	require.Equal(t, cty.String, valAttr.Type())
+	assert.Equal(t, "ok", valAttr.Value().AsString())
+}
+
+func Test_NestedParentModule(t *testing.T) {
+
+	path := createTestFileWithModule(`
+module "my-mod" {
+	source = "../."
+	input = "ok"
+}
+
+output "result" {
+	value = module.my-mod.result
+}
+`,
+		`
+variable "input" {
+	default = "?"
+}
+
+output "result" {
+	value = var.input
+}
+`,
+		"",
+	)
+
+	parser := New()
+
+	blocks, err := parser.ParseDirectory(path, nil, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -161,21 +213,26 @@ func createTestFile(filename, contents string) string {
 	return path
 }
 
-func createTestFileWithModule(contents string, moduleContents string) string {
+func createTestFileWithModule(contents string, moduleContents string, moduleName string) string {
 	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
 	if err != nil {
 		panic(err)
 	}
 
 	rootPath := filepath.Join(dir, "main")
-	modulePath := filepath.Join(dir, "module")
+	modulePath := dir
+	if len(moduleName) > 0 {
+		modulePath = filepath.Join(modulePath, moduleName)
+	}
 
 	if err := os.Mkdir(rootPath, 0755); err != nil {
 		panic(err)
 	}
 
-	if err := os.Mkdir(modulePath, 0755); err != nil {
-		panic(err)
+	if modulePath != dir {
+		if err := os.Mkdir(modulePath, 0755); err != nil {
+			panic(err)
+		}
 	}
 
 	if err := ioutil.WriteFile(filepath.Join(rootPath, "main.tf"), []byte(contents), 0755); err != nil {

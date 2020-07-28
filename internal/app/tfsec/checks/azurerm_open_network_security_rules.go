@@ -31,17 +31,19 @@ func init() {
 
 			if prefixAttr := block.GetAttribute("source_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
 				if strings.HasSuffix(prefixAttr.Value().AsString(), "/0") || prefixAttr.Value().AsString() == "*" {
-					return []scanner.Result{
-						check.NewResultWithValueAnnotation(
-							fmt.Sprintf(
-								"Resource '%s' defines a fully open %s network security group rule.",
-								block.Name(),
-								strings.ToLower(directionAttr.Value().AsString()),
+					if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
+						return []scanner.Result{
+							check.NewResultWithValueAnnotation(
+								fmt.Sprintf(
+									"Resource '%s' defines a fully open %s network security group rule.",
+									block.Name(),
+									strings.ToLower(directionAttr.Value().AsString()),
+								),
+								prefixAttr.Range(),
+								prefixAttr,
+								scanner.SeverityWarning,
 							),
-							prefixAttr.Range(),
-							prefixAttr,
-							scanner.SeverityWarning,
-						),
+						}
 					}
 				}
 			}
@@ -51,14 +53,16 @@ func init() {
 			if prefixesAttr := block.GetAttribute("source_address_prefixes"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
 				for _, prefix := range prefixesAttr.Value().AsValueSlice() {
 					if strings.HasSuffix(prefix.AsString(), "/0") || prefix.AsString() == "*" {
-						results = append(results,
-							check.NewResultWithValueAnnotation(
-								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
-								prefixesAttr.Range(),
-								prefixesAttr,
-								scanner.SeverityWarning,
-							),
-						)
+						if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
+							results = append(results,
+								check.NewResultWithValueAnnotation(
+									fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
+									prefixesAttr.Range(),
+									prefixesAttr,
+									scanner.SeverityWarning,
+								),
+							)
+						}
 					}
 				}
 
@@ -81,17 +85,19 @@ func init() {
 
 			if prefixAttr := block.GetAttribute("destination_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
 				if strings.HasSuffix(prefixAttr.Value().AsString(), "/0") || prefixAttr.Value().AsString() == "*" {
-					return []scanner.Result{
-						check.NewResultWithValueAnnotation(
-							fmt.Sprintf(
-								"Resource '%s' defines a fully open %s network security group rule.",
-								block.Name(),
-								strings.ToLower(directionAttr.Value().AsString()),
+					if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
+						return []scanner.Result{
+							check.NewResultWithValueAnnotation(
+								fmt.Sprintf(
+									"Resource '%s' defines a fully open %s network security group rule.",
+									block.Name(),
+									strings.ToLower(directionAttr.Value().AsString()),
+								),
+								prefixAttr.Range(),
+								prefixAttr,
+								scanner.SeverityWarning,
 							),
-							prefixAttr.Range(),
-							prefixAttr,
-							scanner.SeverityWarning,
-						),
+						}
 					}
 				}
 			}
@@ -101,14 +107,16 @@ func init() {
 			if prefixesAttr := block.GetAttribute("destination_address_prefixes"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
 				for _, prefix := range prefixesAttr.Value().AsValueSlice() {
 					if strings.HasSuffix(prefix.AsString(), "/0") || prefix.AsString() == "*" {
-						results = append(results,
-							check.NewResultWithValueAnnotation(
-								fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
-								prefixesAttr.Range(),
-								prefixesAttr,
-								scanner.SeverityWarning,
-							),
-						)
+						if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
+							results = append(results,
+								check.NewResultWithValueAnnotation(
+									fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
+									prefixesAttr.Range(),
+									prefixesAttr,
+									scanner.SeverityWarning,
+								),
+							)
+						}
 					}
 				}
 
