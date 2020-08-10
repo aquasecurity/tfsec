@@ -156,6 +156,7 @@ there are also checks which are provider agnostic.
 | AWS022  | aws      | A MSK cluster allows unencrypted data in transit.
 | AWS023  | aws      | ECR repository has image scans disabled
 | AWS024  | aws      | Kinesis stream is unencrypted
+| AWS025  | aws      | API Gateway domain name uses outdated SSL/TLS protocols.
 | AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`.
 | AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`.
 | AZU003  | azurerm  | Unencrypted managed disk.
