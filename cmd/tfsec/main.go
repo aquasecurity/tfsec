@@ -24,6 +24,7 @@ var softFail = false
 var excludedChecks string
 var excludeDirectories []string
 var tfvarsPath string
+var outputFlag string
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
@@ -34,6 +35,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
 	rootCmd.Flags().StringSliceVar(&excludeDirectories, "exclude-dir", []string{}, "Exclude a directory from the scan. You can use this flag multiple times to exclude further directories.")
 	rootCmd.Flags().StringVar(&tfvarsPath, "tfvars-file", tfvarsPath, "Path to .tfvars file")
+	rootCmd.Flags().StringVar(&outputFlag, "out", outputFlag, "Set output file")
 }
 
 func main() {
@@ -63,6 +65,7 @@ var rootCmd = &cobra.Command{
 		var dir string
 		var err error
 		var excludedChecksList []string
+		var outputFile *os.File
 
 		if len(args) == 1 {
 			dir, err = filepath.Abs(args[0])
@@ -76,6 +79,18 @@ var rootCmd = &cobra.Command{
 
 		if len(excludedChecks) > 0 {
 			excludedChecksList = strings.Split(excludedChecks, ",")
+		}
+
+		if outputFlag != "" {
+			f, err := os.OpenFile(filepath.Clean(outputFlag), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			defer func() { _ = f.Close() }()
+			outputFile = f
+		} else {
+			outputFile = os.Stdout
 		}
 
 		formatter, err := getFormatter()
@@ -108,7 +123,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		results := scanner.New().Scan(blocks, excludedChecksList)
-		if err := formatter(results); err != nil {
+		if err := formatter(outputFile, results); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
@@ -121,7 +136,7 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func getFormatter() (func([]scanner.Result) error, error) {
+func getFormatter() (formatters.Formatter, error) {
 	switch format {
 	case "", "default":
 		return formatters.FormatDefault, nil

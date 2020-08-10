@@ -3,13 +3,13 @@ package formatters
 import (
 	"encoding/csv"
 	"fmt"
-	"os"
+	"io"
 	"strconv"
 
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
 )
 
-func FormatCSV(results []scanner.Result) error {
+func FormatCSV(w io.Writer, results []scanner.Result) error {
 
 	records := [][]string{
 		{"file", "start_line", "end_line", "rule_id", "severity", "description", "link"},
@@ -27,15 +27,15 @@ func FormatCSV(results []scanner.Result) error {
 		})
 	}
 
-	w := csv.NewWriter(os.Stdout)
+	csvWriter := csv.NewWriter(w)
 
 	for _, record := range records {
-		if err := w.Write(record); err != nil {
+		if err := csvWriter.Write(record); err != nil {
 			return fmt.Errorf("error writing record to csv: %s", err)
 		}
 	}
 
-	w.Flush()
+	csvWriter.Flush()
 
-	return w.Error()
+	return csvWriter.Error()
 }

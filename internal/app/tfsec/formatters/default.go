@@ -2,6 +2,7 @@ package formatters
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"strings"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/liamg/tml"
 )
 
-func FormatDefault(results []scanner.Result) error {
+func FormatDefault(_ io.Writer, results []scanner.Result) error {
 
 	if len(results) == 0 {
 		terminal.PrintSuccessf("\nNo problems detected!\n")
