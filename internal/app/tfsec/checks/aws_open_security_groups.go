@@ -24,10 +24,28 @@ func init() {
 
 			var results []scanner.Result
 
-			if directionBlock := block.GetBlock("ingress"); directionBlock != nil {
+			for _, directionBlock := range block.GetBlocks("ingress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
-					if cidrBlocksAttr.Value().LengthInt() == 0 {
+					if cidrBlocksAttr.Value().IsNull() || cidrBlocksAttr.Value().LengthInt() == 0 {
+						return nil
+					}
+
+					for _, cidr := range cidrBlocksAttr.Value().AsValueSlice() {
+						if strings.HasSuffix(cidr.AsString(), "/0") {
+							results = append(results,
+								check.NewResult(
+									fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.Name()),
+									cidrBlocksAttr.Range(),
+									scanner.SeverityWarning,
+								),
+							)
+						}
+					}
+				}
+				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr != nil {
+
+					if cidrBlocksAttr.Value().IsNull() || cidrBlocksAttr.Value().LengthInt() == 0 {
 						return nil
 					}
 
@@ -57,10 +75,29 @@ func init() {
 
 			var results []scanner.Result
 
-			if directionBlock := block.GetBlock("egress"); directionBlock != nil {
+			for _, directionBlock := range block.GetBlocks("egress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
-					if cidrBlocksAttr.Value().LengthInt() == 0 {
+					if cidrBlocksAttr.Value().IsNull() || cidrBlocksAttr.Value().LengthInt() == 0 {
+						return nil
+					}
+
+					for _, cidr := range cidrBlocksAttr.Value().AsValueSlice() {
+						if strings.HasSuffix(cidr.AsString(), "/0") {
+							results = append(results,
+								check.NewResultWithValueAnnotation(
+									fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.Name()),
+									cidrBlocksAttr.Range(),
+									cidrBlocksAttr,
+									scanner.SeverityWarning,
+								),
+							)
+						}
+					}
+				}
+				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr != nil {
+
+					if cidrBlocksAttr.Value().IsNull() || cidrBlocksAttr.Value().LengthInt() == 0 {
 						return nil
 					}
 

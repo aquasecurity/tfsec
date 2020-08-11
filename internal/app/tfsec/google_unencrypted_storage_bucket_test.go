@@ -30,17 +30,7 @@ resource "google_storage_bucket" "my-bucket" {
 resource "google_storage_bucket" "my-bucket" {
 	encryption {}	
 }`,
-			mustIncludeResultCode: checks.GoogleUnencryptedStorageBucket,
-		},
-		{
-			name: "check google_storage_bucket with empty encryption kms key name",
-			source: `
-resource "google_storage_bucket" "my-bucket" {
-	encryption {
-		default_kms_key_name = ""
-	}	
-}`,
-			mustIncludeResultCode: checks.GoogleUnencryptedStorageBucket,
+			mustExcludeResultCode: checks.GoogleUnencryptedStorageBucket,
 		},
 		{
 			name: "check google_storage_bucket with non-empty encryption kms key name",

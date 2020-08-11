@@ -35,7 +35,7 @@ func init() {
 
 			if cidrBlocksAttr := block.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
-				if cidrBlocksAttr.Value().LengthInt() == 0 {
+				if cidrBlocksAttr.Value().IsNull() || cidrBlocksAttr.Value().LengthInt() == 0 {
 					return nil
 				}
 
@@ -45,6 +45,27 @@ func init() {
 							check.NewResult(
 								fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", block.Name()),
 								cidrBlocksAttr.Range(),
+								scanner.SeverityWarning,
+							),
+						}
+					}
+				}
+
+			}
+
+			if ipv6CidrBlocksAttr := block.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr != nil {
+
+				if ipv6CidrBlocksAttr.Value().IsNull() || ipv6CidrBlocksAttr.Value().LengthInt() == 0 {
+					return nil
+				}
+
+				for _, cidr := range ipv6CidrBlocksAttr.Value().AsValueSlice() {
+					if strings.HasSuffix(cidr.AsString(), "/0") {
+						return []scanner.Result{
+							check.NewResultWithValueAnnotation(
+								fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.Name()),
+								ipv6CidrBlocksAttr.Range(),
+								ipv6CidrBlocksAttr,
 								scanner.SeverityWarning,
 							),
 						}
@@ -74,7 +95,7 @@ func init() {
 
 			if cidrBlocksAttr := block.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
-				if cidrBlocksAttr.Value().LengthInt() == 0 {
+				if cidrBlocksAttr.Value().IsNull() || cidrBlocksAttr.Value().LengthInt() == 0 {
 					return nil
 				}
 
@@ -85,6 +106,27 @@ func init() {
 								fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.Name()),
 								cidrBlocksAttr.Range(),
 								cidrBlocksAttr,
+								scanner.SeverityWarning,
+							),
+						}
+					}
+				}
+
+			}
+
+			if ipv6CidrBlocksAttr := block.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr != nil {
+
+				if ipv6CidrBlocksAttr.Value().IsNull() || ipv6CidrBlocksAttr.Value().LengthInt() == 0 {
+					return nil
+				}
+
+				for _, cidr := range ipv6CidrBlocksAttr.Value().AsValueSlice() {
+					if strings.HasSuffix(cidr.AsString(), "/0") {
+						return []scanner.Result{
+							check.NewResultWithValueAnnotation(
+								fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.Name()),
+								ipv6CidrBlocksAttr.Range(),
+								ipv6CidrBlocksAttr,
 								scanner.SeverityWarning,
 							),
 						}

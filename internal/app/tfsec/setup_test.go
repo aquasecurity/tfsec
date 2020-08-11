@@ -15,6 +15,8 @@ import (
 
 const exampleCheckCode scanner.RuleID = "EXA001"
 
+var excludedChecksList []string
+
 func TestMain(t *testing.M) {
 
 	scanner.RegisterCheck(scanner.Check{
@@ -32,12 +34,12 @@ func TestMain(t *testing.M) {
 
 func scanSource(source string) []scanner.Result {
 	blocks := createBlocksFromSource(source)
-	return scanner.New().Scan(blocks)
+	return scanner.New().Scan(blocks, excludedChecksList)
 }
 
 func createBlocksFromSource(source string) []*parser.Block {
 	path := createTestFile("test.tf", source)
-	blocks, err := parser.New().ParseDirectory(filepath.Dir(path))
+	blocks, err := parser.New().ParseDirectory(filepath.Dir(path), nil, "")
 	if err != nil {
 		panic(err)
 	}

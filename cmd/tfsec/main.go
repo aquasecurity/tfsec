@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/liamg/tfsec/internal/app/tfsec/formatters"
 
@@ -19,12 +20,22 @@ import (
 var showVersion = false
 var disableColours = false
 var format string
+var softFail = false
+var excludedChecks string
+var excludeDirectories []string
+var tfvarsPath string
+var outputFlag string
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
-	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle")
+	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit")
+	rootCmd.Flags().StringVarP(&excludedChecks, "exclude", "e", excludedChecks, "Provide checks via , without space to exclude from run.")
+	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
+	rootCmd.Flags().StringSliceVar(&excludeDirectories, "exclude-dir", []string{}, "Exclude a directory from the scan. You can use this flag multiple times to exclude further directories.")
+	rootCmd.Flags().StringVar(&tfvarsPath, "tfvars-file", tfvarsPath, "Path to .tfvars file")
+	rootCmd.Flags().StringVar(&outputFlag, "out", outputFlag, "Set output file")
 }
 
 func main() {
@@ -53,6 +64,9 @@ var rootCmd = &cobra.Command{
 
 		var dir string
 		var err error
+		var excludedChecksList []string
+		var outputFile *os.File
+
 		if len(args) == 1 {
 			dir, err = filepath.Abs(args[0])
 		} else {
@@ -63,25 +77,58 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		if len(excludedChecks) > 0 {
+			excludedChecksList = strings.Split(excludedChecks, ",")
+		}
+
+		if outputFlag != "" {
+			f, err := os.OpenFile(filepath.Clean(outputFlag), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			defer func() { _ = f.Close() }()
+			outputFile = f
+		} else {
+			outputFile = os.Stdout
+		}
+
 		formatter, err := getFormatter()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		blocks, err := parser.New().ParseDirectory(dir)
+		var absoluteExcludes []string
+		for _, exclude := range excludeDirectories {
+			exDir, err := filepath.Abs(exclude)
+			if err != nil {
+				continue
+			}
+			absoluteExcludes = append(absoluteExcludes, exDir)
+		}
+
+		if tfvarsPath != "" {
+			tfvarsPath, err = filepath.Abs(tfvarsPath)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
+
+		blocks, err := parser.New().ParseDirectory(dir, absoluteExcludes, tfvarsPath)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		results := scanner.New().Scan(blocks)
-		if err := formatter(results); err != nil {
+		results := scanner.New().Scan(blocks, excludedChecksList)
+		if err := formatter(outputFile, results); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		if len(results) == 0 {
+		if len(results) == 0 || softFail {
 			os.Exit(0)
 		}
 
@@ -89,7 +136,7 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func getFormatter() (func([]scanner.Result) error, error) {
+func getFormatter() (formatters.Formatter, error) {
 	switch format {
 	case "", "default":
 		return formatters.FormatDefault, nil
@@ -99,6 +146,8 @@ func getFormatter() (func([]scanner.Result) error, error) {
 		return formatters.FormatCSV, nil
 	case "checkstyle":
 		return formatters.FormatCheckStyle, nil
+	case "junit":
+		return formatters.FormatJUnit, nil
 	default:
 		return nil, fmt.Errorf("invalid format specified: '%s'", format)
 	}

@@ -2,6 +2,7 @@ package scanner
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/zclconf/go-cty/cty"
 
@@ -25,7 +26,7 @@ type Check struct {
 func (check *Check) Run(block *parser.Block, context *Context) []Result {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Printf("WARNING: skipped %s check due to error(s): %s\n", check.Code, err)
+			fmt.Fprintf(os.Stderr, "WARNING: skipped %s check due to error(s): %s\n", check.Code, err)
 		}
 	}()
 	return check.CheckFunc(check, block, context)

@@ -4,3 +4,4 @@
 
 # ignore windows compiled binary
 tfsec.exe
+.vscode/launch.json

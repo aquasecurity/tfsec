@@ -1,6 +1,12 @@
 language: go
 go:
-- 1.13
+- 1.14
+services:
+- docker
+env:
+  global:
+    - secure: "Z5uOG+pcrS/5p8B0Pi+2eYnAJvzey16cN6pJm1jp6DNl6YxekEFMPIznb4qK9LYmAAdxjPr0GLOqkkUygrm51OLrK/oCT4ygDNMXMq/2Pvndj8NVyy0drji38D/v6HqGrNyDKRYKbYFcOGzwwBQGe9IYtahfUuXVU5NhdNrbW5nWjdgvbywomovW6FuUVbFrPHJH9WHnmfIPMzBEvYzD5831V646vLyVGXzehLe6z2d4vuANhGNKH0ACl/8Epv+TdODnGLJR10jkN+QC2r8NhdbdeHPOpgqPduAKsyCyZCDJZvIQsqCeuvUFSY5nqKYzCc2RpVjWo6iia3jKTL94ov0blhn+c/ZSKSwa4rQncGT8f1XWkYa+Bfn4sw1XWVA7cI+Xt1s7Z6axuOULfhmmbIbRu66qlpmUJnYwGMrGVuOluR3yGn2z7VBjqkND/fPm8bLrjRfFicxg4OoWYf1B+HPrPQvSzoX/wx5o10PhlDlH28VWGHHZlGXYq5qdtlTUhptYq6SZWNnyxgNE8ublkPBzc8VqS4wczplUGP0XEooWQ+nUdtp8f+GMHJ9pFRdMpG/hMilIBWh+CdLstUDfnx2zis64a05Cy+xZDFHxahyFs0LhV1B3tLlozR+LDfN+Uae1ozXDwqoZHeaVtdxpTSASyB9DhAKSpzSljp0vQa4="
+    - secure: "Qw1Px9YAQBVcGCe3uonIArbUOZ2LG0Ev//0iitNIBt/zT47Z335tVdIbmqXgvqrX8UN8zjLrqp9sJL0pXVgBXRI46JD+hkYrc/gqpfsfILEZL31z1pHibye1ce69XnalZhUnRUwMy97qdk7jKswIfkfHIXdjQEXUT4wFlR7KxEGdE7EjVWQpSU5JKlzvuQUYXCixDr9sNREd3FShCpkXX0/TTau5nwL8TzL4IePEE0Bb6BfqWhHhQBL9lCQRvqmQLy272QDgB2eEvkyfbsiFZG8+71V7q/N7pvVShWSQm0NCDtKxv8YiTJuvn0nx78QQ6imo8frzvU7+MZth8Lqk64SiqRcoGqv4/6SPMX8q8m28QysxuScUb0Vy+e4MSXGJo2rGYXAH8FzD1v50BYgg0Eeqcpwc/ve7uHclz+dJxoKh7ytxaah2qa8pv2s/QcdRY/M1dGdVtVAgLnk85Epg7ay4r9MY4oMRL6/cA7003lx3Rs8/49dvzgjjWBcZ+/WSfPZVkhNjD2nIAZBQLWV0s4827u3YhDH3PiqkQsrCtC+waz1PI0J/QHtPUfeegFr2g+ra5oD2lJ4oVHf342HkxH1YeIQeymWU0d9kuvGTqEe9daw9lFVSXND7MPspTKV4ceyi5T0ELAd0dofgan1nC3vTShljBXfT7HRkfWT32eo="
 jobs:
   include:
     - stage: test
@@ -8,8 +14,10 @@ jobs:
       script:
         - make test
     - stage: build
+      name: Build
       script:
         - make build
+        - make image
       deploy:
         provider: releases
         skip_cleanup: true
@@ -23,3 +31,11 @@ jobs:
         on:
           repo: liamg/tfsec
           tags: true
+    - stage: publish image
+      name: Publish Docker image
+      if: tag IS NOT blank
+      before_script:
+      - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+      script:
+        - make image
+        - make push-image
