@@ -11,7 +11,7 @@ import (
 
 // AWSUnenforcedHTTPSElasticsearchDomainEndpoint See
 // https://github.com/liamg/tfsec#included-checks for check info
-const AWSUnenforcedHTTPSElasticsearchDomainEndpoint scanner.RuleID = "AWS028"
+const AWSUnenforcedHTTPSElasticsearchDomainEndpoint scanner.RuleID = "AWS033"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

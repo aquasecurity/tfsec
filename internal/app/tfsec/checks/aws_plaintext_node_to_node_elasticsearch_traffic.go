@@ -10,7 +10,7 @@ import (
 )
 
 // AWSPlaintextNodeToNodeElasticsearchTraffic See https://github.com/liamg/tfsec#included-checks for check info
-const AWSPlaintextNodeToNodeElasticsearchTraffic scanner.RuleID = "AWS027"
+const AWSPlaintextNodeToNodeElasticsearchTraffic scanner.RuleID = "AWS032"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

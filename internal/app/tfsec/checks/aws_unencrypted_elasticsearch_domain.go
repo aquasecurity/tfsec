@@ -10,7 +10,7 @@ import (
 )
 
 // AWSUnencryptedElasticsearchDomain See https://github.com/liamg/tfsec#included-checks for check info
-const AWSUnencryptedElasticsearchDomain scanner.RuleID = "AWS026"
+const AWSUnencryptedElasticsearchDomain scanner.RuleID = "AWS031"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
