@@ -148,6 +148,8 @@ func getFormatter() (formatters.Formatter, error) {
 		return formatters.FormatCheckStyle, nil
 	case "junit":
 		return formatters.FormatJUnit, nil
+	case "text":
+		return formatters.FormatText, nil
 	default:
 		return nil, fmt.Errorf("invalid format specified: '%s'", format)
 	}
