@@ -178,6 +178,7 @@ there are also checks which are provider agnostic.
 | GCP008  | google   | Legacy client authentication methods utilized.
 | GCP009  | google   | Pod security policy enforcement not defined.
 | GCP010  | google   | Shielded GKE nodes not enabled.
+| GCP011  | google   | IAM granted directly to user.
 
 ## Running in CI
 
