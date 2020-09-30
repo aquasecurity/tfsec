@@ -32,12 +32,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 			mustIncludeResultCode: checks.AWSCloudFrontOutdatedProtocol,
 		},
 		{
-			name: "check TLSv1.2_2018 not used",
+			name: "check TLSv1.2_2019 not used",
 			source: `
 resource "aws_cloudfront_distribution" "s3_distribution" {
   viewer_certificate {
     cloudfront_default_certificate = true
-	minimum_protocol_version = "TLSv1.1_2016"
+	minimum_protocol_version = "TLSv1.2_2018"
   }
 }`,
 			mustIncludeResultCode: checks.AWSCloudFrontOutdatedProtocol,

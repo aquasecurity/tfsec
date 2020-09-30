@@ -2,7 +2,7 @@ package formatters
 
 import (
 	"encoding/json"
-	"fmt"
+	"io"
 
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
 )
@@ -11,13 +11,9 @@ type JSONOutput struct {
 	Results []scanner.Result `json:"results"`
 }
 
-func FormatJSON(results []scanner.Result) error {
+func FormatJSON(w io.Writer, results []scanner.Result) error {
+	jsonWriter := json.NewEncoder(w)
+	jsonWriter.SetIndent("", "\t")
 
-	data, err := json.MarshalIndent(JSONOutput{results}, "", "\t")
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(data))
-	return nil
+	return jsonWriter.Encode(JSONOutput{results})
 }
