@@ -156,6 +156,13 @@ there are also checks which are provider agnostic.
 | AWS022  | aws      | A MSK cluster allows unencrypted data in transit.
 | AWS023  | aws      | ECR repository has image scans disabled
 | AWS024  | aws      | Kinesis stream is unencrypted
+| AWS025  | aws      | API Gateway domain name uses outdated SSL/TLS protocols.
+| AWS031  | aws      | Elasticsearch domain isn't encrypted at rest.
+| AWS032  | aws      | Elasticsearch domain uses plaintext traffic for node to node communication.
+| AWS033  | aws      | Elasticsearch doesn't enforce HTTPS traffic.
+| AWS034  | aws      | Elasticsearch domain endpoint is using outdated TLS policy.
+| AWS035  | aws      | Unencrypted Elasticache Replication Group.
+| AWS036  | aws      | Elasticache Replication Group uses unencrypted traffic.
 | AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`.
 | AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`.
 | AZU003  | azurerm  | Unencrypted managed disk.
@@ -171,6 +178,7 @@ there are also checks which are provider agnostic.
 | GCP008  | google   | Legacy client authentication methods utilized.
 | GCP009  | google   | Pod security policy enforcement not defined.
 | GCP010  | google   | Shielded GKE nodes not enabled.
+| GCP011  | google   | IAM granted directly to user.
 
 ## Running in CI
 

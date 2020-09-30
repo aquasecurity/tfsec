@@ -36,10 +36,10 @@ func init() {
 						scanner.SeverityError,
 					),
 				}
-			} else if minVersion.Type() == cty.String && minVersion.Value().AsString() != "TLSv1.2_2018" {
+			} else if minVersion.Type() == cty.String && minVersion.Value().AsString() != "TLSv1.2_2019" {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2018)", block.Name()),
+						fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2019)", block.Name()),
 						minVersion.Range(),
 						scanner.SeverityError,
 					),

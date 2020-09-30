@@ -2,7 +2,7 @@ package formatters
 
 import (
 	"encoding/xml"
-	"fmt"
+	"io"
 
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
 )
@@ -26,7 +26,7 @@ type checkstyleOutput struct {
 	Files   []checkstyleFile `xml:"file"`
 }
 
-func FormatCheckStyle(results []scanner.Result) error {
+func FormatCheckStyle(w io.Writer, results []scanner.Result) error {
 
 	output := checkstyleOutput{}
 
@@ -56,11 +56,12 @@ func FormatCheckStyle(results []scanner.Result) error {
 		)
 	}
 
-	data, err := xml.MarshalIndent(output, "", "\t")
-	if err != nil {
+	if _, err := w.Write([]byte(xml.Header)); err != nil {
 		return err
 	}
 
-	fmt.Println(string(data))
-	return nil
+	xmlEncoder := xml.NewEncoder(w)
+	xmlEncoder.Indent("", "\t")
+
+	return xmlEncoder.Encode(output)
 }
