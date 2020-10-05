@@ -12,10 +12,13 @@ import (
 
 // AWSBadBucketACL See https://github.com/liamg/tfsec#included-checks for check info
 const AWSBadBucketACL scanner.RuleID = "AWS001"
+const AwsBadBucketACLDescription scanner.RuleDescription = "S3 Bucket has an ACL defined which allows public access."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSBadBucketACL,
+		Description:    AwsBadBucketACLDescription,
+		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_s3_bucket"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {

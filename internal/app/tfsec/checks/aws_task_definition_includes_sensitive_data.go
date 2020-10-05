@@ -15,10 +15,13 @@ import (
 
 // AWSTaskDefinitionWithSensitiveEnvironmentVariables See https://github.com/liamg/tfsec#included-checks for check info
 const AWSTaskDefinitionWithSensitiveEnvironmentVariables scanner.RuleID = "AWS013"
+const AWSTaskDefinitionWithSensitiveEnvironmentVariablesDescription scanner.RuleDescription = "Task definition defines sensitive environment variable(s)."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+		Description:    AWSTaskDefinitionWithSensitiveEnvironmentVariablesDescription,
+		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecs_task_definition"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {

@@ -11,10 +11,13 @@ import (
 
 // AWSNoKMSAutoRotate See https://github.com/liamg/tfsec#included-checks for check info
 const AWSNoKMSAutoRotate scanner.RuleID = "AWS019"
+const AWSNoKMSAutoRotateDescription scanner.RuleDescription = "A KMS key is not configured to auto-rotate."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSNoKMSAutoRotate,
+		Description:    AWSNoKMSAutoRotateDescription,
+		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_kms_key"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {

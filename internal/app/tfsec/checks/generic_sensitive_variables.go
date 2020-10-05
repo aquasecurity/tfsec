@@ -13,10 +13,13 @@ import (
 
 // GenericSensitiveVariables See https://github.com/liamg/tfsec#included-checks for check info
 const GenericSensitiveVariables scanner.RuleID = "GEN001"
+const GenericSensitiveVariablesDescription scanner.RuleDescription = "Potentially sensitive data stored in \"default\" value of variable."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:          GenericSensitiveVariables,
+		Description:   GenericSensitiveVariablesDescription,
+		Provider:      scanner.GeneralProvider,
 		RequiredTypes: []string{"variable"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 

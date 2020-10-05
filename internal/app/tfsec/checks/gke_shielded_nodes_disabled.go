@@ -6,16 +6,19 @@ import (
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
-	
+
 	"github.com/zclconf/go-cty/cty"
 )
 
 // GkeShieldedNodesDisabled See https://github.com/liamg/tfsec#included-checks for check info
 const GkeShieldedNodesDisabled scanner.RuleID = "GCP010"
+const GkeShieldedNodesDisabledDescription scanner.RuleDescription = "Shielded GKE nodes not enabled."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           GkeShieldedNodesDisabled,
+		Description:    GkeShieldedNodesDisabledDescription,
+		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {

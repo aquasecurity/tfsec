@@ -10,10 +10,13 @@ import (
 
 // GkeEnforcePSP See https://github.com/liamg/tfsec#included-checks for check info
 const GkeEnforcePSP scanner.RuleID = "GCP009"
+const GkeEnforcePSPDescription scanner.RuleDescription = "Pod security policy enforcement not defined."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           GkeEnforcePSP,
+		Description:    GkeEnforcePSPDescription,
+		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
@@ -30,7 +33,7 @@ func init() {
 			}
 
 			enforcePSP := pspBlock.GetAttribute("enabled")
-      if enforcePSP.Type() == cty.Bool && enforcePSP.Value().False() || enforcePSP.Type() == cty.String && enforcePSP.Value().AsString() != "true" {
+			if enforcePSP.Type() == cty.Bool && enforcePSP.Value().False() || enforcePSP.Type() == cty.String && enforcePSP.Value().AsString() != "true" {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement. https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#admission_controllers", block.Name()),

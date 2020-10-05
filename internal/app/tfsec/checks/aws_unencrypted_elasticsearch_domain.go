@@ -11,10 +11,13 @@ import (
 
 // AWSUnencryptedElasticsearchDomain See https://github.com/liamg/tfsec#included-checks for check info
 const AWSUnencryptedElasticsearchDomain scanner.RuleID = "AWS031"
+const AWSUnencryptedElasticsearchDomainDescription scanner.RuleDescription = "Elasticsearch domain isn't encrypted at rest."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSUnencryptedElasticsearchDomain,
+		Description:    AWSUnencryptedElasticsearchDomainDescription,
+		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, context *scanner.Context) []scanner.Result {

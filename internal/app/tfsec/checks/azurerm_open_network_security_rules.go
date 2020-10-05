@@ -13,13 +13,17 @@ import (
 
 // AzureOpenInboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
 const AzureOpenInboundNetworkSecurityGroupRule scanner.RuleID = "AZU001"
+const AzureOpenInboundNetworkSecurityGroupRuleDescription scanner.RuleDescription = "An inbound network security rule allows traffic from `/0`."
 
 // AzureOpenOutboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
 const AzureOpenOutboundNetworkSecurityGroupRule scanner.RuleID = "AZU002"
+const AzureOpenOutboundNetworkSecurityGroupRuleDescription scanner.RuleDescription = "An outbound network security rule allows traffic to `/0`."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AzureOpenInboundNetworkSecurityGroupRule,
+		Description:    AzureOpenInboundNetworkSecurityGroupRuleDescription,
+		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_rule"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
@@ -74,6 +78,8 @@ func init() {
 
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AzureOpenOutboundNetworkSecurityGroupRule,
+		Description:    AzureOpenOutboundNetworkSecurityGroupRuleDescription,
+		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_rule"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {

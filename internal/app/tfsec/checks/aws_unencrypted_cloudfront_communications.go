@@ -12,10 +12,13 @@ import (
 
 // AWSUnencryptedCloudFrontCommunications See https://github.com/liamg/tfsec#included-checks for check info
 const AWSUnencryptedCloudFrontCommunications scanner.RuleID = "AWS020"
+const AWSUnencryptedCloudFrontCommunicationsDescription scanner.RuleDescription = "CloudFront distribution allows unencrypted (HTTP) communications."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSUnencryptedCloudFrontCommunications,
+		Description:    AWSUnencryptedCloudFrontCommunicationsDescription,
+		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudfront_distribution"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, context *scanner.Context) []scanner.Result {
