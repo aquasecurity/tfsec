@@ -3,14 +3,14 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 )
 
-// GkeShieldedNodesDisabled See https://github.com/liamg/tfsec#included-checks for check info
+// GkeShieldedNodesDisabled See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeShieldedNodesDisabled scanner.RuleID = "GCP010"
 const GkeShieldedNodesDisabledDescription scanner.RuleDescription = "Shielded GKE nodes not enabled."
 

@@ -3,14 +3,14 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
 // AWSOutdatedTLSPolicyElasticsearchDomainEndpoint See
-// https://github.com/liamg/tfsec#included-checks for check info
+// https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpoint scanner.RuleID = "AWS034"
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointDescription scanner.RuleDescription = "Elasticsearch domain endpoint is using outdated TLS policy."
 

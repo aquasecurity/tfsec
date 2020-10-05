@@ -3,13 +3,13 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSNoKMSAutoRotate See https://github.com/liamg/tfsec#included-checks for check info
+// AWSNoKMSAutoRotate See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSNoKMSAutoRotate scanner.RuleID = "AWS019"
 const AWSNoKMSAutoRotateDescription scanner.RuleDescription = "A KMS key is not configured to auto-rotate."
 

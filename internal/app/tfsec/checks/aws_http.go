@@ -3,13 +3,13 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/zclconf/go-cty/cty"
 )
 
-// AWSPlainHTTP See https://github.com/liamg/tfsec#included-checks for check info
+// AWSPlainHTTP See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSPlainHTTP scanner.RuleID = "AWS004"
 const AWSPlainHTTPDescription scanner.RuleDescription = "Use of plain HTTP."
 

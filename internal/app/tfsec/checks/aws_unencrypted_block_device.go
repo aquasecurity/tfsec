@@ -3,14 +3,14 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSLaunchConfigurationWithUnencryptedBlockDevice See https://github.com/liamg/tfsec#included-checks for check info
+// AWSLaunchConfigurationWithUnencryptedBlockDevice See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSLaunchConfigurationWithUnencryptedBlockDevice scanner.RuleID = "AWS014"
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceDescription scanner.RuleDescription = "Launch configuration with unencrypted block device."
 

@@ -3,12 +3,12 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSNoBucketLogging See https://github.com/liamg/tfsec#included-checks for check info
+// AWSNoBucketLogging See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSNoBucketLogging scanner.RuleID = "AWS002"
 const AWSNoBucketLoggingDescription scanner.RuleDescription = "S3 Bucket does not have logging enabled."
 

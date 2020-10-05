@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
 // Scanner scans HCL blocks by running all registered checks against them
@@ -37,7 +37,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 			if check.IsRequiredForBlock(block) {
 				for _, result := range check.Run(block, context) {
 					if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
-						result.Link = fmt.Sprintf("https://github.com/liamg/tfsec/wiki/%s", result.RuleID)
+						result.Link = fmt.Sprintf("https://github.com/tfsec/tfsec/wiki/%s", result.RuleID)
 						results = append(results, result)
 					}
 				}

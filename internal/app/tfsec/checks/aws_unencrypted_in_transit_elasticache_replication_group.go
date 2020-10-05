@@ -3,12 +3,12 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedInTransitElasticacheReplicationGroup See https://github.com/liamg/tfsec#included-checks for check info
+// AWSUnencryptedInTransitElasticacheReplicationGroup See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedInTransitElasticacheReplicationGroup scanner.RuleID = "AWS036"
 const AWSUnencryptedInTransitElasticacheReplicationGroupDescription scanner.RuleDescription = "Elasticache Replication Group uses unencrypted traffic."
 

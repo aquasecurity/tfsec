@@ -3,12 +3,12 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedAtRestElasticacheReplicationGroup See https://github.com/liamg/tfsec#included-checks for check info
+// AWSUnencryptedAtRestElasticacheReplicationGroup See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedAtRestElasticacheReplicationGroup scanner.RuleID = "AWS035"
 const AWSUnencryptedAtRestElasticacheReplicationGroupDescription scanner.RuleDescription = "Unencrypted Elasticache Replication Group."
 

@@ -6,15 +6,15 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/formatters"
+	"github.com/tfsec/tfsec/internal/app/tfsec/formatters"
 
 	"github.com/liamg/tml"
 
-	_ "github.com/liamg/tfsec/internal/app/tfsec/checks"
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
-	"github.com/liamg/tfsec/version"
 	"github.com/spf13/cobra"
+	_ "github.com/tfsec/tfsec/internal/app/tfsec/checks"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/version"
 )
 
 var showVersion = false

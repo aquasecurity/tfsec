@@ -4,11 +4,10 @@
 
 # tfsec
 
-[![Travis Build Status](https://travis-ci.org/liamg/tfsec.svg?branch=master)](https://travis-ci.org/liamg/tfsec)
-[![GoReportCard](https://goreportcard.com/badge/github.com/liamg/tfsec)](https://goreportcard.com/report/github.com/liamg/tfsec)
-[![Open Source Helpers](https://www.codetriage.com/liamg/tfsec/badges/users.svg)](https://www.codetriage.com/liamg/tfsec)
-[![Github Release](https://img.shields.io/github/release/liamg/tfsec.svg)](https://github.com/liamg/tfsec/releases)
-[![GitHub All Releases](https://img.shields.io/github/downloads/liamg/tfsec/total)](https://github.com/liamg/tfsec/releases)
+[![Travis Build Status](https://travis-ci.com/tfsec/tfsec.svg?branch=master)](https://travis-ci.com/tfsec/tfsec)
+[![GoReportCard](https://goreportcard.com/badge/github.com/tfsec/tfsec)](https://goreportcard.com/report/github.com/tfsec/tfsec)
+[![Github Release](https://img.shields.io/github/release/tfsec/tfsec.svg)](https://github.com/tfsec/tfsec/releases)
+[![GitHub All Releases](https://img.shields.io/github/downloads/tfsec/tfsec/total)](https://github.com/tfsec/tfsec/releases)
 
 tfsec uses static analysis of your terraform templates to spot potential
 security issues. Now with terraform v0.12+ support.
@@ -32,12 +31,12 @@ Install with Chocolatey:
 choco install tfsec
 ```
 
-You can also grab the binary for your system from the [releases page](https://github.com/liamg/tfsec/releases).
+You can also grab the binary for your system from the [releases page](https://github.com/tfsec/tfsec/releases).
 
 Alternatively, install with Go:
 
 ```bash
-go get -u github.com/liamg/tfsec/cmd/tfsec
+go get -u github.com/tfsec/tfsec/cmd/tfsec
 ```
 
 ## Usage
@@ -60,7 +59,7 @@ run tfsec in a Docker container.
 To run:
 
 ```bash
-docker run --rm -it -v "$(pwd):/src" liamg/tfsec /src
+docker run --rm -it -v "$(pwd):/src" tfsec/tfsec /src
 ```
 
 ## Use as GitHub Action

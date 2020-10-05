@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// GoogleOpenInboundFirewallRule See https://github.com/liamg/tfsec#included-checks for check info
+// GoogleOpenInboundFirewallRule See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleOpenInboundFirewallRule scanner.RuleID = "GCP003"
 const GoogleOpenInboundFirewallRuleDescription scanner.RuleDescription = "An inbound firewall rule allows traffic from `/0`."
 
-// GoogleOpenOutboundFirewallRule See https://github.com/liamg/tfsec#included-checks for check info
+// GoogleOpenOutboundFirewallRule See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleOpenOutboundFirewallRule scanner.RuleID = "GCP004"
 const GoogleOpenOutboundFirewallRuleDescription scanner.RuleDescription = "An outbound firewall rule allows traffic to `/0`."
 

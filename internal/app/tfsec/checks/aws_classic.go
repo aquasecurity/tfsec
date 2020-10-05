@@ -3,12 +3,12 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSClassicUsage See https://github.com/liamg/tfsec#included-checks for check info
+// AWSClassicUsage See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSClassicUsage scanner.RuleID = "AWS003"
 const AWSClassicUsageDescription scanner.RuleDescription = "AWS Classic resource usage."
 

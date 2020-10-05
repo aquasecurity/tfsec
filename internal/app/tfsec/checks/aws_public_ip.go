@@ -3,14 +3,14 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSResourceHasPublicIP See https://github.com/liamg/tfsec#included-checks for check info
+// AWSResourceHasPublicIP See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSResourceHasPublicIP scanner.RuleID = "AWS012"
 const AWSResourceHasPublicIPDescription scanner.RuleDescription = "A resource has a public IP address."
 

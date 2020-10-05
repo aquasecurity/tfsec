@@ -1,41 +1,41 @@
 language: go
 go:
-- 1.14
+- 1.15
 services:
 - docker
 env:
   global:
-    - secure: "Z5uOG+pcrS/5p8B0Pi+2eYnAJvzey16cN6pJm1jp6DNl6YxekEFMPIznb4qK9LYmAAdxjPr0GLOqkkUygrm51OLrK/oCT4ygDNMXMq/2Pvndj8NVyy0drji38D/v6HqGrNyDKRYKbYFcOGzwwBQGe9IYtahfUuXVU5NhdNrbW5nWjdgvbywomovW6FuUVbFrPHJH9WHnmfIPMzBEvYzD5831V646vLyVGXzehLe6z2d4vuANhGNKH0ACl/8Epv+TdODnGLJR10jkN+QC2r8NhdbdeHPOpgqPduAKsyCyZCDJZvIQsqCeuvUFSY5nqKYzCc2RpVjWo6iia3jKTL94ov0blhn+c/ZSKSwa4rQncGT8f1XWkYa+Bfn4sw1XWVA7cI+Xt1s7Z6axuOULfhmmbIbRu66qlpmUJnYwGMrGVuOluR3yGn2z7VBjqkND/fPm8bLrjRfFicxg4OoWYf1B+HPrPQvSzoX/wx5o10PhlDlH28VWGHHZlGXYq5qdtlTUhptYq6SZWNnyxgNE8ublkPBzc8VqS4wczplUGP0XEooWQ+nUdtp8f+GMHJ9pFRdMpG/hMilIBWh+CdLstUDfnx2zis64a05Cy+xZDFHxahyFs0LhV1B3tLlozR+LDfN+Uae1ozXDwqoZHeaVtdxpTSASyB9DhAKSpzSljp0vQa4="
-    - secure: "Qw1Px9YAQBVcGCe3uonIArbUOZ2LG0Ev//0iitNIBt/zT47Z335tVdIbmqXgvqrX8UN8zjLrqp9sJL0pXVgBXRI46JD+hkYrc/gqpfsfILEZL31z1pHibye1ce69XnalZhUnRUwMy97qdk7jKswIfkfHIXdjQEXUT4wFlR7KxEGdE7EjVWQpSU5JKlzvuQUYXCixDr9sNREd3FShCpkXX0/TTau5nwL8TzL4IePEE0Bb6BfqWhHhQBL9lCQRvqmQLy272QDgB2eEvkyfbsiFZG8+71V7q/N7pvVShWSQm0NCDtKxv8YiTJuvn0nx78QQ6imo8frzvU7+MZth8Lqk64SiqRcoGqv4/6SPMX8q8m28QysxuScUb0Vy+e4MSXGJo2rGYXAH8FzD1v50BYgg0Eeqcpwc/ve7uHclz+dJxoKh7ytxaah2qa8pv2s/QcdRY/M1dGdVtVAgLnk85Epg7ay4r9MY4oMRL6/cA7003lx3Rs8/49dvzgjjWBcZ+/WSfPZVkhNjD2nIAZBQLWV0s4827u3YhDH3PiqkQsrCtC+waz1PI0J/QHtPUfeegFr2g+ra5oD2lJ4oVHf342HkxH1YeIQeymWU0d9kuvGTqEe9daw9lFVSXND7MPspTKV4ceyi5T0ELAd0dofgan1nC3vTShljBXfT7HRkfWT32eo="
+  - secure: R4BS8u2baA8HnawuHE0fFYk/wGtcctDKICb/bWR0MKTp4OJ1DiCakM1BrwtLit3amUtCg5SWnbi5rvIbclXV/iW2P+ujDs8/COxDT2pfDHshTS+2TQY2UTzisACT9hOCjv5IdudqIs/tPPWFbRdKtYY6IbNglFPDKABRYEgh8ujwi5azW6Le4je7I3NhH4e1H3ocM33XtvkkEWsMeu2cec885hsQMb877azbfH+W68r/HJJm3Nbqsd/wQs/085btDtqrqk59tfYVllhHi7ZG3pHevNHc8h3CBdLGiWpXP+a2apND9CMiK7z9puB4U/eK+A0N02EX4/pqJ14KqpenCIUoYQ3VGSX4xOlJ8kcAeW52UebKd61YAI1s/SE0fF8XP6brZGbRlISBaLWSVbMKGDrVCCUJMRmInFwXqQHnrVi+FTe39xiqqJ6VMZ0Wiz1r+biS/UTXjzikC20i/NmHAJuqqnPimIG61vzDx/ajYx22TRWW6Ug5RaFcI79aR1G6EkB2qRxrfpvnPOn9J/bxnO39i6WZXdNwwQ+iAeZiOUpR6//XwkYBhvdYUo50BfGtOT2XbuABPuHyftGSCH16lRgNiKaGLjZBBhHHAl4AqIQl8O3eGaiXjcIsPafwBahisSrl6P8MjDYbkZ8rGGUpzzofyQ06Z9Lsff/Dw9KOfW4=
+  - secure: WOHbCGgXMQiGSqM9ODwpmfQrqs33HXJHjH1dt/AeL+DMIQKZ3zyyqE2OFSkvr+EQHkx4KENLE9oLBwhnO63mHfRSVF4revMJUqViz5+pPDw2D51oiT9uPnpnosf8yPMJA7EtpEhXTUNt8I7tifj5FXe6TQ66POtOWliNaD40AibffX6JlxXzrfnOAir0vHmry+VnfSZuNDU40D3JZqPkABDMY0NOEGn+IpscaPS045lD3H+oWsVatty0XnPJOTiSSTAHh4AnbEot2N3FZ568+qdaAVk/MgVHh/6MDxP16YiNGPpNQWLEtgFU/FVGJywE/ejeoyNtuifHSgZDBPlH0f4z5Q5R7MeGvjtFuPQ+52FvbDjJd38isAr9xJCNO5JNrqnwcqZyQpYcxRkNZUpBar5g3nAWMdHsh2yKyBc5fEIu+53KJF8ENIN3Mn/XoWrj2gCqizyIIiMqqatz1Wa4EZHiPw/SlfMX0o6QXRBDfpbAe/5/SGdmFRBOLSRunSiKC6Gu0jUPktcqB4iQn1JE3v2dTG3MexA2MS/waDJRBKjvs/NzroMyHXGutI+6124m2f+Oj+9Q+YtpNd+0u9XqiJxk1/MrBh3voNxYjmxEqB8AF7zWJJaeHZCkueFcYBnJoXOsKnX0mbanR6rKdCiZ7fViekPqkNQeqfWK5IIFvqk=
 jobs:
   include:
-    - stage: test
-      name: Run tests
-      script:
-        - make test
-    - stage: build
-      name: Build
-      script:
-        - make build
-        - make image
-      deploy:
-        provider: releases
-        skip_cleanup: true
-        name: "tfsec $TRAVIS_TAG"
-        file:
-          - bin/darwin/tfsec-darwin-amd64
-          - bin/linux/tfsec-linux-amd64
-          - bin/windows/tfsec-windows-amd64.exe
-        api_key:
-          secure: lSWOIa90AV0XRjgwJhu4j8cPZTOe4Hg5NQP2pYkfwV2jdNg5LT995UaaDy05X0PAcbtyXo63QKbqbhMTkOmLzrb0PX0t1MdKO22xwBYEZLTrQnjIuZFzgYwJaXDiXWaRpM4yBzxOLeuKPdowIk6rgqbhiRAe9fMU8AQde2wKriplpi4VdwlsHLvcONI8QxicTdPAY1JSeandtIBy8vnnQOHgF5ajS21cE1TNj867B++c1wpyemxwo6Z50KHONiG+UBQTqe45d4UXiTEroI8G4Yqcd28q5AGptJJOSrB9JR4zO8d1CrfI1ppHd2vbowNCxdzpL367aYtKxTAdfzFhf1lm79+69bQjkeQKY10edbPlfA+6OeN+AdkVib7XRk4bhoegwX1Y2cpk3iGe8WKnh6+JDclqk4VamcQCbDGSh2Y9FGFOCIji/rO2EjFCg2cmISRqYR42oWt+Szo7Z9V3eucEy3ErdKiTg+5yLQHKrNlhJz0rus1MIxw52K+8JfP+OiYmLh/OXfBvtxl5EaNnHE4Hv2sdvkolRi3RUW1pffn3nc4JQNJX4wOCoDXZzfLza0nLiMjwFCjBucjxHfrcZ7aDrLvroQJ03CbpcsIrYc2dT37mdKksZzYSAHP8k4So/0R6ItzxWf6jUy+RriCCzX/3a4pUe3fJLBRDAg9h7GU=
-        on:
-          repo: liamg/tfsec
-          tags: true
-    - stage: publish image
-      name: Publish Docker image
-      if: tag IS NOT blank
-      before_script:
-      - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
-      script:
-        - make image
-        - make push-image
+  - stage: test
+    name: Run tests
+    script:
+    - make test
+  - stage: build
+    name: Build
+    script:
+    - make build
+    - make image
+    deploy:
+      provider: releases
+      skip_cleanup: true
+      name: tfsec $TRAVIS_TAG
+      file:
+      - bin/darwin/tfsec-darwin-amd64
+      - bin/linux/tfsec-linux-amd64
+      - bin/windows/tfsec-windows-amd64.exe
+      api_key:
+        secure: "gnFbED/JgihbV3zO6BgMj1YY7W+LsMHgVbamdMXcwwI4+9ouUa87D3vXIBpbAPUK7/aNmBeqDhXYX9grpy1gUAkmfPXhqH3zuOFnSiwoGFkZe0coRzZiqNU/pzxB4sZDihDLvk/E8btdNmNwSz6JkYvSbmGfN+b6M1N6Ico/kocV/XPYjfhGcArpngJ0CdbP656ixVo+s9ogwQUI3fNeelX0ppBjj1X8HZMMyLPuDvAsslWn0lb4rTqvpJitqcPaff8VRtnrQExNm5dVhEo03t+zYzPt+6EFhhx2K+dPpnWcDfl6yw7E+mKeN/LZIvGx+9pTQ3I3sclvtQ/COQ2WQn3z5wa5h9D/fsKBS/WxYMx8jWU/TcBeNpLDZhJcILwtYISKi9KfxY8Mr4FcHa+3Zl+uGZHWdbVgx8VR7SdDPi+H7QKcNrMJr7HAE/bHYNocE9qygWWpzGupznYX9RCNRhT51ebSlC497ZPugAkEdlax3yZcNf9CRXrCMLguJhoU3lOK8FyKt8Vvr/OTgbdJT7f440N5U3ETn4d+McZTIH0Gu71DfUAivixCVM2Ex6lvzcms1ZTwSsZMs888eI7mnStJoBS2vNo5AjR2jF0/FlCAjQRl9xUY+mCcRDrsQE2mFpqst4DvBhyYqzXrAiAzemcgtCVsmWpYkd9QrpBde04="
+      on:
+        repo: tfsec/tfsec
+        tags: true
+  - stage: publish image
+    name: Publish Docker image
+    if: tag IS NOT blank
+    before_script:
+    - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+    script:
+    - make image
+    - make push-image

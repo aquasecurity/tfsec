@@ -3,14 +3,14 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AzureVMWithPasswordAuthentication See https://github.com/liamg/tfsec#included-checks for check info
+// AzureVMWithPasswordAuthentication See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureVMWithPasswordAuthentication scanner.RuleID = "AZU005"
 const AzureVMWithPasswordAuthenticationDescription scanner.RuleDescription = "Password authentication in use instead of SSH keys."
 

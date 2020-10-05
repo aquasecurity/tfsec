@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/security"
+	"github.com/tfsec/tfsec/internal/app/tfsec/security"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSTaskDefinitionWithSensitiveEnvironmentVariables See https://github.com/liamg/tfsec#included-checks for check info
+// AWSTaskDefinitionWithSensitiveEnvironmentVariables See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSTaskDefinitionWithSensitiveEnvironmentVariables scanner.RuleID = "AWS013"
 const AWSTaskDefinitionWithSensitiveEnvironmentVariablesDescription scanner.RuleDescription = "Task definition defines sensitive environment variable(s)."
 

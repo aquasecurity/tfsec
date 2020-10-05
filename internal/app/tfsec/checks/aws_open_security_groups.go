@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSOpenIngressSecurityGroupInlineRule See https://github.com/liamg/tfsec#included-checks for check info
+// AWSOpenIngressSecurityGroupInlineRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOpenIngressSecurityGroupInlineRule scanner.RuleID = "AWS008"
 const AWSOpenIngressSecurityGroupInlineRuleDescription scanner.RuleDescription = "An inline ingress security group rule allows traffic from `/0`."
 
-// AWSOpenEgressSecurityGroupInlineRule See https://github.com/liamg/tfsec#included-checks for check info
+// AWSOpenEgressSecurityGroupInlineRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOpenEgressSecurityGroupInlineRule scanner.RuleID = "AWS009"
 const AWSOpenEgressSecurityGroupInlineRuleDescription scanner.RuleDescription = "An inline egress security group rule allows traffic to `/0`."
 

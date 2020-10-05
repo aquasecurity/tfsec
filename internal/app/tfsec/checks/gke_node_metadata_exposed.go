@@ -2,14 +2,15 @@ package checks
 
 import (
 	"fmt"
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 )
 
-// GkeNodeMetadataExposed See https://github.com/liamg/tfsec#included-checks for check info
+// GkeNodeMetadataExposed See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeNodeMetadataExposed scanner.RuleID = "GCP006"
 const GkeNodeMetadataExposedDescription scanner.RuleDescription = "Node metadata value disables metadata concealment."
 

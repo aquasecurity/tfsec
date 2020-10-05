@@ -1,4 +1,4 @@
-IMAGE := liamg/tfsec
+IMAGE := tfsec/tfsec
 
 image:
 	docker build --build-arg tfsec_version=$(TRAVIS_TAG) -t $(IMAGE) .

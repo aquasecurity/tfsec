@@ -3,14 +3,14 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 )
 
-// GkeLegacyMetadataEndpoints See https://github.com/liamg/tfsec#included-checks for check info
+// GkeLegacyMetadataEndpoints See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeLegacyMetadataEndpoints scanner.RuleID = "GCP007"
 const GkeLegacyMetadataEndpointsDescription scanner.RuleDescription = "Legacy metadata endpoints enabled."
 

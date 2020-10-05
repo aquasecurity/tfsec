@@ -3,11 +3,11 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-// GoogleUnencryptedStorageBucket See https://github.com/liamg/tfsec#included-checks for check info
+// GoogleUnencryptedStorageBucket See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleUnencryptedStorageBucket scanner.RuleID = "GCP002"
 const GoogleUnencryptedStorageBucketDescription scanner.RuleDescription = "Unencrypted storage bucket."
 

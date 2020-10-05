@@ -2,12 +2,13 @@ package checks
 
 import (
 	"fmt"
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
 )
 
-// AWSCloudFrontOutdatedProtocol see https://github.com/liamg/tfsec#included-checks for check info
+// AWSCloudFrontOutdatedProtocol See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSCloudFrontOutdatedProtocol scanner.RuleID = "AWS021"
 const AWSCloudFrontOutdatedProtocolDescription scanner.RuleDescription = "CloudFront distribution uses outdated SSL/TSL protocols."
 

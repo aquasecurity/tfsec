@@ -3,12 +3,12 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedS3Bucket See https://github.com/liamg/tfsec#included-checks for check info
+// AWSUnencryptedS3Bucket See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedS3Bucket scanner.RuleID = "AWS017"
 const AWSUnencryptedS3BucketDescription scanner.RuleDescription = "Unencrypted S3 bucket."
 

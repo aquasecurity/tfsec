@@ -3,14 +3,14 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSPubliclyAccessibleResource See https://github.com/liamg/tfsec#included-checks for check info
+// AWSPubliclyAccessibleResource See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSPubliclyAccessibleResource scanner.RuleID = "AWS011"
 const AWSPubliclyAccessibleResourceDescription scanner.RuleDescription = "A resource is marked as publicly accessible."
 
