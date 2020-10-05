@@ -59,7 +59,7 @@ run tfsec in a Docker container.
 To run:
 
 ```bash
-docker run --rm -it -v "$(pwd):/src" tfsec/tfsec /src
+docker run --rm -it -v "$(pwd):/src" liamg/tfsec /src
 ```
 
 ## Use as GitHub Action
