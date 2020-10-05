@@ -12,10 +12,13 @@ import (
 // AWSUnenforcedHTTPSElasticsearchDomainEndpoint See
 // https://github.com/liamg/tfsec#included-checks for check info
 const AWSUnenforcedHTTPSElasticsearchDomainEndpoint scanner.RuleID = "AWS033"
+const AWSUnenforcedHTTPSElasticsearchDomainEndpointDescription scanner.RuleDescription = "Elasticsearch doesn't enforce HTTPS traffic."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSUnenforcedHTTPSElasticsearchDomainEndpoint,
+		Description:    AWSUnenforcedHTTPSElasticsearchDomainEndpointDescription,
+		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, context *scanner.Context) []scanner.Result {

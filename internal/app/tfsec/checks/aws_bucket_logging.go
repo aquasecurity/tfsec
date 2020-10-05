@@ -10,10 +10,13 @@ import (
 
 // AWSNoBucketLogging See https://github.com/liamg/tfsec#included-checks for check info
 const AWSNoBucketLogging scanner.RuleID = "AWS002"
+const AWSNoBucketLoggingDescription scanner.RuleDescription = "S3 Bucket does not have logging enabled."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSNoBucketLogging,
+		Description:    AWSNoBucketLoggingDescription,
+		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_s3_bucket"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {

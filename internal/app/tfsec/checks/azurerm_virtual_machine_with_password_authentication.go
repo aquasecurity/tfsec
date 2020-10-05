@@ -12,10 +12,13 @@ import (
 
 // AzureVMWithPasswordAuthentication See https://github.com/liamg/tfsec#included-checks for check info
 const AzureVMWithPasswordAuthentication scanner.RuleID = "AZU005"
+const AzureVMWithPasswordAuthenticationDescription scanner.RuleDescription = "Password authentication in use instead of SSH keys."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AzureVMWithPasswordAuthentication,
+		Description:    AzureVMWithPasswordAuthenticationDescription,
+		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_virtual_machine"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {

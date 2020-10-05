@@ -11,10 +11,13 @@ import (
 
 // AWSPlaintextNodeToNodeElasticsearchTraffic See https://github.com/liamg/tfsec#included-checks for check info
 const AWSPlaintextNodeToNodeElasticsearchTraffic scanner.RuleID = "AWS032"
+const AWSPlaintextNodeToNodeElasticsearchTrafficDescription scanner.RuleDescription = "Elasticsearch domain uses plaintext traffic for node to node communication."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSPlaintextNodeToNodeElasticsearchTraffic,
+		Description:    AWSPlaintextNodeToNodeElasticsearchTrafficDescription,
+		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, context *scanner.Context) []scanner.Result {

@@ -9,10 +9,13 @@ import (
 
 // AWSApiGatewayDomainNameOutdatedSecurityPolicy See https://github.com/liamg/tfsec#included-checks for check info
 const AWSApiGatewayDomainNameOutdatedSecurityPolicy scanner.RuleID = "AWS025"
+const AWSApiGatewayDomainNameOutdatedSecurityPolicyDescription scanner.RuleDescription = "API Gateway domain name uses outdated SSL/TLS protocols."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSApiGatewayDomainNameOutdatedSecurityPolicy,
+		Description:    AWSApiGatewayDomainNameOutdatedSecurityPolicyDescription,
+		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_api_gateway_domain_name"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {

@@ -13,13 +13,17 @@ import (
 
 // AWSOpenIngressSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
 const AWSOpenIngressSecurityGroupRule scanner.RuleID = "AWS006"
+const AWSOpenIngressSecurityGroupRuleDescription scanner.RuleDescription = "An ingress security group rule allows traffic from `/0`."
 
 // AWSOpenEgressSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
 const AWSOpenEgressSecurityGroupRule scanner.RuleID = "AWS007"
+const AWSOpenEgressSecurityGroupRuleDescription scanner.RuleDescription = "An egress security group rule allows traffic to `/0`."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSOpenIngressSecurityGroupRule,
+		Description:    AWSOpenIngressSecurityGroupRuleDescription,
+		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group_rule"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
@@ -80,6 +84,8 @@ func init() {
 
 	scanner.RegisterCheck(scanner.Check{
 		Code:           AWSOpenEgressSecurityGroupRule,
+		Description:    AWSOpenEgressSecurityGroupRuleDescription,
+		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group_rule"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {

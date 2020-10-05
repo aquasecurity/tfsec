@@ -2,19 +2,22 @@ package checks
 
 import (
 	"fmt"
-	"strings"
 	"github.com/liamg/tfsec/internal/app/tfsec/parser"
 	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
+	"strings"
 )
 
 // GoogleUserIAMGrant See https://github.com/liamg/tfsec#included-checks for check info
 const GoogleUserIAMGrant scanner.RuleID = "GCP011"
+const GoogleUserIAMGrantDescription scanner.RuleDescription = "IAM granted directly to user."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           GoogleUserIAMGrant,
-		RequiredTypes:  []string{"resource", "data"},
+		Code:          GoogleUserIAMGrant,
+		Description:   GoogleUserIAMGrantDescription,
+		Provider:      scanner.GCPProvider,
+		RequiredTypes: []string{"resource", "data"},
 		RequiredLabels: []string{
 			"google_cloud_run_service_iam_binding",
 			"google_cloud_run_service_iam_member",

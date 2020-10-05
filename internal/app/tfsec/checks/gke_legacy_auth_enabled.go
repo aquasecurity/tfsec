@@ -12,10 +12,13 @@ import (
 
 // GkeLegacyAuthEnabled See https://github.com/liamg/tfsec#included-checks for check info
 const GkeLegacyAuthEnabled scanner.RuleID = "GCP008"
+const GkeLegacyAuthEnabledDescription scanner.RuleDescription = "Legacy client authentication methods utilized."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           GkeLegacyAuthEnabled,
+		Description:    GkeLegacyAuthEnabledDescription,
+		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
