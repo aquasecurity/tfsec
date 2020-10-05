@@ -3,14 +3,14 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSBadBucketACL See https://github.com/liamg/tfsec#included-checks for check info
+// AWSBadBucketACL See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSBadBucketACL scanner.RuleID = "AWS001"
 const AwsBadBucketACLDescription scanner.RuleDescription = "S3 Bucket has an ACL defined which allows public access."
 

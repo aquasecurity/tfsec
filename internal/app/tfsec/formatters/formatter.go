@@ -3,7 +3,7 @@ package formatters
 import (
 	"io"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 // Formatter formats scan results into a specific format

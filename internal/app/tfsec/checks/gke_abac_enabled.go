@@ -3,11 +3,11 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-// GkeAbacEnabled See https://github.com/liamg/tfsec#included-checks for check info
+// GkeAbacEnabled See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeAbacEnabled scanner.RuleID = "GCP005"
 const GkeAbacEnabledDescription scanner.RuleDescription = "Legacy ABAC permissions are enabled."
 

@@ -4,7 +4,7 @@ ARG tfsec_version=0.0.0
 
 COPY . /src
 WORKDIR /src
-RUN go build -ldflags "-X github.com/liamg/tfsec/version.Version=${tfsec_version}" -mod=vendor ./cmd/tfsec
+RUN go build -ldflags "-X github.com/tfsec/tfsec/version.Version=${tfsec_version}" -mod=vendor ./cmd/tfsec
 
 FROM alpine
 

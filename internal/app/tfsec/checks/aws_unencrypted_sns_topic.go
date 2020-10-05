@@ -5,12 +5,12 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedSNSTopic See https://github.com/liamg/tfsec#included-checks for check info
+// AWSUnencryptedSNSTopic See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedSNSTopic scanner.RuleID = "AWS016"
 const AWSUnencryptedSNSTopicDescription scanner.RuleDescription = "Unencrypted SNS topic."
 

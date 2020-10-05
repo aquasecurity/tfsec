@@ -2,13 +2,14 @@ package checks
 
 import (
 	"fmt"
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
-	"github.com/zclconf/go-cty/cty"
 	"strings"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/zclconf/go-cty/cty"
 )
 
-// GoogleUserIAMGrant See https://github.com/liamg/tfsec#included-checks for check info
+// GoogleUserIAMGrant See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleUserIAMGrant scanner.RuleID = "GCP011"
 const GoogleUserIAMGrantDescription scanner.RuleDescription = "IAM granted directly to user."
 

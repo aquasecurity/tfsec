@@ -3,13 +3,13 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/zclconf/go-cty/cty"
 )
 
-// AzureUnencryptedDataLakeStore See https://github.com/liamg/tfsec#included-checks for check info
+// AzureUnencryptedDataLakeStore See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureUnencryptedDataLakeStore scanner.RuleID = "AZU004"
 const AzureUnencryptedDataLakeStoreDescription scanner.RuleDescription = "Unencrypted data lake store."
 

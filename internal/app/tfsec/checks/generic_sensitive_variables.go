@@ -3,15 +3,15 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/security"
+	"github.com/tfsec/tfsec/internal/app/tfsec/security"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/zclconf/go-cty/cty"
 )
 
-// GenericSensitiveVariables See https://github.com/liamg/tfsec#included-checks for check info
+// GenericSensitiveVariables See https://github.com/tfsec/tfsec#included-checks for check info
 const GenericSensitiveVariables scanner.RuleID = "GEN001"
 const GenericSensitiveVariablesDescription scanner.RuleDescription = "Potentially sensitive data stored in \"default\" value of variable."
 

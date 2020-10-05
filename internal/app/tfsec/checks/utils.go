@@ -1,7 +1,7 @@
 package checks
 
 import (
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/zclconf/go-cty/cty"
 )
 

@@ -1,9 +1,10 @@
 package tfsec
 
 import (
-	"github.com/liamg/tfsec/internal/app/tfsec/checks"
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
 	"testing"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 func Test_AWSCloudFrontOutdatedProtocol(t *testing.T) {

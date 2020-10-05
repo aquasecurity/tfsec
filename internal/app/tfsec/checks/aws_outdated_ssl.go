@@ -3,14 +3,14 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSOutdatedSSLPolicy See https://github.com/liamg/tfsec#included-checks for check info
+// AWSOutdatedSSLPolicy See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOutdatedSSLPolicy scanner.RuleID = "AWS010"
 const AWSOutdatedSSLPolicyDescription scanner.RuleDescription = "An outdated SSL policy is in use by a load balancer."
 

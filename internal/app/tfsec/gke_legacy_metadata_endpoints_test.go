@@ -3,9 +3,9 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/checks"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_GkeLegacyMetadataEndpoints(t *testing.T) {

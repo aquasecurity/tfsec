@@ -3,12 +3,12 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
 )
 
-// GkeEnforcePSP See https://github.com/liamg/tfsec#included-checks for check info
+// GkeEnforcePSP See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeEnforcePSP scanner.RuleID = "GCP009"
 const GkeEnforcePSPDescription scanner.RuleDescription = "Pod security policy enforcement not defined."
 

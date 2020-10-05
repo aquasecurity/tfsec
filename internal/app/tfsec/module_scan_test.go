@@ -3,8 +3,8 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 func Test_ProblemInModule(t *testing.T) {

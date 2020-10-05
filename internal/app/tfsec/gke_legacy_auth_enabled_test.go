@@ -3,9 +3,9 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/checks"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_GkeLegacyAuthEnabled(t *testing.T) {
@@ -49,7 +49,6 @@ resource "google_container_cluster" "gke" {
 }`,
 			mustIncludeResultCode: checks.GkeLegacyAuthEnabled,
 		},
-
 	}
 
 	for _, test := range tests {

@@ -5,12 +5,12 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedKinesisStream See https://github.com/liamg/tfsec#included-checks for check info
+// AWSUnencryptedKinesisStream See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedKinesisStream scanner.RuleID = "AWS024"
 const AWSUnencryptedKinesisStreamDescription scanner.RuleDescription = "Kinesis stream is unencrypted."
 

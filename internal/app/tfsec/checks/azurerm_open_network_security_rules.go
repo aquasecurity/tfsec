@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AzureOpenInboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
+// AzureOpenInboundNetworkSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureOpenInboundNetworkSecurityGroupRule scanner.RuleID = "AZU001"
 const AzureOpenInboundNetworkSecurityGroupRuleDescription scanner.RuleDescription = "An inbound network security rule allows traffic from `/0`."
 
-// AzureOpenOutboundNetworkSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
+// AzureOpenOutboundNetworkSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureOpenOutboundNetworkSecurityGroupRule scanner.RuleID = "AZU002"
 const AzureOpenOutboundNetworkSecurityGroupRuleDescription scanner.RuleDescription = "An outbound network security rule allows traffic to `/0`."
 

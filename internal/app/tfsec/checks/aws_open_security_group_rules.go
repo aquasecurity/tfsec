@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSOpenIngressSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
+// AWSOpenIngressSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOpenIngressSecurityGroupRule scanner.RuleID = "AWS006"
 const AWSOpenIngressSecurityGroupRuleDescription scanner.RuleDescription = "An ingress security group rule allows traffic from `/0`."
 
-// AWSOpenEgressSecurityGroupRule See https://github.com/liamg/tfsec#included-checks for check info
+// AWSOpenEgressSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOpenEgressSecurityGroupRule scanner.RuleID = "AWS007"
 const AWSOpenEgressSecurityGroupRuleDescription scanner.RuleDescription = "An egress security group rule allows traffic to `/0`."
 

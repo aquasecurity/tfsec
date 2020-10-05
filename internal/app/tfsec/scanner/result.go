@@ -1,7 +1,7 @@
 package scanner
 
 import (
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
 // Result is a positive result for a security check. It encapsulates a code unique to the specific check it was raised

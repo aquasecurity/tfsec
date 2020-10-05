@@ -3,12 +3,12 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedMSKBroker See https://github.com/liamg/tfsec#included-checks for check info
+// AWSUnencryptedMSKBroker See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedMSKBroker scanner.RuleID = "AWS022"
 const AWSUnencryptedMSKBrokerDescription scanner.RuleDescription = "A MSK cluster allows unencrypted data in transit."
 

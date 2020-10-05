@@ -2,12 +2,13 @@ package checks
 
 import (
 	"fmt"
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
 )
 
-// AWSApiGatewayDomainNameOutdatedSecurityPolicy See https://github.com/liamg/tfsec#included-checks for check info
+// AWSApiGatewayDomainNameOutdatedSecurityPolicy See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSApiGatewayDomainNameOutdatedSecurityPolicy scanner.RuleID = "AWS025"
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyDescription scanner.RuleDescription = "API Gateway domain name uses outdated SSL/TLS protocols."
 

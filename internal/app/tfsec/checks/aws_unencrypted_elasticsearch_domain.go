@@ -3,13 +3,13 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedElasticsearchDomain See https://github.com/liamg/tfsec#included-checks for check info
+// AWSUnencryptedElasticsearchDomain See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedElasticsearchDomain scanner.RuleID = "AWS031"
 const AWSUnencryptedElasticsearchDomainDescription scanner.RuleDescription = "Elasticsearch domain isn't encrypted at rest."
 

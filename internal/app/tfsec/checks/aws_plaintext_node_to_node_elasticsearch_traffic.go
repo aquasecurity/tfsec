@@ -3,13 +3,13 @@ package checks
 import (
 	"fmt"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSPlaintextNodeToNodeElasticsearchTraffic See https://github.com/liamg/tfsec#included-checks for check info
+// AWSPlaintextNodeToNodeElasticsearchTraffic See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSPlaintextNodeToNodeElasticsearchTraffic scanner.RuleID = "AWS032"
 const AWSPlaintextNodeToNodeElasticsearchTrafficDescription scanner.RuleDescription = "Elasticsearch domain uses plaintext traffic for node to node communication."
 

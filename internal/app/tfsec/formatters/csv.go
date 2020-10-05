@@ -6,7 +6,7 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 func FormatCSV(w io.Writer, results []scanner.Result) error {
