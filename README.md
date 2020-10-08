@@ -171,6 +171,7 @@ there are also checks which are provider agnostic.
 | AWS043  | aws      | IAM password policy doesn't enforce at least one uppercase character.
 | AWS044  | aws      | AWS Provider has hard coded access credentials specified. 
 | AWS045  | aws      | Cloudfront should have a WAF enabled.
+| AWS046  | aws      | IAM Policy document has wildcard action set.
 | AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`.
 | AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`.
 | AZU003  | azurerm  | Unencrypted managed disk.
