@@ -163,6 +163,12 @@ there are also checks which are provider agnostic.
 | AWS035  | aws      | Unencrypted Elasticache Replication Group.
 | AWS036  | aws      | Elasticache Replication Group uses unencrypted traffic.
 | AWS037  | aws      | IAM password policy doesn't enforce reuse prevention.
+| AWS038  | aws      | IAM password policy doesn't enforce an expiry of at least 90 days.
+| AWS039  | aws      | IAM password policy doesn't enforce at a mimimum length of at least 14 characters.
+| AWS040  | aws      | IAM password policy doesn't enforce at least one symbol.
+| AWS041  | aws      | IAM password policy doesn't enforce at least one number.
+| AWS042  | aws      | IAM password policy doesn't enforce at least one lowercase character.
+| AWS043  | aws      | IAM password policy doesn't enforce at least one uppercase character.
 | AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`.
 | AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`.
 | AZU003  | azurerm  | Unencrypted managed disk.
