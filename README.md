@@ -162,6 +162,7 @@ there are also checks which are provider agnostic.
 | AWS034  | aws      | Elasticsearch domain endpoint is using outdated TLS policy.
 | AWS035  | aws      | Unencrypted Elasticache Replication Group.
 | AWS036  | aws      | Elasticache Replication Group uses unencrypted traffic.
+| AWS037  | aws      | IAM password policy doesn't enforce reuse prevention.
 | AZU001  | azurerm  | An inbound network security rule allows traffic from `/0`.
 | AZU002  | azurerm  | An outbound network security rule allows traffic to `/0`.
 | AZU003  | azurerm  | Unencrypted managed disk.
