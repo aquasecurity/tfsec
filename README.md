@@ -21,8 +21,7 @@ security issues. Now with terraform v0.12+ support.
 Install with brew/linuxbrew:
 
 ```bash
-brew tap liamg/tfsec
-brew install liamg/tfsec/tfsec
+brew install tfsec
 ```
 
 Install with Chocolatey:
