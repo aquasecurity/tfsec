@@ -123,10 +123,15 @@ You can exclude directories from being scanned using the `--exclude-dir [directo
 
 ## Included Checks
 
-Currently, checks are mostly limited to AWS/Azure/GCP resources, but
+Checks are currently limited to AWS/Azure/GCP resources, but
 there are also checks which are provider agnostic.
 
-Included checks can be found in the [Checks page](CHECKS.md)
+| Checks |
+|:---|
+|[AWS Checks](AWS_CHECKS.md)|
+|[Azure Checks](AZURE_CHECKS.md)|
+|[GCP Checks](GCP_CHECKS.md)|
+|[General Checks](GENERAL_CHECKS.md)|
 
 ## Running in CI
 

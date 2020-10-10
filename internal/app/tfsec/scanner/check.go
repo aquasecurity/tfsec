@@ -16,9 +16,9 @@ type RuleProvider string
 
 const (
 	AWSProvider     RuleProvider = "aws"
-	AzureProvider   RuleProvider = "azurerm"
+	AzureProvider   RuleProvider = "azure"
 	GCPProvider     RuleProvider = "google"
-	GeneralProvider RuleProvider = "*"
+	GeneralProvider RuleProvider = "general"
 )
 
 // Check is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.
