@@ -15,6 +15,7 @@ func FormatDefault(_ io.Writer, results []scanner.Result) error {
 
 	if len(results) == 0 {
 		terminal.PrintSuccessf("\nNo problems detected!\n")
+		return nil
 	}
 
 	var severity string
