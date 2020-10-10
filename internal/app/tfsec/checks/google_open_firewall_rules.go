@@ -53,6 +53,7 @@ func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code:           GoogleOpenOutboundFirewallRule,
 		Description:    GoogleOpenOutboundFirewallRuleDescription,
+		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_compute_firewall"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
