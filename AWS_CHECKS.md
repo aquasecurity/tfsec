@@ -1,10 +1,10 @@
 
-# Checks
+# Checks - aws
 
-The checks listed below have been implemented, for more information about each check, see the wiki link provided.
+The aws checks listed below have been implemented, for more information about each check, see the wiki link provided.
 
-| Code | Provider | Description | Wiki link |
-|------|----------|-------------|-----------|
+| Code  | Description | Wiki link |
+|:-------|:-------------|:----------|
 |AWS001|aws|S3 Bucket has an ACL defined which allows public access.|[AWS001 Wiki](https://github.com/tfsec/tfsec/wiki/AWS001)|
 |AWS002|aws|S3 Bucket does not have logging enabled.|[AWS002 Wiki](https://github.com/tfsec/tfsec/wiki/AWS002)|
 |AWS003|aws|AWS Classic resource usage.|[AWS003 Wiki](https://github.com/tfsec/tfsec/wiki/AWS003)|
@@ -46,23 +46,4 @@ The checks listed below have been implemented, for more information about each c
 |AWS044|aws|AWS provider has access credentials specified.|[AWS044 Wiki](https://github.com/tfsec/tfsec/wiki/AWS044)|
 |AWS045|aws|CloudFront distribution does not have a WAF in front.|[AWS045 Wiki](https://github.com/tfsec/tfsec/wiki/AWS045)|
 |AWS046|aws|AWS IAM policy document has wildcard action statement.|[AWS046 Wiki](https://github.com/tfsec/tfsec/wiki/AWS046)|
-|AZU001|azurerm|An inbound network security rule allows traffic from `/0`.|[AZU001 Wiki](https://github.com/tfsec/tfsec/wiki/AZU001)|
-|AZU002|azurerm|An outbound network security rule allows traffic to `/0`.|[AZU002 Wiki](https://github.com/tfsec/tfsec/wiki/AZU002)|
-|AZU003|azurerm|Unencrypted managed disk.|[AZU003 Wiki](https://github.com/tfsec/tfsec/wiki/AZU003)|
-|AZU004|azurerm|Unencrypted data lake store.|[AZU004 Wiki](https://github.com/tfsec/tfsec/wiki/AZU004)|
-|AZU005|azurerm|Password authentication in use instead of SSH keys.|[AZU005 Wiki](https://github.com/tfsec/tfsec/wiki/AZU005)|
-|GCP001|google|Unencrypted compute disk.|[GCP001 Wiki](https://github.com/tfsec/tfsec/wiki/GCP001)|
-|GCP002|google|Unencrypted storage bucket.|[GCP002 Wiki](https://github.com/tfsec/tfsec/wiki/GCP002)|
-|GCP003|google|An inbound firewall rule allows traffic from `/0`.|[GCP003 Wiki](https://github.com/tfsec/tfsec/wiki/GCP003)|
-|GCP004|google|An outbound firewall rule allows traffic to `/0`.|[GCP004 Wiki](https://github.com/tfsec/tfsec/wiki/GCP004)|
-|GCP005|google|Legacy ABAC permissions are enabled.|[GCP005 Wiki](https://github.com/tfsec/tfsec/wiki/GCP005)|
-|GCP006|google|Node metadata value disables metadata concealment.|[GCP006 Wiki](https://github.com/tfsec/tfsec/wiki/GCP006)|
-|GCP007|google|Legacy metadata endpoints enabled.|[GCP007 Wiki](https://github.com/tfsec/tfsec/wiki/GCP007)|
-|GCP008|google|Legacy client authentication methods utilized.|[GCP008 Wiki](https://github.com/tfsec/tfsec/wiki/GCP008)|
-|GCP009|google|Pod security policy enforcement not defined.|[GCP009 Wiki](https://github.com/tfsec/tfsec/wiki/GCP009)|
-|GCP010|google|Shielded GKE nodes not enabled.|[GCP010 Wiki](https://github.com/tfsec/tfsec/wiki/GCP010)|
-|GCP011|google|IAM granted directly to user.|[GCP011 Wiki](https://github.com/tfsec/tfsec/wiki/GCP011)|
-|GEN001|*|Potentially sensitive data stored in "default" value of variable.|[GEN001 Wiki](https://github.com/tfsec/tfsec/wiki/GEN001)|
-|GEN002|*|Potentially sensitive data stored in local value.|[GEN002 Wiki](https://github.com/tfsec/tfsec/wiki/GEN002)|
-|GEN003|*|Potentially sensitive data stored in block attribute.|[GEN003 Wiki](https://github.com/tfsec/tfsec/wiki/GEN003)|
 
