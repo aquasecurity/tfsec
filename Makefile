@@ -11,5 +11,9 @@ test:
 	go test -v ./...
 build:
 	./scripts/build.sh
+build-doc-gen:
+	@go build ./cmd/tfsec-docs
+generate-docs: build-doc-gen
+	@./tfsec-docs
 
-.PHONY: image push-image test build
+.PHONY: image push-image test build build-doc-gen generate-docs
