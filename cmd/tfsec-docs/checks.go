@@ -22,7 +22,7 @@ The {{$.Provider}} checks listed below have been implemented, for more informati
 
 type FileContent struct {
 	Provider string
-	Checks []scanner.Check
+	Checks   []scanner.Check
 }
 
 func generateChecksFiles(registeredChecks []scanner.Check) {
@@ -43,7 +43,7 @@ func generateCheckFile(checkFileContent *FileContent) {
 	if err != nil {
 		panic(err)
 	}
-	checksFile, err := os.Create(fmt.Sprintf("%s/%s_CHECKS.md", projectRoot, strings.ToUpper(checkFileContent.Provider)))
+	checksFile, err := os.Create(fmt.Sprintf("%s/docs/%s_CHECKS.md", projectRoot, strings.ToUpper(checkFileContent.Provider)))
 	if err != nil {
 		panic(err)
 	}
@@ -61,7 +61,7 @@ func sortChecks(checks []scanner.Check) {
 	})
 }
 
-func splitChecksIntoProviders(checks []scanner.Check) map[string][]scanner.Check{
+func splitChecksIntoProviders(checks []scanner.Check) map[string][]scanner.Check {
 	checkMap := make(map[string][]scanner.Check)
 
 	for _, check := range checks {
