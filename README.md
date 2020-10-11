@@ -128,10 +128,10 @@ there are also checks which are provider agnostic.
 
 | Checks |
 |:---|
-|[AWS Checks](AWS_CHECKS.md)|
-|[Azure Checks](AZURE_CHECKS.md)|
-|[GCP Checks](GCP_CHECKS.md)|
-|[General Checks](GENERAL_CHECKS.md)|
+|[AWS Checks](docs/AWS_CHECKS.md)|
+|[Azure Checks](docs/AZURE_CHECKS.md)|
+|[GCP Checks](docs/GCP_CHECKS.md)|
+|[General Checks](docs/GENERAL_CHECKS.md)|
 
 ## Running in CI
 
