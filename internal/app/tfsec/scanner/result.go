@@ -22,3 +22,20 @@ const (
 	SeverityWarning Severity = "WARNING"
 	SeverityInfo    Severity = "INFO"
 )
+
+var ValidSeverity = []Severity{
+	SeverityError, SeverityWarning, SeverityInfo,
+}
+
+func (s *Severity) IsValid() bool {
+	for _, severity := range ValidSeverity {
+		if severity == *s {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *Severity) Valid() []Severity {
+	return ValidSeverity
+}

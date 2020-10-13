@@ -11,6 +11,7 @@ type Block struct {
 	hclBlock *hcl.Block
 	ctx      *hcl.EvalContext
 	prefix   string
+	inModule bool
 }
 
 type Blocks []*Block
@@ -167,4 +168,13 @@ func (block *Block) Name() string {
 		prefix = block.prefix + "." + prefix
 	}
 	return prefix + strings.Join(block.Labels(), ".")
+}
+
+func (block *Block) HasChild(childElement string) bool {
+	return block.GetAttribute(childElement) != nil || block.GetBlock(childElement) != nil
+}
+
+func (block *Block) InModule() bool {
+	// TODO, check if the block is part of a module
+	return false
 }

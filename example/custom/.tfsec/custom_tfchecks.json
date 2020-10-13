@@ -1,0 +1,48 @@
+{
+  "checks": [
+    {
+      "code": "CUS001",
+      "description": "Custom check to ensure the CostCentre tag is applied to EC2 instances",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_instance"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "name": "tags",
+        "action": "contains",
+        "value": "CostCentre"
+      },
+      "errorMessage": "The required CostCentre tag was missing",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/tagging.html"
+      ]
+    },
+    {
+      "code": "CUS002",
+      "description": "Custom check to ensure S3 buckets have versioning enabled",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_s3_bucket"
+      ],
+      "severity": "DEBUG",
+      "matchSpec": {
+        "name": "versioning",
+        "action": "isPresent",
+        "subMatch": {
+          "name" : "enabled",
+          "action": "rawerqu",
+          "value" : "true"
+        }
+      },
+      "errorMessage": "The the versioning block requires enabled attribute",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/tagging.html"
+      ]
+    }
+  ]
+}

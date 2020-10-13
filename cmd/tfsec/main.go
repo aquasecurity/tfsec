@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -14,6 +15,7 @@ import (
 	"github.com/liamg/tml"
 
 	"github.com/spf13/cobra"
+
 	_ "github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
@@ -82,6 +84,13 @@ var rootCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
+
+		debug.Log("Loading custom checks...")
+		err = custom.Load(dir)
+		if err != nil {
+			debug.Log("An error occurred loading custom checks. %s", err)
+		}
+		debug.Log("Custom checks loaded")
 
 		if len(excludedChecks) > 0 {
 			excludedChecksList = strings.Split(excludedChecks, ",")
