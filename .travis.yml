@@ -33,9 +33,9 @@ jobs:
         repo: tfsec/tfsec
         tags: true
   - stage: docs
-      name: Publish Docs
-      script:
-        - make publish-docs
+    name: Publish Docs
+    script:
+    - make publish-docs
   - stage: publish image
     name: Publish Docker image
     if: tag IS NOT blank
