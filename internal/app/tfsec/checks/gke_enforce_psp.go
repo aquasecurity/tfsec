@@ -10,12 +10,14 @@ import (
 
 // GkeEnforcePSP See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeEnforcePSP scanner.RuleID = "GCP009"
-const GkeEnforcePSPDescription scanner.RuleDescription = "Pod security policy enforcement not defined."
+const GkeEnforcePSPDescription scanner.RuleSummary = "Pod security policy enforcement not defined."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           GkeEnforcePSP,
-		Description:    GkeEnforcePSPDescription,
+		Code: GkeEnforcePSP,
+		Documentation: scanner.CheckDocumentation{
+			Summary: GkeEnforcePSPDescription,
+		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster"},

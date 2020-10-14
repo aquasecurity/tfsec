@@ -12,12 +12,14 @@ import (
 
 // GkeLegacyMetadataEndpoints See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeLegacyMetadataEndpoints scanner.RuleID = "GCP007"
-const GkeLegacyMetadataEndpointsDescription scanner.RuleDescription = "Legacy metadata endpoints enabled."
+const GkeLegacyMetadataEndpointsDescription scanner.RuleSummary = "Legacy metadata endpoints enabled."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           GkeLegacyMetadataEndpoints,
-		Description:    GkeLegacyMetadataEndpointsDescription,
+		Code: GkeLegacyMetadataEndpoints,
+		Documentation: scanner.CheckDocumentation{
+			Summary: GkeLegacyMetadataEndpointsDescription,
+		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster"},

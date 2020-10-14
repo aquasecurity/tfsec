@@ -11,7 +11,7 @@ import (
 
 // RuleID is a unique identifier for a check
 type RuleID string
-type RuleDescription string
+type RuleSummary string
 type RuleProvider string
 
 const (
@@ -25,11 +25,29 @@ const (
 // "resource", and the labels to run on e.g. "aws_s3_bucket".
 type Check struct {
 	Code           RuleID
-	Description    RuleDescription
+	Documentation  CheckDocumentation
 	Provider       RuleProvider
 	RequiredTypes  []string
 	RequiredLabels []string
 	CheckFunc      func(*Check, *parser.Block, *Context) []Result
+}
+
+type CheckDocumentation struct {
+
+	// Summary is a brief description of the check, e.g. "Unencrypted S3 Bucket"
+	Summary RuleSummary
+
+	// Explanation (markdown) contains reasoning for the check, details on it's value, and remediation info
+	Explanation string
+
+	// BadExample (hcl) contains Terraform code which would cause the check to fail
+	BadExample string
+
+	// GoodExample (hcl) modifies the BadExample content to cause the check to pass
+	GoodExample string
+
+	// Links are URLs which contain further reading related to the check
+	Links []string
 }
 
 // Run runs the check against the provided HCL block, including the hclEvalContext to evaluate expressions if it is
@@ -40,7 +58,11 @@ func (check *Check) Run(block *parser.Block, context *Context) []Result {
 			fmt.Fprintf(os.Stderr, "WARNING: skipped %s check due to error(s): %s\n", check.Code, err)
 		}
 	}()
-	return check.CheckFunc(check, block, context)
+	results := check.CheckFunc(check, block, context)
+	for i := range results { // supplement results with links to documentation site
+		results[i].Link = fmt.Sprintf("https://tfsec.dev/docs/%s/%s/", check.Provider, check.Code)
+	}
+	return results
 }
 
 // IsRequiredForBlock returns true if the Check should be applied to the given HCL block

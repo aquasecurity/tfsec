@@ -9,12 +9,14 @@ import (
 
 // GkeAbacEnabled See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeAbacEnabled scanner.RuleID = "GCP005"
-const GkeAbacEnabledDescription scanner.RuleDescription = "Legacy ABAC permissions are enabled."
+const GkeAbacEnabledDescription scanner.RuleSummary = "Legacy ABAC permissions are enabled."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           GkeAbacEnabled,
-		Description:    GkeAbacEnabledDescription,
+		Code: GkeAbacEnabled,
+		Documentation: scanner.CheckDocumentation{
+			Summary: GkeAbacEnabledDescription,
+		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster"},

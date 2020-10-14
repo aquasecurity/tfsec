@@ -12,12 +12,14 @@ import (
 
 // AWSProviderHasAccessCredentials See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSProviderHasAccessCredentials scanner.RuleID = "AWS044"
-const AWSProviderHasAccessCredentialsDescription scanner.RuleDescription = "AWS provider has access credentials specified."
+const AWSProviderHasAccessCredentialsDescription scanner.RuleSummary = "AWS provider has access credentials specified."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSProviderHasAccessCredentials,
-		Description:    AWSProviderHasAccessCredentialsDescription,
+		Code: AWSProviderHasAccessCredentials,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSProviderHasAccessCredentialsDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"provider"},
 		RequiredLabels: []string{"aws"},

@@ -10,12 +10,14 @@ import (
 
 // AWSUnencryptedMSKBroker See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedMSKBroker scanner.RuleID = "AWS022"
-const AWSUnencryptedMSKBrokerDescription scanner.RuleDescription = "A MSK cluster allows unencrypted data in transit."
+const AWSUnencryptedMSKBrokerDescription scanner.RuleSummary = "A MSK cluster allows unencrypted data in transit."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSUnencryptedMSKBroker,
-		Description:    AWSUnencryptedMSKBrokerDescription,
+		Code: AWSUnencryptedMSKBroker,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSUnencryptedMSKBrokerDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_msk_cluster"},

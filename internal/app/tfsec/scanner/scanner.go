@@ -37,7 +37,6 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 			if check.IsRequiredForBlock(block) {
 				for _, result := range check.Run(block, context) {
 					if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
-						result.Link = fmt.Sprintf("https://github.com/tfsec/tfsec/wiki/%s", result.RuleID)
 						results = append(results, result)
 					}
 				}

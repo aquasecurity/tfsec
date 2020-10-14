@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const (
@@ -13,7 +15,6 @@ const (
 - title: Getting Started
   docs:
   - home
-
 
 {{range $p := .}}
 - title: {{$p.Provider | ToUpper }} Checks
@@ -27,50 +28,78 @@ title: {{$.Code}}
 permalink: /docs/{{$.Provider}}/{{$.Code}}/
 ---
 
-{{$.Description}}
+***{{$.Documentation.Summary}}***
 
 ## Explanation
 
-## Example
+{{$.Documentation.Explanation}}
 
-` + "```" + `
-"resource" "example" {
-	todo
-}
-` + "```" + `
+## Insecure Example
 
-## Terraform Documentation
+The following example will fail the {{$.Code}} check.
+
+{% highlight hcl %}
+{{$.Documentation.BadExample}}
+{% endhighlight %}
+
+## Secure Example
+
+The following example will pass the {{$.Code}} check.
+
+{% highlight hcl %}
+{{$.Documentation.GoodExample}}
+{% endhighlight %}
+
+## Related Links
+
+{{range $link := $.Documentation.Links}}
+- [{{.}}]({{.}})
+{{end}}
 `
 )
 
-func generateWebPages(fileContents []*FileContent) {
+func generateWebPages(fileContents []*FileContent) error {
 	for _, contents := range fileContents {
 		for _, check := range contents.Checks {
-			generateWebPage(check)
+			if err := generateWebPage(check); err != nil {
+				return err
+			}
 		}
 	}
-	generateDocsDataFile(fileContents)
+	return generateDocsDataFile(fileContents)
 }
 
-func generateDocsDataFile(contents []*FileContent) {
+var funcMap = template.FuncMap{
+	"ToUpper": strings.ToUpper,
+}
+
+func generateDocsDataFile(contents []*FileContent) error {
 	docsFilePath := fmt.Sprintf("%s/_data/docs.yml", webPath)
+	if err := os.MkdirAll(filepath.Dir(docsFilePath), os.ModePerm); err != nil {
+		return err
+	}
 	docTmpl := template.Must(template.New("web").Funcs(funcMap).Parse(docsDataFile))
-	writeTemplate(contents, docsFilePath, docTmpl)
+	return writeTemplate(contents, docsFilePath, docTmpl)
 }
 
-func generateWebPage(check scanner.Check) {
+func generateWebPage(check scanner.Check) error {
 	webProviderPath := fmt.Sprintf("%s/_docs/%s", webPath, strings.ToLower(string(check.Provider)))
-	if !fileExists(webProviderPath) {
-		if err := os.MkdirAll(webProviderPath, os.ModePerm); err != nil {
-			panic(err)
-		}
+	if err := os.MkdirAll(webProviderPath, os.ModePerm); err != nil {
+		return err
 	}
 
 	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, check.Code)
-	if fileExists(filePath) {
-		fmt.Printf("Not generating web page for %s, it already exists\n", check.Code)
-	}
-	fmt.Printf("Generating wiki page for %s at %s\n", check.Code, filePath)
+
+	fmt.Printf("Generating page for %s at %s\n", check.Code, filePath)
 	webTmpl := template.Must(template.New("web").Parse(baseWebPageTemplate))
-	writeTemplate(check, filePath, webTmpl)
+	return writeTemplate(check, filePath, webTmpl)
+}
+
+func writeTemplate(contents interface{}, path string, tmpl *template.Template) error {
+	outputFile, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = outputFile.Close() }()
+	return tmpl.Execute(outputFile, contents)
 }

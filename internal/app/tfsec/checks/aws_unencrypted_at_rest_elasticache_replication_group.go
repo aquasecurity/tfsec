@@ -10,12 +10,14 @@ import (
 
 // AWSUnencryptedAtRestElasticacheReplicationGroup See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedAtRestElasticacheReplicationGroup scanner.RuleID = "AWS035"
-const AWSUnencryptedAtRestElasticacheReplicationGroupDescription scanner.RuleDescription = "Unencrypted Elasticache Replication Group."
+const AWSUnencryptedAtRestElasticacheReplicationGroupDescription scanner.RuleSummary = "Unencrypted Elasticache Replication Group."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSUnencryptedAtRestElasticacheReplicationGroup,
-		Description:    AWSUnencryptedAtRestElasticacheReplicationGroupDescription,
+		Code: AWSUnencryptedAtRestElasticacheReplicationGroup,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSUnencryptedAtRestElasticacheReplicationGroupDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticache_replication_group"},
