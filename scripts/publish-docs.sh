@@ -13,12 +13,12 @@ function clone_site {
 function deploy {
 	echo "deploying changes"
 
-	if [ -z "$TRAVIS_PULL_REQUEST" ]; then
+	if [[ "$TRAVIS_PULL_REQUEST" != "" ]]; then
 	    echo "except don't publish site for pull requests"
 	    exit 0
 	fi
 
-	if [ "$TRAVIS_BRANCH" != "master" ]; then
+	if [[ "$TRAVIS_BRANCH" != "master" ]]; then
 	    echo "except we should only publish the master branch. stopping here"
 	    exit 0
 	fi
