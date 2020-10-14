@@ -14,7 +14,9 @@ import (
 var (
 	projectRoot, err = os.Getwd()
 	generateWiki     bool
+	generateWeb      bool
 	wikiPath         string
+	webPath          string
 )
 
 type FileContent struct {
@@ -24,9 +26,12 @@ type FileContent struct {
 
 func init() {
 	defaultWikiPath := fmt.Sprintf("%s/../tfsec.wiki", projectRoot)
+	defaultWebDocsPath := fmt.Sprintf("%s/../tfsec.github.io", projectRoot)
 
 	rootCmd.Flags().BoolVar(&generateWiki, "generate-wiki", false, "Generate the basis of wiki entries")
+	rootCmd.Flags().BoolVar(&generateWeb, "generate-web", false, "Generate the basis of web entries")
 	rootCmd.Flags().StringVar(&wikiPath, "wiki-path", defaultWikiPath, "The path to generate wiki into, defaults to ../tfsec.wiki")
+	rootCmd.Flags().StringVar(&webPath, "web-path", defaultWebDocsPath, "The path to generate web into, defaults to ../tfsec.github.io")
 }
 
 func main() {
@@ -42,24 +47,20 @@ var rootCmd = &cobra.Command{
 	Long:  `tfsec-docs generates the content for the root README and also can generate the missing base pages for the wiki`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		checksByProvider := splitChecksIntoProviders()
-		var fileContents []*FileContent
-		for provider, checks := range checksByProvider {
-			fileContents = append(fileContents, &FileContent{
-				Provider: provider,
-				Checks:   checks,
-			})
-		}
+		fileContents := getSortedFileContents()
 		generateChecksFiles(fileContents)
 
 		if generateWiki {
 			generateWikiPages(fileContents)
 		}
 
+		if generateWeb {
+			generateWebPages(fileContents)
+		}
 	},
 }
 
-func splitChecksIntoProviders() map[string][]scanner.Check {
+func getSortedFileContents() []*FileContent {
 	checks := scanner.GetRegisteredChecks()
 	checkMap := make(map[string][]scanner.Check)
 
@@ -68,10 +69,16 @@ func splitChecksIntoProviders() map[string][]scanner.Check {
 		checkMap[provider] = append(checkMap[provider], check)
 	}
 
+	var fileContents []*FileContent
 	for provider := range checkMap {
-		sortChecks(checkMap[provider])
+		checks := checkMap[provider]
+		sortChecks(checks)
+		fileContents = append(fileContents, &FileContent{
+			Provider: provider,
+			Checks:   checks,
+		})
 	}
-	return checkMap
+	return fileContents
 }
 
 func sortChecks(checks []scanner.Check) {

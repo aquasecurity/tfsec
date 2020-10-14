@@ -32,4 +32,8 @@ func generateCheckFile(checkFileContent *FileContent) {
 		providerFilePath := fmt.Sprintf("%s/%s/%s.md", wikiPath, strings.ToLower(checkFileContent.Provider), strings.ToUpper(checkFileContent.Provider))
 		writeTemplate(checkFileContent, providerFilePath, checkTmpl)
 	}
+	if generateWeb {
+		providerFilePath := fmt.Sprintf("%s/_docs/%s/home.md", webPath, strings.ToLower(checkFileContent.Provider))
+		writeTemplate(checkFileContent, providerFilePath, checkTmpl)
+	}
 }
