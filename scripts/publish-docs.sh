@@ -18,7 +18,7 @@ function deploy {
 	    exit 0
 	fi
 
-	if [ "$TRAVIS_BRANCH" != "master" ]; then
+	if [[ "$TRAVIS_BRANCH" != "master" ]]; then
 	    echo "except we should only publish the master branch. stopping here"
 	    exit 0
 	fi
