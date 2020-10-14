@@ -11,12 +11,14 @@ import (
 
 // GoogleUserIAMGrant See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleUserIAMGrant scanner.RuleID = "GCP011"
-const GoogleUserIAMGrantDescription scanner.RuleDescription = "IAM granted directly to user."
+const GoogleUserIAMGrantDescription scanner.RuleSummary = "IAM granted directly to user."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:          GoogleUserIAMGrant,
-		Description:   GoogleUserIAMGrantDescription,
+		Code: GoogleUserIAMGrant,
+		Documentation: scanner.CheckDocumentation{
+			Summary: GoogleUserIAMGrantDescription,
+		},
 		Provider:      scanner.GCPProvider,
 		RequiredTypes: []string{"resource", "data"},
 		RequiredLabels: []string{

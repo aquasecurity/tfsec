@@ -2,34 +2,43 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
 
-const checksTableTemplate = `The {{$.Provider}} checks listed below have been implemented, for more information about each check, see the wiki link provided.
+const checksTableTemplate = `---
+permalink: /docs/{{$.Provider}}/home/
+---
 
-| Code  | Description | Wiki link |
+The included {{$.Provider | ToUpper}} checks are listed below. For more information about each check, see the link provided.
+
+| Code  | Summary | Details |
 |:-------|:-------------|:----------|
-{{range $check := .Checks}}|{{$check.Code}}|{{$check.Description}}|[{{$check.Code}}](https://github.com/tfsec/tfsec/wiki/{{$check.Code}})|
+{{range $check := .Checks}}|{{$check.Code}}|{{$check.Documentation.Summary}}|[{{$check.Code}}](/docs/{{$.Provider}}/{{$check.Code}})|
 {{end}}
 `
 
-func generateChecksFiles(registeredChecks []*FileContent) {
+func generateChecksFiles(registeredChecks []*FileContent) error {
 	for _, checkFileContent := range registeredChecks {
-		generateCheckFile(checkFileContent)
+		if err := generateCheckFile(checkFileContent); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
-func generateCheckFile(checkFileContent *FileContent) {
-	checkTmpl := template.Must(template.New("checks").Parse(checksTableTemplate))
+func generateCheckFile(checkFileContent *FileContent) error {
+	checkTmpl, err := template.New("checks").Funcs(funcMap).Parse(checksTableTemplate)
 	if err != nil {
-		panic(err)
+		return err
+	}
 
+	providerFilePath := fmt.Sprintf("%s/_docs/%s/home.md", webPath, strings.ToLower(checkFileContent.Provider))
+	if err := os.MkdirAll(filepath.Dir(providerFilePath), os.ModePerm); err != nil {
+		return err
 	}
-	checksFilePath := fmt.Sprintf("%s/docs/%s_CHECKS.md", projectRoot, strings.ToUpper(checkFileContent.Provider))
-	writeTemplate(checkFileContent, checksFilePath, checkTmpl)
-	if generateWiki {
-		providerFilePath := fmt.Sprintf("%s/%s/%s.md", wikiPath, strings.ToLower(checkFileContent.Provider), strings.ToUpper(checkFileContent.Provider))
-		writeTemplate(checkFileContent, providerFilePath, checkTmpl)
-	}
+	return writeTemplate(checkFileContent, providerFilePath, checkTmpl)
+
 }

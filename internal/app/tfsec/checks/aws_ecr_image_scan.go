@@ -12,12 +12,14 @@ import (
 
 // AWSEcrImageScanNotEnabled See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSEcrImageScanNotEnabled scanner.RuleID = "AWS023"
-const AWSEcrImageScanNotEnabledDescription scanner.RuleDescription = "ECR repository has image scans disabled."
+const AWSEcrImageScanNotEnabledDescription scanner.RuleSummary = "ECR repository has image scans disabled."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSEcrImageScanNotEnabled,
-		Description:    AWSEcrImageScanNotEnabledDescription,
+		Code: AWSEcrImageScanNotEnabled,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSEcrImageScanNotEnabledDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecr_repository"},

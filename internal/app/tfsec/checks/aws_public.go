@@ -12,12 +12,14 @@ import (
 
 // AWSPubliclyAccessibleResource See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSPubliclyAccessibleResource scanner.RuleID = "AWS011"
-const AWSPubliclyAccessibleResourceDescription scanner.RuleDescription = "A resource is marked as publicly accessible."
+const AWSPubliclyAccessibleResourceDescription scanner.RuleSummary = "A resource is marked as publicly accessible."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSPubliclyAccessibleResource,
-		Description:    AWSPubliclyAccessibleResourceDescription,
+		Code: AWSPubliclyAccessibleResource,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSPubliclyAccessibleResourceDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_db_instance", "aws_dms_replication_instance", "aws_rds_cluster_instance", "aws_redshift_cluster"},

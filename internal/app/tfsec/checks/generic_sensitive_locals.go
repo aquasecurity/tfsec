@@ -13,12 +13,14 @@ import (
 
 // GenericSensitiveLocals See https://github.com/tfsec/tfsec#included-checks for check info
 const GenericSensitiveLocals scanner.RuleID = "GEN002"
-const GenericSensitiveLocalsDescription scanner.RuleDescription = "Potentially sensitive data stored in local value."
+const GenericSensitiveLocalsDescription scanner.RuleSummary = "Potentially sensitive data stored in local value."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:          GenericSensitiveLocals,
-		Description:   GenericSensitiveLocalsDescription,
+		Code: GenericSensitiveLocals,
+		Documentation: scanner.CheckDocumentation{
+			Summary: GenericSensitiveLocalsDescription,
+		},
 		Provider:      scanner.GeneralProvider,
 		RequiredTypes: []string{"locals"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {

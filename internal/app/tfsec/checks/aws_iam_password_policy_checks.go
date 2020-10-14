@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
@@ -11,12 +12,14 @@ import (
 
 // AWSIAMPasswordReusePrevention See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSIAMPasswordReusePrevention scanner.RuleID = "AWS037"
-const AWSIAMPasswordReusePreventionDescription scanner.RuleDescription = "IAM Password policy should prevent password reuse."
+const AWSIAMPasswordReusePreventionDescription scanner.RuleSummary = "IAM Password policy should prevent password reuse."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSIAMPasswordReusePrevention,
-		Description:    AWSIAMPasswordReusePreventionDescription,
+		Code: AWSIAMPasswordReusePrevention,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSIAMPasswordReusePreventionDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_iam_account_password_policy"},
@@ -48,12 +51,14 @@ func init() {
 
 // AWSIAMPasswordExpiry See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSIAMPasswordExpiry scanner.RuleID = "AWS038"
-const AWSIAMPasswordExpiryDescription scanner.RuleDescription = "IAM Password policy should have expiry greater than or equal to 90 days."
+const AWSIAMPasswordExpiryDescription scanner.RuleSummary = "IAM Password policy should have expiry greater than or equal to 90 days."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSIAMPasswordExpiry,
-		Description:    AWSIAMPasswordExpiryDescription,
+		Code: AWSIAMPasswordExpiry,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSIAMPasswordExpiryDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_iam_account_password_policy"},
@@ -85,12 +90,14 @@ func init() {
 
 // AWSIAMPasswordMinimumLength See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSIAMPasswordMinimumLength scanner.RuleID = "AWS039"
-const AWSIAMPasswordMinimumLengthDescription scanner.RuleDescription = "IAM Password policy should have minimum password length of 14 or more characters."
+const AWSIAMPasswordMinimumLengthDescription scanner.RuleSummary = "IAM Password policy should have minimum password length of 14 or more characters."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSIAMPasswordMinimumLength,
-		Description:    AWSIAMPasswordMinimumLengthDescription,
+		Code: AWSIAMPasswordMinimumLength,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSIAMPasswordMinimumLengthDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_iam_account_password_policy"},
@@ -122,12 +129,14 @@ func init() {
 
 // AWSIAMPasswordRequiresSymbol See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSIAMPasswordRequiresSymbol scanner.RuleID = "AWS040"
-const AWSIAMPasswordRequiresSymbolDescription scanner.RuleDescription = "IAM Password policy should have requirement for at least one symbol in the password."
+const AWSIAMPasswordRequiresSymbolDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one symbol in the password."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSIAMPasswordRequiresSymbol,
-		Description:    AWSIAMPasswordRequiresSymbolDescription,
+		Code: AWSIAMPasswordRequiresSymbol,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSIAMPasswordRequiresSymbolDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_iam_account_password_policy"},
@@ -158,12 +167,14 @@ func init() {
 
 // AWSIAMPasswordRequiresNumber See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSIAMPasswordRequiresNumber scanner.RuleID = "AWS041"
-const AWSIAMPasswordRequiresNumberDescription scanner.RuleDescription = "IAM Password policy should have requirement for at least one number in the password."
+const AWSIAMPasswordRequiresNumberDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one number in the password."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSIAMPasswordRequiresNumber,
-		Description:    AWSIAMPasswordRequiresNumberDescription,
+		Code: AWSIAMPasswordRequiresNumber,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSIAMPasswordRequiresNumberDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_iam_account_password_policy"},
@@ -194,12 +205,14 @@ func init() {
 
 // AWSIAMPasswordRequiresLowercaseCharacter See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSIAMPasswordRequiresLowercaseCharacter scanner.RuleID = "AWS042"
-const AWSIAMPasswordRequiresLowercaseCharacterDescription scanner.RuleDescription = "IAM Password policy should have requirement for at least one lowercase character."
+const AWSIAMPasswordRequiresLowercaseCharacterDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one lowercase character."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSIAMPasswordRequiresLowercaseCharacter,
-		Description:    AWSIAMPasswordRequiresLowercaseCharacterDescription,
+		Code: AWSIAMPasswordRequiresLowercaseCharacter,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSIAMPasswordRequiresLowercaseCharacterDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_iam_account_password_policy"},
@@ -230,12 +243,14 @@ func init() {
 
 // AWSIAMPasswordRequiresUppercaseCharacter See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSIAMPasswordRequiresUppercaseCharacter scanner.RuleID = "AWS043"
-const AWSIAMPasswordRequiresUppercaseCharacterDescription scanner.RuleDescription = "IAM Password policy should have requirement for at least one uppercase character."
+const AWSIAMPasswordRequiresUppercaseCharacterDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one uppercase character."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSIAMPasswordRequiresUppercaseCharacter,
-		Description:    AWSIAMPasswordRequiresUppercaseCharacterDescription,
+		Code: AWSIAMPasswordRequiresUppercaseCharacter,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSIAMPasswordRequiresUppercaseCharacterDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_iam_account_password_policy"},

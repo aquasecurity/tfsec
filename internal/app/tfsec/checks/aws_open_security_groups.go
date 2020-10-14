@@ -11,16 +11,18 @@ import (
 
 // AWSOpenIngressSecurityGroupInlineRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOpenIngressSecurityGroupInlineRule scanner.RuleID = "AWS008"
-const AWSOpenIngressSecurityGroupInlineRuleDescription scanner.RuleDescription = "An inline ingress security group rule allows traffic from `/0`."
+const AWSOpenIngressSecurityGroupInlineRuleDescription scanner.RuleSummary = "An inline ingress security group rule allows traffic from `/0`."
 
 // AWSOpenEgressSecurityGroupInlineRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOpenEgressSecurityGroupInlineRule scanner.RuleID = "AWS009"
-const AWSOpenEgressSecurityGroupInlineRuleDescription scanner.RuleDescription = "An inline egress security group rule allows traffic to `/0`."
+const AWSOpenEgressSecurityGroupInlineRuleDescription scanner.RuleSummary = "An inline egress security group rule allows traffic to `/0`."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSOpenIngressSecurityGroupInlineRule,
-		Description:    AWSOpenIngressSecurityGroupInlineRuleDescription,
+		Code: AWSOpenIngressSecurityGroupInlineRule,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSOpenIngressSecurityGroupInlineRuleDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group"},
@@ -72,8 +74,10 @@ func init() {
 	})
 
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSOpenEgressSecurityGroupInlineRule,
-		Description:    AWSOpenEgressSecurityGroupInlineRuleDescription,
+		Code: AWSOpenEgressSecurityGroupInlineRule,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSOpenEgressSecurityGroupInlineRuleDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group"},

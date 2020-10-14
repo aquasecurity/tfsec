@@ -12,12 +12,14 @@ import (
 
 // AWSUnencryptedSQSQueue See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedSQSQueue scanner.RuleID = "AWS015"
-const AWSUnencryptedSQSQueueDescription scanner.RuleDescription = "Unencrypted SQS queue."
+const AWSUnencryptedSQSQueueDescription scanner.RuleSummary = "Unencrypted SQS queue."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSUnencryptedSQSQueue,
-		Description:    AWSUnencryptedSQSQueueDescription,
+		Code: AWSUnencryptedSQSQueue,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSUnencryptedSQSQueueDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_sqs_queue"},

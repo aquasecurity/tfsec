@@ -12,12 +12,14 @@ import (
 
 // GkeNodeMetadataExposed See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeNodeMetadataExposed scanner.RuleID = "GCP006"
-const GkeNodeMetadataExposedDescription scanner.RuleDescription = "Node metadata value disables metadata concealment."
+const GkeNodeMetadataExposedDescription scanner.RuleSummary = "Node metadata value disables metadata concealment."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           GkeNodeMetadataExposed,
-		Description:    GkeNodeMetadataExposedDescription,
+		Code: GkeNodeMetadataExposed,
+		Documentation: scanner.CheckDocumentation{
+			Summary: GkeNodeMetadataExposedDescription,
+		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster"},

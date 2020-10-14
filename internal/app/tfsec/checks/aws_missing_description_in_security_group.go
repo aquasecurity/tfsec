@@ -11,12 +11,14 @@ import (
 
 // AWSNoDescriptionInSecurityGroup See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSNoDescriptionInSecurityGroup scanner.RuleID = "AWS018"
-const AWSNoDescriptionInSecurityGroupDescription scanner.RuleDescription = "Missing description for security group/security group rule."
+const AWSNoDescriptionInSecurityGroupDescription scanner.RuleSummary = "Missing description for security group/security group rule."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSNoDescriptionInSecurityGroup,
-		Description:    AWSNoDescriptionInSecurityGroupDescription,
+		Code: AWSNoDescriptionInSecurityGroup,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSNoDescriptionInSecurityGroupDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group", "aws_security_group_rule"},

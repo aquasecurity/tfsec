@@ -11,16 +11,18 @@ import (
 
 // GoogleOpenInboundFirewallRule See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleOpenInboundFirewallRule scanner.RuleID = "GCP003"
-const GoogleOpenInboundFirewallRuleDescription scanner.RuleDescription = "An inbound firewall rule allows traffic from `/0`."
+const GoogleOpenInboundFirewallRuleDescription scanner.RuleSummary = "An inbound firewall rule allows traffic from `/0`."
 
 // GoogleOpenOutboundFirewallRule See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleOpenOutboundFirewallRule scanner.RuleID = "GCP004"
-const GoogleOpenOutboundFirewallRuleDescription scanner.RuleDescription = "An outbound firewall rule allows traffic to `/0`."
+const GoogleOpenOutboundFirewallRuleDescription scanner.RuleSummary = "An outbound firewall rule allows traffic to `/0`."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           GoogleOpenInboundFirewallRule,
-		Description:    GoogleOpenInboundFirewallRuleDescription,
+		Code: GoogleOpenInboundFirewallRule,
+		Documentation: scanner.CheckDocumentation{
+			Summary: GoogleOpenInboundFirewallRuleDescription,
+		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_compute_firewall"},
@@ -51,8 +53,10 @@ func init() {
 	})
 
 	scanner.RegisterCheck(scanner.Check{
-		Code:           GoogleOpenOutboundFirewallRule,
-		Description:    GoogleOpenOutboundFirewallRuleDescription,
+		Code: GoogleOpenOutboundFirewallRule,
+		Documentation: scanner.CheckDocumentation{
+			Summary: GoogleOpenOutboundFirewallRuleDescription,
+		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_compute_firewall"},

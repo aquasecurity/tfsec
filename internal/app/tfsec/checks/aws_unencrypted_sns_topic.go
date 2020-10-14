@@ -12,12 +12,14 @@ import (
 
 // AWSUnencryptedSNSTopic See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedSNSTopic scanner.RuleID = "AWS016"
-const AWSUnencryptedSNSTopicDescription scanner.RuleDescription = "Unencrypted SNS topic."
+const AWSUnencryptedSNSTopicDescription scanner.RuleSummary = "Unencrypted SNS topic."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSUnencryptedSNSTopic,
-		Description:    AWSUnencryptedSNSTopicDescription,
+		Code: AWSUnencryptedSNSTopic,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSUnencryptedSNSTopicDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_sns_topic"},

@@ -12,12 +12,14 @@ import (
 
 // AWSUnencryptedKinesisStream See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedKinesisStream scanner.RuleID = "AWS024"
-const AWSUnencryptedKinesisStreamDescription scanner.RuleDescription = "Kinesis stream is unencrypted."
+const AWSUnencryptedKinesisStreamDescription scanner.RuleSummary = "Kinesis stream is unencrypted."
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code:           AWSUnencryptedKinesisStream,
-		Description:    AWSUnencryptedKinesisStreamDescription,
+		Code: AWSUnencryptedKinesisStream,
+		Documentation: scanner.CheckDocumentation{
+			Summary: AWSUnencryptedKinesisStreamDescription,
+		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_kinesis_stream"},
