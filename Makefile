@@ -28,4 +28,4 @@ generate-wiki: build-doc-gen
 publish-docs:
 	./scripts/publish-docs.sh
 
-.PHONY: image push-image test build build-doc-gen generate-docs piublish-docs
+.PHONY: image push-image test build build-doc-gen generate-docs publish-docs
