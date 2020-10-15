@@ -2,6 +2,7 @@ package scanner
 
 import (
 	"fmt"
+	"sort"
 	"sync"
 )
 
@@ -25,5 +26,8 @@ func RegisterCheck(check Check) {
 
 // GetRegisteredChecks provides all Checks which have been registered with this package
 func GetRegisteredChecks() []Check {
+	sort.Slice(registeredChecks, func(i, j int) bool {
+		return registeredChecks[i].Code < registeredChecks[j].Code
+	})
 	return registeredChecks
 }
