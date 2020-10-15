@@ -38,7 +38,7 @@ permalink: /docs/{{$.Provider}}/{{$.Code}}/
 
 The following example will fail the {{$.Code}} check.
 
-{% highlight hcl %}
+{% highlight terraform %}
 {{$.Documentation.BadExample}}
 {% endhighlight %}
 
@@ -46,7 +46,7 @@ The following example will fail the {{$.Code}} check.
 
 The following example will pass the {{$.Code}} check.
 
-{% highlight hcl %}
+{% highlight terraform %}
 {{$.Documentation.GoodExample}}
 {% endhighlight %}
 
