@@ -53,7 +53,7 @@ The following example will pass the {{$.Code}} check.
 ## Related Links
 
 {{range $link := $.Documentation.Links}}
-- [{{.}}]({{.}}){:target="_blank"}
+- [{{.}}]({{.}}){:target="_blank" rel="nofollow noreferrer noopener"}
 {{end}}
 `
 )
