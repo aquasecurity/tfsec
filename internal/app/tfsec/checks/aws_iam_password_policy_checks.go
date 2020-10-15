@@ -10,28 +10,43 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSIAMPasswordReusePrevention See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSIAMPasswordReusePrevention scanner.RuleID = "AWS037"
-const AWSIAMPasswordReusePreventionDescription scanner.RuleSummary = "IAM Password policy should prevent password reuse."
-const AWSIAMPasswordReusePreventionExplanation = `
+const (
+	AWSIAMPasswordReusePrevention            scanner.RuleID      = "AWS037"
+	AWSIAMPasswordReusePreventionDescription scanner.RuleSummary = "IAM Password policy should prevent password reuse."
 
-`
-const AWSIAMPasswordReusePreventionBadExample = `
+	AWSIAMPasswordReusePreventionExplanation = `
+IAM account password policies should prevent the reuse of passwords. 
 
+The account password policy should be set to prevent using any of the last five used passwords.
 `
-const AWSIAMPasswordReusePreventionGoodExample = `
-
+	AWSIAMPasswordReusePreventionBadExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	password_reuse_prevention = 1
+	...
+}
 `
+	AWSIAMPasswordReusePreventionGoodExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	password_reuse_prevention = 5
+	...
+}
+`
+)
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSIAMPasswordReusePrevention,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AWSIAMPasswordReusePreventionDescription,
-            Explanation: AWSIAMPasswordReusePreventionExplanation,
-            BadExample:  AWSIAMPasswordReusePreventionBadExample,
-            GoodExample: AWSIAMPasswordReusePreventionGoodExample,
-            Links: []string{},
+			Summary:     AWSIAMPasswordReusePreventionDescription,
+			Explanation: AWSIAMPasswordReusePreventionExplanation,
+			BadExample:  AWSIAMPasswordReusePreventionBadExample,
+			GoodExample: AWSIAMPasswordReusePreventionGoodExample,
+			Links: []string{
+				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
@@ -62,15 +77,43 @@ func init() {
 	})
 }
 
-// AWSIAMPasswordExpiry See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSIAMPasswordExpiry scanner.RuleID = "AWS038"
-const AWSIAMPasswordExpiryDescription scanner.RuleSummary = "IAM Password policy should have expiry greater than or equal to 90 days."
+const (
+	AWSIAMPasswordExpiry            scanner.RuleID      = "AWS038"
+	AWSIAMPasswordExpiryDescription scanner.RuleSummary = "IAM Password policy should have expiry less than or equal to 90 days."
+
+	AWSIAMPasswordExpiryExplanation = `
+IAM account password policies should have a maximum age specified. 
+
+The account password policy should be set to expire passwords after 90 days or less.
+`
+	AWSIAMPasswordExpiryBadExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	// max_password_age not set
+	...
+}
+`
+	AWSIAMPasswordExpiryGoodExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	max_password_age = 90
+	...
+}
+`
+)
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSIAMPasswordExpiry,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AWSIAMPasswordExpiryDescription,
+			Summary:     AWSIAMPasswordExpiryDescription,
+			Explanation: AWSIAMPasswordExpiryExplanation,
+			BadExample:  AWSIAMPasswordExpiryBadExample,
+			GoodExample: AWSIAMPasswordExpiryGoodExample,
+			Links: []string{
+				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
@@ -86,10 +129,10 @@ func init() {
 				}
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
-				if value < 90 {
+				if value > 90 {
 					return []scanner.Result{
 						check.NewResult(
-							fmt.Sprintf("Resource '%s' has a max age set which is less than 90 days.", block.Name()),
+							fmt.Sprintf("Resource '%s' has a max age set which is greated than 90 days.", block.Name()),
 							block.Range(),
 							scanner.SeverityWarning,
 						),
@@ -101,15 +144,43 @@ func init() {
 	})
 }
 
-// AWSIAMPasswordMinimumLength See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSIAMPasswordMinimumLength scanner.RuleID = "AWS039"
-const AWSIAMPasswordMinimumLengthDescription scanner.RuleSummary = "IAM Password policy should have minimum password length of 14 or more characters."
+const (
+	AWSIAMPasswordMinimumLength            scanner.RuleID      = "AWS039"
+	AWSIAMPasswordMinimumLengthDescription scanner.RuleSummary = "IAM Password policy should have minimum password length of 14 or more characters."
+
+	AWSIAMPasswordMinimumLengthExplanation = `
+IAM account password policies should ensure that passwords have a minimum length. 
+
+The account password policy should be set to enforce minimum password length of at least 14 characters.
+`
+	AWSIAMPasswordMinimumLengthBadExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	// minimum_password_length not set
+	...
+}
+`
+	AWSIAMPasswordMinimumLengthGoodExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	minimum_password_length = 14
+	...
+}
+`
+)
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSIAMPasswordMinimumLength,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AWSIAMPasswordMinimumLengthDescription,
+			Summary:     AWSIAMPasswordMinimumLengthDescription,
+			Explanation: AWSIAMPasswordMinimumLengthExplanation,
+			BadExample:  AWSIAMPasswordMinimumLengthBadExample,
+			GoodExample: AWSIAMPasswordMinimumLengthGoodExample,
+			Links: []string{
+				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
@@ -140,15 +211,41 @@ func init() {
 	})
 }
 
-// AWSIAMPasswordRequiresSymbol See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSIAMPasswordRequiresSymbol scanner.RuleID = "AWS040"
-const AWSIAMPasswordRequiresSymbolDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one symbol in the password."
+const (
+	AWSIAMPasswordRequiresSymbol            scanner.RuleID      = "AWS040"
+	AWSIAMPasswordRequiresSymbolDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one symbol in the password."
+
+	AWSIAMPasswordRequiresSymbolExplanation = `
+IAM account password policies should ensure that passwords content including a symbol.
+`
+	AWSIAMPasswordRequiresSymbolBadExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	// require_symbols not set
+	...
+}
+`
+	AWSIAMPasswordRequiresSymbolGoodExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	require_symbols = true
+	...
+}
+`
+)
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSIAMPasswordRequiresSymbol,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AWSIAMPasswordRequiresSymbolDescription,
+			Summary:     AWSIAMPasswordRequiresSymbolDescription,
+			Explanation: AWSIAMPasswordRequiresSymbolExplanation,
+			BadExample:  AWSIAMPasswordRequiresSymbolBadExample,
+			GoodExample: AWSIAMPasswordRequiresSymbolGoodExample,
+			Links: []string{
+				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
@@ -178,15 +275,41 @@ func init() {
 	})
 }
 
-// AWSIAMPasswordRequiresNumber See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSIAMPasswordRequiresNumber scanner.RuleID = "AWS041"
-const AWSIAMPasswordRequiresNumberDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one number in the password."
+const (
+	AWSIAMPasswordRequiresNumber            scanner.RuleID      = "AWS041"
+	AWSIAMPasswordRequiresNumberDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one number in the password."
+
+	AWSIAMPasswordRequiresNumberExplanation = `
+IAM account password policies should ensure that passwords content including at least one number.
+`
+	AWSIAMPasswordRequiresNumberBadExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	// require_numbers not set
+	...
+}
+`
+	AWSIAMPasswordRequiresNumberGoodExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	require_numbers = true
+	...
+}
+`
+)
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSIAMPasswordRequiresNumber,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AWSIAMPasswordRequiresNumberDescription,
+			Summary:     AWSIAMPasswordRequiresNumberDescription,
+			Explanation: AWSIAMPasswordRequiresNumberExplanation,
+			BadExample:  AWSIAMPasswordRequiresNumberBadExample,
+			GoodExample: AWSIAMPasswordRequiresNumberGoodExample,
+			Links: []string{
+				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
@@ -216,15 +339,41 @@ func init() {
 	})
 }
 
-// AWSIAMPasswordRequiresLowercaseCharacter See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSIAMPasswordRequiresLowercaseCharacter scanner.RuleID = "AWS042"
-const AWSIAMPasswordRequiresLowercaseCharacterDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one lowercase character."
+const (
+	AWSIAMPasswordRequiresLowercaseCharacter            scanner.RuleID      = "AWS042"
+	AWSIAMPasswordRequiresLowercaseCharacterDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one lowercase character."
+
+	AWSIAMPasswordRequiresLowercaseCharacterExplanation = `
+IAM account password policies should ensure that passwords content including at least one lowercase character.
+`
+	AWSIAMPasswordRequiresLowercaseCharacterBadExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	// require_lowercase_characters not set
+	...
+}
+`
+	AWSIAMPasswordRequiresLowercaseCharacterGoodExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	require_lowercase_characters = true
+	...
+}
+`
+)
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSIAMPasswordRequiresLowercaseCharacter,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AWSIAMPasswordRequiresLowercaseCharacterDescription,
+			Summary:     AWSIAMPasswordRequiresLowercaseCharacterDescription,
+			Explanation: AWSIAMPasswordRequiresLowercaseCharacterExplanation,
+			BadExample:  AWSIAMPasswordRequiresLowercaseCharacterBadExample,
+			GoodExample: AWSIAMPasswordRequiresLowercaseCharacterGoodExample,
+			Links: []string{
+				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
@@ -255,14 +404,41 @@ func init() {
 }
 
 // AWSIAMPasswordRequiresUppercaseCharacter See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSIAMPasswordRequiresUppercaseCharacter scanner.RuleID = "AWS043"
-const AWSIAMPasswordRequiresUppercaseCharacterDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one uppercase character."
+const (
+	AWSIAMPasswordRequiresUppercaseCharacter            scanner.RuleID      = "AWS043"
+	AWSIAMPasswordRequiresUppercaseCharacterDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one uppercase character."
+
+	AWSIAMPasswordRequiresUppercaseCharacterExplanation = `
+IAM account password policies should ensure that passwords content including at least one uppercase character.
+`
+	AWSIAMPasswordRequiresUppercaseCharacterBadExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	// require_uppercase_characters not set
+	...
+}
+`
+	AWSIAMPasswordRequiresUppercaseCharacterGoodExample = `
+resource "aws_iam_account_password_policy" "strict" {
+	...
+	require_uppercase_characters = true
+	...
+}
+`
+)
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSIAMPasswordRequiresUppercaseCharacter,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AWSIAMPasswordRequiresUppercaseCharacterDescription,
+			Summary:     AWSIAMPasswordRequiresUppercaseCharacterDescription,
+			Explanation: AWSIAMPasswordRequiresUppercaseCharacterExplanation,
+			BadExample:  AWSIAMPasswordRequiresUppercaseCharacterBadExample,
+			GoodExample: AWSIAMPasswordRequiresUppercaseCharacterGoodExample,
+			Links: []string{
+				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
