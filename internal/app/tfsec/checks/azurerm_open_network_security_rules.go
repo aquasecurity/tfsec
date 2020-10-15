@@ -15,28 +15,35 @@ import (
 const AzureOpenInboundNetworkSecurityGroupRule scanner.RuleID = "AZU001"
 const AzureOpenInboundNetworkSecurityGroupRuleDescription scanner.RuleSummary = "An inbound network security rule allows traffic from `/0`."
 const AzureOpenInboundNetworkSecurityGroupRuleExplanation = `
+Network security rules should not use very broad subnets.
 
+Where possible, segements should be broken into smaller subnets.
 `
 const AzureOpenInboundNetworkSecurityGroupRuleBadExample = `
-
-`
+resource "azurerm_network_security_rule" "my-rule" {
+	direction = "Inbound"
+	source_address_prefix = "0.0.0.0/0"
+	access = "Allow"
+}`
 const AzureOpenInboundNetworkSecurityGroupRuleGoodExample = `
-
-`
-
-// AzureOpenOutboundNetworkSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
-const AzureOpenOutboundNetworkSecurityGroupRule scanner.RuleID = "AZU002"
-const AzureOpenOutboundNetworkSecurityGroupRuleDescription scanner.RuleSummary = "An outbound network security rule allows traffic to `/0`."
+resource "azurerm_network_security_rule" "my-rule" {
+	direction = "Inbound"
+	destination_address_prefix = "10.0.0.0/16"
+	access = "Allow"
+}`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AzureOpenInboundNetworkSecurityGroupRule,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AzureOpenInboundNetworkSecurityGroupRuleDescription,
-            Explanation: AzureOpenInboundNetworkSecurityGroupRuleExplanation,
-            BadExample:  AzureOpenInboundNetworkSecurityGroupRuleBadExample,
-            GoodExample: AzureOpenInboundNetworkSecurityGroupRuleGoodExample,
-            Links: []string{},
+			Summary:     AzureOpenInboundNetworkSecurityGroupRuleDescription,
+			Explanation: AzureOpenInboundNetworkSecurityGroupRuleExplanation,
+			BadExample:  AzureOpenInboundNetworkSecurityGroupRuleBadExample,
+			GoodExample: AzureOpenInboundNetworkSecurityGroupRuleGoodExample,
+			Links: []string{
+				"https://docs.microsoft.com/en-us/azure/security/fundamentals/network-best-practices",
+				"https://www.terraform.io/docs/providers/azurerm/r/network_security_rule.html",
+			},
 		},
 		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},
@@ -90,11 +97,41 @@ func init() {
 			return results
 		},
 	})
+}
 
+
+const AzureOpenOutboundNetworkSecurityGroupRule scanner.RuleID = "AZU002"
+const AzureOpenOutboundNetworkSecurityGroupRuleDescription scanner.RuleSummary = "An outbound network security rule allows traffic to `/0`."
+const AzureOpenOutboundNetworkSecurityGroupRuleExplanation = `
+Network security rules should not use very broad subnets.
+
+Where possible, segements should be broken into smaller subnets.
+`
+const AzureOpenOutboundNetworkSecurityGroupRuleBadExample = `
+resource "azurerm_network_security_rule" "my-rule" {
+	direction = "Outbound"
+	source_address_prefix = "0.0.0.0/0"
+	access = "Allow"
+}`
+const AzureOpenOutboundNetworkSecurityGroupRuleGoodExample = `
+resource "azurerm_network_security_rule" "my-rule" {
+	direction = "Outbound"
+	destination_address_prefix = "10.0.0.0/16"
+	access = "Allow"
+}`
+
+func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AzureOpenOutboundNetworkSecurityGroupRule,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AzureOpenOutboundNetworkSecurityGroupRuleDescription,
+			Summary:     AzureOpenOutboundNetworkSecurityGroupRuleDescription,
+			Explanation: AzureOpenOutboundNetworkSecurityGroupRuleExplanation,
+			BadExample:  AzureOpenOutboundNetworkSecurityGroupRuleBadExample,
+			GoodExample: AzureOpenOutboundNetworkSecurityGroupRuleGoodExample,
+			Links: []string{
+				"https://docs.microsoft.com/en-us/azure/security/fundamentals/network-best-practices",
+				"https://www.terraform.io/docs/providers/azurerm/r/network_security_rule.html",
+			},
 		},
 		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},
