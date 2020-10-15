@@ -39,6 +39,7 @@ func init() {
 			GoodExample: AWSBadBucketACLGoodExample,
 			Links: []string{
 				"https://aws.amazon.com/premiumsupport/knowledge-center/secure-s3-resources/",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket",
 			},
 		},
 		Provider:       scanner.AWSProvider,
