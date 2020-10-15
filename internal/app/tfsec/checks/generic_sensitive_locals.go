@@ -15,24 +15,41 @@ import (
 const GenericSensitiveLocals scanner.RuleID = "GEN002"
 const GenericSensitiveLocalsDescription scanner.RuleSummary = "Potentially sensitive data stored in local value."
 const GenericSensitiveLocalsExplanation = `
+Sensitive attributes such as passwords and API tokens should not be available in your templates, especially in a plaintext form. You can declare variables to hold the secrets, assuming you can provide values for those variables in a secure fashion. Alternatively, you can store these secrets in a secure secret store, such as AWS KMS.
 
+*NOTE: It is also recommended to store your Terraform state in an encrypted form.*
 `
 const GenericSensitiveLocalsBadExample = `
+locals {
+  password = "p4ssw0rd"
+}
 
+resource "evil_corp" "virtual_machine" {
+	root_password = local.password
+}
 `
 const GenericSensitiveLocalsGoodExample = `
+variable "password" {
+  description = "The root password for our VM"
+  type        = string
+}
 
+resource "evil_corp" "virtual_machine" {
+	root_password = var.password
+}
 `
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: GenericSensitiveLocals,
 		Documentation: scanner.CheckDocumentation{
-			Summary: GenericSensitiveLocalsDescription,
-            Explanation: GenericSensitiveLocalsExplanation,
-            BadExample:  GenericSensitiveLocalsBadExample,
-            GoodExample: GenericSensitiveLocalsGoodExample,
-            Links: []string{},
+			Summary:     GenericSensitiveLocalsDescription,
+			Explanation: GenericSensitiveLocalsExplanation,
+			BadExample:  GenericSensitiveLocalsBadExample,
+			GoodExample: GenericSensitiveLocalsGoodExample,
+			Links: []string{
+				"https://www.terraform.io/docs/state/sensitive-data.html",
+			},
 		},
 		Provider:      scanner.GeneralProvider,
 		RequiredTypes: []string{"locals"},
