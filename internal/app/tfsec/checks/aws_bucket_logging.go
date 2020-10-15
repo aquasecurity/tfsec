@@ -35,7 +35,10 @@ func init() {
 			Explanation: AWSNoBucketLoggingExplanation,
 			BadExample:  AWSNoBucketLoggingBadExample,
 			GoodExample: AWSNoBucketLoggingGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
