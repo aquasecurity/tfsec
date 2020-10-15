@@ -12,24 +12,27 @@ import (
 const AWSClassicUsage scanner.RuleID = "AWS003"
 const AWSClassicUsageDescription scanner.RuleSummary = "AWS Classic resource usage."
 const AWSClassicUsageExplanation = `
-
+AWS Classic resources run in a shared environment with infrastructure owned by other AWS customers. You should run
+resources in a VPC instead.
 `
 const AWSClassicUsageBadExample = `
-
+resource "aws_db_security_group" "my-group" {
+  # ...
+}
 `
-const AWSClassicUsageGoodExample = `
-
-`
+const AWSClassicUsageGoodExample = ``
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSClassicUsage,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AWSClassicUsageDescription,
-            Explanation: AWSClassicUsageExplanation,
-            BadExample:  AWSClassicUsageBadExample,
-            GoodExample: AWSClassicUsageGoodExample,
-            Links: []string{},
+			Summary:     AWSClassicUsageDescription,
+			Explanation: AWSClassicUsageExplanation,
+			BadExample:  AWSClassicUsageBadExample,
+			GoodExample: AWSClassicUsageGoodExample,
+			Links: []string{
+				"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-classic-platform.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

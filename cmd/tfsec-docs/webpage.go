@@ -34,6 +34,7 @@ permalink: /docs/{{$.Provider}}/{{$.Code}}/
 
 {{$.Documentation.Explanation}}
 
+{{if $.Documentation.BadExample }}
 ## Insecure Example
 
 The following example will fail the {{$.Code}} check.
@@ -42,6 +43,8 @@ The following example will fail the {{$.Code}} check.
 {{$.Documentation.BadExample}}
 {% endhighlight %}
 
+{{end}}
+{{if $.Documentation.GoodExample }}
 ## Secure Example
 
 The following example will pass the {{$.Code}} check.
@@ -49,6 +52,7 @@ The following example will pass the {{$.Code}} check.
 {% highlight terraform %}
 {{$.Documentation.GoodExample}}
 {% endhighlight %}
+{{end}}
 
 ## Related Links
 
