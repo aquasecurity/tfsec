@@ -14,14 +14,20 @@ import (
 const AzureUnencryptedManagedDisk scanner.RuleID = "AZU003"
 const AzureUnencryptedManagedDiskDescription scanner.RuleSummary = "Unencrypted managed disk."
 const AzureUnencryptedManagedDiskExplanation = `
-
+Manage disks should be encrypted at rest
 `
-const AzureUnencryptedManagedDiskBadExample = `
-
-`
+const AzureUnencryptedManagedDiskBadExample =  `
+resource "azurerm_managed_disk" "my-disk" {
+	encryption_settings {
+		enabled = false
+	}
+}`
 const AzureUnencryptedManagedDiskGoodExample = `
-
-`
+resource "azurerm_managed_disk" "my-disk" {
+	encryption_settings {
+		enabled = true
+	}
+}`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -31,7 +37,10 @@ func init() {
             Explanation: AzureUnencryptedManagedDiskExplanation,
             BadExample:  AzureUnencryptedManagedDiskBadExample,
             GoodExample: AzureUnencryptedManagedDiskGoodExample,
-            Links: []string{},
+            Links: []string{
+				"https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption",
+				"https://www.terraform.io/docs/providers/azurerm/r/managed_disk.html",
+			},
 		},
 		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},

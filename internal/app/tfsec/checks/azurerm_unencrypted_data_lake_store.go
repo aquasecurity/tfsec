@@ -11,16 +11,18 @@ import (
 
 // AzureUnencryptedDataLakeStore See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureUnencryptedDataLakeStore scanner.RuleID = "AZU004"
-const AzureUnencryptedDataLakeStoreDescription scanner.RuleSummary = "Unencrypted data lake store."
+const AzureUnencryptedDataLakeStoreDescription scanner.RuleSummary = "Unencrypted data lake storage."
 const AzureUnencryptedDataLakeStoreExplanation = `
-
+Datalake storage encryption defaults to Enabled, it shouldn't be overridden to Disabled.
 `
 const AzureUnencryptedDataLakeStoreBadExample = `
-
-`
+resource "azurerm_data_lake_store" "my-lake-store" {
+	encryption_state = "Disabled"
+}`
 const AzureUnencryptedDataLakeStoreGoodExample = `
-
-`
+resource "azurerm_data_lake_store" "my-lake-store" {
+	encryption_state = "Enabled"
+}`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -30,7 +32,10 @@ func init() {
             Explanation: AzureUnencryptedDataLakeStoreExplanation,
             BadExample:  AzureUnencryptedDataLakeStoreBadExample,
             GoodExample: AzureUnencryptedDataLakeStoreGoodExample,
-            Links: []string{},
+            Links: []string{
+				"https://docs.microsoft.com/en-us/azure/data-lake-store/data-lake-store-security-overview",
+				"https://www.terraform.io/docs/providers/azurerm/r/data_lake_store.html",
+			},
 		},
 		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},
