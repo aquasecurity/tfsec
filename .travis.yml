@@ -15,6 +15,7 @@ jobs:
     script:
     - make test
   - stage: build
+    if: tag IS NOT blank
     name: Build
     script:
     - make build
@@ -33,6 +34,7 @@ jobs:
         repo: tfsec/tfsec
         tags: true
   - stage: docs
+    if: branch = master
     name: Publish Docs
     script:
     - make publish-docs
