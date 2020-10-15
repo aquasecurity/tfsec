@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"reflect"
 	"strings"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 
@@ -52,6 +55,7 @@ func (parser *Parser) readTFVars(filename string) (map[string]cty.Value, error) 
 	attrs, _ := tfvars.Body.JustAttributes()
 
 	for _, attr := range attrs {
+		debug.Log("Setting '%s' from tfvars file at %s", attr.Name, filename)
 		inputVars[attr.Name], _ = attr.Expr.Value(&hcl.EvalContext{})
 	}
 
@@ -61,6 +65,7 @@ func (parser *Parser) readTFVars(filename string) (map[string]cty.Value, error) 
 // ParseDirectory recursively parses all terraform files within a given directory
 func (parser *Parser) ParseDirectory(path string, excludedDirectories []string, tfvarsPath string) (Blocks, error) {
 
+	debug.Log("Beginning recursive parse of %s...", path)
 	parseCache := newParseCache()
 	if err := parser.recursivelyParseDirectory(path, parseCache, excludedDirectories); err != nil {
 		return nil, err
@@ -73,6 +78,9 @@ func (parser *Parser) ParseDirectory(path string, excludedDirectories []string, 
 		if err != nil {
 			return nil, err
 		}
+		if len(blocks) > 0 {
+			debug.Log("Added %d blocks from %s...", len(blocks), blocks[0].DefRange.Filename)
+		}
 		blocks = append(blocks, fileBlocks...)
 	}
 
@@ -80,8 +88,6 @@ func (parser *Parser) ParseDirectory(path string, excludedDirectories []string, 
 	if err != nil {
 		return nil, err
 	}
-
-	// TODO add .tfvars values to inputVars
 
 	allBlocks, _ := parser.buildEvaluationContext(
 		blocks,
@@ -172,7 +178,13 @@ func (parser *Parser) buildEvaluationContext(
 
 	moduleBlocks := make(map[string]Blocks)
 
+	debug.Log("Beginning evaluation...")
+
+	var lastContext hcl.EvalContext
+
 	for i := 0; i < maxContextIterations; i++ {
+
+		debug.Log("Starting iteration %d of context evaluation...", i+1)
 
 		ctx.Variables["var"] = parser.getValuesByBlockType(ctx, blocks, "variable", inputVars)
 		ctx.Variables["local"] = parser.getValuesByBlockType(ctx, blocks, "locals", nil)
@@ -206,7 +218,15 @@ func (parser *Parser) buildEvaluationContext(
 			ctx.Variables["module"] = cty.ObjectVal(moduleMap)
 		}
 
-		// todo check of ctx has changed since last iteration - break if not
+		// if ctx matches the last evaluation, we can bail, nothing left to resolve
+		if reflect.DeepEqual(lastContext.Variables, ctx.Variables) {
+			break
+		}
+
+		lastContext.Variables = make(map[string]cty.Value)
+		for k, v := range ctx.Variables {
+			lastContext.Variables[k] = v
+		}
 	}
 
 	var localBlocks []*Block

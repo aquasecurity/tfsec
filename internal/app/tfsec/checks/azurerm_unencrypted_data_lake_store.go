@@ -12,12 +12,25 @@ import (
 // AzureUnencryptedDataLakeStore See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureUnencryptedDataLakeStore scanner.RuleID = "AZU004"
 const AzureUnencryptedDataLakeStoreDescription scanner.RuleSummary = "Unencrypted data lake store."
+const AzureUnencryptedDataLakeStoreExplanation = `
+
+`
+const AzureUnencryptedDataLakeStoreBadExample = `
+
+`
+const AzureUnencryptedDataLakeStoreGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AzureUnencryptedDataLakeStore,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AzureUnencryptedDataLakeStoreDescription,
+            Explanation: AzureUnencryptedDataLakeStoreExplanation,
+            BadExample:  AzureUnencryptedDataLakeStoreBadExample,
+            GoodExample: AzureUnencryptedDataLakeStoreGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},

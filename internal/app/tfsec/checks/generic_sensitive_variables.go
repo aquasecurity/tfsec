@@ -14,12 +14,25 @@ import (
 // GenericSensitiveVariables See https://github.com/tfsec/tfsec#included-checks for check info
 const GenericSensitiveVariables scanner.RuleID = "GEN001"
 const GenericSensitiveVariablesDescription scanner.RuleSummary = "Potentially sensitive data stored in \"default\" value of variable."
+const GenericSensitiveVariablesExplanation = `
+
+`
+const GenericSensitiveVariablesBadExample = `
+
+`
+const GenericSensitiveVariablesGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: GenericSensitiveVariables,
 		Documentation: scanner.CheckDocumentation{
 			Summary: GenericSensitiveVariablesDescription,
+            Explanation: GenericSensitiveVariablesExplanation,
+            BadExample:  GenericSensitiveVariablesBadExample,
+            GoodExample: GenericSensitiveVariablesGoodExample,
+            Links: []string{},
 		},
 		Provider:      scanner.GeneralProvider,
 		RequiredTypes: []string{"variable"},

@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/formatters"
 
 	"github.com/liamg/tml"
@@ -36,6 +38,7 @@ func init() {
 	rootCmd.Flags().StringSliceVar(&excludeDirectories, "exclude-dir", []string{}, "Exclude a directory from the scan. You can use this flag multiple times to exclude further directories.")
 	rootCmd.Flags().StringVar(&tfvarsPath, "tfvars-file", tfvarsPath, "Path to .tfvars file")
 	rootCmd.Flags().StringVar(&outputFlag, "out", outputFlag, "Set output file")
+	rootCmd.Flags().BoolVar(&debug.Enabled, "verbose", debug.Enabled, "Enable verbose logging")
 }
 
 func main() {
@@ -52,6 +55,7 @@ var rootCmd = &cobra.Command{
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 
 		if disableColours {
+			debug.Log("Disabled formatting.")
 			tml.DisableFormatting()
 		}
 
@@ -116,12 +120,14 @@ var rootCmd = &cobra.Command{
 			}
 		}
 
+		debug.Log("Starting parser...")
 		blocks, err := parser.New().ParseDirectory(dir, absoluteExcludes, tfvarsPath)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
+		debug.Log("Starting scanner...")
 		results := scanner.New().Scan(blocks, excludedChecksList)
 		if err := formatter(outputFile, results); err != nil {
 			fmt.Println(err)

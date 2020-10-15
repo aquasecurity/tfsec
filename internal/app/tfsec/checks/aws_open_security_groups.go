@@ -12,6 +12,15 @@ import (
 // AWSOpenIngressSecurityGroupInlineRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOpenIngressSecurityGroupInlineRule scanner.RuleID = "AWS008"
 const AWSOpenIngressSecurityGroupInlineRuleDescription scanner.RuleSummary = "An inline ingress security group rule allows traffic from `/0`."
+const AWSOpenIngressSecurityGroupInlineRuleExplanation = `
+
+`
+const AWSOpenIngressSecurityGroupInlineRuleBadExample = `
+
+`
+const AWSOpenIngressSecurityGroupInlineRuleGoodExample = `
+
+`
 
 // AWSOpenEgressSecurityGroupInlineRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOpenEgressSecurityGroupInlineRule scanner.RuleID = "AWS009"
@@ -22,6 +31,10 @@ func init() {
 		Code: AWSOpenIngressSecurityGroupInlineRule,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSOpenIngressSecurityGroupInlineRuleDescription,
+            Explanation: AWSOpenIngressSecurityGroupInlineRuleExplanation,
+            BadExample:  AWSOpenIngressSecurityGroupInlineRuleBadExample,
+            GoodExample: AWSOpenIngressSecurityGroupInlineRuleGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

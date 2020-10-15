@@ -13,6 +13,15 @@ import (
 // AWSOutdatedSSLPolicy See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOutdatedSSLPolicy scanner.RuleID = "AWS010"
 const AWSOutdatedSSLPolicyDescription scanner.RuleSummary = "An outdated SSL policy is in use by a load balancer."
+const AWSOutdatedSSLPolicyExplanation = `
+
+`
+const AWSOutdatedSSLPolicyBadExample = `
+
+`
+const AWSOutdatedSSLPolicyGoodExample = `
+
+`
 
 var outdatedSSLPolicies = []string{
 	"ELBSecurityPolicy-2015-05",
@@ -26,6 +35,10 @@ func init() {
 		Code: AWSOutdatedSSLPolicy,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSOutdatedSSLPolicyDescription,
+            Explanation: AWSOutdatedSSLPolicyExplanation,
+            BadExample:  AWSOutdatedSSLPolicyBadExample,
+            GoodExample: AWSOutdatedSSLPolicyGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

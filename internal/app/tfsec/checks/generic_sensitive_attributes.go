@@ -14,6 +14,15 @@ import (
 // GenericSensitiveAttributes See https://github.com/tfsec/tfsec#included-checks for check info
 const GenericSensitiveAttributes scanner.RuleID = "GEN003"
 const GenericSensitiveAttributesDescription scanner.RuleSummary = "Potentially sensitive data stored in block attribute."
+const GenericSensitiveAttributesExplanation = `
+
+`
+const GenericSensitiveAttributesBadExample = `
+
+`
+const GenericSensitiveAttributesGoodExample = `
+
+`
 
 var sensitiveWhitelist = []struct {
 	Resource  string
@@ -34,6 +43,10 @@ func init() {
 		Code: GenericSensitiveAttributes,
 		Documentation: scanner.CheckDocumentation{
 			Summary: GenericSensitiveAttributesDescription,
+            Explanation: GenericSensitiveAttributesExplanation,
+            BadExample:  GenericSensitiveAttributesBadExample,
+            GoodExample: GenericSensitiveAttributesGoodExample,
+            Links: []string{},
 		},
 		Provider:      scanner.GeneralProvider,
 		RequiredTypes: []string{"resource", "provider", "module"},

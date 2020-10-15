@@ -11,12 +11,25 @@ import (
 // AWSUnencryptedInTransitElasticacheReplicationGroup See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedInTransitElasticacheReplicationGroup scanner.RuleID = "AWS036"
 const AWSUnencryptedInTransitElasticacheReplicationGroupDescription scanner.RuleSummary = "Elasticache Replication Group uses unencrypted traffic."
+const AWSUnencryptedInTransitElasticacheReplicationGroupExplanation = `
+
+`
+const AWSUnencryptedInTransitElasticacheReplicationGroupBadExample = `
+
+`
+const AWSUnencryptedInTransitElasticacheReplicationGroupGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSUnencryptedInTransitElasticacheReplicationGroup,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSUnencryptedInTransitElasticacheReplicationGroupDescription,
+            Explanation: AWSUnencryptedInTransitElasticacheReplicationGroupExplanation,
+            BadExample:  AWSUnencryptedInTransitElasticacheReplicationGroupBadExample,
+            GoodExample: AWSUnencryptedInTransitElasticacheReplicationGroupGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

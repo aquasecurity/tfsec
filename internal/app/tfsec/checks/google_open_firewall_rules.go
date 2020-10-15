@@ -12,6 +12,15 @@ import (
 // GoogleOpenInboundFirewallRule See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleOpenInboundFirewallRule scanner.RuleID = "GCP003"
 const GoogleOpenInboundFirewallRuleDescription scanner.RuleSummary = "An inbound firewall rule allows traffic from `/0`."
+const GoogleOpenInboundFirewallRuleExplanation = `
+
+`
+const GoogleOpenInboundFirewallRuleBadExample = `
+
+`
+const GoogleOpenInboundFirewallRuleGoodExample = `
+
+`
 
 // GoogleOpenOutboundFirewallRule See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleOpenOutboundFirewallRule scanner.RuleID = "GCP004"
@@ -22,6 +31,10 @@ func init() {
 		Code: GoogleOpenInboundFirewallRule,
 		Documentation: scanner.CheckDocumentation{
 			Summary: GoogleOpenInboundFirewallRuleDescription,
+            Explanation: GoogleOpenInboundFirewallRuleExplanation,
+            BadExample:  GoogleOpenInboundFirewallRuleBadExample,
+            GoodExample: GoogleOpenInboundFirewallRuleGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},

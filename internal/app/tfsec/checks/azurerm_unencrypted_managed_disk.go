@@ -13,12 +13,25 @@ import (
 // AzureUnencryptedManagedDisk See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureUnencryptedManagedDisk scanner.RuleID = "AZU003"
 const AzureUnencryptedManagedDiskDescription scanner.RuleSummary = "Unencrypted managed disk."
+const AzureUnencryptedManagedDiskExplanation = `
+
+`
+const AzureUnencryptedManagedDiskBadExample = `
+
+`
+const AzureUnencryptedManagedDiskGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AzureUnencryptedManagedDisk,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AzureUnencryptedManagedDiskDescription,
+            Explanation: AzureUnencryptedManagedDiskExplanation,
+            BadExample:  AzureUnencryptedManagedDiskBadExample,
+            GoodExample: AzureUnencryptedManagedDiskGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},

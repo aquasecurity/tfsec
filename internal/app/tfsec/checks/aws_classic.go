@@ -11,12 +11,25 @@ import (
 // AWSClassicUsage See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSClassicUsage scanner.RuleID = "AWS003"
 const AWSClassicUsageDescription scanner.RuleSummary = "AWS Classic resource usage."
+const AWSClassicUsageExplanation = `
+
+`
+const AWSClassicUsageBadExample = `
+
+`
+const AWSClassicUsageGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSClassicUsage,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSClassicUsageDescription,
+            Explanation: AWSClassicUsageExplanation,
+            BadExample:  AWSClassicUsageBadExample,
+            GoodExample: AWSClassicUsageGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
