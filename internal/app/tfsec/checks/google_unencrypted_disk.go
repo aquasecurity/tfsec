@@ -10,12 +10,25 @@ import (
 // GoogleUnencryptedDisk See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleUnencryptedDisk scanner.RuleID = "GCP001"
 const GoogleUnencryptedDiskDescription scanner.RuleSummary = "Unencrypted compute disk."
+const GoogleUnencryptedDiskExplanation = `
+
+`
+const GoogleUnencryptedDiskBadExample = `
+
+`
+const GoogleUnencryptedDiskGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: GoogleUnencryptedDisk,
 		Documentation: scanner.CheckDocumentation{
 			Summary: GoogleUnencryptedDiskDescription,
+            Explanation: GoogleUnencryptedDiskExplanation,
+            BadExample:  GoogleUnencryptedDiskBadExample,
+            GoodExample: GoogleUnencryptedDiskGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},

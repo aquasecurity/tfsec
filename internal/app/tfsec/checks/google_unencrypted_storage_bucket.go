@@ -10,12 +10,25 @@ import (
 // GoogleUnencryptedStorageBucket See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleUnencryptedStorageBucket scanner.RuleID = "GCP002"
 const GoogleUnencryptedStorageBucketDescription scanner.RuleSummary = "Unencrypted storage bucket."
+const GoogleUnencryptedStorageBucketExplanation = `
+
+`
+const GoogleUnencryptedStorageBucketBadExample = `
+
+`
+const GoogleUnencryptedStorageBucketGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: GoogleUnencryptedStorageBucket,
 		Documentation: scanner.CheckDocumentation{
 			Summary: GoogleUnencryptedStorageBucketDescription,
+            Explanation: GoogleUnencryptedStorageBucketExplanation,
+            BadExample:  GoogleUnencryptedStorageBucketBadExample,
+            GoodExample: GoogleUnencryptedStorageBucketGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},

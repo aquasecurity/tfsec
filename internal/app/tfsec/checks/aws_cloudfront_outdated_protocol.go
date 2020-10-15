@@ -11,12 +11,25 @@ import (
 // AWSCloudFrontOutdatedProtocol See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSCloudFrontOutdatedProtocol scanner.RuleID = "AWS021"
 const AWSCloudFrontOutdatedProtocolDescription scanner.RuleSummary = "CloudFront distribution uses outdated SSL/TSL protocols."
+const AWSCloudFrontOutdatedProtocolExplanation = `
+
+`
+const AWSCloudFrontOutdatedProtocolBadExample = `
+
+`
+const AWSCloudFrontOutdatedProtocolGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSCloudFrontOutdatedProtocol,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSCloudFrontOutdatedProtocolDescription,
+            Explanation: AWSCloudFrontOutdatedProtocolExplanation,
+            BadExample:  AWSCloudFrontOutdatedProtocolBadExample,
+            GoodExample: AWSCloudFrontOutdatedProtocolGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

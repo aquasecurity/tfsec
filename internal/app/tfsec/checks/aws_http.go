@@ -12,12 +12,25 @@ import (
 // AWSPlainHTTP See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSPlainHTTP scanner.RuleID = "AWS004"
 const AWSPlainHTTPDescription scanner.RuleSummary = "Use of plain HTTP."
+const AWSPlainHTTPExplanation = `
+
+`
+const AWSPlainHTTPBadExample = `
+
+`
+const AWSPlainHTTPGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSPlainHTTP,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSPlainHTTPDescription,
+            Explanation: AWSPlainHTTPExplanation,
+            BadExample:  AWSPlainHTTPBadExample,
+            GoodExample: AWSPlainHTTPGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

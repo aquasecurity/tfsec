@@ -10,12 +10,25 @@ import (
 // AWSCloudFrontDoesNotHaveAWaf See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSCloudFrontDoesNotHaveAWaf scanner.RuleID = "AWS045"
 const AWSCloudFrontDoesNotHaveAWafDescription scanner.RuleSummary = "CloudFront distribution does not have a WAF in front."
+const AWSCloudFrontDoesNotHaveAWafExplanation = `
+
+`
+const AWSCloudFrontDoesNotHaveAWafBadExample = `
+
+`
+const AWSCloudFrontDoesNotHaveAWafGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSCloudFrontDoesNotHaveAWaf,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSCloudFrontDoesNotHaveAWafDescription,
+            Explanation: AWSCloudFrontDoesNotHaveAWafExplanation,
+            BadExample:  AWSCloudFrontDoesNotHaveAWafBadExample,
+            GoodExample: AWSCloudFrontDoesNotHaveAWafGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

@@ -11,12 +11,25 @@ import (
 // AWSIamPolicyWildcardActions See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSIamPolicyWildcardActions scanner.RuleID = "AWS046"
 const AWSIamPolicyWildcardActionsDescription scanner.RuleSummary = "AWS IAM policy document has wildcard action statement."
+const AWSIamPolicyWildcardActionsExplanation = `
+
+`
+const AWSIamPolicyWildcardActionsBadExample = `
+
+`
+const AWSIamPolicyWildcardActionsGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSIamPolicyWildcardActions,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSIamPolicyWildcardActionsDescription,
+            Explanation: AWSIamPolicyWildcardActionsExplanation,
+            BadExample:  AWSIamPolicyWildcardActionsBadExample,
+            GoodExample: AWSIamPolicyWildcardActionsGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"data"},

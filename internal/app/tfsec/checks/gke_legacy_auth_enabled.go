@@ -13,12 +13,25 @@ import (
 // GkeLegacyAuthEnabled See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeLegacyAuthEnabled scanner.RuleID = "GCP008"
 const GkeLegacyAuthEnabledDescription scanner.RuleSummary = "Legacy client authentication methods utilized."
+const GkeLegacyAuthEnabledExplanation = `
+
+`
+const GkeLegacyAuthEnabledBadExample = `
+
+`
+const GkeLegacyAuthEnabledGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: GkeLegacyAuthEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary: GkeLegacyAuthEnabledDescription,
+            Explanation: GkeLegacyAuthEnabledExplanation,
+            BadExample:  GkeLegacyAuthEnabledBadExample,
+            GoodExample: GkeLegacyAuthEnabledGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},

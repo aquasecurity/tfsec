@@ -11,12 +11,25 @@ import (
 // AWSUnencryptedS3Bucket See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedS3Bucket scanner.RuleID = "AWS017"
 const AWSUnencryptedS3BucketDescription scanner.RuleSummary = "Unencrypted S3 bucket."
+const AWSUnencryptedS3BucketExplanation = `
+
+`
+const AWSUnencryptedS3BucketBadExample = `
+
+`
+const AWSUnencryptedS3BucketGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSUnencryptedS3Bucket,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSUnencryptedS3BucketDescription,
+            Explanation: AWSUnencryptedS3BucketExplanation,
+            BadExample:  AWSUnencryptedS3BucketBadExample,
+            GoodExample: AWSUnencryptedS3BucketGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

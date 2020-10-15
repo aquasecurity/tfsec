@@ -14,6 +14,15 @@ import (
 // AzureOpenInboundNetworkSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureOpenInboundNetworkSecurityGroupRule scanner.RuleID = "AZU001"
 const AzureOpenInboundNetworkSecurityGroupRuleDescription scanner.RuleSummary = "An inbound network security rule allows traffic from `/0`."
+const AzureOpenInboundNetworkSecurityGroupRuleExplanation = `
+
+`
+const AzureOpenInboundNetworkSecurityGroupRuleBadExample = `
+
+`
+const AzureOpenInboundNetworkSecurityGroupRuleGoodExample = `
+
+`
 
 // AzureOpenOutboundNetworkSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureOpenOutboundNetworkSecurityGroupRule scanner.RuleID = "AZU002"
@@ -24,6 +33,10 @@ func init() {
 		Code: AzureOpenInboundNetworkSecurityGroupRule,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AzureOpenInboundNetworkSecurityGroupRuleDescription,
+            Explanation: AzureOpenInboundNetworkSecurityGroupRuleExplanation,
+            BadExample:  AzureOpenInboundNetworkSecurityGroupRuleBadExample,
+            GoodExample: AzureOpenInboundNetworkSecurityGroupRuleGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},

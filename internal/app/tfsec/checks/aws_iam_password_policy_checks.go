@@ -13,12 +13,25 @@ import (
 // AWSIAMPasswordReusePrevention See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSIAMPasswordReusePrevention scanner.RuleID = "AWS037"
 const AWSIAMPasswordReusePreventionDescription scanner.RuleSummary = "IAM Password policy should prevent password reuse."
+const AWSIAMPasswordReusePreventionExplanation = `
+
+`
+const AWSIAMPasswordReusePreventionBadExample = `
+
+`
+const AWSIAMPasswordReusePreventionGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSIAMPasswordReusePrevention,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSIAMPasswordReusePreventionDescription,
+            Explanation: AWSIAMPasswordReusePreventionExplanation,
+            BadExample:  AWSIAMPasswordReusePreventionBadExample,
+            GoodExample: AWSIAMPasswordReusePreventionGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

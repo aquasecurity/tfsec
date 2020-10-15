@@ -13,12 +13,25 @@ import (
 // GkeShieldedNodesDisabled See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeShieldedNodesDisabled scanner.RuleID = "GCP010"
 const GkeShieldedNodesDisabledDescription scanner.RuleSummary = "Shielded GKE nodes not enabled."
+const GkeShieldedNodesDisabledExplanation = `
+
+`
+const GkeShieldedNodesDisabledBadExample = `
+
+`
+const GkeShieldedNodesDisabledGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: GkeShieldedNodesDisabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary: GkeShieldedNodesDisabledDescription,
+            Explanation: GkeShieldedNodesDisabledExplanation,
+            BadExample:  GkeShieldedNodesDisabledBadExample,
+            GoodExample: GkeShieldedNodesDisabledGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},

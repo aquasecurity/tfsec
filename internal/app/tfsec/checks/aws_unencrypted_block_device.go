@@ -13,12 +13,25 @@ import (
 // AWSLaunchConfigurationWithUnencryptedBlockDevice See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSLaunchConfigurationWithUnencryptedBlockDevice scanner.RuleID = "AWS014"
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceDescription scanner.RuleSummary = "Launch configuration with unencrypted block device."
+const AWSLaunchConfigurationWithUnencryptedBlockDeviceExplanation = `
+
+`
+const AWSLaunchConfigurationWithUnencryptedBlockDeviceBadExample = `
+
+`
+const AWSLaunchConfigurationWithUnencryptedBlockDeviceGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSLaunchConfigurationWithUnencryptedBlockDeviceDescription,
+            Explanation: AWSLaunchConfigurationWithUnencryptedBlockDeviceExplanation,
+            BadExample:  AWSLaunchConfigurationWithUnencryptedBlockDeviceBadExample,
+            GoodExample: AWSLaunchConfigurationWithUnencryptedBlockDeviceGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

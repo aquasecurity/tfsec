@@ -13,12 +13,25 @@ import (
 // AWSResourceHasPublicIP See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSResourceHasPublicIP scanner.RuleID = "AWS012"
 const AWSResourceHasPublicIPDescription scanner.RuleSummary = "A resource has a public IP address."
+const AWSResourceHasPublicIPExplanation = `
+
+`
+const AWSResourceHasPublicIPBadExample = `
+
+`
+const AWSResourceHasPublicIPGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSResourceHasPublicIP,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSResourceHasPublicIPDescription,
+            Explanation: AWSResourceHasPublicIPExplanation,
+            BadExample:  AWSResourceHasPublicIPBadExample,
+            GoodExample: AWSResourceHasPublicIPGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

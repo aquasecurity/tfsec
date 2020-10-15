@@ -13,12 +13,25 @@ import (
 // AWSExternallyExposedLoadBalancer See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSExternallyExposedLoadBalancer scanner.RuleID = "AWS005"
 const AWSExternallyExposedLoadBalancerDescription scanner.RuleSummary = "Load balancer is exposed to the internet."
+const AWSExternallyExposedLoadBalancerExplanation = `
+
+`
+const AWSExternallyExposedLoadBalancerBadExample = `
+
+`
+const AWSExternallyExposedLoadBalancerGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSExternallyExposedLoadBalancer,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AWSExternallyExposedLoadBalancerDescription,
+            Explanation: AWSExternallyExposedLoadBalancerExplanation,
+            BadExample:  AWSExternallyExposedLoadBalancerBadExample,
+            GoodExample: AWSExternallyExposedLoadBalancerGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

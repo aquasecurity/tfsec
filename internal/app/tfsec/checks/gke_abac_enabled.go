@@ -10,12 +10,25 @@ import (
 // GkeAbacEnabled See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeAbacEnabled scanner.RuleID = "GCP005"
 const GkeAbacEnabledDescription scanner.RuleSummary = "Legacy ABAC permissions are enabled."
+const GkeAbacEnabledExplanation = `
+
+`
+const GkeAbacEnabledBadExample = `
+
+`
+const GkeAbacEnabledGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: GkeAbacEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary: GkeAbacEnabledDescription,
+            Explanation: GkeAbacEnabledExplanation,
+            BadExample:  GkeAbacEnabledBadExample,
+            GoodExample: GkeAbacEnabledGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},

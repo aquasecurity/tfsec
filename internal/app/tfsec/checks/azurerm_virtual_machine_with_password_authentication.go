@@ -13,12 +13,25 @@ import (
 // AzureVMWithPasswordAuthentication See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureVMWithPasswordAuthentication scanner.RuleID = "AZU005"
 const AzureVMWithPasswordAuthenticationDescription scanner.RuleSummary = "Password authentication in use instead of SSH keys."
+const AzureVMWithPasswordAuthenticationExplanation = `
+
+`
+const AzureVMWithPasswordAuthenticationBadExample = `
+
+`
+const AzureVMWithPasswordAuthenticationGoodExample = `
+
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AzureVMWithPasswordAuthentication,
 		Documentation: scanner.CheckDocumentation{
 			Summary: AzureVMWithPasswordAuthenticationDescription,
+            Explanation: AzureVMWithPasswordAuthenticationExplanation,
+            BadExample:  AzureVMWithPasswordAuthenticationBadExample,
+            GoodExample: AzureVMWithPasswordAuthenticationGoodExample,
+            Links: []string{},
 		},
 		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},
