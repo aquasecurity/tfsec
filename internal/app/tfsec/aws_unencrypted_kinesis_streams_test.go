@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSUnencryptedKinesisStream(t *testing.T) {
@@ -22,7 +21,7 @@ func Test_AWSUnencryptedKinesisStream(t *testing.T) {
 resource "aws_kinesis_stream" "test_stream" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedKinesisStream,
+			mustIncludeResultCode: aws.AWSUnencryptedKinesisStream,
 		},
 		{
 			name: "check blank encryption key id specified for aws_sqs_queue",
@@ -30,7 +29,7 @@ resource "aws_kinesis_stream" "test_stream" {
 resource "aws_kinesis_stream" "test_stream" {
 	encryption_type = "NONE"
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedKinesisStream,
+			mustIncludeResultCode: aws.AWSUnencryptedKinesisStream,
 		},
 		{
 			name: "check encryption key id specified for aws_sqs_queue",
@@ -38,7 +37,7 @@ resource "aws_kinesis_stream" "test_stream" {
 resource "aws_kinesis_stream" "test_stream" {
 	encryption_type = "KMS"
 }`,
-			mustExcludeResultCode: checks.AWSUnencryptedKinesisStream,
+			mustExcludeResultCode: aws.AWSUnencryptedKinesisStream,
 		},
 	}
 

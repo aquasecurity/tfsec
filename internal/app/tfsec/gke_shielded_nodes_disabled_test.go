@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/google"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_GkeShieldedNodesDisabled(t *testing.T) {
@@ -23,14 +22,14 @@ resource "google_container_cluster" "gke" {
 	enable_shielded_nodes = "false"
 
 }`,
-			mustIncludeResultCode: checks.GkeShieldedNodesDisabled,
+			mustIncludeResultCode: google.GkeShieldedNodesDisabled,
 		},
 		{
 			name: "check google_container_cluster with enable_shielded_nodes not set",
 			source: `
 resource "google_container_cluster" "gke" {
 }`,
-			mustIncludeResultCode: checks.GkeShieldedNodesDisabled,
+			mustIncludeResultCode: google.GkeShieldedNodesDisabled,
 		},
 		{
 			name: "check google_container_cluster with enable_shielded_nodes set to true",
@@ -39,7 +38,7 @@ resource "google_container_cluster" "gke" {
 	enable_shielded_nodes = "true"
 
 }`,
-			mustExcludeResultCode: checks.GkeShieldedNodesDisabled,
+			mustExcludeResultCode: google.GkeShieldedNodesDisabled,
 		},
 	}
 

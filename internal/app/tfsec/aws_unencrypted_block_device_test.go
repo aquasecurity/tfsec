@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSUnencryptedBlockDevice(t *testing.T) {
@@ -22,7 +21,7 @@ func Test_AWSUnencryptedBlockDevice(t *testing.T) {
 resource "aws_launch_configuration" "my-launch-config" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+			mustIncludeResultCode: aws.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check no encryption configured for ebs_block_device",
@@ -30,7 +29,7 @@ resource "aws_launch_configuration" "my-launch-config" {
 resource "aws_launch_configuration" "my-launch-config" {
 	root_block_device {}
 }`,
-			mustIncludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+			mustIncludeResultCode: aws.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check no encryption configured for ebs_block_device",
@@ -41,7 +40,7 @@ resource "aws_launch_configuration" "my-launch-config" {
 	}
 	ebs_block_device {}
 }`,
-			mustIncludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+			mustIncludeResultCode: aws.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check encryption disabled for root_block_device",
@@ -51,7 +50,7 @@ resource "aws_launch_configuration" "my-launch-config" {
 		encrypted = false
 	}
 }`,
-			mustIncludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+			mustIncludeResultCode: aws.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check encryption disabled for ebs_block_device",
@@ -64,7 +63,7 @@ resource "aws_launch_configuration" "my-launch-config" {
 		encrypted = false
 	}
 }`,
-			mustIncludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+			mustIncludeResultCode: aws.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check encryption enabled for root_block_device",
@@ -74,7 +73,7 @@ resource "aws_launch_configuration" "my-launch-config" {
 		encrypted = true
 	}
 }`,
-			mustExcludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+			mustExcludeResultCode: aws.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check encryption enabled for root_block_device and ebs_block_device",
@@ -87,7 +86,7 @@ resource "aws_launch_configuration" "my-launch-config" {
 		encrypted = true
 	}
 }`,
-			mustExcludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+			mustExcludeResultCode: aws.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check encryption enabled by default for root_block_device",
@@ -101,7 +100,7 @@ resource "aws_launch_configuration" "my-launch-config" {
 
 	}
 }`,
-			mustExcludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+			mustExcludeResultCode: aws.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check encryption enabled by default for non-specified root_block_device",
@@ -113,7 +112,7 @@ resource "aws_ebs_encryption_by_default" "example" {
 resource "aws_launch_configuration" "my-launch-config" {
 
 }`,
-			mustExcludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+			mustExcludeResultCode: aws.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check encryption enabled by default for non-specified root_block_device and ebs_block_device",
@@ -125,7 +124,7 @@ resource "aws_ebs_encryption_by_default" "example" {
 resource "aws_launch_configuration" "my-launch-config" {
 	ebs_block_device{}
 }`,
-			mustExcludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+			mustExcludeResultCode: aws.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 		{
 			name: "check encryption enabled for one ebs_block_device and not for another",
@@ -141,7 +140,7 @@ resource "aws_launch_configuration" "my-launch-config" {
 		encrypted  = false
 	}
 }`,
-			mustIncludeResultCode: checks.AWSLaunchConfigurationWithUnencryptedBlockDevice,
+			mustIncludeResultCode: aws.AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		},
 	}
 

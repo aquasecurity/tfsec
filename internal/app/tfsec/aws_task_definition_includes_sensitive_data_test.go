@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSTaskDefinitionIncludesSensitiveData(t *testing.T) {
@@ -35,7 +34,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			mustIncludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+			mustIncludeResultCode: aws.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are not included",
@@ -56,7 +55,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			mustExcludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+			mustExcludeResultCode: aws.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are included but ignored",
@@ -78,7 +77,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			mustExcludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+			mustExcludeResultCode: aws.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 	}
 

@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSOutdatedSSLPolicy(t *testing.T) {
@@ -23,7 +22,7 @@ resource "aws_alb_listener" "my-resource" {
 	ssl_policy = "ELBSecurityPolicy-TLS-1-1-2017-01"
 	protocol = "HTTPS"
 }`,
-			mustIncludeResultCode: checks.AWSOutdatedSSLPolicy,
+			mustIncludeResultCode: aws.AWSOutdatedSSLPolicy,
 		},
 		{
 			name: "check aws_lb_listener with outdated policy",
@@ -32,7 +31,7 @@ resource "aws_lb_listener" "my-resource" {
 	ssl_policy = "ELBSecurityPolicy-TLS-1-1-2017-01"
 	protocol = "HTTPS"
 }`,
-			mustIncludeResultCode: checks.AWSOutdatedSSLPolicy,
+			mustIncludeResultCode: aws.AWSOutdatedSSLPolicy,
 		},
 		{
 			name: "check aws_alb_listener with ok policy",
@@ -41,7 +40,7 @@ resource "aws_alb_listener" "my-resource" {
 	ssl_policy = "ELBSecurityPolicy-TLS-1-2-2017-01"
 	protocol = "HTTPS"
 }`,
-			mustExcludeResultCode: checks.AWSOutdatedSSLPolicy,
+			mustExcludeResultCode: aws.AWSOutdatedSSLPolicy,
 		},
 	}
 

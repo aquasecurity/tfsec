@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/google"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_GkeEnforcePSPTest(t *testing.T) {
@@ -24,7 +23,7 @@ resource "google_container_cluster" "gke" {
     enabled = "false"
   }
 }`,
-			mustIncludeResultCode: checks.GkeEnforcePSP,
+			mustIncludeResultCode: google.GkeEnforcePSP,
 		},
 		{
 			name: "check google_container_cluster with pod_security_policy_config block not set",
@@ -32,7 +31,7 @@ resource "google_container_cluster" "gke" {
 resource "google_container_cluster" "gke" {
 
 }`,
-			mustIncludeResultCode: checks.GkeEnforcePSP,
+			mustIncludeResultCode: google.GkeEnforcePSP,
 		},
 		{
 			name: "check google_container_cluster with pod_security_policy_config.enabled set to true",
@@ -42,7 +41,7 @@ resource "google_container_cluster" "gke" {
     enabled = "true"
   }
 }`,
-			mustExcludeResultCode: checks.GkeEnforcePSP,
+			mustExcludeResultCode: google.GkeEnforcePSP,
 		},
 	}
 

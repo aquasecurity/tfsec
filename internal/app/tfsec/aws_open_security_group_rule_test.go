@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSOpenSecurityGroupRule(t *testing.T) {
@@ -23,7 +22,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "ingress"
 	cidr_blocks = ["0.0.0.0/0"]
 }`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
+			mustIncludeResultCode: aws.AWSOpenIngressSecurityGroupRule,
 		},
 		{
 			name: "check aws_security_group_rule egress on 0.0.0.0/0",
@@ -32,7 +31,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "egress"
 	cidr_blocks = ["0.0.0.0/0"]
 }`,
-			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
+			mustIncludeResultCode: aws.AWSOpenEgressSecurityGroupRule,
 		},
 		{
 			name: "check aws_security_group_rule egress on 0.0.0.0/0 in list",
@@ -41,7 +40,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "egress"
 	cidr_blocks = ["10.0.0.0/16", "0.0.0.0/0"]
 }`,
-			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
+			mustIncludeResultCode: aws.AWSOpenEgressSecurityGroupRule,
 		},
 		{
 			name: "check aws_security_group_rule egress on 10.0.0.0/16",
@@ -50,7 +49,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "egress"
 	cidr_blocks = ["10.0.0.0/16"]
 }`,
-			mustExcludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
+			mustExcludeResultCode: aws.AWSOpenEgressSecurityGroupRule,
 		},
 		{
 			name: "check variable containing 0.0.0.0/0",
@@ -71,7 +70,7 @@ variable "blocks" {
 }
 
 `,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
+			mustIncludeResultCode: aws.AWSOpenIngressSecurityGroupRule,
 		},
 		{
 			name: "check aws_security_group_rule ingress on ::/0",
@@ -80,7 +79,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "ingress"
 	ipv6_cidr_blocks = ["::/0"]
 }`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
+			mustIncludeResultCode: aws.AWSOpenIngressSecurityGroupRule,
 		},
 	}
 
