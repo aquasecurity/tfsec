@@ -66,11 +66,18 @@ func getSortedFileContents() []*FileContent {
 			Checks:   checks,
 		})
 	}
+	sortFileContentsByProvider(fileContents)
 	return fileContents
 }
 
 func sortChecks(checks []scanner.Check) {
 	sort.Slice(checks, func(i, j int) bool {
 		return checks[i].Code < checks[j].Code
+	})
+}
+
+func sortFileContentsByProvider(fileContents []*FileContent) {
+	sort.Slice(fileContents, func(i, j int) bool {
+		return fileContents[i].Provider < fileContents[j].Provider
 	})
 }
