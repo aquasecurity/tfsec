@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/azure"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -21,7 +21,7 @@ func Test_AzureUnencryptedDataLakeStore(t *testing.T) {
 resource "azurerm_data_lake_store" "my-lake-store" {
 	encryption_state = "Disabled"
 }`,
-			mustIncludeResultCode: azure.AzureUnencryptedDataLakeStore,
+			mustIncludeResultCode: checks.AzureUnencryptedDataLakeStore,
 		},
 		{
 			name: "check azurerm_data_lake_store with encryption enabled",
@@ -29,7 +29,7 @@ resource "azurerm_data_lake_store" "my-lake-store" {
 resource "azurerm_data_lake_store" "my-lake-store" {
 	encryption_state = "Enabled"
 }`,
-			mustExcludeResultCode: azure.AzureUnencryptedDataLakeStore,
+			mustExcludeResultCode: checks.AzureUnencryptedDataLakeStore,
 		},
 		{
 			name: "check azurerm_data_lake_store with encryption enabled by default",
@@ -37,7 +37,7 @@ resource "azurerm_data_lake_store" "my-lake-store" {
 resource "azurerm_data_lake_store" "my-lake-store" {
 	
 }`,
-			mustExcludeResultCode: azure.AzureUnencryptedDataLakeStore,
+			mustExcludeResultCode: checks.AzureUnencryptedDataLakeStore,
 		},
 	}
 

@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			mustIncludeResultCode: aws.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+			mustIncludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are not included",
@@ -55,7 +55,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			mustExcludeResultCode: aws.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+			mustExcludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are included but ignored",
@@ -77,7 +77,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			mustExcludeResultCode: aws.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+			mustExcludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 	}
 

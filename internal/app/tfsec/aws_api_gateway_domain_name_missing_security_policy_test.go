@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -21,7 +21,7 @@ func Test_AWSMissingSecurityPolicy(t *testing.T) {
 resource "aws_api_gateway_domain_name" "my-resource" {
 	security_policy = "TLS_1_0"
 }`,
-			mustIncludeResultCode: aws.AWSApiGatewayDomainNameOutdatedSecurityPolicy,
+			mustIncludeResultCode: checks.AWSApiGatewayDomainNameOutdatedSecurityPolicy,
 		},
 		{
 			name: "check aws_api_gateway_domain_name with empty security policy",
@@ -29,7 +29,7 @@ resource "aws_api_gateway_domain_name" "my-resource" {
 resource "aws_api_gateway_domain_name" "my-resource" {
 	security_policy = ""
 }`,
-			mustIncludeResultCode: aws.AWSApiGatewayDomainNameOutdatedSecurityPolicy,
+			mustIncludeResultCode: checks.AWSApiGatewayDomainNameOutdatedSecurityPolicy,
 		},
 		{
 			name: "check aws_api_gateway_domain_name without security policy",
@@ -37,7 +37,7 @@ resource "aws_api_gateway_domain_name" "my-resource" {
 resource "aws_api_gateway_domain_name" "my-resource" {
  domain=""
 }`,
-			mustIncludeResultCode: aws.AWSApiGatewayDomainNameOutdatedSecurityPolicy,
+			mustIncludeResultCode: checks.AWSApiGatewayDomainNameOutdatedSecurityPolicy,
 		},
 		{
 			name: "check aws_api_gateway_domain_name with ok policy",
@@ -45,7 +45,7 @@ resource "aws_api_gateway_domain_name" "my-resource" {
 resource "aws_api_gateway_domain_name" "my-resource" {
 	security_policy = "TLS_1_2"
 }`,
-			mustExcludeResultCode: aws.AWSApiGatewayDomainNameOutdatedSecurityPolicy,
+			mustExcludeResultCode: checks.AWSApiGatewayDomainNameOutdatedSecurityPolicy,
 		},
 	}
 

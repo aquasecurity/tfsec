@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/google"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -23,7 +23,7 @@ resource "google_container_cluster" "gke" {
 		node_metadata = "EXPOSE"
 		}
 }`,
-			mustIncludeResultCode: google.GkeNodeMetadataExposed,
+			mustIncludeResultCode: checks.GkeNodeMetadataExposed,
 		},
 		{
 			name: "check google_container_cluster with workload_metadata_config.node_metadata set to UNSPECIFIED",
@@ -33,7 +33,7 @@ resource "google_container_cluster" "gke" {
 		node_metadata = "UNSPECIFIED"
 		}
 }`,
-			mustIncludeResultCode: google.GkeNodeMetadataExposed,
+			mustIncludeResultCode: checks.GkeNodeMetadataExposed,
 		},
 	}
 

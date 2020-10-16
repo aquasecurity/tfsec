@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/google"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -23,7 +23,7 @@ resource "google_project_iam_binding" "project-binding" {
 		"user:test@example.com",
 		]
 }`,
-			mustIncludeResultCode: google.GoogleUserIAMGrant,
+			mustIncludeResultCode: checks.GoogleUserIAMGrant,
 		},
 		{
 			name: "check google_project_iam_binding with grant to user identity",
@@ -33,7 +33,7 @@ resource "google_project_iam_binding" "project-binding" {
 		"group:test@example.com",
 		]
 }`,
-			mustExcludeResultCode: google.GoogleUserIAMGrant,
+			mustExcludeResultCode: checks.GoogleUserIAMGrant,
 		},
 		{
 			name: "check google_project_iam_member with grant to user identity",
@@ -41,7 +41,7 @@ resource "google_project_iam_binding" "project-binding" {
 resource "google_project_iam_member" "project-member" {
 	member = "user:test@example.com"
 }`,
-			mustIncludeResultCode: google.GoogleUserIAMGrant,
+			mustIncludeResultCode: checks.GoogleUserIAMGrant,
 		},
 		{
 			name: "check google_storage_bucket_iam_binding with grant to user identity",
@@ -51,7 +51,7 @@ resource "google_storage_bucket_iam_binding" "bucket-binding" {
 		"user:test@example.com",
 		]
 }`,
-			mustIncludeResultCode: google.GoogleUserIAMGrant,
+			mustIncludeResultCode: checks.GoogleUserIAMGrant,
 		},
 		{
 			name: "check google_storage_bucket_iam_member with grant to user identity",
@@ -59,7 +59,7 @@ resource "google_storage_bucket_iam_binding" "bucket-binding" {
 resource "google_storage_bucket_iam_member" "bucket-member" {
 	member = "user:test@example.com"
 }`,
-			mustIncludeResultCode: google.GoogleUserIAMGrant,
+			mustIncludeResultCode: checks.GoogleUserIAMGrant,
 		},
 		{
 			name: "check google_storage_bucket_iam_member with grant to service account identity",
@@ -67,7 +67,7 @@ resource "google_storage_bucket_iam_member" "bucket-member" {
 resource "google_storage_bucket_iam_member" "bucket-member" {
 	member = "serviceAccount:test@example.com"
 }`,
-			mustExcludeResultCode: google.GoogleUserIAMGrant,
+			mustExcludeResultCode: checks.GoogleUserIAMGrant,
 		},
 		{
 			name: "check data.google_iam_policy with grant to user",
@@ -80,7 +80,7 @@ data "google_iam_policy" "test-policy" {
 		]
 	}
 }`,
-			mustIncludeResultCode: google.GoogleUserIAMGrant,
+			mustIncludeResultCode: checks.GoogleUserIAMGrant,
 		},
 	}
 

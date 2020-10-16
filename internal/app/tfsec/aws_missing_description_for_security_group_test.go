@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -21,7 +21,7 @@ func Test_AWSMissingDescriptionForSecurityGroup(t *testing.T) {
 resource "aws_security_group" "my-group" {
 	
 }`,
-			mustIncludeResultCode: aws.AWSNoDescriptionInSecurityGroup,
+			mustIncludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
 		},
 		{
 			name: "check aws_security_group_rule without description",
@@ -29,7 +29,7 @@ resource "aws_security_group" "my-group" {
 resource "aws_security_group_rule" "my-rule" {
 	
 }`,
-			mustIncludeResultCode: aws.AWSNoDescriptionInSecurityGroup,
+			mustIncludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
 		},
 		{
 			name: "check aws_security_group with description",
@@ -37,7 +37,7 @@ resource "aws_security_group_rule" "my-rule" {
 resource "aws_security_group" "my-group" {
 	description = "this is a group for allowing shiz"
 }`,
-			mustExcludeResultCode: aws.AWSNoDescriptionInSecurityGroup,
+			mustExcludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
 		},
 		{
 			name: "check aws_security_group_rule with description",
@@ -45,7 +45,7 @@ resource "aws_security_group" "my-group" {
 resource "aws_security_group_rule" "my-rule" {
 	description = "this is a group for allowing shiz"
 }`,
-			mustExcludeResultCode: aws.AWSNoDescriptionInSecurityGroup,
+			mustExcludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
 		},
 	}
 

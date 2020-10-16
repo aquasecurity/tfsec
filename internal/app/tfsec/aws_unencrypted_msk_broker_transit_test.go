@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -17,7 +17,7 @@ func Test_AWSUnencryptedMSKBroker(t *testing.T) {
 		{
 			name:                  "check MSK broker with encryption_info not set",
 			source:                `resource "aws_msk_cluster" "msk-cluster" {}`,
-			mustIncludeResultCode: aws.AWSUnencryptedMSKBroker,
+			mustIncludeResultCode: checks.AWSUnencryptedMSKBroker,
 		},
 		{
 			name: "check MSK broker with encryption_in_transit not set",
@@ -30,7 +30,7 @@ resource "aws_msk_cluster" "msk-cluster" {
 		}
 	}
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedMSKBroker,
+			mustIncludeResultCode: checks.AWSUnencryptedMSKBroker,
 		},
 		{
 			name: "check MSK broker with client_broker not set",
@@ -41,7 +41,7 @@ resource "aws_msk_cluster" "msk-cluster" {
 		}
 	}
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedMSKBroker,
+			mustIncludeResultCode: checks.AWSUnencryptedMSKBroker,
 		},
 		{
 			name: "check MSK broker with client_broker set to PLAINTEXT",
@@ -53,7 +53,7 @@ resource "aws_msk_cluster" "msk-cluster" {
 		}
 	}
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedMSKBroker,
+			mustIncludeResultCode: checks.AWSUnencryptedMSKBroker,
 		},
 		{
 			name: "check MSK broker with client_broker set to TLS_PLAINTEXT",
@@ -65,7 +65,7 @@ resource "aws_msk_cluster" "msk-cluster" {
 		}
 	}
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedMSKBroker,
+			mustIncludeResultCode: checks.AWSUnencryptedMSKBroker,
 		},
 		{
 			name: "check MSK broker with client_broker set to TLS",
@@ -77,7 +77,7 @@ resource "aws_msk_cluster" "msk-cluster" {
 		}
 	}
 }`,
-			mustExcludeResultCode: aws.AWSUnencryptedMSKBroker,
+			mustExcludeResultCode: checks.AWSUnencryptedMSKBroker,
 		},
 	}
 

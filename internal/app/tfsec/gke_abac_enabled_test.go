@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/google"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -22,7 +22,7 @@ resource "google_container_cluster" "gke" {
 	enable_legacy_abac = "true"
 	
 }`,
-			mustIncludeResultCode: google.GkeAbacEnabled,
+			mustIncludeResultCode: checks.GkeAbacEnabled,
 		},
 	}
 

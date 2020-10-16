@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/general"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -21,7 +21,7 @@ func Test_AWSSensitiveLocals(t *testing.T) {
 locals {
 	password = "secret"
 }`,
-			mustIncludeResultCode: general.GenericSensitiveLocals,
+			mustIncludeResultCode: checks.GenericSensitiveLocals,
 		},
 		{
 			name: "check non-sensitive local",
@@ -29,7 +29,7 @@ locals {
 locals {
 	something = "something"
 }`,
-			mustExcludeResultCode: general.GenericSensitiveLocals,
+			mustExcludeResultCode: checks.GenericSensitiveLocals,
 		},
 	}
 

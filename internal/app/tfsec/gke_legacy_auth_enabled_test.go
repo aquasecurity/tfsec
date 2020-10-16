@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/google"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -21,7 +21,7 @@ func Test_GkeLegacyAuthEnabled(t *testing.T) {
 resource "google_container_cluster" "gke" {
 
 }`,
-			mustIncludeResultCode: google.GkeLegacyAuthEnabled,
+			mustIncludeResultCode: checks.GkeLegacyAuthEnabled,
 		},
 		{
 			name: "check google_container_cluster with master_auth static user/pass disabled",
@@ -32,7 +32,7 @@ resource "google_container_cluster" "gke" {
     password = ""
 	}
 }`,
-			mustExcludeResultCode: google.GkeLegacyAuthEnabled,
+			mustExcludeResultCode: checks.GkeLegacyAuthEnabled,
 		},
 		{
 			name: "check google_container_cluster with client cert enabled and master_auth static user/pass disabled",
@@ -46,7 +46,7 @@ resource "google_container_cluster" "gke" {
     }
 	}
 }`,
-			mustIncludeResultCode: google.GkeLegacyAuthEnabled,
+			mustIncludeResultCode: checks.GkeLegacyAuthEnabled,
 		},
 	}
 

@@ -48,7 +48,7 @@ func Test_isBooleanOrStringTrue(t *testing.T) {
 			},
 			nil,
 		)
-		if result := IsBooleanOrStringTrue(attr); result != test.result {
+		if result := isBooleanOrStringTrue(attr); result != test.result {
 			t.Errorf("expected %v got %v\n", test.val, result)
 		}
 	}

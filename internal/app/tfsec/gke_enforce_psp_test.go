@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/google"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -23,7 +23,7 @@ resource "google_container_cluster" "gke" {
     enabled = "false"
   }
 }`,
-			mustIncludeResultCode: google.GkeEnforcePSP,
+			mustIncludeResultCode: checks.GkeEnforcePSP,
 		},
 		{
 			name: "check google_container_cluster with pod_security_policy_config block not set",
@@ -31,7 +31,7 @@ resource "google_container_cluster" "gke" {
 resource "google_container_cluster" "gke" {
 
 }`,
-			mustIncludeResultCode: google.GkeEnforcePSP,
+			mustIncludeResultCode: checks.GkeEnforcePSP,
 		},
 		{
 			name: "check google_container_cluster with pod_security_policy_config.enabled set to true",
@@ -41,7 +41,7 @@ resource "google_container_cluster" "gke" {
     enabled = "true"
   }
 }`,
-			mustExcludeResultCode: google.GkeEnforcePSP,
+			mustExcludeResultCode: checks.GkeEnforcePSP,
 		},
 	}
 
