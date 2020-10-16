@@ -1,4 +1,4 @@
-package tfsec
+package test
 
 import (
 	"fmt"
