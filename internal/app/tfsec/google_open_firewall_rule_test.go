@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/google"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_GoogleOpenInboundFirewallRule(t *testing.T) {
@@ -22,7 +21,7 @@ func Test_GoogleOpenInboundFirewallRule(t *testing.T) {
 resource "google_compute_firewall" "my-firewall" {
 	source_ranges = ["0.0.0.0/0"]
 }`,
-			mustIncludeResultCode: checks.GoogleOpenInboundFirewallRule,
+			mustIncludeResultCode: google.GoogleOpenInboundFirewallRule,
 		},
 		{
 			name: "check google_compute_firewall ingress on /32",
@@ -30,7 +29,7 @@ resource "google_compute_firewall" "my-firewall" {
 resource "google_compute_firewall" "my-firewall" {
 	source_ranges = ["1.2.3.4/32"]
 }`,
-			mustExcludeResultCode: checks.GoogleOpenInboundFirewallRule,
+			mustExcludeResultCode: google.GoogleOpenInboundFirewallRule,
 		},
 	}
 
@@ -57,7 +56,7 @@ func Test_GoogleOpenOutboundFirewallRule(t *testing.T) {
 resource "google_compute_firewall" "my-firewall" {
 	destination_ranges = ["0.0.0.0/0"]
 }`,
-			mustIncludeResultCode: checks.GoogleOpenOutboundFirewallRule,
+			mustIncludeResultCode: google.GoogleOpenOutboundFirewallRule,
 		},
 		{
 			name: "check google_compute_firewall egress on /32",
@@ -65,7 +64,7 @@ resource "google_compute_firewall" "my-firewall" {
 resource "google_compute_firewall" "my-firewall" {
 	destination_ranges = ["1.2.3.4/32"]
 }`,
-			mustExcludeResultCode: checks.GoogleOpenOutboundFirewallRule,
+			mustExcludeResultCode: google.GoogleOpenOutboundFirewallRule,
 		},
 	}
 

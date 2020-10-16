@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/general"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSSensitiveAttributes(t *testing.T) {
@@ -22,7 +21,7 @@ func Test_AWSSensitiveAttributes(t *testing.T) {
 resource "evil_corp" "virtual_machine" {
 	root_password = "secret"
 }`,
-			mustIncludeResultCode: checks.GenericSensitiveAttributes,
+			mustIncludeResultCode: general.GenericSensitiveAttributes,
 		},
 		{
 			name: "check non-sensitive local",
@@ -30,7 +29,7 @@ resource "evil_corp" "virtual_machine" {
 resource "evil_corp" "virtual_machine" {
 	memory = 512
 }`,
-			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+			mustExcludeResultCode: general.GenericSensitiveAttributes,
 		},
 		{
 			name: "avoid false positive for aws_efs_file_system",
@@ -38,7 +37,7 @@ resource "evil_corp" "virtual_machine" {
 resource "aws_efs_file_system" "myfs" {
 	creation_token = "something"
 }`,
-			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+			mustExcludeResultCode: general.GenericSensitiveAttributes,
 		},
 	}
 

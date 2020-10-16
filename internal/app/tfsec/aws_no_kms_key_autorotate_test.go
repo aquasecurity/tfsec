@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSNoKmsKeyAutoRotate(t *testing.T) {
@@ -18,7 +17,7 @@ func Test_AWSNoKmsKeyAutoRotate(t *testing.T) {
 		{
 			name:                  "check KMS Key with auto-rotation not set",
 			source:                `resource "aws_kms_key" "kms_key" {}`,
-			mustIncludeResultCode: checks.AWSNoKMSAutoRotate,
+			mustIncludeResultCode: aws.AWSNoKMSAutoRotate,
 		},
 		{
 			name: "check KMS Key with auto-rotation disabled",
@@ -26,7 +25,7 @@ func Test_AWSNoKmsKeyAutoRotate(t *testing.T) {
 resource "aws_kms_key" "kms_key" {
 	enable_key_rotation = false
 }`,
-			mustIncludeResultCode: checks.AWSNoKMSAutoRotate,
+			mustIncludeResultCode: aws.AWSNoKMSAutoRotate,
 		},
 		{
 			name: "check KMS Key with auto-rotation enabled",
@@ -34,7 +33,7 @@ resource "aws_kms_key" "kms_key" {
 resource "aws_kms_key" "kms_key" {
 	enable_key_rotation = true
 }`,
-			mustExcludeResultCode: checks.AWSNoKMSAutoRotate,
+			mustExcludeResultCode: aws.AWSNoKMSAutoRotate,
 		},
 	}
 

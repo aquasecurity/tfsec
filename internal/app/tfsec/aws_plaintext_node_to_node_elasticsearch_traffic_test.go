@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSPlaintextNodeToNodeElasticsearchTraffic(t *testing.T) {
@@ -22,7 +21,7 @@ func Test_AWSPlaintextNodeToNodeElasticsearchTraffic(t *testing.T) {
 resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSPlaintextNodeToNodeElasticsearchTraffic,
+			mustIncludeResultCode: aws.AWSPlaintextNodeToNodeElasticsearchTraffic,
 		},
 		{
 			name: "check false enabled attr aws_elasticsearch_domain",
@@ -34,7 +33,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     enabled = false
   }
 }`,
-			mustIncludeResultCode: checks.AWSPlaintextNodeToNodeElasticsearchTraffic,
+			mustIncludeResultCode: aws.AWSPlaintextNodeToNodeElasticsearchTraffic,
 		},
 		{
 			name: "check true enabled attr aws_elasticsearch_domain",
@@ -46,7 +45,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     enabled = true
   }
 }`,
-			mustExcludeResultCode: checks.AWSPlaintextNodeToNodeElasticsearchTraffic,
+			mustExcludeResultCode: aws.AWSPlaintextNodeToNodeElasticsearchTraffic,
 		},
 	}
 

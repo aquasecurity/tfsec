@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSClassicUsage(t *testing.T) {
@@ -19,22 +18,22 @@ func Test_AWSClassicUsage(t *testing.T) {
 		{
 			name:                  "check aws_db_security_group",
 			source:                `resource "aws_db_security_group" "my-group" {}`,
-			mustIncludeResultCode: checks.AWSClassicUsage,
+			mustIncludeResultCode: aws.AWSClassicUsage,
 		},
 		{
 			name:                  "check aws_redshift_security_group",
 			source:                `resource "aws_redshift_security_group" "my-group" {}`,
-			mustIncludeResultCode: checks.AWSClassicUsage,
+			mustIncludeResultCode: aws.AWSClassicUsage,
 		},
 		{
 			name:                  "check aws_elasticache_security_group",
 			source:                `resource "aws_elasticache_security_group" "my-group" {}`,
-			mustIncludeResultCode: checks.AWSClassicUsage,
+			mustIncludeResultCode: aws.AWSClassicUsage,
 		},
 		{
 			name:                  "check for false positives",
 			source:                `resource "my_resource" "my-resource" {}`,
-			mustExcludeResultCode: checks.AWSClassicUsage,
+			mustExcludeResultCode: aws.AWSClassicUsage,
 		},
 	}
 

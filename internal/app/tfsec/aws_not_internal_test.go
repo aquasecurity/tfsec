@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSNotInternal(t *testing.T) {
@@ -22,7 +21,7 @@ func Test_AWSNotInternal(t *testing.T) {
 resource "aws_alb" "my-resource" {
 	internal = false
 }`,
-			mustIncludeResultCode: checks.AWSExternallyExposedLoadBalancer,
+			mustIncludeResultCode: aws.AWSExternallyExposedLoadBalancer,
 		},
 		{
 			name: "check aws_elb when not internal",
@@ -30,7 +29,7 @@ resource "aws_alb" "my-resource" {
 resource "aws_elb" "my-resource" {
 	internal = false
 }`,
-			mustIncludeResultCode: checks.AWSExternallyExposedLoadBalancer,
+			mustIncludeResultCode: aws.AWSExternallyExposedLoadBalancer,
 		},
 		{
 			name: "check aws_lb when not internal",
@@ -38,14 +37,14 @@ resource "aws_elb" "my-resource" {
 resource "aws_lb" "my-resource" {
 	internal = false
 }`,
-			mustIncludeResultCode: checks.AWSExternallyExposedLoadBalancer,
+			mustIncludeResultCode: aws.AWSExternallyExposedLoadBalancer,
 		},
 		{
 			name: "check aws_lb when not explicitly marked as internal",
 			source: `
 resource "aws_lb" "my-resource" {
 }`,
-			mustIncludeResultCode: checks.AWSExternallyExposedLoadBalancer,
+			mustIncludeResultCode: aws.AWSExternallyExposedLoadBalancer,
 		},
 		{
 			name: "check aws_lb when explicitly marked as internal",
@@ -53,7 +52,7 @@ resource "aws_lb" "my-resource" {
 resource "aws_lb" "my-resource" {
 	internal = true
 }`,
-			mustExcludeResultCode: checks.AWSExternallyExposedLoadBalancer,
+			mustExcludeResultCode: aws.AWSExternallyExposedLoadBalancer,
 		},
 	}
 

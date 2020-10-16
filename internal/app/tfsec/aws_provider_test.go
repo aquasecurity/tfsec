@@ -1,9 +1,10 @@
 package tfsec
 
 import (
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"testing"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 func Test_AWSProviderHasAccessCredentials(t *testing.T) {
@@ -20,7 +21,7 @@ func Test_AWSProviderHasAccessCredentials(t *testing.T) {
 provider "aws" {
   access_key = "abcd1234"
 }`,
-			mustIncludeResultCode: checks.AWSProviderHasAccessCredentials,
+			mustIncludeResultCode: aws.AWSProviderHasAccessCredentials,
 		},
 		{
 			name: "check aws provider has secret key specified",
@@ -28,7 +29,7 @@ provider "aws" {
 provider "aws" {
   secret_key = "abcd1234"
 }`,
-			mustIncludeResultCode: checks.AWSProviderHasAccessCredentials,
+			mustIncludeResultCode: aws.AWSProviderHasAccessCredentials,
 		},
 		{
 			name: "check aws provider has both access and secret key specified",
@@ -37,14 +38,14 @@ provider "aws" {
   access_key = "abcd1234"
   secret_key = "abcd1234"
 }`,
-			mustIncludeResultCode: checks.AWSProviderHasAccessCredentials,
+			mustIncludeResultCode: aws.AWSProviderHasAccessCredentials,
 		},
 		{
 			name: "check aws provider has neither access or secret key specified",
 			source: `
 provider "aws" {
 }`,
-			mustExcludeResultCode: checks.AWSProviderHasAccessCredentials,
+			mustExcludeResultCode: aws.AWSProviderHasAccessCredentials,
 		},
 	}
 

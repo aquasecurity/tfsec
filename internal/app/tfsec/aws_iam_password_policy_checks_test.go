@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -27,7 +27,7 @@ resource "aws_iam_account_password_policy" "strict" {
   require_symbols                = true
   allow_users_to_change_password = true
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordReusePrevention,
+			mustIncludeResultCode: aws.AWSIAMPasswordReusePrevention,
 		},
 		{
 			name: "check aws_iam_account_password_policy has password_reuse_prevention less than 5",
@@ -41,7 +41,7 @@ resource "aws_iam_account_password_policy" "strict" {
   allow_users_to_change_password = true
   password_reuse_prevention      = 4
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordReusePrevention,
+			mustIncludeResultCode: aws.AWSIAMPasswordReusePrevention,
 		},
 		{
 			name: "check aws_iam_account_password_policy has password_reuse_prevention greater than 5",
@@ -55,7 +55,7 @@ resource "aws_iam_account_password_policy" "strict" {
   allow_users_to_change_password = true
   password_reuse_prevention      = 5
 }`,
-			mustExcludeResultCode: checks.AWSIAMPasswordReusePrevention,
+			mustExcludeResultCode: aws.AWSIAMPasswordReusePrevention,
 		},
 	}
 
@@ -85,7 +85,7 @@ resource "aws_iam_account_password_policy" "strict" {
   require_symbols                = true
   allow_users_to_change_password = true
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordMinimumLength,
+			mustIncludeResultCode: aws.AWSIAMPasswordMinimumLength,
 		},
 		{
 			name: "check aws_iam_account_password_policy has minimum_password_length less than 14",
@@ -99,7 +99,7 @@ resource "aws_iam_account_password_policy" "strict" {
   allow_users_to_change_password = true
   password_reuse_prevention      = 4
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordMinimumLength,
+			mustIncludeResultCode: aws.AWSIAMPasswordMinimumLength,
 		},
 		{
 			name: "check aws_iam_account_password_policy has minimum_password_length greater than 14",
@@ -112,7 +112,7 @@ resource "aws_iam_account_password_policy" "strict" {
   require_symbols                = true
   allow_users_to_change_password = true
 }`,
-			mustExcludeResultCode: checks.AWSIAMPasswordMinimumLength,
+			mustExcludeResultCode: aws.AWSIAMPasswordMinimumLength,
 		},
 	}
 
@@ -137,7 +137,7 @@ func Test_AWSIamPasswordRequiresSymbol(t *testing.T) {
 			source: `
 resource "aws_iam_account_password_policy" "strict" {
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordRequiresSymbol,
+			mustIncludeResultCode: aws.AWSIAMPasswordRequiresSymbol,
 		},
 		{
 			name: "check aws_iam_account_password_policy require_symbols is set but not true",
@@ -145,7 +145,7 @@ resource "aws_iam_account_password_policy" "strict" {
 resource "aws_iam_account_password_policy" "strict" {
   require_symbols                = false
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordRequiresSymbol,
+			mustIncludeResultCode: aws.AWSIAMPasswordRequiresSymbol,
 		},
 		{
 			name: "check aws_iam_account_password_policy require_symbols is set to true",
@@ -153,7 +153,7 @@ resource "aws_iam_account_password_policy" "strict" {
 resource "aws_iam_account_password_policy" "strict" {
   require_symbols                = true
 }`,
-			mustExcludeResultCode: checks.AWSIAMPasswordRequiresSymbol,
+			mustExcludeResultCode: aws.AWSIAMPasswordRequiresSymbol,
 		},
 	}
 
@@ -178,7 +178,7 @@ func Test_AWSIamPasswordRequiresNumber(t *testing.T) {
 			source: `
 resource "aws_iam_account_password_policy" "strict" {
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordRequiresNumber,
+			mustIncludeResultCode: aws.AWSIAMPasswordRequiresNumber,
 		},
 		{
 			name: "check aws_iam_account_password_policy require_numbers is set but not true",
@@ -186,7 +186,7 @@ resource "aws_iam_account_password_policy" "strict" {
 resource "aws_iam_account_password_policy" "strict" {
   require_numbers                = false
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordRequiresNumber,
+			mustIncludeResultCode: aws.AWSIAMPasswordRequiresNumber,
 		},
 		{
 			name: "check aws_iam_account_password_policy require_numbers is set to true",
@@ -194,7 +194,7 @@ resource "aws_iam_account_password_policy" "strict" {
 resource "aws_iam_account_password_policy" "strict" {
   require_numbers                = true
 }`,
-			mustExcludeResultCode: checks.AWSIAMPasswordRequiresNumber,
+			mustExcludeResultCode: aws.AWSIAMPasswordRequiresNumber,
 		},
 	}
 
@@ -219,7 +219,7 @@ func Test_AWSIamPasswordRequiresUppercaseCharacter(t *testing.T) {
 			source: `
 resource "aws_iam_account_password_policy" "strict" {
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordRequiresUppercaseCharacter,
+			mustIncludeResultCode: aws.AWSIAMPasswordRequiresUppercaseCharacter,
 		},
 		{
 			name: "check aws_iam_account_password_policy require_uppercase_characters is set but not true",
@@ -227,7 +227,7 @@ resource "aws_iam_account_password_policy" "strict" {
 resource "aws_iam_account_password_policy" "strict" {
   require_uppercase_characters                = false
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordRequiresUppercaseCharacter,
+			mustIncludeResultCode: aws.AWSIAMPasswordRequiresUppercaseCharacter,
 		},
 		{
 			name: "check aws_iam_account_password_policy require_uppercase_characters is set to true",
@@ -235,7 +235,7 @@ resource "aws_iam_account_password_policy" "strict" {
 resource "aws_iam_account_password_policy" "strict" {
   require_uppercase_characters                = true
 }`,
-			mustExcludeResultCode: checks.AWSIAMPasswordRequiresUppercaseCharacter,
+			mustExcludeResultCode: aws.AWSIAMPasswordRequiresUppercaseCharacter,
 		},
 	}
 
@@ -260,7 +260,7 @@ func Test_AWSIamPasswordRequiresLowercaseCharacter(t *testing.T) {
 			source: `
 resource "aws_iam_account_password_policy" "strict" {
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordRequiresLowercaseCharacter,
+			mustIncludeResultCode: aws.AWSIAMPasswordRequiresLowercaseCharacter,
 		},
 		{
 			name: "check aws_iam_account_password_policy has require_lowercase_characters is set but not true",
@@ -268,7 +268,7 @@ resource "aws_iam_account_password_policy" "strict" {
 resource "aws_iam_account_password_policy" "strict" {
   require_lowercase_characters                = false
 }`,
-			mustIncludeResultCode: checks.AWSIAMPasswordRequiresLowercaseCharacter,
+			mustIncludeResultCode: aws.AWSIAMPasswordRequiresLowercaseCharacter,
 		},
 		{
 			name: "check aws_iam_account_password_policy has require_lowercase_characters is set to true",
@@ -276,7 +276,7 @@ resource "aws_iam_account_password_policy" "strict" {
 resource "aws_iam_account_password_policy" "strict" {
   require_lowercase_characters                = true
 }`,
-			mustExcludeResultCode: checks.AWSIAMPasswordRequiresLowercaseCharacter,
+			mustExcludeResultCode: aws.AWSIAMPasswordRequiresLowercaseCharacter,
 		},
 	}
 

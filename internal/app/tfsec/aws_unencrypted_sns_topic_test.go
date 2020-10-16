@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSUnencryptedSNSTopic(t *testing.T) {
@@ -22,7 +21,7 @@ func Test_AWSUnencryptedSNSTopic(t *testing.T) {
 resource "aws_sns_topic" "my-topic" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedSNSTopic,
+			mustIncludeResultCode: aws.AWSUnencryptedSNSTopic,
 		},
 		{
 			name: "check blank encryption key id specified for aws_sns_topic",
@@ -30,7 +29,7 @@ resource "aws_sns_topic" "my-topic" {
 resource "aws_sns_topic" "my-topic" {
 	kms_master_key_id = ""
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedSNSTopic,
+			mustIncludeResultCode: aws.AWSUnencryptedSNSTopic,
 		},
 		{
 			name: "check encryption key id specified for aws_sns_topic",
@@ -38,7 +37,7 @@ resource "aws_sns_topic" "my-topic" {
 resource "aws_sns_topic" "my-topic" {
 	kms_master_key_id = "/blah"
 }`,
-			mustExcludeResultCode: checks.AWSUnencryptedSNSTopic,
+			mustExcludeResultCode: aws.AWSUnencryptedSNSTopic,
 		},
 	}
 

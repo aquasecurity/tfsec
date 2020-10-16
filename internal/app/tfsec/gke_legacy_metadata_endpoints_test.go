@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/google"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_GkeLegacyMetadataEndpoints(t *testing.T) {
@@ -24,7 +23,7 @@ resource "google_container_cluster" "gke" {
     disable-legacy-endpoints = false
   }
 }`,
-			mustIncludeResultCode: checks.GkeLegacyMetadataEndpoints,
+			mustIncludeResultCode: google.GkeLegacyMetadataEndpoints,
 		},
 		{
 			name: "check google_container_cluster with metadata.disable-legacy-endpoints set to true",
@@ -34,7 +33,7 @@ resource "google_container_cluster" "gke" {
     disable-legacy-endpoints = true
   }
 }`,
-			mustExcludeResultCode: checks.GkeLegacyMetadataEndpoints,
+			mustExcludeResultCode: google.GkeLegacyMetadataEndpoints,
 		},
 	}
 

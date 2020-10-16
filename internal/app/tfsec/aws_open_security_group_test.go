@@ -3,9 +3,8 @@ package tfsec
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 )
 
 func Test_AWSOpenSecurityGroup(t *testing.T) {
@@ -24,7 +23,7 @@ func Test_AWSOpenSecurityGroup(t *testing.T) {
 				cidr_blocks = ["0.0.0.0/0"]
 			}
 		}`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
+			mustIncludeResultCode: aws.AWSOpenIngressSecurityGroupInlineRule,
 		},
 		{
 			name: "check aws_security_group egress on 0.0.0.0/0",
@@ -34,7 +33,7 @@ func Test_AWSOpenSecurityGroup(t *testing.T) {
 				cidr_blocks = ["0.0.0.0/0"]
 			}
 		}`,
-			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupInlineRule,
+			mustIncludeResultCode: aws.AWSOpenEgressSecurityGroupInlineRule,
 		},
 		{
 			name: "check aws_security_group egress on 0.0.0.0/0 in list",
@@ -44,7 +43,7 @@ func Test_AWSOpenSecurityGroup(t *testing.T) {
 				cidr_blocks = ["10.0.0.0/16", "0.0.0.0/0"]
 			}
 		}`,
-			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupInlineRule,
+			mustIncludeResultCode: aws.AWSOpenEgressSecurityGroupInlineRule,
 		},
 		{
 			name: "check aws_security_group egress on 10.0.0.0/16",
@@ -54,7 +53,7 @@ func Test_AWSOpenSecurityGroup(t *testing.T) {
 				cidr_blocks = ["10.0.0.0/16"]
 			}
 		}`,
-			mustExcludeResultCode: checks.AWSOpenEgressSecurityGroupInlineRule,
+			mustExcludeResultCode: aws.AWSOpenEgressSecurityGroupInlineRule,
 		},
 		{
 			name: "check dynamic blocks using for_each",
@@ -102,7 +101,7 @@ func Test_AWSOpenSecurityGroup(t *testing.T) {
 		 }
 		}
 					`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
+			mustIncludeResultCode: aws.AWSOpenIngressSecurityGroupInlineRule,
 		},
 		{
 			name: "check aws_security_group multiple ingress on 0.0.0.0/0",
@@ -115,7 +114,7 @@ func Test_AWSOpenSecurityGroup(t *testing.T) {
 				cidr_blocks = ["0.0.0.0/0"]
 			}
 		}`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
+			mustIncludeResultCode: aws.AWSOpenIngressSecurityGroupInlineRule,
 		},
 		{
 			name: "check dynamic values for cidr_blocks",
@@ -141,7 +140,7 @@ variable "cidr_2" {
   default = ["1.1.1.1/32"]
 }
 `,
-			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupInlineRule,
+			mustIncludeResultCode: aws.AWSOpenEgressSecurityGroupInlineRule,
 		},
 		{
 			name: "check aws_security_group ingress on ::/0",
@@ -151,7 +150,7 @@ variable "cidr_2" {
 				ipv6_cidr_blocks = ["0.0.0.0/0"]
 			}
 		}`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
+			mustIncludeResultCode: aws.AWSOpenIngressSecurityGroupInlineRule,
 		},
 	}
 
