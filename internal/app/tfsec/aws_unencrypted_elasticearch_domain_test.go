@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -21,7 +21,7 @@ func TestAWSUnencryptedElasticsearchDomain(t *testing.T) {
 resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 	
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedElasticsearchDomain,
+			mustIncludeResultCode: checks.AWSUnencryptedElasticsearchDomain,
 		},
 		{
 			name: "check false enabled attr aws_elasticsearch_domain",
@@ -31,7 +31,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 
   encrypt_at_rest { }
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedElasticsearchDomain,
+			mustIncludeResultCode: checks.AWSUnencryptedElasticsearchDomain,
 		},
 		{
 			name: "check true enabled attr aws_elasticsearch_domain",
@@ -43,7 +43,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     enabled = true
   }
 }`,
-			mustExcludeResultCode: aws.AWSUnencryptedElasticsearchDomain,
+			mustExcludeResultCode: checks.AWSUnencryptedElasticsearchDomain,
 		},
 	}
 

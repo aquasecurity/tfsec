@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/azure"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -23,7 +23,7 @@ resource "azurerm_virtual_machine" "my-disk" {
 		disable_password_authentication = false
 	}
 }`,
-			mustIncludeResultCode: azure.AzureVMWithPasswordAuthentication,
+			mustIncludeResultCode: checks.AzureVMWithPasswordAuthentication,
 		},
 		{
 			name: "check azurerm_virtual_machine without password auth",
@@ -33,7 +33,7 @@ resource "azurerm_virtual_machine" "my-disk" {
 		disable_password_authentication = true
 	}
 }`,
-			mustExcludeResultCode: azure.AzureVMWithPasswordAuthentication,
+			mustExcludeResultCode: checks.AzureVMWithPasswordAuthentication,
 		},
 	}
 

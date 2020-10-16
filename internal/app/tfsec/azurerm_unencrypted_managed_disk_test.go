@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/azure"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -21,7 +21,7 @@ func Test_AzureUnencryptedManagedDisk(t *testing.T) {
 resource "azurerm_managed_disk" "my-disk" {
 	
 }`,
-			mustIncludeResultCode: azure.AzureUnencryptedManagedDisk,
+			mustIncludeResultCode: checks.AzureUnencryptedManagedDisk,
 		},
 		{
 			name: "check azurerm_managed_disk with encryption disabled",
@@ -31,7 +31,7 @@ resource "azurerm_managed_disk" "my-disk" {
 		enabled = false
 	}
 }`,
-			mustIncludeResultCode: azure.AzureUnencryptedManagedDisk,
+			mustIncludeResultCode: checks.AzureUnencryptedManagedDisk,
 		},
 		{
 			name: "check azurerm_managed_disk with encryption enabled",
@@ -41,7 +41,7 @@ resource "azurerm_managed_disk" "my-disk" {
 		enabled = true
 	}
 }`,
-			mustExcludeResultCode: azure.AzureUnencryptedManagedDisk,
+			mustExcludeResultCode: checks.AzureUnencryptedManagedDisk,
 		},
 	}
 

@@ -5,9 +5,9 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-// IsBooleanOrStringTrue returns true if the attribute is a boolean and is
+// isBooleanOrStringTrue returns true if the attribute is a boolean and is
 // `true` or if the attribute is a string and is `"true"`.
-func IsBooleanOrStringTrue(val *parser.Attribute) bool {
+func isBooleanOrStringTrue(val *parser.Attribute) bool {
 	switch val.Type() {
 	case cty.Bool:
 		return val.Value().True()

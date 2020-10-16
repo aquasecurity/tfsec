@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -22,7 +22,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "ingress"
 	cidr_blocks = ["0.0.0.0/0"]
 }`,
-			mustIncludeResultCode: aws.AWSOpenIngressSecurityGroupRule,
+			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
 		},
 		{
 			name: "check aws_security_group_rule egress on 0.0.0.0/0",
@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "egress"
 	cidr_blocks = ["0.0.0.0/0"]
 }`,
-			mustIncludeResultCode: aws.AWSOpenEgressSecurityGroupRule,
+			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
 		},
 		{
 			name: "check aws_security_group_rule egress on 0.0.0.0/0 in list",
@@ -40,7 +40,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "egress"
 	cidr_blocks = ["10.0.0.0/16", "0.0.0.0/0"]
 }`,
-			mustIncludeResultCode: aws.AWSOpenEgressSecurityGroupRule,
+			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
 		},
 		{
 			name: "check aws_security_group_rule egress on 10.0.0.0/16",
@@ -49,7 +49,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "egress"
 	cidr_blocks = ["10.0.0.0/16"]
 }`,
-			mustExcludeResultCode: aws.AWSOpenEgressSecurityGroupRule,
+			mustExcludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
 		},
 		{
 			name: "check variable containing 0.0.0.0/0",
@@ -70,7 +70,7 @@ variable "blocks" {
 }
 
 `,
-			mustIncludeResultCode: aws.AWSOpenIngressSecurityGroupRule,
+			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
 		},
 		{
 			name: "check aws_security_group_rule ingress on ::/0",
@@ -79,7 +79,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "ingress"
 	ipv6_cidr_blocks = ["::/0"]
 }`,
-			mustIncludeResultCode: aws.AWSOpenIngressSecurityGroupRule,
+			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
 		},
 	}
 

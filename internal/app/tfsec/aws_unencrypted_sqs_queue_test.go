@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -21,7 +21,7 @@ func Test_AWSUnencryptedSQSQueue(t *testing.T) {
 resource "aws_sqs_queue" "my-queue" {
 	
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedSQSQueue,
+			mustIncludeResultCode: checks.AWSUnencryptedSQSQueue,
 		},
 		{
 			name: "check blank encryption key id specified for aws_sqs_queue",
@@ -29,7 +29,7 @@ resource "aws_sqs_queue" "my-queue" {
 resource "aws_sqs_queue" "my-queue" {
 	kms_master_key_id = ""
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedSQSQueue,
+			mustIncludeResultCode: checks.AWSUnencryptedSQSQueue,
 		},
 		{
 			name: "check encryption key id specified for aws_sqs_queue",
@@ -37,7 +37,7 @@ resource "aws_sqs_queue" "my-queue" {
 resource "aws_sqs_queue" "my-queue" {
 	kms_master_key_id = "/blah"
 }`,
-			mustExcludeResultCode: aws.AWSUnencryptedSQSQueue,
+			mustExcludeResultCode: checks.AWSUnencryptedSQSQueue,
 		},
 	}
 

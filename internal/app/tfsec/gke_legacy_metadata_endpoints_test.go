@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/google"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -23,7 +23,7 @@ resource "google_container_cluster" "gke" {
     disable-legacy-endpoints = false
   }
 }`,
-			mustIncludeResultCode: google.GkeLegacyMetadataEndpoints,
+			mustIncludeResultCode: checks.GkeLegacyMetadataEndpoints,
 		},
 		{
 			name: "check google_container_cluster with metadata.disable-legacy-endpoints set to true",
@@ -33,7 +33,7 @@ resource "google_container_cluster" "gke" {
     disable-legacy-endpoints = true
   }
 }`,
-			mustExcludeResultCode: google.GkeLegacyMetadataEndpoints,
+			mustExcludeResultCode: checks.GkeLegacyMetadataEndpoints,
 		},
 	}
 

@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -22,7 +22,7 @@ resource "aws_s3_bucket" "my-bucket" {
 	acl = "public-read"
 	logging {}
 }`,
-			mustIncludeResultCode: aws.AWSBadBucketACL,
+			mustIncludeResultCode: checks.AWSBadBucketACL,
 		},
 		{
 			name: "check aws_s3_bucket with acl=public-read-write",
@@ -31,7 +31,7 @@ resource "aws_s3_bucket" "my-bucket" {
 	acl = "public-read-write"
 	logging {}
 }`,
-			mustIncludeResultCode: aws.AWSBadBucketACL,
+			mustIncludeResultCode: checks.AWSBadBucketACL,
 		},
 		{
 			name: "check aws_s3_bucket with acl=website",
@@ -39,7 +39,7 @@ resource "aws_s3_bucket" "my-bucket" {
 resource "aws_s3_bucket" "my-bucket" {
 	acl = "website"
 }`,
-			mustIncludeResultCode: aws.AWSBadBucketACL,
+			mustIncludeResultCode: checks.AWSBadBucketACL,
 		},
 		{
 			name: "check aws_s3_bucket with acl=private",
@@ -47,7 +47,7 @@ resource "aws_s3_bucket" "my-bucket" {
 resource "aws_s3_bucket" "my-bucket" {
 	acl = "private"
 }`,
-			mustExcludeResultCode: aws.AWSBadBucketACL,
+			mustExcludeResultCode: checks.AWSBadBucketACL,
 		},
 	}
 

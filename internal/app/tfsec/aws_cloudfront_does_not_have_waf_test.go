@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -52,7 +52,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     target_origin_id = "groupS3"
   }
 }`,
-			mustIncludeResultCode: aws.AWSCloudFrontDoesNotHaveAWaf,
+			mustIncludeResultCode: checks.AWSCloudFrontDoesNotHaveAWaf,
 		},
 		{
 			name: "check there is a waf web_acl_id for aws_cloudfront_distribution",
@@ -83,7 +83,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   web_acl_id = "waf_id"
 }`,
-			mustExcludeResultCode: aws.AWSCloudFrontDoesNotHaveAWaf,
+			mustExcludeResultCode: checks.AWSCloudFrontDoesNotHaveAWaf,
 		},
 	}
 

@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -21,7 +21,7 @@ func Test_AWSOutdatedTLSPolicyElasticsearchDomainEndpoint(t *testing.T) {
 resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 	
 }`,
-			mustExcludeResultCode: aws.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
+			mustExcludeResultCode: checks.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
 		},
 		{
 			name: "check tls_security_policy for aws_elasticsearch_domain isn't the default",
@@ -33,7 +33,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     enforce_https = true
   }
 }`,
-			mustIncludeResultCode: aws.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
+			mustIncludeResultCode: checks.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
 		},
 		{
 			name: "check tls_security_policy isn't set to TLsv1.0 for aws_elasticsearch_domain",
@@ -46,7 +46,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     tls_security_policy = "Policy-Min-TLS-1-0-2019-07"
   }
 }`,
-			mustIncludeResultCode: aws.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
+			mustIncludeResultCode: checks.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
 		},
 		{
 			name: "check tls_security_policy is set to TLSv1.2 for aws_elasticsearch_domain",
@@ -59,7 +59,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
   }
 }`,
-			mustExcludeResultCode: aws.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
+			mustExcludeResultCode: checks.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
 		},
 	}
 

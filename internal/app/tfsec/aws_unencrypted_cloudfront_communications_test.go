@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -20,7 +20,7 @@ func Test_AWSUnencryptedCloudFrontCommunications(t *testing.T) {
 resource "aws_cloudfront_distribution" "s3_distribution" {
 
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedCloudFrontCommunications,
+			mustIncludeResultCode: checks.AWSUnencryptedCloudFrontCommunications,
 		},
 		{
 			name: "check no default viewer_protocol_policy in default_cache_behavior",
@@ -30,7 +30,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
 	  }
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedCloudFrontCommunications,
+			mustIncludeResultCode: checks.AWSUnencryptedCloudFrontCommunications,
 		},
 		{
 			name: "check viewer_protocol_policy include allows-all",
@@ -40,7 +40,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 	    viewer_protocol_policy = "allow-all"
 	  }
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedCloudFrontCommunications,
+			mustIncludeResultCode: checks.AWSUnencryptedCloudFrontCommunications,
 		},
 		{
 			name: "check no viewer_protocol_policy in ordered_cache_behavior",
@@ -55,7 +55,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
 	}
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedCloudFrontCommunications,
+			mustIncludeResultCode: checks.AWSUnencryptedCloudFrontCommunications,
 		},
 		{
 			name: "check for allow-all in viewer_protocol_policy in orderd_cache_behavior ",
@@ -70,7 +70,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 		viewer_protocol_policy = "allow-all"
 	}
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedCloudFrontCommunications,
+			mustIncludeResultCode: checks.AWSUnencryptedCloudFrontCommunications,
 		},
 	}
 

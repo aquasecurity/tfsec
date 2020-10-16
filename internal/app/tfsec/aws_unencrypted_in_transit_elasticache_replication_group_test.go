@@ -3,7 +3,7 @@ package tfsec
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks/aws"
+	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -21,7 +21,7 @@ resource "aws_elasticache_replication_group" "my-resource" {
         replication_group_id = "foo"
         replication_group_description = "my foo cluster"
 }`,
-			mustIncludeResultCode: aws.AWSUnencryptedInTransitElasticacheReplicationGroup,
+			mustIncludeResultCode: checks.AWSUnencryptedInTransitElasticacheReplicationGroup,
 		},
 		{
 			name: "check aws_elasticache_replication_group with transit_encryption_enabled",
@@ -32,7 +32,7 @@ resource "aws_elasticache_replication_group" "my-resource" {
 
         transit_encryption_enabled = true
 }`,
-			mustExcludeResultCode: aws.AWSUnencryptedInTransitElasticacheReplicationGroup,
+			mustExcludeResultCode: checks.AWSUnencryptedInTransitElasticacheReplicationGroup,
 		},
 	}
 
