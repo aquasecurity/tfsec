@@ -10,7 +10,7 @@ import (
 )
 
 // AWSCloudFrontOutdatedProtocol See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSCloudFrontOutdatedProtocol scanner.RuleID = "AWS021"
+const AWSCloudFrontOutdatedProtocol scanner.RuleCode = "AWS021"
 const AWSCloudFrontOutdatedProtocolDescription scanner.RuleSummary = "CloudFront distribution uses outdated SSL/TSL protocols."
 const AWSCloudFrontOutdatedProtocolExplanation = `
 

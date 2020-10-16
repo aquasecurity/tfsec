@@ -11,7 +11,7 @@ import (
 )
 
 // AWSUnencryptedKinesisStream See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSUnencryptedKinesisStream scanner.RuleID = "AWS024"
+const AWSUnencryptedKinesisStream scanner.RuleCode = "AWS024"
 const AWSUnencryptedKinesisStreamDescription scanner.RuleSummary = "Kinesis stream is unencrypted."
 const AWSUnencryptedKinesisStreamExplanation = `
 

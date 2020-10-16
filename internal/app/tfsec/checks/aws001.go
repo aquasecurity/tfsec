@@ -10,7 +10,7 @@ import (
 )
 
 // AWSBadBucketACL See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSBadBucketACL scanner.RuleID = "AWS001"
+const AWSBadBucketACL scanner.RuleCode = "AWS001"
 const AwsBadBucketACLDescription scanner.RuleSummary = "S3 Bucket has an ACL defined which allows public access."
 const AWSBadBucketACLExplanation = `
 S3 bucket permissions should be set to deny public access unless explicitly required.

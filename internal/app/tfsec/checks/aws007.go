@@ -10,7 +10,7 @@ import (
 )
 
 // AWSOpenEgressSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSOpenEgressSecurityGroupRule scanner.RuleID = "AWS007"
+const AWSOpenEgressSecurityGroupRule scanner.RuleCode = "AWS007"
 const AWSOpenEgressSecurityGroupRuleDescription scanner.RuleSummary = "An egress security group rule allows traffic to `/0`."
 
 func init() {

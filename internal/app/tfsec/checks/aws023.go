@@ -11,7 +11,7 @@ import (
 )
 
 // AWSEcrImageScanNotEnabled See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSEcrImageScanNotEnabled scanner.RuleID = "AWS023"
+const AWSEcrImageScanNotEnabled scanner.RuleCode = "AWS023"
 const AWSEcrImageScanNotEnabledDescription scanner.RuleSummary = "ECR repository has image scans disabled."
 const AWSEcrImageScanNotEnabledExplanation = `
 

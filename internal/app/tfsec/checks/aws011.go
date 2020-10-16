@@ -11,7 +11,7 @@ import (
 )
 
 // AWSPubliclyAccessibleResource See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSPubliclyAccessibleResource scanner.RuleID = "AWS011"
+const AWSPubliclyAccessibleResource scanner.RuleCode = "AWS011"
 const AWSPubliclyAccessibleResourceDescription scanner.RuleSummary = "A resource is marked as publicly accessible."
 const AWSPubliclyAccessibleResourceExplanation = `
 

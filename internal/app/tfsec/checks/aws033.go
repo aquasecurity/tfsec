@@ -12,7 +12,7 @@ import (
 
 // AWSUnenforcedHTTPSElasticsearchDomainEndpoint See
 // https://github.com/tfsec/tfsec#included-checks for check info
-const AWSUnenforcedHTTPSElasticsearchDomainEndpoint scanner.RuleID = "AWS033"
+const AWSUnenforcedHTTPSElasticsearchDomainEndpoint scanner.RuleCode = "AWS033"
 const AWSUnenforcedHTTPSElasticsearchDomainEndpointDescription scanner.RuleSummary = "Elasticsearch doesn't enforce HTTPS traffic."
 const AWSUnenforcedHTTPSElasticsearchDomainEndpointExplanation = `
 

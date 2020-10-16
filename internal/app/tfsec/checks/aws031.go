@@ -11,7 +11,7 @@ import (
 )
 
 // AWSUnencryptedElasticsearchDomain See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSUnencryptedElasticsearchDomain scanner.RuleID = "AWS031"
+const AWSUnencryptedElasticsearchDomain scanner.RuleCode = "AWS031"
 const AWSUnencryptedElasticsearchDomainDescription scanner.RuleSummary = "Elasticsearch domain isn't encrypted at rest."
 const AWSUnencryptedElasticsearchDomainExplanation = `
 

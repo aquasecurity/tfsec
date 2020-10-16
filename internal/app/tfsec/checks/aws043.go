@@ -10,7 +10,7 @@ import (
 
 // AWSIAMPasswordRequiresUppercaseCharacter See https://github.com/tfsec/tfsec#included-checks for check info
 const (
-	AWSIAMPasswordRequiresUppercaseCharacter            scanner.RuleID      = "AWS043"
+	AWSIAMPasswordRequiresUppercaseCharacter            scanner.RuleCode    = "AWS043"
 	AWSIAMPasswordRequiresUppercaseCharacterDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one uppercase character."
 
 	AWSIAMPasswordRequiresUppercaseCharacterExplanation = `

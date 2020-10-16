@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	AWSIAMPasswordRequiresLowercaseCharacter            scanner.RuleID      = "AWS042"
+	AWSIAMPasswordRequiresLowercaseCharacter            scanner.RuleCode    = "AWS042"
 	AWSIAMPasswordRequiresLowercaseCharacterDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one lowercase character."
 
 	AWSIAMPasswordRequiresLowercaseCharacterExplanation = `

@@ -9,7 +9,7 @@ import (
 )
 
 // AWSNoBucketLogging See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSNoBucketLogging scanner.RuleID = "AWS002"
+const AWSNoBucketLogging scanner.RuleCode = "AWS002"
 const AWSNoBucketLoggingDescription scanner.RuleSummary = "S3 Bucket does not have logging enabled."
 const AWSNoBucketLoggingExplanation = `
 Buckets should have logging enabled so that access can be audited. 

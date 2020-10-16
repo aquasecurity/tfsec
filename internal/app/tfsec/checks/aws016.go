@@ -11,7 +11,7 @@ import (
 )
 
 // AWSUnencryptedSNSTopic See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSUnencryptedSNSTopic scanner.RuleID = "AWS016"
+const AWSUnencryptedSNSTopic scanner.RuleCode = "AWS016"
 const AWSUnencryptedSNSTopicDescription scanner.RuleSummary = "Unencrypted SNS topic."
 const AWSUnencryptedSNSTopicExplanation = `
 

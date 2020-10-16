@@ -9,7 +9,7 @@ import (
 )
 
 // AWSUnencryptedInTransitElasticacheReplicationGroup See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSUnencryptedInTransitElasticacheReplicationGroup scanner.RuleID = "AWS036"
+const AWSUnencryptedInTransitElasticacheReplicationGroup scanner.RuleCode = "AWS036"
 const AWSUnencryptedInTransitElasticacheReplicationGroupDescription scanner.RuleSummary = "Elasticache Replication Group uses unencrypted traffic."
 const AWSUnencryptedInTransitElasticacheReplicationGroupExplanation = `
 

@@ -9,7 +9,7 @@ import (
 )
 
 // AWSUnencryptedAtRestElasticacheReplicationGroup See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSUnencryptedAtRestElasticacheReplicationGroup scanner.RuleID = "AWS035"
+const AWSUnencryptedAtRestElasticacheReplicationGroup scanner.RuleCode = "AWS035"
 const AWSUnencryptedAtRestElasticacheReplicationGroupDescription scanner.RuleSummary = "Unencrypted Elasticache Replication Group."
 const AWSUnencryptedAtRestElasticacheReplicationGroupExplanation = `
 

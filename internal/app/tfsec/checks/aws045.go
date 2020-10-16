@@ -8,7 +8,7 @@ import (
 )
 
 // AWSCloudFrontDoesNotHaveAWaf See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSCloudFrontDoesNotHaveAWaf scanner.RuleID = "AWS045"
+const AWSCloudFrontDoesNotHaveAWaf scanner.RuleCode = "AWS045"
 const AWSCloudFrontDoesNotHaveAWafDescription scanner.RuleSummary = "CloudFront distribution does not have a WAF in front."
 const AWSCloudFrontDoesNotHaveAWafExplanation = `
 

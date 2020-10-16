@@ -11,7 +11,7 @@ import (
 )
 
 // AWSPlainHTTP See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSPlainHTTP scanner.RuleID = "AWS004"
+const AWSPlainHTTP scanner.RuleCode = "AWS004"
 const AWSPlainHTTPDescription scanner.RuleSummary = "Use of plain HTTP."
 const AWSPlainHTTPExplanation = `
 

@@ -11,7 +11,7 @@ import (
 )
 
 // GkeLegacyAuthEnabled See https://github.com/tfsec/tfsec#included-checks for check info
-const GkeLegacyAuthEnabled scanner.RuleID = "GCP008"
+const GkeLegacyAuthEnabled scanner.RuleCode = "GCP008"
 const GkeLegacyAuthEnabledDescription scanner.RuleSummary = "Legacy client authentication methods utilized."
 const GkeLegacyAuthEnabledExplanation = `
 

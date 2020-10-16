@@ -9,7 +9,7 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-const AzureOpenOutboundNetworkSecurityGroupRule scanner.RuleID = "AZU002"
+const AzureOpenOutboundNetworkSecurityGroupRule scanner.RuleCode = "AZU002"
 const AzureOpenOutboundNetworkSecurityGroupRuleDescription scanner.RuleSummary = "An outbound network security rule allows traffic to `/0`."
 const AzureOpenOutboundNetworkSecurityGroupRuleExplanation = `
 Network security rules should not use very broad subnets.

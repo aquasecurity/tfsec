@@ -11,7 +11,7 @@ import (
 )
 
 // GkeShieldedNodesDisabled See https://github.com/tfsec/tfsec#included-checks for check info
-const GkeShieldedNodesDisabled scanner.RuleID = "GCP010"
+const GkeShieldedNodesDisabled scanner.RuleCode = "GCP010"
 const GkeShieldedNodesDisabledDescription scanner.RuleSummary = "Shielded GKE nodes not enabled."
 const GkeShieldedNodesDisabledExplanation = `
 

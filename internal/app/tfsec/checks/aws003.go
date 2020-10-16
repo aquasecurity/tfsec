@@ -9,7 +9,7 @@ import (
 )
 
 // AWSClassicUsage See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSClassicUsage scanner.RuleID = "AWS003"
+const AWSClassicUsage scanner.RuleCode = "AWS003"
 const AWSClassicUsageDescription scanner.RuleSummary = "AWS Classic resource usage."
 const AWSClassicUsageExplanation = `
 AWS Classic resources run in a shared environment with infrastructure owned by other AWS customers. You should run

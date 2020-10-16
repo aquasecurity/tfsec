@@ -12,7 +12,7 @@ import (
 )
 
 // AzureOpenInboundNetworkSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
-const AzureOpenInboundNetworkSecurityGroupRule scanner.RuleID = "AZU001"
+const AzureOpenInboundNetworkSecurityGroupRule scanner.RuleCode = "AZU001"
 const AzureOpenInboundNetworkSecurityGroupRuleDescription scanner.RuleSummary = "An inbound network security rule allows traffic from `/0`."
 const AzureOpenInboundNetworkSecurityGroupRuleExplanation = `
 Network security rules should not use very broad subnets.

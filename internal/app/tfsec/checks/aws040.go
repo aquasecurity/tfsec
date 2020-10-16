@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	AWSIAMPasswordRequiresSymbol            scanner.RuleID      = "AWS040"
+	AWSIAMPasswordRequiresSymbol            scanner.RuleCode    = "AWS040"
 	AWSIAMPasswordRequiresSymbolDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one symbol in the password."
 
 	AWSIAMPasswordRequiresSymbolExplanation = `

@@ -8,7 +8,7 @@ import (
 )
 
 // GoogleUnencryptedDisk See https://github.com/tfsec/tfsec#included-checks for check info
-const GoogleUnencryptedDisk scanner.RuleID = "GCP001"
+const GoogleUnencryptedDisk scanner.RuleCode = "GCP001"
 const GoogleUnencryptedDiskDescription scanner.RuleSummary = "Unencrypted compute disk."
 const GoogleUnencryptedDiskExplanation = `
 
