@@ -27,7 +27,7 @@ function deploy {
 	git config user.name "Travis Build"
   git config user.email travis@tfsec
 	git add -A
-	git commit -m "Travis Build: ${TRAVIS_BUILD_NUMBER}. ${MESSAGE}"
+	git commit -m "Travis Build: ${TRAVIS_BUILD_NUMBER}. ${MESSAGE}" || true
 	git push "${DEPLOY_REPO}" main:main || true
 	popd
 }
