@@ -11,7 +11,7 @@ import (
 )
 
 // AWSPlaintextNodeToNodeElasticsearchTraffic See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSPlaintextNodeToNodeElasticsearchTraffic scanner.RuleID = "AWS032"
+const AWSPlaintextNodeToNodeElasticsearchTraffic scanner.RuleCode = "AWS032"
 const AWSPlaintextNodeToNodeElasticsearchTrafficDescription scanner.RuleSummary = "Elasticsearch domain uses plaintext traffic for node to node communication."
 const AWSPlaintextNodeToNodeElasticsearchTrafficExplanation = `
 

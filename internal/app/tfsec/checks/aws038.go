@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	AWSIAMPasswordExpiry            scanner.RuleID      = "AWS038"
+	AWSIAMPasswordExpiry            scanner.RuleCode    = "AWS038"
 	AWSIAMPasswordExpiryDescription scanner.RuleSummary = "IAM Password policy should have expiry less than or equal to 90 days."
 
 	AWSIAMPasswordExpiryExplanation = `

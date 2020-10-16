@@ -11,7 +11,7 @@ import (
 )
 
 // GoogleUserIAMGrant See https://github.com/tfsec/tfsec#included-checks for check info
-const GoogleUserIAMGrant scanner.RuleID = "GCP011"
+const GoogleUserIAMGrant scanner.RuleCode = "GCP011"
 const GoogleUserIAMGrantDescription scanner.RuleSummary = "IAM granted directly to user."
 const GoogleUserIAMGrantExplanation = `
 

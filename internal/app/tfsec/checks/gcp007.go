@@ -11,7 +11,7 @@ import (
 )
 
 // GkeLegacyMetadataEndpoints See https://github.com/tfsec/tfsec#included-checks for check info
-const GkeLegacyMetadataEndpoints scanner.RuleID = "GCP007"
+const GkeLegacyMetadataEndpoints scanner.RuleCode = "GCP007"
 const GkeLegacyMetadataEndpointsDescription scanner.RuleSummary = "Legacy metadata endpoints enabled."
 const GkeLegacyMetadataEndpointsExplanation = `
 

@@ -10,7 +10,7 @@ import (
 )
 
 // AWSApiGatewayDomainNameOutdatedSecurityPolicy See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSApiGatewayDomainNameOutdatedSecurityPolicy scanner.RuleID = "AWS025"
+const AWSApiGatewayDomainNameOutdatedSecurityPolicy scanner.RuleCode = "AWS025"
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyDescription scanner.RuleSummary = "API Gateway domain name uses outdated SSL/TLS protocols."
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyExplanation = `
 

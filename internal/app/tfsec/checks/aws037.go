@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	AWSIAMPasswordReusePrevention            scanner.RuleID      = "AWS037"
+	AWSIAMPasswordReusePrevention            scanner.RuleCode    = "AWS037"
 	AWSIAMPasswordReusePreventionDescription scanner.RuleSummary = "IAM Password policy should prevent password reuse."
 
 	AWSIAMPasswordReusePreventionExplanation = `

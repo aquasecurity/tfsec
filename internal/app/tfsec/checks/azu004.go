@@ -11,7 +11,7 @@ import (
 )
 
 // AzureUnencryptedDataLakeStore See https://github.com/tfsec/tfsec#included-checks for check info
-const AzureUnencryptedDataLakeStore scanner.RuleID = "AZU004"
+const AzureUnencryptedDataLakeStore scanner.RuleCode = "AZU004"
 const AzureUnencryptedDataLakeStoreDescription scanner.RuleSummary = "Unencrypted data lake storage."
 const AzureUnencryptedDataLakeStoreExplanation = `
 Datalake storage encryption defaults to Enabled, it shouldn't be overridden to Disabled.

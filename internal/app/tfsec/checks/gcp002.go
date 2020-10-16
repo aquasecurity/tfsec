@@ -8,7 +8,7 @@ import (
 )
 
 // GoogleUnencryptedStorageBucket See https://github.com/tfsec/tfsec#included-checks for check info
-const GoogleUnencryptedStorageBucket scanner.RuleID = "GCP002"
+const GoogleUnencryptedStorageBucket scanner.RuleCode = "GCP002"
 const GoogleUnencryptedStorageBucketDescription scanner.RuleSummary = "Unencrypted storage bucket."
 const GoogleUnencryptedStorageBucketExplanation = `
 

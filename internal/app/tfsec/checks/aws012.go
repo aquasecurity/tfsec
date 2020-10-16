@@ -11,7 +11,7 @@ import (
 )
 
 // AWSResourceHasPublicIP See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSResourceHasPublicIP scanner.RuleID = "AWS012"
+const AWSResourceHasPublicIP scanner.RuleCode = "AWS012"
 const AWSResourceHasPublicIPDescription scanner.RuleSummary = "A resource has a public IP address."
 const AWSResourceHasPublicIPExplanation = `
 

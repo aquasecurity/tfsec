@@ -11,7 +11,7 @@ import (
 )
 
 // GkeNodeMetadataExposed See https://github.com/tfsec/tfsec#included-checks for check info
-const GkeNodeMetadataExposed scanner.RuleID = "GCP006"
+const GkeNodeMetadataExposed scanner.RuleCode = "GCP006"
 const GkeNodeMetadataExposedDescription scanner.RuleSummary = "Node metadata value disables metadata concealment."
 const GkeNodeMetadataExposedExplanation = `
 

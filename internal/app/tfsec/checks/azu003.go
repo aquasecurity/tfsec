@@ -11,7 +11,7 @@ import (
 )
 
 // AzureUnencryptedManagedDisk See https://github.com/tfsec/tfsec#included-checks for check info
-const AzureUnencryptedManagedDisk scanner.RuleID = "AZU003"
+const AzureUnencryptedManagedDisk scanner.RuleCode = "AZU003"
 const AzureUnencryptedManagedDiskDescription scanner.RuleSummary = "Unencrypted managed disk."
 const AzureUnencryptedManagedDiskExplanation = `
 Manage disks should be encrypted at rest

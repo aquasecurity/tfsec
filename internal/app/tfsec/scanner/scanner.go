@@ -20,7 +20,7 @@ func New() *Scanner {
 }
 
 // Find element in list
-func checkInList(code RuleID, list []string) bool {
+func checkInList(code RuleCode, list []string) bool {
 	codeCurrent := fmt.Sprintf("%s", code)
 	for _, codeIgnored := range list {
 		if codeIgnored == codeCurrent {
@@ -49,7 +49,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 	return results
 }
 
-func (scanner *Scanner) checkRangeIgnored(code RuleID, r parser.Range) bool {
+func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range) bool {
 	raw, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return false

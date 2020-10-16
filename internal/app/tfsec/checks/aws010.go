@@ -11,7 +11,7 @@ import (
 )
 
 // AWSOutdatedSSLPolicy See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSOutdatedSSLPolicy scanner.RuleID = "AWS010"
+const AWSOutdatedSSLPolicy scanner.RuleCode = "AWS010"
 const AWSOutdatedSSLPolicyDescription scanner.RuleSummary = "An outdated SSL policy is in use by a load balancer."
 const AWSOutdatedSSLPolicyExplanation = `
 

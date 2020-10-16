@@ -11,7 +11,7 @@ import (
 )
 
 // AWSNoDescriptionInSecurityGroup See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSNoDescriptionInSecurityGroup scanner.RuleID = "AWS018"
+const AWSNoDescriptionInSecurityGroup scanner.RuleCode = "AWS018"
 const AWSNoDescriptionInSecurityGroupDescription scanner.RuleSummary = "Missing description for security group/security group rule."
 const AWSNoInSecurityGroupExplanation = `
 

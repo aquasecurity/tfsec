@@ -11,7 +11,7 @@ import (
 )
 
 // AWSUnencryptedSQSQueue See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSUnencryptedSQSQueue scanner.RuleID = "AWS015"
+const AWSUnencryptedSQSQueue scanner.RuleCode = "AWS015"
 const AWSUnencryptedSQSQueueDescription scanner.RuleSummary = "Unencrypted SQS queue."
 const AWSUnencryptedSQSQueueExplanation = `
 

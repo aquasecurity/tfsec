@@ -11,7 +11,7 @@ import (
 )
 
 // AWSUnencryptedCloudFrontCommunications See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSUnencryptedCloudFrontCommunications scanner.RuleID = "AWS020"
+const AWSUnencryptedCloudFrontCommunications scanner.RuleCode = "AWS020"
 const AWSUnencryptedCloudFrontCommunicationsDescription scanner.RuleSummary = "CloudFront distribution allows unencrypted (HTTP) communications."
 const AWSUnencryptedCloudFrontCommunicationsExplanation = `
 

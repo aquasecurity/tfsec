@@ -12,7 +12,7 @@ import (
 
 // AWSOutdatedTLSPolicyElasticsearchDomainEndpoint See
 // https://github.com/tfsec/tfsec#included-checks for check info
-const AWSOutdatedTLSPolicyElasticsearchDomainEndpoint scanner.RuleID = "AWS034"
+const AWSOutdatedTLSPolicyElasticsearchDomainEndpoint scanner.RuleCode = "AWS034"
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointDescription scanner.RuleSummary = "Elasticsearch domain endpoint is using outdated TLS policy."
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointExplanation = `
 

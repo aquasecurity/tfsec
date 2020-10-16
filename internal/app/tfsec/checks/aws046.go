@@ -9,7 +9,7 @@ import (
 )
 
 // AWSIamPolicyWildcardActions See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSIamPolicyWildcardActions scanner.RuleID = "AWS046"
+const AWSIamPolicyWildcardActions scanner.RuleCode = "AWS046"
 const AWSIamPolicyWildcardActionsDescription scanner.RuleSummary = "AWS IAM policy document has wildcard action statement."
 const AWSIamPolicyWildcardActionsExplanation = `
 

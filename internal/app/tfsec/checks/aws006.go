@@ -12,7 +12,7 @@ import (
 )
 
 // AWSOpenIngressSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSOpenIngressSecurityGroupRule scanner.RuleID = "AWS006"
+const AWSOpenIngressSecurityGroupRule scanner.RuleCode = "AWS006"
 const AWSOpenIngressSecurityGroupRuleDescription scanner.RuleSummary = "An ingress security group rule allows traffic from `/0`."
 const AWSOpenIngressSecurityGroupRuleExplanation = `
 

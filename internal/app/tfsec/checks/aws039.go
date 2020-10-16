@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	AWSIAMPasswordMinimumLength            scanner.RuleID      = "AWS039"
+	AWSIAMPasswordMinimumLength            scanner.RuleCode    = "AWS039"
 	AWSIAMPasswordMinimumLengthDescription scanner.RuleSummary = "IAM Password policy should have minimum password length of 14 or more characters."
 
 	AWSIAMPasswordMinimumLengthExplanation = `

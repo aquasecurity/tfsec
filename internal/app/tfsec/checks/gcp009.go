@@ -10,7 +10,7 @@ import (
 )
 
 // GkeEnforcePSP See https://github.com/tfsec/tfsec#included-checks for check info
-const GkeEnforcePSP scanner.RuleID = "GCP009"
+const GkeEnforcePSP scanner.RuleCode = "GCP009"
 const GkeEnforcePSPDescription scanner.RuleSummary = "Pod security policy enforcement not defined."
 const GkeEnforcePSPExplanation = `
 

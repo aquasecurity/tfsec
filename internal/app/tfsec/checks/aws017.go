@@ -9,7 +9,7 @@ import (
 )
 
 // AWSUnencryptedS3Bucket See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSUnencryptedS3Bucket scanner.RuleID = "AWS017"
+const AWSUnencryptedS3Bucket scanner.RuleCode = "AWS017"
 const AWSUnencryptedS3BucketDescription scanner.RuleSummary = "Unencrypted S3 bucket."
 const AWSUnencryptedS3BucketExplanation = `
 

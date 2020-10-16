@@ -9,7 +9,7 @@ import (
 )
 
 // AWSUnencryptedMSKBroker See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSUnencryptedMSKBroker scanner.RuleID = "AWS022"
+const AWSUnencryptedMSKBroker scanner.RuleCode = "AWS022"
 const AWSUnencryptedMSKBrokerDescription scanner.RuleSummary = "A MSK cluster allows unencrypted data in transit."
 const AWSUnencryptedMSKBrokerExplanation = `
 

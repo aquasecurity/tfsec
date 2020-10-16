@@ -14,7 +14,7 @@ import (
 )
 
 // AWSTaskDefinitionWithSensitiveEnvironmentVariables See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSTaskDefinitionWithSensitiveEnvironmentVariables scanner.RuleID = "AWS013"
+const AWSTaskDefinitionWithSensitiveEnvironmentVariables scanner.RuleCode = "AWS013"
 const AWSTaskDefinitionWithSensitiveEnvironmentVariablesDescription scanner.RuleSummary = "Task definition defines sensitive environment variable(s)."
 const AWSTaskDefinitionWithSensitiveEnvironmentVariablesExplanation = `
 

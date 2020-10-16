@@ -10,7 +10,7 @@ import (
 )
 
 // GoogleOpenInboundFirewallRule See https://github.com/tfsec/tfsec#included-checks for check info
-const GoogleOpenInboundFirewallRule scanner.RuleID = "GCP003"
+const GoogleOpenInboundFirewallRule scanner.RuleCode = "GCP003"
 const GoogleOpenInboundFirewallRuleDescription scanner.RuleSummary = "An inbound firewall rule allows traffic from `/0`."
 const GoogleOpenInboundFirewallRuleExplanation = `
 

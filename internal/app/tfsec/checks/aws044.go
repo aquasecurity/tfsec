@@ -11,7 +11,7 @@ import (
 )
 
 // AWSProviderHasAccessCredentials See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSProviderHasAccessCredentials scanner.RuleID = "AWS044"
+const AWSProviderHasAccessCredentials scanner.RuleCode = "AWS044"
 const AWSProviderHasAccessCredentialsDescription scanner.RuleSummary = "AWS provider has access credentials specified."
 const AWSProviderHasAccessCredentialsExplanation = `
 

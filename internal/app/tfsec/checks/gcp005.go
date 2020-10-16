@@ -8,7 +8,7 @@ import (
 )
 
 // GkeAbacEnabled See https://github.com/tfsec/tfsec#included-checks for check info
-const GkeAbacEnabled scanner.RuleID = "GCP005"
+const GkeAbacEnabled scanner.RuleCode = "GCP005"
 const GkeAbacEnabledDescription scanner.RuleSummary = "Legacy ABAC permissions are enabled."
 const GkeAbacEnabledExplanation = `
 

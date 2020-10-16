@@ -11,7 +11,7 @@ import (
 )
 
 // AWSExternallyExposedLoadBalancer See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSExternallyExposedLoadBalancer scanner.RuleID = "AWS005"
+const AWSExternallyExposedLoadBalancer scanner.RuleCode = "AWS005"
 const AWSExternallyExposedLoadBalancerDescription scanner.RuleSummary = "Load balancer is exposed to the internet."
 const AWSExternallyExposedLoadBalancerExplanation = `
 

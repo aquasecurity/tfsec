@@ -11,7 +11,7 @@ import (
 )
 
 // AWSNoKMSAutoRotate See https://github.com/tfsec/tfsec#included-checks for check info
-const AWSNoKMSAutoRotate scanner.RuleID = "AWS019"
+const AWSNoKMSAutoRotate scanner.RuleCode = "AWS019"
 const AWSNoKMSAutoRotateDescription scanner.RuleSummary = "A KMS key is not configured to auto-rotate."
 const AWSNoKMSAutoRotateExplanation = `
 
