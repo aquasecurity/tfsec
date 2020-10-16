@@ -132,7 +132,7 @@ func Test_AWSGibsonHackable(t *testing.T) {
 		mustIncludeResultCode scanner.RuleCode
 		mustExcludeResultCode scanner.RuleCode
 	}{
-        	// this makes sure the check works in the most basic scenario
+		// this makes sure the check works in the most basic scenario
 		{
 			name: "check fails when hackable is set to true on an aws_gibson resource",
 			source: `
@@ -141,7 +141,7 @@ resource "aws_gibson" "my-gibson" {
 }`,
 			mustIncludeResultCode: checks.AWSGibsonHackableCode,
        		},
-       		// this checks for a false positive
+		// this checks for a false positive
 		{ 
 			name: "check passes when hackable is set to false on an aws_gibson resource",
 			source: `
