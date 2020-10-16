@@ -61,7 +61,7 @@ func init() {
 			BadExample:  AWSGibsonHackableBadExample,
 			GoodExample: AWSGibsonHackableGoodExample,
 			Links: []string{ // any useful links relating to your check go here
-                "https://www.imdb.com/title/tt0113243/"
+                		"https://www.imdb.com/title/tt0113243/"
 			},
 		},
         
@@ -106,7 +106,7 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
 ...
 ```
 
-You can see a good example of a real check file [here](https://github.com/tfsec/tfsec/blob/master/internal/app/tfsec/checks/aws/aws001.go).
+You can see a good example of a real check file [here](https://github.com/tfsec/tfsec/blob/master/internal/app/tfsec/checks/aws001.go).
 
 ### Writing Tests
 
