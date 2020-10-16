@@ -51,10 +51,10 @@ Next up, you need to tell the scanner about your check. You can do this by calli
 func init() {
 	scanner.RegisterCheck(scanner.Check{
     
-        // our new check code
+        	// our new check code
 		Code: AWSGibsonHackableCode,
     
-        // all of our documentation data that will be available in the output and/or at https://tfsec.dev/
+        	// all of our documentation data that will be available in the output and/or at https://tfsec.dev/
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSGibsonHackableDescription,
 			Explanation: AWSGibsonHackableExplanation,
@@ -65,18 +65,18 @@ func init() {
 			},
 		},
         
-        // the provider your check targets
+        	// the provider your check targets
 		Provider:       scanner.AWSProvider,
 
-        // which terraform blocks do you want to check - usually "resource"
+        	// which terraform blocks do you want to check - usually "resource"
 		RequiredTypes:  []string{"resource"},
         
-        // the type of resource(s) you want to target
+        	// the type of resource(s) you want to target
 		RequiredLabels: []string{"aws_gibson"},
         
-        // the actual logic for your check
+        	// the actual logic for your check
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-            // TODO: add check logic here
+            		// TODO: add check logic here
 			return nil
 		},
 	})
@@ -132,7 +132,7 @@ func Test_AWSGibsonHackable(t *testing.T) {
 		mustIncludeResultCode scanner.RuleCode
 		mustExcludeResultCode scanner.RuleCode
 	}{
-        // this makes sure the check works in the most basic scenario
+        	// this makes sure the check works in the most basic scenario
 		{
 			name: "check fails when hackable is set to true on an aws_gibson resource",
 			source: `
@@ -140,8 +140,8 @@ resource "aws_gibson" "my-gibson" {
 	hackable = true
 }`,
 			mustIncludeResultCode: checks.AWSGibsonHackableCode,
-        },
-        // this checks for a false positive
+       		},
+       		// this checks for a false positive
 		{ 
 			name: "check passes when hackable is set to false on an aws_gibson resource",
 			source: `
