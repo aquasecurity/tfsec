@@ -3,6 +3,8 @@ package checks
 import (
 	"fmt"
 
+	"github.com/zclconf/go-cty/cty"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -22,9 +24,9 @@ resource "google_container_cluster" "gke" {
 `
 const GkeAbacEnabledGoodExample = `
 resource "google_container_cluster" "gke" {
-	...
-	enable_legacy_abac not set
-	...
+	# ...
+	# enable_legacy_abac not set
+	# ...
 }
 `
 
@@ -47,7 +49,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			enable_legacy_abac := block.GetAttribute("enable_legacy_abac")
-			if enable_legacy_abac.Value().AsString() == "true" {
+			if enable_legacy_abac != nil && enable_legacy_abac.Value().Type() == cty.String && enable_legacy_abac.Value().AsString() == "true" {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", block.Name()),

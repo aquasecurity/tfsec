@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -17,16 +18,16 @@ IAM account password policies should ensure that passwords content including a s
 `
 	AWSIAMPasswordRequiresSymbolBadExample = `
 resource "aws_iam_account_password_policy" "strict" {
-	...
-	// require_symbols not set
-	...
+	# ...
+	# require_symbols not set
+	# ...
 }
 `
 	AWSIAMPasswordRequiresSymbolGoodExample = `
 resource "aws_iam_account_password_policy" "strict" {
-	...
+	# ...
 	require_symbols = true
-	...
+	# ...
 }
 `
 )

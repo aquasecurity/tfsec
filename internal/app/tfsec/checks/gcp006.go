@@ -23,13 +23,13 @@ const GkeNodeMetadataExposedBadExample = `
 resource "google_container_cluster" "gke" {
 	workload_metadata_config {
 		node_metadata = "EXPOSE"
-		}
+	}
 }`
 const GkeNodeMetadataExposedGoodExample = `
 resource "google_container_cluster" "gke" {
 	workload_metadata_config {
-		node_metadata = "UNSPECIFIED"
-		}
+		node_metadata = "SPECIFIED"
+	}
 }`
 
 func init() {
@@ -52,7 +52,8 @@ func init() {
 
 			nodeMetadata := block.GetBlock("workload_metadata_config").GetAttribute("node_metadata")
 
-			if nodeMetadata.Type() == cty.String && nodeMetadata.Value().AsString() == "EXPOSE" || nodeMetadata.Type() == cty.String && nodeMetadata.Value().AsString() == "UNSPECIFIED" {
+			if nodeMetadata != nil && nodeMetadata.Type() == cty.String &&
+				(nodeMetadata.Value().AsString() == "EXPOSE" || nodeMetadata.Value().AsString() == "UNSPECIFIED") {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines a cluster with node metadata exposed. node_metadata set to EXPOSE or UNSPECIFIED disables metadata concealment. ", block.Name()),
