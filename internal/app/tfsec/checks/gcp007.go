@@ -14,14 +14,26 @@ import (
 const GkeLegacyMetadataEndpoints scanner.RuleCode = "GCP007"
 const GkeLegacyMetadataEndpointsDescription scanner.RuleSummary = "Legacy metadata endpoints enabled."
 const GkeLegacyMetadataEndpointsExplanation = `
+The Compute Engine instance metadata server exposes legacy v0.1 and v1beta1 endpoints, which do not enforce metadata query headers. 
 
+This is a feature in the v1 APIs that makes it more difficult for a potential attacker to retrieve instance metadata. 
+
+Unless specifically required, we recommend you disable these legacy APIs.
+
+When setting the <code>metadata</code> block, the default value for <code>disable-legacy-endpoints</code> is set to true, they should not be explicitly enabled.
 `
 const GkeLegacyMetadataEndpointsBadExample = `
-
-`
+resource "google_container_cluster" "gke" {
+	metadata {
+    disable-legacy-endpoints = false
+  }
+}`
 const GkeLegacyMetadataEndpointsGoodExample = `
-
-`
+resource "google_container_cluster" "gke" {
+	metadata {
+    disable-legacy-endpoints = true
+  }
+}`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -31,7 +43,10 @@ func init() {
 			Explanation: GkeLegacyMetadataEndpointsExplanation,
 			BadExample:  GkeLegacyMetadataEndpointsBadExample,
 			GoodExample: GkeLegacyMetadataEndpointsGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#protect_node_metadata_default_for_112",
+				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#metadata",
+			},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
@@ -42,7 +57,7 @@ func init() {
 			if legacyMetadataAPI.Type() == cty.String && legacyMetadataAPI.Value().AsString() != "true" || legacyMetadataAPI.Type() == cty.Bool && legacyMetadataAPI.Value().False() {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled. See: https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#protect_node_metadata_default_for_112", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", block.Name()),
 						legacyMetadataAPI.Range(),
 						scanner.SeverityError,
 					),

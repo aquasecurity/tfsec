@@ -39,11 +39,11 @@ resource "google_container_cluster" "gke" {
 			source: `
 resource "google_container_cluster" "gke" {
 	master_auth {
-    username = ""
-    password = ""
+        username = ""
+        password = ""
 		client_certificate_config {
-      issue_client_certificate = true
-    }
+            issue_client_certificate = true
+        }
 	}
 }`,
 			mustIncludeResultCode: checks.GkeLegacyAuthEnabled,

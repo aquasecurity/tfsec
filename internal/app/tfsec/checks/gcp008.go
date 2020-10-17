@@ -14,13 +14,31 @@ import (
 const GkeLegacyAuthEnabled scanner.RuleCode = "GCP008"
 const GkeLegacyAuthEnabledDescription scanner.RuleSummary = "Legacy client authentication methods utilized."
 const GkeLegacyAuthEnabledExplanation = `
+It is recommended to use Serivce Accounts and OAuth as authentication methods for accessing the master in the container cluster. 
 
+Basic authentication should be disabled by explicitly unsetting the <code>username</code> and <code>password</code> on the <code>master_auth</code> block.
 `
 const GkeLegacyAuthEnabledBadExample = `
+resource "google_container_cluster" "gke" {
+}
 
+resource "google_container_cluster" "gke" {
+	master_auth {
+	    username = ""
+	    password = ""
+		client_certificate_config {
+			issue_client_certificate = true
+	    }
+	}
+}
 `
 const GkeLegacyAuthEnabledGoodExample = `
-
+resource "google_container_cluster" "gke" {
+	master_auth {
+	    username = ""
+	    password = ""
+	}
+}
 `
 
 func init() {
@@ -31,7 +49,10 @@ func init() {
 			Explanation: GkeLegacyAuthEnabledExplanation,
 			BadExample:  GkeLegacyAuthEnabledBadExample,
 			GoodExample: GkeLegacyAuthEnabledGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#restrict_authn_methods",
+				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#master_auth",
+			},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
@@ -44,7 +65,7 @@ func init() {
 			if masterAuthBlock == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password. https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#restrict_authn_methods", block.Name()),
+						fmt.Sprintf("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", block.Name()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -52,7 +73,7 @@ func init() {
 			} else if staticAuthUser.Type() == cty.String && staticAuthUser.Value().AsString() != "" && staticAuthPass.Type() == cty.String && staticAuthPass.Value().AsString() != "" {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead. https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#restrict_authn_methods", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", block.Name()),
 						masterAuthBlock.Range(),
 						scanner.SeverityError,
 					),
@@ -62,7 +83,7 @@ func init() {
 			if issueClientCert.Type() == cty.Bool && issueClientCert.Value().True() || issueClientCert.Type() == cty.String && issueClientCert.Value().AsString() == "true" {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead. https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#restrict_authn_methods", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", block.Name()),
 						issueClientCert.Range(),
 						scanner.SeverityError,
 					),
