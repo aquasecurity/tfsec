@@ -47,6 +47,16 @@ resource "aws_security_group_rule" "my-rule" {
 }`,
 			mustExcludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
 		},
+		{
+			name:                  "check aws_security_group good example",
+			source:                checks.AWSNoDescriptionInSecurityGroupGoodExample,
+			mustExcludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
+		},
+		{
+			name:                  "check aws_security_group bad example",
+			source:                checks.AWSNoDescriptionInSecurityGroupBadExample,
+			mustIncludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
+		},
 	}
 
 	for _, test := range tests {
