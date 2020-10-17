@@ -2,8 +2,9 @@ package checks
 
 import (
 	"fmt"
-	"github.com/zclconf/go-cty/cty"
 	"strings"
+
+	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
@@ -19,7 +20,7 @@ Where possible, segments should be broken into smaller subnets.
 const AzureOpenOutboundNetworkSecurityGroupRuleBadExample = `
 resource "azurerm_network_security_rule" "my-rule" {
 	direction = "Outbound"
-	source_address_prefix = "0.0.0.0/0"
+	destination_address_prefix = "0.0.0.0/0"
 	access = "Allow"
 }`
 const AzureOpenOutboundNetworkSecurityGroupRuleGoodExample = `

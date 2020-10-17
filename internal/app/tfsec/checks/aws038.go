@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -19,16 +20,16 @@ The account password policy should be set to expire passwords after 90 days or l
 `
 	AWSIAMPasswordExpiryBadExample = `
 resource "aws_iam_account_password_policy" "strict" {
-	...
-	// max_password_age not set
-	...
+	# ...
+	# max_password_age not set
+	# ...
 }
 `
 	AWSIAMPasswordExpiryGoodExample = `
 resource "aws_iam_account_password_policy" "strict" {
-	...
+	# ...
 	max_password_age = 90
-	...
+	# ...
 }
 `
 )

@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -19,16 +20,16 @@ The account password policy should be set to enforce minimum password length of 
 `
 	AWSIAMPasswordMinimumLengthBadExample = `
 resource "aws_iam_account_password_policy" "strict" {
-	...
-	// minimum_password_length not set
-	...
+	# ...
+	# minimum_password_length not set
+	# ...
 }
 `
 	AWSIAMPasswordMinimumLengthGoodExample = `
 resource "aws_iam_account_password_policy" "strict" {
-	...
+	# ...
 	minimum_password_length = 14
-	...
+	# ...
 }
 `
 )

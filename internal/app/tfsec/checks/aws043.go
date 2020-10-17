@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -18,16 +19,16 @@ IAM account password policies should ensure that passwords content including at 
 `
 	AWSIAMPasswordRequiresUppercaseCharacterBadExample = `
 resource "aws_iam_account_password_policy" "strict" {
-	...
-	// require_uppercase_characters not set
-	...
+	# ...
+	# require_uppercase_characters not set
+	# ...
 }
 `
 	AWSIAMPasswordRequiresUppercaseCharacterGoodExample = `
 resource "aws_iam_account_password_policy" "strict" {
-	...
+	# ...
 	require_uppercase_characters = true
-	...
+	# ...
 }
 `
 )
