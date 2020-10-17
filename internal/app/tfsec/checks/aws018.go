@@ -14,13 +14,36 @@ import (
 const AWSNoDescriptionInSecurityGroup scanner.RuleCode = "AWS018"
 const AWSNoDescriptionInSecurityGroupDescription scanner.RuleSummary = "Missing description for security group/security group rule."
 const AWSNoDescriptionInSecurityGroupExplanation = `
+Security groups and security group rules should include a description for auditing purposes.
 
+Simplifies auditing, debugging, and managing security groups.
 `
 const AWSNoDescriptionInSecurityGroupBadExample = `
+resource "aws_security_group" "http" {
+  name        = "http"
 
+  ingress {
+    description = "HTTP from VPC"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main.cidr_block]
+  }
+}
 `
 const AWSNoDescriptionInSecurityGroupGoodExample = `
+resource "aws_security_group" "http" {
+  name        = "http"
+  description = "Allow inbound HTTP traffic"
 
+  ingress {
+    description = "HTTP from VPC"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main.cidr_block]
+  }
+}
 `
 
 func init() {
@@ -31,7 +54,11 @@ func init() {
 			Explanation: AWSNoDescriptionInSecurityGroupExplanation,
 			BadExample:  AWSNoDescriptionInSecurityGroupBadExample,
 			GoodExample: AWSNoDescriptionInSecurityGroupGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule",
+				"https://www.cloudconformity.com/knowledge-base/aws/EC2/security-group-rules-description.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
