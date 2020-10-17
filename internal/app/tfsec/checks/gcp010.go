@@ -14,14 +14,18 @@ import (
 const GkeShieldedNodesDisabled scanner.RuleCode = "GCP010"
 const GkeShieldedNodesDisabledDescription scanner.RuleSummary = "Shielded GKE nodes not enabled."
 const GkeShieldedNodesDisabledExplanation = `
+CIS GKE Benchmark Recommendation: 6.5.5. Ensure Shielded GKE Nodes are Enabled
 
+Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.
 `
 const GkeShieldedNodesDisabledBadExample = `
-
-`
+resource "google_container_cluster" "gke" {
+	enable_shielded_nodes = "false"
+}`
 const GkeShieldedNodesDisabledGoodExample = `
-
-`
+resource "google_container_cluster" "gke" {
+	enable_shielded_nodes = "true"
+}`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -31,7 +35,10 @@ func init() {
 			Explanation: GkeShieldedNodesDisabledExplanation,
 			BadExample:  GkeShieldedNodesDisabledBadExample,
 			GoodExample: GkeShieldedNodesDisabledGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#shielded_nodes",
+				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#enable_shielded_nodes",
+			},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
@@ -43,7 +50,7 @@ func init() {
 			if enable_shielded_nodes == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters. https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#shielded_nodes", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", block.Name()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -53,7 +60,7 @@ func init() {
 			if enable_shielded_nodes.Type() == cty.Bool && enable_shielded_nodes.Value().False() || enable_shielded_nodes.Type() == cty.String && enable_shielded_nodes.Value().AsString() != "true" {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters. https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#shielded_nodes", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", block.Name()),
 						enable_shielded_nodes.Range(),
 						scanner.SeverityError,
 					),

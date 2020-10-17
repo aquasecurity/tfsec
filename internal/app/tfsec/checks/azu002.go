@@ -14,7 +14,7 @@ const AzureOpenOutboundNetworkSecurityGroupRuleDescription scanner.RuleSummary =
 const AzureOpenOutboundNetworkSecurityGroupRuleExplanation = `
 Network security rules should not use very broad subnets.
 
-Where possible, segements should be broken into smaller subnets.
+Where possible, segments should be broken into smaller subnets.
 `
 const AzureOpenOutboundNetworkSecurityGroupRuleBadExample = `
 resource "azurerm_network_security_rule" "my-rule" {

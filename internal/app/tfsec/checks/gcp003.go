@@ -13,14 +13,18 @@ import (
 const GoogleOpenInboundFirewallRule scanner.RuleCode = "GCP003"
 const GoogleOpenInboundFirewallRuleDescription scanner.RuleSummary = "An inbound firewall rule allows traffic from `/0`."
 const GoogleOpenInboundFirewallRuleExplanation = `
+Network security rules should not use very broad subnets.
 
+Where possible, segments should be broken into smaller subnets and avoid using the <code>/0</code> subnet.
 `
 const GoogleOpenInboundFirewallRuleBadExample = `
-
-`
+resource "google_compute_firewall" "my-firewall" {
+	source_ranges = ["0.0.0.0/0"]
+}`
 const GoogleOpenInboundFirewallRuleGoodExample = `
-
-`
+resource "google_compute_firewall" "my-firewall" {
+	source_ranges = ["1.2.3.4/32"]
+}`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -30,7 +34,10 @@ func init() {
 			Explanation: GoogleOpenInboundFirewallRuleExplanation,
 			BadExample:  GoogleOpenInboundFirewallRuleBadExample,
 			GoodExample: GoogleOpenInboundFirewallRuleGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://cloud.google.com/vpc/docs/using-firewalls",
+				"https://www.terraform.io/docs/providers/google/r/compute_firewall.html",
+			},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},

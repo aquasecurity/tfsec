@@ -13,14 +13,26 @@ import (
 const GkeEnforcePSP scanner.RuleCode = "GCP009"
 const GkeEnforcePSPDescription scanner.RuleSummary = "Pod security policy enforcement not defined."
 const GkeEnforcePSPExplanation = `
+By default, Pods in Kubernetes can operate with capabilities beyond what they require. You should constrain the Pod's capabilities to only those required for that workload.
 
+Kubernetes offers controls for restricting your Pods to execute with only explicitly granted capabilities. 
+
+Pod Security Policy allows you to set smart defaults for your Pods, and enforce controls you want to enable across your fleet. 
+
+The policies you define should be specific to the needs of your application
 `
 const GkeEnforcePSPBadExample = `
-
-`
+resource "google_container_cluster" "gke" {
+	pod_security_policy_config {
+        enabled = "false"
+	}
+}`
 const GkeEnforcePSPGoodExample = `
-
-`
+resource "google_container_cluster" "gke" {
+	pod_security_policy_config {
+        enabled = "true"
+	}
+}`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -30,7 +42,10 @@ func init() {
 			Explanation: GkeEnforcePSPExplanation,
 			BadExample:  GkeEnforcePSPBadExample,
 			GoodExample: GkeEnforcePSPGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#admission_controllers",
+				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#pod_security_policy_config",
+			},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
@@ -41,7 +56,7 @@ func init() {
 			if pspBlock == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement. https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#admission_controllers", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", block.Name()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -52,7 +67,7 @@ func init() {
 			if enforcePSP.Type() == cty.Bool && enforcePSP.Value().False() || enforcePSP.Type() == cty.String && enforcePSP.Value().AsString() != "true" {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement. https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#admission_controllers", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", block.Name()),
 						enforcePSP.Range(),
 						scanner.SeverityError,
 					),

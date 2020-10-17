@@ -11,13 +11,21 @@ import (
 const GkeAbacEnabled scanner.RuleCode = "GCP005"
 const GkeAbacEnabledDescription scanner.RuleSummary = "Legacy ABAC permissions are enabled."
 const GkeAbacEnabledExplanation = `
+You should disable Attribute-Based Access Control (ABAC), and instead use Role-Based Access Control (RBAC) in GKE.
 
+RBAC has significant security advantages and is now stable in Kubernetes, so it’s time to disable ABAC.
 `
 const GkeAbacEnabledBadExample = `
-
+resource "google_container_cluster" "gke" {
+	enable_legacy_abac = "true"
+}
 `
 const GkeAbacEnabledGoodExample = `
-
+resource "google_container_cluster" "gke" {
+	...
+	enable_legacy_abac not set
+	...
+}
 `
 
 func init() {
@@ -28,7 +36,10 @@ func init() {
 			Explanation: GkeAbacEnabledExplanation,
 			BadExample:  GkeAbacEnabledBadExample,
 			GoodExample: GkeAbacEnabledGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#leave_abac_disabled_default_for_110",
+				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#enable_legacy_abac",
+			},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
@@ -39,7 +50,7 @@ func init() {
 			if enable_legacy_abac.Value().AsString() == "true" {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#leave_abac_disabled_default_for_110", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", block.Name()),
 						block.Range(),
 						scanner.SeverityError,
 					),

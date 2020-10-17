@@ -16,14 +16,6 @@ func Test_GoogleUnencryptedDisk(t *testing.T) {
 		mustExcludeResultCode scanner.RuleCode
 	}{
 		{
-			name: "check google_compute_disk with no disk_encryption_key block",
-			source: `
-resource "google_compute_disk" "my-disk" {
-	
-}`,
-			mustIncludeResultCode: checks.GoogleUnencryptedDisk,
-		},
-		{
 			name: "check google_compute_disk with empty disk_encryption_key block",
 			source: `
 resource "google_compute_disk" "my-disk" {
