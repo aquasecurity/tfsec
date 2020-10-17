@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
@@ -54,7 +55,8 @@ var rootCmd = &cobra.Command{
 	Long:  `tfsec is a simple tool to detect potential security vulnerabilities in your terraformed infrastructure.`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 
-		if disableColours {
+		// disable colour if running on windows - colour formatting doesn't work
+		if disableColours || runtime.GOOS == "windows" {
 			debug.Log("Disabled formatting.")
 			tml.DisableFormatting()
 		}

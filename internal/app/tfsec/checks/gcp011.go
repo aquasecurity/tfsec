@@ -14,14 +14,33 @@ import (
 const GoogleUserIAMGrant scanner.RuleCode = "GCP011"
 const GoogleUserIAMGrantDescription scanner.RuleSummary = "IAM granted directly to user."
 const GoogleUserIAMGrantExplanation = `
+Permissions should not be directly granted to users, you identify roles that contain the appropriate permissions, and then grant those roles to the user. 
 
+Granting permissions to users quickly become unwieldy and complex to make large scale changes to remove access to a particular resource.
+
+Permissions should be granted on roles, groups, services accounts instead.
 `
 const GoogleUserIAMGrantBadExample = `
+resource "google_project_iam_binding" "project-binding" {
+	members = [
+		"user:test@example.com",
+		]
+}
 
+resource "google_project_iam_member" "project-member" {
+	member = "user:test@example.com"
+}
 `
 const GoogleUserIAMGrantGoodExample = `
+resource "google_project_iam_binding" "project-binding" {
+	members = [
+		"group:test@example.com",
+		]
+}
 
-`
+resource "google_storage_bucket_iam_member" "bucket-member" {
+	member = "serviceAccount:test@example.com"
+}`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -31,7 +50,11 @@ func init() {
 			Explanation: GoogleUserIAMGrantExplanation,
 			BadExample:  GoogleUserIAMGrantBadExample,
 			GoodExample: GoogleUserIAMGrantGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://cloud.google.com/iam/docs/overview#permissions",
+				"https://cloud.google.com/resource-manager/reference/rest/v1/projects/setIamPolicy",
+				"https://www.terraform.io/docs/providers/google/d/iam_policy.html#members",
+			},
 		},
 		Provider:      scanner.GCPProvider,
 		RequiredTypes: []string{"resource", "data"},

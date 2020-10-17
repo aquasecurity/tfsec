@@ -30,12 +30,12 @@ permalink: /docs/{{$.Provider}}/{{$.Code}}/
 
 ***{{$.Documentation.Summary}}***
 
-## Explanation
+### Explanation
 
 {{$.Documentation.Explanation}}
 
 {{if $.Documentation.BadExample }}
-## Insecure Example
+### Insecure Example
 
 The following example will fail the {{$.Code}} check.
 
@@ -45,7 +45,7 @@ The following example will fail the {{$.Code}} check.
 
 {{end}}
 {{if $.Documentation.GoodExample }}
-## Secure Example
+### Secure Example
 
 The following example will pass the {{$.Code}} check.
 
@@ -54,7 +54,7 @@ The following example will pass the {{$.Code}} check.
 {% endhighlight %}
 {{end}}
 
-## Related Links
+### Related Links
 
 {{range $link := $.Documentation.Links}}
 - [{{.}}]({{.}}){:target="_blank" rel="nofollow noreferrer noopener"}

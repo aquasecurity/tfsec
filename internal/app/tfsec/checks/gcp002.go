@@ -11,14 +11,26 @@ import (
 const GoogleUnencryptedStorageBucket scanner.RuleCode = "GCP002"
 const GoogleUnencryptedStorageBucketDescription scanner.RuleSummary = "Unencrypted storage bucket."
 const GoogleUnencryptedStorageBucketExplanation = `
+Google storage buckets should have an <code>encryption</code> block to ensure that the data is encrypted at rest.
 
+When specifying an <code>encryption</code> block, by not including the optional <code>default_kms_key_name</code> you are deferring to Google Provided Encryption.
 `
 const GoogleUnencryptedStorageBucketBadExample = `
-
-`
+resource "google_storage_bucket" "my-bucket" {
+	...
+	no encryption block specified
+	...
+}`
 const GoogleUnencryptedStorageBucketGoodExample = `
+resource "google_storage_bucket" "my-bucket" {
+	encryption {}	
+}
 
-`
+resource "google_storage_bucket" "my-bucket" {
+	encryption {
+		default_kms_key_name = "my-key"
+	}	
+}`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -28,7 +40,10 @@ func init() {
 			Explanation: GoogleUnencryptedStorageBucketExplanation,
 			BadExample:  GoogleUnencryptedStorageBucketBadExample,
 			GoodExample: GoogleUnencryptedStorageBucketGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://cloud.google.com/storage/docs/json_api/v1/buckets",
+				"https://www.terraform.io/docs/providers/google/r/storage_bucket.html",
+			},
 		},
 		Provider:       scanner.GCPProvider,
 		RequiredTypes:  []string{"resource"},
@@ -45,7 +60,6 @@ func init() {
 					),
 				}
 			}
-
 			return nil
 		},
 	})

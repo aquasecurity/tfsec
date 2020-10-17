@@ -14,7 +14,7 @@ import (
 const AzureUnencryptedManagedDisk scanner.RuleCode = "AZU003"
 const AzureUnencryptedManagedDiskDescription scanner.RuleSummary = "Unencrypted managed disk."
 const AzureUnencryptedManagedDiskExplanation = `
-Manage disks should be encrypted at rest
+Manage disks should be encrypted at rest. When specifying the <code>encryption_settings</code> block, the enabled attribute should be set to <code>true</code>.
 `
 const AzureUnencryptedManagedDiskBadExample = `
 resource "azurerm_managed_disk" "my-disk" {
