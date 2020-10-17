@@ -8,17 +8,29 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedS3Bucket See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedS3Bucket scanner.RuleCode = "AWS017"
 const AWSUnencryptedS3BucketDescription scanner.RuleSummary = "Unencrypted S3 bucket."
 const AWSUnencryptedS3BucketExplanation = `
-
+S3 Buckets should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific buckets.
 `
 const AWSUnencryptedS3BucketBadExample = `
-
+resource "aws_s3_bucket" "my-bucket" {
+  bucket = "mybucket"
+}
 `
 const AWSUnencryptedS3BucketGoodExample = `
+resource "aws_s3_bucket" "my-bucket" {
+  bucket = "mybucket"
 
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = "arn"
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
+}
 `
 
 func init() {

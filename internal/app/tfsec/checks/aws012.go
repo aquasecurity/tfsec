@@ -10,17 +10,20 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSResourceHasPublicIP See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSResourceHasPublicIP scanner.RuleCode = "AWS012"
 const AWSResourceHasPublicIPDescription scanner.RuleSummary = "A resource has a public IP address."
 const AWSResourceHasPublicIPExplanation = `
-
+You should limit the provision of public IP addresses for resources. Resources should not be exposed on the public internet, but should have access limited to consumers required for the function of your application. 
 `
 const AWSResourceHasPublicIPBadExample = `
-
+resource "aws_launch_configuration" "my-resource" {
+	associate_public_ip_address = true
+}
 `
 const AWSResourceHasPublicIPGoodExample = `
-
+resource "aws_launch_configuration" "my-resource" {
+	associate_public_ip_address = false
+}
 `
 
 func init() {

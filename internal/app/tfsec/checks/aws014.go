@@ -10,17 +10,24 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSLaunchConfigurationWithUnencryptedBlockDevice See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSLaunchConfigurationWithUnencryptedBlockDevice scanner.RuleCode = "AWS014"
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceDescription scanner.RuleSummary = "Launch configuration with unencrypted block device."
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceExplanation = `
-
+Blocks devices should be encrypted to ensure sensitive data is hel securely at rest.
 `
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceBadExample = `
-
+resource "aws_launch_configuration" "my-launch-config" {
+	root_block_device {
+		encrypted = false
+	}
+}
 `
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceGoodExample = `
-
+resource "aws_launch_configuration" "my-launch-config" {
+	root_block_device {
+		encrypted = true
+	}
+}
 `
 
 func init() {

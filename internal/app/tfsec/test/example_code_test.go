@@ -13,8 +13,7 @@ func TestExampleCode(t *testing.T) {
 
 		t.Run(fmt.Sprintf("Check 'good' example code for %s", check.Code), func(t *testing.T) {
 			if strings.TrimSpace(check.Documentation.GoodExample) == "" {
-				t.Skip("good example code not provided")
-				return
+				t.Fatalf("good example code not provided for %s", check.Code)
 			}
 			results := scanSource(check.Documentation.GoodExample)
 			assertCheckCode(t, "", check.Code, results)
@@ -22,8 +21,7 @@ func TestExampleCode(t *testing.T) {
 
 		t.Run(fmt.Sprintf("Check 'bad' example code for %s", check.Code), func(t *testing.T) {
 			if strings.TrimSpace(check.Documentation.BadExample) == "" {
-				t.Skip("bad example code not provided")
-				return
+				t.Fatalf("bad example code not provided for %s", check.Code)
 			}
 			results := scanSource(check.Documentation.BadExample)
 			assertCheckCode(t, check.Code, "", results)

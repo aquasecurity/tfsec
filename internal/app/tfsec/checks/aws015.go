@@ -10,17 +10,20 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedSQSQueue See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedSQSQueue scanner.RuleCode = "AWS015"
 const AWSUnencryptedSQSQueueDescription scanner.RuleSummary = "Unencrypted SQS queue."
 const AWSUnencryptedSQSQueueExplanation = `
-
+Queues should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific queues.
 `
 const AWSUnencryptedSQSQueueBadExample = `
-
+resource "aws_sqs_queue" "my-queue" {
+	# no key specified
+}
 `
 const AWSUnencryptedSQSQueueGoodExample = `
-
+resource "aws_sqs_queue" "my-queue" {
+	kms_master_key_id = "/blah"
+}
 `
 
 func init() {

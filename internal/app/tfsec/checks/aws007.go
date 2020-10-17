@@ -2,22 +2,41 @@ package checks
 
 import (
 	"fmt"
-	"github.com/zclconf/go-cty/cty"
 	"strings"
+
+	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-// AWSOpenEgressSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOpenEgressSecurityGroupRule scanner.RuleCode = "AWS007"
 const AWSOpenEgressSecurityGroupRuleDescription scanner.RuleSummary = "An egress security group rule allows traffic to `/0`."
+const AWSOpenEgressSecurityGroupRuleExplanation = `
+Opening up ports to connect out to the public internet is generally to be avoided. You should restrict access to IP addresses or ranges that are explicitly required where possible.
+`
+const AWSOpenEgressSecurityGroupRuleBadExample = `
+resource "aws_security_group_rule" "my-rule" {
+	type = "egress"
+	cidr_blocks = ["0.0.0.0/0"]
+}
+`
+const AWSOpenEgressSecurityGroupRuleGoodExample = `
+resource "aws_security_group_rule" "my-rule" {
+	type = "egress"
+	cidr_blocks = ["10.0.0.0/16"]
+}
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSOpenEgressSecurityGroupRule,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AWSOpenEgressSecurityGroupRuleDescription,
+			Summary:     AWSOpenEgressSecurityGroupRuleDescription,
+			Explanation: AWSOpenEgressSecurityGroupRuleExplanation,
+			BadExample:  AWSOpenEgressSecurityGroupRuleBadExample,
+			GoodExample: AWSOpenEgressSecurityGroupRuleGoodExample,
+			Links:       nil,
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

@@ -14,13 +14,17 @@ import (
 const AWSNoKMSAutoRotate scanner.RuleCode = "AWS019"
 const AWSNoKMSAutoRotateDescription scanner.RuleSummary = "A KMS key is not configured to auto-rotate."
 const AWSNoKMSAutoRotateExplanation = `
-
+You should configure your KMS keys to auto rotate to maintain security and defend against compromise.
 `
 const AWSNoKMSAutoRotateBadExample = `
-
+resource "aws_kms_key" "kms_key" {
+	enable_key_rotation = false
+}
 `
 const AWSNoKMSAutoRotateGoodExample = `
-
+resource "aws_kms_key" "kms_key" {
+	enable_key_rotation = true
+}
 `
 
 func init() {

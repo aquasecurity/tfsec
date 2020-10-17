@@ -9,7 +9,6 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-// AWSBadBucketACL See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSBadBucketACL scanner.RuleCode = "AWS001"
 const AwsBadBucketACLDescription scanner.RuleSummary = "S3 Bucket has an ACL defined which allows public access."
 const AWSBadBucketACLExplanation = `

@@ -10,17 +10,22 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSPlainHTTP See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSPlainHTTP scanner.RuleCode = "AWS004"
 const AWSPlainHTTPDescription scanner.RuleSummary = "Use of plain HTTP."
 const AWSPlainHTTPExplanation = `
+Plain HTTP is unencrypted and human-readable. This means that if a malicious actor was to eavesdrop on your connection, they would be able to see all of your data flowing back and forth.
 
+You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning eavesdroppers cannot read your traffic.
 `
 const AWSPlainHTTPBadExample = `
-
+resource "aws_alb_listener" "my-listener" {
+	protocol = "HTTP"
+}
 `
 const AWSPlainHTTPGoodExample = `
-
+resource "aws_alb_listener" "my-listener" {
+	protocol = "HTTPS"
+}
 `
 
 func init() {
@@ -31,7 +36,10 @@ func init() {
 			Explanation: AWSPlainHTTPExplanation,
 			BadExample:  AWSPlainHTTPBadExample,
 			GoodExample: AWSPlainHTTPGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://www.cloudflare.com/en-gb/learning/ssl/why-is-http-not-secure/",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
