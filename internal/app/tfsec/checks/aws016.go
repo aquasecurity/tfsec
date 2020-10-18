@@ -10,17 +10,20 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedSNSTopic See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedSNSTopic scanner.RuleCode = "AWS016"
 const AWSUnencryptedSNSTopicDescription scanner.RuleSummary = "Unencrypted SNS topic."
 const AWSUnencryptedSNSTopicExplanation = `
-
+Queues should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific queues.
 `
 const AWSUnencryptedSNSTopicBadExample = `
-
+resource "aws_sns_topic" "my-topic" {
+	# no key id specified
+}
 `
 const AWSUnencryptedSNSTopicGoodExample = `
-
+resource "aws_sns_topic" "my-topic" {
+	kms_master_key_id = "/blah"
+}
 `
 
 func init() {

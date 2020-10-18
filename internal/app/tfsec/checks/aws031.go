@@ -10,17 +10,28 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedElasticsearchDomain See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedElasticsearchDomain scanner.RuleCode = "AWS031"
 const AWSUnencryptedElasticsearchDomainDescription scanner.RuleSummary = "Elasticsearch domain isn't encrypted at rest."
 const AWSUnencryptedElasticsearchDomainExplanation = `
-
+You should ensure your Elasticsearch data is encrypted at rest to help prevent sensitive information from being read by unauthorised users. 
 `
 const AWSUnencryptedElasticsearchDomainBadExample = `
+resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+  domain_name = "domain-foo"
 
+  encrypt_at_rest {
+    enabled = false
+  }
+}
 `
 const AWSUnencryptedElasticsearchDomainGoodExample = `
+resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+  domain_name = "domain-foo"
 
+  encrypt_at_rest {
+    enabled = true
+  }
+}
 `
 
 func init() {

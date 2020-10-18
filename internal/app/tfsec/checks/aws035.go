@@ -8,17 +8,26 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedAtRestElasticacheReplicationGroup See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedAtRestElasticacheReplicationGroup scanner.RuleCode = "AWS035"
 const AWSUnencryptedAtRestElasticacheReplicationGroupDescription scanner.RuleSummary = "Unencrypted Elasticache Replication Group."
 const AWSUnencryptedAtRestElasticacheReplicationGroupExplanation = `
-
+You should ensure your Elasticache data is encrypted at rest to help prevent sensitive information from being read by unauthorised users.
 `
 const AWSUnencryptedAtRestElasticacheReplicationGroupBadExample = `
+resource "aws_elasticache_replication_group" "my-resource" {
+        replication_group_id = "foo"
+        replication_group_description = "my foo cluster"
 
+        at_rest_encryption_enabled = false
+}
 `
 const AWSUnencryptedAtRestElasticacheReplicationGroupGoodExample = `
+resource "aws_elasticache_replication_group" "my-resource" {
+        replication_group_id = "foo"
+        replication_group_description = "my foo cluster"
 
+        at_rest_encryption_enabled = true
+}
 `
 
 func init() {

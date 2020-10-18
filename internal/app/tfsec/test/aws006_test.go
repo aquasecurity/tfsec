@@ -7,7 +7,7 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-func Test_AWSOpenSecurityGroupRule(t *testing.T) {
+func Test_AWSOpenIngressSecurityGroupRule(t *testing.T) {
 
 	var tests = []struct {
 		name                  string
@@ -23,33 +23,6 @@ resource "aws_security_group_rule" "my-rule" {
 	cidr_blocks = ["0.0.0.0/0"]
 }`,
 			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
-		},
-		{
-			name: "check aws_security_group_rule egress on 0.0.0.0/0",
-			source: `
-resource "aws_security_group_rule" "my-rule" {
-	type = "egress"
-	cidr_blocks = ["0.0.0.0/0"]
-}`,
-			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
-		},
-		{
-			name: "check aws_security_group_rule egress on 0.0.0.0/0 in list",
-			source: `
-resource "aws_security_group_rule" "my-rule" {
-	type = "egress"
-	cidr_blocks = ["10.0.0.0/16", "0.0.0.0/0"]
-}`,
-			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
-		},
-		{
-			name: "check aws_security_group_rule egress on 10.0.0.0/16",
-			source: `
-resource "aws_security_group_rule" "my-rule" {
-	type = "egress"
-	cidr_blocks = ["10.0.0.0/16"]
-}`,
-			mustExcludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
 		},
 		{
 			name: "check variable containing 0.0.0.0/0",

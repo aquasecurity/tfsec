@@ -15,13 +15,27 @@ import (
 const AWSUnenforcedHTTPSElasticsearchDomainEndpoint scanner.RuleCode = "AWS033"
 const AWSUnenforcedHTTPSElasticsearchDomainEndpointDescription scanner.RuleSummary = "Elasticsearch doesn't enforce HTTPS traffic."
 const AWSUnenforcedHTTPSElasticsearchDomainEndpointExplanation = `
+Plain HTTP is unencrypted and human-readable. This means that if a malicious actor was to eavesdrop on your connection, they would be able to see all of your data flowing back and forth.
 
+You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning eavesdroppers cannot read your traffic.
 `
 const AWSUnenforcedHTTPSElasticsearchDomainEndpointBadExample = `
+resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+  domain_name = "domain-foo"
 
+  domain_endpoint_options {
+    enforce_https = false
+  }
+}
 `
 const AWSUnenforcedHTTPSElasticsearchDomainEndpointGoodExample = `
+resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+  domain_name = "domain-foo"
 
+  domain_endpoint_options {
+    enforce_https = true
+  }
+}
 `
 
 func init() {

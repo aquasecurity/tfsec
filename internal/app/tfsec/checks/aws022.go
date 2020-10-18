@@ -12,13 +12,27 @@ import (
 const AWSUnencryptedMSKBroker scanner.RuleCode = "AWS022"
 const AWSUnencryptedMSKBrokerDescription scanner.RuleSummary = "A MSK cluster allows unencrypted data in transit."
 const AWSUnencryptedMSKBrokerExplanation = `
-
+Encryption should be forced for Kafka clusters, including for communication between nodes. This ensure sensitive data is kept private.
 `
 const AWSUnencryptedMSKBrokerBadExample = `
-
+resource "aws_msk_cluster" "msk-cluster" {
+	encryption_info {
+		encryption_in_transit {
+			client_broker = "TLS_PLAINTEXT"
+			in_cluster = true
+		}
+	}
+}
 `
 const AWSUnencryptedMSKBrokerGoodExample = `
-
+resource "aws_msk_cluster" "msk-cluster" {
+	encryption_info {
+		encryption_in_transit {
+			client_broker = "TLS"
+			in_cluster = true
+		}
+	}
+}
 `
 
 func init() {
@@ -79,7 +93,7 @@ func init() {
 					} else if clientBroker != nil && clientBroker.Value().AsString() == "TLS_PLAINTEXT" {
 						results = append(results,
 							check.NewResultWithValueAnnotation(
-								fmt.Sprintf("Resource '%s' defines a MSK cluster  that allows plaintext as well as TLS encrypted data in transit.", block.Name()),
+								fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit.", block.Name()),
 								clientBroker.Range(),
 								clientBroker,
 								scanner.SeverityWarning,

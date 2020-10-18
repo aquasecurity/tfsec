@@ -8,15 +8,37 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-// AWSOpenEgressSecurityGroupInlineRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOpenEgressSecurityGroupInlineRule scanner.RuleCode = "AWS009"
 const AWSOpenEgressSecurityGroupInlineRuleDescription scanner.RuleSummary = "An inline egress security group rule allows traffic to `/0`."
+const AWSOpenEgressSecurityGroupInlineRuleExplanation = `
+Opening up ports to the public internet is generally to be avoided. You should restrict access to IP addresses or ranges that explicitly require it where possible.
+`
+const AWSOpenEgressSecurityGroupInlineRuleBadExample = `
+resource "aws_security_group" "my-group" {
+	egress {
+		cidr_blocks = ["0.0.0.0/0"]
+	}
+}
+`
+const AWSOpenEgressSecurityGroupInlineRuleGoodExample = `
+resource "aws_security_group" "my-group" {
+	egress {
+		cidr_blocks = ["1.2.3.4/32"]
+	}
+}
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSOpenEgressSecurityGroupInlineRule,
 		Documentation: scanner.CheckDocumentation{
-			Summary: AWSOpenEgressSecurityGroupInlineRuleDescription,
+			Summary:     AWSOpenEgressSecurityGroupInlineRuleDescription,
+			Explanation: AWSOpenEgressSecurityGroupInlineRuleExplanation,
+			BadExample:  AWSOpenEgressSecurityGroupInlineRuleBadExample,
+			GoodExample: AWSOpenEgressSecurityGroupInlineRuleGoodExample,
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

@@ -14,13 +14,25 @@ import (
 const AWSPlaintextNodeToNodeElasticsearchTraffic scanner.RuleCode = "AWS032"
 const AWSPlaintextNodeToNodeElasticsearchTrafficDescription scanner.RuleSummary = "Elasticsearch domain uses plaintext traffic for node to node communication."
 const AWSPlaintextNodeToNodeElasticsearchTrafficExplanation = `
-
+Traffic flowing between Elasticsearch nodes should be encrypted to ensure sensitive data is kept private.
 `
 const AWSPlaintextNodeToNodeElasticsearchTrafficBadExample = `
+resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+  domain_name = "domain-foo"
 
+  node_to_node_encryption {
+    enabled = false
+  }
+}
 `
 const AWSPlaintextNodeToNodeElasticsearchTrafficGoodExample = `
+resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+  domain_name = "domain-foo"
 
+  node_to_node_encryption {
+    enabled = true
+  }
+}
 `
 
 func init() {

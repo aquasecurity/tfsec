@@ -9,17 +9,20 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-// AWSApiGatewayDomainNameOutdatedSecurityPolicy See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSApiGatewayDomainNameOutdatedSecurityPolicy scanner.RuleCode = "AWS025"
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyDescription scanner.RuleSummary = "API Gateway domain name uses outdated SSL/TLS protocols."
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyExplanation = `
-
+You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyBadExample = `
-
+resource "aws_api_gateway_domain_name" "my-resource" {
+	security_policy = "TLS_1_0"
+}
 `
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyGoodExample = `
-
+resource "aws_api_gateway_domain_name" "my-resource" {
+	security_policy = "TLS_1_2"
+}
 `
 
 func init() {

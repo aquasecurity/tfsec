@@ -16,7 +16,7 @@ func Test_AWSUnencryptedKinesisStream(t *testing.T) {
 		mustExcludeResultCode scanner.RuleCode
 	}{
 		{
-			name: "check no encryption key id specified for aws_sqs_queue",
+			name: "check no encryption specified for aws_kinesis_stream",
 			source: `
 resource "aws_kinesis_stream" "test_stream" {
 	
@@ -24,10 +24,18 @@ resource "aws_kinesis_stream" "test_stream" {
 			mustIncludeResultCode: checks.AWSUnencryptedKinesisStream,
 		},
 		{
-			name: "check blank encryption key id specified for aws_sqs_queue",
+			name: "check encryption disabled for aws_kinesis_stream",
 			source: `
 resource "aws_kinesis_stream" "test_stream" {
 	encryption_type = "NONE"
+}`,
+			mustIncludeResultCode: checks.AWSUnencryptedKinesisStream,
+		},
+		{
+			name: "check no encryption key id specified for aws_kinesis_stream",
+			source: `
+resource "aws_kinesis_stream" "test_stream" {
+	encryption_type = "KMS"
 }`,
 			mustIncludeResultCode: checks.AWSUnencryptedKinesisStream,
 		},
@@ -36,6 +44,7 @@ resource "aws_kinesis_stream" "test_stream" {
 			source: `
 resource "aws_kinesis_stream" "test_stream" {
 	encryption_type = "KMS"
+	kms_key_id = "my/key"
 }`,
 			mustExcludeResultCode: checks.AWSUnencryptedKinesisStream,
 		},

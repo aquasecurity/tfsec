@@ -20,12 +20,32 @@ var excludedChecksList []string
 func TestMain(t *testing.M) {
 
 	scanner.RegisterCheck(scanner.Check{
-		Code:           exampleCheckCode,
+		Code: exampleCheckCode,
+		Documentation: scanner.CheckDocumentation{
+			Summary:     "A stupid example check for a test.",
+			Explanation: "Bad should not be set.",
+			BadExample: `
+resource "problem" "x" {
+	bad = "1"
+}
+`,
+			GoodExample: `
+resource "problem" "x" {
+	
+}
+`,
+			Links: nil,
+		},
+		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"problem"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-			return []scanner.Result{
-				check.NewResult("example problem", block.Range(), scanner.SeverityError),
+			if block.GetAttribute("bad") != nil {
+				return []scanner.Result{
+					check.NewResult("example problem", block.Range(), scanner.SeverityError),
+				}
 			}
+
+			return nil
 		},
 	})
 

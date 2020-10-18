@@ -8,7 +8,6 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSNoBucketLogging See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSNoBucketLogging scanner.RuleCode = "AWS002"
 const AWSNoBucketLoggingDescription scanner.RuleSummary = "S3 Bucket does not have logging enabled."
 const AWSNoBucketLoggingExplanation = `

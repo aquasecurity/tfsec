@@ -12,13 +12,30 @@ import (
 const AWSIamPolicyWildcardActions scanner.RuleCode = "AWS046"
 const AWSIamPolicyWildcardActionsDescription scanner.RuleSummary = "AWS IAM policy document has wildcard action statement."
 const AWSIamPolicyWildcardActionsExplanation = `
-
+IAM profiles should be configured with the specific, minimum set of permissions required.
 `
 const AWSIamPolicyWildcardActionsBadExample = `
+data "aws_iam_policy_document" "my-policy" {
+	statement {
+		sid = "1"
 
+        actions = [
+      		"*"
+    	]
+	}
+}
 `
 const AWSIamPolicyWildcardActionsGoodExample = `
+data "aws_iam_policy_document" "my-policy" {
+	statement {
+		sid = "1"
 
+        actions = [
+      		"s3:ListAllMyBuckets",
+      		"ec2:DescribeInstances"
+    	]
+	}
+}
 `
 
 func init() {

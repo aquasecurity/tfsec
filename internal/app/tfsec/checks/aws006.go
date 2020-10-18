@@ -11,17 +11,22 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSOpenIngressSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOpenIngressSecurityGroupRule scanner.RuleCode = "AWS006"
 const AWSOpenIngressSecurityGroupRuleDescription scanner.RuleSummary = "An ingress security group rule allows traffic from `/0`."
 const AWSOpenIngressSecurityGroupRuleExplanation = `
-
+Opening up ports to the public internet is generally to be avoided. You should restrict access to IP addresses or ranges that explicitly require it where possible.
 `
 const AWSOpenIngressSecurityGroupRuleBadExample = `
-
+resource "aws_security_group_rule" "my-rule" {
+	type = "ingress"
+	cidr_blocks = ["0.0.0.0/0"]
+}
 `
 const AWSOpenIngressSecurityGroupRuleGoodExample = `
-
+resource "aws_security_group_rule" "my-rule" {
+	type = "ingress"
+	cidr_blocks = ["10.0.0.0/16"]
+}
 `
 
 func init() {
@@ -32,7 +37,9 @@ func init() {
 			Explanation: AWSOpenIngressSecurityGroupRuleExplanation,
 			BadExample:  AWSOpenIngressSecurityGroupRuleBadExample,
 			GoodExample: AWSOpenIngressSecurityGroupRuleGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

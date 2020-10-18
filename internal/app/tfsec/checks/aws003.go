@@ -8,7 +8,6 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSClassicUsage See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSClassicUsage scanner.RuleCode = "AWS003"
 const AWSClassicUsageDescription scanner.RuleSummary = "AWS Classic resource usage."
 const AWSClassicUsageExplanation = `
@@ -20,7 +19,11 @@ resource "aws_db_security_group" "my-group" {
   # ...
 }
 `
-const AWSClassicUsageGoodExample = ``
+const AWSClassicUsageGoodExample = `
+resource "aws_security_group" "allow-db-access" {
+  # ...
+}
+`
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{

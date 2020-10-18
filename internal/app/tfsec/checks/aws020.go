@@ -10,17 +10,26 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedCloudFrontCommunications See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedCloudFrontCommunications scanner.RuleCode = "AWS020"
 const AWSUnencryptedCloudFrontCommunicationsDescription scanner.RuleSummary = "CloudFront distribution allows unencrypted (HTTP) communications."
 const AWSUnencryptedCloudFrontCommunicationsExplanation = `
+Plain HTTP is unencrypted and human-readable. This means that if a malicious actor was to eavesdrop on your connection, they would be able to see all of your data flowing back and forth.
 
+You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning eavesdroppers cannot read your traffic.
 `
 const AWSUnencryptedCloudFrontCommunicationsBadExample = `
-
+resource "aws_cloudfront_distribution" "s3_distribution" {
+	default_cache_behavior {
+	    viewer_protocol_policy = "allow-all"
+	  }
+}
 `
 const AWSUnencryptedCloudFrontCommunicationsGoodExample = `
-
+resource "aws_cloudfront_distribution" "s3_distribution" {
+	default_cache_behavior {
+	    viewer_protocol_policy = "redirect-to-https"
+	  }
+}
 `
 
 func init() {
@@ -49,7 +58,7 @@ func init() {
 						scanner.SeverityError,
 					),
 				)
-			} else if defaultBehaviorBlock != nil {
+			} else {
 				protocolPolicy := defaultBehaviorBlock.GetAttribute("viewer_protocol_policy")
 				if protocolPolicy == nil {
 					results = append(results,

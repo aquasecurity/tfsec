@@ -13,17 +13,45 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSTaskDefinitionWithSensitiveEnvironmentVariables See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSTaskDefinitionWithSensitiveEnvironmentVariables scanner.RuleCode = "AWS013"
 const AWSTaskDefinitionWithSensitiveEnvironmentVariablesDescription scanner.RuleSummary = "Task definition defines sensitive environment variable(s)."
 const AWSTaskDefinitionWithSensitiveEnvironmentVariablesExplanation = `
-
+You should not make secrets available to a user in plaintext in any scenario. Secrets can instead be pulled from a secure secret storage system by the service requiring them.  
 `
 const AWSTaskDefinitionWithSensitiveEnvironmentVariablesBadExample = `
+resource "aws_ecs_task_definition" "my-task" {
+  container_definitions = <<EOF
+[
+  {
+    "name": "my_service",
+    "essential": true,
+    "memory": 256,
+    "environment": [
+      { "name": "ENVIRONMENT", "value": "development" },
+      { "name": "DATABASE_PASSWORD", "value": "oh no D:"}
+    ]
+  }
+]
+EOF
 
+}
 `
 const AWSTaskDefinitionWithSensitiveEnvironmentVariablesGoodExample = `
+resource "aws_ecs_task_definition" "my-task" {
+  container_definitions = <<EOF
+[
+  {
+    "name": "my_service",
+    "essential": true,
+    "memory": 256,
+    "environment": [
+      { "name": "ENVIRONMENT", "value": "development" }
+    ]
+  }
+]
+EOF
 
+}
 `
 
 func init() {
@@ -34,7 +62,10 @@ func init() {
 			Explanation: AWSTaskDefinitionWithSensitiveEnvironmentVariablesExplanation,
 			BadExample:  AWSTaskDefinitionWithSensitiveEnvironmentVariablesBadExample,
 			GoodExample: AWSTaskDefinitionWithSensitiveEnvironmentVariablesGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://docs.aws.amazon.com/systems-manager/latest/userguide/integration-ps-secretsmanager.html",
+				"https://www.vaultproject.io/",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

@@ -10,17 +10,20 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSExternallyExposedLoadBalancer See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSExternallyExposedLoadBalancer scanner.RuleCode = "AWS005"
 const AWSExternallyExposedLoadBalancerDescription scanner.RuleSummary = "Load balancer is exposed to the internet."
 const AWSExternallyExposedLoadBalancerExplanation = `
-
+There are many scenarios in which you would want to expose a load balancer to the wider internet, but this check exists as a warning to prevent accidental exposure of internal assets. You should ensure that this resource should be exposed publicly.
 `
 const AWSExternallyExposedLoadBalancerBadExample = `
-
+resource "aws_alb" "my-resource" {
+	internal = false
+}
 `
 const AWSExternallyExposedLoadBalancerGoodExample = `
-
+resource "aws_alb" "my-resource" {
+	internal = true
+}
 `
 
 func init() {
@@ -31,7 +34,9 @@ func init() {
 			Explanation: AWSExternallyExposedLoadBalancerExplanation,
 			BadExample:  AWSExternallyExposedLoadBalancerBadExample,
 			GoodExample: AWSExternallyExposedLoadBalancerGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

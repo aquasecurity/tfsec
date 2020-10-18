@@ -9,17 +9,26 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-// AWSCloudFrontOutdatedProtocol See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSCloudFrontOutdatedProtocol scanner.RuleCode = "AWS021"
-const AWSCloudFrontOutdatedProtocolDescription scanner.RuleSummary = "CloudFront distribution uses outdated SSL/TSL protocols."
+const AWSCloudFrontOutdatedProtocolDescription scanner.RuleSummary = "CloudFront distribution uses outdated SSL/TLS protocols."
 const AWSCloudFrontOutdatedProtocolExplanation = `
-
+You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `
 const AWSCloudFrontOutdatedProtocolBadExample = `
-
+resource "aws_cloudfront_distribution" "s3_distribution" {
+  viewer_certificate {
+    cloudfront_default_certificate = true
+	minimum_protocol_version = "TLSv1.0"
+  }
+}
 `
 const AWSCloudFrontOutdatedProtocolGoodExample = `
-
+resource "aws_cloudfront_distribution" "s3_distribution" {
+  viewer_certificate {
+    cloudfront_default_certificate = true
+	minimum_protocol_version = "TLSv1.2_2019"
+  }
+}
 `
 
 func init() {

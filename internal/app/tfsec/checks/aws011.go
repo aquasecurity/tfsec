@@ -10,17 +10,20 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSPubliclyAccessibleResource See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSPubliclyAccessibleResource scanner.RuleCode = "AWS011"
 const AWSPubliclyAccessibleResourceDescription scanner.RuleSummary = "A resource is marked as publicly accessible."
 const AWSPubliclyAccessibleResourceExplanation = `
-
+Database resources should not publicly available. You should limit all access to the minimum that is required for your application to function. 
 `
 const AWSPubliclyAccessibleResourceBadExample = `
-
+resource "aws_db_instance" "my-resource" {
+	publicly_accessible = true
+}
 `
 const AWSPubliclyAccessibleResourceGoodExample = `
-
+resource "aws_db_instance" "my-resource" {
+	publicly_accessible = false
+}
 `
 
 func init() {
@@ -31,7 +34,9 @@ func init() {
 			Explanation: AWSPubliclyAccessibleResourceExplanation,
 			BadExample:  AWSPubliclyAccessibleResourceBadExample,
 			GoodExample: AWSPubliclyAccessibleResourceGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

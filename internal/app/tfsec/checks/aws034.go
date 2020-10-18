@@ -10,18 +10,30 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSOutdatedTLSPolicyElasticsearchDomainEndpoint See
-// https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpoint scanner.RuleCode = "AWS034"
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointDescription scanner.RuleSummary = "Elasticsearch domain endpoint is using outdated TLS policy."
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointExplanation = `
-
+You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointBadExample = `
+resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+  domain_name = "domain-foo"
 
+  domain_endpoint_options {
+    enforce_https = true
+    tls_security_policy = "Policy-Min-TLS-1-0-2019-07"
+  }
+}
 `
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointGoodExample = `
+resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+  domain_name = "domain-foo"
 
+  domain_endpoint_options {
+    enforce_https = true
+    tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
+  }
+}
 `
 
 func init() {

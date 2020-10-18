@@ -14,13 +14,27 @@ import (
 const AWSEcrImageScanNotEnabled scanner.RuleCode = "AWS023"
 const AWSEcrImageScanNotEnabledDescription scanner.RuleSummary = "ECR repository has image scans disabled."
 const AWSEcrImageScanNotEnabledExplanation = `
-
+Repository image scans should be enabled to ensure vulnerable software can be discovered and remediated as soon as possible.
 `
 const AWSEcrImageScanNotEnabledBadExample = `
+resource "aws_ecr_repository" "foo" {
+  name                 = "bar"
+  image_tag_mutability = "MUTABLE"
 
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
 `
 const AWSEcrImageScanNotEnabledGoodExample = `
+resource "aws_ecr_repository" "foo" {
+  name                 = "bar"
+  image_tag_mutability = "MUTABLE"
 
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
 `
 
 func init() {
