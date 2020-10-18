@@ -8,17 +8,26 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedInTransitElasticacheReplicationGroup See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedInTransitElasticacheReplicationGroup scanner.RuleCode = "AWS036"
 const AWSUnencryptedInTransitElasticacheReplicationGroupDescription scanner.RuleSummary = "Elasticache Replication Group uses unencrypted traffic."
 const AWSUnencryptedInTransitElasticacheReplicationGroupExplanation = `
-
+Traffic flowing between Elasticache replication nodes should be encrypted to ensure sensitive data is kept private.
 `
 const AWSUnencryptedInTransitElasticacheReplicationGroupBadExample = `
+resource "aws_elasticache_replication_group" "my-resource" {
+        replication_group_id = "foo"
+        replication_group_description = "my foo cluster"
 
+        transit_encryption_enabled = false
+}
 `
 const AWSUnencryptedInTransitElasticacheReplicationGroupGoodExample = `
+resource "aws_elasticache_replication_group" "my-resource" {
+        replication_group_id = "foo"
+        replication_group_description = "my foo cluster"
 
+        transit_encryption_enabled = true
+}
 `
 
 func init() {

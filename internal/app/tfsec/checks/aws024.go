@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/zclconf/go-cty/cty"
 
@@ -10,17 +11,21 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// AWSUnencryptedKinesisStream See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedKinesisStream scanner.RuleCode = "AWS024"
 const AWSUnencryptedKinesisStreamDescription scanner.RuleSummary = "Kinesis stream is unencrypted."
 const AWSUnencryptedKinesisStreamExplanation = `
-
+Kinesis streams should be encrypted to ensure sensitive data is kept private. Additionally, non-default KMS keys should be used so granularity of access control can be ensured.
 `
 const AWSUnencryptedKinesisStreamBadExample = `
-
+resource "aws_kinesis_stream" "test_stream" {
+	encryption_type = "NONE"
+}
 `
 const AWSUnencryptedKinesisStreamGoodExample = `
-
+resource "aws_kinesis_stream" "test_stream" {
+	encryption_type = "KMS"
+	kms_key_id = "my/special/key"
+}
 `
 
 func init() {
@@ -47,7 +52,7 @@ func init() {
 						scanner.SeverityError,
 					),
 				}
-			} else if encryptionTypeAttr.Type() == cty.String && encryptionTypeAttr.Value().AsString() == "" || encryptionTypeAttr.Value().AsString() == "NONE" || encryptionTypeAttr.Value().AsString() == "None" {
+			} else if encryptionTypeAttr.Type() == cty.String && strings.ToUpper(encryptionTypeAttr.Value().AsString()) != "KMS" {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", block.Name()),
@@ -55,6 +60,17 @@ func init() {
 						encryptionTypeAttr,
 						scanner.SeverityError,
 					),
+				}
+			} else {
+				keyIDAttr := block.GetAttribute("kms_key_id")
+				if keyIDAttr == nil || keyIDAttr.Value().AsString() == "" || keyIDAttr.Value().AsString() == "alias/aws/kinesis" {
+					return []scanner.Result{
+						check.NewResult(
+							fmt.Sprintf("Resource '%s' defines a Kinesis Stream encrypted with the default Kinesis key.", block.Name()),
+							block.Range(),
+							scanner.SeverityWarning,
+						),
+					}
 				}
 			}
 

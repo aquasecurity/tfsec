@@ -24,7 +24,9 @@ module "something" {
 }
 `,
 			moduleSource: `
-resource "problem" "uhoh" {}
+resource "problem" "uhoh" {
+	bad = "1"
+}
 `,
 			mustIncludeResultCode: exampleCheckCode,
 		},

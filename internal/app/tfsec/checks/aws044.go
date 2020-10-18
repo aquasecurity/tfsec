@@ -14,13 +14,17 @@ import (
 const AWSProviderHasAccessCredentials scanner.RuleCode = "AWS044"
 const AWSProviderHasAccessCredentialsDescription scanner.RuleSummary = "AWS provider has access credentials specified."
 const AWSProviderHasAccessCredentialsExplanation = `
-
+The AWS provider block should not contain hardcoded credentials. These can be passed in securely as runtime using environment variables.
 `
 const AWSProviderHasAccessCredentialsBadExample = `
-
+provider "aws" {
+  access_key = "AKIAABCD12ABCDEF1ABC"
+  secret_key = "s8d7ghas9dghd9ophgs9"
+}
 `
 const AWSProviderHasAccessCredentialsGoodExample = `
-
+provider "aws" {
+}
 `
 
 func init() {

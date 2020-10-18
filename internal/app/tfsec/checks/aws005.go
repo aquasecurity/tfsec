@@ -34,7 +34,9 @@ func init() {
 			Explanation: AWSExternallyExposedLoadBalancerExplanation,
 			BadExample:  AWSExternallyExposedLoadBalancerBadExample,
 			GoodExample: AWSExternallyExposedLoadBalancerGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

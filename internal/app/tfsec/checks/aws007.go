@@ -36,7 +36,9 @@ func init() {
 			Explanation: AWSOpenEgressSecurityGroupRuleExplanation,
 			BadExample:  AWSOpenEgressSecurityGroupRuleBadExample,
 			GoodExample: AWSOpenEgressSecurityGroupRuleGoodExample,
-			Links:       nil,
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
