@@ -2,6 +2,8 @@ package checks
 
 import (
 	"fmt"
+	"github.com/zclconf/go-cty/cty"
+	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
@@ -55,6 +57,11 @@ func init() {
 
 			if statementBlocks := block.GetBlocks("statement"); statementBlocks != nil {
 				for _, statementBlock := range statementBlocks {
+					if effect := statementBlock.GetAttribute("effect"); effect != nil {
+						if effect.Type() == cty.String && strings.ToLower(effect.Value().AsString()) == "deny" {
+							continue
+						}
+					}
 					if actions := statementBlock.GetAttribute("actions"); actions != nil {
 						actionValues := actions.Value().AsValueSlice()
 						for _, actionValue := range actionValues {
