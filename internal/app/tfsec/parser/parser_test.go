@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"testing"
 
 	"github.com/zclconf/go-cty/cty"
@@ -72,6 +73,11 @@ data "cats_cat" "the-cats-mother" {
 
 	// resources
 	resourceBlocks := blocks.OfType("resource")
+
+	sort.Slice(resourceBlocks, func(i, j int) bool {
+		return resourceBlocks[i].Labels()[0] < resourceBlocks[j].Labels()[0]
+	})
+
 	require.Len(t, resourceBlocks, 2)
 	require.Len(t, resourceBlocks[0].Labels(), 2)
 
@@ -141,13 +147,19 @@ output "result" {
 	assert.Equal(t, "ok", inputAttr.Value().AsString())
 
 	outputs := blocks.OfType("output")
-	require.Len(t, outputs, 1)
-	output := outputs[0]
-	assert.Equal(t, "output.result", output.Name())
-	valAttr := output.GetAttribute("value")
-	require.NotNil(t, valAttr)
-	require.Equal(t, cty.String, valAttr.Type())
-	assert.Equal(t, "ok", valAttr.Value().AsString())
+	require.Len(t, outputs, 2)
+	for _, output := range outputs {
+		if output.inModule {
+			assert.Equal(t, "module.my-mod.result", output.Name())
+		} else {
+			assert.Equal(t, "output.result", output.Name())
+		}
+		valAttr := output.GetAttribute("value")
+		require.NotNil(t, valAttr)
+		require.Equal(t, cty.String, valAttr.Type())
+		assert.Equal(t, "ok", valAttr.Value().AsString())
+	}
+
 }
 
 func Test_NestedParentModule(t *testing.T) {
@@ -192,13 +204,18 @@ output "result" {
 	assert.Equal(t, "ok", inputAttr.Value().AsString())
 
 	outputs := blocks.OfType("output")
-	require.Len(t, outputs, 1)
-	output := outputs[0]
-	assert.Equal(t, "output.result", output.Name())
-	valAttr := output.GetAttribute("value")
-	require.NotNil(t, valAttr)
-	require.Equal(t, cty.String, valAttr.Type())
-	assert.Equal(t, "ok", valAttr.Value().AsString())
+	require.Len(t, outputs, 2)
+	for _, output := range outputs {
+		if output.inModule {
+			assert.Equal(t, "module.my-mod.result", output.Name())
+		} else {
+			assert.Equal(t, "output.result", output.Name())
+		}
+		valAttr := output.GetAttribute("value")
+		require.NotNil(t, valAttr)
+		require.Equal(t, cty.String, valAttr.Type())
+		assert.Equal(t, "ok", valAttr.Value().AsString())
+	}
 }
 
 func createTestFile(filename, contents string) string {

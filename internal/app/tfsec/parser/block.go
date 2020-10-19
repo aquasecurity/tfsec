@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
@@ -19,7 +20,7 @@ type Blocks []*Block
 func (blocks Blocks) OfType(t string) Blocks {
 	var results []*Block
 	for _, block := range blocks {
-		if block.Type() == t && block.prefix == "" {
+		if block.Type() == t {
 			results = append(results, block)
 		}
 	}
@@ -27,20 +28,16 @@ func (blocks Blocks) OfType(t string) Blocks {
 }
 
 func (blocks Blocks) RemoveDuplicates() Blocks {
-	var filtered Blocks
+	filtered := make(map[string]Block)
 	for _, block := range blocks {
-		var found bool
-		for _, current := range filtered {
-			if current.Range() == block.Range() {
-				found = true
-				break
-			}
-		}
-		if !found {
-			filtered = append(filtered, block)
-		}
+		filtered[block.identifier()] = *block
 	}
-	return filtered
+	var blockSet Blocks
+	for key := range filtered {
+		block := filtered[key]
+		blockSet = append(blockSet, &block)
+	}
+	return blockSet
 }
 
 func NewBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext) *Block {
@@ -164,8 +161,8 @@ func (block *Block) Name() string {
 	if block.Type() != "resource" {
 		prefix = block.Type() + "."
 	}
-	if block.prefix != "" {
-		prefix = block.prefix + "." + prefix
+	if block.Type() == "output" && block.inModule {
+		prefix = fmt.Sprintf("%s.", block.prefix)
 	}
 	return prefix + strings.Join(block.Labels(), ".")
 }
@@ -175,6 +172,9 @@ func (block *Block) HasChild(childElement string) bool {
 }
 
 func (block *Block) InModule() bool {
-	// TODO, check if the block is part of a module
-	return false
+	return block.inModule
+}
+
+func (block *Block) identifier() string {
+	return fmt.Sprintf("%s:%s:%s", block.Range().Filename, block.Type(), strings.Join(block.Labels(), ":"))
 }

@@ -37,6 +37,10 @@ resource "aws_s3_bucket" "disabled_versioned_bucket" {
   acl    = "private"
 
   versioning {
-    enabled = false
+    enabled = true
   }
+}
+
+module "custom_bucket" {
+  source = "./modules/custom_bucket"
 }

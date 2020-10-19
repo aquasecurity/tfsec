@@ -34,7 +34,7 @@ const Equals CheckAction = "equals"
 
 // MatchSpec specifies the checks that should be performed
 type MatchSpec struct {
-	Name       string      `json:"name"`
+	Name       string      `json:"name,omitempty"`
 	MatchValue string      `json:"value,omitempty"`
 	Action     CheckAction `json:"action,omitempty"`
 	SubMatch   *MatchSpec  `json:"subMatch,omitempty"`

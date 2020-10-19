@@ -74,7 +74,8 @@ func validateMatchSpec(spec *MatchSpec, check *Check, checkErrors []error) []err
 	if !spec.Action.isValid() {
 		checkErrors = append(checkErrors, errors.New(fmt.Sprintf("matchSpec.Action[%s] is not a recognised option. Should be %s", spec.Action, ValidCheckActions)))
 	}
-	if len(spec.Name) == 0 {
+	// if the check is inModule, no name is required
+	if len(spec.Name) == 0 && spec.Action != "inModule" {
 		checkErrors = append(checkErrors, errors.New("matchSpec.Name requires a value"))
 	}
 	if spec.SubMatch != nil {

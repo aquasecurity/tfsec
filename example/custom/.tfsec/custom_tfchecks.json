@@ -29,19 +29,37 @@
       "requiredLabels": [
         "aws_s3_bucket"
       ],
-      "severity": "DEBUG",
+      "severity": "WARNING",
       "matchSpec": {
         "name": "versioning",
         "action": "isPresent",
         "subMatch": {
           "name" : "enabled",
-          "action": "rawerqu",
+          "action": "equals",
           "value" : "true"
         }
       },
       "errorMessage": "The the versioning block requires enabled attribute",
       "relatedLinks": [
         "http://internal.acmecorp.com/standards/aws/tagging.html"
+      ]
+    },
+    {
+      "code": "CUS003",
+      "description": "Custom check to ensure S3 buckets are only created using the custom_bucket module",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_s3_bucket"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "action": "inModule"
+      },
+      "errorMessage": "S3 buckets must only be created using the custom bucket module",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/s3_buckets.html"
       ]
     }
   ]

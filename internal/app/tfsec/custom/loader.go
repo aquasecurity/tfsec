@@ -20,6 +20,8 @@ func Load(rootPath string) error {
 	_, err := os.Stat(customCheckDir)
 	if os.IsNotExist(err) {
 		return nil
+	} else if err != nil {
+		return err
 	}
 
 	return loadCustomChecks(customCheckDir)
@@ -33,10 +35,17 @@ func loadCustomChecks(customCheckDir string) error {
 	var errorList []string
 	for _, file := range files {
 		checkFilePath := path.Join(customCheckDir, file.Name())
+		err = Validate(checkFilePath)
+		if err != nil {
+			errorList = append(errorList, err.Error())
+			continue
+		}
 		checks, err := loadCheckFile(checkFilePath)
 		if err != nil {
 			errorList = append(errorList, err.Error())
+			continue
 		}
+
 		processFoundChecks(checks)
 	}
 

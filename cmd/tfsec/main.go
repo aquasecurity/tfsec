@@ -88,7 +88,8 @@ var rootCmd = &cobra.Command{
 		debug.Log("Loading custom checks...")
 		err = custom.Load(dir)
 		if err != nil {
-			debug.Log("An error occurred loading custom checks. %s", err)
+			fmt.Fprint(os.Stderr, fmt.Sprintf("There were errors while processing custom check files. %s", err))
+			os.Exit(1)
 		}
 		debug.Log("Custom checks loaded")
 

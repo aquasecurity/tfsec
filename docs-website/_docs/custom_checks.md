@@ -6,9 +6,9 @@ permalink: /docs/home/
 ## What is it?
 tfsec comes with an ever growing number of built in checks, these cover standard AWS, Azure and GCP provider checks, plus several more.
 
-We recognise that there are checks that need performing for an organisation that don't fit with. general use cases; for this, there are custom checks.
+We recognise that there are checks that need performing for an organisation that don't fit with general use cases; for this, there are custom checks.
 
-Custom checks offer an accessible approach to injecting checks that satisfy your organisations compliance and security needs. For example, if you require that all EC2 instances have a`CostCentre` tag, that can be achieved with a `custom_check`
+Custom checks offer an accessible approach to injecting checks that satisfy your organisations compliance and security needs. For example, if you require that all EC2 instances have a `CostCentre` tag, that can be achieved with a `custom_check`.
 
 ## How does it work?
 Custom checks are defined as json files which sit in the `.tfsec` folder in the root check path. any file with the suffix `_tfchecks.json` will be parsed and the checks included during the run.
@@ -45,7 +45,7 @@ Taking the previous example of a required cost centre, the check file might look
 }
 ```
 
-The check is made up of the following attributes;
+The check contains up of the following attributes;
 
 | Attribute | Description |
 |:-----------|:-------------|
@@ -64,15 +64,24 @@ The `MatchSpec` is the what will define the check itself - this is fairly basic 
 | Attribute | Description |
 |:----------|:------------|
 | name | The name of the attribute or block to run the check on |
-| action | The check type - see below for more infor |
+| action | The check type - see below for more information |
 | value | In cases where a value is required, the value to look for |
 |subMatch | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block |
 
 #### Check Actions
 There are a number of `CheckActions` available which should allow you to quickly put together most checks.
 
+##### inModule
+The `inModule` check action passes if the resource block is a component of a module. For example, if you're looking to check that an `aws_s3_bucket` is only created using a custom module, you could use the following `MatchSpec`;
+
+```json
+"matchSpec" : {
+  "action": "inModule"
+}
+```
+
 ##### isPresent
-The `isPresent` check action passes if the required block or attribute is available in the checked block. For example, if you're looking to check that an `acl` is provided and don't care what it is, you can use the following `MatchSpec`
+The `isPresent` check action passes if the required block or attribute is available in the checked block. For example, if you're looking to check that an `acl` is provided and don't care what it is, you can use the following `MatchSpec`;
 
 ```json
 "matchSpec" : {
@@ -103,7 +112,7 @@ The `startsWith` check action passes if the checked attribute string starts with
 ```
 
 ##### endsWith
-The `endsWith` check action passes if the checked attribute string ends with the specified value. For example, to check that `acl` begins with `public` you could use the following `MatchSpec`
+The `endsWith` check action passes if the checked attribute string ends with the specified value. For example, to check that `acl` begins with `public` you could use the following `MatchSpec`;
 
 ```json
 "matchSpec" : {
@@ -118,7 +127,7 @@ The `contains` check action will change depending on the attribute or block it i
 
 If the attribute is an `object` or `map` it will pass if a key can be found that matches the `MatchSpec` value.
 
-For example, if you want to ensure that the `CostCentre`  tag is provided, you might use the following `MatchSpec`
+For example, if you want to ensure that the `CostCentre` exists, you might use the following `MatchSpec`;
 
 ```json
 "matchSpec" : {
@@ -131,7 +140,7 @@ For example, if you want to ensure that the `CostCentre`  tag is provided, you m
 ##### equals 
 The `equals` check action passes if the checked attribute equals specified value. 
 The core primitive types are supported, if the subject attribute is a Boolean, the `MatchSpec` value will attempt to be cast to a Boolean for comparison.
-For example, to check that `acl` begins with `private` you could use the following `MatchSpec`
+For example, to check that `acl` begins with `private` you could use the following `MatchSpec`;
 
 ```json
 "matchSpec" : {

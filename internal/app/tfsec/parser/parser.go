@@ -214,7 +214,12 @@ func (parser *Parser) buildEvaluationContext(
 			}
 			moduleName := moduleBlock.Labels[0]
 
-			moduleBlocks[moduleName], moduleMap[moduleName] = parser.parseModuleBlock(moduleBlock, ctx, path, pc, excludedDirectories) // todo return parsed blocks here too
+			result, nameValue := parser.parseModuleBlock(moduleBlock, ctx, path, pc, excludedDirectories) // todo return parsed blocks here too
+			for _, block := range result {
+				block.inModule = true
+			}
+			moduleBlocks[moduleName] = result
+			moduleMap[moduleName] = nameValue
 			ctx.Variables["module"] = cty.ObjectVal(moduleMap)
 		}
 
