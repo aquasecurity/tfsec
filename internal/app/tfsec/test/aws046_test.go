@@ -31,6 +31,20 @@ data "aws_iam_policy_document" "my-policy" {
 			mustExcludeResultCode: checks.AWSIamPolicyWildcardActions,
 		},
 		{
+			name: "check aws_iam_policy_document does not have any wildcard actions.",
+			source: `
+data "aws_iam_policy_document" "my-policy" {
+	statement {
+		sid = "1"
+		effect = "deny"
+        actions = [
+      		"*",
+    	]
+	}
+}`,
+			mustExcludeResultCode: checks.AWSIamPolicyWildcardActions,
+		},
+		{
 			name: "check aws_iam_policy_document has wildcard actions.",
 			source: `
 data "aws_iam_policy_document" "my-policy" {
