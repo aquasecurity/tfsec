@@ -54,7 +54,7 @@ func init() {
 						check.NewResultWithValueAnnotation(
 							fmt.Sprintf(
 								"Resource '%s' has password authentication enabled. Use SSH keys instead.",
-								block.Name(),
+								block.FullName(),
 							),
 							passwordAuthDisabledAttr.Range(),
 							passwordAuthDisabledAttr,

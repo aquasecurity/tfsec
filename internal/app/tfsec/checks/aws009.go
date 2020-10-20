@@ -58,7 +58,7 @@ func init() {
 						if strings.HasSuffix(cidr.AsString(), "/0") {
 							results = append(results,
 								check.NewResultWithValueAnnotation(
-									fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.Name()),
+									fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.FullName()),
 									cidrBlocksAttr.Range(),
 									cidrBlocksAttr,
 									scanner.SeverityWarning,
@@ -77,7 +77,7 @@ func init() {
 						if strings.HasSuffix(cidr.AsString(), "/0") {
 							results = append(results,
 								check.NewResultWithValueAnnotation(
-									fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.Name()),
+									fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.FullName()),
 									cidrBlocksAttr.Range(),
 									cidrBlocksAttr,
 									scanner.SeverityWarning,

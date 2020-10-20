@@ -45,7 +45,7 @@ func init() {
 			if internalAttr := block.GetAttribute("internal"); internalAttr == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' is exposed publicly.", block.Name()),
+						fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
 					),
@@ -53,7 +53,7 @@ func init() {
 			} else if internalAttr.Type() == cty.Bool && internalAttr.Value().False() {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
-						fmt.Sprintf("Resource '%s' is exposed publicly.", block.Name()),
+						fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName()),
 						internalAttr.Range(),
 						internalAttr,
 						scanner.SeverityWarning,

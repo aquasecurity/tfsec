@@ -45,7 +45,7 @@ func init() {
 			if kmsKeyIDAttr == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.Name()),
+						fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -53,7 +53,7 @@ func init() {
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
-						fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.Name()),
+						fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.FullName()),
 						kmsKeyIDAttr.Range(),
 						kmsKeyIDAttr,
 						scanner.SeverityError,

@@ -37,7 +37,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 	for _, block := range blocks {
 		for _, check := range GetRegisteredChecks() {
 			if check.IsRequiredForBlock(block) {
-				debug.Log("Running check for %s on %s.%s (%s)...", check.Code, block.Type(), block.Name(), block.Range().Filename)
+				debug.Log("Running check for %s on %s.%s (%s)...", check.Code, block.Type(), block.FullName(), block.Range().Filename)
 				for _, result := range check.Run(block, context) {
 					if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
 						results = append(results, result)

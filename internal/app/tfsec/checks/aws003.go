@@ -43,7 +43,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			return []scanner.Result{
 				check.NewResult(
-					fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", block.Name()),
+					fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", block.FullName()),
 					block.Range(),
 					scanner.SeverityError,
 				),

@@ -54,7 +54,7 @@ func init() {
 			if attr := block.GetAttribute("max_password_age"); attr == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' does not have a max password age set.", block.Name()),
+						fmt.Sprintf("Resource '%s' does not have a max password age set.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
 					),
@@ -64,7 +64,7 @@ func init() {
 				if value > 90 {
 					return []scanner.Result{
 						check.NewResult(
-							fmt.Sprintf("Resource '%s' has a max age set which is greated than 90 days.", block.Name()),
+							fmt.Sprintf("Resource '%s' has a max age set which is greated than 90 days.", block.FullName()),
 							block.Range(),
 							scanner.SeverityWarning,
 						),

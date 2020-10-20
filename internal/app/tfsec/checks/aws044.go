@@ -45,7 +45,7 @@ func init() {
 			if accessKeyAttribute := block.GetAttribute("access_key"); accessKeyAttribute != nil && accessKeyAttribute.Type() == cty.String {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
-						fmt.Sprintf("Provider '%s' has an access key specified.", block.Name()),
+						fmt.Sprintf("Provider '%s' has an access key specified.", block.FullName()),
 						accessKeyAttribute.Range(),
 						accessKeyAttribute,
 						scanner.SeverityError,
@@ -54,7 +54,7 @@ func init() {
 			} else if secretKeyAttribute := block.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
-						fmt.Sprintf("Provider '%s' has a secret key specified.", block.Name()),
+						fmt.Sprintf("Provider '%s' has a secret key specified.", block.FullName()),
 						secretKeyAttribute.Range(),
 						secretKeyAttribute,
 						scanner.SeverityError,

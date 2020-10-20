@@ -2,8 +2,9 @@ package checks
 
 import (
 	"fmt"
-	"github.com/zclconf/go-cty/cty"
 	"strings"
+
+	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
@@ -68,7 +69,7 @@ func init() {
 							if actionValue.AsString() == "*" {
 								return []scanner.Result{
 									check.NewResult(
-										fmt.Sprintf("Resource '%s' has a wildcard action specified.", block.Name()),
+										fmt.Sprintf("Resource '%s' has a wildcard action specified.", block.FullName()),
 										statementBlock.Range(),
 										scanner.SeverityError,
 									),

@@ -65,7 +65,7 @@ func init() {
 			if masterAuthBlock == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", block.Name()),
+						fmt.Sprintf("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -73,7 +73,7 @@ func init() {
 			} else if staticAuthUser.Type() == cty.String && staticAuthUser.Value().AsString() != "" && staticAuthPass.Type() == cty.String && staticAuthPass.Value().AsString() != "" {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", block.FullName()),
 						masterAuthBlock.Range(),
 						scanner.SeverityError,
 					),
@@ -83,7 +83,7 @@ func init() {
 			if issueClientCert.Type() == cty.Bool && issueClientCert.Value().True() || issueClientCert.Type() == cty.String && issueClientCert.Value().AsString() == "true" {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", block.FullName()),
 						issueClientCert.Range(),
 						scanner.SeverityError,
 					),

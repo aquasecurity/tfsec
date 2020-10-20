@@ -51,7 +51,7 @@ func init() {
 				if acl == "public-read" || acl == "public-read-write" || acl == "website" {
 					return []scanner.Result{
 						check.NewResultWithValueAnnotation(
-							fmt.Sprintf("Resource '%s' has an ACL which allows public access.", block.Name()),
+							fmt.Sprintf("Resource '%s' has an ACL which allows public access.", block.FullName()),
 							attr.Range(),
 							attr,
 							scanner.SeverityWarning,
@@ -61,7 +61,7 @@ func init() {
 				if acl == "authenticated-read" {
 					return []scanner.Result{
 						check.NewResultWithValueAnnotation(
-							fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", block.Name()),
+							fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", block.FullName()),
 							attr.Range(),
 							attr,
 							scanner.SeverityWarning,

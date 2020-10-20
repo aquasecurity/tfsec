@@ -47,7 +47,7 @@ func init() {
 			if encryptionTypeAttr == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", block.Name()),
+						fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -55,7 +55,7 @@ func init() {
 			} else if encryptionTypeAttr.Type() == cty.String && strings.ToUpper(encryptionTypeAttr.Value().AsString()) != "KMS" {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
-						fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", block.Name()),
+						fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", block.FullName()),
 						encryptionTypeAttr.Range(),
 						encryptionTypeAttr,
 						scanner.SeverityError,
@@ -66,7 +66,7 @@ func init() {
 				if keyIDAttr == nil || keyIDAttr.Value().AsString() == "" || keyIDAttr.Value().AsString() == "alias/aws/kinesis" {
 					return []scanner.Result{
 						check.NewResult(
-							fmt.Sprintf("Resource '%s' defines a Kinesis Stream encrypted with the default Kinesis key.", block.Name()),
+							fmt.Sprintf("Resource '%s' defines a Kinesis Stream encrypted with the default Kinesis key.", block.FullName()),
 							block.Range(),
 							scanner.SeverityWarning,
 						),

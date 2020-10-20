@@ -49,7 +49,7 @@ func init() {
 					check.NewResultWithValueAnnotation(
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted data lake store.",
-							block.Name(),
+							block.FullName(),
 						),
 						encryptionStateAttr.Range(),
 						encryptionStateAttr,

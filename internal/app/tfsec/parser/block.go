@@ -9,10 +9,9 @@ import (
 )
 
 type Block struct {
-	hclBlock *hcl.Block
-	ctx      *hcl.EvalContext
-	prefix   string
-	inModule bool
+	hclBlock    *hcl.Block
+	ctx         *hcl.EvalContext
+	moduleBlock *hcl.Block
 }
 
 type Blocks []*Block
@@ -40,10 +39,11 @@ func (blocks Blocks) RemoveDuplicates() Blocks {
 	return blockSet
 }
 
-func NewBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext) *Block {
+func NewBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock *hcl.Block) *Block {
 	return &Block{
-		hclBlock: hclBlock,
-		ctx:      ctx,
+		ctx:         ctx,
+		hclBlock:    hclBlock,
+		moduleBlock: moduleBlock,
 	}
 }
 
@@ -77,7 +77,8 @@ func (block *Block) GetBlock(name string) *Block {
 	}
 	for _, child := range block.body().Blocks {
 		if child.Type == name {
-			return NewBlock(child.AsHCLBlock(), block.ctx)
+			// TODO check if this is a module block inside another module?
+			return NewBlock(child.AsHCLBlock(), block.ctx, block.moduleBlock)
 		}
 		if child.Type == "dynamic" && len(child.Labels) == 1 && child.Labels[0] == name {
 			blocks := block.parseDynamicBlockResult(child)
@@ -97,7 +98,8 @@ func (block *Block) GetBlocks(name string) Blocks {
 	var results []*Block
 	for _, child := range block.body().Blocks {
 		if child.Type == name {
-			results = append(results, NewBlock(child.AsHCLBlock(), block.ctx))
+			// TODO check if this is a module block inside another module?
+			results = append(results, NewBlock(child.AsHCLBlock(), block.ctx, block.moduleBlock))
 		}
 		if child.Type == "dynamic" && len(child.Labels) == 1 && child.Labels[0] == name {
 			dynamics := block.parseDynamicBlockResult(child)
@@ -112,7 +114,7 @@ func (block *Block) parseDynamicBlockResult(dynamic *hclsyntax.Block) Blocks {
 
 	var results Blocks
 
-	wrapped := NewBlock(dynamic.AsHCLBlock(), block.ctx)
+	wrapped := NewBlock(dynamic.AsHCLBlock(), block.ctx, block.moduleBlock)
 
 	forEach := wrapped.GetAttribute("for_each")
 	if forEach == nil {
@@ -156,15 +158,27 @@ func (block *Block) GetAttribute(name string) *Attribute {
 	return nil
 }
 
-func (block *Block) Name() string {
+// LocalName is the name relative to the current module
+func (block *Block) LocalName() string {
 	var prefix string
 	if block.Type() != "resource" {
 		prefix = block.Type() + "."
 	}
-	if block.Type() == "output" && block.inModule {
-		prefix = fmt.Sprintf("%s.", block.prefix)
-	}
 	return prefix + strings.Join(block.Labels(), ".")
+}
+
+func (block *Block) FullName() string {
+
+	if block.moduleBlock != nil && len(block.moduleBlock.Labels) == 1 {
+		return fmt.Sprintf(
+			"module.%s.%s.%s",
+			block.moduleBlock.Labels[0],
+			block.Type(),
+			strings.Join(block.Labels(), "."),
+		)
+	}
+
+	return block.LocalName()
 }
 
 func (block *Block) HasChild(childElement string) bool {
@@ -172,9 +186,10 @@ func (block *Block) HasChild(childElement string) bool {
 }
 
 func (block *Block) InModule() bool {
-	return block.inModule
+	return block.moduleBlock != nil
 }
 
 func (block *Block) identifier() string {
+	// TODO use FullName() here instead? these should be unique
 	return fmt.Sprintf("%s:%s:%s", block.Range().Filename, block.Type(), strings.Join(block.Labels(), ":"))
 }

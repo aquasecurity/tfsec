@@ -59,7 +59,7 @@ func init() {
 			Explanation: AWSSqsPolicyWildcardActionsExplanation,
 			BadExample:  AWSSqsPolicyWildcardActionsBadExample,
 			GoodExample: AWSSqsPolicyWildcardActionsGoodExample,
-			Links:       []string{
+			Links: []string{
 				"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-security-best-practices.html",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue_policy",
 			},
@@ -81,7 +81,7 @@ func init() {
 					if strings.ToLower(statement.Effect) == "allow" && (statement.Action == "*" || statement.Action == "sqs:*") {
 						return []scanner.Result{
 							check.NewResult(
-								fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", block.Name()),
+								fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", block.FullName()),
 								block.Range(),
 								scanner.SeverityError,
 							),

@@ -92,7 +92,7 @@ func init() {
 					for _, env := range definition.EnvVars {
 						if security.IsSensitiveAttribute(env.Name) && env.Value != "" {
 							results = append(results, check.NewResultWithValueAnnotation(
-								fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", block.Name(), env.Name),
+								fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", block.FullName(), env.Name),
 								definitionsAttr.Range(),
 								definitionsAttr,
 								scanner.SeverityWarning,

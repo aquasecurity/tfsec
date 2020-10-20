@@ -140,7 +140,7 @@ output "result" {
 	require.Len(t, modules, 1)
 	module := modules[0]
 	assert.Equal(t, "module", module.Type())
-	assert.Equal(t, "module.my-mod", module.Name())
+	assert.Equal(t, "module.my-mod", module.FullName())
 	inputAttr := module.GetAttribute("input")
 	require.NotNil(t, inputAttr)
 	require.Equal(t, cty.String, inputAttr.Value().Type())
@@ -149,10 +149,10 @@ output "result" {
 	outputs := blocks.OfType("output")
 	require.Len(t, outputs, 2)
 	for _, output := range outputs {
-		if output.inModule {
-			assert.Equal(t, "module.my-mod.result", output.Name())
+		if output.moduleBlock != nil {
+			assert.Equal(t, "module.my-mod.result", output.FullName())
 		} else {
-			assert.Equal(t, "output.result", output.Name())
+			assert.Equal(t, "output.result", output.FullName())
 		}
 		valAttr := output.GetAttribute("value")
 		require.NotNil(t, valAttr)
@@ -197,7 +197,7 @@ output "result" {
 	require.Len(t, modules, 1)
 	module := modules[0]
 	assert.Equal(t, "module", module.Type())
-	assert.Equal(t, "module.my-mod", module.Name())
+	assert.Equal(t, "module.my-mod", module.FullName())
 	inputAttr := module.GetAttribute("input")
 	require.NotNil(t, inputAttr)
 	require.Equal(t, cty.String, inputAttr.Value().Type())
@@ -206,10 +206,10 @@ output "result" {
 	outputs := blocks.OfType("output")
 	require.Len(t, outputs, 2)
 	for _, output := range outputs {
-		if output.inModule {
-			assert.Equal(t, "module.my-mod.result", output.Name())
+		if output.moduleBlock != nil {
+			assert.Equal(t, "module.my-mod.result", output.FullName())
 		} else {
-			assert.Equal(t, "output.result", output.Name())
+			assert.Equal(t, "output.result", output.FullName())
 		}
 		valAttr := output.GetAttribute("value")
 		require.NotNil(t, valAttr)

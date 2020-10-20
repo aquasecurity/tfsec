@@ -65,7 +65,7 @@ func init() {
 					if strings.HasSuffix(cidr.AsString(), "/0") {
 						return []scanner.Result{
 							check.NewResult(
-								fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", block.Name()),
+								fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", block.FullName()),
 								cidrBlocksAttr.Range(),
 								scanner.SeverityWarning,
 							),
@@ -85,7 +85,7 @@ func init() {
 					if strings.HasSuffix(cidr.AsString(), "/0") {
 						return []scanner.Result{
 							check.NewResultWithValueAnnotation(
-								fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", block.Name()),
+								fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", block.FullName()),
 								ipv6CidrBlocksAttr.Range(),
 								ipv6CidrBlocksAttr,
 								scanner.SeverityWarning,

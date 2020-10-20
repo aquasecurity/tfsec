@@ -45,7 +45,7 @@ func init() {
 				if publicAttr.Value().True() {
 					return []scanner.Result{
 						check.NewResultWithValueAnnotation(
-							fmt.Sprintf("Resource '%s' has a public IP address associated.", block.Name()),
+							fmt.Sprintf("Resource '%s' has a public IP address associated.", block.FullName()),
 							publicAttr.Range(),
 							publicAttr,
 							scanner.SeverityError,
