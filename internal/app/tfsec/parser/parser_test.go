@@ -7,6 +7,8 @@ import (
 	"sort"
 	"testing"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/stretchr/testify/assert"
@@ -15,7 +17,6 @@ import (
 )
 
 func Test_BasicParsing(t *testing.T) {
-	parser := New()
 
 	path := createTestFile("test.tf", `
 
@@ -48,7 +49,9 @@ data "cats_cat" "the-cats-mother" {
 
 `)
 
-	blocks, err := parser.ParseDirectory(filepath.Dir(path), nil, "")
+	debug.Enabled = true
+	parser := New(filepath.Dir(path), "", nil)
+	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,9 +132,8 @@ output "result" {
 		"module",
 	)
 
-	parser := New()
-
-	blocks, err := parser.ParseDirectory(path, nil, "")
+	parser := New(path, "", nil)
+	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -186,9 +188,8 @@ output "result" {
 		"",
 	)
 
-	parser := New()
-
-	blocks, err := parser.ParseDirectory(path, nil, "")
+	parser := New(path, "", nil)
+	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
 	}
