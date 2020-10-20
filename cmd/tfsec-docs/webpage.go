@@ -14,6 +14,7 @@ const (
 	docsDataFile = `
 - title: Getting Started
   docs:
+  - custom_checks.md
   - home
 
 {{range $p := .}}

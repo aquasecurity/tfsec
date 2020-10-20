@@ -11,7 +11,11 @@ import (
 
 // RuleCode is a unique identifier for a check
 type RuleCode string
+
+// RuleSummary is a summary description for a check
 type RuleSummary string
+
+// RuleProvider is the provider that the check applies to
 type RuleProvider string
 
 const (
