@@ -193,3 +193,7 @@ func (block *Block) identifier() string {
 	// TODO use FullName() here instead? these should be unique
 	return fmt.Sprintf("%s:%s:%s", block.Range().Filename, block.Type(), strings.Join(block.Labels(), ":"))
 }
+
+func (block *Block) Label() string {
+	return strings.Join(block.hclBlock.Labels, ".")
+}

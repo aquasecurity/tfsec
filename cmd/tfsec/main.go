@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 
@@ -133,7 +134,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Starting parser...")
-		blocks, err := parser.New().ParseDirectory(dir, absoluteExcludes, tfvarsPath)
+		blocks, err := parser.New(dir, tfvarsPath, absoluteExcludes).ParseDirectory()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
