@@ -54,7 +54,7 @@ func init() {
 			if encryptionBlock == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines an unencrypted storage bucket.", block.Name()),
+						fmt.Sprintf("Resource '%s' defines an unencrypted storage bucket.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),

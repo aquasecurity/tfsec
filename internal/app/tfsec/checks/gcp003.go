@@ -54,7 +54,7 @@ func init() {
 					if strings.HasSuffix(cidr.AsString(), "/0") {
 						return []scanner.Result{
 							check.NewResult(
-								fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", block.Name()),
+								fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", block.FullName()),
 								sourceRanges.Range(),
 								scanner.SeverityWarning,
 							),

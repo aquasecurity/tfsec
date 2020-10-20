@@ -60,7 +60,7 @@ func init() {
 							check.NewResultWithValueAnnotation(
 								fmt.Sprintf(
 									"Resource '%s' defines a fully open %s network security group rule.",
-									block.Name(),
+									block.FullName(),
 									strings.ToLower(directionAttr.Value().AsString()),
 								),
 								prefixAttr.Range(),
@@ -80,7 +80,7 @@ func init() {
 						if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
 							results = append(results,
 								check.NewResultWithValueAnnotation(
-									fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.Name(), prefix.AsString()),
+									fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.FullName(), prefix.AsString()),
 									prefixesAttr.Range(),
 									prefixesAttr,
 									scanner.SeverityWarning,

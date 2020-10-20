@@ -53,7 +53,7 @@ func init() {
 			if defaultBehaviorBlock == nil {
 				results = append(results,
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing default_cache_behavior block).", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing default_cache_behavior block).", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -63,7 +63,7 @@ func init() {
 				if protocolPolicy == nil {
 					results = append(results,
 						check.NewResult(
-							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", block.Name()),
+							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", block.FullName()),
 							block.Range(),
 							scanner.SeverityError,
 						),
@@ -71,7 +71,7 @@ func init() {
 				} else if protocolPolicy.Type() == cty.String && protocolPolicy.Value().AsString() == "allow-all" {
 					results = append(results,
 						check.NewResultWithValueAnnotation(
-							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", block.Name()),
+							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", block.FullName()),
 							protocolPolicy.Range(),
 							protocolPolicy,
 							scanner.SeverityError,
@@ -86,7 +86,7 @@ func init() {
 				if orderedProtocolPolicy == nil {
 					results = append(results,
 						check.NewResult(
-							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", block.Name()),
+							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", block.FullName()),
 							block.Range(),
 							scanner.SeverityError,
 						),
@@ -94,7 +94,7 @@ func init() {
 				} else if orderedProtocolPolicy != nil && orderedProtocolPolicy.Type() == cty.String && orderedProtocolPolicy.Value().AsString() == "allow-all" {
 					results = append(results,
 						check.NewResultWithValueAnnotation(
-							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", block.Name()),
+							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", block.FullName()),
 							orderedProtocolPolicy.Range(),
 							orderedProtocolPolicy,
 							scanner.SeverityError,

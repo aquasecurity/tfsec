@@ -53,7 +53,7 @@ func init() {
 			if encryptionBlock == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", block.Name()),
+						fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -64,7 +64,7 @@ func init() {
 			if enabledAttr == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", block.Name()),
+						fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", block.FullName()),
 						encryptionBlock.Range(),
 						scanner.SeverityError,
 					),
@@ -78,7 +78,7 @@ func init() {
 			if !encryptionEnabled {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", block.Name()),
+						fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", block.FullName()),
 						encryptionBlock.Range(),
 						scanner.SeverityError,
 					),

@@ -47,7 +47,7 @@ func init() {
 				if publicAttr.Value().True() {
 					return []scanner.Result{
 						check.NewResultWithValueAnnotation(
-							fmt.Sprintf("Resource '%s' is exposed publicly.", block.Name()),
+							fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName()),
 							publicAttr.Range(),
 							publicAttr,
 							scanner.SeverityWarning,

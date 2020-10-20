@@ -58,7 +58,7 @@ func init() {
 			if ecrScanStatusAttr == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -66,7 +66,7 @@ func init() {
 			} else if ecrScanStatusAttr.Type() == cty.Bool && ecrScanStatusAttr.Value().False() {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
-						fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", block.FullName()),
 						ecrScanStatusAttr.Range(),
 						ecrScanStatusAttr,
 						scanner.SeverityError,

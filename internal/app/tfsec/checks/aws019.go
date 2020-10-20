@@ -46,7 +46,7 @@ func init() {
 			if keyRotationAttr == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.Name()),
+						fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
 					),
@@ -56,7 +56,7 @@ func init() {
 			if keyRotationAttr.Type() == cty.Bool && keyRotationAttr.Value().False() {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
-						fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.Name()),
+						fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.FullName()),
 						keyRotationAttr.Range(),
 						keyRotationAttr,
 						scanner.SeverityWarning,

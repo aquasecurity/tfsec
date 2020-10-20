@@ -93,7 +93,7 @@ func (parser *Parser) ParseDirectory(path string, excludedDirectories []string, 
 		blocks,
 		path,
 		inputVars,
-		true,
+		nil,
 		parseCache,
 		excludedDirectories,
 	)
@@ -165,7 +165,7 @@ func (parser *Parser) buildEvaluationContext(
 	blocks hcl.Blocks,
 	path string,
 	inputVars map[string]cty.Value,
-	isRoot bool,
+	parentBlock *hcl.Block,
 	pc parseCache,
 	excludedDirectories []string,
 ) (Blocks, *hcl.EvalContext) {
@@ -195,7 +195,7 @@ func (parser *Parser) buildEvaluationContext(
 		}
 		ctx.Variables["data"] = parser.getValuesByBlockType(ctx, blocks, "data", nil)
 
-		if isRoot {
+		if parentBlock == nil {
 			ctx.Variables["output"] = parser.getValuesByBlockType(ctx, blocks, "output", nil)
 		} else {
 			outputs := parser.getValuesByBlockType(ctx, blocks, "output", nil)
@@ -216,7 +216,7 @@ func (parser *Parser) buildEvaluationContext(
 
 			result, nameValue := parser.parseModuleBlock(moduleBlock, ctx, path, pc, excludedDirectories) // todo return parsed blocks here too
 			for _, block := range result {
-				block.inModule = true
+				block.moduleBlock = parentBlock
 			}
 			moduleBlocks[moduleName] = result
 			moduleMap[moduleName] = nameValue
@@ -236,12 +236,11 @@ func (parser *Parser) buildEvaluationContext(
 
 	var localBlocks []*Block
 	for _, block := range blocks {
-		localBlocks = append(localBlocks, NewBlock(block, ctx))
+		localBlocks = append(localBlocks, NewBlock(block, ctx, parentBlock))
 	}
 
-	for moduleName, blocks := range moduleBlocks {
+	for _, blocks := range moduleBlocks {
 		for _, block := range blocks {
-			block.prefix = fmt.Sprintf("module.%s", moduleName)
 			localBlocks = append(localBlocks, block)
 		}
 	}
@@ -317,7 +316,7 @@ func (parser *Parser) parseModuleBlock(
 		blocks = append(blocks, fileBlocks...)
 	}
 
-	childModules, ctx := subParser.buildEvaluationContext(blocks, path, inputVars, false, pc, excludedDirectories)
+	childModules, ctx := subParser.buildEvaluationContext(blocks, path, inputVars, block, pc, excludedDirectories)
 	parseResult := ParseResult{
 		Blocks: childModules.RemoveDuplicates(),
 		Value:  cty.ObjectVal(ctx.Variables),

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/zclconf/go-cty/cty"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -56,10 +58,13 @@ func init() {
 					}
 
 					for _, cidr := range cidrBlocksAttr.Value().AsValueSlice() {
+						if cidr.Type() != cty.String {
+							continue
+						}
 						if strings.HasSuffix(cidr.AsString(), "/0") {
 							results = append(results,
 								check.NewResult(
-									fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.Name()),
+									fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.FullName()),
 									cidrBlocksAttr.Range(),
 									scanner.SeverityWarning,
 								),
@@ -77,7 +82,7 @@ func init() {
 						if strings.HasSuffix(cidr.AsString(), "/0") {
 							results = append(results,
 								check.NewResult(
-									fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.Name()),
+									fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.FullName()),
 									cidrBlocksAttr.Range(),
 									scanner.SeverityWarning,
 								),
