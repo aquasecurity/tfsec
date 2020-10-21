@@ -96,7 +96,7 @@ resource "aws_s3_bucket" "my-bucket" {
 
 func createBlocksFromSource(source string) []*Block {
 	path := createTestFile("test.tf", source)
-	blocks, err := New(filepath.Dir(path), "", nil).ParseDirectory()
+	blocks, err := New(filepath.Dir(path), "").ParseDirectory()
 	if err != nil {
 		panic(err)
 	}

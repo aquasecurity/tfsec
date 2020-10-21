@@ -11,7 +11,7 @@ import (
 type Block struct {
 	hclBlock    *hcl.Block
 	ctx         *hcl.EvalContext
-	moduleBlock *hcl.Block
+	moduleBlock *Block
 }
 
 type Blocks []*Block
@@ -39,7 +39,7 @@ func (blocks Blocks) RemoveDuplicates() Blocks {
 	return blockSet
 }
 
-func NewBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock *hcl.Block) *Block {
+func NewBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock *Block) *Block {
 	return &Block{
 		ctx:         ctx,
 		hclBlock:    hclBlock,
@@ -167,12 +167,11 @@ func (block *Block) LocalName() string {
 
 func (block *Block) FullName() string {
 
-	if block.moduleBlock != nil && len(block.moduleBlock.Labels) == 1 {
+	if block.moduleBlock != nil {
 		return fmt.Sprintf(
-			"module.%s:%s.%s",
-			strings.Join(block.moduleBlock.Labels, "."),
-			block.Type(),
-			strings.Join(block.Labels(), "."),
+			"%s:%s",
+			block.moduleBlock.FullName(),
+			block.LocalName(),
 		)
 	}
 

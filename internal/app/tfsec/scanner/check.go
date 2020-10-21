@@ -2,10 +2,11 @@ package scanner
 
 import (
 	"fmt"
-	internalDebug "github.com/tfsec/tfsec/internal/app/tfsec/debug"
-	"github.com/zclconf/go-cty/cty"
 	"os"
 	"runtime/debug"
+
+	internalDebug "github.com/tfsec/tfsec/internal/app/tfsec/debug"
+	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
@@ -146,5 +147,6 @@ func (check *Check) NewResultWithValueAnnotation(description string, r parser.Ra
 		Description:     description,
 		Range:           r,
 		RangeAnnotation: fmt.Sprintf("[%s] %#v", typeStr, raw),
+		Severity:        severity,
 	}
 }

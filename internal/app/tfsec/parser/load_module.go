@@ -98,7 +98,7 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 		}
 		for _, fileBlock := range fileBlocks {
-			blocks = append(blocks, NewBlock(fileBlock, nil, block.hclBlock))
+			blocks = append(blocks, NewBlock(fileBlock, nil, block))
 		}
 	}
 

@@ -50,7 +50,7 @@ data "cats_cat" "the-cats-mother" {
 `)
 
 	debug.Enabled = true
-	parser := New(filepath.Dir(path), "", nil)
+	parser := New(filepath.Dir(path), "")
 	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
@@ -132,7 +132,7 @@ output "result" {
 		"module",
 	)
 
-	parser := New(path, "", nil)
+	parser := New(path, "")
 	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
@@ -152,7 +152,7 @@ output "result" {
 	require.Len(t, outputs, 2)
 	for _, output := range outputs {
 		if output.moduleBlock != nil {
-			assert.Equal(t, "module.my-mod.result", output.FullName())
+			assert.Equal(t, "module.my-mod:output.result", output.FullName())
 		} else {
 			assert.Equal(t, "output.result", output.FullName())
 		}
@@ -188,7 +188,7 @@ output "result" {
 		"",
 	)
 
-	parser := New(path, "", nil)
+	parser := New(path, "")
 	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
@@ -208,7 +208,7 @@ output "result" {
 	require.Len(t, outputs, 2)
 	for _, output := range outputs {
 		if output.moduleBlock != nil {
-			assert.Equal(t, "module.my-mod.result", output.FullName())
+			assert.Equal(t, "module.my-mod:output.result", output.FullName())
 		} else {
 			assert.Equal(t, "output.result", output.FullName())
 		}
