@@ -77,7 +77,6 @@ func (block *Block) GetBlock(name string) *Block {
 	}
 	for _, child := range block.body().Blocks {
 		if child.Type == name {
-			// TODO check if this is a module block inside another module?
 			return NewBlock(child.AsHCLBlock(), block.ctx, block.moduleBlock)
 		}
 		if child.Type == "dynamic" && len(child.Labels) == 1 && child.Labels[0] == name {
@@ -98,7 +97,6 @@ func (block *Block) GetBlocks(name string) Blocks {
 	var results []*Block
 	for _, child := range block.body().Blocks {
 		if child.Type == name {
-			// TODO check if this is a module block inside another module?
 			results = append(results, NewBlock(child.AsHCLBlock(), block.ctx, block.moduleBlock))
 		}
 		if child.Type == "dynamic" && len(child.Labels) == 1 && child.Labels[0] == name {
@@ -171,8 +169,8 @@ func (block *Block) FullName() string {
 
 	if block.moduleBlock != nil && len(block.moduleBlock.Labels) == 1 {
 		return fmt.Sprintf(
-			"module.%s.%s.%s",
-			block.moduleBlock.Labels[0],
+			"module.%s:%s.%s",
+			strings.Join(block.moduleBlock.Labels, "."),
 			block.Type(),
 			strings.Join(block.Labels(), "."),
 		)

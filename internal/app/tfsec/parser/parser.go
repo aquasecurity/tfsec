@@ -6,22 +6,22 @@ import (
 
 // Parser is a tool for parsing terraform templates at a given file system location
 type Parser struct {
-	fullPath            string
-	tfvarsPath          string
+	fullPath   string
+	tfvarsPath string
 }
 
 // New creates a new Parser
 func New(fullPath string, tfvarsPath string) *Parser {
 	return &Parser{
-		fullPath:            fullPath,
-		tfvarsPath:          tfvarsPath,
+		fullPath:   fullPath,
+		tfvarsPath: tfvarsPath,
 	}
 }
 
 // ParseDirectory recursively parses all terraform files within a given directory
 func (parser *Parser) ParseDirectory() (Blocks, error) {
 
-	debug.Log("Beginning recursive parse of %s...", parser.fullPath)
+	debug.Log("Beginning parse for directory '%s'...", parser.fullPath)
 	files, err := LoadDirectory(parser.fullPath)
 	if err != nil {
 		return nil, err
@@ -42,14 +42,19 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 		}
 	}
 
+	debug.Log("Loading TFVars...")
 	inputVars, err := LoadTFVars(parser.tfvarsPath)
 	if err != nil {
 		return nil, err
 	}
 
+	debug.Log("Loading module metadata...")
 	modulesMetadata, _ := LoadModuleMetadata(parser.fullPath)
 
-	evaluator := NewEvaluator(parser.fullPath, blocks, inputVars, modulesMetadata)
+	debug.Log("Loading modules...")
+	modules := LoadModules(blocks, parser.fullPath, modulesMetadata)
+
+	debug.Log("Evaluating expressions...")
+	evaluator := NewEvaluator(parser.fullPath, blocks, inputVars, modulesMetadata, modules)
 	return evaluator.EvaluateAll()
 }
-

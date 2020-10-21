@@ -1,14 +1,11 @@
 package parser
 
 import (
-	"fmt"
+	"reflect"
+
 	"github.com/hashicorp/hcl/v2"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
-	"os"
-	"path/filepath"
-	"reflect"
-	"strings"
 )
 
 const maxContextIterations = 32
@@ -23,7 +20,7 @@ type Evaluator struct {
 	moduleBasePath string
 }
 
-func NewEvaluator(path string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata) *Evaluator {
+func NewEvaluator(path string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo) *Evaluator {
 
 	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
@@ -36,24 +33,19 @@ func NewEvaluator(path string, blocks Blocks, inputVars map[string]cty.Value, mo
 	}
 
 	return &Evaluator{
-		path: path,
+		path:           path,
 		moduleBasePath: path,
-		ctx:       ctx,
-		blocks:    blocks,
-		inputVars: inputVars,
+		ctx:            ctx,
+		blocks:         blocks,
+		inputVars:      inputVars,
 		moduleMetadata: moduleMetadata,
+		modules:        modules,
 	}
 }
 
-func(e *Evaluator) SetModuleBasePath(path string) {
+func (e *Evaluator) SetModuleBasePath(path string) {
 	e.moduleBasePath = path
 }
-
-/*
-blocks hcl.Blocks,
-inputVars map[string]cty.Value,
-parentBlock *hcl.Block,
-*/
 
 func (e *Evaluator) evaluateStep(i int) {
 
@@ -74,116 +66,9 @@ func (e *Evaluator) evaluateStep(i int) {
 	e.evaluateModules()
 }
 
-// reads all module blocks and loads the underlying modules, adding blocks to e.moduleBlocks
-func(e *Evaluator) loadModules() error {
-
-	for _, moduleBlock := range e.blocks.OfType("module") {
-		if moduleBlock.Label() == "" {
-			continue
-		}
-		module, err := e.loadModule(moduleBlock)
-		if err != nil {
-			_, _ =  fmt.Fprintf(os.Stderr, "WARNING: Failed to load module: %s\n", err)
-			continue
-		}
-		e.modules = append(e.modules, module)
-	}
-
-	return nil
-}
-
-type ModuleInfo struct {
-	Name string
-	Path string
-	Definition *Block
-	Blocks Blocks
-}
-
-// takes in a module "x" {} block and loads resources etc. into e.moduleBlocks - additionally returns variables to add to ["module.x.*"] variables
-func (e *Evaluator) loadModule(block *Block) (*ModuleInfo, error) {
-
-	if block.Label() == "" {
-		return nil, fmt.Errorf("module without label at %s", block.Range())
-	}
-
-	var source string
-	attrs, _ := block.hclBlock.Body.JustAttributes()
-	for _, attr := range attrs {
-		if attr.Name == "source" {
-			sourceVal, _ := attr.Expr.Value(e.ctx)
-			if sourceVal.Type() == cty.String {
-				source = sourceVal.AsString()
-			}
-		}
-	}
-
-	if source == "" {
-		return nil, fmt.Errorf("could not read module source attribute at %s", block.Range().String())
-	}
-
-	var modulePath string
-
-	if e.moduleMetadata != nil {
-		// if we have module metadata we can parse all the modules as they'll be cached locally!
-		for _, module := range e.moduleMetadata.Modules {
-			if module.Key == block.Label() || module.Source == source {
-				modulePath = filepath.Clean(filepath.Join(e.moduleBasePath, module.Dir))
-				break
-			}
-		}
-	}
-
-	if modulePath == "" {
-		// if we have no metadata, we can only support modules available on the local filesystem
-		// users wanting this feature should run a `terraform init` before running tfsec to cache all modules locally
-		if !strings.HasPrefix(source, "./") && !strings.HasPrefix(source, "../") {
-			if e.moduleMetadata == nil {
-				return nil, fmt.Errorf("no mechanism to locate module source for %s from %s - please run `terraform init` first", block.FullName(), source)
-			}else{
-				return nil, fmt.Errorf("could not find module source for %s from %s", block.FullName(), source)
-			}
-		}
-
-		modulePath = filepath.Join(filepath.Dir(block.Range().Filename), source)
-	}
-
-	// todo forward excluded directories?
-	moduleFiles, err := LoadDirectory(modulePath)
-	if err != nil {
-		return  nil, err
-	}
-
-	var blocks Blocks
-
-	for _, file := range moduleFiles {
-		fileBlocks, err := LoadBlocksFromFile(file)
-		if err != nil {
-			return nil, err
-		}
-		if len(fileBlocks) > 0 {
-			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
-		}
-		for _, fileBlock := range fileBlocks {
-			blocks = append(blocks, NewBlock(fileBlock, nil, nil))
-		}
-	}
-
-	debug.Log("Found module at %s (defined at %s)", modulePath, block.Range())
-
-	return &ModuleInfo{
-		Name:   block.Label(),
-		Path:   modulePath,
-		Definition: block,
-		Blocks: blocks,
-	}, nil
-}
-
-
-func(e *Evaluator) evaluateModules() {
+func (e *Evaluator) evaluateModules() {
 
 	for _, module := range e.modules {
-
-		// TODO wrap and catch panic
 
 		inputVars := make(map[string]cty.Value)
 		for _, attr := range module.Definition.GetAttributes() {
@@ -196,7 +81,9 @@ func(e *Evaluator) evaluateModules() {
 				inputVars[attr.Name()] = attr.Value()
 			}()
 		}
-		moduleEvaluator := NewEvaluator(module.Path, module.Blocks, inputVars, e.moduleMetadata)
+
+		childModules := LoadModules(module.Blocks, e.moduleBasePath, e.moduleMetadata)
+		moduleEvaluator := NewEvaluator(module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules)
 		moduleEvaluator.SetModuleBasePath(e.moduleBasePath)
 		_, _ = moduleEvaluator.EvaluateAll()
 
@@ -221,13 +108,6 @@ func (e *Evaluator) ExportOutputs() cty.Value {
 
 func (e *Evaluator) EvaluateAll() (Blocks, error) {
 
-	debug.Log("Loading modules...")
-	if err := e.loadModules(); err != nil {
-		return nil, err
-	}
-
-	debug.Log("Beginning evaluation...")
-
 	var lastContext hcl.EvalContext
 
 	for i := 0; i < maxContextIterations; i++ {
@@ -245,7 +125,13 @@ func (e *Evaluator) EvaluateAll() (Blocks, error) {
 		}
 	}
 
-	return e.blocks, nil
+	var allBlocks Blocks
+	allBlocks = append(allBlocks, e.blocks...)
+	for _, module := range e.modules {
+		allBlocks = append(allBlocks, module.Blocks...)
+	}
+
+	return allBlocks, nil
 }
 
 // returns true if all evaluations were successful
@@ -286,7 +172,7 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 
 			if def, exists := attributes["value"]; exists {
 				func() {
-					defer func(){
+					defer func() {
 						_ = recover()
 					}()
 					values[block.Label()], _ = def.Expr.Value(e.ctx)
@@ -341,7 +227,7 @@ func (e *Evaluator) readValues(block *hcl.Block) cty.Value {
 
 	for _, attribute := range attributes {
 		func() {
-			defer func(){
+			defer func() {
 				if err := recover(); err != nil {
 					return
 				}
