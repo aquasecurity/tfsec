@@ -14,8 +14,8 @@ const (
 	docsDataFile = `
 - title: Getting Started
   docs:
-  - custom_checks.md
   - home
+  - custom_checks
 
 {{range $p := .}}
 - title: {{$p.Provider | ToUpper }} Checks
