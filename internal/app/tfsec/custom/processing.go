@@ -2,6 +2,7 @@ package custom
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -24,7 +25,7 @@ func processFoundChecks(checks ChecksFile) {
 					if !evalMatchSpec(rootBlock, matchSpec) {
 						return []scanner.Result{
 							check.NewResult(
-								fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.Name(), customCheck.ErrorMessage),
+								fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage),
 								rootBlock.Range(),
 								customCheck.Severity,
 							),

@@ -102,7 +102,7 @@ func init() {
 				if identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
 					return []scanner.Result{
 						check.NewResult(
-							fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", block.Name()),
+							fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", block.FullName()),
 							attributes.Range(),
 							scanner.SeverityWarning,
 						),

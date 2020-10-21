@@ -98,7 +98,7 @@ func init() {
 			if wafAclIdBlock == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", block.Name()),
+						fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
 					),

@@ -1,9 +1,10 @@
 package parser
 
 import (
-	"github.com/stretchr/testify/assert"
 	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_IsPresentCheckOnBlock(t *testing.T) {
@@ -95,7 +96,7 @@ resource "aws_s3_bucket" "my-bucket" {
 
 func createBlocksFromSource(source string) []*Block {
 	path := createTestFile("test.tf", source)
-	blocks, err := New().ParseDirectory(filepath.Dir(path), nil, "")
+	blocks, err := New(filepath.Dir(path), "").ParseDirectory()
 	if err != nil {
 		panic(err)
 	}

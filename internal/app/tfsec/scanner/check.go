@@ -3,7 +3,9 @@ package scanner
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 
+	internalDebug "github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -59,7 +61,8 @@ type CheckDocumentation struct {
 func (check *Check) Run(block *parser.Block, context *Context) []Result {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Fprintf(os.Stderr, "WARNING: skipped %s check due to error(s): %s\n", check.Code, err)
+			_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s check due to error(s): %s\n", check.Code, err)
+			internalDebug.Log("Stack trace for failed %s check:\n%s\n\n", check.Code, string(debug.Stack()))
 		}
 	}()
 	results := check.CheckFunc(check, block, context)
@@ -144,5 +147,6 @@ func (check *Check) NewResultWithValueAnnotation(description string, r parser.Ra
 		Description:     description,
 		Range:           r,
 		RangeAnnotation: fmt.Sprintf("[%s] %#v", typeStr, raw),
+		Severity:        severity,
 	}
 }

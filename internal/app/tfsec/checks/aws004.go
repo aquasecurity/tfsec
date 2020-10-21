@@ -64,7 +64,7 @@ func init() {
 				}
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
-						fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.Name()),
+						fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.FullName()),
 						reportRange,
 						protocolAttr,
 						scanner.SeverityError,

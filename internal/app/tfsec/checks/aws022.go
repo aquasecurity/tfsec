@@ -56,7 +56,7 @@ func init() {
 			if defaultBehaviorBlock == nil {
 				results = append(results,
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_info block).", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_info block).", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
 					),
@@ -66,7 +66,7 @@ func init() {
 				if encryptionInTransit == nil {
 					results = append(results,
 						check.NewResult(
-							fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_in_transit block).", block.Name()),
+							fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_in_transit block).", block.FullName()),
 							block.Range(),
 							scanner.SeverityWarning,
 						),
@@ -76,7 +76,7 @@ func init() {
 					if clientBroker == nil {
 						results = append(results,
 							check.NewResult(
-								fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing client_broker block).", block.Name()),
+								fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing client_broker block).", block.FullName()),
 								block.Range(),
 								scanner.SeverityWarning,
 							),
@@ -84,7 +84,7 @@ func init() {
 					} else if clientBroker != nil && clientBroker.Value().AsString() == "PLAINTEXT" {
 						results = append(results,
 							check.NewResultWithValueAnnotation(
-								fmt.Sprintf("Resource '%s' defines a MSK cluster that only allows plaintext data in transit.", block.Name()),
+								fmt.Sprintf("Resource '%s' defines a MSK cluster that only allows plaintext data in transit.", block.FullName()),
 								clientBroker.Range(),
 								clientBroker,
 								scanner.SeverityError,
@@ -93,7 +93,7 @@ func init() {
 					} else if clientBroker != nil && clientBroker.Value().AsString() == "TLS_PLAINTEXT" {
 						results = append(results,
 							check.NewResultWithValueAnnotation(
-								fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit.", block.Name()),
+								fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit.", block.FullName()),
 								clientBroker.Range(),
 								clientBroker,
 								scanner.SeverityWarning,

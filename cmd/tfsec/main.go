@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 
@@ -27,7 +28,6 @@ var disableColours = false
 var format string
 var softFail = false
 var excludedChecks string
-var excludeDirectories []string
 var tfvarsPath string
 var outputFlag string
 
@@ -38,7 +38,6 @@ func init() {
 	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit")
 	rootCmd.Flags().StringVarP(&excludedChecks, "exclude", "e", excludedChecks, "Provide checks via , without space to exclude from run.")
 	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
-	rootCmd.Flags().StringSliceVar(&excludeDirectories, "exclude-dir", []string{}, "Exclude a directory from the scan. You can use this flag multiple times to exclude further directories.")
 	rootCmd.Flags().StringVar(&tfvarsPath, "tfvars-file", tfvarsPath, "Path to .tfvars file")
 	rootCmd.Flags().StringVar(&outputFlag, "out", outputFlag, "Set output file")
 	rootCmd.Flags().BoolVar(&debug.Enabled, "verbose", debug.Enabled, "Enable verbose logging")
@@ -115,15 +114,6 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		var absoluteExcludes []string
-		for _, exclude := range excludeDirectories {
-			exDir, err := filepath.Abs(exclude)
-			if err != nil {
-				continue
-			}
-			absoluteExcludes = append(absoluteExcludes, exDir)
-		}
-
 		if tfvarsPath != "" {
 			tfvarsPath, err = filepath.Abs(tfvarsPath)
 			if err != nil {
@@ -133,7 +123,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Starting parser...")
-		blocks, err := parser.New().ParseDirectory(dir, absoluteExcludes, tfvarsPath)
+		blocks, err := parser.New(dir, tfvarsPath).ParseDirectory()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)

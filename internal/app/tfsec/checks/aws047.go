@@ -3,6 +3,7 @@ package checks
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/zclconf/go-cty/cty"
 	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -59,7 +60,7 @@ func init() {
 			Explanation: AWSSqsPolicyWildcardActionsExplanation,
 			BadExample:  AWSSqsPolicyWildcardActionsBadExample,
 			GoodExample: AWSSqsPolicyWildcardActionsGoodExample,
-			Links:       []string{
+			Links: []string{
 				"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-security-best-practices.html",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue_policy",
 			},
@@ -68,6 +69,11 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_sqs_queue_policy"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+
+			if block.GetAttribute("policy").Value().Type() != cty.String {
+				return nil
+			}
+
 			rawJSON := []byte(block.GetAttribute("policy").Value().AsString())
 			var policy struct {
 				Statement []struct {
@@ -81,7 +87,7 @@ func init() {
 					if strings.ToLower(statement.Effect) == "allow" && (statement.Action == "*" || statement.Action == "sqs:*") {
 						return []scanner.Result{
 							check.NewResult(
-								fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", block.Name()),
+								fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", block.FullName()),
 								block.Range(),
 								scanner.SeverityError,
 							),

@@ -58,7 +58,7 @@ func init() {
 					if policy == sslPolicyAttr.Value().AsString() {
 						return []scanner.Result{
 							check.NewResultWithValueAnnotation(
-								fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", block.Name()),
+								fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", block.FullName()),
 								sslPolicyAttr.Range(),
 								sslPolicyAttr,
 								scanner.SeverityError,

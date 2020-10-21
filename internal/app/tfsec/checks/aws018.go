@@ -69,7 +69,7 @@ func init() {
 			if descriptionAttr == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", block.Name()),
+						fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -79,7 +79,7 @@ func init() {
 			if descriptionAttr.Type() == cty.String && descriptionAttr.Value().AsString() == "" {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
-						fmt.Sprintf("Resource '%s' should include a non-empty description for auditing purposes.", block.Name()),
+						fmt.Sprintf("Resource '%s' should include a non-empty description for auditing purposes.", block.FullName()),
 						descriptionAttr.Range(),
 						descriptionAttr,
 						scanner.SeverityError,

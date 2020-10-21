@@ -52,7 +52,7 @@ func init() {
 			if enable_legacy_abac != nil && enable_legacy_abac.Value().Type() == cty.String && enable_legacy_abac.Value().AsString() == "true" {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),

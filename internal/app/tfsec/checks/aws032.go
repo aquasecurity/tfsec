@@ -54,7 +54,7 @@ func init() {
 			if encryptionBlock == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing node_to_node_encryption block).", block.Name()),
+						fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing node_to_node_encryption block).", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -65,7 +65,7 @@ func init() {
 			if enabledAttr == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enabled attribute).", block.Name()),
+						fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enabled attribute).", block.FullName()),
 						encryptionBlock.Range(),
 						scanner.SeverityError,
 					),
@@ -79,7 +79,7 @@ func init() {
 			if !nodeToNodeEncryptionEnabled {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", block.Name()),
+						fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", block.FullName()),
 						encryptionBlock.Range(),
 						scanner.SeverityError,
 					),

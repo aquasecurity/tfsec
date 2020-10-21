@@ -46,7 +46,7 @@ func init() {
 			if loggingBlock := block.GetBlock("logging"); loggingBlock == nil {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' does not have logging enabled.", block.Name()),
+						fmt.Sprintf("Resource '%s' does not have logging enabled.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),

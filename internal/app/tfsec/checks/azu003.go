@@ -53,7 +53,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted managed disk.",
-							block.Name(),
+							block.FullName(),
 						),
 						block.Range(),
 						scanner.SeverityError,
@@ -67,7 +67,7 @@ func init() {
 					check.NewResultWithValueAnnotation(
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted managed disk.",
-							block.Name(),
+							block.FullName(),
 						),
 						enabledAttr.Range(),
 						enabledAttr,

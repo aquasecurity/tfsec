@@ -76,7 +76,7 @@ func init() {
 					}
 					if val.AsString() != "" {
 						results = append(results, check.NewResultWithValueAnnotation(
-							fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", block.Name()),
+							fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", block.FullName()),
 							attribute.Range(),
 							attribute,
 							scanner.SeverityWarning,

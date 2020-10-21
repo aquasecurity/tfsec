@@ -57,7 +57,7 @@ func init() {
 			if legacyMetadataAPI.Type() == cty.String && legacyMetadataAPI.Value().AsString() != "true" || legacyMetadataAPI.Type() == cty.Bool && legacyMetadataAPI.Value().False() {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", block.Name()),
+						fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", block.FullName()),
 						legacyMetadataAPI.Range(),
 						scanner.SeverityError,
 					),
