@@ -114,10 +114,6 @@ tfsec . -e GEN001,GCP001,GCP002
 
 You can include values from a tfvars file in the scan,  using, for example: `--tfvars-file terraform.tfvars`.
 
-## Excluding Directories
-
-You can exclude directories from being scanned using the `--exclude-dir [directory]` flag. This can be used multiple times to exclude multiple directories.
-
 ## Included Checks
 
 Checks are currently limited to AWS/Azure/GCP resources, but
