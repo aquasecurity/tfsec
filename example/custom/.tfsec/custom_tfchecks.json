@@ -39,7 +39,7 @@
           "value" : "true"
         }
       },
-      "errorMessage": "The the versioning block requires enabled attribute",
+      "errorMessage": "The versioning block requires enabled attribute",
       "relatedLinks": [
         "http://internal.acmecorp.com/standards/aws/tagging.html"
       ]

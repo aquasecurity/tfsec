@@ -6,8 +6,6 @@ import (
 
 func IsSensitiveAttribute(name string) bool {
 
-	// TODO add a whole bunch of regular expressions in here
-
 	name = strings.ToLower(name)
 
 	switch {
