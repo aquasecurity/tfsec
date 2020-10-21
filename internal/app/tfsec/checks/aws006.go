@@ -62,6 +62,11 @@ func init() {
 				}
 
 				for _, cidr := range cidrBlocksAttr.Value().AsValueSlice() {
+
+					if cidr.Type() != cty.String {
+						continue
+					}
+
 					if strings.HasSuffix(cidr.AsString(), "/0") {
 						return []scanner.Result{
 							check.NewResult(
@@ -82,6 +87,11 @@ func init() {
 				}
 
 				for _, cidr := range ipv6CidrBlocksAttr.Value().AsValueSlice() {
+
+					if cidr.Type() != cty.String {
+						continue
+					}
+
 					if strings.HasSuffix(cidr.AsString(), "/0") {
 						return []scanner.Result{
 							check.NewResultWithValueAnnotation(

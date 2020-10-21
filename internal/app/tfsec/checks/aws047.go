@@ -3,6 +3,7 @@ package checks
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/zclconf/go-cty/cty"
 	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -68,6 +69,11 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_sqs_queue_policy"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+
+			if block.GetAttribute("policy").Value().Type() != cty.String {
+				return nil
+			}
+
 			rawJSON := []byte(block.GetAttribute("policy").Value().AsString())
 			var policy struct {
 				Statement []struct {

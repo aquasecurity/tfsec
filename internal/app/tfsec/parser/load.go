@@ -1,56 +1,43 @@
 package parser
 
 import (
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-	"strings"
-
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 
 	"github.com/hashicorp/hcl/v2/hclparse"
 
 	"github.com/hashicorp/hcl/v2"
 )
 
-func LoadDirectory(fullPath string, excludedDirectories []string) ([]*hcl.File, error) {
+func LoadDirectory(fullPath string) ([]*hcl.File, error) {
 
 	hclParser := hclparse.NewParser()
 
-	if err := filepath.Walk(fullPath,
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-
-			if info.IsDir() {
-				return nil
-			}
-
-			if filepath.Ext(info.Name()) != ".tf" {
-				return nil
-			}
-
-			for _, excluded := range excludedDirectories {
-				if !strings.HasSuffix(excluded, string(filepath.Separator)) {
-					excluded = fmt.Sprintf("%s%s", excluded, string(filepath.Separator))
-				}
-				if strings.HasPrefix(path, excluded) {
-					return nil
-				}
-			}
-
-			_, diag := hclParser.ParseHCLFile(path)
-			if diag != nil && diag.HasErrors() {
-				return diag
-			}
-
-			return nil
-		}); err != nil {
+	fileInfos, err := ioutil.ReadDir(fullPath)
+	if err != nil {
 		return nil, err
+	}
+
+	for _, info := range fileInfos {
+		if info.IsDir() {
+			continue
+		}
+
+		if filepath.Ext(info.Name()) != ".tf" {
+			continue
+		}
+
+		path := filepath.Join(fullPath, info.Name())
+		_, diag := hclParser.ParseHCLFile(path)
+		if diag != nil && diag.HasErrors() {
+			return nil, diag
+		}
 	}
 
 	var files []*hcl.File
@@ -83,4 +70,50 @@ func LoadTFVars(filename string) (map[string]cty.Value, error) {
 	}
 
 	return inputVars, nil
+}
+
+func LoadBlocksFromFile(file *hcl.File) (hcl.Blocks, error) {
+
+	contents, diagnostics := file.Body.Content(terraformSchema)
+	if diagnostics != nil && diagnostics.HasErrors() {
+		return nil, diagnostics
+	}
+
+	if contents == nil {
+		return nil, fmt.Errorf("file contents is empty")
+	}
+
+	return contents.Blocks, nil
+}
+
+
+type ModulesMetadata struct {
+	Modules []ModuleMetadata `json:"Modules"`
+}
+
+type ModuleMetadata struct {
+	Key     string `json:"Key"`
+	Source  string `json:"Source"`
+	Version string `json:"Version"`
+	Dir     string `json:"Dir"`
+}
+
+func LoadModuleMetadata(fullPath string) (*ModulesMetadata, error) {
+	metadataPath := filepath.Join(fullPath, ".terraform/modules/modules.json")
+	if _, err := os.Stat(metadataPath); err != nil {
+		return nil, err
+	}
+
+	f, err := os.Open(metadataPath)
+	if err != nil {
+		return nil, err
+	}
+	defer func(){ _ = f.Close() }()
+
+	var metadata ModulesMetadata
+	if err := json.NewDecoder(f).Decode(&metadata); err != nil {
+		return nil, err
+	}
+
+	return &metadata, nil
 }
