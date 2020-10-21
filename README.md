@@ -41,11 +41,9 @@ go get -u github.com/tfsec/tfsec/cmd/tfsec
 
 ## Usage
 
-tfsec will recursively scan the specified directory. If no directory is
-specified, the current working directory will be used.
+tfsec will scan the specified directory. If no directory is specified, the current working directory will be used.
 
-The exit status will be non zero if problems are found, otherwise the
-exit status will be zero.
+The exit status will be non-zero if tfsec finds problems, otherwise the exit status will be zero.
 
 ```bash
 tfsec .
@@ -53,8 +51,7 @@ tfsec .
 
 ## Use with Docker
 
-As an alternative to installing and running tfsec on your system, you may
-run tfsec in a Docker container.
+As an alternative to installing and running tfsec on your system, you may run tfsec in a Docker container.
 
 To run:
 

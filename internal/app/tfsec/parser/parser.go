@@ -18,7 +18,7 @@ func New(fullPath string, tfvarsPath string) *Parser {
 	}
 }
 
-// ParseDirectory recursively parses all terraform files within a given directory
+// ParseDirectory parses all terraform files within a given directory
 func (parser *Parser) ParseDirectory() (Blocks, error) {
 
 	debug.Log("Beginning parse for directory '%s'...", parser.fullPath)
