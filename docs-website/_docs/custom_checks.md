@@ -1,6 +1,6 @@
 ---
 title: Custom Checks
-permalink: /docs/home/
+permalink: /docs/custom_checks/
 ---
 
 ## What is it?
