@@ -77,7 +77,7 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 
 	for _, entry := range entries {
 		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".tf" {
-			debug.Log("Found qualifying subdirctory containing .tf files: %s", path)
+			debug.Log("Found qualifying subdirectory containing .tf files: %s", path)
 			return []string{path}, nil
 		}
 	}
