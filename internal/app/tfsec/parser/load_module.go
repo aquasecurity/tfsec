@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+
 	"github.com/hashicorp/hcl/v2"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
@@ -45,6 +47,8 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 		return nil, fmt.Errorf("module without label at %s", block.Range())
 	}
 
+	evalTime := timer.Start(timer.Evaluation)
+
 	var source string
 	attrs, _ := block.hclBlock.Body.JustAttributes()
 	for _, attr := range attrs {
@@ -55,6 +59,8 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 			}
 		}
 	}
+
+	evalTime.Stop()
 
 	if source == "" {
 		return nil, fmt.Errorf("could not read module source attribute at %s", block.Range().String())
