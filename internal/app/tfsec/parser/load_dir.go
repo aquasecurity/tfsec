@@ -4,12 +4,23 @@ import (
 	"io/ioutil"
 	"path/filepath"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+
 	"github.com/hashicorp/hcl/v2/hclparse"
 
 	"github.com/hashicorp/hcl/v2"
 )
 
+var knownFiles = make(map[string]struct{})
+
+func CountFiles() int {
+	return len(knownFiles)
+}
+
 func LoadDirectory(fullPath string) ([]*hcl.File, error) {
+
+	t := timer.Start(timer.DiskIO)
+	defer t.Stop()
 
 	hclParser := hclparse.NewParser()
 
@@ -32,6 +43,8 @@ func LoadDirectory(fullPath string) ([]*hcl.File, error) {
 		if diag != nil && diag.HasErrors() {
 			return nil, diag
 		}
+
+		knownFiles[path] = struct{}{}
 	}
 
 	var files []*hcl.File
