@@ -194,3 +194,7 @@ func (block *Block) identifier() string {
 func (block *Block) Label() string {
 	return strings.Join(block.hclBlock.Labels, ".")
 }
+
+func (block *Block) HasBlock(childElement string) bool {
+	return block.GetBlock(childElement) != nil
+}
