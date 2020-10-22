@@ -8,6 +8,18 @@ We've documented the process of adding a new check below. If you have any other 
 
 Adding a check typically involves the addition of two files. The first is the file containing the check code itself and it's documentation. The second is a file containing tests for your check. You won't typically need to touch any other files - documentation is generated automatically from the check file itself.
 
+Adding a check can be simplified by running the `make new-check` command. this will request base information about the new check then generate the skeleton code for you to populate.
+
+Key attributes requested;
+
+- Provider: Select the provider from the list
+- Short Code: This is a very terse description of the check, it will form the check name
+- Summary: A slightly longer free text summary of the check
+- Required Types: What kind of blocks is this check for (resource, data, variable etc). Provide this as a space separated list
+- Required Label: What kind of labels is this check for (aws_instance, google_container_cluster). Provide this as a space separated list
+
+The generator will determine the next available code and create the check and the check test.
+
 ### Writing Your Check Code
 
 First you'll need to generate a `Rule Code` for your check. This is prefixed with 3 characters describing the provider for your check, so for AWS resources, it would begin with `AWS`. You've probably guessed that if the "highest" check rule ID for the provider is `AWS122` on the master branch, your check code should be `AWS123`. If your check will target multiple providers, you can prefix it with `GEN`.

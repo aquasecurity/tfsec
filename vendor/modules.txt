@@ -29,6 +29,7 @@ github.com/hashicorp/terraform/lang/funcs
 github.com/inconshreveable/mousetrap
 # github.com/liamg/clinch v1.3.0
 ## explicit
+github.com/liamg/clinch/prompt
 github.com/liamg/clinch/terminal
 # github.com/liamg/tml v0.2.0
 ## explicit
@@ -39,6 +40,9 @@ github.com/mitchellh/go-homedir
 github.com/mitchellh/go-wordwrap
 # github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e
 ## explicit
+# github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942
+github.com/pkg/term
+github.com/pkg/term/termios
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
 # github.com/spf13/cobra v1.0.0
