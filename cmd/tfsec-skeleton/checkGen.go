@@ -1,13 +1,10 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/liamg/clinch/prompt"
 	"os"
-	"regexp"
 	"sort"
-	"strconv"
 	"strings"
 	"text/template"
 )
@@ -65,14 +62,6 @@ func writeTemplate(checkPath string, checkTmpl *template.Template, details *chec
 	return nil
 }
 
-func verifyCheckPath(checkPath string) error {
-	stat, _ := os.Stat(checkPath)
-	if stat != nil {
-		return errors.New(fmt.Sprintf("file [%s] already exists so not creating check", checkPath))
-	}
-	return nil
-}
-
 func constructSkeleton() (*checkSkeleton, error) {
 	var providerStrings []string
 	for key := range providers {
@@ -115,20 +104,4 @@ func populateSkeleton(summary string, selected string, shortCodeContent string, 
 		return nil, nil, err
 	}
 	return checkBody, nil, nil
-}
-
-func calculateNextCode(provider string) (string, error) {
-	files, err := listFiles("internal/app/tfsec/checks", fmt.Sprintf("%s.*", provider))
-	if err != nil {
-		return "", err
-	}
-	re := regexp.MustCompile("[0-9]+")
-	maxCode := 0
-	for _, file := range files {
-		thisCode, _ := strconv.Atoi(strings.Join(re.FindAllString(file.Name(), -1), ""))
-		if thisCode > maxCode {
-			maxCode = thisCode
-		}
-	}
-	return fmt.Sprintf("%03d", maxCode+1), nil
 }
