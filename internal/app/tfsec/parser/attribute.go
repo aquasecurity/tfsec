@@ -6,6 +6,7 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -112,6 +113,19 @@ func (attr *Attribute) Equals(checkValue string) bool {
 			return false
 		}
 		return attr.Value().RawEquals(checkNumber)
+	}
+	return false
+}
+
+func (attr *Attribute) RegexMatches(pattern string) bool {
+	re, err := regexp.Compile(pattern)
+	if err != nil {
+		debug.Log("an error occurred while compiling the regex: %s", err)
+		return false
+	}
+	if attr.Value().Type() == cty.String {
+		match := re.MatchString(attr.Value().AsString())
+		return match
 	}
 	return false
 }

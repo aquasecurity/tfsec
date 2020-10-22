@@ -150,6 +150,28 @@ For example, to check that `acl` begins with `private` you could use the followi
 }
 
 ```
+
+#### regexMatches
+The `regexMatches` check action passes when the regex is matched to the pattern passed in the value. This is check would generally be used as a top level check to filter whether or not to apply a check.
+
+For example, this check will ensure that the source attribute of a module matches the supplied regex before continuing with the subMatches. This can be used to ensure that checks are targetted to specific modules.
+
+When tackling this specific use case of filtering module blocks by source, the `requiredLabels` should be set to `"*"`
+
+```json
+    "matchSpec": {
+        "name": "source",
+        "action": "regexMatches",
+        "value": "^modules\\/.*public_.+bucket$",
+        "subMatch": {
+          "name": "acl",
+          "action": "equals",
+          "value": "public-read"
+        }
+      }
+```
+
+
 ## How do I know my JSON is valid?
 We have provided the `tfsec-checkgen` binary which will validate your check file to ensure that it is valid for use with `tfsec`. 
 

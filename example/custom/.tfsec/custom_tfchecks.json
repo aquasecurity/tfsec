@@ -61,6 +61,31 @@
       "relatedLinks": [
         "http://internal.acmecorp.com/standards/aws/s3_buckets.html"
       ]
+    },
+    {
+      "code": "CUS004",
+      "description": "Check that bucket created by custom bucket module must have the acl set to public-read",
+      "requiredTypes": [
+        "module"
+      ],
+      "requiredLabels": [
+        "*"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "name": "source",
+        "action": "regexMatches",
+        "value": "^modules\/.*public_.+bucket$",
+        "subMatch": {
+          "name": "acl",
+          "action": "equals",
+          "value": "public-read"
+        }
+      },
+      "errorMessage": "S3 buckets created with the `custom_bucket` module must have the bucket_name blah",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/s3_buckets.html"
+      ]
     }
   ]
 }
