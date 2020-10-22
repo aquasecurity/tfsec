@@ -119,10 +119,10 @@ there are also checks which are provider agnostic.
 
 | Checks |
 |:---|
-|[AWS Checks](docs/AWS_CHECKS.md)|
-|[Azure Checks](docs/AZURE_CHECKS.md)|
-|[GCP Checks](docs/GCP_CHECKS.md)|
-|[General Checks](docs/GENERAL_CHECKS.md)|
+|[AWS Checks](https://www.tfsec.dev/docs/aws/home/)|
+|[Azure Checks](https://www.tfsec.dev/docs/azure/home/)|
+|[GCP Checks](https://www.tfsec.dev/docs/google/home/)|
+|[General Checks](https://www.tfsec.dev/docs/general/home/)|
 
 ## Running in CI
 
