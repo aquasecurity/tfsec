@@ -26,6 +26,10 @@ var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 		attribute := block.GetAttribute(spec.Name)
 		return attribute != nil && attribute.Equals(spec.MatchValue)
 	},
+	RegexMatches: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		return attribute != nil && attribute.RegexMatches(spec.MatchValue)
+	},
 }
 
 func processFoundChecks(checks ChecksFile) {

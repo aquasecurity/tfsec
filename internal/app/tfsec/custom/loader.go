@@ -3,7 +3,6 @@ package custom
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -15,8 +14,7 @@ type ChecksFile struct {
 	Checks []*Check `json:"checks"`
 }
 
-func Load(rootPath string) error {
-	customCheckDir := fmt.Sprintf("%s/.tfsec", rootPath)
+func Load(customCheckDir string) error {
 	_, err := os.Stat(customCheckDir)
 	if os.IsNotExist(err) {
 		return nil

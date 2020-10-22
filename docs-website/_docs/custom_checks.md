@@ -13,6 +13,11 @@ Custom checks offer an accessible approach to injecting checks that satisfy your
 ## How does it work?
 Custom checks are defined as json files which sit in the `.tfsec` folder in the root check path. any file with the suffix `_tfchecks.json` will be parsed and the checks included during the run.
 
+
+### Overriding check directory
+The default location for custom checks can be overridden, this is done using the `--custom-check-dir` to specify another location to load the checks from instead.
+This is useful when global checks are to applied to the terraform under test.
+
 ### What does a check file look like?
 Check files are simply json, this ensures that checks can be put together without requiring Go knowledge or being able to build a new release of tfsec to include your custom code.
 
@@ -151,7 +156,7 @@ For example, to check that `acl` begins with `private` you could use the followi
 
 ```
 
-#### regexMatches
+##### regexMatches
 The `regexMatches` check action passes when the regex is matched to the pattern passed in the value. This is check would generally be used as a top level check to filter whether or not to apply a check.
 
 For example, this check will ensure that the source attribute of a module matches the supplied regex before continuing with the subMatches. This can be used to ensure that checks are targetted to specific modules.

@@ -75,14 +75,14 @@
       "matchSpec": {
         "name": "source",
         "action": "regexMatches",
-        "value": "^modules\/.*public_.+bucket$",
+        "value": ".*public_.+bucket$",
         "subMatch": {
           "name": "acl",
           "action": "equals",
-          "value": "public-read"
+          "value": "private"
         }
       },
-      "errorMessage": "S3 buckets created with the `custom_bucket` module must have the bucket_name blah",
+      "errorMessage": "S3 buckets created with the `custom_bucket` module must have an acl of public-read",
       "relatedLinks": [
         "http://internal.acmecorp.com/standards/aws/s3_buckets.html"
       ]

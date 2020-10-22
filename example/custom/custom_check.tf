@@ -42,7 +42,7 @@ resource "aws_s3_bucket" "disabled_versioned_bucket" {
 }
 
 module "custom_bucket" {
-  source      = "modules/public_custom_bucket"
+  source      = "./modules/public_custom_bucket"
   bucket_name = "new-public-bucket"
-  acl         = "public-read"
+  acl         = "private"
 }
