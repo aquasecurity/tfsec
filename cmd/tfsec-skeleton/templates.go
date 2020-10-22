@@ -3,10 +3,6 @@ package main
 const checkTemplate = `package checks
 
 import (
-	"fmt"
-
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -21,7 +17,7 @@ resource "" "my-" {
 
 }
 ` + "`" + `
-const {{.CheckName}}BadExample = ` + "`" + `
+const {{.CheckName}}GoodExample = ` + "`" + `
 resource "" "my-" {
 
 }
