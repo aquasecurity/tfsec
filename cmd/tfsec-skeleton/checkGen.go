@@ -91,17 +91,21 @@ func constructSkeleton() (*checkSkeleton, error) {
 
 func populateSkeleton(summary string, selected string, shortCodeContent string, blockTypes string, blockLabels string, err error) (*checkSkeleton, *checkSkeleton, error) {
 	checkBody := &checkSkeleton{}
+
 	checkBody.Summary = summary
 	checkBody.Provider = providers[selected]
 	checkBody.ProviderLongName = selected
-	checkBody.CheckName = fmt.Sprintf("%s%s", strings.ToUpper(checkBody.Provider), strings.ReplaceAll(strings.Title(shortCodeContent), " ", ""))
-	checkBody.RequiredTypes = fmt.Sprintf("{\"%s\"}", strings.Join(strings.Split(blockTypes, " "), "\", \""))
-	checkBody.RequiredLabels = fmt.Sprintf("{\"%s\"}", strings.Join(strings.Split(blockLabels, " "), "\", \""))
-	checkBody.CheckFilename = fmt.Sprintf("%s.go", strings.ToLower(checkBody.Code))
-	checkBody.TestFileName = fmt.Sprintf("%s_test.go", strings.ToLower(checkBody.Code))
 	checkBody.Code, err = calculateNextCode(checkBody.Provider)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	checkBody.CheckName = fmt.Sprintf("%s%s", strings.ToUpper(checkBody.Provider), strings.ReplaceAll(strings.Title(shortCodeContent), " ", ""))
+	checkBody.RequiredTypes = fmt.Sprintf("{\"%s\"}", strings.Join(strings.Split(blockTypes, " "), "\", \""))
+	checkBody.RequiredLabels = fmt.Sprintf("{\"%s\"}", strings.Join(strings.Split(blockLabels, " "), "\", \""))
+	filename := fmt.Sprintf("%s%s", checkBody.Provider, checkBody.Code)
+	checkBody.CheckFilename = fmt.Sprintf("%s.go", strings.ToLower(filename))
+	checkBody.TestFileName = fmt.Sprintf("%s_test.go", strings.ToLower(filename))
+
 	return checkBody, nil, nil
 }
