@@ -8,7 +8,7 @@ type MatchType string
 type CheckAction string
 
 var ValidCheckActions = []CheckAction{
-	InModule, IsPresent, NotPresent, StartsWith, EndsWith, Contains, Equals,
+	InModule, IsPresent, NotPresent, StartsWith, EndsWith, Contains, Equals, RegexMatches,
 }
 
 // InModule checks that the block is part of a module
@@ -31,6 +31,8 @@ const Contains CheckAction = "contains"
 
 // Contains checks that the named child attribute has a value equal to the check value
 const Equals CheckAction = "equals"
+
+const RegexMatches CheckAction = "regexMatches"
 
 // MatchSpec specifies the checks that should be performed
 type MatchSpec struct {

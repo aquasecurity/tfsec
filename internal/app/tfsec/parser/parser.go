@@ -1,9 +1,13 @@
 package parser
 
 import (
-	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
+	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
+	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
 )
 
 // Parser is a tool for parsing terraform templates at a given file system location
@@ -24,10 +28,12 @@ func New(fullPath string, tfvarsPath string) *Parser {
 func (parser *Parser) ParseDirectory() (Blocks, error) {
 
 	debug.Log("Finding Terraform subdirectories...")
+	t := timer.Start(timer.DiskIO)
 	subdirectories, err := parser.getSubdirectories(parser.fullPath)
 	if err != nil {
 		return nil, err
 	}
+	t.Stop()
 
 	var blocks Blocks
 
@@ -41,7 +47,8 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 		for _, file := range files {
 			fileBlocks, err := LoadBlocksFromFile(file)
 			if err != nil {
-				return nil, err
+				_, _ = fmt.Fprintf(os.Stderr, "WARNING: HCL error: %s\n", err)
+				continue
 			}
 			if len(fileBlocks) > 0 {
 				debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
@@ -52,14 +59,22 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 		}
 	}
 
+	if len(blocks) == 0 {
+		return nil, nil
+	}
+
 	debug.Log("Loading TFVars...")
+	t = timer.Start(timer.DiskIO)
 	inputVars, err := LoadTFVars(parser.tfvarsPath)
 	if err != nil {
 		return nil, err
 	}
+	t.Stop()
 
 	debug.Log("Loading module metadata...")
+	t = timer.Start(timer.DiskIO)
 	modulesMetadata, _ := LoadModuleMetadata(parser.fullPath)
+	t.Stop()
 
 	debug.Log("Loading modules...")
 	modules := LoadModules(blocks, parser.fullPath, modulesMetadata)

@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -32,6 +34,13 @@ func checkInList(code RuleCode, list []string) bool {
 
 // Scan takes all available hcl blocks and an optional context, and returns a slice of results. Each result indicates a potential security problem.
 func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string) []Result {
+
+	if len(blocks) == 0 {
+		return nil
+	}
+
+	checkTime := timer.Start(timer.Check)
+	defer checkTime.Stop()
 	var results []Result
 	context := &Context{blocks: blocks}
 	for _, block := range blocks {

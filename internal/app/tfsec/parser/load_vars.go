@@ -3,6 +3,8 @@ package parser
 import (
 	"io/ioutil"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
@@ -11,6 +13,8 @@ import (
 )
 
 func LoadTFVars(filename string) (map[string]cty.Value, error) {
+
+	diskTime := timer.Start(timer.DiskIO)
 
 	inputVars := make(map[string]cty.Value)
 
@@ -22,6 +26,11 @@ func LoadTFVars(filename string) (map[string]cty.Value, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	diskTime.Stop()
+
+	hclParseTime := timer.Start(timer.HCLParse)
+	defer hclParseTime.Stop()
 
 	variableFile, _ := hclsyntax.ParseConfig(src, filename, hcl.Pos{Line: 1, Column: 1})
 	attrs, _ := variableFile.Body.JustAttributes()
