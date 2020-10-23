@@ -98,7 +98,8 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 	for _, file := range moduleFiles {
 		fileBlocks, err := LoadBlocksFromFile(file)
 		if err != nil {
-			return nil, err
+			_, _ = fmt.Fprintf(os.Stderr, "WARNING: HCL error: %s\n", err)
+			continue
 		}
 		if len(fileBlocks) > 0 {
 			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)

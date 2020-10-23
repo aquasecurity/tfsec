@@ -1,7 +1,9 @@
 package parser
 
 import (
+	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
@@ -45,7 +47,8 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 		for _, file := range files {
 			fileBlocks, err := LoadBlocksFromFile(file)
 			if err != nil {
-				return nil, err
+				_, _ = fmt.Fprintf(os.Stderr, "WARNING: HCL error: %s\n", err)
+				continue
 			}
 			if len(fileBlocks) > 0 {
 				debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
