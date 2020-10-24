@@ -6,6 +6,10 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+
 	"github.com/liamg/clinch/terminal"
 	"github.com/liamg/tml"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
@@ -14,13 +18,15 @@ import (
 func FormatDefault(_ io.Writer, results []scanner.Result) error {
 
 	if len(results) == 0 {
-		terminal.PrintSuccessf("\nNo problems detected!\n")
+		_ = tml.Printf("\n")
+		printStatistics()
+		terminal.PrintSuccessf("\nNo problems detected!\n\n")
 		return nil
 	}
 
 	var severity string
 
-	terminal.PrintErrorf("\n%d potential problems detected:\n\n", len(results))
+	fmt.Println("")
 	for i, result := range results {
 		terminal.PrintErrorf("<underline>Problem %d</underline>\n", i+1)
 
@@ -42,8 +48,26 @@ func FormatDefault(_ io.Writer, results []scanner.Result) error {
 		tml.Printf("  <blue>See %s for more information.</blue>\n\n", result.Link)
 	}
 
+	// TODO show files processed
+	printStatistics()
+
+	terminal.PrintErrorf("\n%d potential problems detected.\n\n", len(results))
+
 	return nil
 
+}
+
+func printStatistics() {
+	times := timer.Summary()
+	for _, operation := range []timer.Operation{
+		timer.DiskIO,
+		timer.HCLParse,
+		timer.Evaluation,
+		timer.Check,
+	} {
+		_ = tml.Printf("  <blue>%-20s</blue> %s\n", operation, times[operation].String())
+	}
+	_ = tml.Printf("  <blue>%-20s</blue> %d\n", "files loaded", parser.CountFiles())
 }
 
 // highlight the lines of code which caused a problem, if available

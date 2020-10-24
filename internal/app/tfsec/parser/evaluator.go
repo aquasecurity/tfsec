@@ -3,6 +3,8 @@ package parser
 import (
 	"reflect"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+
 	"github.com/hashicorp/hcl/v2"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
@@ -49,6 +51,7 @@ func (e *Evaluator) SetModuleBasePath(path string) {
 
 func (e *Evaluator) evaluateStep(i int) {
 
+	evalTime := timer.Start(timer.Evaluation)
 	debug.Log("Starting iteration %d of context evaluation...", i+1)
 
 	e.ctx.Variables["var"] = e.getValuesByBlockType("variable")
@@ -63,6 +66,8 @@ func (e *Evaluator) evaluateStep(i int) {
 	e.ctx.Variables["data"] = e.getValuesByBlockType("data")
 	e.ctx.Variables["output"] = e.getValuesByBlockType("output")
 
+	evalTime.Stop()
+
 	e.evaluateModules()
 }
 
@@ -70,6 +75,7 @@ func (e *Evaluator) evaluateModules() {
 
 	for _, module := range e.modules {
 
+		evalTime := timer.Start(timer.Evaluation)
 		inputVars := make(map[string]cty.Value)
 		for _, attr := range module.Definition.GetAttributes() {
 			func() {
@@ -81,12 +87,14 @@ func (e *Evaluator) evaluateModules() {
 				inputVars[attr.Name()] = attr.Value()
 			}()
 		}
+		evalTime.Stop()
 
 		childModules := LoadModules(module.Blocks, e.moduleBasePath, e.moduleMetadata)
 		moduleEvaluator := NewEvaluator(module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules)
 		moduleEvaluator.SetModuleBasePath(e.moduleBasePath)
 		_, _ = moduleEvaluator.EvaluateAll()
 
+		evalTime = timer.Start(timer.Evaluation)
 		// export module outputs
 		moduleMapRaw := e.ctx.Variables["module"]
 		if moduleMapRaw == cty.NilVal {
@@ -98,6 +106,7 @@ func (e *Evaluator) evaluateModules() {
 		}
 		moduleMap[module.Name] = moduleEvaluator.ExportOutputs()
 		e.ctx.Variables["module"] = cty.ObjectVal(moduleMap)
+		evalTime.Stop()
 	}
 }
 

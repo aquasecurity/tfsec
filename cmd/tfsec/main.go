@@ -30,6 +30,7 @@ var softFail = false
 var excludedChecks string
 var tfvarsPath string
 var outputFlag string
+var customCheckDir string
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
@@ -40,6 +41,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
 	rootCmd.Flags().StringVar(&tfvarsPath, "tfvars-file", tfvarsPath, "Path to .tfvars file")
 	rootCmd.Flags().StringVar(&outputFlag, "out", outputFlag, "Set output file")
+	rootCmd.Flags().StringVar(&customCheckDir, "custom-check-dir", customCheckDir, "Explicitly the custom checks dir location")
 	rootCmd.Flags().BoolVar(&debug.Enabled, "verbose", debug.Enabled, "Enable verbose logging")
 }
 
@@ -85,7 +87,12 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Loading custom checks...")
-		err = custom.Load(dir)
+		if len(customCheckDir) == 0 {
+			debug.Log("Using the default custom check folder")
+			customCheckDir = fmt.Sprintf("%s/.tfsec", dir)
+		}
+		debug.Log("custom check directory set to %s", customCheckDir)
+		err = custom.Load(customCheckDir)
 		if err != nil {
 			fmt.Fprint(os.Stderr, fmt.Sprintf("There were errors while processing custom check files. %s", err))
 			os.Exit(1)

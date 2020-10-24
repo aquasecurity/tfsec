@@ -7,6 +7,31 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
+var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
+	IsPresent:  func(block *parser.Block, spec *MatchSpec) bool { return block.HasChild(spec.Name) },
+	NotPresent: func(block *parser.Block, spec *MatchSpec) bool { return !block.HasChild(spec.Name) },
+	StartsWith: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		return attribute != nil && attribute.StartsWith(spec.MatchValue)
+	},
+	EndsWith: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		return attribute != nil && attribute.EndsWith(spec.MatchValue)
+	},
+	Contains: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		return attribute != nil && attribute.Contains(spec.MatchValue)
+	},
+	Equals: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		return attribute != nil && attribute.Equals(spec.MatchValue)
+	},
+	RegexMatches: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		return attribute != nil && attribute.RegexMatches(spec.MatchValue)
+	},
+}
+
 func processFoundChecks(checks ChecksFile) {
 	for _, customCheck := range checks.Checks {
 		func(customCheck Check) {
@@ -43,34 +68,19 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec) bool {
 		return false
 	}
 	evalResult := false
-	attribute := block.GetAttribute(spec.Name)
-	switch spec.Action {
-	case InModule:
+	if spec.Action == InModule {
 		return block.InModule()
-	case IsPresent:
-		evalResult = block.HasChild(spec.Name)
-		break
-	case NotPresent:
-		evalResult = !block.HasChild(spec.Name)
-		break
-	case StartsWith:
-		evalResult = attribute != nil && attribute.StartsWith(spec.MatchValue)
-		break
-	case EndsWith:
-		evalResult = attribute != nil && attribute.EndsWith(spec.MatchValue)
-		break
-	case Contains:
-		evalResult = attribute != nil && attribute.Contains(spec.MatchValue)
-		break
-	case Equals:
-		evalResult = attribute != nil && attribute.Equals(spec.MatchValue)
-		break
 	}
+	if spec.Action == RegexMatches && !matchFunctions[RegexMatches](block, spec) {
+		return true
+	}
+	evalResult = matchFunctions[spec.Action](block, spec)
 
 	if spec.SubMatch != nil {
-		subBlock := block.GetBlock(spec.Name)
-		evalResult = evalMatchSpec(subBlock, spec.SubMatch)
+		if block.HasBlock(spec.Name) {
+			block = block.GetBlock(spec.Name)
+		}
+		evalResult = evalMatchSpec(block, spec.SubMatch)
 	}
-
 	return evalResult
 }
