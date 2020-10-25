@@ -18,20 +18,18 @@ func Test_AZUAKSClusterNetworkPolicy(t *testing.T) {
 		{
 			name: "check if network_policy set",
 			source: `
-		resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
-			network_profile {
-				}
-		}`,
+resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+}`,
 			mustIncludeResultCode: checks.AZUAKSClusterNetworkPolicy,
 		},
 		{
 			name: "check network_policy set",
 			source: `
-		resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
-			network_profile {
-				network_policy = "calico"
-				}
-		}`,
+resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+	network_profile {
+		network_policy = "calico"
+		}
+}`,
 			mustExcludeResultCode: checks.AZUAKSClusterNetworkPolicy,
 		},
 	}
