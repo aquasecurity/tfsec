@@ -2,8 +2,6 @@ package checks
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -56,50 +54,30 @@ func init() {
 
 			if cidrBlocksAttr := block.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
-				if cidrBlocksAttr.Value().IsNull() || cidrBlocksAttr.Value().LengthInt() == 0 {
-					return nil
-				}
-
-				for _, cidr := range cidrBlocksAttr.Value().AsValueSlice() {
-					if cidr.Type() != cty.String {
-						continue
-					}
-					if strings.HasSuffix(cidr.AsString(), "/0") {
-						return []scanner.Result{
-							check.NewResultWithValueAnnotation(
-								fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.FullName()),
-								cidrBlocksAttr.Range(),
-								cidrBlocksAttr,
-								scanner.SeverityWarning,
-							),
-						}
+				if isOpenCidr(cidrBlocksAttr, check.Provider) {
+					return []scanner.Result{
+						check.NewResultWithValueAnnotation(
+							fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.FullName()),
+							cidrBlocksAttr.Range(),
+							cidrBlocksAttr,
+							scanner.SeverityWarning,
+						),
 					}
 				}
-
 			}
 
 			if ipv6CidrBlocksAttr := block.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr != nil {
 
-				if ipv6CidrBlocksAttr.Value().IsNull() || ipv6CidrBlocksAttr.Value().LengthInt() == 0 {
-					return nil
-				}
-
-				for _, cidr := range ipv6CidrBlocksAttr.Value().AsValueSlice() {
-					if cidr.Type() != cty.String {
-						continue
-					}
-					if strings.HasSuffix(cidr.AsString(), "/0") {
-						return []scanner.Result{
-							check.NewResultWithValueAnnotation(
-								fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.FullName()),
-								ipv6CidrBlocksAttr.Range(),
-								ipv6CidrBlocksAttr,
-								scanner.SeverityWarning,
-							),
-						}
+				if isOpenCidr(ipv6CidrBlocksAttr, check.Provider) {
+					return []scanner.Result{
+						check.NewResultWithValueAnnotation(
+							fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.FullName()),
+							ipv6CidrBlocksAttr.Range(),
+							ipv6CidrBlocksAttr,
+							scanner.SeverityWarning,
+						),
 					}
 				}
-
 			}
 
 			return nil

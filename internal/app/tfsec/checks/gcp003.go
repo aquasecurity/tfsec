@@ -2,8 +2,6 @@ package checks
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -45,23 +43,15 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			if sourceRanges := block.GetAttribute("source_ranges"); sourceRanges != nil {
-
-				if sourceRanges.Value().LengthInt() == 0 {
-					return nil
-				}
-
-				for _, cidr := range sourceRanges.Value().AsValueSlice() {
-					if strings.HasSuffix(cidr.AsString(), "/0") {
-						return []scanner.Result{
-							check.NewResult(
-								fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", block.FullName()),
-								sourceRanges.Range(),
-								scanner.SeverityWarning,
-							),
-						}
+				if isOpenCidr(sourceRanges, check.Provider) {
+					return []scanner.Result{
+						check.NewResult(
+							fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", block.FullName()),
+							sourceRanges.Range(),
+							scanner.SeverityWarning,
+						),
 					}
 				}
-
 			}
 
 			return nil

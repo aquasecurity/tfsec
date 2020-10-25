@@ -2,10 +2,6 @@ package checks
 
 import (
 	"fmt"
-	"strings"
-
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -53,41 +49,27 @@ func init() {
 			for _, directionBlock := range block.GetBlocks("ingress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
-					if cidrBlocksAttr.Value().IsNull() || cidrBlocksAttr.Value().LengthInt() == 0 {
-						return nil
-					}
-
-					for _, cidr := range cidrBlocksAttr.Value().AsValueSlice() {
-						if cidr.Type() != cty.String {
-							continue
-						}
-						if strings.HasSuffix(cidr.AsString(), "/0") {
-							results = append(results,
-								check.NewResult(
-									fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.FullName()),
-									cidrBlocksAttr.Range(),
-									scanner.SeverityWarning,
-								),
-							)
-						}
+					if isOpenCidr(cidrBlocksAttr, check.Provider) {
+						results = append(results,
+							check.NewResult(
+								fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.FullName()),
+								cidrBlocksAttr.Range(),
+								scanner.SeverityWarning,
+							),
+						)
 					}
 				}
+
 				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr != nil {
 
-					if cidrBlocksAttr.Value().IsNull() || cidrBlocksAttr.Value().LengthInt() == 0 {
-						return nil
-					}
-
-					for _, cidr := range cidrBlocksAttr.Value().AsValueSlice() {
-						if strings.HasSuffix(cidr.AsString(), "/0") {
-							results = append(results,
-								check.NewResult(
-									fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.FullName()),
-									cidrBlocksAttr.Range(),
-									scanner.SeverityWarning,
-								),
-							)
-						}
+					if isOpenCidr(cidrBlocksAttr, check.Provider) {
+						results = append(results,
+							check.NewResult(
+								fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.FullName()),
+								cidrBlocksAttr.Range(),
+								scanner.SeverityWarning,
+							),
+						)
 					}
 				}
 			}
