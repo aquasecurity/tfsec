@@ -46,16 +46,14 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			if networkprofileBlock := block.GetBlock("network_profile"); networkprofileBlock != nil {
-				networkpolicyAttr := networkprofileBlock.GetAttribute("network_policy")
-				if networkpolicyAttr == nil {
+				if networkprofileBlock.GetAttribute("network_policy") == nil {
 					return []scanner.Result{
-						check.NewResultWithValueAnnotation(
+						check.NewResult(
 							fmt.Sprintf(
 								"Resource '%s' do not have network_policy define. network_policy should be defined to have opportunity allow or block traffic to pods",
 								block.FullName(),
 							),
-							networkpolicyAttr.Range(),
-							networkpolicyAttr,
+							networkprofileBlock.Range(),
 							scanner.SeverityError,
 						),
 					}

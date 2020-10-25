@@ -19,6 +19,7 @@ func Test_AZUAKSClusterNetworkPolicy(t *testing.T) {
 			name: "check if network_policy set",
 			source: `
 resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+	network_profile {}
 }`,
 			mustIncludeResultCode: checks.AZUAKSClusterNetworkPolicy,
 		},
