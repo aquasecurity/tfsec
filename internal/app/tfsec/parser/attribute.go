@@ -1,13 +1,13 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -54,7 +54,7 @@ func (attr *Attribute) Name() string {
 	return attr.hclAttribute.Name
 }
 
-func (attr *Attribute) Contains(checkValue string) bool {
+func (attr *Attribute) Contains(checkValue interface{}) bool {
 	val := attr.Value()
 	if val.IsNull() {
 		return false
@@ -77,39 +77,34 @@ func (attr *Attribute) Contains(checkValue string) bool {
 		}
 		return false
 	}
-	return strings.Contains(val.AsString(), checkValue)
+	return strings.Contains(val.AsString(), fmt.Sprintf("%v", checkValue))
 }
 
-func (attr *Attribute) StartsWith(prefix string) bool {
+func (attr *Attribute) StartsWith(prefix interface{}) bool {
 	if attr.Value().Type() == cty.String {
-		return strings.HasPrefix(attr.Value().AsString(), prefix)
+		return strings.HasPrefix(attr.Value().AsString(), fmt.Sprintf("%v", prefix))
 	}
 	return false
 }
 
-func (attr *Attribute) EndsWith(prefix string) bool {
+func (attr *Attribute) EndsWith(suffix interface{}) bool {
 	if attr.Value().Type() == cty.String {
-		return strings.HasSuffix(attr.Value().AsString(), prefix)
+		return strings.HasSuffix(attr.Value().AsString(), fmt.Sprintf("%v", suffix))
 	}
 	return false
 }
 
-func (attr *Attribute) Equals(checkValue string) bool {
+func (attr *Attribute) Equals(checkValue interface{}) bool {
 	if attr.Value().Type() == cty.String {
-		return strings.EqualFold(attr.Value().AsString(), checkValue)
+		return strings.EqualFold(attr.Value().AsString(), fmt.Sprintf("%v", checkValue))
 	}
 	if attr.Value().Type() == cty.Bool {
-		checkBool, err := strconv.ParseBool(checkValue)
-		if err != nil {
-			debug.Log("Error converting bool for equality check. %s", err)
-			return false
-		}
-		return attr.Value().True() == checkBool
+		return attr.Value().True() == checkValue
 	}
 	if attr.Value().Type() == cty.Number {
 		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
 		if err != nil {
-			debug.Log("Error converting bool for equality check. %s", err)
+			debug.Log("Error converting number for equality check. %s", err)
 			return false
 		}
 		return attr.Value().RawEquals(checkNumber)
@@ -117,8 +112,9 @@ func (attr *Attribute) Equals(checkValue string) bool {
 	return false
 }
 
-func (attr *Attribute) RegexMatches(pattern string) bool {
-	re, err := regexp.Compile(pattern)
+func (attr *Attribute) RegexMatches(pattern interface{}) bool {
+	patternVal := fmt.Sprintf("%v", pattern)
+	re, err := regexp.Compile(patternVal)
 	if err != nil {
 		debug.Log("an error occurred while compiling the regex: %s", err)
 		return false
@@ -128,4 +124,52 @@ func (attr *Attribute) RegexMatches(pattern string) bool {
 		return match
 	}
 	return false
+}
+
+func (attr *Attribute) IsAny(options ...interface{}) bool {
+	if attr.Value().Type() == cty.String {
+		for _, option := range options {
+			if option == attr.Value().AsString() {
+				return true
+			}
+		}
+	}
+	if attr.Value().Type() == cty.Number {
+		for _, option := range options {
+			checkValue, err := gocty.ToCtyValue(option, cty.Number)
+			if err != nil {
+				debug.Log("Error converting number for equality check. %s", err)
+				return false
+			}
+			if attr.Value().RawEquals(checkValue) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (attr *Attribute) IsNone(options ...interface{}) bool {
+	if attr.Value().Type() == cty.String {
+		for _, option := range options {
+			if option == attr.Value().AsString() {
+				return false
+			}
+		}
+	}
+	if attr.Value().Type() == cty.Number {
+		for _, option := range options {
+			checkValue, err := gocty.ToCtyValue(option, cty.Number)
+			if err != nil {
+				debug.Log("Error converting number for equality check. %s", err)
+				return false
+			}
+			if attr.Value().RawEquals(checkValue) {
+				return false
+			}
+
+		}
+	}
+
+	return true
 }
