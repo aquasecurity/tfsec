@@ -44,6 +44,9 @@ func init() {
 		RequiredLabels: []string{"aws_s3_bucket"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if loggingBlock := block.GetBlock("logging"); loggingBlock == nil {
+				if block.GetAttribute("acl") != nil && block.GetAttribute("acl").Value().AsString() == "log-delivery-write" {
+					return nil
+				}
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not have logging enabled.", block.FullName()),

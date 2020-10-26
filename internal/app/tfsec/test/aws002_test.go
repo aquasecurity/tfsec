@@ -33,6 +33,14 @@ resource "aws_s3_bucket" "my-bucket" {
 }`,
 			mustExcludeResultCode: checks.AWSNoBucketLogging,
 		},
+		{
+			name: "check bucket with acl 'log-delivery-write' for logging",
+			source: `
+resource "aws_s3_bucket" "my-bucket" {
+	acl = "log-delivery-write"
+}`,
+			mustExcludeResultCode: checks.AWSNoBucketLogging,
+		},
 	}
 
 	for _, test := range tests {

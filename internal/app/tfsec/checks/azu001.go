@@ -56,7 +56,7 @@ func init() {
 			}
 
 			if prefixAttr := block.GetAttribute("source_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
-				if strings.HasSuffix(prefixAttr.Value().AsString(), "/0") || prefixAttr.Value().AsString() == "*" {
+				if isOpenCidr(prefixAttr, check.Provider) {
 					if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
 						return []scanner.Result{
 							check.NewResultWithValueAnnotation(
@@ -77,21 +77,18 @@ func init() {
 			var results []scanner.Result
 
 			if prefixesAttr := block.GetAttribute("source_address_prefixes"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
-				for _, prefix := range prefixesAttr.Value().AsValueSlice() {
-					if strings.HasSuffix(prefix.AsString(), "/0") || prefix.AsString() == "*" {
-						if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
-							results = append(results,
-								check.NewResultWithValueAnnotation(
-									fmt.Sprintf("Resource '%s' defines a fully open %s security group rule.", block.FullName(), prefix.AsString()),
-									prefixesAttr.Range(),
-									prefixesAttr,
-									scanner.SeverityWarning,
-								),
-							)
-						}
+				if isOpenCidr(prefixesAttr, check.Provider) {
+					if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
+						results = append(results,
+							check.NewResultWithValueAnnotation(
+								fmt.Sprintf("Resource '%s' defines a fully open security group rule.", block.FullName()),
+								prefixesAttr.Range(),
+								prefixesAttr,
+								scanner.SeverityWarning,
+							),
+						)
 					}
 				}
-
 			}
 
 			return results
