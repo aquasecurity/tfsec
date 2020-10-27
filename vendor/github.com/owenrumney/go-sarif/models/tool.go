@@ -13,7 +13,8 @@ type driver struct {
 type rule struct {
 	Id               string            `json:"id"`
 	ShortDescription *textBlock        `json:"shortDescription"`
-	HelpUri          string            `json:"helpUri"`
+	HelpUri          string            `json:"helpUri,omitempty"`
+	Help             *textBlock        `json:"help,omitempty"`
 	Properties       map[string]string `json:"properties,omitempty"`
 }
 
@@ -42,6 +43,13 @@ func (rule *rule) WithDescription(description string) *rule {
 
 func (rule *rule) WithHelpUri(helpUrl string) *rule {
 	rule.HelpUri = helpUrl
+	return rule
+}
+
+func (rule *rule) WithHelp(helpText string) *rule {
+	rule.Help = &textBlock{
+		Text: helpText,
+	}
 	return rule
 }
 

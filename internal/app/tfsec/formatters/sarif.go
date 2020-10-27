@@ -21,7 +21,7 @@ func FormatSarif(w io.Writer, results []scanner.Result, baseDir string) error {
 	for _, result := range results {
 		rule := run.AddRule(string(result.RuleID)).
 			WithDescription(result.Description).
-			WithHelpUri(fmt.Sprintf("https://tfsec.dev/%s/%s", strings.ToLower(string(result.RuleProvider)), result.RuleID))
+			WithHelp(fmt.Sprintf("You can lean more about %s at https://tfsec.dev/%s/%s", result.RuleID, strings.ToLower(string(result.RuleProvider)), result.RuleID))
 
 		relativePath, err := filepath.Rel(baseDir, result.Range.Filename)
 		if err != nil {
