@@ -36,15 +36,7 @@ func New(version Version) (*Report, error) {
 }
 
 func (sarif *Report) AddRun(toolName, informationUri string) *models.Run {
-	tool := &models.Tool{
-		Driver: &models.Driver{
-			Name:           toolName,
-			InformationUri: informationUri,
-		},
-	}
-	run := &models.Run{
-		Tool: tool,
-	}
+	run := models.NewRun(toolName, informationUri)
 	sarif.Runs = append(sarif.Runs, run)
 	return run
 }
@@ -60,6 +52,15 @@ func getVersionSchema(version Version) (string, error) {
 
 func (sarif *Report) Write(w io.Writer) error {
 	marshal, err := json.Marshal(sarif)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(marshal)
+	return err
+}
+
+func (sarif *Report) PrettyWrite(w io.Writer) error {
+	marshal, err := json.MarshalIndent(sarif, "", "  ")
 	if err != nil {
 		return err
 	}
