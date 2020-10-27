@@ -24,11 +24,11 @@ func FormatSarif(w io.Writer, results []scanner.Result) error {
 
 		ruleResult := run.AddResult(rule.Id).
 			WithMessage(string(result.RuleDescription)).
-			WithLevel(string(result.Severity)).
+			WithLevel(strings.ToLower(string(result.Severity))).
 			WithLocationDetails(result.Range.Filename, result.Range.StartLine, 1)
 
 		run.AddResultDetails(rule, ruleResult, result.Range.Filename)
 	}
 
-	return report.Write(w)
+	return report.PrettyWrite(w)
 }

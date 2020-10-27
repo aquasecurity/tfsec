@@ -1,31 +1,44 @@
 package models
 
 type Run struct {
-	Tool      *Tool              `json:"tool"`
+	Tool      *tool              `json:"tool"`
 	Artifacts []*LocationWrapper `json:"artifacts,omitempty"`
 	Results   []*Result          `json:"results,omitempty"`
 }
 
 type LocationWrapper struct {
-	Location *Location `json:"location,omitentry"`
+	Location *l `json:"location,omitentry"`
 }
 
-// AddArtifact returns the index of the newly added ArtifactLocation
-func (run *Run) AddArtifact(location *Location) int {
+func NewRun(toolName, informationUri string) *Run {
+	tool := &tool{
+		Driver: &driver{
+			Name:           toolName,
+			InformationUri: informationUri,
+		},
+	}
+	run := &Run{
+		Tool: tool,
+	}
+	return run
+}
+
+// AddArtifact returns the index of the newly added artifactLocation
+func (run *Run) AddArtifact(location string) int {
 	for i, l := range run.Artifacts {
-		if l.Location.Uri == location.Uri {
+		if l.Location.Uri == location {
 			return i
 		}
 	}
 	run.Artifacts = append(run.Artifacts, &LocationWrapper{
-		Location: &Location{
-			Uri: location.Uri,
+		Location: &l{
+			Uri: location,
 		},
 	})
 	return len(run.Artifacts) - 1
 }
 
-func (run *Run) AddRule(ruleId string) *Rule {
+func (run *Run) AddRule(ruleId string) *rule {
 	for _, rule := range run.Tool.Driver.Rules {
 		if rule.Id == ruleId {
 			return rule
@@ -48,10 +61,10 @@ func (run *Run) AddResult(ruleId string) *Result {
 }
 
 // AddResultDetails adds rules to the driver and artifact locations if they are missing. It adds the result to the result block as well
-func (run *Run) AddResultDetails(rule *Rule, result *Result, location string) {
+func (run *Run) AddResultDetails(rule *rule, result *Result, location string) {
 	ruleIndex := run.Tool.Driver.getOrCreateRule(rule)
 	result.RuleIndex = ruleIndex
-	locationIndex := run.AddArtifact(&Location{Uri: location})
+	locationIndex := run.AddArtifact(location)
 	updateResultLocationIndex(result, location, locationIndex)
 }
 

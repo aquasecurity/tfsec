@@ -1,23 +1,23 @@
 package models
 
-type Tool struct {
-	Driver *Driver `json:"driver"`
+type tool struct {
+	Driver *driver `json:"driver"`
 }
 
-type Driver struct {
+type driver struct {
 	Name           string  `json:"name"`
 	InformationUri string  `json:"informationUri"`
-	Rules          []*Rule `json:"rules,omitempty"`
+	Rules          []*rule `json:"rules,omitempty"`
 }
 
-type Rule struct {
+type rule struct {
 	Id               string            `json:"id"`
-	ShortDescription *TextBlock        `json:"shortDescription"`
+	ShortDescription *textBlock        `json:"shortDescription"`
 	HelpUri          string            `json:"helpUri"`
 	Properties       map[string]string `json:"properties,omitempty"`
 }
 
-func (driver *Driver) getOrCreateRule(rule *Rule) int {
+func (driver *driver) getOrCreateRule(rule *rule) int {
 	for i, r := range driver.Rules {
 		if r.Id == rule.Id {
 			return i
@@ -27,25 +27,25 @@ func (driver *Driver) getOrCreateRule(rule *Rule) int {
 	return len(driver.Rules) - 1
 }
 
-func newRule(ruleId string) *Rule {
-	return &Rule{
+func newRule(ruleId string) *rule {
+	return &rule{
 		Id: ruleId,
 	}
 }
 
-func (rule *Rule) WithDescription(description string) *Rule {
-	rule.ShortDescription = &TextBlock{
+func (rule *rule) WithDescription(description string) *rule {
+	rule.ShortDescription = &textBlock{
 		Text: description,
 	}
 	return rule
 }
 
-func (rule *Rule) WithHelpUri(helpUrl string) *Rule {
+func (rule *rule) WithHelpUri(helpUrl string) *rule {
 	rule.HelpUri = helpUrl
 	return rule
 }
 
-func (rule *Rule) WithProperties(properties map[string]string) *Rule {
+func (rule *rule) WithProperties(properties map[string]string) *rule {
 	rule.Properties = properties
 	return rule
 }
