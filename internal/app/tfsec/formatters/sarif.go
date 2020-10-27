@@ -3,6 +3,7 @@ package formatters
 import (
 	"fmt"
 	"io"
+	"os"
 	"strings"
 
 	"github.com/owenrumney/go-sarif/sarif"
@@ -25,10 +26,16 @@ func FormatSarif(w io.Writer, results []scanner.Result) error {
 		ruleResult := run.AddResult(rule.Id).
 			WithMessage(string(result.RuleDescription)).
 			WithLevel(strings.ToLower(string(result.Severity))).
-			WithLocationDetails(result.Range.Filename, result.Range.StartLine, 1)
+			WithLocationDetails(getRelativePath(result.Range.Filename), result.Range.StartLine, 1)
 
 		run.AddResultDetails(rule, ruleResult, result.Range.Filename)
 	}
 
 	return report.PrettyWrite(w)
+}
+
+func getRelativePath(fullPath string) string {
+	checkRootPath := os.Getenv("ABSOLUTE_CHECK_PATH")
+	relativePath := strings.TrimPrefix(strings.ReplaceAll(fullPath, checkRootPath, ""), "/")
+	return relativePath
 }

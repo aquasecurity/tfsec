@@ -86,6 +86,8 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		os.Setenv("ABSOLUTE_CHECK_PATH", dir)
+
 		debug.Log("Loading custom checks...")
 		if len(customCheckDir) == 0 {
 			debug.Log("Using the default custom check folder")
