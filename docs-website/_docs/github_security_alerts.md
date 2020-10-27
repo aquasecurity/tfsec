@@ -1,5 +1,5 @@
 ---
-title: Custom Checks
+title: Github Security Checks
 permalink: /docs/github_security_alerts/
 ---
 
