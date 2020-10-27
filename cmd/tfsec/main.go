@@ -138,7 +138,7 @@ var rootCmd = &cobra.Command{
 
 		debug.Log("Starting scanner...")
 		results := scanner.New().Scan(blocks, excludedChecksList)
-		if err := formatter(outputFile, results); err != nil {
+		if err := formatter(outputFile, results, dir); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
