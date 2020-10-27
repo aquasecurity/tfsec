@@ -193,3 +193,121 @@ resource "aws_security_group" "my-security_group" {
 		})
 	}
 }
+
+func Test_AttributeIsAny(t *testing.T) {
+	var tests []struct {
+		name           string
+		source         string
+		checkAttribute string
+		checkValue     []interface{}
+		expectedResult bool
+	} = []struct {
+		name           string
+		source         string
+		checkAttribute string
+		checkValue     []interface{}
+		expectedResult bool
+	}{
+		{
+			name: "bucket acl is not one of the specified acls",
+			source: `
+resource "aws_s3_bucket" "my-bucket" {
+ 	bucket_name = "bucketName"
+	acl = "public-read"
+}`,
+			checkAttribute: "acl",
+			checkValue:     []interface{}{"private", "authenticated-read"},
+			expectedResult: false,
+		},
+		{
+			name: "bucket acl is one of the specified acls",
+			source: `
+resource "aws_s3_bucket" "my-bucket" {
+ 	bucket_name = "bucketName"
+	acl = "private"
+}`,
+			checkAttribute: "acl",
+			checkValue:     []interface{}{"private", "authenticated-read"},
+			expectedResult: true,
+		},
+		{
+			name: "is is one of the provided valued",
+			source: `
+resource "aws_security_group" "my-security_group" {
+	count = 1
+}`,
+			checkAttribute: "count",
+			checkValue:     []interface{}{1, 2},
+			expectedResult: true,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			blocks := createBlocksFromSource(test.source)
+			for _, block := range blocks {
+				if !block.HasChild(test.checkAttribute) {
+					t.Fail()
+				}
+				attr := block.GetAttribute(test.checkAttribute)
+				assert.Equal(t, attr.IsAny(test.checkValue...), test.expectedResult)
+			}
+		})
+	}
+}
+
+func Test_AttributeIsNone(t *testing.T) {
+	var tests = []struct {
+		name           string
+		source         string
+		checkAttribute string
+		checkValue     []interface{}
+		expectedResult bool
+	}{
+		{
+			name: "bucket acl is not one of the specified acls",
+			source: `
+resource "aws_s3_bucket" "my-bucket" {
+ 	bucket_name = "bucketName"
+	acl = "public-read"
+}`,
+			checkAttribute: "acl",
+			checkValue:     []interface{}{"private", "authenticated-read"},
+			expectedResult: true,
+		},
+		{
+			name: "bucket acl is one of the specified acls",
+			source: `
+resource "aws_s3_bucket" "my-bucket" {
+ 	bucket_name = "bucketName"
+	acl = "private"
+}`,
+			checkAttribute: "acl",
+			checkValue:     []interface{}{"private", "authenticated-read"},
+			expectedResult: false,
+		},
+		{
+			name: "count is non-of the provided values",
+			source: `
+resource "aws_security_group" "my-security_group" {
+	count = 0
+}`,
+			checkAttribute: "count",
+			checkValue:     []interface{}{1, 2},
+			expectedResult: true,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			blocks := createBlocksFromSource(test.source)
+			for _, block := range blocks {
+				if !block.HasChild(test.checkAttribute) {
+					t.Fail()
+				}
+				attr := block.GetAttribute(test.checkAttribute)
+				assert.Equal(t, attr.IsNone(test.checkValue...), test.expectedResult)
+			}
+		})
+	}
+}

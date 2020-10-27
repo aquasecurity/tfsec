@@ -16,6 +16,7 @@ const (
   docs:
   - home
   - custom_checks
+  - github_security_alerts
 
 {{range $p := .}}
 - title: {{$p.Provider | ToUpper }} Checks
