@@ -38,6 +38,10 @@ github.com/mitchellh/go-homedir
 github.com/mitchellh/go-wordwrap
 # github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e
 ## explicit
+# github.com/owenrumney/go-sarif v0.0.1
+## explicit
+github.com/owenrumney/go-sarif/models
+github.com/owenrumney/go-sarif/sarif
 # github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942
 github.com/pkg/term
 github.com/pkg/term/termios
@@ -48,7 +52,7 @@ github.com/pmezard/go-difflib/difflib
 github.com/spf13/cobra
 # github.com/spf13/pflag v1.0.3
 github.com/spf13/pflag
-# github.com/stretchr/testify v1.5.1
+# github.com/stretchr/testify v1.6.1
 ## explicit
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
@@ -76,5 +80,5 @@ golang.org/x/text/transform
 golang.org/x/text/unicode/norm
 # gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f
 ## explicit
-# gopkg.in/yaml.v2 v2.2.2
-gopkg.in/yaml.v2
+# gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
+gopkg.in/yaml.v3
