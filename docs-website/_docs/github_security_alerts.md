@@ -15,7 +15,7 @@ We have provided an action which can be used in your github repo with very littl
 
 Github Actions make it easy to add functionality; to add an action, go to the `Action` tab to create a new workflow and choose to Set up a workflow yourself.
 
-![Setup a new workflow](newworkflow.png)
+![Setup a new workflow](/docs/newworkflow.png)
 
 Paste in the workflow content below (be sure to check you're using the latest version of the tfsec-sarif-action by checking [here](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload))
 
@@ -58,7 +58,7 @@ Finally, the sarif report will be uploaded and the `Security` tab updated with t
 
 It will look something like;
 
-![Code Scanning](codescanning.png)
+![Code Scanning](/docs/codescanning.png)
 
 ## Anything else I should know?
 
