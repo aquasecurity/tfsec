@@ -39,7 +39,7 @@ jobs:
         uses: tfsec/tfsec-sarif-action@v0.0.3
         with:
           sarif_file: tfsec.sarif         
-          github_token: ${{ secrets.github_token }}
+          github_token: $${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
@@ -70,7 +70,7 @@ If you have code that is deeper in the github repo, you can use `working_directo
         with:
           working_directory: terraform/relevant
           sarif_file: tfsec.sarif         
-          github_token: ${{ secrets.github_token }}
+          github_token: $${{ secrets.GITHUB_TOKEN }}
 
 ```
 
