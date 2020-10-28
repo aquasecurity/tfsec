@@ -20,7 +20,7 @@ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 const AZUAKSAPIServerAuthorizedIPRangesGoodExample = `
 resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
     api_server_authorized_ip_ranges = [
-		x.x.x.x/32
+		"1.2.3.4/32"
 	]
 }
 `
