@@ -9,7 +9,7 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-func FormatText(_ io.Writer, results []scanner.Result) error {
+func FormatText(_ io.Writer, results []scanner.Result, _ string) error {
 
 	if len(results) == 0 {
 		fmt.Print("\nNo problems detected!\n")

@@ -134,8 +134,21 @@ American friends).
 
 ## Output options
 
-You can output tfsec results as JSON, CSV, Checkstyle, JUnit or just plain old human readable format. Use the `--format` flag
+You can output tfsec results as JSON, CSV, Checkstyle, Sarif, JUnit or just plain old human readable format. Use the `--format` flag
 to specify your desired format.
+
+## Github Security Alerts
+If you want to integrate with Github Security alerts and include the output of your tfsec checks you can use the [tfsec-sarif-action](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload) Github action to run the static analysis then upload the results to the security alerts tab.
+
+The alerts generated for [tfsec-example-project](https://gighub.com/tfsec/tfsec-github-project) look like this.
+
+![github security alerts](codescanning.png)
+
+When you click through the alerts for the branch, you get more information about the actual issue. 
+
+![github security alerts](scanningalert.png)
+
+For more information about adding security alerts, check 
 
 ## Support for older terraform versions
 
