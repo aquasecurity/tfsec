@@ -111,10 +111,12 @@ func (check *Check) IsRequiredForBlock(block *parser.Block) bool {
 // NewResult creates a new Result, containing the given description and range
 func (check *Check) NewResult(description string, r parser.Range, severity Severity) Result {
 	return Result{
-		RuleID:      check.Code,
-		Description: description,
-		Range:       r,
-		Severity:    severity,
+		RuleID:          check.Code,
+		RuleDescription: check.Documentation.Summary,
+		RuleProvider:    check.Provider,
+		Description:     description,
+		Range:           r,
+		Severity:        severity,
 	}
 }
 
@@ -144,6 +146,8 @@ func (check *Check) NewResultWithValueAnnotation(description string, r parser.Ra
 
 	return Result{
 		RuleID:          check.Code,
+		RuleDescription: check.Documentation.Summary,
+		RuleProvider:    check.Provider,
 		Description:     description,
 		Range:           r,
 		RangeAnnotation: fmt.Sprintf("[%s] %#v", typeStr, raw),

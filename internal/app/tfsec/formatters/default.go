@@ -15,7 +15,7 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-func FormatDefault(_ io.Writer, results []scanner.Result) error {
+func FormatDefault(_ io.Writer, results []scanner.Result, _ string) error {
 
 	if len(results) == 0 {
 		_ = tml.Printf("\n")
