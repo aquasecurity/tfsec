@@ -23,7 +23,13 @@ const (
   docs:
   - {{$p.Provider}}/home
 {{range $check := $p.Checks}}  - {{$check.Provider}}/{{$check.Code}}
-{{end}}{{end}}`
+{{end}}{{end}}
+	
+- title: Custom Check Library	
+  docs:
+  - checkLibrary/custom_check_library
+
+`
 
 	baseWebPageTemplate = `---
 title: {{$.Code}}
