@@ -16,13 +16,22 @@ const (
   docs:
   - home
   - custom_checks
+  - github_security_alerts
 
 {{range $p := .}}
 - title: {{$p.Provider | ToUpper }} Checks
   docs:
   - {{$p.Provider}}/home
 {{range $check := $p.Checks}}  - {{$check.Provider}}/{{$check.Code}}
-{{end}}{{end}}`
+{{end}}{{end}}
+- title: Custom Check Library	
+  docs:
+  - check_library/custom_check_library
+  - check_library/acls
+  - check_library/in_module
+  - check_library/tagged
+
+`
 
 	baseWebPageTemplate = `---
 title: {{$.Code}}

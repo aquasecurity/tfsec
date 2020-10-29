@@ -30,6 +30,14 @@ var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 		attribute := block.GetAttribute(spec.Name)
 		return attribute != nil && attribute.RegexMatches(spec.MatchValue)
 	},
+	IsAny: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		return attribute != nil && attribute.IsAny(unpackInterfaceToInterfaceSlice(spec.MatchValue)...)
+	},
+	IsNone: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		return attribute != nil && attribute.IsNone(unpackInterfaceToInterfaceSlice(spec.MatchValue)...)
+	},
 }
 
 func processFoundChecks(checks ChecksFile) {
@@ -83,4 +91,16 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec) bool {
 		evalResult = evalMatchSpec(block, spec.SubMatch)
 	}
 	return evalResult
+}
+
+func unpackInterfaceToInterfaceSlice(t interface{}) []interface{} {
+	switch t := t.(type) {
+	case []interface{}:
+		var result []interface{}
+		for _, i := range t {
+			result = append(result, i)
+		}
+		return result
+	}
+	return nil
 }

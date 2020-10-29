@@ -117,7 +117,7 @@ The `startsWith` check action passes if the checked attribute string starts with
 ```
 
 ##### endsWith
-The `endsWith` check action passes if the checked attribute string ends with the specified value. For example, to check that `acl` begins with `public` you could use the following `MatchSpec`;
+The `endsWith` check action passes if the checked attribute string ends with the specified value. For example, to check that `acl` ends with `read` you could use the following `MatchSpec`;
 
 ```json
 "matchSpec" : {
@@ -176,6 +176,27 @@ When tackling this specific use case of filtering module blocks by source, the `
       }
 ```
 
+##### isAny
+The `isAny` check action passes when the attribute value can be found in the slice passed as the check value. This check action supports strings and numbers
+
+```
+"matchSpec" : {
+  "name": "acl",
+  "action": "isAny",
+  "value": ["private", "log-delivery-write"]
+}
+```
+
+##### isNone
+The `isNone` check action passes when the attribute value cannot be found in the slice passed as the check value. This check action supports strings and numbers
+
+```
+"matchSpec" : {
+  "name": "acl",
+  "action": "isNone",
+  "value": ["authenticated-read", "public-read"]
+}
+```
 
 ## How do I know my JSON is valid?
 We have provided the `tfsec-checkgen` binary which will validate your check file to ensure that it is valid for use with `tfsec`. 

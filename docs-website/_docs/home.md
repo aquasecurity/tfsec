@@ -48,4 +48,4 @@ docker run --rm -it -v "$(pwd):/src" liamg/tfsec /src
 
 ## Use as GitHub Action
 
-If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/triat/terraform-security-scan](https://github.com/triat/terraform-security-scan).
+If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/marketplace/actions/run-tfsec-with-sarif-upload](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload). See [github action page](/docs/github_security_alerts) for more details
