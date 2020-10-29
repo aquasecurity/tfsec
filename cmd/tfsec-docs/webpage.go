@@ -24,7 +24,6 @@ const (
   - {{$p.Provider}}/home
 {{range $check := $p.Checks}}  - {{$check.Provider}}/{{$check.Code}}
 {{end}}{{end}}
-	
 - title: Custom Check Library	
   docs:
   - checkLibrary/custom_check_library
