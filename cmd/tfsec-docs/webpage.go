@@ -26,7 +26,10 @@ const (
 {{end}}{{end}}
 - title: Custom Check Library	
   docs:
-  - checkLibrary/custom_check_library
+  - check_library/custom_check_library
+  - check_library/acls
+  - check_library/in_module
+  - check_library/tagged
 
 `
 
