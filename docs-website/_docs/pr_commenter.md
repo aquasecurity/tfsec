@@ -40,6 +40,7 @@ On each pull request and subsequent commit, tfsec will run and add comments to t
 
 The comment will only be added once per transgression.
 
+
 ## Example PR Comment
 
 The screenshot below demonstrates the comments that can be expected when using the action
