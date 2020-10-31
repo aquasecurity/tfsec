@@ -173,3 +173,11 @@ func (attr *Attribute) IsNone(options ...interface{}) bool {
 
 	return true
 }
+
+func (attr *Attribute) IsTrue() bool {
+	return attr.Value().Type() == cty.Bool && attr.Value().True()
+}
+
+func (attr *Attribute) IsFalse() bool {
+	return attr.Value().Type() == cty.Bool && attr.Value().False()
+}
