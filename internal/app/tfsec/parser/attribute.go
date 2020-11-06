@@ -181,3 +181,20 @@ func (attr *Attribute) IsTrue() bool {
 func (attr *Attribute) IsFalse() bool {
 	return attr.Value().Type() == cty.Bool && attr.Value().False()
 }
+
+func (attr *Attribute) IsEmpty() bool {
+	if attr.Value().Type() == cty.String {
+		return len(attr.Value().AsString()) == 0
+	}
+	if attr.Type().IsListType() || attr.Type().IsTupleType() {
+		return len(attr.Value().AsValueSlice()) == 0
+	}
+	if attr.Type().IsMapType() || attr.Type().IsObjectType() {
+		return len(attr.Value().AsValueMap()) == 0
+	}
+	if attr.Value().Type() == cty.Number {
+		// a number can't ever be empty
+		return false
+	}
+	return true
+}
