@@ -311,3 +311,113 @@ resource "aws_security_group" "my-security_group" {
 		})
 	}
 }
+
+func Test_AttributeIsEmpty(t *testing.T) {
+	var tests = []struct {
+		name           string
+		source         string
+		checkAttribute string
+		checkValue     []interface{}
+		expectedResult bool
+	}{
+		{
+			name: "bucket acl is not empty",
+			source: `
+resource "aws_s3_bucket" "my-bucket" {
+ 	bucket_name = "bucketName"
+	acl = "public-read"
+}`,
+			checkAttribute: "acl",
+			expectedResult: false,
+		},
+		{
+			name: "bucket acl is empty",
+			source: `
+resource "aws_s3_bucket" "my-bucket" {
+ 	bucket_name = "bucketName"
+	acl = ""
+}`,
+			checkAttribute: "acl",
+			expectedResult: true,
+		},
+		{
+			name: "tags is not empty",
+			source: `
+resource "aws_s3_bucket" "my-bucket" {
+ 	bucket_name = "bucketName"
+	acl = "public-read"
+	tags = {
+		Department = "Finance"
+	}
+}`,
+			checkAttribute: "tags",
+			expectedResult: false,
+		},
+		{
+			name: "tags is empty",
+			source: `
+resource "aws_s3_bucket" "my-bucket" {
+ 	bucket_name = "bucketName"
+	acl = "public-read"
+	tags = {
+	}
+}`,
+			checkAttribute: "tags",
+			expectedResult: true,
+		},
+		{
+			name: "cidr is not empty",
+			source: `
+resource "aws_security_group_rule" "example" {
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "sg-123456"
+}`,
+			checkAttribute: "cidr_blocks",
+			expectedResult: false,
+		},
+		{
+			name: "cidr is empty",
+			source: `
+resource "aws_security_group_rule" "example" {
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = []
+  security_group_id = "sg-123456"
+}`,
+			checkAttribute: "cidr_blocks",
+			expectedResult: true,
+		},
+		{
+			name: "from_port_is_not_empty",
+			source: `
+resource "aws_security_group_rule" "example" {
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = []
+  security_group_id = "sg-123456"
+}`,
+			checkAttribute: "from_port",
+			expectedResult: false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			blocks := createBlocksFromSource(test.source)
+			for _, block := range blocks {
+				if !block.HasChild(test.checkAttribute) {
+					t.Fail()
+				}
+				attr := block.GetAttribute(test.checkAttribute)
+				assert.Equal(t, attr.IsEmpty(), test.expectedResult)
+			}
+		})
+	}
+}
