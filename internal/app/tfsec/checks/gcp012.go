@@ -58,14 +58,14 @@ func init() {
 			serviceAccount := displayBlock.GetAttribute("service_account")
 
 			if serviceAccount == nil || serviceAccount.IsEmpty() {
-				if display_block == nil {
-					display_block = block
+				if displayBlock == nil {
+					displayBlock = block
 				}
 
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", block.FullName()),
-						display_block.Range(),
+						displayBlock.Range(),
 						scanner.SeverityError,
 					),
 				}
