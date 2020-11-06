@@ -5,7 +5,6 @@ import (
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-	"github.com/zclconf/go-cty/cty"
 )
 
 const GCPGKENodeServiceAccount scanner.RuleCode = "GCP012"
