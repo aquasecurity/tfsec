@@ -182,6 +182,10 @@ func (block *Block) HasChild(childElement string) bool {
 	return block.GetAttribute(childElement) != nil || block.GetBlock(childElement) != nil
 }
 
+func (block *Block) MissingChild(childElement string) bool {
+	return !block.HasChild(childElement)
+}
+
 func (block *Block) InModule() bool {
 	return block.moduleBlock != nil
 }
