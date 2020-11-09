@@ -198,3 +198,15 @@ func (attr *Attribute) IsEmpty() bool {
 	}
 	return true
 }
+
+func (attr *Attribute) MapValue(mapKey string) cty.Value {
+	if attr.Type().IsObjectType() || attr.Type().IsMapType() {
+		attrMap := attr.Value().AsValueMap()
+		for key, value := range attrMap {
+			if key == mapKey {
+				return value
+			}
+		}
+	}
+	return cty.StringVal("")
+}
