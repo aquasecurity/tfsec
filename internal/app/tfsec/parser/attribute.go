@@ -94,8 +94,19 @@ func (attr *Attribute) EndsWith(suffix interface{}) bool {
 	return false
 }
 
-func (attr *Attribute) Equals(checkValue interface{}) bool {
+type EqualityOption int
+
+const (
+	IgnoreCase EqualityOption = iota
+)
+
+func (attr *Attribute) Equals(checkValue interface{}, equalityOptions ...EqualityOption) bool {
 	if attr.Value().Type() == cty.String {
+		for _, option := range equalityOptions {
+			if option == IgnoreCase {
+				return strings.EqualFold(strings.ToLower(attr.Value().AsString()), strings.ToLower(fmt.Sprintf("%v", checkValue)))
+			}
+		}
 		return strings.EqualFold(attr.Value().AsString(), fmt.Sprintf("%v", checkValue))
 	}
 	if attr.Value().Type() == cty.Bool {
@@ -197,4 +208,16 @@ func (attr *Attribute) IsEmpty() bool {
 		return false
 	}
 	return true
+}
+
+func (attr *Attribute) MapValue(mapKey string) cty.Value {
+	if attr.Type().IsObjectType() || attr.Type().IsMapType() {
+		attrMap := attr.Value().AsValueMap()
+		for key, value := range attrMap {
+			if key == mapKey {
+				return value
+			}
+		}
+	}
+	return cty.StringVal("")
 }
