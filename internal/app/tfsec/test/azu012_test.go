@@ -42,6 +42,31 @@ resource "azurerm_storage_account_network_rules" "test" {
 			mustIncludeResultCode: checks.AZUDefaultActionOnNetworkRuleSetToDeny,
 		},
 		{
+			name: "check default action of Allow on storage account causes a failure",
+			source: `
+resource "azurerm_storage_account" "example" {
+  name                = "storageaccountname"
+  resource_group_name = azurerm_resource_group.example.name
+
+  location                 = azurerm_resource_group.example.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+
+  network_rules {
+    default_action             = "Allow"
+    ip_rules                   = ["100.0.0.1"]
+    virtual_network_subnet_ids = [azurerm_subnet.example.id]
+    bypass                     = ["Metrics", "AzureServices"]
+  }
+
+  tags = {
+    environment = "staging"
+  }
+}
+`,
+			mustIncludeResultCode: checks.AZUDefaultActionOnNetworkRuleSetToDeny,
+		},
+		{
 			name: "check no error when the default action is set to deny",
 			source: `
 resource "azurerm_storage_account_network_rules" "test" {

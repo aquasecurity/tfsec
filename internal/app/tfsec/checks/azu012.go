@@ -8,7 +8,7 @@ import (
 )
 
 const AZUDefaultActionOnNetworkRuleSetToDeny scanner.RuleCode = "AZU012"
-const AZUDefaultActionOnNetworkRuleSetToDenyDescription scanner.RuleSummary = "The default action on Network Rules should be set to deny"
+const AZUDefaultActionOnNetworkRuleSetToDenyDescription scanner.RuleSummary = "The default action on Storage account network rules should be set to deny"
 const AZUDefaultActionOnNetworkRuleSetToDenyExplanation = `
 The default_action for network rules should come into effect when no other rules are matched.
 
@@ -48,8 +48,15 @@ func init() {
 		},
 		Provider:       scanner.AzureProvider,
 		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_storage_account_network_rules"},
+		RequiredLabels: []string{"azurerm_storage_account", "azurerm_storage_account_network_rules"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+
+			if block.Labels()[0] == "azurerm_storage_account" {
+				if block.MissingChild("network_rules") {
+					return nil
+				}
+				block = block.GetBlock("network_rules")
+			}
 
 			defaultAction := block.GetAttribute("default_action")
 			if defaultAction != nil && defaultAction.Equals("Allow", parser.IgnoreCase) {
