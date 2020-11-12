@@ -17,7 +17,7 @@ When you require secure transfer, any requests originating from an insecure conn
 Microsoft recommends that you always require secure transfer for all of your storage accounts.
 `
 const AZURequireSecureTransferForStorageAccountsBadExample = `
-resource "azurerm_storage_account" "example" {
+resource "azurerm_storage_account" "bad_example" {
   name                      = "storageaccountname"
   resource_group_name       = azurerm_resource_group.example.name
   location                  = azurerm_resource_group.example.location
@@ -27,7 +27,7 @@ resource "azurerm_storage_account" "example" {
 }
 `
 const AZURequireSecureTransferForStorageAccountsGoodExample = `
-resource "azurerm_storage_account" "example" {
+resource "azurerm_storage_account" "good_example" {
   name                      = "storageaccountname"
   resource_group_name       = azurerm_resource_group.example.name
   location                  = azurerm_resource_group.example.location

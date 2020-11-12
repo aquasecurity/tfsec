@@ -15,7 +15,7 @@ Some Microsoft services that interact with storage accounts operate from network
 To help this type of service work as intended, allow the set of trusted Microsoft services to bypass the network rules
 `
 const AZUTrustedMicrosoftServicesHaveStroageAccountAccessBadExample = `
-resource "azurerm_storage_account" "example" {
+resource "azurerm_storage_account" "bad_example" {
   name                = "storageaccountname"
   resource_group_name = azurerm_resource_group.example.name
 
@@ -46,7 +46,7 @@ resource "azurerm_storage_account_network_rules" "test" {
 }
 `
 const AZUTrustedMicrosoftServicesHaveStroageAccountAccessGoodExample = `
-resource "azurerm_storage_account" "example" {
+resource "azurerm_storage_account" "good_example" {
   name                = "storageaccountname"
   resource_group_name = azurerm_resource_group.example.name
 
