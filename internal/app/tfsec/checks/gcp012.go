@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
@@ -43,6 +44,10 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster", "google_container_node_pool"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+
+			if strings.HasPrefix(block.Label(), "google_container_cluster") && !block.HasBlock("node_config") {
+				return nil
+			}
 
 			if !block.HasBlock("node_config") {
 				return []scanner.Result{

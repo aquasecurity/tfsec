@@ -31,7 +31,7 @@ resource "google_container_cluster" "my-cluster" {
 resource "google_container_cluster" "my-cluster" {
 }
 `,
-			mustIncludeResultCode: checks.GCPGKENodeServiceAccount,
+			mustExcludeResultCode: checks.GCPGKENodeServiceAccount,
 		},
 		{
 			name: "defines service account in container cluster",
