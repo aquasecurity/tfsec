@@ -15,7 +15,7 @@ The default_action for network rules should come into effect when no other rules
 The default action should be set to Deny.
 `
 const AZUDefaultActionOnNetworkRuleSetToDenyBadExample = `
-resource "azurerm_storage_account_network_rules" "test" {
+resource "azurerm_storage_account_network_rules" "bad_example" {
   
   default_action             = "Allow"
   ip_rules                   = ["127.0.0.1"]
@@ -24,7 +24,7 @@ resource "azurerm_storage_account_network_rules" "test" {
 }
 `
 const AZUDefaultActionOnNetworkRuleSetToDenyGoodExample = `
-resource "azurerm_storage_account_network_rules" "test" {
+resource "azurerm_storage_account_network_rules" "good_example" {
   
   default_action             = "Deny"
   ip_rules                   = ["127.0.0.1"]
