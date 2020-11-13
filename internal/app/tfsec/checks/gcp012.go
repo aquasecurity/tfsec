@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
@@ -15,15 +16,15 @@ You should create and use a minimally privileged service account to run your GKE
 
 const GCPGKENodeServiceAccountBadExample = `
 resource "google_container_cluster" "my-cluster" {
-  node_config {
-  }
+	node_config {
+	}
 }
 `
 const GCPGKENodeServiceAccountGoodExample = `
 resource "google_container_cluster" "my-cluster" {
-  node_config {
-    service_account = "cool-service-account@example.com"
-  }
+	node_config {
+		service_account = "cool-service-account@example.com"
+	}
 }
 `
 
@@ -43,6 +44,10 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster", "google_container_node_pool"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+
+			if strings.HasPrefix(block.Label(), "google_container_cluster") && block.GetAttribute("remove_default_node_pool").IsTrue() {
+				return nil
+			}
 
 			if !block.HasBlock("node_config") {
 				return []scanner.Result{
