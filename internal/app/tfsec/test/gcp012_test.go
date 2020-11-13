@@ -16,9 +16,10 @@ func Test_GCPGKENodeServiceAccount(t *testing.T) {
 		mustExcludeResultCode scanner.RuleCode
 	}{
 		{
-			name: "does not define service account in container cluster",
+			name: "does not define service account in container cluster and uses default node pool",
 			source: `
 resource "google_container_cluster" "my-cluster" {
+	remove_default_node_pool = false
   node_config {
   }
 }
@@ -26,12 +27,21 @@ resource "google_container_cluster" "my-cluster" {
 			mustIncludeResultCode: checks.GCPGKENodeServiceAccount,
 		},
 		{
-			name: "does not define node_config in container cluster",
+			name: "does not define service account in container cluster but removes default node pool",
+			source: `
+resource "google_container_cluster" "my-cluster" {
+	remove_default_node_pool = true
+}
+`,
+			mustExcludeResultCode: checks.GCPGKENodeServiceAccount,
+		},
+		{
+			name: "does not define node_config in container cluster and uses default node pool",
 			source: `
 resource "google_container_cluster" "my-cluster" {
 }
 `,
-			mustExcludeResultCode: checks.GCPGKENodeServiceAccount,
+			mustIncludeResultCode: checks.GCPGKENodeServiceAccount,
 		},
 		{
 			name: "defines service account in container cluster",
