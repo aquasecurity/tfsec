@@ -96,7 +96,7 @@ func init() {
 		RequiredLabels: []string{"azurerm_storage_account_network_rules", "azurerm_storage_account"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
-			if block.Labels()[0] == "azurerm_storage_account" {
+			if block.IsResourceType("azurerm_storage_account") {
 				if block.MissingChild("network_rules") {
 					return nil
 				}

@@ -84,7 +84,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			var securityRules parser.Blocks
-			if block.Labels()[0] == "azurerm_network_security_group" {
+			if block.IsResourceType("azurerm_network_security_group") {
 				securityRules = block.GetBlocks("security_rule")
 			} else {
 				securityRules = append(securityRules, block)

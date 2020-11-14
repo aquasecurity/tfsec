@@ -178,6 +178,20 @@ func (block *Block) FullName() string {
 	return block.LocalName()
 }
 
+func (block *Block) TypeLabel() string {
+	if len(block.Labels()) > 0 {
+		return block.Labels()[0]
+	}
+	return ""
+}
+
+func (block *Block) NameLabel() string {
+	if len(block.Labels()) > 1 {
+		return block.Labels()[1]
+	}
+	return ""
+}
+
 func (block *Block) HasChild(childElement string) bool {
 	return block.GetAttribute(childElement) != nil || block.GetBlock(childElement) != nil
 }
@@ -201,4 +215,8 @@ func (block *Block) Label() string {
 
 func (block *Block) HasBlock(childElement string) bool {
 	return block.GetBlock(childElement) != nil
+}
+
+func (block *Block) IsResourceType(resourceType string) bool {
+	return block.TypeLabel() == resourceType
 }

@@ -95,7 +95,7 @@ func (check *Check) IsRequiredForBlock(block *parser.Block) bool {
 	if len(check.RequiredLabels) > 0 {
 		var found bool
 		for _, requiredLabel := range check.RequiredLabels {
-			if requiredLabel == "*" || (len(block.Labels()) > 0 && block.Labels()[0] == requiredLabel) {
+			if requiredLabel == "*" || (len(block.Labels()) > 0 && block.TypeLabel() == requiredLabel) {
 				found = true
 				break
 			}

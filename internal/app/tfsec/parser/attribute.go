@@ -221,3 +221,55 @@ func (attr *Attribute) MapValue(mapKey string) cty.Value {
 	}
 	return cty.StringVal("")
 }
+
+func (attr *Attribute) LessThan(checkValue int) bool {
+	if attr.Value().Type() == cty.Number {
+		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
+		if err != nil {
+			debug.Log("Error converting number for equality check. %s", err)
+			return false
+		}
+
+		return attr.Value().LessThan(checkNumber).True()
+	}
+	return false
+}
+
+func (attr *Attribute) LessThanOrEqualTo(checkValue int) bool {
+	if attr.Value().Type() == cty.Number {
+		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
+		if err != nil {
+			debug.Log("Error converting number for equality check. %s", err)
+			return false
+		}
+
+		return attr.Value().LessThanOrEqualTo(checkNumber).True()
+	}
+	return false
+}
+
+func (attr *Attribute) GreaterThan(checkValue int) bool {
+	if attr.Value().Type() == cty.Number {
+		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
+		if err != nil {
+			debug.Log("Error converting number for equality check. %s", err)
+			return false
+		}
+
+		return attr.Value().GreaterThan(checkNumber).True()
+	}
+	return false
+}
+
+func (attr *Attribute) GreaterThanOrEqualTo(checkValue int) bool {
+	if attr.Value().Type() == cty.Number {
+		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
+		if err != nil {
+			debug.Log("Error converting number for equality check. %s", err)
+			return false
+		}
+
+		return attr.Value().GreaterThanOrEqualTo(checkNumber).True()
+	}
+	return false
+}
