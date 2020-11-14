@@ -58,7 +58,7 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_sql_server", "azurerm_sql_server", "azurerm_mssql_database_extended_auditing_policy"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-			if block.TypeLabel() != "azurerm_mssql_database_extended_auditing_policy" {
+			if !block.IsResourceType("azurerm_mssql_database_extended_auditing_policy") {
 				if block.MissingChild("extended_auditing_policy") {
 					return nil
 				}
