@@ -421,3 +421,89 @@ resource "aws_security_group_rule" "example" {
 		})
 	}
 }
+
+func Test_AttributeIsLessThan(t *testing.T) {
+	var tests = []struct {
+		name           string
+		source         string
+		checkAttribute string
+		checkValue     int
+		expectedResult bool
+	}{
+		{
+			name: "check attribute is less than check value",
+			source: `
+resource "numerical_something" "my-bucket" {
+	value = 100
+}`,
+			checkAttribute: "value",
+			checkValue:     200,
+			expectedResult: true,
+		},
+		{
+			name: "check attribute is not less than check value",
+			source: `
+resource "numerical_something" "my-bucket" {
+	value = 100
+}`,
+			checkAttribute: "value",
+			checkValue:     50,
+			expectedResult: false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			blocks := createBlocksFromSource(test.source)
+			for _, block := range blocks {
+				if !block.HasChild(test.checkAttribute) {
+					t.Fail()
+				}
+				attr := block.GetAttribute(test.checkAttribute)
+				assert.Equal(t, attr.LessThan(test.checkValue), test.expectedResult)
+			}
+		})
+	}
+}
+
+func Test_AttributeIsLessThanOrEqual(t *testing.T) {
+	var tests = []struct {
+		name           string
+		source         string
+		checkAttribute string
+		checkValue     int
+		expectedResult bool
+	}{
+		{
+			name: "check attribute is less than or equal check value",
+			source: `
+resource "numerical_something" "my-bucket" {
+	value = 100
+}`,
+			checkAttribute: "value",
+			checkValue:     100,
+			expectedResult: true,
+		},
+		{
+			name: "check attribute is not less than check value",
+			source: `
+resource "numerical_something" "my-bucket" {
+	value = 100
+}`,
+			checkAttribute: "value",
+			checkValue:     50,
+			expectedResult: false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			blocks := createBlocksFromSource(test.source)
+			for _, block := range blocks {
+				if !block.HasChild(test.checkAttribute) {
+					t.Fail()
+				}
+				attr := block.GetAttribute(test.checkAttribute)
+				assert.Equal(t, attr.LessThanOrEqualTo(test.checkValue), test.expectedResult)
+			}
+		})
+	}
+}

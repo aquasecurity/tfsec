@@ -72,7 +72,7 @@ func init() {
 		SKIP:
 			for _, attribute := range attributes {
 				for _, whitelisted := range sensitiveWhitelist {
-					if whitelisted.Resource == block.Labels()[0] && whitelisted.Attribute == attribute.Name() {
+					if whitelisted.Resource == block.TypeLabel() && whitelisted.Attribute == attribute.Name() {
 						continue SKIP
 					}
 				}

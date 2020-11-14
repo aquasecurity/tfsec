@@ -62,7 +62,7 @@ func init() {
 				return nil
 			}
 
-			if !security.IsSensitiveAttribute(block.Labels()[0]) {
+			if !security.IsSensitiveAttribute(block.TypeLabel()) {
 				return nil
 			}
 
