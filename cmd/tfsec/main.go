@@ -152,7 +152,7 @@ var rootCmd = &cobra.Command{
 }
 
 func getFormatter() (formatters.Formatter, error) {
-	switch format {
+	switch strings.ToLower(format) {
 	case "", "default":
 		return formatters.FormatDefault, nil
 	case "json":
