@@ -157,8 +157,12 @@ func getFormatter() (formatters.Formatter, error) {
 		return formatters.FormatDefault, nil
 	case "json":
 		return formatters.FormatJSON, nil
+	case "JSON":
+		return formatters.FormatJSON, nil	
 	case "csv":
 		return formatters.FormatCSV, nil
+	case "CSV":
+		return formatters.FormatCSV, nil		
 	case "checkstyle":
 		return formatters.FormatCheckStyle, nil
 	case "junit":
