@@ -36,7 +36,11 @@ var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 	},
 	IsNone: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		return attribute != nil && attribute.IsNone(unpackInterfaceToInterfaceSlice(spec.MatchValue)...)
+		if attribute == nil {
+			// attribute is null so can't match
+			return true
+		}
+		return attribute.IsNone(unpackInterfaceToInterfaceSlice(spec.MatchValue)...)
 	},
 }
 

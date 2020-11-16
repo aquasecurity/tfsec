@@ -49,9 +49,9 @@ module "custom_bucket" {
 
 resource "aws_s3_bucket" "bucket_with_public_acl" {
   bucket = "my-tf-test-bucket"
-  acl    = "public-read"
-
-  versioning {
+//  acl    = "public-read"
+//
+versioning {
     enabled = true
   }
 }
