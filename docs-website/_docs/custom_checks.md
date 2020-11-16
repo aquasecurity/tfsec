@@ -71,7 +71,7 @@ The `MatchSpec` is the what will define the check itself - this is fairly basic 
 | name | The name of the attribute or block to run the check on |
 | action | The check type - see below for more information |
 | value | In cases where a value is required, the value to look for |
-| ignoreUndefined | If the attribute is undefined, ignore are pass the check |
+| ignoreUndefined | If the attribute is undefined, ignore and pass the check |
 |subMatch | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block |
 
 #### Check Actions
