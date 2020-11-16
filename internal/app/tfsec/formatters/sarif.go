@@ -1,7 +1,6 @@
 package formatters
 
 import (
-	"fmt"
 	"io"
 	"path/filepath"
 	"strings"
@@ -21,7 +20,7 @@ func FormatSarif(w io.Writer, results []scanner.Result, baseDir string) error {
 	for _, result := range results {
 		rule := run.AddRule(string(result.RuleID)).
 			WithDescription(result.Description).
-			WithHelp(fmt.Sprintf("You can lean more about %s at https://tfsec.dev/docs/%s/%s", result.RuleID, strings.ToLower(string(result.RuleProvider)), result.RuleID))
+			WithHelp(result.Link)
 
 		relativePath, err := filepath.Rel(baseDir, result.Range.Filename)
 		if err != nil {

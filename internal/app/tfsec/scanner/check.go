@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"runtime/debug"
+	"strings"
 
 	internalDebug "github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
@@ -66,8 +67,16 @@ func (check *Check) Run(block *parser.Block, context *Context) []Result {
 		}
 	}()
 	results := check.CheckFunc(check, block, context)
-	for i := range results { // supplement results with links to documentation site
-		results[i].Link = fmt.Sprintf("https://tfsec.dev/docs/%s/%s/", check.Provider, check.Code)
+	if check.Provider == "custom" {
+		for i := range results { // populate custom check results with relatedLinks
+			if len(check.Documentation.Links) > 0 {
+				results[i].Link = fmt.Sprintf("See the following link(s) for more information:\n\n   %s", strings.Join(check.Documentation.Links, "\n   "))
+			}
+		}
+	} else {
+		for i := range results { // supplement results with links to documentation site
+			results[i].Link = fmt.Sprintf("See https://tfsec.dev/docs/%s/%s/ for more information.", check.Provider, check.Code)
+		}
 	}
 	return results
 }

@@ -55,7 +55,7 @@ func FormatJUnit(w io.Writer, results []scanner.Result, _ string) error {
 				Time:      "0",
 				Failure: &JUnitFailure{
 					Message: result.Description,
-					Contents: fmt.Sprintf("%s\n%s\nMore information: %s",
+					Contents: fmt.Sprintf("%s\n%s\n%s",
 						result.Range.String(),
 						highlightCodeJunit(result),
 						result.Link),

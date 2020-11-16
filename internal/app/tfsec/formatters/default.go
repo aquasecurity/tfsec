@@ -45,7 +45,7 @@ func FormatDefault(_ io.Writer, results []scanner.Result, _ string) error {
 
 `, result.RuleID, severity, result.Description, result.Range.String())
 		highlightCode(result)
-		tml.Printf("  <blue>See %s for more information.</blue>\n\n", result.Link)
+		tml.Printf("  <blue> %s </blue>\n\n", result.Link)
 	}
 
 	// TODO show files processed
