@@ -11,6 +11,7 @@ resource "aws_instance" "non_compliant" {
 resource "aws_instance" "compliant" {
   ami           = "ami-12345"
   instance_type = "t2.small"
+  cpu_core_count = 4
 
   tags = {
     Department = "Finance"

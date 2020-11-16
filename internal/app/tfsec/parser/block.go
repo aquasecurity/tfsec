@@ -90,6 +90,17 @@ func (block *Block) GetBlock(name string) *Block {
 	return nil
 }
 
+func (block *Block) AllBlocks() Blocks {
+	if block == nil || block.hclBlock == nil {
+		return nil
+	}
+	var results []*Block
+	for _, child := range block.body().Blocks {
+		results = append(results, NewBlock(child.AsHCLBlock(), block.ctx, block.moduleBlock))
+	}
+	return results
+}
+
 func (block *Block) GetBlocks(name string) Blocks {
 	if block == nil || block.hclBlock == nil {
 		return nil
@@ -219,4 +230,8 @@ func (block *Block) HasBlock(childElement string) bool {
 
 func (block *Block) IsResourceType(resourceType string) bool {
 	return block.TypeLabel() == resourceType
+}
+
+func (block *Block) IsEmpty() bool {
+	return len(block.AllBlocks()) == 0 && len(block.GetAttributes()) == 0
 }

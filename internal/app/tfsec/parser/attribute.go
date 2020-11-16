@@ -222,7 +222,7 @@ func (attr *Attribute) MapValue(mapKey string) cty.Value {
 	return cty.StringVal("")
 }
 
-func (attr *Attribute) LessThan(checkValue int) bool {
+func (attr *Attribute) LessThan(checkValue interface{}) bool {
 	if attr.Value().Type() == cty.Number {
 		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
 		if err != nil {
@@ -235,7 +235,7 @@ func (attr *Attribute) LessThan(checkValue int) bool {
 	return false
 }
 
-func (attr *Attribute) LessThanOrEqualTo(checkValue int) bool {
+func (attr *Attribute) LessThanOrEqualTo(checkValue interface{}) bool {
 	if attr.Value().Type() == cty.Number {
 		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
 		if err != nil {
@@ -248,7 +248,7 @@ func (attr *Attribute) LessThanOrEqualTo(checkValue int) bool {
 	return false
 }
 
-func (attr *Attribute) GreaterThan(checkValue int) bool {
+func (attr *Attribute) GreaterThan(checkValue interface{}) bool {
 	if attr.Value().Type() == cty.Number {
 		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
 		if err != nil {
@@ -261,7 +261,7 @@ func (attr *Attribute) GreaterThan(checkValue int) bool {
 	return false
 }
 
-func (attr *Attribute) GreaterThanOrEqualTo(checkValue int) bool {
+func (attr *Attribute) GreaterThanOrEqualTo(checkValue interface{}) bool {
 	if attr.Value().Type() == cty.Number {
 		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
 		if err != nil {

@@ -71,6 +71,7 @@ The `MatchSpec` is the what will define the check itself - this is fairly basic 
 | name | The name of the attribute or block to run the check on |
 | action | The check type - see below for more information |
 | value | In cases where a value is required, the value to look for |
+| ignoreUndefined | If the attribute is undefined, ignore are pass the check |
 |subMatch | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block |
 
 #### Check Actions
@@ -102,6 +103,17 @@ Conversely, the `noPresent` check action passes if the specified block or attrib
 "matchSpec" : {
   "name": "acl",
   "action": "notPresent"
+}
+```
+
+##### isEmpty
+The `isEmpty` check action passes if the named block or attribute is defined by empty.
+For example, to check that there are not tags you might use the following `MatchSpec`
+
+```json
+"matchSpec" : {
+  "name": "tags",
+  "action": "isEmpty",
 }
 ```
 
@@ -153,7 +165,54 @@ For example, to check that `acl` begins with `private` you could use the followi
   "action": "equals",
   "value": "private"
 }
+```
 
+##### lessThan
+The `lessThan` check action passes if the checked attribute is numerical and the value is less than the specified value.
+For example, if you want to ensure that the `cpu_core_count` is less than 8, you might use the following `MatchSpec`
+
+```json
+"matchSpec" : {
+  "name": "cpu_core_count",
+  "action": "lessThan",
+  "value": 8
+}
+```
+
+##### lessThanOrEqualTo
+The `lessThanOrEqualTo` check action passes if the checked attribute is numerical and the value is less than or equal tothe specified value.
+For example, if you want to ensure that the `cpu_core_count` is less than or equal to 4, you might use the following `MatchSpec`
+
+```json
+"matchSpec" : {
+  "name": "cpu_core_count",
+  "action": "lessThanOrEqualTo",
+  "value": 4
+}
+```
+
+##### greaterThan
+The `greaterThan` check action passes if the checked attribute is numerical and the value is greater than the specified value.
+For example, if you want to ensure that the `cpu_core_count` is greater than 2, you might use the following `MatchSpec`
+
+```json
+"matchSpec" : {
+  "name": "cpu_core_count",
+  "action": "greaterThan",
+  "value": 2
+}
+```
+
+##### greaterThanOrEqualTo
+The `greaterThanOrEqualTo` check action passes if the checked attribute is numerical and the value is greater than or equal tothe specified value.
+For example, if you want to ensure that the `cpu_core_count` is greater than or equal to 4, you might use the following `MatchSpec`
+
+```json
+"matchSpec" : {
+  "name": "cpu_core_count",
+  "action": "greaterThanOrEqualTo",
+  "value": 4
+}
 ```
 
 ##### regexMatches

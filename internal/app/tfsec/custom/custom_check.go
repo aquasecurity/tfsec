@@ -8,7 +8,21 @@ type MatchType string
 type CheckAction string
 
 var ValidCheckActions = []CheckAction{
-	InModule, IsPresent, NotPresent, StartsWith, EndsWith, Contains, Equals, RegexMatches, IsAny, IsNone,
+	InModule,
+	IsPresent,
+	NotPresent,
+	IsEmpty,
+	StartsWith,
+	EndsWith,
+	Contains,
+	Equals,
+	LessThan,
+	LessThanOrEqualTo,
+	GreaterThan,
+	GreaterThanOrEqualTo,
+	RegexMatches,
+	IsAny,
+	IsNone,
 }
 
 // InModule checks that the block is part of a module
@@ -16,6 +30,9 @@ const InModule CheckAction = "inModule"
 
 // IsPresent checks that the named child is present in the block
 const IsPresent CheckAction = "isPresent"
+
+// IsEmpty checks that the named attribute value is empty
+const IsEmpty CheckAction = "isEmpty"
 
 // NotPresent checks that the named child is absent in the block
 const NotPresent CheckAction = "notPresent"
@@ -41,12 +58,25 @@ const IsAny CheckAction = "isAny"
 // IsNone checks that the named attribute value cannot be found in the provided slice
 const IsNone CheckAction = "isNone"
 
+// LessThan checks that the named attribute value is less than the check value
+const LessThan CheckAction = "lessThan"
+
+// LessThanOrEqualTo checks that the named attribute value is less than or equal to the check value
+const LessThanOrEqualTo CheckAction = "lessThanOrEqualTo"
+
+// GreaterThan checks that the named attribute value is greater than the check value
+const GreaterThan CheckAction = "greaterThan"
+
+// GreaterThanOrEqualTo checks that the named attribute value is greater than or equal to the check value
+const GreaterThanOrEqualTo CheckAction = "greaterThanOrEqualTo"
+
 // MatchSpec specifies the checks that should be performed
 type MatchSpec struct {
-	Name       string      `json:"name,omitempty"`
-	MatchValue interface{} `json:"value,omitempty"`
-	Action     CheckAction `json:"action,omitempty"`
-	SubMatch   *MatchSpec  `json:"subMatch,omitempty"`
+	Name            string      `json:"name,omitempty"`
+	MatchValue      interface{} `json:"value,omitempty"`
+	Action          CheckAction `json:"action,omitempty"`
+	SubMatch        *MatchSpec  `json:"subMatch,omitempty"`
+	IgnoreUndefined bool        `json:"ignoreUndefined,omitempty"`
 }
 
 // CustomCheck specifies the check definition represented in json
