@@ -36,7 +36,7 @@ func FormatText(_ io.Writer, results []scanner.Result, _ string) error {
 
 `, result.RuleID, severity, result.Description, result.Range.String())
 		outputCode(result)
-		fmt.Printf("  $s\n\n", result.Link)
+		fmt.Printf("  %s\n\n", result.Link)
 	}
 
 	return nil
