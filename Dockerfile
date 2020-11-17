@@ -4,7 +4,14 @@ ARG tfsec_version=0.0.0
 
 COPY . /src
 WORKDIR /src
-RUN go build -ldflags "-X github.com/tfsec/tfsec/version.Version=${tfsec_version}" -mod=vendor ./cmd/tfsec
+ENV CGO_ENABLED=0
+RUN go build \
+  -a \
+  -ldflags "-X github.com/tfsec/tfsec/version.Version=${tfsec_version}" \
+  -ldflags "-s -w -extldflags '-static'" \
+  -mod=vendor \
+  ./cmd/tfsec
+
 
 FROM alpine
 
