@@ -10,25 +10,80 @@ import (
 var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 	IsPresent:  func(block *parser.Block, spec *MatchSpec) bool { return block.HasChild(spec.Name) },
 	NotPresent: func(block *parser.Block, spec *MatchSpec) bool { return !block.HasChild(spec.Name) },
+	IsEmpty: func(block *parser.Block, spec *MatchSpec) bool {
+		if block.MissingChild(spec.Name) {
+			return true
+		}
+
+		attribute := block.GetAttribute(spec.Name)
+		if attribute != nil {
+			return attribute.IsEmpty()
+		}
+		childBlock := block.GetBlock(spec.Name)
+		return childBlock.IsEmpty()
+	},
 	StartsWith: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		return attribute != nil && attribute.StartsWith(spec.MatchValue)
+		if attribute == nil {
+			return spec.IgnoreUndefined
+		}
+		return attribute.StartsWith(spec.MatchValue)
 	},
 	EndsWith: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		return attribute != nil && attribute.EndsWith(spec.MatchValue)
+		if attribute == nil {
+			return spec.IgnoreUndefined
+		}
+		return attribute.EndsWith(spec.MatchValue)
 	},
 	Contains: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		return attribute != nil && attribute.Contains(spec.MatchValue)
+		if attribute == nil {
+			return spec.IgnoreUndefined
+		}
+		return attribute.Contains(spec.MatchValue)
 	},
 	Equals: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		return attribute != nil && attribute.Equals(spec.MatchValue)
+		if attribute == nil {
+			return spec.IgnoreUndefined
+		}
+		return attribute.Equals(spec.MatchValue)
+	},
+	LessThan: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		if attribute == nil {
+			return spec.IgnoreUndefined
+		}
+		return attribute.LessThan(spec.MatchValue)
+	},
+	LessThanOrEqualTo: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		if attribute == nil {
+			return spec.IgnoreUndefined
+		}
+		return attribute.LessThanOrEqualTo(spec.MatchValue)
+	},
+	GreaterThan: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		if attribute == nil {
+			return spec.IgnoreUndefined
+		}
+		return attribute.GreaterThan(spec.MatchValue)
+	},
+	GreaterThanOrEqualTo: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		if attribute == nil {
+			return spec.IgnoreUndefined
+		}
+		return attribute.GreaterThanOrEqualTo(spec.MatchValue)
 	},
 	RegexMatches: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		return attribute != nil && attribute.RegexMatches(spec.MatchValue)
+		if attribute == nil {
+			return spec.IgnoreUndefined
+		}
+		return attribute.RegexMatches(spec.MatchValue)
 	},
 	IsAny: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
@@ -37,7 +92,6 @@ var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 	IsNone: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
-			// attribute is null so can't match
 			return true
 		}
 		return attribute.IsNone(unpackInterfaceToInterfaceSlice(spec.MatchValue)...)

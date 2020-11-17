@@ -126,6 +126,26 @@
       "relatedLinks": [
         "http://internal.acmecorp.com/standards/aws/tagging.html"
       ]
+    },
+    {
+      "code": "CUS007",
+      "description": "Don't use more CPU cores than 3",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_instance"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "name": "cpu_core_count",
+        "value": 2,
+        "action": "lessThan"
+      },
+      "errorMessage": "The ec2 instance has a CPU core count greater than allowed for cost saving",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/tagging.html"
+      ]
     }
   ]
 }
