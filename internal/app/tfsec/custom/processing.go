@@ -43,6 +43,13 @@ var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 		}
 		return attribute.Contains(spec.MatchValue)
 	},
+	NotContains: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		if attribute == nil {
+			return spec.IgnoreUndefined
+		}
+		return !attribute.Contains(spec.MatchValue)
+	},
 	Equals: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {

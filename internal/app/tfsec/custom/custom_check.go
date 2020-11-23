@@ -15,6 +15,7 @@ var ValidCheckActions = []CheckAction{
 	StartsWith,
 	EndsWith,
 	Contains,
+	NotContains,
 	Equals,
 	LessThan,
 	LessThanOrEqualTo,
@@ -45,6 +46,9 @@ const EndsWith CheckAction = "endsWith"
 
 // Contains checks that the named child attribute has a value in the map, list or attribute
 const Contains CheckAction = "contains"
+
+// NotContains checks that the named child attribute does not have a value in the map, list or attribute
+const NotContains CheckAction = "notContains"
 
 // Contains checks that the named child attribute has a value equal to the check value
 const Equals CheckAction = "equals"
