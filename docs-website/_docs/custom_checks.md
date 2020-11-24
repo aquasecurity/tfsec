@@ -213,6 +213,13 @@ For example, if you want to ensure that the `CostCentre` exists, you might use t
 }
 ```
 
+```yaml
+matchSpec:
+  name: tags
+  action: contains
+  value: CostCentre
+```
+
 ##### notContains
 The `notContains` check action will change depending on the attribute or block it is applied to. If the check is against a string attribute, it will look for the `MatchSpec` value in the attribute. If the check is against a list, it will pass if the value item can be found in the list.
 
@@ -231,8 +238,8 @@ For example, you want to make sure that an `action` does not contain `kms:*` you
 ```yaml
 matchSpec:
   name: tags
-  action: contains
-  value: CostCentre
+  action: notContains
+  value: kms:*
 ```
 
 ##### equals 
@@ -394,6 +401,15 @@ The `isNone` check action passes when the attribute value cannot be found in the
 }
 ```
 
+```yaml
+matchSpec:
+  name: acl
+  action: isNone
+  value:
+  - authenticated-read
+  - public-read
+```
+
 ##### requiresPresence
 The `requiresPresence` checks that the resouce in `name` is also present in the Terraform code.
 
@@ -408,11 +424,8 @@ If you wanted to ensure that `aws_vpc_flowlogs` is present if there is a `aws_vp
 
 ```yaml
 matchSpec:
-  name: acl
-  action: isNone
-  value:
-  - authenticated-read
-  - public-read
+  name: aws_vpc_flowlogs
+  action: requiresPresence
 ```
 
 ## How do I know my JSON is valid?
