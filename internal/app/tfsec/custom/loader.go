@@ -3,9 +3,12 @@ package custom
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -26,7 +29,7 @@ func Load(customCheckDir string) error {
 }
 
 func loadCustomChecks(customCheckDir string) error {
-	files, err := listFiles(customCheckDir, ".*_tfchecks.json")
+	files, err := listFiles(customCheckDir, ".*_tfchecks.*")
 	if err != nil {
 		return err
 	}
@@ -55,14 +58,27 @@ func loadCustomChecks(customCheckDir string) error {
 
 func loadCheckFile(checkFilePath string) (ChecksFile, error) {
 	var checks ChecksFile
-	checkJson, err := ioutil.ReadFile(checkFilePath)
+	checkFileContent, err := ioutil.ReadFile(checkFilePath)
 	if err != nil {
 		return checks, err
 	}
-	err = json.Unmarshal(checkJson, &checks)
-	if err != nil {
-		return checks, err
+	ext := filepath.Ext(checkFilePath)
+	switch strings.ToLower(ext) {
+	case ".json":
+		err = json.Unmarshal(checkFileContent, &checks)
+		if err != nil {
+			return checks, err
+		}
+	case ".yml":
+	case ".yaml":
+		err = yaml.Unmarshal(checkFileContent, &checks)
+		if err != nil {
+			return checks, nil
+		}
+	default:
+		return checks, fmt.Errorf("couldn't process the file %s", checkFilePath)
 	}
+
 	return checks, nil
 }
 
