@@ -22,6 +22,7 @@ var ValidCheckActions = []CheckAction{
 	GreaterThan,
 	GreaterThanOrEqualTo,
 	RegexMatches,
+	RequiresPresence,
 	IsAny,
 	IsNone,
 }
@@ -73,6 +74,9 @@ const GreaterThan CheckAction = "greaterThan"
 
 // GreaterThanOrEqualTo checks that the named attribute value is greater than or equal to the check value
 const GreaterThanOrEqualTo CheckAction = "greaterThanOrEqualTo"
+
+// RequiresPresence checks that a second resource is present
+const RequiresPresence CheckAction = "requiresPresence"
 
 // MatchSpec specifies the checks that should be performed
 type MatchSpec struct {
