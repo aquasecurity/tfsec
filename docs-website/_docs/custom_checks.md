@@ -154,6 +154,21 @@ For example, if you want to ensure that the `CostCentre` exists, you might use t
 }
 ```
 
+##### notContains
+The `notContains` check action will change depending on the attribute or block it is applied to. If the check is against a string attribute, it will look for the `MatchSpec` value in the attribute. If the check is against a list, it will pass if the value item can be found in the list.
+
+If the attribute is an `object` or `map` it will pass if a key can be found that matches the `MatchSpec` value.
+
+For example, you want to make sure that an `action` does not contain `kms:*` you might use the following `MatchSpec`:
+
+```json
+"matchSpec" : {
+  "name": "action",
+  "action": "notContains",
+  "value": "kms:*"
+}
+```
+
 ##### equals 
 The `equals` check action passes if the checked attribute equals specified value. 
 The core primitive types are supported, if the subject attribute is a Boolean, the `MatchSpec` value will attempt to be cast to a Boolean for comparison.
@@ -254,6 +269,18 @@ The `isNone` check action passes when the attribute value cannot be found in the
   "name": "acl",
   "action": "isNone",
   "value": ["authenticated-read", "public-read"]
+}
+```
+
+##### requiresPresence
+The `requiresPresence` checks that the resouce in `name` is also present in the Terraform code.
+
+If you wanted to ensure that `aws_vpc_flowlogs` is present if there is a `aws_vpc`, you might use the following `matchSpec`:
+
+```
+"matchSpec" : {
+  "action": "requiresPresence",
+  "name": "aws_vpc_flowlogs"
 }
 ```
 

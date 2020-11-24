@@ -15,12 +15,14 @@ var ValidCheckActions = []CheckAction{
 	StartsWith,
 	EndsWith,
 	Contains,
+	NotContains,
 	Equals,
 	LessThan,
 	LessThanOrEqualTo,
 	GreaterThan,
 	GreaterThanOrEqualTo,
 	RegexMatches,
+	RequiresPresence,
 	IsAny,
 	IsNone,
 }
@@ -46,6 +48,9 @@ const EndsWith CheckAction = "endsWith"
 // Contains checks that the named child attribute has a value in the map, list or attribute
 const Contains CheckAction = "contains"
 
+// NotContains checks that the named child attribute does not have a value in the map, list or attribute
+const NotContains CheckAction = "notContains"
+
 // Contains checks that the named child attribute has a value equal to the check value
 const Equals CheckAction = "equals"
 
@@ -69,6 +74,9 @@ const GreaterThan CheckAction = "greaterThan"
 
 // GreaterThanOrEqualTo checks that the named attribute value is greater than or equal to the check value
 const GreaterThanOrEqualTo CheckAction = "greaterThanOrEqualTo"
+
+// RequiresPresence checks that a second resource is present
+const RequiresPresence CheckAction = "requiresPresence"
 
 // MatchSpec specifies the checks that should be performed
 type MatchSpec struct {

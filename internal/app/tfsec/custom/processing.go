@@ -2,7 +2,6 @@ package custom
 
 import (
 	"fmt"
-
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -42,6 +41,13 @@ var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 			return spec.IgnoreUndefined
 		}
 		return attribute.Contains(spec.MatchValue)
+	},
+	NotContains: func(block *parser.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		if attribute == nil {
+			return spec.IgnoreUndefined
+		}
+		return !attribute.Contains(spec.MatchValue)
 	},
 	Equals: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
@@ -111,9 +117,9 @@ func processFoundChecks(checks ChecksFile) {
 				Provider:       "custom",
 				RequiredTypes:  customCheck.RequiredTypes,
 				RequiredLabels: customCheck.RequiredLabels,
-				CheckFunc: func(check *scanner.Check, rootBlock *parser.Block, _ *scanner.Context) []scanner.Result {
+				CheckFunc: func(check *scanner.Check, rootBlock *parser.Block, ctx *scanner.Context) []scanner.Result {
 					matchSpec := customCheck.MatchSpec
-					if !evalMatchSpec(rootBlock, matchSpec) {
+					if !evalMatchSpec(rootBlock, matchSpec, ctx) {
 						return []scanner.Result{
 							check.NewResult(
 								fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage),
@@ -129,7 +135,7 @@ func processFoundChecks(checks ChecksFile) {
 	}
 }
 
-func evalMatchSpec(block *parser.Block, spec *MatchSpec) bool {
+func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) bool {
 	if block == nil {
 		return false
 	}
@@ -140,15 +146,26 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec) bool {
 	if spec.Action == RegexMatches && !matchFunctions[RegexMatches](block, spec) {
 		return true
 	}
+
+	if spec.Action == RequiresPresence {
+		return resourceFound(spec, ctx)
+	}
+
 	evalResult = matchFunctions[spec.Action](block, spec)
 
 	if spec.SubMatch != nil {
 		if block.HasBlock(spec.Name) {
 			block = block.GetBlock(spec.Name)
 		}
-		evalResult = evalMatchSpec(block, spec.SubMatch)
+		evalResult = evalMatchSpec(block, spec.SubMatch, nil)
 	}
 	return evalResult
+}
+
+func resourceFound(spec *MatchSpec, ctx *scanner.Context) bool {
+	val := fmt.Sprintf("%v", spec.Name)
+	byType := ctx.GetResourcesByType(val)
+	return len(byType) > 0
 }
 
 func unpackInterfaceToInterfaceSlice(t interface{}) []interface{} {
