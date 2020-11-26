@@ -54,7 +54,7 @@ resource "problem" "x" {
 
 func scanSource(source string) []scanner.Result {
 	blocks := createBlocksFromSource(source)
-	return scanner.New().Scan(blocks, excludedChecksList)
+	return scanner.New().Scan(blocks, excludedChecksList, nil)
 }
 
 func createBlocksFromSource(source string) []*parser.Block {
