@@ -22,6 +22,8 @@ func LoadConfig(configFilePath string) (*Config, error) {
 		if os.IsNotExist(err) {
 			debug.Log("Failed to load the config file, not found. %s", configFilePath)
 			return config, nil
+		} else {
+		    return nil, err
 		}
 	}
 

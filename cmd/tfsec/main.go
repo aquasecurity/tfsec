@@ -95,6 +95,7 @@ var rootCmd = &cobra.Command{
 			tfsecConfig, err = config.LoadConfig(configFile)
 			if err != nil {
 				fmt.Fprint(os.Stderr, fmt.Sprintf("Failed to load the config file. %s", err))
+				os.Exit(1)
 			}
 		}
 
