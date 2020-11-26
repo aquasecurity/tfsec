@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/tfsec/tfsec/internal/app/tfsec/config"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -31,6 +32,8 @@ var excludedChecks string
 var tfvarsPath string
 var outputFlag string
 var customCheckDir string
+var configFile string
+var tfsecConfig = &config.Config{}
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
@@ -42,6 +45,7 @@ func init() {
 	rootCmd.Flags().StringVar(&tfvarsPath, "tfvars-file", tfvarsPath, "Path to .tfvars file")
 	rootCmd.Flags().StringVar(&outputFlag, "out", outputFlag, "Set output file")
 	rootCmd.Flags().StringVar(&customCheckDir, "custom-check-dir", customCheckDir, "Explicitly the custom checks dir location")
+	rootCmd.Flags().StringVar(&configFile, "config-file", configFile, "Config file to use during run")
 	rootCmd.Flags().BoolVar(&debug.Enabled, "verbose", debug.Enabled, "Enable verbose logging")
 }
 
@@ -84,6 +88,15 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
+		}
+
+		if len(configFile) > 0 {
+			debug.Log("loading in the config file")
+			tfsecConfig, err = config.LoadConfig(configFile)
+			if err != nil {
+				fmt.Fprint(os.Stderr, fmt.Sprintf("Failed to load the config file. %s", err))
+				os.Exit(1)
+			}
 		}
 
 		debug.Log("Loading custom checks...")
@@ -138,6 +151,7 @@ var rootCmd = &cobra.Command{
 
 		debug.Log("Starting scanner...")
 		results := scanner.New().Scan(blocks, excludedChecksList)
+		results = updateResultSeverity(results)
 		if err := formatter(outputFile, results, dir); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -149,6 +163,26 @@ var rootCmd = &cobra.Command{
 
 		os.Exit(1)
 	},
+}
+
+func updateResultSeverity(results []scanner.Result) []scanner.Result {
+	overrides := tfsecConfig.SeverityOverrides
+
+	if len(overrides) == 0 {
+		return results
+	}
+
+	var overriddenResults []scanner.Result
+	for _, result := range results {
+		for code, severity := range overrides {
+			if result.RuleID == scanner.RuleCode(code) {
+				result.OverrideSeverity(severity)
+			}
+		}
+		overriddenResults = append(overriddenResults, result)
+	}
+
+	return overriddenResults
 }
 
 func getFormatter() (formatters.Formatter, error) {
