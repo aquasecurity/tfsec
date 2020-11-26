@@ -87,7 +87,7 @@ type MatchSpec struct {
 	IgnoreUndefined bool        `json:"ignoreUndefined,omitempty" yaml:"ignoreUndefined,omitempty"`
 }
 
-// CustomCheck specifies the check definition represented in yaml
+//Check specifies the check definition represented in json/yaml
 type Check struct {
 	Code           scanner.RuleCode    `json:"code" yaml:"code"`
 	Description    scanner.RuleSummary `json:"description" yaml:"description"`

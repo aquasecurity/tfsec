@@ -14,7 +14,7 @@ import (
 )
 
 type ChecksFile struct {
-	Checks []*Check `json:"checks"`
+	Checks []*Check `json:"checks" yaml:"checks"`
 }
 
 func Load(customCheckDir string) error {
