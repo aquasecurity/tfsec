@@ -80,23 +80,23 @@ const RequiresPresence CheckAction = "requiresPresence"
 
 // MatchSpec specifies the checks that should be performed
 type MatchSpec struct {
-	Name            string      `json:"name,omitempty"`
-	MatchValue      interface{} `json:"value,omitempty"`
-	Action          CheckAction `json:"action,omitempty"`
-	SubMatch        *MatchSpec  `json:"subMatch,omitempty"`
-	IgnoreUndefined bool        `json:"ignoreUndefined,omitempty"`
+	Name            string      `json:"name,omitempty" yaml:"name,omitempty"`
+	MatchValue      interface{} `json:"value,omitempty" yaml:"value,omitempty"`
+	Action          CheckAction `json:"action,omitempty" yaml:"action,omitempty"`
+	SubMatch        *MatchSpec  `json:"subMatch,omitempty" yaml:"subMatch,omitempty"`
+	IgnoreUndefined bool        `json:"ignoreUndefined,omitempty" yaml:"ignoreUndefined,omitempty"`
 }
 
-// CustomCheck specifies the check definition represented in json
+//Check specifies the check definition represented in json/yaml
 type Check struct {
-	Code           scanner.RuleCode    `json:"code"`
-	Description    scanner.RuleSummary `json:"description"`
-	RequiredTypes  []string            `json:"requiredTypes"`
-	RequiredLabels []string            `json:"requiredLabels"`
-	Severity       scanner.Severity    `json:"severity"`
-	ErrorMessage   string              `json:"errorMessage,omitempty"`
-	MatchSpec      *MatchSpec          `json:"matchSpec"`
-	RelatedLinks   []string            `json:"relatedLinks,omitempty"`
+	Code           scanner.RuleCode    `json:"code" yaml:"code"`
+	Description    scanner.RuleSummary `json:"description" yaml:"description"`
+	RequiredTypes  []string            `json:"requiredTypes" yaml:"requiredTypes"`
+	RequiredLabels []string            `json:"requiredLabels" yaml:"requiredLabels"`
+	Severity       scanner.Severity    `json:"severity" yaml:"severity"`
+	ErrorMessage   string              `json:"errorMessage,omitempty" yaml:"errorMessage,omitempty"`
+	MatchSpec      *MatchSpec          `json:"matchSpec" yaml:"matchSpec"`
+	RelatedLinks   []string            `json:"relatedLinks,omitempty" yaml:"relatedLinks,omitempty"`
 }
 
 func (action *CheckAction) isValid() bool {

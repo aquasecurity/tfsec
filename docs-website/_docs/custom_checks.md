@@ -11,7 +11,7 @@ We recognise that there are checks that need performing for an organisation that
 Custom checks offer an accessible approach to injecting checks that satisfy your organisations compliance and security needs. For example, if you require that all EC2 instances have a `CostCentre` tag, that can be achieved with a `custom_check`.
 
 ## How does it work?
-Custom checks are defined as json files which sit in the `.tfsec` folder in the root check path. any file with the suffix `_tfchecks.json` will be parsed and the checks included during the run.
+Custom checks are defined as json files which sit in the `.tfsec` folder in the root check path. any file with the suffix `_tfchecks.json` or `_tfchecks.yaml` will be parsed and the checks included during the run.
 
 
 ### Overriding check directory
@@ -50,6 +50,28 @@ Taking the previous example of a required cost centre, the check file might look
 }
 ```
 
+or 
+
+```yaml
+---
+checks:
+- code: CUS001
+  description: Custom check to ensure the CostCentre tag is applied to EC2 instances
+  requiredTypes:
+  - resource
+  requiredLabels:
+  - aws_instance
+  severity: ERROR
+  matchSpec:
+    name: tags
+    action: contains
+    value: CostCentre
+  errorMessage: The required CostCentre tag was missing
+  relatedLinks:
+  - http://internal.acmecorp.com/standards/aws/tagging.html
+
+```
+
 The check contains up of the following attributes;
 
 | Attribute | Description |
@@ -86,6 +108,11 @@ The `inModule` check action passes if the resource block is a component of a mod
 }
 ```
 
+```yaml
+matchSpec:
+  action: inModule
+```
+
 ##### isPresent
 The `isPresent` check action passes if the required block or attribute is available in the checked block. For example, if you're looking to check that an `acl` is provided and don't care what it is, you can use the following `MatchSpec`;
 
@@ -96,6 +123,12 @@ The `isPresent` check action passes if the required block or attribute is availa
 }
 ```
 
+```yaml
+matchSpec:
+  name: acl
+  action: isPresent
+```
+
 ##### notPresent
 Conversely, the `noPresent` check action passes if the specified block or attribute is not found in the checked block. For example, if you explicitly don't want an `acl` attribute to be present hou can use the following `MatchSpec`
 
@@ -104,6 +137,12 @@ Conversely, the `noPresent` check action passes if the specified block or attrib
   "name": "acl",
   "action": "notPresent"
 }
+```
+
+```yaml
+matchSpec:
+  name: acl
+  action: notPresent
 ```
 
 ##### isEmpty
@@ -117,6 +156,12 @@ For example, to check that there are not tags you might use the following `Match
 }
 ```
 
+```yaml
+matchSpec:
+  name: acl
+  action: isEmpty
+```
+
 ##### startsWith
 The `startsWith` check action passes if the checked attribute string starts with the specified value. For example, to check that `acl` begins with `public` you could use the following `MatchSpec`
 
@@ -128,6 +173,13 @@ The `startsWith` check action passes if the checked attribute string starts with
 }
 ```
 
+```yaml
+matchSpec:
+  name: acl
+  action: startsWith
+  value: public
+```
+
 ##### endsWith
 The `endsWith` check action passes if the checked attribute string ends with the specified value. For example, to check that `acl` ends with `read` you could use the following `MatchSpec`;
 
@@ -137,6 +189,13 @@ The `endsWith` check action passes if the checked attribute string ends with the
   "action": "endsWith",
   "value": "-read"
 }
+```
+
+```yaml
+matchSpec:
+  name: acl
+  action: endsWith
+  value: -read
 ```
 
 ##### contains
@@ -154,6 +213,13 @@ For example, if you want to ensure that the `CostCentre` exists, you might use t
 }
 ```
 
+```yaml
+matchSpec:
+  name: tags
+  action: contains
+  value: CostCentre
+```
+
 ##### notContains
 The `notContains` check action will change depending on the attribute or block it is applied to. If the check is against a string attribute, it will look for the `MatchSpec` value in the attribute. If the check is against a list, it will pass if the value item can be found in the list.
 
@@ -169,6 +235,13 @@ For example, you want to make sure that an `action` does not contain `kms:*` you
 }
 ```
 
+```yaml
+matchSpec:
+  name: tags
+  action: notContains
+  value: kms:*
+```
+
 ##### equals 
 The `equals` check action passes if the checked attribute equals specified value. 
 The core primitive types are supported, if the subject attribute is a Boolean, the `MatchSpec` value will attempt to be cast to a Boolean for comparison.
@@ -180,6 +253,13 @@ For example, to check that `acl` begins with `private` you could use the followi
   "action": "equals",
   "value": "private"
 }
+```
+
+```yaml
+matchSpec:
+  name: acl
+  action: equals
+  value: private
 ```
 
 ##### lessThan
@@ -194,6 +274,13 @@ For example, if you want to ensure that the `cpu_core_count` is less than 8, you
 }
 ```
 
+```yaml
+matchSpec:
+  name: cpu_core_count
+  action: lessThan
+  value: 8
+```
+
 ##### lessThanOrEqualTo
 The `lessThanOrEqualTo` check action passes if the checked attribute is numerical and the value is less than or equal tothe specified value.
 For example, if you want to ensure that the `cpu_core_count` is less than or equal to 4, you might use the following `MatchSpec`
@@ -204,6 +291,13 @@ For example, if you want to ensure that the `cpu_core_count` is less than or equ
   "action": "lessThanOrEqualTo",
   "value": 4
 }
+```
+
+```yaml
+matchSpec:
+  name: cpu_core_count
+  action: lessThanOrEqualTo
+  value: 4
 ```
 
 ##### greaterThan
@@ -218,6 +312,13 @@ For example, if you want to ensure that the `cpu_core_count` is greater than 2, 
 }
 ```
 
+```yaml
+matchSpec:
+  name: cpu_core_count
+  action: greaterThan
+  value: 2
+```
+
 ##### greaterThanOrEqualTo
 The `greaterThanOrEqualTo` check action passes if the checked attribute is numerical and the value is greater than or equal tothe specified value.
 For example, if you want to ensure that the `cpu_core_count` is greater than or equal to 4, you might use the following `MatchSpec`
@@ -228,6 +329,13 @@ For example, if you want to ensure that the `cpu_core_count` is greater than or 
   "action": "greaterThanOrEqualTo",
   "value": 4
 }
+```
+
+```yaml
+matchSpec:
+  name: cpu_core_count
+  action: greaterThanOrEqualTo
+  value: 4
 ```
 
 ##### regexMatches
@@ -250,6 +358,18 @@ When tackling this specific use case of filtering module blocks by source, the `
       }
 ```
 
+```yaml
+matchSpec:
+  name: source
+  action: regexMatches
+  value: "^modules\\/.*public_.+bucket$"
+  subMatch:
+    name: acl
+    action: equals
+    value: public-read
+
+```
+
 ##### isAny
 The `isAny` check action passes when the attribute value can be found in the slice passed as the check value. This check action supports strings and numbers
 
@@ -259,6 +379,15 @@ The `isAny` check action passes when the attribute value can be found in the sli
   "action": "isAny",
   "value": ["private", "log-delivery-write"]
 }
+```
+
+```yaml
+matchSpec:
+  name: acl
+  action: isAny
+  value:
+  - private
+  - log-delivery-write
 ```
 
 ##### isNone
@@ -272,6 +401,15 @@ The `isNone` check action passes when the attribute value cannot be found in the
 }
 ```
 
+```yaml
+matchSpec:
+  name: acl
+  action: isNone
+  value:
+  - authenticated-read
+  - public-read
+```
+
 ##### requiresPresence
 The `requiresPresence` checks that the resouce in `name` is also present in the Terraform code.
 
@@ -282,6 +420,12 @@ If you wanted to ensure that `aws_vpc_flowlogs` is present if there is a `aws_vp
   "action": "requiresPresence",
   "name": "aws_vpc_flowlogs"
 }
+```
+
+```yaml
+matchSpec:
+  name: aws_vpc_flowlogs
+  action: requiresPresence
 ```
 
 ## How do I know my JSON is valid?
