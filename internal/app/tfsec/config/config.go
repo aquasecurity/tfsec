@@ -29,18 +29,18 @@ func LoadConfig(configFilePath string) (*Config, error) {
 	ext := filepath.Ext(configFilePath)
 	switch strings.ToLower(ext) {
 	case ".json":
-		err = json.Unmarshal(configFileContent, &config)
+		err = json.Unmarshal(configFileContent, config)
 		if err != nil {
 			return nil, err
 		}
 	case ".yml":
 	case ".yaml":
-		err = yaml.Unmarshal(configFileContent, &config)
+		err = yaml.Unmarshal(configFileContent, config)
 		if err != nil {
 			return nil, err
 		}
 	default:
-		return config, fmt.Errorf("couldn't process the file %s", configFilePath)
+		return nil, fmt.Errorf("couldn't process the file %s", configFilePath)
 	}
 
 	return config, nil
