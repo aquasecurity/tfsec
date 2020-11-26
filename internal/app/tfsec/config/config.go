@@ -3,7 +3,6 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -19,17 +18,12 @@ func LoadConfig(configFilePath string) (*Config, error) {
 	var config = &Config{}
 
 	if _, err := os.Stat(configFilePath); err != nil {
-		if os.IsNotExist(err) {
-			debug.Log("Failed to load the config file, not found. %s", configFilePath)
-			return config, nil
-		} else {
-		    return nil, err
-		}
+		return nil, err
 	}
 
 	configFileContent, err := ioutil.ReadFile(configFilePath)
 	if err != nil {
-		return config, err
+		return nil, err
 	}
 
 	ext := filepath.Ext(configFilePath)
@@ -37,13 +31,13 @@ func LoadConfig(configFilePath string) (*Config, error) {
 	case ".json":
 		err = json.Unmarshal(configFileContent, &config)
 		if err != nil {
-			return config, err
+			return nil, err
 		}
 	case ".yml":
 	case ".yaml":
 		err = yaml.Unmarshal(configFileContent, &config)
 		if err != nil {
-			return config, nil
+			return nil, err
 		}
 	default:
 		return config, fmt.Errorf("couldn't process the file %s", configFilePath)
