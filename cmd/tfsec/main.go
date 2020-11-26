@@ -149,7 +149,8 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Starting scanner...")
-		results := scanner.New().Scan(blocks, excludedChecksList, tfsecConfig)
+		results := scanner.New().Scan(blocks, excludedChecksList)
+		results = updateResultSeverity(results)
 		if err := formatter(outputFile, results, dir); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -161,6 +162,26 @@ var rootCmd = &cobra.Command{
 
 		os.Exit(1)
 	},
+}
+
+func updateResultSeverity(results []scanner.Result) []scanner.Result {
+	overrides := tfsecConfig.SeverityOverrides
+
+	if len(overrides) == 0 {
+		return results
+	}
+
+	var overriddenResults []scanner.Result
+	for _, result := range results {
+		for code, severity := range overrides {
+			if result.RuleID == scanner.RuleCode(code) {
+				result.OverrideSeverity(severity)
+			}
+		}
+		overriddenResults = append(overriddenResults, result)
+	}
+
+	return overriddenResults
 }
 
 func getFormatter() (formatters.Formatter, error) {

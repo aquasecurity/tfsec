@@ -90,5 +90,5 @@ func scanTerraform(t *testing.T, mainTf string) []scanner.Result {
 	blocks, err := parser.New(dirName, "").ParseDirectory()
 	assert.NoError(t, err)
 
-	return scanner.New().Scan(blocks, []string{}, nil)
+	return scanner.New().Scan(blocks, []string{})
 }

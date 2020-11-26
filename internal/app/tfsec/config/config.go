@@ -16,14 +16,15 @@ type Config struct {
 }
 
 func LoadConfig(configFilePath string) (*Config, error) {
+	var config = &Config{}
+
 	if _, err := os.Stat(configFilePath); err != nil {
 		if os.IsNotExist(err) {
 			debug.Log("Failed to load the config file, not found. %s", configFilePath)
-			return nil, nil
+			return config, nil
 		}
 	}
 
-	var config = &Config{}
 	configFileContent, err := ioutil.ReadFile(configFilePath)
 	if err != nil {
 		return config, err

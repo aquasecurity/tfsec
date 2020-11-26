@@ -29,6 +29,10 @@ var ValidSeverity = []Severity{
 	SeverityError, SeverityWarning, SeverityInfo,
 }
 
+func (r *Result) OverrideSeverity(severity string) {
+	r.Severity = Severity(severity)
+}
+
 func (s *Severity) IsValid() bool {
 	for _, severity := range ValidSeverity {
 		if severity == *s {

@@ -2,7 +2,6 @@ package scanner
 
 import (
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/config"
 	"io/ioutil"
 	"strings"
 
@@ -34,7 +33,7 @@ func checkInList(code RuleCode, list []string) bool {
 }
 
 // Scan takes all available hcl blocks and an optional context, and returns a slice of results. Each result indicates a potential security problem.
-func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string, config *config.Config) []Result {
+func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string) []Result {
 
 	if len(blocks) == 0 {
 		return nil
@@ -50,7 +49,6 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 				debug.Log("Running check for %s on %s.%s (%s)...", check.Code, block.Type(), block.FullName(), block.Range().Filename)
 				for _, result := range check.Run(block, context) {
 					if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
-						updateResultSeverity(&result, config.SeverityOverrides)
 						results = append(results, result)
 					}
 				}
@@ -58,18 +56,6 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 		}
 	}
 	return results
-}
-
-func updateResultSeverity(result *Result, overrides map[string]string) {
-	if len(overrides) == 0 {
-		return
-	}
-	for code, severity := range overrides {
-		if result.RuleID == RuleCode(code) {
-			result.Severity = Severity(severity)
-			break
-		}
-	}
 }
 
 func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range) bool {
