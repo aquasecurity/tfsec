@@ -32,6 +32,6 @@ severity_overrides:
 
 To run tfsec against a Terraform folder called `tf` with the config file `tfsec.yml` you would run 
 
-```shell script
+```
 tfsec --config-file tfsec.yml ./tf
 ```
