@@ -99,6 +99,16 @@ resource "aws_security_group_rule" "my-rule" {
 If you're not sure which line to add the comment on, just check the
 tfsec output for the line number of the discovered problem.
 
+You can ignore multiple rules by concatenating the rules on a single line:
+
+```hcl
+#tfsec:ignore:AWS017 tfsec:ignore:AWS002
+resource "aws_s3_bucket" "my-bucket" {
+  bucket = "foobar"
+  acl    = "private"
+}
+```
+
 ## Disable checks
 
 You may wish to exclude some checks from running. If you'd like to do so, you can
