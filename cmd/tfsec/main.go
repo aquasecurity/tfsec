@@ -157,12 +157,22 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if len(results) == 0 || softFail {
+		if allInfo(results) || softFail {
 			os.Exit(0)
 		}
 
 		os.Exit(1)
 	},
+}
+
+func allInfo(results []scanner.Result) bool {
+	for _, result := range results {
+		if result.Severity != scanner.SeverityInfo {
+			return false
+		}
+	}
+
+	return true
 }
 
 func updateResultSeverity(results []scanner.Result) []scanner.Result {
