@@ -12,6 +12,7 @@ import (
 
 type Config struct {
 	SeverityOverrides map[string]string `json:"severity_overrides,omitempty" yaml:"severity_overrides,omitempty"`
+	ExcludedChecks    []string          `json:"exclude,omitempty" yaml:"exclude,omitempty"`
 }
 
 func LoadConfig(configFilePath string) (*Config, error) {
@@ -33,8 +34,7 @@ func LoadConfig(configFilePath string) (*Config, error) {
 		if err != nil {
 			return nil, err
 		}
-	case ".yml":
-	case ".yaml":
+	case ".yaml", ".yml":
 		err = yaml.Unmarshal(configFileContent, config)
 		if err != nil {
 			return nil, err

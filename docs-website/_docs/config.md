@@ -14,18 +14,40 @@ The structure of the config file can be either `json` or `yaml` and is passed us
 ```json
 {
   "severity_overrides": {
-    "CUS002": "ERROR",
+    "CUSTOM001": "ERROR",
     "AWS025": "WARNING"
   }
 }
 ``` 
 
 or 
+
 ```yaml
 ---
 severity_overrides:
-  CUS002: ERROR
+  CUSTOM001: ERROR
   AWS025: INFO
+```
+
+## Excluding checks
+
+There are moments where the list of checks you'd want to exclude becomes larger and larger.
+Rather than passing all the excluded checks via the command line, you can use the configuration
+entry `exclude` to list them all out. 
+
+```json
+{
+  "exclude": ["CUSTOM001", "AWS025"]
+}
+``` 
+
+or 
+
+```yaml
+---
+exclude:
+  - CUSTOM001
+  - AWS025
 ```
 
 ## Running with the config

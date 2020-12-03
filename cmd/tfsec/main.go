@@ -150,7 +150,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Starting scanner...")
-		results := scanner.New().Scan(blocks, excludedChecksList)
+		results := scanner.New().Scan(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks))
 		results = updateResultSeverity(results)
 		if err := formatter(outputFile, results, dir); err != nil {
 			fmt.Println(err)
@@ -163,6 +163,20 @@ var rootCmd = &cobra.Command{
 
 		os.Exit(1)
 	},
+}
+
+func mergeWithoutDuplicates(left, right []string) []string {
+	all := append(left, right...)
+	var set = map[string]bool{}
+	for _, x := range all {
+		set[x] = true
+	}
+	var result []string
+	for x, _ := range set {
+		result = append(result, x)
+	}
+
+	return result
 }
 
 func allInfo(results []scanner.Result) bool {
