@@ -14,7 +14,7 @@ The structure of the config file can be either `json` or `yaml` and is passed us
 ```json
 {
   "severity_overrides": {
-    "CUSTOM001": "ERROR",
+    "CUS002": "ERROR",
     "AWS025": "WARNING"
   }
 }
@@ -25,7 +25,7 @@ or
 ```yaml
 ---
 severity_overrides:
-  CUSTOM001: ERROR
+  CUS002: ERROR
   AWS025: INFO
 ```
 
@@ -37,7 +37,7 @@ entry `exclude` to list them all out.
 
 ```json
 {
-  "exclude": ["CUSTOM001", "AWS025"]
+  "exclude": ["CUS002", "AWS025"]
 }
 ``` 
 
@@ -46,7 +46,7 @@ or
 ```yaml
 ---
 exclude:
-  - CUSTOM001
+  - CUS002
   - AWS025
 ```
 
