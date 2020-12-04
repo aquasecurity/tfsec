@@ -21,11 +21,33 @@ The structure of the config file can be either `json` or `yaml` and is passed us
 ``` 
 
 or 
+
 ```yaml
 ---
 severity_overrides:
   CUS002: ERROR
   AWS025: INFO
+```
+
+## Excluding checks
+
+There are moments where the list of checks you'd want to exclude becomes larger and larger.
+Rather than passing all the excluded checks via the command line, you can use the configuration
+entry `exclude` to list them all out. 
+
+```json
+{
+  "exclude": ["CUS002", "AWS025"]
+}
+``` 
+
+or 
+
+```yaml
+---
+exclude:
+  - CUS002
+  - AWS025
 ```
 
 ## Running with the config
