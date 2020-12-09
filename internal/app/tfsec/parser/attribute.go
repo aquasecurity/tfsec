@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 	"regexp"
 	"strings"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 )
 
 type Attribute struct {
@@ -206,6 +207,19 @@ func (attr *Attribute) IsEmpty() bool {
 	if attr.Value().Type() == cty.Number {
 		// a number can't ever be empty
 		return false
+	}
+	if attr.Value().IsNull() {
+		templExpr := attr.hclAttribute.Expr.(*hclsyntax.TemplateExpr)
+		if templExpr == nil {
+			return true
+		}
+		// walk the parts of the expression to ensure that it has a literal value
+		for _, p := range templExpr.Parts {
+			part := p.(*hclsyntax.LiteralValueExpr)
+			if part != nil && !part.Val.IsNull() {
+				return false
+			}
+		}
 	}
 	return true
 }
