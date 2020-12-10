@@ -209,15 +209,16 @@ func (attr *Attribute) IsEmpty() bool {
 		return false
 	}
 	if attr.Value().IsNull() {
-		templExpr := attr.hclAttribute.Expr.(*hclsyntax.TemplateExpr)
-		if templExpr == nil {
-			return true
-		}
-		// walk the parts of the expression to ensure that it has a literal value
-		for _, p := range templExpr.Parts {
-			part := p.(*hclsyntax.LiteralValueExpr)
-			if part != nil && !part.Val.IsNull() {
-				return false
+		switch t := attr.hclAttribute.Expr.(type) {
+		case *hclsyntax.ConditionalExpr:
+			return false
+		case *hclsyntax.TemplateExpr:
+			// walk the parts of the expression to ensure that it has a literal value
+			for _, p := range t.Parts {
+				part := p.(*hclsyntax.LiteralValueExpr)
+				if part != nil && !part.Val.IsNull() {
+					return false
+				}
 			}
 		}
 	}
