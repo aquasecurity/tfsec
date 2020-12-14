@@ -42,6 +42,11 @@ func init() {
 		RequiredLabels: []string{"aws_kms_key"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			keyRotationAttr := block.GetAttribute("enable_key_rotation")
+			keyUsageAttr := block.GetAttribute("key_usage")
+
+			if keyUsageAttr.Value().AsString() == "SIGN_VERIFY" {
+				return nil
+			}
 
 			if keyRotationAttr == nil {
 				return []scanner.Result{
