@@ -2,12 +2,13 @@ package parser
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
+
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
-	"regexp"
-	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 )
@@ -210,6 +211,8 @@ func (attr *Attribute) IsEmpty() bool {
 	}
 	if attr.Value().IsNull() {
 		switch t := attr.hclAttribute.Expr.(type) {
+		case *hclsyntax.ScopeTraversalExpr:
+			return false
 		case *hclsyntax.ConditionalExpr:
 			return false
 		case *hclsyntax.TemplateExpr:
