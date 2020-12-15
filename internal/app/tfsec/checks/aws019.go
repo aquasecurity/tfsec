@@ -43,7 +43,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			keyUsageAttr := block.GetAttribute("key_usage")
 
-			if keyUsageAttr != nil && keyUsageAttr.Value().AsString() == "SIGN_VERIFY" {
+			if keyUsageAttr != nil && keyUsageAttr.Equals("SIGN_VERIFY") {
 				return nil
 			}
 
