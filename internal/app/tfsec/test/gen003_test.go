@@ -42,8 +42,8 @@ resource "aws_efs_file_system" "myfs" {
 		{
 			name: "avoid false positive for google_secret_manager_secret",
 			source: `
-resource "google_secret_manager_secret" "ssh_key" {
-	secret_id = "ssh_key"
+resource "google_secret_manager_secret" "secret" {
+	secret_id = "secret"
 }`,
 			mustExcludeResultCode: checks.GenericSensitiveAttributes,
 		},
