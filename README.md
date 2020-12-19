@@ -150,7 +150,7 @@ to specify your desired format.
 ## Github Security Alerts
 If you want to integrate with Github Security alerts and include the output of your tfsec checks you can use the [tfsec-sarif-action](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload) Github action to run the static analysis then upload the results to the security alerts tab.
 
-The alerts generated for [tfsec-example-project](https://gighub.com/tfsec/tfsec-github-project) look like this.
+The alerts generated for [tfsec-example-project](https://github.com/tfsec/tfsec-example-project) look like this.
 
 ![github security alerts](codescanning.png)
 
