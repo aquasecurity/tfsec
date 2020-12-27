@@ -49,6 +49,10 @@ var sensitiveWhitelist = []struct {
 		Attribute: "get_password_data",
 	},
 	{
+		Resource:  "github_actions_secret",
+		Attribute: "secret_name",
+  },
+	{
 		Resource:  "google_secret_manager_secret",
 		Attribute: "secret_id",
 	},
