@@ -82,6 +82,18 @@ data "google_iam_policy" "test-policy" {
 }`,
 			mustIncludeResultCode: checks.GoogleUserIAMGrant,
 		},
+		{
+			name: "check data.google_iam_policy with grant to interpolated values",
+			source: `
+data "google_iam_policy" "test-policy" {
+	binding {
+		members = [
+			"serviceAccount:${google_service_account.service_account.email}"]
+		]
+	}
+}`,
+			mustExcludeResultCode: checks.GoogleUserIAMGrant,
+		},
 	}
 
 	for _, test := range tests {

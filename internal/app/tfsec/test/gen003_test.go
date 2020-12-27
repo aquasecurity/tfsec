@@ -39,6 +39,14 @@ resource "aws_efs_file_system" "myfs" {
 }`,
 			mustExcludeResultCode: checks.GenericSensitiveAttributes,
 		},
+		{
+			name: "avoid false positive for google_secret_manager_secret",
+			source: `
+resource "google_secret_manager_secret" "secret" {
+	secret_id = "secret"
+}`,
+			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+		},
 	}
 
 	for _, test := range tests {
@@ -47,5 +55,30 @@ resource "aws_efs_file_system" "myfs" {
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
+}
 
+func Test_GitHubSensitiveAttributes(t *testing.T) {
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode scanner.RuleCode
+		mustExcludeResultCode scanner.RuleCode
+	}{
+		{
+			name: "avoid false positive for github_actions_secret",
+			source: `
+resource "github_actions_secret" "infrastructure_digitalocean_deploy_user" {
+	secret_name = "digitalocean_deploy_user"
+}`,
+			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			results := scanSource(test.source)
+			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
 }
