@@ -7,8 +7,7 @@ WORKDIR /src
 ENV CGO_ENABLED=0
 RUN go build \
   -a \
-  -ldflags "-X github.com/tfsec/tfsec/version.Version=${tfsec_version}" \
-  -ldflags "-s -w -extldflags '-static'" \
+  -ldflags "-X github.com/tfsec/tfsec/version.Version=${tfsec_version} -s -w -extldflags '-static'" \
   -mod=vendor \
   ./cmd/tfsec
 
