@@ -39,6 +39,14 @@ resource "aws_efs_file_system" "myfs" {
 }`,
 			mustExcludeResultCode: checks.GenericSensitiveAttributes,
 		},
+		{
+			name: "avoid false positive for google_secret_manager_secret",
+			source: `
+resource "google_secret_manager_secret" "secret" {
+	secret_id = "secret"
+}`,
+			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+		},
 	}
 
 	for _, test := range tests {

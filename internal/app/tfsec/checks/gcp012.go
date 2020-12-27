@@ -60,7 +60,7 @@ func init() {
 			}
 			displayBlock := block.GetBlock("node_config")
 			serviceAccount := displayBlock.GetAttribute("service_account")
-
+			
 			if serviceAccount == nil || serviceAccount.IsEmpty() {
 				if displayBlock == nil {
 					displayBlock = block

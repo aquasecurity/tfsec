@@ -48,6 +48,10 @@ var sensitiveWhitelist = []struct {
 		Resource:  "aws_instance",
 		Attribute: "get_password_data",
 	},
+	{
+		Resource:  "google_secret_manager_secret",
+		Attribute: "secret_id",
+	},
 }
 
 func init() {

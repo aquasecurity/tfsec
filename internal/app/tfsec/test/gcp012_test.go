@@ -83,6 +83,17 @@ resource "google_container_node_pool" "my-np-cluster" {
 `,
 			mustExcludeResultCode: checks.GCPGKENodeServiceAccount,
 		},
+		{
+			name: "defines service account in container node pool using reference",
+			source: `
+resource "google_container_node_pool" "my-np-cluster" {
+	node_config {
+		service_account = google_service_account.service_account.email
+	}
+}
+`,
+			mustExcludeResultCode: checks.GCPGKENodeServiceAccount,
+		},
 	}
 
 	for _, test := range tests {
