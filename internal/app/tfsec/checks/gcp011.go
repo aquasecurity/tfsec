@@ -97,9 +97,8 @@ func init() {
 			} else if attributes = block.GetBlock("binding").GetAttribute("members"); attributes != nil {
 				members = attributes.Value().AsValueSlice()
 			}
-
 			for _, identities := range members {
-				if identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
+				if identities.IsKnown() && identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
 					return []scanner.Result{
 						check.NewResult(
 							fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", block.FullName()),
