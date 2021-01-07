@@ -35,6 +35,14 @@ resource "aws_kms_key" "kms_key" {
 }`,
 			mustExcludeResultCode: checks.AWSNoKMSAutoRotate,
 		},
+		{
+			name: "check SIGN_VERIFY KMS Key with auto-rotation disabled",
+			source: `
+resource "aws_kms_key" "kms_key" {
+	key_usage = "SIGN_VERIFY"
+}`,
+			mustExcludeResultCode: checks.AWSNoKMSAutoRotate,
+		},
 	}
 
 	for _, test := range tests {
