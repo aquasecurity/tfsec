@@ -28,16 +28,35 @@ resource "aws_db_instance" "my-db-instance" {
 			name: "Encryption not enabled on db instance",
 			source: `
 resource "aws_db_instance" "my-db-instance" {
-	kms_key_id = ""
+	storage_encrypted = false
 }
 `,
 			mustIncludeResultCode: checks.AWSRDSEncryptionNotEnabled,
 		},
 		{
-			name: "Encryption enabled on db instance",
+			name: "Encryption not enabled on db instance",
 			source: `
 resource "aws_db_instance" "my-db-instance" {
-	kms_key_id  = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+	kms_key_id = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+}
+`,
+			mustIncludeResultCode: checks.AWSRDSEncryptionNotEnabled,
+		},
+		{
+			name: "Encryption using specified CMK enabled on db instance",
+			source: `
+resource "aws_db_instance" "my-db-instance" {
+	storage_encrypted = true
+	kms_key_id = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+}
+`,
+			mustExcludeResultCode: checks.AWSRDSEncryptionNotEnabled,
+		},
+		{
+			name: "Encryption using default CMK enabled on db instance",
+			source: `
+resource "aws_db_instance" "my-db-instance" {
+	storage_encrypted = true
 }
 `,
 			mustExcludeResultCode: checks.AWSRDSEncryptionNotEnabled,
