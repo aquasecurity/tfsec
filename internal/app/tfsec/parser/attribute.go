@@ -73,6 +73,13 @@ func (attr *Attribute) Contains(checkValue interface{}) bool {
 	if val.Type().IsListType() || val.Type().IsTupleType() {
 		valueSlice := val.AsValueSlice()
 		for _, value := range valueSlice {
+			if value.Type().IsObjectType() || value.Type().IsMapType() {
+				valueMap := value.AsValueMap()
+				if valueMap["key"].AsString() == checkValue {
+					return true
+				}
+				return false
+			}
 			if value.AsString() == checkValue {
 				return true
 			}
