@@ -178,6 +178,27 @@ resource "aws_security_group" "my-security_group" {
 			checkValue:     "172.0.0.0/8",
 			expectedResult: true,
 		},
+		{
+			name: "autoscaling group has propagated key defined",
+			source: `
+resource "aws_autoscaling_group" "my-aws_autoscaling_group" {		
+	tags = [
+		{
+			"key"                 = "Name"
+			"propagate_at_launch" = "true"
+			"value"               = "couchbase-seb-develop-dev"
+		},
+		{
+			"key"                 = "app"
+			"propagate_at_launch" = "true"
+			"value"               = "myapp"
+		}
+		]
+}`,
+			checkAttribute: "tags",
+			checkValue:     "Name",
+			expectedResult: true,
+		},
 	}
 
 	for _, test := range tests {
