@@ -9,7 +9,7 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-func FormatSarif(w io.Writer, results []scanner.Result, baseDir string) error {
+func FormatSarif(w io.Writer, results []scanner.Result, baseDir string, options ...FormatterOption) error {
 	report, err := sarif.New(sarif.Version210)
 	if err != nil {
 		return err
