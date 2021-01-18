@@ -15,12 +15,27 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-func FormatDefault(_ io.Writer, results []scanner.Result, _ string) error {
+func FormatDefault(_ io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
+
+	showStatistics := true
+	showSuccessOutput := true
+
+	for _, option := range options {
+		if option == ConciseOutput {
+			showStatistics = false
+			showSuccessOutput = false
+			break
+		}
+	}
 
 	if len(results) == 0 {
-		_ = tml.Printf("\n")
-		printStatistics()
-		terminal.PrintSuccessf("\nNo problems detected!\n\n")
+		if showStatistics {
+			_ = tml.Printf("\n")
+			printStatistics()
+		}
+		if showSuccessOutput {
+			terminal.PrintSuccessf("\nNo problems detected!\n\n")
+		}
 		return nil
 	}
 
@@ -49,7 +64,9 @@ func FormatDefault(_ io.Writer, results []scanner.Result, _ string) error {
 	}
 
 	// TODO show files processed
-	printStatistics()
+	if showStatistics {
+		printStatistics()
+	}
 
 	terminal.PrintErrorf("\n%d potential problems detected.\n\n", len(results))
 

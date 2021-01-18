@@ -39,7 +39,7 @@ type JUnitFailure struct {
 	Contents string `xml:",chardata"`
 }
 
-func FormatJUnit(w io.Writer, results []scanner.Result, _ string) error {
+func FormatJUnit(w io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
 
 	output := JUnitTestSuite{
 		Name:     "tfsec",

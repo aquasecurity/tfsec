@@ -34,6 +34,7 @@ var outputFlag string
 var customCheckDir string
 var configFile string
 var tfsecConfig = &config.Config{}
+var conciseOutput = false
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
@@ -47,6 +48,7 @@ func init() {
 	rootCmd.Flags().StringVar(&customCheckDir, "custom-check-dir", customCheckDir, "Explicitly the custom checks dir location")
 	rootCmd.Flags().StringVar(&configFile, "config-file", configFile, "Config file to use during run")
 	rootCmd.Flags().BoolVar(&debug.Enabled, "verbose", debug.Enabled, "Enable verbose logging")
+	rootCmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
 }
 
 func main() {
@@ -152,7 +154,7 @@ var rootCmd = &cobra.Command{
 		debug.Log("Starting scanner...")
 		results := scanner.New().Scan(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks))
 		results = updateResultSeverity(results)
-		if err := formatter(outputFile, results, dir); err != nil {
+		if err := formatter(outputFile, results, dir, getFormatterOptions()...); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
@@ -163,6 +165,14 @@ var rootCmd = &cobra.Command{
 
 		os.Exit(1)
 	},
+}
+
+func getFormatterOptions() []formatters.FormatterOption {
+	var options []formatters.FormatterOption
+	if conciseOutput {
+		options = append(options, formatters.ConciseOutput)
+	}
+	return options
 }
 
 func mergeWithoutDuplicates(left, right []string) []string {
