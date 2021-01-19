@@ -43,7 +43,7 @@ jobs:
     - make publish-docs
   - stage: publish image
     name: Publish Docker image
-    if: tag IS NOT blank
+   # if: tag IS NOT blank
     before_script:
     - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
     script:
