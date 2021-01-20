@@ -35,6 +35,7 @@ var customCheckDir string
 var configFile string
 var tfsecConfig = &config.Config{}
 var conciseOutput = false
+var excludeDownloaded = false
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
@@ -49,6 +50,7 @@ func init() {
 	rootCmd.Flags().StringVar(&configFile, "config-file", configFile, "Config file to use during run")
 	rootCmd.Flags().BoolVar(&debug.Enabled, "verbose", debug.Enabled, "Enable verbose logging")
 	rootCmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
+	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 }
 
 func main() {
@@ -154,6 +156,8 @@ var rootCmd = &cobra.Command{
 		debug.Log("Starting scanner...")
 		results := scanner.New().Scan(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks))
 		results = updateResultSeverity(results)
+		results = removeDuplicatesAndUnwanted(results)
+
 		if err := formatter(outputFile, results, dir, getFormatterOptions()...); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -165,6 +169,23 @@ var rootCmd = &cobra.Command{
 
 		os.Exit(1)
 	},
+}
+
+func removeDuplicatesAndUnwanted(results []scanner.Result) []scanner.Result {
+	reduction := map[scanner.Result]bool{}
+
+	for _, result := range results {
+		reduction[result] = true
+	}
+
+	var returnVal []scanner.Result
+	for r, _ := range reduction {
+		if excludeDownloaded && strings.Contains(r.Range.Filename, "/.terraform") {
+			continue
+		}
+		returnVal = append(returnVal, r)
+	}
+	return returnVal
 }
 
 func getFormatterOptions() []formatters.FormatterOption {
