@@ -7,6 +7,7 @@
 [![Github Release](https://img.shields.io/github/release/tfsec/tfsec.svg)](https://github.com/tfsec/tfsec/releases)
 [![GitHub All Releases](https://img.shields.io/github/downloads/tfsec/tfsec/total)](https://github.com/tfsec/tfsec/releases)
 [![Join Our Slack](https://img.shields.io/badge/Slack-Join-green)](https://join.slack.com/t/tfsec/shared_invite/zt-i0vo9rp2-tEizIaT1dS4Eu2hVIsvwDg)
+[![Docker Build](https://img.shields.io/docker/v/tfsec/tfsec)](https://dockerhub.com/r/tfsec/tfsec)
 
 tfsec uses static analysis of your terraform templates to spot potential
 security issues. Now with terraform v0.12+ support.
