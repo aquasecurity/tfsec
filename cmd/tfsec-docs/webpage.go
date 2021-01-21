@@ -22,6 +22,7 @@ const (
 
 	baseWebPageTemplate = `---
 title: {{$.Code}}
+summary: {{$.Documentation.Summary}}
 permalink: /docs/{{$.Provider}}/{{$.Code}}/
 ---
 
