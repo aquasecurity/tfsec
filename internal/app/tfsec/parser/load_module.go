@@ -2,7 +2,9 @@ package parser
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -88,12 +90,28 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 		modulePath = filepath.Join(filepath.Dir(block.Range().Filename), source)
 	}
 
+	var blocks Blocks
+
+	blocks, err := getModuleBlocks(block, modulePath, blocks)
+	if err != nil {
+		return nil, err
+	}
+
+	debug.Log("Loaded module '%s' (requested at %s)", modulePath, block.Range())
+
+	return &ModuleInfo{
+		Name:       block.Label(),
+		Path:       modulePath,
+		Definition: block,
+		Blocks:     blocks,
+	}, nil
+}
+
+func getModuleBlocks(block *Block, modulePath string, blocks Blocks) (Blocks, error) {
 	moduleFiles, err := LoadDirectory(modulePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load module %s: %w", block.Label(), err)
 	}
-
-	var blocks Blocks
 
 	for _, file := range moduleFiles {
 		fileBlocks, err := LoadBlocksFromFile(file)
@@ -109,12 +127,23 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 		}
 	}
 
-	debug.Log("Loaded module '%s' (requested at %s)", modulePath, block.Range())
-
-	return &ModuleInfo{
-		Name:       block.Label(),
-		Path:       modulePath,
-		Definition: block,
-		Blocks:     blocks,
-	}, nil
+	modulesPath := fmt.Sprintf("%s/modules", modulePath)
+	if _, err := os.Stat(modulesPath); !os.IsNotExist(err) {
+		subModulePaths, err := ioutil.ReadDir(modulesPath)
+		if err != nil {
+			return nil, err
+		}
+		for _, subPath := range subModulePaths {
+			if subPath.IsDir() {
+				submodulePath := path.Join(modulesPath, subPath.Name())
+				moduleBlocks, err := getModuleBlocks(block, submodulePath, blocks)
+				if err != nil {
+					return nil, err
+				}
+				blocks = append(blocks, moduleBlocks...)
+			}
+		}
+	}
+	return blocks, nil
 }
+
