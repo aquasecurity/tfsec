@@ -14,7 +14,7 @@ for IMAGE in ${IMAGES[@]}; do
     docker push ${IMAGE}:${TRAVIS_TAG}
 
     # push the minor tag - eg; v0.36
-    docker tag ${IMAGE} ${IMAGE}:
+    docker tag ${IMAGE} ${IMAGE}:${TRAVIS_TAG%.*}
     docker push ${IMAGE}:${TRAVIS_TAG%.*}
 
     # push the latest tag
