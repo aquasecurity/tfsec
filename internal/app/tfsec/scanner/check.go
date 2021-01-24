@@ -28,6 +28,10 @@ const (
 	GeneralProvider RuleProvider = "general"
 )
 
+func RuleProviderToString(provider RuleProvider) string {
+	return strings.ToUpper(string(provider))
+}
+
 // Check is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.
 // "resource", and the labels to run on e.g. "aws_s3_bucket".
 type Check struct {

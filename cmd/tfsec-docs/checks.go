@@ -9,14 +9,17 @@ import (
 )
 
 const checksTableTemplate = `---
+title: {{$.Provider | ToUpper }} Checks
 permalink: /docs/{{$.Provider}}/home/
+has_children: true
+has_toc: false
 ---
 
 The included {{$.Provider | ToUpper}} checks are listed below. For more information about each check, see the link provided.
 
-| Code  | Summary | Details |
-|:-------|:-------------|:----------|
-{{range $check := .Checks}}|{{$check.Code}}|{{$check.Documentation.Summary}}|[{{$check.Code}}](/docs/{{$.Provider}}/{{$check.Code}})|
+| Code  | Summary |
+|:-------|:-------------|
+{{range $check := .Checks}}|[{{$check.Code}}](/docs/{{$.Provider}}/{{$check.Code}})|{{$check.Documentation.Summary}}|
 {{end}}
 `
 
@@ -35,7 +38,7 @@ func generateCheckFile(checkFileContent *FileContent) error {
 		return err
 	}
 
-	providerFilePath := fmt.Sprintf("%s/_docs/%s/home.md", webPath, strings.ToLower(checkFileContent.Provider))
+	providerFilePath := fmt.Sprintf("%s/docs/%s/home.md", webPath, strings.ToLower(checkFileContent.Provider))
 	if err := os.MkdirAll(filepath.Dir(providerFilePath), os.ModePerm); err != nil {
 		return err
 	}

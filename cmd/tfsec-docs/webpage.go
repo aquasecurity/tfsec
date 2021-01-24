@@ -22,11 +22,14 @@ const (
 
 	baseWebPageTemplate = `---
 title: {{$.Code}}
-summary: {{$.Documentation.Summary}}
+summary: {{$.Documentation.Summary}} {{$.RequiredLabels}} 
+resources: 
 permalink: /docs/{{$.Provider}}/{{$.Code}}/
+nav_order: 2
+parent: {{$.Provider | ToUpperProvider }} Checks
 ---
 
-***{{$.Documentation.Summary}}***
+## {{$.Documentation.Summary}}
 
 ### Explanation
 
@@ -72,7 +75,17 @@ func generateWebPages(fileContents []*FileContent) error {
 }
 
 var funcMap = template.FuncMap{
-	"ToUpper": strings.ToUpper,
+	"ToUpper":         strings.ToUpper,
+	"ToUpperProvider": scanner.RuleProviderToString,
+	"Join":            join,
+}
+
+func join(s []string) string {
+	// first arg is sep, remaining args are strings to join
+	if s == nil {
+		return ""
+	}
+	return strings.Join(s[1:], s[0])
 }
 
 func generateDocsDataFile(contents []*FileContent) error {
@@ -85,7 +98,7 @@ func generateDocsDataFile(contents []*FileContent) error {
 }
 
 func generateWebPage(check scanner.Check) error {
-	webProviderPath := fmt.Sprintf("%s/_docs/%s", webPath, strings.ToLower(string(check.Provider)))
+	webProviderPath := fmt.Sprintf("%s/docs/%s", webPath, strings.ToLower(string(check.Provider)))
 	if err := os.MkdirAll(webProviderPath, os.ModePerm); err != nil {
 		return err
 	}
@@ -93,7 +106,7 @@ func generateWebPage(check scanner.Check) error {
 	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, check.Code)
 
 	fmt.Printf("Generating page for %s at %s\n", check.Code, filePath)
-	webTmpl := template.Must(template.New("web").Parse(baseWebPageTemplate))
+	webTmpl := template.Must(template.New("web").Funcs(funcMap).Parse(baseWebPageTemplate))
 	return writeTemplate(check, filePath, webTmpl)
 }
 
