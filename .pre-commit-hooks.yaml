@@ -1,0 +1,6 @@
+- id: tfsec
+  name: TFSec
+  description: TFsec is a tool to statically analyze Terraform templates to spot potential security issues.
+  language: golang
+  entry: tfsec
+  types: [terraform]
