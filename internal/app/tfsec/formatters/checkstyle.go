@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"io"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 type checkstyleResult struct {
@@ -26,7 +26,7 @@ type checkstyleOutput struct {
 	Files   []checkstyleFile `xml:"file"`
 }
 
-func FormatCheckStyle(w io.Writer, results []scanner.Result) error {
+func FormatCheckStyle(w io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
 
 	output := checkstyleOutput{}
 

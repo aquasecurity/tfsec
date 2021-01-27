@@ -4,7 +4,13 @@ ARG tfsec_version=0.0.0
 
 COPY . /src
 WORKDIR /src
-RUN go build -ldflags "-X github.com/liamg/tfsec/version.Version=${tfsec_version}" -mod=vendor ./cmd/tfsec
+ENV CGO_ENABLED=0
+RUN go build \
+  -a \
+  -ldflags "-X github.com/tfsec/tfsec/version.Version=${tfsec_version} -s -w -extldflags '-static'" \
+  -mod=vendor \
+  ./cmd/tfsec
+
 
 FROM alpine
 
@@ -17,5 +23,5 @@ COPY --from=build-env /src/tfsec /usr/bin/tfsec
 # set the default entrypoint -- when this container is run, use this command
 ENTRYPOINT [ "tfsec" ]
 
-# as we specified an entrytrypoint, this is appended as an argument (i.e., `tfsec --help`)
+# as we specified an entrypoint, this is appended as an argument (i.e., `tfsec --help`)
 CMD [ "--help" ]

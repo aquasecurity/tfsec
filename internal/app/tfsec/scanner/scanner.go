@@ -5,7 +5,11 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
 // Scanner scans HCL blocks by running all registered checks against them
@@ -18,7 +22,7 @@ func New() *Scanner {
 }
 
 // Find element in list
-func checkInList(code RuleID, list []string) bool {
+func checkInList(code RuleCode, list []string) bool {
 	codeCurrent := fmt.Sprintf("%s", code)
 	for _, codeIgnored := range list {
 		if codeIgnored == codeCurrent {
@@ -30,14 +34,21 @@ func checkInList(code RuleID, list []string) bool {
 
 // Scan takes all available hcl blocks and an optional context, and returns a slice of results. Each result indicates a potential security problem.
 func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string) []Result {
+
+	if len(blocks) == 0 {
+		return nil
+	}
+
+	checkTime := timer.Start(timer.Check)
+	defer checkTime.Stop()
 	var results []Result
 	context := &Context{blocks: blocks}
 	for _, block := range blocks {
 		for _, check := range GetRegisteredChecks() {
 			if check.IsRequiredForBlock(block) {
+				debug.Log("Running check for %s on %s.%s (%s)...", check.Code, block.Type(), block.FullName(), block.Range().Filename)
 				for _, result := range check.Run(block, context) {
 					if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
-						result.Link = fmt.Sprintf("https://github.com/liamg/tfsec/wiki/%s", result.RuleID)
 						results = append(results, result)
 					}
 				}
@@ -47,7 +58,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 	return results
 }
 
-func (scanner *Scanner) checkRangeIgnored(code RuleID, r parser.Range) bool {
+func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range) bool {
 	raw, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return false

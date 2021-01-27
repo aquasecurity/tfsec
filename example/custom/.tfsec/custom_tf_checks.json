@@ -1,0 +1,151 @@
+{
+  "checks": [
+    {
+      "code": "CUS001",
+      "description": "Custom check to ensure the CostCentre tag is applied to EC2 instances",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_instance"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "name": "tags",
+        "action": "contains",
+        "value": "CostCentre"
+      },
+      "errorMessage": "The required CostCentre tag was missing",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/tagging.html"
+      ]
+    },
+    {
+      "code": "CUS002",
+      "description": "Custom check to ensure S3 buckets have versioning enabled",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_s3_bucket"
+      ],
+      "severity": "WARNING",
+      "matchSpec": {
+        "name": "versioning",
+        "action": "isPresent",
+        "subMatch": {
+          "name" : "enabled",
+          "action": "equals",
+          "value" : "true"
+        }
+      },
+      "errorMessage": "The versioning block requires enabled attribute",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/tagging.html"
+      ]
+    },
+    {
+      "code": "CUS003",
+      "description": "Check ACL is not one of bad values",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_s3_bucket"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "name": "acl",
+        "value": ["public-read", "authenticated-users"],
+        "action": "isNone"
+      },
+      "errorMessage": "The ACL must not be one of ['public-read', 'authenticated-users']",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/tagging.html"
+      ]
+    },
+    {
+      "code": "CUS004",
+      "description": "Custom check to ensure S3 buckets are only created using the custom_bucket module",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_s3_bucket"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "action": "inModule"
+      },
+      "errorMessage": "S3 buckets must only be created using the custom bucket module",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/s3_buckets.html"
+      ]
+    },
+    {
+      "code": "CUS005",
+      "description": "Check that bucket created by custom bucket module must have the acl set to public-read",
+      "requiredTypes": [
+        "module"
+      ],
+      "requiredLabels": [
+        "*"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "name": "source",
+        "action": "regexMatches",
+        "value": ".*public_.+bucket$",
+        "subMatch": {
+          "name": "acl",
+          "action": "equals",
+          "value": "private"
+        }
+      },
+      "errorMessage": "S3 buckets created with the `custom_bucket` module must have an acl of public-read",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/s3_buckets.html"
+      ]
+    },
+    {
+      "code": "CUS006",
+      "description": "AMIs must be one of the expected range",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_instance"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "name": "ami",
+        "value": ["ami-1234", "ami-5678"],
+        "action": "isAny"
+      },
+      "errorMessage": "The ec2 instance has an ami that isn't in the permitted range ['ami-1234', 'ami-5678']",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/tagging.html"
+      ]
+    },
+    {
+      "code": "CUS007",
+      "description": "Don't use more CPU cores than 3",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_instance"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "name": "cpu_core_count",
+        "value": 2,
+        "action": "lessThan"
+      },
+      "errorMessage": "The ec2 instance has a CPU core count greater than allowed for cost saving",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/tagging.html"
+      ]
+    }
+  ]
+}

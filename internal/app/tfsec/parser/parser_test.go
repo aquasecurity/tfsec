@@ -4,7 +4,10 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"testing"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 
 	"github.com/zclconf/go-cty/cty"
 
@@ -14,7 +17,6 @@ import (
 )
 
 func Test_BasicParsing(t *testing.T) {
-	parser := New()
 
 	path := createTestFile("test.tf", `
 
@@ -47,7 +49,9 @@ data "cats_cat" "the-cats-mother" {
 
 `)
 
-	blocks, err := parser.ParseDirectory(filepath.Dir(path), nil, "")
+	debug.Enabled = true
+	parser := New(filepath.Dir(path), "")
+	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,7 +61,7 @@ data "cats_cat" "the-cats-mother" {
 	require.Len(t, variables, 1)
 	assert.Equal(t, "variable", variables[0].Type())
 	require.Len(t, variables[0].Labels(), 1)
-	assert.Equal(t, "cats_mother", variables[0].Labels()[0])
+	assert.Equal(t, "cats_mother", variables[0].TypeLabel())
 	defaultVal := variables[0].GetAttribute("default")
 	require.NotNil(t, defaultVal)
 	assert.Equal(t, cty.String, defaultVal.Value().Type())
@@ -68,22 +72,27 @@ data "cats_cat" "the-cats-mother" {
 	require.Len(t, providerBlocks, 1)
 	assert.Equal(t, "provider", providerBlocks[0].Type())
 	require.Len(t, providerBlocks[0].Labels(), 1)
-	assert.Equal(t, "cats", providerBlocks[0].Labels()[0])
+	assert.Equal(t, "cats", providerBlocks[0].TypeLabel())
 
 	// resources
 	resourceBlocks := blocks.OfType("resource")
+
+	sort.Slice(resourceBlocks, func(i, j int) bool {
+		return resourceBlocks[i].TypeLabel() < resourceBlocks[j].TypeLabel()
+	})
+
 	require.Len(t, resourceBlocks, 2)
 	require.Len(t, resourceBlocks[0].Labels(), 2)
 
 	assert.Equal(t, "resource", resourceBlocks[0].Type())
-	assert.Equal(t, "cats_cat", resourceBlocks[0].Labels()[0])
-	assert.Equal(t, "mittens", resourceBlocks[0].Labels()[1])
+	assert.Equal(t, "cats_cat", resourceBlocks[0].TypeLabel())
+	assert.Equal(t, "mittens", resourceBlocks[0].NameLabel())
 
 	assert.Equal(t, "mittens", resourceBlocks[0].GetAttribute("name").Value().AsString())
 	assert.True(t, resourceBlocks[0].GetAttribute("special").Value().True())
 
 	assert.Equal(t, "resource", resourceBlocks[1].Type())
-	assert.Equal(t, "cats_kitten", resourceBlocks[1].Labels()[0])
+	assert.Equal(t, "cats_kitten", resourceBlocks[1].TypeLabel())
 	assert.Equal(t, "the great destroyer", resourceBlocks[1].GetAttribute("name").Value().AsString())
 	assert.Equal(t, "mittens", resourceBlocks[1].GetAttribute("parent").Value().AsString())
 
@@ -93,8 +102,8 @@ data "cats_cat" "the-cats-mother" {
 	require.Len(t, dataBlocks[0].Labels(), 2)
 
 	assert.Equal(t, "data", dataBlocks[0].Type())
-	assert.Equal(t, "cats_cat", dataBlocks[0].Labels()[0])
-	assert.Equal(t, "the-cats-mother", dataBlocks[0].Labels()[1])
+	assert.Equal(t, "cats_cat", dataBlocks[0].TypeLabel())
+	assert.Equal(t, "the-cats-mother", dataBlocks[0].NameLabel())
 
 	assert.Equal(t, "boots", dataBlocks[0].GetAttribute("name").Value().AsString())
 }
@@ -123,9 +132,8 @@ output "result" {
 		"module",
 	)
 
-	parser := New()
-
-	blocks, err := parser.ParseDirectory(path, nil, "")
+	parser := New(path, "")
+	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -134,20 +142,26 @@ output "result" {
 	require.Len(t, modules, 1)
 	module := modules[0]
 	assert.Equal(t, "module", module.Type())
-	assert.Equal(t, "module.my-mod", module.Name())
+	assert.Equal(t, "module.my-mod", module.FullName())
 	inputAttr := module.GetAttribute("input")
 	require.NotNil(t, inputAttr)
 	require.Equal(t, cty.String, inputAttr.Value().Type())
 	assert.Equal(t, "ok", inputAttr.Value().AsString())
 
 	outputs := blocks.OfType("output")
-	require.Len(t, outputs, 1)
-	output := outputs[0]
-	assert.Equal(t, "output.result", output.Name())
-	valAttr := output.GetAttribute("value")
-	require.NotNil(t, valAttr)
-	require.Equal(t, cty.String, valAttr.Type())
-	assert.Equal(t, "ok", valAttr.Value().AsString())
+	require.Len(t, outputs, 2)
+	for _, output := range outputs {
+		if output.moduleBlock != nil {
+			assert.Equal(t, "module.my-mod:output.result", output.FullName())
+		} else {
+			assert.Equal(t, "output.result", output.FullName())
+		}
+		valAttr := output.GetAttribute("value")
+		require.NotNil(t, valAttr)
+		require.Equal(t, cty.String, valAttr.Type())
+		assert.Equal(t, "ok", valAttr.Value().AsString())
+	}
+
 }
 
 func Test_NestedParentModule(t *testing.T) {
@@ -174,9 +188,8 @@ output "result" {
 		"",
 	)
 
-	parser := New()
-
-	blocks, err := parser.ParseDirectory(path, nil, "")
+	parser := New(path, "")
+	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -185,20 +198,25 @@ output "result" {
 	require.Len(t, modules, 1)
 	module := modules[0]
 	assert.Equal(t, "module", module.Type())
-	assert.Equal(t, "module.my-mod", module.Name())
+	assert.Equal(t, "module.my-mod", module.FullName())
 	inputAttr := module.GetAttribute("input")
 	require.NotNil(t, inputAttr)
 	require.Equal(t, cty.String, inputAttr.Value().Type())
 	assert.Equal(t, "ok", inputAttr.Value().AsString())
 
 	outputs := blocks.OfType("output")
-	require.Len(t, outputs, 1)
-	output := outputs[0]
-	assert.Equal(t, "output.result", output.Name())
-	valAttr := output.GetAttribute("value")
-	require.NotNil(t, valAttr)
-	require.Equal(t, cty.String, valAttr.Type())
-	assert.Equal(t, "ok", valAttr.Value().AsString())
+	require.Len(t, outputs, 2)
+	for _, output := range outputs {
+		if output.moduleBlock != nil {
+			assert.Equal(t, "module.my-mod:output.result", output.FullName())
+		} else {
+			assert.Equal(t, "output.result", output.FullName())
+		}
+		valAttr := output.GetAttribute("value")
+		require.NotNil(t, valAttr)
+		require.Equal(t, cty.String, valAttr.Type())
+		assert.Equal(t, "ok", valAttr.Value().AsString())
+	}
 }
 
 func createTestFile(filename, contents string) string {

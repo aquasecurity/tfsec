@@ -1,6 +1,6 @@
 package scanner
 
-import "github.com/liamg/tfsec/internal/app/tfsec/parser"
+import "github.com/tfsec/tfsec/internal/app/tfsec/parser"
 
 type Context struct {
 	blocks parser.Blocks
@@ -9,7 +9,7 @@ type Context struct {
 func (c *Context) GetResourcesByType(t string) parser.Blocks {
 	var results parser.Blocks
 	for _, block := range c.blocks {
-		if block.Type() == "resource" && len(block.Labels()) > 0 && block.Labels()[0] == t {
+		if block.Type() == "resource" && len(block.Labels()) > 0 && block.TypeLabel() == t {
 			results = append(results, block)
 		}
 	}

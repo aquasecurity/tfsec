@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 // see https://github.com/windyroad/JUnit-Schema/blob/master/JUnit.xsd
@@ -39,7 +39,7 @@ type JUnitFailure struct {
 	Contents string `xml:",chardata"`
 }
 
-func FormatJUnit(w io.Writer, results []scanner.Result) error {
+func FormatJUnit(w io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
 
 	output := JUnitTestSuite{
 		Name:     "tfsec",
@@ -51,11 +51,11 @@ func FormatJUnit(w io.Writer, results []scanner.Result) error {
 		output.TestCases = append(output.TestCases,
 			JUnitTestCase{
 				Classname: result.Range.Filename,
-				Name:      fmt.Sprintf("[%s][%s]", result.RuleID, result.Severity),
+				Name:      fmt.Sprintf("[%s][%s] - %s", result.RuleID, result.Severity, result.Description),
 				Time:      "0",
 				Failure: &JUnitFailure{
 					Message: result.Description,
-					Contents: fmt.Sprintf("%s\n%s\nMore information: %s",
+					Contents: fmt.Sprintf("%s\n%s\n%s",
 						result.Range.String(),
 						highlightCodeJunit(result),
 						result.Link),

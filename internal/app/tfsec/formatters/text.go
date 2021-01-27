@@ -6,13 +6,14 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-func FormatText(_ io.Writer, results []scanner.Result) error {
+func FormatText(_ io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
 
 	if len(results) == 0 {
 		fmt.Print("\nNo problems detected!\n")
+		return nil
 	}
 
 	var severity string
@@ -36,7 +37,7 @@ func FormatText(_ io.Writer, results []scanner.Result) error {
 
 `, result.RuleID, severity, result.Description, result.Range.String())
 		outputCode(result)
-		fmt.Printf("  See %s for more information.\n\n", result.Link)
+		fmt.Printf("  %s\n\n", result.Link)
 	}
 
 	return nil

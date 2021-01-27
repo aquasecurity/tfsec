@@ -6,10 +6,10 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-func FormatCSV(w io.Writer, results []scanner.Result) error {
+func FormatCSV(w io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
 
 	records := [][]string{
 		{"file", "start_line", "end_line", "rule_id", "severity", "description", "link"},

@@ -6,20 +6,42 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+
 	"github.com/liamg/clinch/terminal"
-	"github.com/liamg/tfsec/internal/app/tfsec/scanner"
 	"github.com/liamg/tml"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-func FormatDefault(_ io.Writer, results []scanner.Result) error {
+func FormatDefault(_ io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
+
+	showStatistics := true
+	showSuccessOutput := true
+
+	for _, option := range options {
+		if option == ConciseOutput {
+			showStatistics = false
+			showSuccessOutput = false
+			break
+		}
+	}
 
 	if len(results) == 0 {
-		terminal.PrintSuccessf("\nNo problems detected!\n")
+		if showStatistics {
+			_ = tml.Printf("\n")
+			printStatistics()
+		}
+		if showSuccessOutput {
+			terminal.PrintSuccessf("\nNo problems detected!\n\n")
+		}
+		return nil
 	}
 
 	var severity string
 
-	terminal.PrintErrorf("\n%d potential problems detected:\n\n", len(results))
+	fmt.Println("")
 	for i, result := range results {
 		terminal.PrintErrorf("<underline>Problem %d</underline>\n", i+1)
 
@@ -38,11 +60,31 @@ func FormatDefault(_ io.Writer, results []scanner.Result) error {
 
 `, result.RuleID, severity, result.Description, result.Range.String())
 		highlightCode(result)
-		tml.Printf("  <blue>See %s for more information.</blue>\n\n", result.Link)
+		tml.Printf("  <blue> %s </blue>\n\n", result.Link)
 	}
+
+	// TODO show files processed
+	if showStatistics {
+		printStatistics()
+	}
+
+	terminal.PrintErrorf("\n%d potential problems detected.\n\n", len(results))
 
 	return nil
 
+}
+
+func printStatistics() {
+	times := timer.Summary()
+	for _, operation := range []timer.Operation{
+		timer.DiskIO,
+		timer.HCLParse,
+		timer.Evaluation,
+		timer.Check,
+	} {
+		_ = tml.Printf("  <blue>%-20s</blue> %s\n", operation, times[operation].String())
+	}
+	_ = tml.Printf("  <blue>%-20s</blue> %d\n", "files loaded", parser.CountFiles())
 }
 
 // highlight the lines of code which caused a problem, if available

@@ -10,10 +10,7 @@ type Range struct {
 }
 
 // String creates a human-readable summary of the range
-func (r *Range) String() string {
-	if r == nil {
-		return "unknown"
-	}
+func (r Range) String() string {
 	if r.StartLine != r.EndLine {
 		return fmt.Sprintf("%s:%d-%d", r.Filename, r.StartLine, r.EndLine)
 	}
