@@ -172,8 +172,14 @@ var rootCmd = &cobra.Command{
 }
 
 func removeDuplicatesAndUnwanted(results []scanner.Result) []scanner.Result {
+	reduction := map[scanner.Result]bool{}
+
+	for _, result := range results {
+		reduction[result] = true
+	}
+
 	var returnVal []scanner.Result
-	for _, r := range results {
+	for r, _ := range reduction {
 		if excludeDownloaded && strings.Contains(r.Range.Filename, "/.terraform") {
 			continue
 		}
