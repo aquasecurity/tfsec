@@ -90,22 +90,20 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 		return nil, err
 	}
 
-	for _, entry := range entries {
-		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".tf" {
-			debug.Log("Found qualifying subdirectory containing .tf files: %s", path)
-			return []string{path}, nil
-		}
-	}
-
-	var results []string
+	results := make([]string, 0, 10)
+	tfDirsMap := make(map[string]bool)
 
 	for _, entry := range entries {
 		if entry.IsDir() {
-			dirs, err := parser.getSubdirectories(filepath.Join(path, entry.Name()))
+			validSubDirs, err := parser.getSubdirectories(filepath.Join(path, entry.Name()))
 			if err != nil {
 				return nil, err
 			}
-			results = append(results, dirs...)
+			results = append(results, validSubDirs...)
+		} else if _, exists := tfDirsMap[path]; !exists && filepath.Ext(entry.Name()) == ".tf" {
+			debug.Log("Found new qualifying subdirectory containing .tf files: %s", path)
+			tfDirsMap[path] = true
+			results = append(results, path)
 		}
 	}
 
