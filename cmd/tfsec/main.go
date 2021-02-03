@@ -105,7 +105,7 @@ var rootCmd = &cobra.Command{
 			} else if _, err = os.Stat(yamlConfigFile); err == nil {
 				tfsecConfig = loadConfigFile(yamlConfigFile)
 			} else {
-			       tfsecConfig = &config.Config{}
+				tfsecConfig = &config.Config{}
 			}
 		}
 
