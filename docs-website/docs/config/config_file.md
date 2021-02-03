@@ -10,10 +10,10 @@ The tfsec config file can override various tfsec configurations.
 
 The tfsec config file is a file in the `.tfsec` folder in the root check path named `config.json` or `config.yml` and is automaticaly loaded if it exists.
 
-The config file can also be set with the `-config-file` option:
+The config file can also be set with the `--config-file` option:
 
 ```
-tfsec -config-file tfsec.yml
+tfsec --config-file tfsec.yml
 ```
 
 ## Syntax and Overrides
