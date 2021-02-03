@@ -96,32 +96,14 @@ var rootCmd = &cobra.Command{
 		tfsecDir := fmt.Sprintf("%s/.tfsec", dir)
 
 		if len(configFile) > 0 {
-			debug.Log("loading config file...")
-			tfsecConfig, err = config.LoadConfig(configFile)
-			if err != nil {
-				fmt.Fprint(os.Stderr, fmt.Sprintf("Failed to load the config file. %s", err))
-				os.Exit(1)
-			}
-			debug.Log("loaded config file %s", configFile)
+			tfsecConfig = loadConfigFile(configFile)
 		} else {
 			jsonConfigFile := fmt.Sprintf("%s/%s", tfsecDir, "config.json")
 			yamlConfigFile := fmt.Sprintf("%s/%s", tfsecDir, "config.yml")
 			if _, err = os.Stat(jsonConfigFile); err == nil {
-				debug.Log("loading config file...")
-				tfsecConfig, err = config.LoadConfig(jsonConfigFile)
-				if err != nil {
-					fmt.Fprint(os.Stderr, fmt.Sprintf("Failed to load the config file. %s", err))
-					os.Exit(1)
-				}
-				debug.Log("loaded config file %s", jsonConfigFile)
+				tfsecConfig = loadConfigFile(jsonConfigFile)
 			} else if _, err = os.Stat(yamlConfigFile); err == nil {
-				debug.Log("loading config file...")
-				tfsecConfig, err = config.LoadConfig(yamlConfigFile)
-				if err != nil {
-					fmt.Fprint(os.Stderr, fmt.Sprintf("Failed to load the config file. %s", err))
-					os.Exit(1)
-				}
-				debug.Log("loaded config file %s", yamlConfigFile)
+				tfsecConfig = loadConfigFile(yamlConfigFile)
 			}
 		}
 
@@ -281,4 +263,15 @@ func getFormatter() (formatters.Formatter, error) {
 	default:
 		return nil, fmt.Errorf("invalid format specified: '%s'", format)
 	}
+}
+
+func loadConfigFile(configFilePath string) *config.Config {
+	debug.Log("loading config file %s", configFilePath)
+	config, err := config.LoadConfig(configFilePath)
+	if err != nil {
+		fmt.Fprint(os.Stderr, fmt.Sprintf("Failed to load the config file. %s", err))
+		os.Exit(1)
+	}
+	debug.Log("loaded config file")
+	return config
 }
