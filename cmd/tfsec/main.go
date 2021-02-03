@@ -96,18 +96,31 @@ var rootCmd = &cobra.Command{
 		tfsecDir := fmt.Sprintf("%s/.tfsec", dir)
 
 		if len(configFile) > 0 {
-			debug.Log("loading in the config file")
+			debug.Log("loading config file...")
 			tfsecConfig, err = config.LoadConfig(configFile)
 			if err != nil {
 				fmt.Fprint(os.Stderr, fmt.Sprintf("Failed to load the config file. %s", err))
 				os.Exit(1)
 			}
+			debug.Log("loaded config file %s", configFile)
 		} else {
 			jsonConfigFile := fmt.Sprintf("%s/%s", tfsecDir, "config.json")
 			yamlConfigFile := fmt.Sprintf("%s/%s", tfsecDir, "config.yml")
-			if tfsecConfig, err = config.LoadConfig(jsonConfigFile); err == nil {
+			if _, err = os.Stat(jsonConfigFile); err == nil {
+				debug.Log("loading config file...")
+				tfsecConfig, err = config.LoadConfig(jsonConfigFile)
+				if err != nil {
+					fmt.Fprint(os.Stderr, fmt.Sprintf("Failed to load the config file. %s", err))
+					os.Exit(1)
+				}
 				debug.Log("loaded config file %s", jsonConfigFile)
-			} else if tfsecConfig, err = config.LoadConfig(yamlConfigFile); err == nil {
+			} else if _, err = os.Stat(yamlConfigFile); err == nil {
+				debug.Log("loading config file...")
+				tfsecConfig, err = config.LoadConfig(yamlConfigFile)
+				if err != nil {
+					fmt.Fprint(os.Stderr, fmt.Sprintf("Failed to load the config file. %s", err))
+					os.Exit(1)
+				}
 				debug.Log("loaded config file %s", yamlConfigFile)
 			}
 		}
