@@ -6,4 +6,4 @@ has_toc: no
 nav_order: 10
 ---
 
-tfsec configuration and overrides.
+## tfsec Configuration and Overrides
