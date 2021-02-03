@@ -93,6 +93,7 @@ var rootCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
+		tfsecDir := fmt.Sprintf("%s/.tfsec", dir)
 
 		if len(configFile) > 0 {
 			debug.Log("loading in the config file")
@@ -101,12 +102,20 @@ var rootCmd = &cobra.Command{
 				fmt.Fprint(os.Stderr, fmt.Sprintf("Failed to load the config file. %s", err))
 				os.Exit(1)
 			}
+		} else {
+			jsonConfigFile := fmt.Sprintf("%s/%s", tfsecDir, "config.json")
+			yamlConfigFile := fmt.Sprintf("%s/%s", tfsecDir, "config.yml")
+			if tfsecConfig, err = config.LoadConfig(jsonConfigFile); err == nil {
+				debug.Log("loaded config file %s", jsonConfigFile)
+			} else if tfsecConfig, err = config.LoadConfig(yamlConfigFile); err == nil {
+				debug.Log("loaded config file %s", yamlConfigFile)
+			}
 		}
 
 		debug.Log("Loading custom checks...")
 		if len(customCheckDir) == 0 {
 			debug.Log("Using the default custom check folder")
-			customCheckDir = fmt.Sprintf("%s/.tfsec", dir)
+			customCheckDir = tfsecDir
 		}
 		debug.Log("custom check directory set to %s", customCheckDir)
 		err = custom.Load(customCheckDir)
