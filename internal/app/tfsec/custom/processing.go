@@ -151,6 +151,26 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 		return resourceFound(spec, ctx)
 	}
 
+	// This And MatchSpec is only true if all childSpecs return true
+	if spec.Action == And {
+		for _, childSpec := range spec.ChildMatchSpec {
+			if !evalMatchSpec(block, &childSpec, ctx) {
+				return false
+			}
+		}
+		return true
+	}
+
+	// If a single childSpec is true then this Or matchSpec is true
+	if spec.Action == Or {
+		for _, childSpec := range spec.ChildMatchSpec {
+			if evalMatchSpec(block, &childSpec, ctx) {
+				return true
+			}
+		}
+		return false
+	}
+
 	evalResult = matchFunctions[spec.Action](block, spec)
 
 	if spec.SubMatch != nil {
@@ -162,18 +182,6 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 		}
 	}
 
-	if len(spec.SubMatches) > 0 {
-
-	AllBlocks:
-		for _, block := range block.GetBlocks(spec.Name) {
-			for i := range spec.SubMatches {
-				evalResult = evalMatchSpec(block, &spec.SubMatches[i], nil)
-				if !evalResult {
-					break AllBlocks
-				}
-			}
-		}
-	}
 	return evalResult
 }
 

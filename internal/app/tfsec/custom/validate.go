@@ -74,10 +74,18 @@ func validateMatchSpec(spec *MatchSpec, check *Check, checkErrors []error) []err
 	if !spec.Action.isValid() {
 		checkErrors = append(checkErrors, errors.New(fmt.Sprintf("matchSpec.Action[%s] is not a recognised option. Should be %s", spec.Action, ValidCheckActions)))
 	}
-	// if the check is inModule, no name is required
-	if len(spec.Name) == 0 && spec.Action != "inModule" {
+	// if the check is one of `inModule`,`or`,`and`, no name is required
+	if len(spec.Name) == 0 && spec.Action != "inModule" && spec.Action != "or" && spec.Action != "and" {
 		checkErrors = append(checkErrors, errors.New("matchSpec.Name requires a value"))
 	}
+
+	// if the check is one of `or`, `and`, then all childMatchSpec's must also be valid
+	if spec.Action == "or" || spec.Action == "and" {
+		for _, childMatchSpec := range spec.ChildMatchSpec {
+			checkErrors = append(validateMatchSpec(&childMatchSpec, check, checkErrors))
+		}
+	}
+
 	if spec.SubMatch != nil {
 		return validateMatchSpec(spec.SubMatch, check, checkErrors)
 	}

@@ -25,6 +25,8 @@ var ValidCheckActions = []CheckAction{
 	RequiresPresence,
 	IsAny,
 	IsNone,
+	And,
+	Or,
 }
 
 // InModule checks that the block is part of a module
@@ -78,13 +80,19 @@ const GreaterThanOrEqualTo CheckAction = "greaterThanOrEqualTo"
 // RequiresPresence checks that a second resource is present
 const RequiresPresence CheckAction = "requiresPresence"
 
+// And checks that at both of the given ChildMatchSpec's evaluates to True
+const And CheckAction = "and"
+
+// Or checks that at least one of the given ChildMatchSpec's evaluates to True
+const Or CheckAction = "or"
+
 // MatchSpec specifies the checks that should be performed
 type MatchSpec struct {
 	Name            string      `json:"name,omitempty" yaml:"name,omitempty"`
 	MatchValue      interface{} `json:"value,omitempty" yaml:"value,omitempty"`
 	Action          CheckAction `json:"action,omitempty" yaml:"action,omitempty"`
+	ChildMatchSpec  []MatchSpec `json:"childMatchSpec,omitempty" yaml:"childMatchSpec,omitempty"`
 	SubMatch        *MatchSpec  `json:"subMatch,omitempty" yaml:"subMatch,omitempty"`
-	SubMatches      []MatchSpec `json:"subMatches,omitempty" yaml:"subMatches,omitempty"`
 	IgnoreUndefined bool        `json:"ignoreUndefined,omitempty" yaml:"ignoreUndefined,omitempty"`
 }
 
