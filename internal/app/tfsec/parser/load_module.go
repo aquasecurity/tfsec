@@ -73,7 +73,7 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 	if metadata != nil {
 		// if we have module metadata we can parse all the modules as they'll be cached locally!
 		for _, module := range metadata.Modules {
-			if module.Key == block.Label() || module.Source == source {
+			if module.Source == source {
 				modulePath = filepath.Clean(filepath.Join(moduleBasePath, module.Dir))
 				break
 			}
