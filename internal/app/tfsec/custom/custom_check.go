@@ -84,6 +84,7 @@ type MatchSpec struct {
 	MatchValue      interface{} `json:"value,omitempty" yaml:"value,omitempty"`
 	Action          CheckAction `json:"action,omitempty" yaml:"action,omitempty"`
 	SubMatch        *MatchSpec  `json:"subMatch,omitempty" yaml:"subMatch,omitempty"`
+	SubMatches      []MatchSpec `json:"subMatches,omitempty" yaml:"subMatches,omitempty"`
 	IgnoreUndefined bool        `json:"ignoreUndefined,omitempty" yaml:"ignoreUndefined,omitempty"`
 }
 
