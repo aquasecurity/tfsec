@@ -98,6 +98,7 @@ The `MatchSpec` is the what will define the check itself - this is fairly basic 
 | value | In cases where a value is required, the value to look for |
 | ignoreUndefined | If the attribute is undefined, ignore and pass the check |
 |subMatch | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block |
+|subMatches | An array of sub MatchSpec block for nested checking. All sub MatchSpecs must match. |
 
 #### Check Actions
 There are a number of `CheckActions` available which should allow you to quickly put together most checks.
