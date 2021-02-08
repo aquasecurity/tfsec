@@ -84,14 +84,13 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 		// if we have no metadata, we can only support modules available on the local filesystem
 		// users wanting this feature should run a `terraform init` before running tfsec to cache all modules locally
 		if !strings.HasPrefix(source, "./") && !strings.HasPrefix(source, "../") {
-			return nil, fmt.Errorf("missing module with source '%s' -  try to 'terraform init' first", source)
+			return nil, fmt.Errorf("didn't load module %s", source)
 		}
 
 		modulePath = filepath.Join(filepath.Dir(block.Range().Filename), source)
 	}
 
 	var blocks Blocks
-
 	blocks, err := getModuleBlocks(block, modulePath, blocks)
 	if err != nil {
 		return nil, err
@@ -128,22 +127,23 @@ func getModuleBlocks(block *Block, modulePath string, blocks Blocks) (Blocks, er
 	}
 
 	modulesPath := fmt.Sprintf("%s/modules", modulePath)
-	if _, err := os.Stat(modulesPath); !os.IsNotExist(err) {
-		subModulePaths, err := ioutil.ReadDir(modulesPath)
-		if err != nil {
-			return nil, err
-		}
-		for _, subPath := range subModulePaths {
-			if subPath.IsDir() {
-				submodulePath := path.Join(modulesPath, subPath.Name())
-				moduleBlocks, err := getModuleBlocks(block, submodulePath, blocks)
-				if err != nil {
-					return nil, err
-				}
-				blocks = append(blocks, moduleBlocks...)
+	if _, err := os.Stat(modulesPath); os.IsNotExist(err) {
+		// return nothing
+		return nil, nil
+	}
+	subModulePaths, err := ioutil.ReadDir(modulesPath)
+	if err != nil {
+		return nil, err
+	}
+	for _, subPath := range subModulePaths {
+		if subPath.IsDir() {
+			submodulePath := path.Join(modulesPath, subPath.Name())
+			moduleBlocks, err := getModuleBlocks(block, submodulePath, blocks)
+			if err != nil {
+				return nil, err
 			}
+			blocks = append(blocks, moduleBlocks...)
 		}
 	}
 	return blocks, nil
 }
-

@@ -29,10 +29,10 @@ func LoadModuleMetadata(fullPath string) (*ModulesMetadata, error) {
 	}
 	defer func() { _ = f.Close() }()
 
-	var metadata ModulesMetadata
+	var metadata *ModulesMetadata
 	if err := json.NewDecoder(f).Decode(&metadata); err != nil {
 		return nil, err
 	}
 
-	return &metadata, nil
+	return metadata, nil
 }

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
@@ -71,10 +72,20 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	}
 	t.Stop()
 
+	var meta []ModuleMetadata
 	debug.Log("Loading module metadata...")
 	t = timer.Start(timer.DiskIO)
-	modulesMetadata, _ := LoadModuleMetadata(parser.fullPath)
+	for _, subdirectory := range subdirectories {
+		if _, err := os.Stat(fmt.Sprintf("%s/.terraform/modules", subdirectory)); err == nil {
+			mm, _ := LoadModuleMetadata(subdirectory)
+			meta = append(meta, mm.Modules...)
+		}
+	}
 	t.Stop()
+
+	modulesMetadata := &ModulesMetadata{
+		Modules: meta,
+	}
 
 	debug.Log("Loading modules...")
 	modules := LoadModules(blocks, parser.fullPath, modulesMetadata)
@@ -85,27 +96,29 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 }
 
 func (parser *Parser) getSubdirectories(path string) ([]string, error) {
+	if strings.Contains(path, ".terraform") {
+		return nil, nil
+	}
+
 	entries, err := ioutil.ReadDir(path)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, entry := range entries {
-		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".tf" {
-			debug.Log("Found qualifying subdirectory containing .tf files: %s", path)
-			return []string{path}, nil
-		}
-	}
-
-	var results []string
+	results := make([]string, 0, 10)
+	tfDirsMap := make(map[string]bool)
 
 	for _, entry := range entries {
 		if entry.IsDir() {
-			dirs, err := parser.getSubdirectories(filepath.Join(path, entry.Name()))
+			validSubDirs, err := parser.getSubdirectories(filepath.Join(path, entry.Name()))
 			if err != nil {
 				return nil, err
 			}
-			results = append(results, dirs...)
+			results = append(results, validSubDirs...)
+		} else if _, exists := tfDirsMap[path]; !exists && filepath.Ext(entry.Name()) == ".tf" {
+			debug.Log("Found new qualifying subdirectory containing .tf files: %s", path)
+			tfDirsMap[path] = true
+			results = append(results, path)
 		}
 	}
 
