@@ -159,6 +159,17 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 		}
 		evalResult = evalMatchSpec(block, spec.SubMatch, nil)
 	}
+	if len(spec.SubMatches) > 0 {
+		if block.HasBlock(spec.Name) {
+			block = block.GetBlock(spec.Name)
+		}
+		for i := range spec.SubMatches {
+			evalResult = evalMatchSpec(block, &spec.SubMatches[i], nil)
+			if !evalResult {
+				break
+			}
+		}
+	}
 	return evalResult
 }
 
