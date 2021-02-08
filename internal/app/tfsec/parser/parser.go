@@ -79,6 +79,10 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	debug.Log("Loading modules...")
 	modules := LoadModules(blocks, parser.fullPath, modulesMetadata)
 
+	for _, module := range modules {
+		blocks = append(blocks, module.Blocks...)
+	}
+
 	debug.Log("Evaluating expressions...")
 	evaluator := NewEvaluator(parser.fullPath, blocks, inputVars, modulesMetadata, modules)
 	return evaluator.EvaluateAll()
