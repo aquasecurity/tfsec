@@ -38,6 +38,10 @@ func isOpenCidr(attr *parser.Attribute, provider scanner.RuleProvider) bool {
 			continue
 		}
 
+		if !cidr.IsKnown() {
+			continue
+		}
+
 		cidrStr := cidr.AsString()
 		if strings.HasSuffix(cidrStr, "/0") || cidrStr == "*" {
 			return true
