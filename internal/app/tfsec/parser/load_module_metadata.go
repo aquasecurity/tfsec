@@ -7,6 +7,7 @@ import (
 )
 
 type ModulesMetadata struct {
+	Path string
 	Modules []ModuleMetadata `json:"Modules"`
 }
 
@@ -34,5 +35,6 @@ func LoadModuleMetadata(fullPath string) (*ModulesMetadata, error) {
 		return nil, err
 	}
 
+	metadata.Path = metadataPath
 	return &metadata, nil
 }
