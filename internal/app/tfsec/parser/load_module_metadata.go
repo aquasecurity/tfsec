@@ -35,6 +35,6 @@ func LoadModuleMetadata(fullPath string) (*ModulesMetadata, error) {
 		return nil, err
 	}
 
-	metadata.Path = metadataPath
+	metadata.Path = fullPath
 	return &metadata, nil
 }
