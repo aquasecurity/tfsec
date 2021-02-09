@@ -154,19 +154,23 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 	evalResult = matchFunctions[spec.Action](block, spec)
 
 	if spec.SubMatch != nil {
-		if block.HasBlock(spec.Name) {
-			block = block.GetBlock(spec.Name)
-		}
-		evalResult = evalMatchSpec(block, spec.SubMatch, nil)
-	}
-	if len(spec.SubMatches) > 0 {
-		if block.HasBlock(spec.Name) {
-			block = block.GetBlock(spec.Name)
-		}
-		for i := range spec.SubMatches {
-			evalResult = evalMatchSpec(block, &spec.SubMatches[i], nil)
+		for _, block := range block.GetBlocks(spec.Name) {
+			evalResult = evalMatchSpec(block, spec.SubMatch, nil)
 			if !evalResult {
 				break
+			}
+		}
+	}
+
+	if len(spec.SubMatches) > 0 {
+
+	AllBlocks:
+		for _, block := range block.GetBlocks(spec.Name) {
+			for i := range spec.SubMatches {
+				evalResult = evalMatchSpec(block, &spec.SubMatches[i], nil)
+				if !evalResult {
+					break AllBlocks
+				}
 			}
 		}
 	}
