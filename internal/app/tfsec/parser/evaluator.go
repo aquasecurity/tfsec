@@ -22,7 +22,7 @@ type Evaluator struct {
 	moduleBasePath string
 }
 
-func NewEvaluator(path string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo) *Evaluator {
+func NewEvaluator(path, moduleBasePath string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo) *Evaluator {
 
 	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
@@ -36,7 +36,7 @@ func NewEvaluator(path string, blocks Blocks, inputVars map[string]cty.Value, mo
 
 	return &Evaluator{
 		path:           path,
-		moduleBasePath: path,
+		moduleBasePath: moduleBasePath,
 		ctx:            ctx,
 		blocks:         blocks,
 		inputVars:      inputVars,
@@ -90,9 +90,10 @@ func (e *Evaluator) evaluateModules() {
 		evalTime.Stop()
 
 		childModules := LoadModules(module.Blocks, e.moduleBasePath, e.moduleMetadata)
-		moduleEvaluator := NewEvaluator(module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules)
+		moduleEvaluator := NewEvaluator(module.Path, e.moduleBasePath, module.Blocks, inputVars, e.moduleMetadata, childModules)
 		moduleEvaluator.SetModuleBasePath(e.moduleBasePath)
-		_, _ = moduleEvaluator.EvaluateAll()
+		b, _ := moduleEvaluator.EvaluateAll()
+		e.blocks = append(e.blocks, b...)
 
 		evalTime = timer.Start(timer.Evaluation)
 		// export module outputs

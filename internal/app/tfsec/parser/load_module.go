@@ -37,55 +37,7 @@ func LoadModules(blocks Blocks, moduleBasePath string, metadata *ModulesMetadata
 		modules = append(modules, module)
 	}
 
-	metaModules, err := addMetadataModules(metadata)
-	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "WARNING: Failed to load module: %s\n", err)
-		return modules
-	}
-	modules = append(modules, metaModules...)
-
 	return modules
-}
-
-func addMetadataModules(metadata *ModulesMetadata) ([]*ModuleInfo, error) {
-	var modules []*ModuleInfo
-	if metadata == nil || len(metadata.Modules) == 0 {
-		return modules, nil
-	}
-
-	for _, m := range metadata.Modules {
-		func(m ModuleMetadata) error {
-			directory, err := LoadDirectory(m.Dir)
-			if err != nil {
-				return  err
-			}
-			for _, d := range directory {
-				blocks, err := LoadBlocksFromFile(d)
-				if err != nil {
-					return  err
-				}
-				for _, moduleBlock := range blocks.OfType("module") {
-					b := NewBlock(moduleBlock, nil, nil)
-					if b.Label() == "" {
-						continue
-					}
-					var blocks Blocks
-					err := getModuleBlocks(b, m.Dir, &blocks)
-					if err != nil {
-						return  err
-					}
-					modules = append(modules, &ModuleInfo{
-						Name:       b.Label(),
-						Path:       m.Dir,
-						Definition: b,
-						Blocks:     blocks,
-					})
-				}
-			}
-			return nil
-		}(m)
-	}
-	return modules, nil
 }
 
 // takes in a module "x" {} block and loads resources etc. into e.moduleBlocks - additionally returns variables to add to ["module.x.*"] variables
