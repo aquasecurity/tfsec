@@ -69,8 +69,7 @@ func loadCheckFile(checkFilePath string) (ChecksFile, error) {
 		if err != nil {
 			return checks, err
 		}
-	case ".yml":
-	case ".yaml":
+	case ".yml", ".yaml":
 		err = yaml.Unmarshal(checkFileContent, &checks)
 		if err != nil {
 			return checks, nil
