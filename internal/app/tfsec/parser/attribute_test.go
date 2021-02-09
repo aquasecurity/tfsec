@@ -199,6 +199,16 @@ resource "aws_autoscaling_group" "my-aws_autoscaling_group" {
 			checkValue:     "Name",
 			expectedResult: true,
 		},
+		{
+			name: "contains array of strings ignores case",
+			source: `
+resource "aws_security_group" "my-security_group" {
+	cidr_block = ["Foo", "Bar" ] 
+}`,
+		checkAttribute: "cidr_block",
+		checkValue: "foo",
+		expectedResult: true,
+		},
 	}
 
 	for _, test := range tests {

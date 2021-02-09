@@ -80,13 +80,17 @@ func (attr *Attribute) Contains(checkValue interface{}) bool {
 				}
 				return false
 			}
-			if value.AsString() == checkValue {
+			if containsIgnoreCase(value.AsString(), fmt.Sprintf("%v", checkValue)) {
 				return true
 			}
 		}
 		return false
 	}
-	return strings.Contains(val.AsString(), fmt.Sprintf("%v", checkValue))
+	return containsIgnoreCase(val.AsString(), fmt.Sprintf("%v", checkValue))
+}
+
+func containsIgnoreCase(left, substring string) bool {
+	return strings.Contains(strings.ToLower(left), strings.ToLower(substring))
 }
 
 func (attr *Attribute) StartsWith(prefix interface{}) bool {
