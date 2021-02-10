@@ -56,7 +56,13 @@ func (attr *Attribute) Name() string {
 	return attr.hclAttribute.Name
 }
 
-func (attr *Attribute) Contains(checkValue interface{}) bool {
+func (attr *Attribute) Contains(checkValue interface{}, equalityOptions ...EqualityOption) bool {
+	ignoreCase := false
+	for _, option := range equalityOptions {
+		if option == IgnoreCase {
+			ignoreCase = true
+		}
+	}
 	val := attr.Value()
 	if val.IsNull() {
 		return false
@@ -70,23 +76,29 @@ func (attr *Attribute) Contains(checkValue interface{}) bool {
 		}
 		return false
 	}
+	stringToLookFor := fmt.Sprintf("%v", checkValue)
 	if val.Type().IsListType() || val.Type().IsTupleType() {
 		valueSlice := val.AsValueSlice()
 		for _, value := range valueSlice {
 			if value.Type().IsObjectType() || value.Type().IsMapType() {
 				valueMap := value.AsValueMap()
-				if valueMap["key"].AsString() == checkValue {
-					return true
-				}
-				return false
+				return valueMap["key"].AsString() == checkValue
 			}
-			if containsIgnoreCase(value.AsString(), fmt.Sprintf("%v", checkValue)) {
+			if ignoreCase && containsIgnoreCase(value.AsString(), stringToLookFor) {
+				return true
+			}
+			if strings.Contains(value.AsString(), stringToLookFor) {
 				return true
 			}
 		}
 		return false
 	}
-	return containsIgnoreCase(val.AsString(), fmt.Sprintf("%v", checkValue))
+
+	if ignoreCase && containsIgnoreCase(val.AsString(), stringToLookFor) {
+		return true
+	}
+
+	return strings.Contains(val.AsString(), stringToLookFor)
 }
 
 func containsIgnoreCase(left, substring string) bool {
