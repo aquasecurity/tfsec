@@ -13,20 +13,19 @@ import (
 const maxContextIterations = 32
 
 type Evaluator struct {
-	ctx            *hcl.EvalContext
-	blocks         Blocks
-	modules        []*ModuleInfo
-	inputVars      map[string]cty.Value
-	moduleMetadata *ModulesMetadata
-	path           string
-	moduleBasePath string
+	ctx             *hcl.EvalContext
+	blocks          Blocks
+	modules         []*ModuleInfo
+	inputVars       map[string]cty.Value
+	moduleMetadata  *ModulesMetadata
+	projectRootPath string // root of the current scan
 }
 
-func NewEvaluator(path, moduleBasePath string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo) *Evaluator {
+func NewEvaluator(projectRootPath string, modulePath string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo) *Evaluator {
 
 	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
-		Functions: Functions(path),
+		Functions: Functions(modulePath),
 	}
 
 	// attach context to blocks
@@ -35,18 +34,17 @@ func NewEvaluator(path, moduleBasePath string, blocks Blocks, inputVars map[stri
 	}
 
 	return &Evaluator{
-		path:           path,
-		moduleBasePath: moduleBasePath,
-		ctx:            ctx,
-		blocks:         blocks,
-		inputVars:      inputVars,
-		moduleMetadata: moduleMetadata,
-		modules:        modules,
+		projectRootPath: projectRootPath,
+		ctx:             ctx,
+		blocks:          blocks,
+		inputVars:       inputVars,
+		moduleMetadata:  moduleMetadata,
+		modules:         modules,
 	}
 }
 
 func (e *Evaluator) SetModuleBasePath(path string) {
-	e.moduleBasePath = path
+	e.projectRootPath = path
 }
 
 func (e *Evaluator) evaluateStep(i int) {
@@ -89,9 +87,8 @@ func (e *Evaluator) evaluateModules() {
 		}
 		evalTime.Stop()
 
-		childModules := LoadModules(module.Blocks, e.moduleBasePath, e.moduleMetadata)
-		moduleEvaluator := NewEvaluator(module.Path, e.moduleBasePath, module.Blocks, inputVars, e.moduleMetadata, childModules)
-		moduleEvaluator.SetModuleBasePath(e.moduleBasePath)
+		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata)
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules)
 		b, _ := moduleEvaluator.EvaluateAll()
 		e.blocks = append(e.blocks, b...)
 

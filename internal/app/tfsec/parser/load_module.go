@@ -21,7 +21,7 @@ type ModuleInfo struct {
 }
 
 // reads all module blocks and loads the underlying modules, adding blocks to e.moduleBlocks
-func LoadModules(blocks Blocks, moduleBasePath string, metadata *ModulesMetadata) []*ModuleInfo {
+func LoadModules(blocks Blocks, projectBasePath string, metadata *ModulesMetadata) []*ModuleInfo {
 
 	var modules []*ModuleInfo
 
@@ -29,7 +29,7 @@ func LoadModules(blocks Blocks, moduleBasePath string, metadata *ModulesMetadata
 		if moduleBlock.Label() == "" {
 			continue
 		}
-		module, err := loadModule(moduleBlock, moduleBasePath, metadata)
+		module, err := loadModule(moduleBlock, projectBasePath, metadata)
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: Failed to load module: %s\n", err)
 			continue
@@ -41,7 +41,7 @@ func LoadModules(blocks Blocks, moduleBasePath string, metadata *ModulesMetadata
 }
 
 // takes in a module "x" {} block and loads resources etc. into e.moduleBlocks - additionally returns variables to add to ["module.x.*"] variables
-func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) (*ModuleInfo, error) {
+func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata) (*ModuleInfo, error) {
 
 	if block.Label() == "" {
 		return nil, fmt.Errorf("module without label at %s", block.Range())
@@ -72,7 +72,7 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 		// if we have module metadata we can parse all the modules as they'll be cached locally!
 		for _, module := range metadata.Modules {
 			if module.Source == source {
-				modulePath = filepath.Clean(filepath.Join(metadata.Path, module.Dir))
+				modulePath = filepath.Clean(filepath.Join(projectBasePath, module.Dir))
 				break
 			}
 		}
@@ -84,7 +84,7 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 			return nil, fmt.Errorf("missing module with source '%s' -  try to 'terraform init' first", source)
 		}
 
-		modulePath = filepath.Join(filepath.Dir(block.Range().Filename), source)
+		modulePath = filepath.Join(projectBasePath, source)
 	}
 
 	blocks := Blocks{}
