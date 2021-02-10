@@ -22,29 +22,30 @@ func init() {
         "name": "metadata_options",
         "action": "isPresent",
         "subMatch": {
-			"action": "and",
-			"predicateMatchSpec":
-				[{
-            		"name": "http_endpoint",
-            		"action": "equals",
-            		"value": "enabled"
-          		},
-          		{
-            		"name": "http_put_response_hop_limit",
-            		"action": "equals",
-            		"value": 1
-          		},
-          		{
-            		"name": "http_tokens",
-            		"action": "equals",
-            		"value": "required"
-          		}
-        		]}
+          "action": "and",
+          "predicateMatchSpec": [
+            {
+              "name": "http_endpoint",
+              "action": "equals",
+              "value": "enabled"
+            },
+            {
+              "name": "http_put_response_hop_limit",
+              "action": "equals",
+              "value": 1
+            },
+            {
+              "name": "http_tokens",
+              "action": "equals",
+              "value": "required"
+            }
+          ]
+        }
       }
     }
   ]
 }
-    `)
+`)
 }
 
 func TestInstanceMetadataEndpointPresent(t *testing.T) {
