@@ -80,20 +80,20 @@ const GreaterThanOrEqualTo CheckAction = "greaterThanOrEqualTo"
 // RequiresPresence checks that a second resource is present
 const RequiresPresence CheckAction = "requiresPresence"
 
-// And checks that at both of the given ChildMatchSpec's evaluates to True
+// And checks that at both of the given predicateMatchSpec's evaluates to True
 const And CheckAction = "and"
 
-// Or checks that at least one of the given ChildMatchSpec's evaluates to True
+// Or checks that at least one of the given predicateMatchSpec's evaluates to True
 const Or CheckAction = "or"
 
 // MatchSpec specifies the checks that should be performed
 type MatchSpec struct {
-	Name            string      `json:"name,omitempty" yaml:"name,omitempty"`
-	MatchValue      interface{} `json:"value,omitempty" yaml:"value,omitempty"`
-	Action          CheckAction `json:"action,omitempty" yaml:"action,omitempty"`
-	PredicateMatchSpec  []MatchSpec `json:"childMatchSpec,omitempty" yaml:"childMatchSpec,omitempty"`
-	SubMatch        *MatchSpec  `json:"subMatch,omitempty" yaml:"subMatch,omitempty"`
-	IgnoreUndefined bool        `json:"ignoreUndefined,omitempty" yaml:"ignoreUndefined,omitempty"`
+	Name               string      `json:"name,omitempty" yaml:"name,omitempty"`
+	MatchValue         interface{} `json:"value,omitempty" yaml:"value,omitempty"`
+	Action             CheckAction `json:"action,omitempty" yaml:"action,omitempty"`
+	PredicateMatchSpec []MatchSpec `json:"predicateMatchSpec,omitempty" yaml:"predicateMatchSpec,omitempty"`
+	SubMatch           *MatchSpec  `json:"subMatch,omitempty" yaml:"subMatch,omitempty"`
+	IgnoreUndefined    bool        `json:"ignoreUndefined,omitempty" yaml:"ignoreUndefined,omitempty"`
 }
 
 //Check specifies the check definition represented in json/yaml

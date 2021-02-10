@@ -88,7 +88,6 @@ var testNestedMatchSpec = MatchSpec{
 			},
 		},
 	},
-
 }
 
 func TestRequiresPresenceWithResourcePresent(t *testing.T) {
@@ -128,10 +127,10 @@ resource "aws_vpc" "main" {
 func TestOrMatchFunction(t *testing.T) {
 
 	var tests = []struct {
-		name           string
-		source         string
+		name               string
+		source             string
 		predicateMatchSpec MatchSpec
-		expected       bool
+		expected           bool
 	}{
 		{
 			name: "check `or` match function with no true evaluation",
@@ -140,7 +139,7 @@ resource "aws_ami" "example" {
 }
 `,
 			predicateMatchSpec: testOrMatchSpec,
-			expected:       false,
+			expected:           false,
 		},
 		{
 			name: "check `or` match function with a single true evaluation",
@@ -150,7 +149,7 @@ resource "aws_ami" "example" {
 }
 `,
 			predicateMatchSpec: testOrMatchSpec,
-			expected:       true,
+			expected:           true,
 		},
 		{
 			name: "check `or` match function with all true evaluation",
@@ -161,7 +160,7 @@ resource "aws_ami" "example" {
 }
 `,
 			predicateMatchSpec: testOrMatchSpec,
-			expected:       true,
+			expected:           true,
 		},
 	}
 	for _, test := range tests {
@@ -175,10 +174,10 @@ resource "aws_ami" "example" {
 
 func TestAndMatchFunction(t *testing.T) {
 	var tests = []struct {
-		name           string
-		source         string
+		name               string
+		source             string
 		predicateMatchSpec MatchSpec
-		expected       bool
+		expected           bool
 	}{
 		{
 			name: "check `and` match function with no true evaluation",
@@ -187,7 +186,7 @@ resource "aws_ami" "example" {
 }
 `,
 			predicateMatchSpec: testAndMatchSpec,
-			expected:       false,
+			expected:           false,
 		},
 		{
 			name: "check `and` match function with a single true evaluation",
@@ -197,7 +196,7 @@ resource "aws_ami" "example" {
 }
 `,
 			predicateMatchSpec: testAndMatchSpec,
-			expected:       false,
+			expected:           false,
 		},
 		{
 			name: "check `and` match function with all true evaluation",
@@ -208,7 +207,7 @@ resource "aws_ami" "example" {
 }
 `,
 			predicateMatchSpec: testAndMatchSpec,
-			expected:       true,
+			expected:           true,
 		},
 	}
 	for _, test := range tests {
@@ -221,10 +220,10 @@ resource "aws_ami" "example" {
 }
 func TestNestedMatchFunction(t *testing.T) {
 	var tests = []struct {
-		name           string
-		source         string
+		name               string
+		source             string
 		predicateMatchSpec MatchSpec
-		expected       bool
+		expected           bool
 	}{
 		{
 			name: "check nested match function with only inner true evaluation",
@@ -236,7 +235,7 @@ resource "aws_ami" "example" {
 }
 `,
 			predicateMatchSpec: testNestedMatchSpec,
-			expected:       false,
+			expected:           false,
 		},
 		{
 			name: "check nested match function with no true evaluation",
@@ -246,7 +245,7 @@ resource "aws_ami" "example" {
 }
 `,
 			predicateMatchSpec: testNestedMatchSpec,
-			expected:       false,
+			expected:           false,
 		},
 		{
 			name: "check nested match function with all true evaluation",
@@ -258,7 +257,7 @@ resource "aws_ami" "example" {
 }
 `,
 			predicateMatchSpec: testNestedMatchSpec,
-			expected:       true,
+			expected:           true,
 		},
 	}
 	for _, test := range tests {
