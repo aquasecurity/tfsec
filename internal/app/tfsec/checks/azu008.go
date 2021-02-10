@@ -43,16 +43,20 @@ func init() {
 		RequiredLabels: []string{"azurerm_kubernetes_cluster"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
-			if apiIPrangesAttr := block.GetAttribute("api_server_authorized_ip_ranges"); apiIPrangesAttr == nil || apiIPrangesAttr.Value().LengthInt() < 1 {
-				return []scanner.Result{
-					check.NewResult(
-						fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", block.FullName()),
-						block.Range(),
-						scanner.SeverityError,
-					),
+			if (block.MissingChild("api_server_authorized_ip_ranges") ||
+				block.GetAttribute("api_server_authorized_ip_ranges").Value().LengthInt() < 1) &&
+				(block.MissingChild("private_cluster_enabled") ||
+					block.GetAttribute("private_cluster_enabled").IsFalse()) {
+				{
+					return []scanner.Result{
+						check.NewResult(
+							fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", block.FullName()),
+							block.Range(),
+							scanner.SeverityError,
+						),
+					}
 				}
 			}
-
 			return nil
 		},
 	})
