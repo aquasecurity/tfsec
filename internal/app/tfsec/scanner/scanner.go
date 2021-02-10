@@ -43,16 +43,19 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 	defer checkTime.Stop()
 	var results []Result
 	context := &Context{blocks: blocks}
+	checks := GetRegisteredChecks()
 	for _, block := range blocks {
-		for _, check := range GetRegisteredChecks() {
-			if check.IsRequiredForBlock(block) {
-				debug.Log("Running check for %s on %s.%s (%s)...", check.Code, block.Type(), block.FullName(), block.Range().Filename)
-				for _, result := range check.Run(block, context) {
-					if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
-						results = append(results, result)
+		for _, check := range checks {
+			func (check Check) {
+				if check.IsRequiredForBlock(block) {
+					debug.Log("Running check for %s on %s.%s (%s)...", check.Code, block.Type(), block.FullName(), block.Range().Filename)
+					for _, result := range check.Run(block, context) {
+						if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
+							results = append(results, result)
+						}
 					}
 				}
-			}
+			}(check)
 		}
 	}
 	return results

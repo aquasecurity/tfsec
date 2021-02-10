@@ -2,12 +2,11 @@ package parser
 
 import (
 	"fmt"
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
+	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
-	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
 )
 
 // Parser is a tool for parsing terraform templates at a given file system location
@@ -80,8 +79,13 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	modules := LoadModules(blocks, parser.fullPath, modulesMetadata)
 
 	debug.Log("Evaluating expressions...")
-	evaluator := NewEvaluator(parser.fullPath, blocks, inputVars, modulesMetadata, modules)
-	return evaluator.EvaluateAll()
+	evaluator := NewEvaluator(parser.fullPath, parser.fullPath, blocks, inputVars, modulesMetadata, modules)
+	evaluatedBlocks, err := evaluator.EvaluateAll()
+	if err != nil {
+		return nil, err
+	}
+	return evaluatedBlocks.RemoveDuplicates(), nil
+
 }
 
 func (parser *Parser) getSubdirectories(path string) ([]string, error) {
