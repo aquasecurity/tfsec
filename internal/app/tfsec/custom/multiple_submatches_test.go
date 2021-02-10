@@ -21,23 +21,25 @@ func init() {
       "matchSpec": {
         "name": "metadata_options",
         "action": "isPresent",
-        "subMatches": [
-          {
-            "name": "http_endpoint",
-            "action": "equals",
-            "value": "enabled"
-          },
-          {
-            "name": "http_put_response_hop_limit",
-            "action": "equals",
-            "value": 1
-          },
-          {
-            "name": "http_tokens",
-            "action": "equals",
-            "value": "required"
-          }
-        ]
+        "subMatch": {
+			"action": "and",
+			"childMatchSpec":
+				[{
+            		"name": "http_endpoint",
+            		"action": "equals",
+            		"value": "enabled"
+          		},
+          		{
+            		"name": "http_put_response_hop_limit",
+            		"action": "equals",
+            		"value": 1
+          		},
+          		{
+            		"name": "http_tokens",
+            		"action": "equals",
+            		"value": "required"
+          		}
+        		]}
       }
     }
   ]

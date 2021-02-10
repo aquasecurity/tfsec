@@ -40,23 +40,24 @@ func init() {
       ],
       "severity": "ERROR",
       "matchSpec": {
-        "name": "statement",
-        "action": "isPresent",
-        "subMatches": [
-          {
-            "name": "actions",
-            "action": "notContains",
-            "value": "s3:Foo",
-            "ignoreUndefined": true
-          },
-          {
-            "name": "actions",
-            "action": "notContains",
-            "value": "s3:Bar",
-            "ignoreUndefined": true
-          }
-        ]
-      }
+			"name": "statement",
+			"action": "isPresent",
+			"subMatch": {
+				"action": "and",
+				"childMatchSpec": [{
+					"name": "actions",
+					"action": "notContains",
+					"value": "s3:Foo",
+					"ignoreUndefined": true
+				},
+				{
+					"name": "actions",
+					"action": "notContains",
+					"value": "s3:Bar",
+					"ignoreUndefined": true
+				}]
+			}
+		}
     }
   ]
 }
