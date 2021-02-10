@@ -90,13 +90,11 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 		modulePath = filepath.Join(filepath.Dir(block.Range().Filename), source)
 	}
 
-	var blocks Blocks
-
-	blocks, err := getModuleBlocks(block, modulePath, blocks)
+	blocks := Blocks{}
+	err := getModuleBlocks(block, modulePath, &blocks)
 	if err != nil {
 		return nil, err
 	}
-
 	debug.Log("Loaded module '%s' (requested at %s)", modulePath, block.Range())
 
 	return &ModuleInfo{
@@ -107,10 +105,10 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 	}, nil
 }
 
-func getModuleBlocks(block *Block, modulePath string, blocks Blocks) (Blocks, error) {
+func getModuleBlocks(block *Block, modulePath string, blocks *Blocks) error {
 	moduleFiles, err := LoadDirectory(modulePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to load module %s: %w", block.Label(), err)
+		return fmt.Errorf("failed to load module %s: %w", block.Label(), err)
 	}
 
 	for _, file := range moduleFiles {
@@ -123,7 +121,7 @@ func getModuleBlocks(block *Block, modulePath string, blocks Blocks) (Blocks, er
 			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 		}
 		for _, fileBlock := range fileBlocks {
-			blocks = append(blocks, NewBlock(fileBlock, nil, block))
+			*blocks = append(*blocks, NewBlock(fileBlock, nil, block))
 		}
 	}
 
@@ -131,19 +129,18 @@ func getModuleBlocks(block *Block, modulePath string, blocks Blocks) (Blocks, er
 	if _, err := os.Stat(modulesPath); !os.IsNotExist(err) {
 		subModulePaths, err := ioutil.ReadDir(modulesPath)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		for _, subPath := range subModulePaths {
 			if subPath.IsDir() {
 				submodulePath := path.Join(modulesPath, subPath.Name())
-				moduleBlocks, err := getModuleBlocks(block, submodulePath, blocks)
+				err := getModuleBlocks(block, submodulePath, blocks)
 				if err != nil {
-					return nil, err
+					return err
 				}
-				blocks = append(blocks, moduleBlocks...)
 			}
 		}
 	}
-	return blocks, nil
+	return nil
 }
 
