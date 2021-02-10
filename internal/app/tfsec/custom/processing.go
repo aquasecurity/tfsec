@@ -153,7 +153,7 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 
 	// This And MatchSpec is only true if all childSpecs return true
 	if spec.Action == And {
-		for _, childSpec := range spec.ChildMatchSpec {
+		for _, childSpec := range spec.PredicateMatchSpec {
 			if !evalMatchSpec(block, &childSpec, ctx) {
 				return false
 			}
@@ -163,7 +163,7 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 
 	// If a single childSpec is true then this Or matchSpec is true
 	if spec.Action == Or {
-		for _, childSpec := range spec.ChildMatchSpec {
+		for _, childSpec := range spec.PredicateMatchSpec {
 			if evalMatchSpec(block, &childSpec, ctx) {
 				return true
 			}

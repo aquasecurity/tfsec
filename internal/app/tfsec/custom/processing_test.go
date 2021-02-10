@@ -40,7 +40,7 @@ func init() {
 
 var testOrMatchSpec = MatchSpec{
 	Action: "or",
-	ChildMatchSpec: []MatchSpec{
+	PredicateMatchSpec: []MatchSpec{
 		{
 			Name:   "name",
 			Action: "isPresent",
@@ -54,7 +54,7 @@ var testOrMatchSpec = MatchSpec{
 
 var testAndMatchSpec = MatchSpec{
 	Action: "and",
-	ChildMatchSpec: []MatchSpec{
+	PredicateMatchSpec: []MatchSpec{
 		{
 			Name:   "name",
 			Action: "isPresent",
@@ -68,7 +68,7 @@ var testAndMatchSpec = MatchSpec{
 
 var testNestedMatchSpec = MatchSpec{
 	Action: "and",
-	ChildMatchSpec: []MatchSpec{
+	PredicateMatchSpec: []MatchSpec{
 		{
 			Name:       "virtualization_type",
 			Action:     "equals",
@@ -76,7 +76,7 @@ var testNestedMatchSpec = MatchSpec{
 		},
 		{
 			Action: "or",
-			ChildMatchSpec: []MatchSpec{
+			PredicateMatchSpec: []MatchSpec{
 				{
 					Name:   "image_location",
 					Action: "isPresent",
@@ -130,7 +130,7 @@ func TestOrMatchFunction(t *testing.T) {
 	var tests = []struct {
 		name           string
 		source         string
-		childMatchSpec MatchSpec
+		predicateMatchSpec MatchSpec
 		expected       bool
 	}{
 		{
@@ -139,7 +139,7 @@ func TestOrMatchFunction(t *testing.T) {
 resource "aws_ami" "example" {
 }
 `,
-			childMatchSpec: testOrMatchSpec,
+			predicateMatchSpec: testOrMatchSpec,
 			expected:       false,
 		},
 		{
@@ -149,7 +149,7 @@ resource "aws_ami" "example" {
 	name = "placeholder-name"
 }
 `,
-			childMatchSpec: testOrMatchSpec,
+			predicateMatchSpec: testOrMatchSpec,
 			expected:       true,
 		},
 		{
@@ -160,14 +160,14 @@ resource "aws_ami" "example" {
 	description = "this is a description."
 }
 `,
-			childMatchSpec: testOrMatchSpec,
+			predicateMatchSpec: testOrMatchSpec,
 			expected:       true,
 		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			blocks := createBlocksFromSource(test.source)[0]
-			result := evalMatchSpec(blocks, &test.childMatchSpec, nil)
+			result := evalMatchSpec(blocks, &test.predicateMatchSpec, nil)
 			assert.Equal(t, result, test.expected, "`Or` match function evaluating incorrectly.")
 		})
 	}
@@ -177,7 +177,7 @@ func TestAndMatchFunction(t *testing.T) {
 	var tests = []struct {
 		name           string
 		source         string
-		childMatchSpec MatchSpec
+		predicateMatchSpec MatchSpec
 		expected       bool
 	}{
 		{
@@ -186,7 +186,7 @@ func TestAndMatchFunction(t *testing.T) {
 resource "aws_ami" "example" {
 }
 `,
-			childMatchSpec: testAndMatchSpec,
+			predicateMatchSpec: testAndMatchSpec,
 			expected:       false,
 		},
 		{
@@ -196,7 +196,7 @@ resource "aws_ami" "example" {
 	name = "placeholder-name"
 }
 `,
-			childMatchSpec: testAndMatchSpec,
+			predicateMatchSpec: testAndMatchSpec,
 			expected:       false,
 		},
 		{
@@ -207,14 +207,14 @@ resource "aws_ami" "example" {
 	description = "this is a description."
 }
 `,
-			childMatchSpec: testAndMatchSpec,
+			predicateMatchSpec: testAndMatchSpec,
 			expected:       true,
 		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			blocks := createBlocksFromSource(test.source)[0]
-			result := evalMatchSpec(blocks, &test.childMatchSpec, nil)
+			result := evalMatchSpec(blocks, &test.predicateMatchSpec, nil)
 			assert.Equal(t, result, test.expected, "`And` match function evaluating incorrectly.")
 		})
 	}
@@ -223,7 +223,7 @@ func TestNestedMatchFunction(t *testing.T) {
 	var tests = []struct {
 		name           string
 		source         string
-		childMatchSpec MatchSpec
+		predicateMatchSpec MatchSpec
 		expected       bool
 	}{
 		{
@@ -235,7 +235,7 @@ resource "aws_ami" "example" {
 	kernel_id = "XXXXXXXXXX"
 }
 `,
-			childMatchSpec: testNestedMatchSpec,
+			predicateMatchSpec: testNestedMatchSpec,
 			expected:       false,
 		},
 		{
@@ -245,7 +245,7 @@ resource "aws_ami" "example" {
 	virtualization_type = "hvm"
 }
 `,
-			childMatchSpec: testNestedMatchSpec,
+			predicateMatchSpec: testNestedMatchSpec,
 			expected:       false,
 		},
 		{
@@ -257,14 +257,14 @@ resource "aws_ami" "example" {
 	kernel_id = "XXXXXXXXXX"
 }
 `,
-			childMatchSpec: testNestedMatchSpec,
+			predicateMatchSpec: testNestedMatchSpec,
 			expected:       true,
 		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			blocks := createBlocksFromSource(test.source)[0]
-			result := evalMatchSpec(blocks, &test.childMatchSpec, nil)
+			result := evalMatchSpec(blocks, &test.predicateMatchSpec, nil)
 			assert.Equal(t, result, test.expected, "Nested match functions evaluating incorrectly.")
 		})
 	}

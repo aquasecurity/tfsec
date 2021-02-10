@@ -79,10 +79,10 @@ func validateMatchSpec(spec *MatchSpec, check *Check, checkErrors []error) []err
 		checkErrors = append(checkErrors, errors.New("matchSpec.Name requires a value"))
 	}
 
-	// if the check is one of `or`, `and`, then all childMatchSpec's must also be valid
+	// if the check is one of `or`, `and`, then all PredicateMatchSpec's must also be valid
 	if spec.Action == "or" || spec.Action == "and" {
-		for _, childMatchSpec := range spec.ChildMatchSpec {
-			checkErrors = append(validateMatchSpec(&childMatchSpec, check, checkErrors))
+		for _, predicateMatchSpec := range spec.PredicateMatchSpec {
+			checkErrors = append(validateMatchSpec(&predicateMatchSpec, check, checkErrors))
 		}
 	}
 

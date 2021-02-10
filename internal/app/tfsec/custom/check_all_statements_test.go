@@ -44,7 +44,7 @@ func init() {
 			"action": "isPresent",
 			"subMatch": {
 				"action": "and",
-				"childMatchSpec": [{
+				"predicateMatchSpec": [{
 					"name": "actions",
 					"action": "notContains",
 					"value": "s3:Foo",

@@ -23,7 +23,7 @@ func init() {
         "action": "isPresent",
         "subMatch": {
 			"action": "and",
-			"childMatchSpec":
+			"predicateMatchSpec":
 				[{
             		"name": "http_endpoint",
             		"action": "equals",
