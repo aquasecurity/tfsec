@@ -172,26 +172,13 @@ var rootCmd = &cobra.Command{
 		}
 
 		// Soft fail always takes precedence. If set, only execution errors
-		// produce failure exit codes.
+		// produce a failure exit code (1).
 		if softFail {
 			os.Exit(0)
 		}
 
 		if detailedExitCode {
-			// If there are no failed checks, then produce a success exit code (0).
-			if len(results) == 0 {
-				os.Exit(0)
-			}
-
-			// If there are some failed checks but they are all of INFO severity, then
-			// produce a special failure exit code (2).
-			if allInfo(results) {
-				os.Exit(2)
-			}
-
-			// If there is any failed check of ERROR or WARNING severity, then
-			// produce the regular failure exit code (1).
-			os.Exit(1)
+			os.Exit(getDetailedExitCode(results))
 		}
 
 		// If all failed checks are of INFO severity, then produce a success
@@ -202,6 +189,23 @@ var rootCmd = &cobra.Command{
 
 		os.Exit(1)
 	},
+}
+
+func getDetailedExitCode(results []scanner.Result) int {
+	// If there are no failed checks, then produce a success exit code (0).
+	if len(results) == 0 {
+		return 0
+	}
+
+	// If there are some failed checks but they are all of INFO severity, then
+	// produce a special failure exit code (2).
+	if allInfo(results) {
+		return 2
+	}
+
+	// If there is any failed check of ERROR or WARNING severity, then
+	// produce the regular failure exit code (1).
+	return 1
 }
 
 func removeDuplicatesAndUnwanted(results []scanner.Result) []scanner.Result {
