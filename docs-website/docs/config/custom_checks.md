@@ -439,19 +439,19 @@ with `subMatch` to enforce multiple nested `subMatch` statements. Note that `or`
 If you wanted to ensure that `device_name` and `encrypted` were both present in a nested `ebs_block_device`, you might use the following `matchSpec`:
 
 ```
-"matchSpec" : {
-  "action" : "isPresent",
-  "name" : "ebs_block_device",
-  "subMatch" : {
-    "action" : "and"
-    "predicateMatchSpec" : [
+"matchSpec": {
+  "action": "isPresent",
+  "name": "ebs_block_device",
+  "subMatch": {
+    "action": "and",
+    "predicateMatchSpec": [
       {
-        "action" : "isPresent"
-        "name" : "device_name"      
+        "action": "isPresent",
+        "name": "device_name"      
       },
       {
-        "action" : "isPresent"
-        "name" : "encrypted"
+        "action": "isPresent",
+        "name": "encrypted"
       }
     ]
   }
@@ -479,7 +479,7 @@ as many times as needed to represent your check.
 If you wanted to ensure that `virtualization_type` was given either `hvm` or `paravirtual`, while enforcing the additional attributes arguments that are associated with these values, you might use the following `matchSpec`:
 
 ```
-"matchSpec" : {
+"matchSpec": {
   "action": "or",
   "predicateMatchSpec": [
     {
@@ -488,7 +488,7 @@ If you wanted to ensure that `virtualization_type` was given either `hvm` or `pa
       "value": "hvm"
     },
     {
-      "action": "and"
+      "action": "and",
       "predicateMatchSpec": [
         {
           "name": "virtualization_type",
@@ -496,11 +496,11 @@ If you wanted to ensure that `virtualization_type` was given either `hvm` or `pa
           "value": "paravirtual"
         },
         {
-          "name": "image_location"
+          "name": "image_location",
           "action": "isPresent"
         },
         {
-          "name": "kernel_id"
+          "name": "kernel_id",
           "action": "isPresent"
         }
       ]
