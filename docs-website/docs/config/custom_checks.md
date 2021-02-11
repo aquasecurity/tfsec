@@ -98,7 +98,7 @@ The `MatchSpec` is the what will define the check itself - this is fairly basic 
 | value | In cases where a value is required, the value to look for |
 | ignoreUndefined | If the attribute is undefined, ignore and pass the check |
 |subMatch | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block |
-|predicateMatchSpec | An array of MatchSpec block to be logically joined by `and` or `or` actions|
+|predicateMatchSpec | An array of MatchSpec blocks to be logically aggregated by either `and` or `or` actions |
 
 #### Check Actions
 There are a number of `CheckActions` available which should allow you to quickly put together most checks.
@@ -377,8 +377,8 @@ matchSpec:
 ##### isAny
 The `isAny` check action passes when the attribute value can be found in the slice passed as the check value. This check action supports strings and numbers
 
-```
-"matchSpec" : {
+```json
+"matchSpec": {
   "name": "acl",
   "action": "isAny",
   "value": ["private", "log-delivery-write"]
@@ -397,8 +397,8 @@ matchSpec:
 ##### isNone
 The `isNone` check action passes when the attribute value cannot be found in the slice passed as the check value. This check action supports strings and numbers
 
-```
-"matchSpec" : {
+```json
+"matchSpec": {
   "name": "acl",
   "action": "isNone",
   "value": ["authenticated-read", "public-read"]
@@ -419,7 +419,7 @@ The `requiresPresence` checks that the resouce in `name` is also present in the 
 
 If you wanted to ensure that `aws_vpc_flowlogs` is present if there is a `aws_vpc`, you might use the following `matchSpec`:
 
-```
+```json
 "matchSpec" : {
   "action": "requiresPresence",
   "name": "aws_vpc_flowlogs"
@@ -433,12 +433,15 @@ matchSpec:
 ```
 
 ##### and
-The `and` checks that all the blocks provided in `predicateMatchSpec` evaluates to `true`. You can also use the `and` operation 
-with `subMatch` to enforce multiple nested `subMatch` statements. Note that `or` and `and` actions can be nested as many times as needed to represent your check. 
+The `and` check action passes when all the blocks provided within `predicateMatchSpec` evaluate to `true`. This action
+can be combined with `subMatch` to perform composite checks against the contents of nested blocks.
 
-If you wanted to ensure that `device_name` and `encrypted` were both present in a nested `ebs_block_device`, you might use the following `matchSpec`:
+Note that `or` and `and` actions can be nested as many times as needed.
 
-```
+If you wanted to ensure that `device_name` and `encrypted` are both present in a nested `ebs_block_device` block,
+you might use the following `matchSpec`:
+
+```json
 "matchSpec": {
   "action": "isPresent",
   "name": "ebs_block_device",
@@ -472,20 +475,27 @@ matchSpec:
 ```
 
 ##### or
-The `or` checks that at least one of the blocks provided in `predicateMatchSpec` evaluates to `true`. Similar to the `and`
-action, `or` actions can also be combined with `subMatch` in a similar manner. Note that `or` and `and` actions can be nested
-as many times as needed to represent your check. 
+The `or` check action passes when at least one of the blocks provided within `predicateMatchSpec` evaluates to `true`.
+This action can be combined with `subMatch` to perform composite checks against the contents of nested blocks.
 
-If you wanted to ensure that `virtualization_type` was given either `hvm` or `paravirtual`, while enforcing the additional attributes arguments that are associated with these values, you might use the following `matchSpec`:
+Note that `or` and `and` actions can be nested as many times as needed.
+
+If you want to ensure that `virtualization_type` is assigned to either `hvm` or `paravirtual`, while enforcing
+that their implicitly linked required attributes are also present, you might use the following `matchSpec`:
 
 ```
 "matchSpec": {
   "action": "or",
   "predicateMatchSpec": [
     {
-      "name": "virtualization_type",
-      "action": "equals",
-      "value": "hvm"
+      "action": "and",
+      "predicateMatchSpec": [
+        {
+          "name": "virtualization_type",
+          "action": "equals",
+          "value": "hvm"
+        }
+      ]
     },
     {
       "action": "and",
@@ -513,18 +523,22 @@ If you wanted to ensure that `virtualization_type` was given either `hvm` or `pa
 matchSpec:
   action: or
   predicateMatchSpec:
-    - name: virtualization_type
-      action: equals
-      value: hvm
-    - action: and 
+    - action: and
       predicateMatchSpec:
         - name: virtualization_type
           action: equals
-          value: paravirtual 
+          value: hvm
+        - name: sriov_net_support
+          action: isPresent
+    - action: and
+      predicateMatchSpec:
+        - name: virtualization_type
+          action: equals
+          value: paravirtual
         - name: image_location
           action: isPresent
         - name: kernel_id
-          action: isPresent 
+          action: isPresent
 ```
 
 ## How do I know my JSON is valid?
