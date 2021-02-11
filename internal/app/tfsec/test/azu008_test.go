@@ -42,6 +42,25 @@ func Test_AZUAKSAPIServerAuthorizedIPRanges(t *testing.T) {
 }`,
 			mustExcludeResultCode: checks.AZUAKSAPIServerAuthorizedIPRanges,
 		},
+		{
+			name: "check azurerm_kubernetes_cluster without api_server_authorized_ip_ranges defined but private cluster enabled true",
+			source: `
+			resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+				private_cluster_enabled = true
+}`,
+			mustExcludeResultCode: checks.AZUAKSAPIServerAuthorizedIPRanges,
+		},
+		{
+			name: "check azurerm_kubernetes_cluster with api_server_authorized_ip_ranges defined but private cluster enabled true",
+			source: `
+			resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+				private_cluster_enabled = true
+				api_server_authorized_ip_ranges = [
+					"1.2.3.4/32"
+				]
+}`,
+			mustExcludeResultCode: checks.AZUAKSAPIServerAuthorizedIPRanges,
+		},
 	}
 
 	for _, test := range tests {
