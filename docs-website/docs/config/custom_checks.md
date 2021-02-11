@@ -98,7 +98,7 @@ The `MatchSpec` is the what will define the check itself - this is fairly basic 
 | value | In cases where a value is required, the value to look for |
 | ignoreUndefined | If the attribute is undefined, ignore and pass the check |
 |subMatch | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block |
-|subMatches | An array of sub MatchSpec block for nested checking. All sub MatchSpecs must match. |
+|predicateMatchSpec | An array of MatchSpec block to be logically joined by `and` or `or` actions|
 
 #### Check Actions
 There are a number of `CheckActions` available which should allow you to quickly put together most checks.
@@ -430,6 +430,101 @@ If you wanted to ensure that `aws_vpc_flowlogs` is present if there is a `aws_vp
 matchSpec:
   name: aws_vpc_flowlogs
   action: requiresPresence
+```
+
+##### and
+The `and` checks that all the blocks provided in `predicateMatchSpec` evaluates to `true`. You can also use the `and` operation 
+with `subMatch` to enforce multiple nested `subMatch` statements. Note that `or` and `and` actions can be nested as many times as needed to represent your check. 
+
+If you wanted to ensure that `device_name` and `encrypted` were both present in a nested `ebs_block_device`, you might use the following `matchSpec`:
+
+```
+"matchSpec" : {
+  "action" : "isPresent",
+  "name" : "ebs_block_device",
+  "subMatch" : {
+    "action" : "and"
+    "predicateMatchSpec" : [
+      {
+        "action" : "isPresent"
+        "name" : "device_name"      
+      },
+      {
+        "action" : "isPresent"
+        "name" : "encrypted"
+      }
+    ]
+  }
+}
+```
+
+```yaml
+matchSpec:
+  action: isPresent
+  name: ebs_block_device
+  subMatch : 
+    action : and
+    predicateMatchSpec :
+      - action : isPresent
+        name : device_name
+      - action : isPresent
+        name : encrypted 
+```
+
+##### or
+The `or` checks that at least one of the blocks provided in `predicateMatchSpec` evaluates to `true`. Similar to the `and`
+action, `or` actions can also be combined with `subMatch` in a similar manner. Note that `or` and `and` actions can be nested
+as many times as needed to represent your check. 
+
+If you wanted to ensure that `virtualization_type` was given either `hvm` or `paravirtual`, while enforcing the additional attributes arguments that are associated with these values, you might use the following `matchSpec`:
+
+```
+"matchSpec" : {
+  "action": "or",
+  "predicateMatchSpec": [
+    {
+      "name": "virtualization_type",
+      "action": "equals",
+      "value": "hvm"
+    },
+    {
+      "action": "and"
+      "predicateMatchSpec": [
+        {
+          "name": "virtualization_type",
+          "action": "equals",
+          "value": "paravirtual"
+        },
+        {
+          "name": "image_location"
+          "action": "isPresent"
+        },
+        {
+          "name": "kernel_id"
+          "action": "isPresent"
+        }
+      ]
+    }
+  ]
+}
+```
+
+```yaml
+matchSpec:
+  action: or
+  predicateMatchSpec:
+    - name: virtualization_type
+      action: equals
+      value: hvm
+    - action: and 
+      predicateMatchSpec:
+        - name: virtualization_type
+          action: equals
+          value: paravirtual 
+        - name: image_location
+          action: isPresent
+        - name: kernel_id
+          action: isPresent 
 ```
 
 ## How do I know my JSON is valid?
