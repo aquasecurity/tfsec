@@ -42,20 +42,23 @@ func init() {
       "matchSpec": {
         "name": "statement",
         "action": "isPresent",
-        "subMatches": [
-          {
-            "name": "actions",
-            "action": "notContains",
-            "value": "s3:Foo",
-            "ignoreUndefined": true
-          },
-          {
-            "name": "actions",
-            "action": "notContains",
-            "value": "s3:Bar",
-            "ignoreUndefined": true
-          }
-        ]
+        "subMatch": {
+          "action": "and",
+          "predicateMatchSpec": [
+            {
+              "name": "actions",
+              "action": "notContains",
+              "value": "s3:Foo",
+              "ignoreUndefined": true
+            },
+            {
+              "name": "actions",
+              "action": "notContains",
+              "value": "s3:Bar",
+              "ignoreUndefined": true
+            }
+          ]
+        }
       }
     }
   ]

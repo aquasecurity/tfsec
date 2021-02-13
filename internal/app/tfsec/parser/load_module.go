@@ -2,9 +2,7 @@ package parser
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 
@@ -23,7 +21,7 @@ type ModuleInfo struct {
 }
 
 // reads all module blocks and loads the underlying modules, adding blocks to e.moduleBlocks
-func LoadModules(blocks Blocks, moduleBasePath string, metadata *ModulesMetadata) []*ModuleInfo {
+func LoadModules(blocks Blocks, projectBasePath string, metadata *ModulesMetadata) []*ModuleInfo {
 
 	var modules []*ModuleInfo
 
@@ -31,7 +29,7 @@ func LoadModules(blocks Blocks, moduleBasePath string, metadata *ModulesMetadata
 		if moduleBlock.Label() == "" {
 			continue
 		}
-		module, err := loadModule(moduleBlock, moduleBasePath, metadata)
+		module, err := loadModule(moduleBlock, projectBasePath, metadata)
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: Failed to load module: %s\n", err)
 			continue
@@ -43,7 +41,7 @@ func LoadModules(blocks Blocks, moduleBasePath string, metadata *ModulesMetadata
 }
 
 // takes in a module "x" {} block and loads resources etc. into e.moduleBlocks - additionally returns variables to add to ["module.x.*"] variables
-func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) (*ModuleInfo, error) {
+func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata) (*ModuleInfo, error) {
 
 	if block.Label() == "" {
 		return nil, fmt.Errorf("module without label at %s", block.Range())
@@ -74,12 +72,11 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 		// if we have module metadata we can parse all the modules as they'll be cached locally!
 		for _, module := range metadata.Modules {
 			if module.Source == source {
-				modulePath = filepath.Clean(filepath.Join(moduleBasePath, module.Dir))
+				modulePath = filepath.Clean(filepath.Join(projectBasePath, module.Dir))
 				break
 			}
 		}
 	}
-
 	if modulePath == "" {
 		// if we have no metadata, we can only support modules available on the local filesystem
 		// users wanting this feature should run a `terraform init` before running tfsec to cache all modules locally
@@ -87,16 +84,14 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 			return nil, fmt.Errorf("missing module with source '%s' -  try to 'terraform init' first", source)
 		}
 
-		modulePath = filepath.Join(filepath.Dir(block.Range().Filename), source)
+		modulePath = filepath.Join(projectBasePath, source)
 	}
 
-	var blocks Blocks
-
-	blocks, err := getModuleBlocks(block, modulePath, blocks)
+	blocks := Blocks{}
+	err := getModuleBlocks(block, modulePath, &blocks)
 	if err != nil {
 		return nil, err
 	}
-
 	debug.Log("Loaded module '%s' (requested at %s)", modulePath, block.Range())
 
 	return &ModuleInfo{
@@ -107,10 +102,10 @@ func loadModule(block *Block, moduleBasePath string, metadata *ModulesMetadata) 
 	}, nil
 }
 
-func getModuleBlocks(block *Block, modulePath string, blocks Blocks) (Blocks, error) {
+func getModuleBlocks(block *Block, modulePath string, blocks *Blocks) error {
 	moduleFiles, err := LoadDirectory(modulePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to load module %s: %w", block.Label(), err)
+		return fmt.Errorf("failed to load module %s: %w", block.Label(), err)
 	}
 
 	for _, file := range moduleFiles {
@@ -123,27 +118,9 @@ func getModuleBlocks(block *Block, modulePath string, blocks Blocks) (Blocks, er
 			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 		}
 		for _, fileBlock := range fileBlocks {
-			blocks = append(blocks, NewBlock(fileBlock, nil, block))
+			*blocks = append(*blocks, NewBlock(fileBlock, nil, block))
 		}
 	}
-
-	modulesPath := fmt.Sprintf("%s/modules", modulePath)
-	if _, err := os.Stat(modulesPath); !os.IsNotExist(err) {
-		subModulePaths, err := ioutil.ReadDir(modulesPath)
-		if err != nil {
-			return nil, err
-		}
-		for _, subPath := range subModulePaths {
-			if subPath.IsDir() {
-				submodulePath := path.Join(modulesPath, subPath.Name())
-				moduleBlocks, err := getModuleBlocks(block, submodulePath, blocks)
-				if err != nil {
-					return nil, err
-				}
-				blocks = append(blocks, moduleBlocks...)
-			}
-		}
-	}
-	return blocks, nil
+	return nil
 }
 
