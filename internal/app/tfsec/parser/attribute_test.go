@@ -132,6 +132,7 @@ func Test_AttributeContains(t *testing.T) {
 		checkAttribute string
 		checkValue     string
 		expectedResult bool
+		ignoreCase     bool
 	}{
 		{
 			name: "bucket name contains Name",
@@ -199,6 +200,27 @@ resource "aws_autoscaling_group" "my-aws_autoscaling_group" {
 			checkValue:     "Name",
 			expectedResult: true,
 		},
+		{
+			name: "contains array of strings ignores case",
+			source: `
+resource "aws_security_group" "my-security_group" {
+	cidr_block = ["Foo", "Bar" ] 
+}`,
+			checkAttribute: "cidr_block",
+			checkValue:     "foo",
+			expectedResult: true,
+			ignoreCase:     true,
+		},
+		{
+			name: "contains array of strings ignores case",
+			source: `
+resource "aws_security_group" "my-security_group" {
+	cidr_block = ["Foo", "Bar" ] 
+}`,
+			checkAttribute: "cidr_block",
+			checkValue:     "foo",
+			expectedResult: false,
+		},
 	}
 
 	for _, test := range tests {
@@ -209,7 +231,11 @@ resource "aws_autoscaling_group" "my-aws_autoscaling_group" {
 					t.Fail()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
-				assert.Equal(t, attr.Contains(test.checkValue), test.expectedResult)
+				if test.ignoreCase {
+					assert.Equal(t, attr.Contains(test.checkValue, IgnoreCase), test.expectedResult)
+				} else {
+					assert.Equal(t, attr.Contains(test.checkValue), test.expectedResult)
+				}
 			}
 		})
 	}

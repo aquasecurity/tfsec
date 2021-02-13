@@ -7,7 +7,9 @@ import (
 )
 
 var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
-	IsPresent:  func(block *parser.Block, spec *MatchSpec) bool { return block.HasChild(spec.Name) },
+	IsPresent: func(block *parser.Block, spec *MatchSpec) bool {
+		return block.HasChild(spec.Name) || spec.IgnoreUndefined
+},
 	NotPresent: func(block *parser.Block, spec *MatchSpec) bool { return !block.HasChild(spec.Name) },
 	IsEmpty: func(block *parser.Block, spec *MatchSpec) bool {
 		if block.MissingChild(spec.Name) {
@@ -40,7 +42,7 @@ var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
-		return attribute.Contains(spec.MatchValue)
+		return attribute.Contains(spec.MatchValue, parser.IgnoreCase)
 	},
 	NotContains: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
