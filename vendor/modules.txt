@@ -1,18 +1,40 @@
-# github.com/agext/levenshtein v1.2.2
+# github.com/Unknwon/com v0.0.0-20151008135407-28b053d5a292
+## explicit
+# github.com/agext/levenshtein v1.2.3
+## explicit
 github.com/agext/levenshtein
-# github.com/apparentlymart/go-cidr v1.0.1
+# github.com/agl/ed25519 v0.0.0-20150830182803-278e1ec8e8a6
+## explicit
+# github.com/apparentlymart/go-cidr v1.1.0
 github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v12 v12.0.0
 github.com/apparentlymart/go-textseg/v12/textseg
-# github.com/bmatcuk/doublestar v1.1.5
+# github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6
+## explicit
+# github.com/blang/semver v3.5.1+incompatible
+## explicit
+# github.com/bmatcuk/doublestar v1.3.4
+## explicit
 github.com/bmatcuk/doublestar
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/google/uuid v1.1.1
+# github.com/dnaeon/go-vcr v0.0.0-20180920040454-5637cf3d8a31
+## explicit
+# github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db
+## explicit
+# github.com/google/uuid v1.2.0
+## explicit
 github.com/google/uuid
-# github.com/hashicorp/go-uuid v1.0.1
+# github.com/hashicorp/errwrap v1.1.0
+## explicit
+github.com/hashicorp/errwrap
+# github.com/hashicorp/go-multierror v1.1.0
+## explicit
+github.com/hashicorp/go-multierror
+# github.com/hashicorp/go-uuid v1.0.2
+## explicit
 github.com/hashicorp/go-uuid
-# github.com/hashicorp/hcl/v2 v2.7.0
+# github.com/hashicorp/hcl/v2 v2.8.2
 ## explicit
 github.com/hashicorp/hcl/v2
 github.com/hashicorp/hcl/v2/ext/customdecode
@@ -20,22 +42,32 @@ github.com/hashicorp/hcl/v2/ext/tryfunc
 github.com/hashicorp/hcl/v2/hclparse
 github.com/hashicorp/hcl/v2/hclsyntax
 github.com/hashicorp/hcl/v2/json
-# github.com/hashicorp/terraform v0.12.28
+# github.com/hashicorp/hil v0.0.0-20190212112733-ab17b08d6590
+## explicit
+# github.com/hashicorp/terraform v0.14.6
 ## explicit
 github.com/hashicorp/terraform/lang/funcs
+github.com/hashicorp/terraform/tfdiags
+# github.com/hashicorp/vault v0.10.4
+## explicit
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
-# github.com/liamg/clinch v1.3.0
+# github.com/keybase/go-crypto v0.0.0-20161004153544-93f5b35093ba
+## explicit
+# github.com/liamg/clinch v1.5.5
 ## explicit
 github.com/liamg/clinch/prompt
 github.com/liamg/clinch/terminal
-# github.com/liamg/tml v0.2.0
+# github.com/liamg/tml v0.4.0
 ## explicit
 github.com/liamg/tml
 # github.com/mitchellh/go-homedir v1.1.0
 github.com/mitchellh/go-homedir
-# github.com/mitchellh/go-wordwrap v1.0.0
+# github.com/mitchellh/go-wordwrap v1.0.1
+## explicit
 github.com/mitchellh/go-wordwrap
+# github.com/mitchellh/hashstructure v1.0.0
+## explicit
 # github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e
 ## explicit
 # github.com/owenrumney/go-sarif v0.0.5
@@ -47,16 +79,24 @@ github.com/pkg/term
 github.com/pkg/term/termios
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
-# github.com/spf13/cobra v1.0.0
+# github.com/spf13/cobra v1.1.3
 ## explicit
 github.com/spf13/cobra
-# github.com/spf13/pflag v1.0.3
+# github.com/spf13/pflag v1.0.5
 github.com/spf13/pflag
 # github.com/stretchr/testify v1.6.1
 ## explicit
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
-# github.com/zclconf/go-cty v1.5.1
+# github.com/terraform-providers/terraform-provider-openstack v1.15.0
+## explicit
+# github.com/ugorji/go v1.1.4
+## explicit
+# github.com/vmihailenco/msgpack v4.0.1+incompatible
+## explicit
+# github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77
+## explicit
+# github.com/zclconf/go-cty v1.7.1
 ## explicit
 github.com/zclconf/go-cty/cty
 github.com/zclconf/go-cty/cty/convert
@@ -65,22 +105,51 @@ github.com/zclconf/go-cty/cty/function/stdlib
 github.com/zclconf/go-cty/cty/gocty
 github.com/zclconf/go-cty/cty/json
 github.com/zclconf/go-cty/cty/set
-# github.com/zclconf/go-cty-yaml v1.0.1
+# github.com/zclconf/go-cty-yaml v1.0.2
 ## explicit
 github.com/zclconf/go-cty-yaml
-# golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37
+# golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
+## explicit
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
+golang.org/x/crypto/chacha20
+golang.org/x/crypto/curve25519
+golang.org/x/crypto/ed25519
+golang.org/x/crypto/ed25519/internal/edwards25519
+golang.org/x/crypto/internal/subtle
+golang.org/x/crypto/poly1305
+golang.org/x/crypto/ssh
+golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/sys v0.0.0-20190804053845-51ab0e2deafa
+# golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c
+## explicit
+golang.org/x/sys/cpu
+golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/text v0.3.2
+# golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf
+## explicit
+golang.org/x/term
+# golang.org/x/text v0.3.5
+## explicit
+golang.org/x/text/encoding
+golang.org/x/text/encoding/charmap
+golang.org/x/text/encoding/ianaindex
+golang.org/x/text/encoding/internal
+golang.org/x/text/encoding/internal/identifier
+golang.org/x/text/encoding/japanese
+golang.org/x/text/encoding/korean
+golang.org/x/text/encoding/simplifiedchinese
+golang.org/x/text/encoding/traditionalchinese
+golang.org/x/text/encoding/unicode
+golang.org/x/text/internal/utf8internal
+golang.org/x/text/runes
 golang.org/x/text/transform
 golang.org/x/text/unicode/norm
 # gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f
 ## explicit
-# gopkg.in/yaml.v2 v2.3.0
+# gopkg.in/yaml.v2 v2.4.0
 ## explicit
 gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c

@@ -47,6 +47,18 @@ resource "google_secret_manager_secret" "secret" {
 }`,
 			mustExcludeResultCode: checks.GenericSensitiveAttributes,
 		},
+		{
+			name: "check github actions org secret passes",
+			source: `
+variable "value" {} # passed from tfvar
+
+resource "github_actions_organization_secret" "test" {
+  secret_name     = "TEST"
+  plaintext_value = var.value
+  visibility             = "private"
+}`,
+			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+		},
 	}
 
 	for _, test := range tests {
