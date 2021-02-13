@@ -51,7 +51,11 @@ var sensitiveWhitelist = []struct {
 	{
 		Resource:  "github_actions_secret",
 		Attribute: "secret_name",
-  },
+	},
+	{
+		Resource:  "github_actions_organization_secret",
+		Attribute: "secret_name",
+	},
 	{
 		Resource:  "google_secret_manager_secret",
 		Attribute: "secret_id",
