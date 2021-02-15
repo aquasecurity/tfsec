@@ -11,13 +11,10 @@ RUN go build \
   -mod=vendor \
   ./cmd/tfsec
 
+###
+FROM scratch
 
-FROM alpine
-
-# use a non-privileged user
-USER nobody
-
-# work somewhere where we can write
+# Copy tfsec from build container
 COPY --from=build-env /src/tfsec /usr/bin/tfsec
 
 # set the default entrypoint -- when this container is run, use this command
