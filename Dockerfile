@@ -1,4 +1,4 @@
-FROM golang:1.14-alpine  AS build-env
+FROM golang:1.15-alpine AS build-env
 
 ARG tfsec_version=0.0.0
 
