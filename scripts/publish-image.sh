@@ -4,10 +4,10 @@ set -e
 
 IMAGES=(tfsec/tfsec)
 
-for IMAGE in ${IMAGES[@]}; do
+for IMAGE in "${IMAGES[@]}"; do
     echo "building ${IMAGE}..."
-    docker build --build-arg tfsec_version=${TRAVIS_TAG} -f Dockerfile -t ${IMAGE} .
-    docker build --build-arg tfsec_version=${TRAVIS_TAG} -f Dockerfile.scratch -t ${IMAGE}-scratch .
+    docker build --build-arg tfsec_version="${TRAVIS_TAG}" -f Dockerfile -t "${IMAGE}" .
+    docker build --build-arg tfsec_version="${TRAVIS_TAG}" -f Dockerfile.scratch -t "${IMAGE}"-scratch .
 
     echo "publishing ${IMAGE}..."
     # push the patch tag - eg; v0.36.15
