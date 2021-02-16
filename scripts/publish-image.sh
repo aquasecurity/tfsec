@@ -3,7 +3,7 @@
 set -e 
 
 IMAGES=(tfsec/tfsec)
-docker build -f Dockerfile.builder -t tfsec/builder .
+docker build --build-arg tfsec_version=${TRAVIS_TAG} -f Dockerfile.builder -t tfsec/builder .
 
 for IMAGE in ${IMAGES[@]}; do
     echo "building ${IMAGE}..."
