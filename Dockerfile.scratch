@@ -1,5 +1,5 @@
 FROM tfsec/builder AS build-env
-FROM alpine
+FROM scratch
 # use a non-privileged user
 USER nobody
 # work somewhere where we can write
