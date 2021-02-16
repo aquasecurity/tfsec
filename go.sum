@@ -348,8 +348,6 @@ github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d/go.mod h1:YUTz3bUH
 github.com/oklog/run v1.0.0 h1:Ru7dDtJNOyC66gQ5dQmaCa0qIsAUFY3sFpK1Xk8igrw=
 github.com/oklog/run v1.0.0/go.mod h1:dlhp/R75TPv97u0XWUtDeV/lRKWPKSdTuV0TZvrmrQA=
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
-github.com/owenrumney/go-sarif v0.0.4 h1:1PuX1ehfGd7AAqbC0FMIX9hB6d0z/UbBQ/jk4YMvJbE=
-github.com/owenrumney/go-sarif v0.0.4/go.mod h1:nf8O4BVFyhZNvKwD4FGP+r6EXqk1hT7n7kLSnQ+aNuI=
 github.com/owenrumney/go-sarif v0.0.5 h1:9rnjGzjkt+tCEIRcehjIZvCHojzkWT7rxnu7CjMCB8g=
 github.com/owenrumney/go-sarif v0.0.5/go.mod h1:nf8O4BVFyhZNvKwD4FGP+r6EXqk1hT7n7kLSnQ+aNuI=
 github.com/packer-community/winrmcp v0.0.0-20180102160824-81144009af58 h1:m3CEgv3ah1Rhy82L+c0QG/U3VyY1UsvsIdkh0/rU97Y=
