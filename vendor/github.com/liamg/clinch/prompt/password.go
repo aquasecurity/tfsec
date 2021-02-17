@@ -17,3 +17,14 @@ func EnterPassword(msg string) string {
 	}
 	return string(bytePassword)
 }
+
+// EnterPasswordE requests input from the user with the given message, hiding that input, and returns any user input that was gathered until a newline was entered - returning an error if one occurred
+func EnterPasswordE(msg string) (string, error) {
+	terminal.ClearLine()
+	terminal.PrintImportantf(msg)
+	bytePassword, err := sshterm.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		return "", err
+	}
+	return string(bytePassword), nil
+}
