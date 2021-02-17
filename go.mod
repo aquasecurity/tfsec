@@ -12,7 +12,7 @@ require (
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.6.1
 	github.com/zclconf/go-cty v1.5.1
-	github.com/zclconf/go-cty-yaml v1.0.1
+	github.com/zclconf/go-cty-yaml v1.0.2
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/yaml.v2 v2.3.0
 )
