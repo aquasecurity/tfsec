@@ -25,11 +25,11 @@ github.com/hashicorp/hcl/v2/json
 github.com/hashicorp/terraform/lang/funcs
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
-# github.com/liamg/clinch v1.3.0
+# github.com/liamg/clinch v1.5.5
 ## explicit
 github.com/liamg/clinch/prompt
 github.com/liamg/clinch/terminal
-# github.com/liamg/tml v0.2.0
+# github.com/liamg/tml v0.3.0
 ## explicit
 github.com/liamg/tml
 # github.com/mitchellh/go-homedir v1.1.0
