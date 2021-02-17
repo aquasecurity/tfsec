@@ -11,7 +11,7 @@ RUN go build \
   -mod=vendor \
   ./cmd/tfsec
 
-FROM alpine
+FROM scratch
 # use a non-privileged user
 USER nobody
 # work somewhere where we can write
