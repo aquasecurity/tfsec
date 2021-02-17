@@ -1,6 +1,6 @@
 module github.com/tfsec/tfsec
 
-go 1.15
+go 1.16
 
 require (
 	github.com/hashicorp/hcl/v2 v2.7.0
