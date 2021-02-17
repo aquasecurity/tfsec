@@ -46,7 +46,7 @@ func HideCursor() {
 
 // MoveCursorToColumn moves the cursor to the given column (zero indexed)
 func MoveCursorToColumn(column int) {
-	fmt.Printf("\r\033[%dC", column+1)
+	fmt.Printf("\033[%dG", column+1)
 }
 
 // MoveCursorTo moves the cursor to the given position (zero indexed)
