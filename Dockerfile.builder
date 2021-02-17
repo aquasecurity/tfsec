@@ -1,4 +1,4 @@
-FROM golang:1.15-alpine AS build-env
+FROM golang:1.16-alpine AS build-env
 
 ARG tfsec_version=0.0.0
 
@@ -10,5 +10,3 @@ RUN go build \
   -ldflags "-X github.com/tfsec/tfsec/version.Version=${tfsec_version} -s -w -extldflags '-static'" \
   -mod=vendor \
   ./cmd/tfsec
-
-
