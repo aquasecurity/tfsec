@@ -91,7 +91,7 @@ func init() {
 			}
 
 			for _, rule := range securityRules {
-				if rule.HasChild("access") && rule.GetAttribute("access").Contains("Deny") {
+				if rule.HasChild("access") && rule.GetAttribute("access").Equals("Deny") {
 					return nil
 				}
 				if rule.HasChild("destination_port_range") && rule.GetAttribute("destination_port_range").Contains("22") {
