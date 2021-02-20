@@ -45,6 +45,17 @@ resource "aws_rds_cluster" "my-instance" {
 			mustIncludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
 		},
 		{
+			name: "check rds storage_encrypted is false and key_id is null",
+			source: `
+resource "aws_rds_cluster" "my-instance" {
+	name       = "cluster-1"
+	storage_encrypted = false
+	kms_key_id = null
+}
+`,
+			mustIncludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
+		},
+		{
 			name: "check rds encryption is enabled correctly",
 			source: `
 resource "aws_rds_cluster" "my-instance" {
