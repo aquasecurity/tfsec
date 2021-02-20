@@ -80,14 +80,15 @@ func (attr *Attribute) Contains(checkValue interface{}, equalityOptions ...Equal
 	if val.Type().IsListType() || val.Type().IsTupleType() {
 		valueSlice := val.AsValueSlice()
 		for _, value := range valueSlice {
+			stringToTest := value
 			if value.Type().IsObjectType() || value.Type().IsMapType() {
 				valueMap := value.AsValueMap()
-				return valueMap["key"].AsString() == checkValue
+				stringToTest = valueMap["key"]
 			}
-			if ignoreCase && containsIgnoreCase(value.AsString(), stringToLookFor) {
+			if ignoreCase && containsIgnoreCase(stringToTest.AsString(), stringToLookFor) {
 				return true
 			}
-			if strings.Contains(value.AsString(), stringToLookFor) {
+			if strings.Contains(stringToTest.AsString(), stringToLookFor) {
 				return true
 			}
 		}
