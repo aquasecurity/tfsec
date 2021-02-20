@@ -14,7 +14,6 @@ jobs:
     name: Run tests
     script:
     - make test
-    - make image
   - stage: build
     if: tag IS NOT blank
     name: Build
