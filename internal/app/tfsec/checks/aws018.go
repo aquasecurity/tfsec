@@ -3,8 +3,6 @@ package checks
 import (
 	"fmt"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -64,9 +62,7 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group", "aws_security_group_rule"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-
-			descriptionAttr := block.GetAttribute("description")
-			if descriptionAttr == nil {
+			if block.MissingChild("description") {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", block.FullName()),
@@ -76,7 +72,8 @@ func init() {
 				}
 			}
 
-			if descriptionAttr.Type() == cty.String && descriptionAttr.Value().AsString() == "" {
+			descriptionAttr := block.GetAttribute("description")
+			if descriptionAttr.IsEmpty() {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' should include a non-empty description for auditing purposes.", block.FullName()),
@@ -86,7 +83,6 @@ func init() {
 					),
 				}
 			}
-
 			return nil
 		},
 	})
