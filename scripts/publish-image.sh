@@ -3,47 +3,34 @@
 set -e 
 
 IMAGES=(tfsec/tfsec)
+
+function publish_image() {
+    WORKING_IMAGE=$1
+    TARGET_IMAGE=$2
+
+    echo "publishing ${TARGET_IMAGE}..."
+    # push the patch tag - eg; v0.36.15
+    docker tag ${WORKING_IMAGE} ${TARGET_IMAGE}:${TRAVIS_TAG}
+    docker push ${TARGET_IMAGE}:${TRAVIS_TAG}
+
+    # push the minor tag - eg; v0.36
+    docker tag ${WORKING_IMAGE} ${TARGET_IMAGE}:${TRAVIS_TAG%.*}
+    docker push ${TARGET_IMAGE}:${TRAVIS_TAG%.*}
+
+    # push the latest tag
+    docker tag ${WORKING_IMAGE} ${TARGET_IMAGE}:latest
+    docker push ${TARGET_IMAGE}:latest
+
+}
+
 for IMAGE in "${IMAGES[@]}"; do
     echo "building ${IMAGE}..."
     docker build --build-arg tfsec_version="${TRAVIS_TAG}" -f Dockerfile -t "${IMAGE}" .
-    docker build --build-arg tfsec_version="${TRAVIS_TAG}" -f Dockerfile.scratch -t "${IMAGE}"-scratch .
+    docker build --build-arg tfsec_version="${TRAVIS_TAG}" -f Dockerfile.scratch -t "${IMAGE}-scratch" .
+    docker build --build-arg tfsec_version="${TRAVIS_TAG}" -f Dockerfile.ci -t "${IMAGE}-ci" .
 
-    echo "publishing ${IMAGE}..."
-    # push the patch tag - eg; v0.36.15
-    docker tag ${IMAGE} ${IMAGE}:${TRAVIS_TAG}
-    docker push ${IMAGE}:${TRAVIS_TAG}
-
-    # push the minor tag - eg; v0.36
-    docker tag ${IMAGE} ${IMAGE}:${TRAVIS_TAG%.*}
-    docker push ${IMAGE}:${TRAVIS_TAG%.*}
-
-    # push the latest tag
-    docker tag ${IMAGE} ${IMAGE}:latest
-    docker push ${IMAGE}:latest
-
-    echo "publishing ${IMAGE}-alpine..."
-    # push the patch tag - eg; v0.36.15
-    docker tag ${IMAGE} ${IMAGE}-alpine:${TRAVIS_TAG}
-    docker push ${IMAGE}-alpine:${TRAVIS_TAG}
-
-    # push the minor tag - eg; v0.36
-    docker tag ${IMAGE} ${IMAGE}-alpine:${TRAVIS_TAG%.*}
-    docker push ${IMAGE}-alpine:${TRAVIS_TAG%.*}
-
-    # push the latest tag
-    docker tag ${IMAGE} ${IMAGE}-alpine:latest
-    docker push ${IMAGE}-alpine:latest
-
-    echo "publishing ${IMAGE}-scratch..."
-    # push the patch tag - eg; v0.36.15
-    docker tag ${IMAGE}-scratch ${IMAGE}-scratch:${TRAVIS_TAG}
-    docker push ${IMAGE}-scratch:${TRAVIS_TAG}
-
-    # push the minor tag - eg; v0.36
-    docker tag ${IMAGE}-scratch ${IMAGE}-scratch:${TRAVIS_TAG%.*}
-    docker push ${IMAGE}-scratch:${TRAVIS_TAG%.*}
-
-    # push the latest tag
-    docker tag ${IMAGE}-scratch ${IMAGE}-scratch:latest
-    docker push ${IMAGE}-scratch:latest
+    publish_image "${IMAGE}" "${IMAGE}"
+    publish_image "${IMAGE}" "${IMAGE}-alpine"
+    publish_image "${IMAGE}-scratch" "${IMAGE}-scratch"
+    publish_image "${IMAGE}-ci" "${IMAGE}-ci"
 done;
