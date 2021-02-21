@@ -10,16 +10,16 @@ function publish_image() {
 
     echo "publishing ${TARGET_IMAGE}..."
     # push the patch tag - eg; v0.36.15
-    docker tag ${WORKING_IMAGE} ${TARGET_IMAGE}:${TRAVIS_TAG}
-    docker push ${TARGET_IMAGE}:${TRAVIS_TAG}
+    docker tag "${WORKING_IMAGE}" "${TARGET_IMAGE}":"${TRAVIS_TAG}"
+    docker push "${TARGET_IMAGE}":"${TRAVIS_TAG}"
 
     # push the minor tag - eg; v0.36
-    docker tag ${WORKING_IMAGE} ${TARGET_IMAGE}:${TRAVIS_TAG%.*}
-    docker push ${TARGET_IMAGE}:${TRAVIS_TAG%.*}
+    docker tag "${WORKING_IMAGE}" "${TARGET_IMAGE}":"${TRAVIS_TAG%.*}"
+    docker push "${TARGET_IMAGE}":"${TRAVIS_TAG%.*}"
 
     # push the latest tag
-    docker tag ${WORKING_IMAGE} ${TARGET_IMAGE}:latest
-    docker push ${TARGET_IMAGE}:latest
+    docker tag "${WORKING_IMAGE}" "${TARGET_IMAGE}":latest
+    docker push "${TARGET_IMAGE}":latest
 
 }
 
