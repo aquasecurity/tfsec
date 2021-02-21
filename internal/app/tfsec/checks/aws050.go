@@ -70,9 +70,10 @@ func init() {
 				if isOpenCidr(cidrBlockAttr, check.Provider) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						return []scanner.Result{
-							check.NewResult(
+							check.NewResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", block.FullName()),
 								cidrBlockAttr.Range(),
+								cidrBlockAttr,
 								scanner.SeverityError,
 							),
 						}
