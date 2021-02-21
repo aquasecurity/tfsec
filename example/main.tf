@@ -37,20 +37,3 @@ resource "aws_api_gateway_domain_name" "outdated_security_policy" {
 resource "aws_api_gateway_domain_name" "valid_security_policy" {
     security_policy = "TLS_1_2"
 }
-
-resource "aws_eks_cluster" "good_example" {
-    encryption_config {
-        resources = []
-        provider {
-            key_arn = var.kms_arn
-        }
-    }
-
-    enabled_cluster_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
-
-    name = "good_example_cluster"
-    role_arn = var.cluster_arn
-    vpc_config {
-        endpoint_public_access = false
-    }
-}
