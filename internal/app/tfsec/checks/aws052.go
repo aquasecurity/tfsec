@@ -43,15 +43,25 @@ func init() {
 		RequiredLabels: []string{"aws_db_instance"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
-			storageEncryptedattr := block.GetAttribute("storage_encrypted")
-
-			if storageEncryptedattr == nil || storageEncryptedattr.IsFalse() {
+			if block.MissingChild("storage_encrypted") {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' defines a disabled RDS Instance Encryption.", block.FullName()),
+						fmt.Sprintf("Resource '%s' has no storage encryption defined.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
+				}
+			}
+
+			storageEncrypted := block.GetAttribute("storage_encrypted")
+			if storageEncrypted.IsFalse() {
+				return []scanner.Result{
+					check.NewResultWithValueAnnotation(
+						fmt.Sprintf("Resource '%s' has storage encrypted set to false", block.FullName()),
+						storageEncrypted.Range(),
+						storageEncrypted,
+						scanner.SeverityError,
+						),
 				}
 			}
 			return nil
