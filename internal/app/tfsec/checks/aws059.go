@@ -96,7 +96,7 @@ func init() {
 			if block.MissingChild("encryption_configuration") {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' .", blockName),
+						fmt.Sprintf("Resource '%s' missing encryption configuration block.", blockName),
 						block.Range(),
 						scanner.SeverityError,
 					),
