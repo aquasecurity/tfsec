@@ -7,7 +7,6 @@ IMAGES=(tfsec/tfsec)
 function publish_image() {
     WORKING_IMAGE=$1
     TARGET_IMAGE=$2
-
     echo "publishing ${TARGET_IMAGE}..."
     # push the patch tag - eg; v0.36.15
     docker tag "${WORKING_IMAGE}" "${TARGET_IMAGE}":"${TRAVIS_TAG}"
@@ -33,4 +32,7 @@ for IMAGE in "${IMAGES[@]}"; do
     publish_image "${IMAGE}" "${IMAGE}-alpine"
     publish_image "${IMAGE}-scratch" "${IMAGE}-scratch"
     publish_image "${IMAGE}-ci" "${IMAGE}-ci"
+
 done;
+
+popd
