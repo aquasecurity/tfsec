@@ -25,7 +25,7 @@ github.com/hashicorp/hcl/v2/json
 github.com/hashicorp/terraform/lang/funcs
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
-# github.com/liamg/clinch v1.5.5
+# github.com/liamg/clinch v1.5.6
 ## explicit
 github.com/liamg/clinch/prompt
 github.com/liamg/clinch/terminal
