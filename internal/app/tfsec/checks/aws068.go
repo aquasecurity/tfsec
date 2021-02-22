@@ -7,7 +7,7 @@ import (
 )
 
 const AWSEKSClusterNotOpenPublicly scanner.RuleCode = "AWS068"
-const AWSEKSClusterNotOpenPubliclyDescription scanner.RuleSummary = "EKS cluster should not hove open CIDR range for public access"
+const AWSEKSClusterNotOpenPubliclyDescription scanner.RuleSummary = "EKS cluster should not have open CIDR range for public access"
 const AWSEKSClusterNotOpenPubliclyExplanation = `
 EKS Clusters have public access cidrs set to 0.0.0.0/0 by default which is wide open to the internet. This should be explicitly set to a more specific CIDR range
 `
