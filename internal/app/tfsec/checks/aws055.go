@@ -85,9 +85,10 @@ func init() {
 
 			if enabled == nil || enabled.IsFalse() {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' explicitly disables node to node encryption on the domain.", block.FullName()),
-						block.Range(),
+						enabled.Range(),
+						enabled,
 						scanner.SeverityError,
 					),
 				}
