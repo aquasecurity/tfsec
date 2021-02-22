@@ -12,7 +12,7 @@ github.com/davecgh/go-spew/spew
 github.com/google/uuid
 # github.com/hashicorp/go-uuid v1.0.1
 github.com/hashicorp/go-uuid
-# github.com/hashicorp/hcl/v2 v2.7.0
+# github.com/hashicorp/hcl/v2 v2.8.2
 ## explicit
 github.com/hashicorp/hcl/v2
 github.com/hashicorp/hcl/v2/ext/customdecode
