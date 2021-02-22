@@ -1,20 +1,23 @@
 package models
 
+// Run type represents a run of a tool
 type Run struct {
 	Tool      *tool              `json:"tool"`
 	Artifacts []*LocationWrapper `json:"artifacts,omitempty"`
 	Results   []*Result          `json:"results,omitempty"`
 }
 
+// LocationWrapper reprents the location details of a run
 type LocationWrapper struct {
-	Location *l `json:"location,omitentry"`
+	Location *location `json:"location,omitempty"`
 }
 
-func NewRun(toolName, informationUri string) *Run {
+// NewRun allows the creation of a new Run
+func NewRun(toolName, informationURI string) *Run {
 	tool := &tool{
 		Driver: &driver{
 			Name:           toolName,
-			InformationUri: informationUri,
+			InformationURI: informationURI,
 		},
 	}
 	run := &Run{
@@ -23,45 +26,47 @@ func NewRun(toolName, informationUri string) *Run {
 	return run
 }
 
-// AddArtifact returns the index of the newly added artifactLocation
-func (run *Run) AddArtifact(location string) int {
+// AddArtifact returns the index of an existing artefact, the newly added artifactLocation
+func (run *Run) AddArtifact(artifactLocation string) int {
 	for i, l := range run.Artifacts {
-		if l.Location.Uri == location {
+		if l.Location.URI == artifactLocation {
 			return i
 		}
 	}
 	run.Artifacts = append(run.Artifacts, &LocationWrapper{
-		Location: &l{
-			Uri: location,
+		Location: &location{
+			URI: artifactLocation,
 		},
 	})
 	return len(run.Artifacts) - 1
 }
 
-func (run *Run) AddRule(ruleId string) *rule {
+// AddRule returns an existing Rule for the ruleID or creates a new Rule and returns it
+func (run *Run) AddRule(ruleID string) *Rule {
 	for _, rule := range run.Tool.Driver.Rules {
-		if rule.Id == ruleId {
+		if rule.ID == ruleID {
 			return rule
 		}
 	}
-	rule := newRule(ruleId)
+	rule := newRule(ruleID)
 	run.Tool.Driver.Rules = append(run.Tool.Driver.Rules, rule)
 	return rule
 }
 
-func (run *Run) AddResult(ruleId string) *Result {
+// AddResult returns an existing Result or creates a new one and returns it
+func (run *Run) AddResult(ruleID string) *Result {
 	for _, result := range run.Results {
-		if result.RuleId == ruleId {
+		if result.RuleID == ruleID {
 			return result
 		}
 	}
-	result := newRuleResult(ruleId)
+	result := newRuleResult(ruleID)
 	run.Results = append(run.Results, result)
 	return result
 }
 
 // AddResultDetails adds rules to the driver and artifact locations if they are missing. It adds the result to the result block as well
-func (run *Run) AddResultDetails(rule *rule, result *Result, location string) {
+func (run *Run) AddResultDetails(rule *Rule, result *Result, location string) {
 	ruleIndex := run.Tool.Driver.getOrCreateRule(rule)
 	result.RuleIndex = ruleIndex
 	locationIndex := run.AddArtifact(location)
@@ -70,7 +75,7 @@ func (run *Run) AddResultDetails(rule *rule, result *Result, location string) {
 
 func updateResultLocationIndex(result *Result, location string, index int) {
 	for _, resultLocation := range result.Locations {
-		if resultLocation.PhysicalLocation.ArtifactLocation.Uri == location {
+		if resultLocation.PhysicalLocation.ArtifactLocation.URI == location {
 			resultLocation.PhysicalLocation.ArtifactLocation.Index = index
 			break
 		}
