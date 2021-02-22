@@ -34,5 +34,3 @@ for IMAGE in "${IMAGES[@]}"; do
     publish_image "${IMAGE}-ci" "${IMAGE}-ci"
 
 done;
-
-popd
