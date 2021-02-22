@@ -38,7 +38,7 @@ github.com/mitchellh/go-homedir
 github.com/mitchellh/go-wordwrap
 # github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e
 ## explicit
-# github.com/owenrumney/go-sarif v0.0.5
+# github.com/owenrumney/go-sarif v0.0.6
 ## explicit
 github.com/owenrumney/go-sarif/models
 github.com/owenrumney/go-sarif/sarif
