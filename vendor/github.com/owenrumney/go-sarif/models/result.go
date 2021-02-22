@@ -4,7 +4,7 @@ package models
 type Result struct {
 	Level     string            `json:"level"`
 	Message   *textBlock        `json:"message"`
-	RuleId    string            `json:"ruleId"`
+	RuleID    string            `json:"ruleId"`
 	RuleIndex int               `json:"ruleIndex"`
 	Locations []*resultLocation `json:"locations,omitempty"`
 }
@@ -24,25 +24,27 @@ type region struct {
 }
 
 type artifactLocation struct {
-	Uri   string `json:"uri"`
+	URI   string `json:"uri"`
 	Index int    `json:"index"`
 }
 
-type l struct {
-	Uri string `json:"uri"`
+type location struct {
+	URI string `json:"uri"`
 }
 
-func newRuleResult(ruleId string) *Result {
+func newRuleResult(ruleID string) *Result {
 	return &Result{
-		RuleId: ruleId,
+		RuleID: ruleID,
 	}
 }
 
+// WithLevel specifies the level of the finding, error, warning for a result and returns the updated result
 func (result *Result) WithLevel(level string) *Result {
 	result.Level = level
 	return result
 }
 
+// WithMessage specifies the message for a result and returns the updated result
 func (result *Result) WithMessage(message string) *Result {
 	result.Message = &textBlock{
 		Text: message,
@@ -50,10 +52,11 @@ func (result *Result) WithMessage(message string) *Result {
 	return result
 }
 
+// WithLocationDetails specifies the location details of the Result and returns the update result
 func (result *Result) WithLocationDetails(path string, startLine, startColumn int) *Result {
 	location := &physicalLocation{
 		ArtifactLocation: &artifactLocation{
-			Uri: path,
+			URI: path,
 		},
 		Region: &region{
 			StartLine:   startLine,
