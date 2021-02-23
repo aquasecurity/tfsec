@@ -44,14 +44,14 @@ func init() {
 			keyUsageAttr := block.GetAttribute("key_usage")
 
 			if keyUsageAttr != nil && keyUsageAttr.Equals("SIGN_VERIFY") {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			keyRotationAttr := block.GetAttribute("enable_key_rotation")
 
 			if keyRotationAttr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
@@ -61,7 +61,7 @@ func init() {
 
 			if keyRotationAttr.Type() == cty.Bool && keyRotationAttr.Value().False() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.FullName()),
 						keyRotationAttr.Range(),
 						keyRotationAttr,
@@ -70,7 +70,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

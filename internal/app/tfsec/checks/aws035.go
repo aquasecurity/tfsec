@@ -48,7 +48,7 @@ func init() {
 			encryptionAttr := block.GetAttribute("at_rest_encryption_enabled")
 			if encryptionAttr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (missing at_rest_encryption_enabled attribute).", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -56,7 +56,7 @@ func init() {
 				}
 			} else if !isBooleanOrStringTrue(encryptionAttr) {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (at_rest_encryption_enabled set to false).", block.FullName()),
 						encryptionAttr.Range(),
 						encryptionAttr,
@@ -65,7 +65,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

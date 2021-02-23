@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -58,7 +59,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if block.MissingChild("extended_auditing_policy") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not have extended audit configured.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -66,7 +67,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

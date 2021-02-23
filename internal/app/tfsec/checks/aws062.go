@@ -61,14 +61,14 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			if block.MissingChild("user_data") {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			userData := block.GetAttribute("user_data")
 			if userData.Contains("AWS_ACCESS_KEY_ID", parser.IgnoreCase) &&
 				userData.RegexMatches("(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}") {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' has userdata with access key id defined.", block.FullName()),
 						userData.Range(),
 						userData,
@@ -80,7 +80,7 @@ func init() {
 			if userData.Contains("AWS_SECRET_ACCESS_KEY", parser.IgnoreCase) &&
 				userData.RegexMatches("(?i)aws_secre.+[=:]\\s{0,}[A-Za-z0-9\\/+=]{40}.?") {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' has userdata with access secret key defined.", block.FullName()),
 						userData.Range(),
 						userData,
@@ -88,7 +88,7 @@ func init() {
 					),
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

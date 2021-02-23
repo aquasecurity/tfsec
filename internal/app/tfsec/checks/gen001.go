@@ -59,11 +59,11 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			if len(block.Labels()) == 0 {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if !security.IsSensitiveAttribute(block.TypeLabel()) {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			var results []scanner.Result
@@ -75,7 +75,7 @@ func init() {
 						continue
 					}
 					if val.AsString() != "" {
-						results = append(results, check.NewResultWithValueAnnotation(
+						results = append(results, check.NewFailingResultWithValueAnnotation(
 							fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", block.FullName()),
 							attribute.Range(),
 							attribute,

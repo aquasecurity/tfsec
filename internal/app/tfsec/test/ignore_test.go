@@ -30,7 +30,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		RequiredLabels: []string{"bad"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			return []scanner.Result{
-				check.NewResult("example problem", block.Range(), scanner.SeverityError),
+				check.NewFailingResult("example problem", block.Range(), scanner.SeverityError),
 			}
 		},
 	})
@@ -40,7 +40,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		RequiredLabels: []string{"bad"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			return []scanner.Result{
-				check.NewResult("example problem", block.Range(), scanner.SeverityError),
+				check.NewFailingResult("example problem", block.Range(), scanner.SeverityError),
 			}
 		},
 	})

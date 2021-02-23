@@ -59,7 +59,7 @@ func init() {
 			if nodeMetadata != nil && nodeMetadata.Type() == cty.String &&
 				(nodeMetadata.Value().AsString() == "EXPOSE" || nodeMetadata.Value().AsString() == "UNSPECIFIED") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines a cluster with node metadata exposed. node_metadata set to EXPOSE or UNSPECIFIED disables metadata concealment. ", block.FullName()),
 						nodeMetadata.Range(),
 						scanner.SeverityError,
@@ -67,7 +67,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -55,21 +56,21 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_eks_cluster"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-				
+
 			if block.MissingChild("encryption_config") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' has no encryption_config block", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
-						),
+					),
 				}
 			}
 
 			encryption_config := block.GetBlock("encryption_config")
 			if encryption_config.MissingChild("resources") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' has encryption_config block with no resources attribute specified", block.FullName()),
 						encryption_config.Range(),
 						scanner.SeverityError,
@@ -80,7 +81,7 @@ func init() {
 			resources := encryption_config.GetAttribute("resources")
 			if !resources.Contains("secrets") {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' does not include secrets in encrypted resources", block.FullName()),
 						resources.Range(),
 						resources,
@@ -91,7 +92,7 @@ func init() {
 
 			if encryption_config.MissingChild("provider") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' has encryption_config block with no provider block specified", block.FullName()),
 						encryption_config.Range(),
 						scanner.SeverityError,
@@ -100,9 +101,9 @@ func init() {
 			}
 
 			providerBlock := encryption_config.GetBlock("provider")
-			if providerBlock.MissingChild("key_arn"){
+			if providerBlock.MissingChild("key_arn") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' has encryption_config block with provider block specified missing key arn", block.FullName()),
 						encryption_config.Range(),
 						scanner.SeverityError,
@@ -113,7 +114,7 @@ func init() {
 			keyArn := providerBlock.GetAttribute("key_arn")
 			if keyArn.IsEmpty() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' has encryption_config block with provider block specified but key_arn is empty", block.FullName()),
 						keyArn.Range(),
 						keyArn,
@@ -122,7 +123,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

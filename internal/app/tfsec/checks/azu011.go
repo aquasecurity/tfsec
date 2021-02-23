@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -61,7 +62,7 @@ func init() {
 					value := properties.MapValue("publicAccess")
 					if value == cty.StringVal("blob") || value == cty.StringVal("container") {
 						return []scanner.Result{
-							check.NewResult(
+							check.NewFailingResult(
 								fmt.Sprintf("Resource '%s' defines publicAccess as '%s', should be 'off .", block.FullName(), value),
 								block.Range(),
 								scanner.SeverityError,
@@ -71,7 +72,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

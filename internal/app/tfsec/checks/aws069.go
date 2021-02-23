@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -55,7 +56,7 @@ func init() {
 
 			if block.MissingChild("vpc_config") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -66,7 +67,7 @@ func init() {
 			vpcConfig := block.GetBlock("vpc_config")
 			if vpcConfig.MissingChild("endpoint_public_access") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' is using default public access in the vpc config", block.FullName()),
 						vpcConfig.Range(),
 						scanner.SeverityError,
@@ -77,7 +78,7 @@ func init() {
 			publicAccessEnabled := vpcConfig.GetAttribute("endpoint_public_access")
 			if publicAccessEnabled.IsTrue() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", block.FullName()),
 						publicAccessEnabled.Range(),
 						publicAccessEnabled,
@@ -85,7 +86,7 @@ func init() {
 					),
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

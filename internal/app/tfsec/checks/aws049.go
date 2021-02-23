@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
@@ -56,25 +57,25 @@ func init() {
 			protoAttr := block.GetAttribute("protocol")
 
 			if egressAttr.Type() == cty.Bool && egressAttr.Value().True() {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if actionAttr == nil || actionAttr.Type() != cty.String {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if actionAttr.Value().AsString() != "allow" {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if cidrBlockAttr := block.GetAttribute("cidr_block"); cidrBlockAttr != nil {
 
 				if isOpenCidr(cidrBlockAttr, check.Provider) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-						return nil
+						return []scanner.Result{check.NewPassingResult(block.Range())}
 					} else {
 						return []scanner.Result{
-							check.NewResult(
+							check.NewFailingResult(
 								fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", block.FullName()),
 								cidrBlockAttr.Range(),
 								scanner.SeverityWarning,
@@ -89,10 +90,10 @@ func init() {
 
 				if isOpenCidr(ipv6CidrBlockAttr, check.Provider) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-						return nil
+						return []scanner.Result{check.NewPassingResult(block.Range())}
 					} else {
 						return []scanner.Result{
-							check.NewResultWithValueAnnotation(
+							check.NewFailingResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", block.FullName()),
 								ipv6CidrBlockAttr.Range(),
 								ipv6CidrBlockAttr,
@@ -104,7 +105,7 @@ func init() {
 
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

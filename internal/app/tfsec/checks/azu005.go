@@ -51,7 +51,7 @@ func init() {
 				passwordAuthDisabledAttr := linuxConfigBlock.GetAttribute("disable_password_authentication")
 				if passwordAuthDisabledAttr != nil && passwordAuthDisabledAttr.Type() == cty.Bool && passwordAuthDisabledAttr.Value().False() {
 					return []scanner.Result{
-						check.NewResultWithValueAnnotation(
+						check.NewFailingResultWithValueAnnotation(
 							fmt.Sprintf(
 								"Resource '%s' has password authentication enabled. Use SSH keys instead.",
 								block.FullName(),
@@ -64,7 +64,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

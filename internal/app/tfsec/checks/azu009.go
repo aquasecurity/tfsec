@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
@@ -48,7 +49,7 @@ func init() {
 			addonprofileBlock := block.GetBlock("addon_profile")
 			if addonprofileBlock == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -59,7 +60,7 @@ func init() {
 			omsagentBlock := addonprofileBlock.GetBlock("oms_agent")
 			if omsagentBlock == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -68,9 +69,9 @@ func init() {
 			}
 
 			enabledAttr := omsagentBlock.GetAttribute("enabled")
-			if enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() || enabledAttr == nil{
+			if enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() || enabledAttr == nil {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf(
 							"Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).",
 							block.FullName(),
@@ -82,7 +83,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

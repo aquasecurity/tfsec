@@ -46,12 +46,12 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			if strings.HasPrefix(block.Label(), "google_container_cluster") && block.GetAttribute("remove_default_node_pool").IsTrue() {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if !block.HasBlock("node_config") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -60,14 +60,14 @@ func init() {
 			}
 			displayBlock := block.GetBlock("node_config")
 			serviceAccount := displayBlock.GetAttribute("service_account")
-			
+
 			if serviceAccount == nil || serviceAccount.IsEmpty() {
 				if displayBlock == nil {
 					displayBlock = block
 				}
 
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", block.FullName()),
 						displayBlock.Range(),
 						scanner.SeverityError,
@@ -75,7 +75,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

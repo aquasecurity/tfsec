@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -60,18 +61,18 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if !block.IsResourceType("azurerm_mssql_database_extended_auditing_policy") {
 				if block.MissingChild("extended_auditing_policy") {
-					return nil
+					return []scanner.Result{check.NewPassingResult(block.Range())}
 				}
 				block = block.GetBlock("extended_auditing_policy")
 			}
 
 			if block.MissingChild("retention_in_days") {
 				// using default of unlimited
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 			if block.GetAttribute("retention_in_days").LessThan(90) {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' specifies a retention period of less than 90 days.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -79,7 +80,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

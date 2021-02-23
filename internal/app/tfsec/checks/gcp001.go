@@ -58,7 +58,7 @@ func init() {
 			if keyBlock != nil {
 				if keyBlock.GetAttribute("raw_key") == nil && keyBlock.GetAttribute("kms_key_self_link") == nil {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("Resource '%s' defines an unencrypted disk. You should specify raw_key or kms_key_self_link.", block.FullName()),
 							keyBlock.Range(),
 							scanner.SeverityError,
@@ -67,7 +67,7 @@ func init() {
 
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

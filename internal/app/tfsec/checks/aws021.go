@@ -49,7 +49,7 @@ func init() {
 			viewerCertificateBlock := block.GetBlock("viewer_certificate")
 			if viewerCertificateBlock == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing viewer_certificate block)", block.FullName()),
 						viewerCertificateBlock.Range(),
 						scanner.SeverityError,
@@ -59,7 +59,7 @@ func init() {
 
 			if minVersion := viewerCertificateBlock.GetAttribute("minimum_protocol_version"); minVersion == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", block.FullName()),
 						viewerCertificateBlock.Range(),
 						scanner.SeverityError,
@@ -67,14 +67,14 @@ func init() {
 				}
 			} else if minVersion.Type() == cty.String && minVersion.Value().AsString() != "TLSv1.2_2019" {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2019)", block.FullName()),
 						minVersion.Range(),
 						scanner.SeverityError,
 					),
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

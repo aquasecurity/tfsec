@@ -46,7 +46,7 @@ func init() {
 			encryptionStateAttr := block.GetAttribute("encryption_state")
 			if encryptionStateAttr != nil && encryptionStateAttr.Type() == cty.String && encryptionStateAttr.Value().AsString() == "Disabled" {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted data lake store.",
 							block.FullName(),
@@ -58,7 +58,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

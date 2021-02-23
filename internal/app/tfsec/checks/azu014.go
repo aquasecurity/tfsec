@@ -57,7 +57,7 @@ func init() {
 
 			if block.HasChild("enable_https_traffic_only") && block.GetAttribute("enable_https_traffic_only").IsFalse() {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' explicitly turns off secure transfer to storage account.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -65,7 +65,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

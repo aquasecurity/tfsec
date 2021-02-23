@@ -44,7 +44,7 @@ func init() {
 
 			if accessKeyAttribute := block.GetAttribute("access_key"); accessKeyAttribute != nil && accessKeyAttribute.Type() == cty.String {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Provider '%s' has an access key specified.", block.FullName()),
 						accessKeyAttribute.Range(),
 						accessKeyAttribute,
@@ -53,7 +53,7 @@ func init() {
 				}
 			} else if secretKeyAttribute := block.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Provider '%s' has a secret key specified.", block.FullName()),
 						secretKeyAttribute.Range(),
 						secretKeyAttribute,
@@ -62,7 +62,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

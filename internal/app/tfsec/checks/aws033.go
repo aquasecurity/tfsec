@@ -56,7 +56,7 @@ func init() {
 			endpointBlock := block.GetBlock("domain_endpoint_options")
 			if endpointBlock == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing domain_endpoint_options block).", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -67,7 +67,7 @@ func init() {
 			enforceHTTPSAttr := endpointBlock.GetAttribute("enforce_https")
 			if enforceHTTPSAttr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enforce_https attribute).", block.FullName()),
 						endpointBlock.Range(),
 						scanner.SeverityError,
@@ -81,7 +81,7 @@ func init() {
 			enforcedHTTPS := isTrueBool || isTrueString
 			if !enforcedHTTPS {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", block.FullName()),
 						endpointBlock.Range(),
 						scanner.SeverityError,
@@ -89,7 +89,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

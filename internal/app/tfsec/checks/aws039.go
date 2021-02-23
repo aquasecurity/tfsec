@@ -53,7 +53,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if attr := block.GetAttribute("minimum_password_length"); attr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not have a minimum password length set.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
@@ -63,7 +63,7 @@ func init() {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value < 14 {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("Resource '%s' has a minimum password length which is less than 14 characters.", block.FullName()),
 							block.Range(),
 							scanner.SeverityWarning,
@@ -71,7 +71,7 @@ func init() {
 					}
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

@@ -59,7 +59,7 @@ func init() {
 			rootDeviceBlock := block.GetBlock("root_block_device")
 			if rootDeviceBlock == nil && !encryptionByDefault {
 				results = append(results,
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device. Consider adding <blue>root_block_device{ encrypted = true }</blue>", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -69,7 +69,7 @@ func init() {
 				encryptedAttr := rootDeviceBlock.GetAttribute("encrypted")
 				if encryptedAttr == nil && !encryptionByDefault {
 					results = append(results,
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device. Consider adding <blue>encrypted = true</blue>", block.FullName()),
 							rootDeviceBlock.Range(),
 							scanner.SeverityError,
@@ -77,7 +77,7 @@ func init() {
 					)
 				} else if encryptedAttr != nil && encryptedAttr.Type() == cty.Bool && encryptedAttr.Value().False() {
 					results = append(results,
-						check.NewResultWithValueAnnotation(
+						check.NewFailingResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device.", block.FullName()),
 							encryptedAttr.Range(),
 							encryptedAttr,
@@ -92,7 +92,7 @@ func init() {
 				encryptedAttr := ebsDeviceBlock.GetAttribute("encrypted")
 				if encryptedAttr == nil && !encryptionByDefault {
 					results = append(results,
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device. Consider adding <blue>encrypted = true</blue>", block.FullName()),
 							ebsDeviceBlock.Range(),
 							scanner.SeverityError,
@@ -100,7 +100,7 @@ func init() {
 					)
 				} else if encryptedAttr != nil && encryptedAttr.Type() == cty.Bool && encryptedAttr.Value().False() {
 					results = append(results,
-						check.NewResultWithValueAnnotation(
+						check.NewFailingResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device.", block.FullName()),
 							encryptedAttr.Range(),
 							encryptedAttr,

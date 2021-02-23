@@ -97,14 +97,14 @@ func init() {
 			wafAclIdBlock := block.GetAttribute("web_acl_id")
 			if wafAclIdBlock == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
 					),
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

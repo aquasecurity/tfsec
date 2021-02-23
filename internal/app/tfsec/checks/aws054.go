@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -59,7 +60,7 @@ func init() {
 				enforceHttps := endpointOptions.GetAttribute("enforce_https")
 				if enforceHttps != nil && enforceHttps.IsFalse() {
 					return []scanner.Result{
-						check.NewResultWithValueAnnotation(
+						check.NewFailingResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' explicitly turns off enforcing https on the ElasticSearch domain.", block.FullName()),
 							enforceHttps.Range(),
 							enforceHttps,
@@ -69,7 +70,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

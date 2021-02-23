@@ -49,7 +49,7 @@ func init() {
 
 			if enable_shielded_nodes == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -59,7 +59,7 @@ func init() {
 
 			if enable_shielded_nodes.Type() == cty.Bool && enable_shielded_nodes.Value().False() || enable_shielded_nodes.Type() == cty.String && enable_shielded_nodes.Value().AsString() != "true" {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", block.FullName()),
 						enable_shielded_nodes.Range(),
 						scanner.SeverityError,
@@ -67,7 +67,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

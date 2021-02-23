@@ -52,7 +52,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if attr := block.GetAttribute("require_uppercase_characters"); attr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not require an uppercase character in the password.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
@@ -61,7 +61,7 @@ func init() {
 			} else if attr.Value().Type() == cty.Bool {
 				if attr.Value().False() {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least one uppercase character in the password.", block.FullName()),
 							block.Range(),
 							scanner.SeverityWarning,
@@ -69,7 +69,7 @@ func init() {
 					}
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

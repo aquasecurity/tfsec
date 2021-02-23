@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -45,18 +46,18 @@ func init() {
 
 			typeAttr := block.GetAttribute("type")
 			if typeAttr == nil || typeAttr.Type() != cty.String {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if typeAttr.Value().AsString() != "egress" {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if cidrBlocksAttr := block.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 				if isOpenCidr(cidrBlocksAttr, check.Provider) {
 					return []scanner.Result{
-						check.NewResultWithValueAnnotation(
+						check.NewFailingResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.FullName()),
 							cidrBlocksAttr.Range(),
 							cidrBlocksAttr,
@@ -70,7 +71,7 @@ func init() {
 
 				if isOpenCidr(ipv6CidrBlocksAttr, check.Provider) {
 					return []scanner.Result{
-						check.NewResultWithValueAnnotation(
+						check.NewFailingResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.FullName()),
 							ipv6CidrBlocksAttr.Range(),
 							ipv6CidrBlocksAttr,
@@ -80,7 +81,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

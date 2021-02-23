@@ -48,7 +48,7 @@ func init() {
 			if networkprofileBlock := block.GetBlock("network_profile"); networkprofileBlock != nil {
 				if networkprofileBlock.GetAttribute("network_policy") == nil {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf(
 								"Resource '%s' do not have network_policy define. network_policy should be defined to have opportunity allow or block traffic to pods",
 								block.FullName(),
@@ -60,7 +60,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

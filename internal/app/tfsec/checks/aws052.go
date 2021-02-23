@@ -45,7 +45,7 @@ func init() {
 
 			if block.MissingChild("storage_encrypted") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' has no storage encryption defined.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -56,15 +56,15 @@ func init() {
 			storageEncrypted := block.GetAttribute("storage_encrypted")
 			if storageEncrypted.IsFalse() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' has storage encrypted set to false", block.FullName()),
 						storageEncrypted.Range(),
 						storageEncrypted,
 						scanner.SeverityError,
-						),
+					),
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

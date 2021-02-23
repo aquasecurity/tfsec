@@ -2,6 +2,7 @@ package custom
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -9,7 +10,7 @@ import (
 var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 	IsPresent: func(block *parser.Block, spec *MatchSpec) bool {
 		return block.HasChild(spec.Name) || spec.IgnoreUndefined
-},
+	},
 	NotPresent: func(block *parser.Block, spec *MatchSpec) bool { return !block.HasChild(spec.Name) },
 	IsEmpty: func(block *parser.Block, spec *MatchSpec) bool {
 		if block.MissingChild(spec.Name) {
@@ -123,14 +124,14 @@ func processFoundChecks(checks ChecksFile) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, ctx) {
 						return []scanner.Result{
-							check.NewResult(
+							check.NewFailingResult(
 								fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage),
 								rootBlock.Range(),
 								customCheck.Severity,
 							),
 						}
 					}
-					return nil
+					return []scanner.Result{check.NewPassingResult(rootBlock.Range())}
 				},
 			})
 		}(*customCheck)

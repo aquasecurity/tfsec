@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -72,7 +73,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if block.MissingChild("node_to_node_encryption") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not configure node to node encryption on the domain.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -85,7 +86,7 @@ func init() {
 
 			if enabled == nil || enabled.IsFalse() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' explicitly disables node to node encryption on the domain.", block.FullName()),
 						enabled.Range(),
 						enabled,
@@ -94,7 +95,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -50,7 +51,7 @@ func init() {
 
 					if isOpenCidr(cidrBlocksAttr, check.Provider) {
 						results = append(results,
-							check.NewResultWithValueAnnotation(
+							check.NewFailingResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.FullName()),
 								cidrBlocksAttr.Range(),
 								cidrBlocksAttr,
@@ -64,7 +65,7 @@ func init() {
 
 					if isOpenCidr(cidrBlocksAttr, check.Provider) {
 						results = append(results,
-							check.NewResultWithValueAnnotation(
+							check.NewFailingResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.FullName()),
 								cidrBlocksAttr.Range(),
 								cidrBlocksAttr,

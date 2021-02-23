@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
@@ -48,7 +49,7 @@ func init() {
 
 			if efsEnabledAttr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not specify if encryption should be used.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -56,7 +57,7 @@ func init() {
 				}
 			} else if efsEnabledAttr.Type() == cty.Bool && efsEnabledAttr.Value().False() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' actively does not have encryption applied.", block.FullName()),
 						efsEnabledAttr.Range(),
 						efsEnabledAttr,
@@ -64,9 +65,9 @@ func init() {
 					),
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

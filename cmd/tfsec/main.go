@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/config"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/config"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
 
@@ -35,6 +36,7 @@ var customCheckDir string
 var configFile string
 var tfsecConfig = &config.Config{}
 var conciseOutput = false
+var includePassed = false
 var excludeDownloaded = false
 var detailedExitCode = false
 
@@ -51,6 +53,7 @@ func init() {
 	rootCmd.Flags().StringVar(&configFile, "config-file", configFile, "Config file to use during run")
 	rootCmd.Flags().BoolVar(&debug.Enabled, "verbose", debug.Enabled, "Enable verbose logging")
 	rootCmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
+	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Show passing checks in the results output")
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&detailedExitCode, "detailed-exit-code", detailedExitCode, "Produce more detailed exit status codes.")
 }
@@ -166,6 +169,10 @@ var rootCmd = &cobra.Command{
 		results = updateResultSeverity(results)
 		results = removeDuplicatesAndUnwanted(results)
 
+		if !includePassed {
+			results = removePassingResults(results)
+		}
+
 		if err := formatter(outputFile, results, dir, getFormatterOptions()...); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -183,7 +190,7 @@ var rootCmd = &cobra.Command{
 
 		// If all failed checks are of INFO severity, then produce a success
 		// exit code (0).
-		if allInfo(results)  {
+		if allInfo(results) {
 			os.Exit(0)
 		}
 
@@ -230,7 +237,26 @@ func getFormatterOptions() []formatters.FormatterOption {
 	if conciseOutput {
 		options = append(options, formatters.ConciseOutput)
 	}
+	if includePassed {
+		options = append(options, formatters.IncludePassed)
+	}
 	return options
+}
+
+func removePassingResults(results []scanner.Result) []scanner.Result {
+
+	i := 0
+
+	for _, result := range results {
+		if !result.Passed {
+			results[i] = result
+			i++
+		}
+	}
+
+	results = results[:i]
+
+	return results
 }
 
 func mergeWithoutDuplicates(left, right []string) []string {

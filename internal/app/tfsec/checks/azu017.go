@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -92,13 +93,13 @@ func init() {
 
 			for _, rule := range securityRules {
 				if rule.HasChild("access") && rule.GetAttribute("access").Equals("Deny", parser.IgnoreCase) {
-					return nil
+					return []scanner.Result{check.NewPassingResult(block.Range())}
 				}
 				if rule.HasChild("destination_port_range") && rule.GetAttribute("destination_port_range").Contains("22") {
 					if rule.HasChild("source_address_prefix") {
 						if rule.GetAttribute("source_address_prefix").IsAny("*", "0.0.0.0", "/0", "internet", "any") {
 							return []scanner.Result{
-								check.NewResult(
+								check.NewFailingResult(
 									fmt.Sprintf("Resource '%s' has a .", block.FullName()),
 									block.Range(),
 									scanner.SeverityError,
@@ -108,7 +109,7 @@ func init() {
 					}
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

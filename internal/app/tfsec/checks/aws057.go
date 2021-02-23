@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -79,7 +80,7 @@ func init() {
 
 			if block.MissingChild("log_publishing_options") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not configure logging at rest on the domain.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -92,7 +93,7 @@ func init() {
 
 			if enabled != nil && enabled.IsFalse() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' explicitly disables logging on the domain.", block.FullName()),
 						enabled.Range(),
 						enabled,
@@ -101,7 +102,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }
