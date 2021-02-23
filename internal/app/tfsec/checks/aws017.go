@@ -50,7 +50,7 @@ func init() {
 
 			if block.MissingChild("server_side_encryption_configuration") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -60,7 +60,7 @@ func init() {
 			encryptionBlock := block.GetBlock("server_side_encryption_configuration")
 			if encryptionBlock.MissingChild("rule") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", block.FullName()),
 						encryptionBlock.Range(),
 						scanner.SeverityError,
@@ -72,7 +72,7 @@ func init() {
 
 			if ruleBlock.MissingChild("apply_server_side_encryption_by_default") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", block.FullName()),
 						ruleBlock.Range(),
 						scanner.SeverityError,
@@ -83,7 +83,7 @@ func init() {
 			applyBlock := ruleBlock.GetBlock("apply_server_side_encryption_by_default")
 			if sseAttr := applyBlock.GetAttribute("sse_algorithm"); sseAttr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", block.FullName()),
 						applyBlock.Range(),
 						scanner.SeverityError,
@@ -91,7 +91,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

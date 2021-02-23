@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -53,7 +54,7 @@ func init() {
 				if block.GetAttribute("principal").EndsWith("amazonaws.com") {
 					if block.MissingChild("source_arn") {
 						return []scanner.Result{
-							check.NewResult(
+							check.NewFailingResult(
 								fmt.Sprintf("Resource '%s' missing source ARN but has *.amazonaws.com Principal.", block.FullName()),
 								block.Range(),
 								scanner.SeverityError,
@@ -63,7 +64,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

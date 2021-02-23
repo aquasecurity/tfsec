@@ -44,7 +44,7 @@ func init() {
 			kmsKeyIDAttr := block.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -52,7 +52,7 @@ func init() {
 				}
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.FullName()),
 						kmsKeyIDAttr.Range(),
 						kmsKeyIDAttr,
@@ -61,7 +61,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

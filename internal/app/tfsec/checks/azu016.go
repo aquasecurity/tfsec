@@ -68,7 +68,7 @@ func init() {
 				queueProps := block.GetBlock("queue_properties")
 				if queueProps.MissingChild("logging") {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", block.FullName()),
 							block.Range(),
 							scanner.SeverityWarning,
@@ -77,7 +77,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

@@ -3,8 +3,9 @@ package checks
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/zclconf/go-cty/cty"
 	"strings"
+
+	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
@@ -71,7 +72,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			if block.GetAttribute("policy").Value().Type() != cty.String {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			rawJSON := []byte(block.GetAttribute("policy").Value().AsString())
@@ -86,7 +87,7 @@ func init() {
 				for _, statement := range policy.Statement {
 					if strings.ToLower(statement.Effect) == "allow" && (statement.Action == "*" || statement.Action == "sqs:*") {
 						return []scanner.Result{
-							check.NewResult(
+							check.NewFailingResult(
 								fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", block.FullName()),
 								block.Range(),
 								scanner.SeverityError,
@@ -96,7 +97,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

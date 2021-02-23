@@ -85,13 +85,13 @@ func init() {
 				}
 
 				if err := json.Unmarshal(rawJSON, &definitions); err != nil {
-					return nil
+					return []scanner.Result{check.NewPassingResult(block.Range())}
 				}
 
 				for _, definition := range definitions {
 					for _, env := range definition.EnvVars {
 						if security.IsSensitiveAttribute(env.Name) && env.Value != "" {
-							results = append(results, check.NewResultWithValueAnnotation(
+							results = append(results, check.NewFailingResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", block.FullName(), env.Name),
 								definitionsAttr.Range(),
 								definitionsAttr,

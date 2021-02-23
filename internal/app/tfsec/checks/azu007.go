@@ -49,7 +49,7 @@ func init() {
 			rbacBlock := block.GetBlock("role_based_access_control")
 			if rbacBlock == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines without RBAC", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -60,7 +60,7 @@ func init() {
 			enabledAttr := rbacBlock.GetAttribute("enabled")
 			if enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf(
 							"Resource '%s' RBAC disabled.",
 							block.FullName(),
@@ -72,7 +72,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

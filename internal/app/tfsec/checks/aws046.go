@@ -68,7 +68,7 @@ func init() {
 						for _, actionValue := range actionValues {
 							if actionValue.AsString() == "*" {
 								return []scanner.Result{
-									check.NewResult(
+									check.NewFailingResult(
 										fmt.Sprintf("Resource '%s' has a wildcard action specified.", block.FullName()),
 										statementBlock.Range(),
 										scanner.SeverityError,
@@ -80,7 +80,7 @@ func init() {
 
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

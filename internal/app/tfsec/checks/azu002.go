@@ -50,14 +50,14 @@ func init() {
 
 			directionAttr := block.GetAttribute("direction")
 			if directionAttr == nil || directionAttr.Type() != cty.String || directionAttr.Value().AsString() != "Outbound" {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if prefixAttr := block.GetAttribute("destination_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
 				if isOpenCidr(prefixAttr, check.Provider) {
 					if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
 						return []scanner.Result{
-							check.NewResultWithValueAnnotation(
+							check.NewFailingResultWithValueAnnotation(
 								fmt.Sprintf(
 									"Resource '%s' defines a fully open %s network security group rule.",
 									block.FullName(),
@@ -78,7 +78,7 @@ func init() {
 				if isOpenCidr(prefixesAttr, check.Provider) {
 					if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
 						results = append(results,
-							check.NewResultWithValueAnnotation(
+							check.NewFailingResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' defines a fully open security group rule.", block.FullName()),
 								prefixesAttr.Range(),
 								prefixesAttr,

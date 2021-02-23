@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -45,7 +46,7 @@ func init() {
 
 				if isOpenCidr(destinationRanges, check.Provider) {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("Resource '%s' defines a fully open outbound firewall rule.", block.FullName()),
 							destinationRanges.Range(),
 							scanner.SeverityWarning,
@@ -54,7 +55,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

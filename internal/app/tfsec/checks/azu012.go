@@ -53,7 +53,7 @@ func init() {
 
 			if block.IsResourceType("azurerm_storage_account") {
 				if block.MissingChild("network_rules") {
-					return nil
+					return []scanner.Result{check.NewPassingResult(block.Range())}
 				}
 				block = block.GetBlock("network_rules")
 			}
@@ -61,7 +61,7 @@ func init() {
 			defaultAction := block.GetAttribute("default_action")
 			if defaultAction != nil && defaultAction.Equals("Allow", parser.IgnoreCase) {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines a default_action of Allow. It should be Deny.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -69,7 +69,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

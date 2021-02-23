@@ -50,7 +50,7 @@ func init() {
 			encryptionSettingsBlock := block.GetBlock("encryption_settings")
 			if encryptionSettingsBlock == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted managed disk.",
 							block.FullName(),
@@ -64,7 +64,7 @@ func init() {
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
 			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf(
 							"Resource '%s' defines an unencrypted managed disk.",
 							block.FullName(),
@@ -76,7 +76,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

@@ -90,7 +90,7 @@ func init() {
 				}
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String && attribute.Value().AsString() != "" {
-						results = append(results, check.NewResultWithValueAnnotation(
+						results = append(results, check.NewFailingResultWithValueAnnotation(
 							fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", block.FullName()),
 							attribute.Range(),
 							attribute,

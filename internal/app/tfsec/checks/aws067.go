@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -68,24 +69,24 @@ func init() {
 
 			if block.MissingChild("enabled_cluster_log_types") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
-						),
+					),
 				}
 			}
 
 			configuredLogging := block.GetAttribute("enabled_cluster_log_types")
 			var logTypeResults []scanner.Result
 			for _, logType := range controlPlaneLogging {
-				if ! configuredLogging.Contains(logType) {
-					logTypeResults = append(logTypeResults, check.NewResultWithValueAnnotation(
+				if !configuredLogging.Contains(logType) {
+					logTypeResults = append(logTypeResults, check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' is missing the control plane log type '%s'", block.FullName(), logType),
 						configuredLogging.Range(),
 						configuredLogging,
 						scanner.SeverityError,
-						))
+					))
 				}
 			}
 

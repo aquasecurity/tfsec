@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
@@ -54,15 +55,15 @@ func init() {
 			protoAttr := block.GetAttribute("protocol")
 
 			if egressAttr.Type() == cty.Bool && egressAttr.Value().True() {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if actionAttr == nil || actionAttr.Type() != cty.String {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if actionAttr.Value().AsString() != "allow" {
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if cidrBlockAttr := block.GetAttribute("cidr_block"); cidrBlockAttr != nil {
@@ -70,7 +71,7 @@ func init() {
 				if isOpenCidr(cidrBlockAttr, check.Provider) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						return []scanner.Result{
-							check.NewResultWithValueAnnotation(
+							check.NewFailingResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", block.FullName()),
 								cidrBlockAttr.Range(),
 								cidrBlockAttr,
@@ -78,7 +79,7 @@ func init() {
 							),
 						}
 					} else {
-						return nil
+						return []scanner.Result{check.NewPassingResult(block.Range())}
 					}
 				}
 
@@ -89,7 +90,7 @@ func init() {
 				if isOpenCidr(ipv6CidrBlockAttr, check.Provider) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						return []scanner.Result{
-							check.NewResultWithValueAnnotation(
+							check.NewFailingResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", block.FullName()),
 								ipv6CidrBlockAttr.Range(),
 								ipv6CidrBlockAttr,
@@ -97,13 +98,13 @@ func init() {
 							),
 						}
 					} else {
-						return nil
+						return []scanner.Result{check.NewPassingResult(block.Range())}
 					}
 				}
 
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

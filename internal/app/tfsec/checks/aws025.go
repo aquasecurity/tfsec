@@ -43,7 +43,7 @@ func init() {
 			securityPolicyAttr := block.GetAttribute("security_policy")
 			if securityPolicyAttr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' should include security_policy (defauls to outdated SSL/TLS policy).", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -53,7 +53,7 @@ func init() {
 
 			if securityPolicyAttr.Type() == cty.String && securityPolicyAttr.Value().AsString() != "TLS_1_2" {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", block.FullName()),
 						securityPolicyAttr.Range(),
 						securityPolicyAttr,
@@ -62,7 +62,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

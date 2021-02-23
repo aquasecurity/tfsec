@@ -53,7 +53,7 @@ func init() {
 						if redirectBlock := actionBlock.GetBlock("redirect"); redirectBlock != nil {
 							redirectProtocolAttr := redirectBlock.GetAttribute("protocol")
 							if redirectProtocolAttr != nil && redirectProtocolAttr.Type() == cty.String && redirectProtocolAttr.Value().AsString() == "HTTPS" {
-								return nil
+								return []scanner.Result{check.NewPassingResult(block.Range())}
 							}
 						}
 					}
@@ -63,7 +63,7 @@ func init() {
 					reportRange = protocolAttr.Range()
 				}
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.FullName()),
 						reportRange,
 						protocolAttr,
@@ -71,7 +71,7 @@ func init() {
 					),
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

@@ -64,7 +64,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if block.MissingChild("description") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -75,7 +75,7 @@ func init() {
 			descriptionAttr := block.GetAttribute("description")
 			if descriptionAttr.IsEmpty() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' should include a non-empty description for auditing purposes.", block.FullName()),
 						descriptionAttr.Range(),
 						descriptionAttr,
@@ -83,7 +83,7 @@ func init() {
 					),
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

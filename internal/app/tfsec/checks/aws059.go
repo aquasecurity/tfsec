@@ -89,13 +89,13 @@ func init() {
 					HasChild("result_configuration") {
 					block = block.GetBlock("configuration").GetBlock("result_configuration")
 				} else {
-					return nil
+					return []scanner.Result{check.NewPassingResult(block.Range())}
 				}
 			}
 
 			if block.MissingChild("encryption_configuration") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' missing encryption configuration block.", blockName),
 						block.Range(),
 						scanner.SeverityError,
@@ -103,7 +103,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

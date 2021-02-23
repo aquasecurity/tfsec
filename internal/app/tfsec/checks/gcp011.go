@@ -100,7 +100,7 @@ func init() {
 			for _, identities := range members {
 				if identities.IsKnown() && identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", block.FullName()),
 							attributes.Range(),
 							scanner.SeverityWarning,
@@ -109,7 +109,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

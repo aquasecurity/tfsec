@@ -55,7 +55,7 @@ func init() {
 			pspBlock := block.GetBlock("pod_security_policy_config")
 			if pspBlock == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -66,7 +66,7 @@ func init() {
 			enforcePSP := pspBlock.GetAttribute("enabled")
 			if enforcePSP.Type() == cty.Bool && enforcePSP.Value().False() || enforcePSP.Type() == cty.String && enforcePSP.Value().AsString() != "true" {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", block.FullName()),
 						enforcePSP.Range(),
 						scanner.SeverityError,
@@ -74,7 +74,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

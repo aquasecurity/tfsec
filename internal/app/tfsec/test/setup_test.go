@@ -41,7 +41,7 @@ resource "problem" "x" {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if block.GetAttribute("bad") != nil {
 				return []scanner.Result{
-					check.NewResult("example problem", block.Range(), scanner.SeverityError),
+					check.NewFailingResult("example problem", block.Range(), scanner.SeverityError),
 				}
 			}
 

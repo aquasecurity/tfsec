@@ -42,7 +42,7 @@ func init() {
 		RequiredLabels: []string{"aws_db_security_group", "aws_redshift_security_group", "aws_elasticache_security_group"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			return []scanner.Result{
-				check.NewResult(
+				check.NewFailingResult(
 					fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", block.FullName()),
 					block.Range(),
 					scanner.SeverityError,

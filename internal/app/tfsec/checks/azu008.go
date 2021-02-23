@@ -49,7 +49,7 @@ func init() {
 					block.GetAttribute("private_cluster_enabled").IsFalse()) {
 				{
 					return []scanner.Result{
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", block.FullName()),
 							block.Range(),
 							scanner.SeverityError,
@@ -57,7 +57,7 @@ func init() {
 					}
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

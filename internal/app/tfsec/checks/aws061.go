@@ -67,7 +67,7 @@ func init() {
 
 			if block.MissingChild("access_log_settings") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' is missing access log settings block.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -75,7 +75,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

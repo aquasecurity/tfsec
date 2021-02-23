@@ -54,25 +54,25 @@ func init() {
 			endpointBlock := block.GetBlock("domain_endpoint_options")
 			if endpointBlock == nil {
 				// Check AWS033 covers this case.
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			tlsPolicyAttr := endpointBlock.GetAttribute("tls_security_policy")
 			if tlsPolicyAttr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (defaults to Policy-Min-TLS-1-0-2019-07).", block.FullName()),
 						endpointBlock.Range(),
 						scanner.SeverityError,
 					),
 				}
 
-				return nil
+				return []scanner.Result{check.NewPassingResult(block.Range())}
 			}
 
 			if tlsPolicyAttr.Value().Equals(cty.StringVal("Policy-Min-TLS-1-0-2019-07")).True() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (set to Policy-Min-TLS-1-0-2019-07).", block.FullName()),
 						tlsPolicyAttr.Range(),
 						tlsPolicyAttr,
@@ -81,7 +81,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

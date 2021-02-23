@@ -53,7 +53,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if attr := block.GetAttribute("max_password_age"); attr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not have a max password age set.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
@@ -63,7 +63,7 @@ func init() {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value > 90 {
 					return []scanner.Result{
-						check.NewResultWithValueAnnotation(
+						check.NewFailingResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' has high password age.", block.FullName()),
 							attr.Range(),
 							attr,
@@ -72,7 +72,7 @@ func init() {
 					}
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

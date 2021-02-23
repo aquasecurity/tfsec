@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -60,9 +61,9 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudtrail"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-			if block.MissingChild("enable_log_file_validation")  {
+			if block.MissingChild("enable_log_file_validation") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not enable log file validation.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
@@ -73,15 +74,15 @@ func init() {
 			logFileValidation := block.GetAttribute("enable_log_file_validation")
 			if logFileValidation.IsFalse() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' does not enable log file validation.", block.FullName()),
 						logFileValidation.Range(),
 						logFileValidation,
 						scanner.SeverityWarning,
 					),
 				}
-			}/**/
-			return nil
+			} /**/
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

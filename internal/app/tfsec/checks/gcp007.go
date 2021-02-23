@@ -56,7 +56,7 @@ func init() {
 			legacyMetadataAPI := block.GetBlock("metadata").GetAttribute("disable-legacy-endpoints")
 			if legacyMetadataAPI.Type() == cty.String && legacyMetadataAPI.Value().AsString() != "true" || legacyMetadataAPI.Type() == cty.Bool && legacyMetadataAPI.Value().False() {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", block.FullName()),
 						legacyMetadataAPI.Range(),
 						scanner.SeverityError,
@@ -64,7 +64,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

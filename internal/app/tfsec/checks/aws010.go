@@ -57,7 +57,7 @@ func init() {
 				for _, policy := range outdatedSSLPolicies {
 					if policy == sslPolicyAttr.Value().AsString() {
 						return []scanner.Result{
-							check.NewResultWithValueAnnotation(
+							check.NewFailingResultWithValueAnnotation(
 								fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", block.FullName()),
 								sslPolicyAttr.Range(),
 								sslPolicyAttr,
@@ -68,7 +68,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

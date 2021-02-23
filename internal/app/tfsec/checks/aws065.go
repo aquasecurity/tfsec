@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -61,30 +62,30 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudtrail"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-				
+
 			if block.MissingChild("kms_key_id") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not have a kms_key_id set.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
-						),
+					),
 				}
 			}
 
 			kmsKeyId := block.GetAttribute("kms_key_id")
 			if kmsKeyId.IsEmpty() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' has a kms_key_id but it is not set.", block.FullName()),
 						kmsKeyId.Range(),
 						kmsKeyId,
 						scanner.SeverityError,
-						),
+					),
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

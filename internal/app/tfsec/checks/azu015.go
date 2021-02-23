@@ -52,14 +52,14 @@ func init() {
 
 			if block.MissingChild("min_tls_version") || block.GetAttribute("min_tls_version").IsNone("TLS1_2") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' should have the min tls version set to TLS1_2 .", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
 					),
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

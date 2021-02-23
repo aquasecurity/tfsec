@@ -45,7 +45,7 @@ func init() {
 			enabledAttr := block.GetAttribute("enable_https_traffic_only")
 			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf(
 							"Resource '%s' enable_https_traffic_only disabled.",
 							block.FullName(),
@@ -57,7 +57,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

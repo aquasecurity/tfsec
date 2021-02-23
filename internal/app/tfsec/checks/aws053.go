@@ -49,17 +49,17 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 			if block.HasChild("performance_insights_enabled") && block.GetAttribute("performance_insights_enabled").IsTrue() {
-				if block.MissingChild("performance_insights_kms_key_id")  {
+				if block.MissingChild("performance_insights_kms_key_id") {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", block.FullName()),
 							block.Range(),
 							scanner.SeverityError,
 						),
 					}
-				} else if  block.GetAttribute("performance_insights_kms_key_id").IsEmpty() {
+				} else if block.GetAttribute("performance_insights_kms_key_id").IsEmpty() {
 					return []scanner.Result{
-						check.NewResultWithValueAnnotation(
+						check.NewFailingResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", block.FullName()),
 							block.GetAttribute("performance_insights_kms_key_id").Range(),
 							block.GetAttribute("performance_insights_kms_key_id"),
@@ -69,7 +69,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

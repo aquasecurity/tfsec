@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -55,7 +56,7 @@ func init() {
 
 			if block.MissingChild("vpc_config") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access cidrs is set", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -66,7 +67,7 @@ func init() {
 			vpcConfig := block.GetBlock("vpc_config")
 			if vpcConfig.MissingChild("public_access_cidrs") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' is using default public access cidrs in the vpc config", block.FullName()),
 						vpcConfig.Range(),
 						scanner.SeverityError,
@@ -77,7 +78,7 @@ func init() {
 			publicAccessCidrs := vpcConfig.GetAttribute("public_access_cidrs")
 			if isOpenCidr(publicAccessCidrs, scanner.AWSProvider) {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' has public access cidr explicitly set to wide open", block.FullName()),
 						publicAccessCidrs.Range(),
 						publicAccessCidrs,
@@ -85,7 +86,7 @@ func init() {
 					),
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

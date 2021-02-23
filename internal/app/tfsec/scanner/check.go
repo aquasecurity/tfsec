@@ -150,8 +150,18 @@ func wildcardMatch(pattern string, subject string) bool {
 	return true
 }
 
-// NewResult creates a new Result, containing the given description and range
-func (check *Check) NewResult(description string, r parser.Range, severity Severity) Result {
+func (check *Check) NewPassingResult(r parser.Range) Result {
+	return Result{
+		RuleID:          check.Code,
+		RuleDescription: check.Documentation.Summary,
+		RuleProvider:    check.Provider,
+		Description:     string(check.Documentation.Summary),
+		Range:           r,
+		Passed:          true,
+	}
+}
+
+func (check *Check) NewFailingResult(description string, r parser.Range, severity Severity) Result {
 	return Result{
 		RuleID:          check.Code,
 		RuleDescription: check.Documentation.Summary,
@@ -159,13 +169,14 @@ func (check *Check) NewResult(description string, r parser.Range, severity Sever
 		Description:     description,
 		Range:           r,
 		Severity:        severity,
+		Passed:          false,
 	}
 }
 
-func (check *Check) NewResultWithValueAnnotation(description string, r parser.Range, attr *parser.Attribute, severity Severity) Result {
+func (check *Check) NewFailingResultWithValueAnnotation(description string, r parser.Range, attr *parser.Attribute, severity Severity) Result {
 
 	if attr == nil || attr.IsLiteral() {
-		return check.NewResult(description, r, severity)
+		return check.NewFailingResult(description, r, severity)
 	}
 
 	var raw interface{}
@@ -183,7 +194,7 @@ func (check *Check) NewResultWithValueAnnotation(description string, r parser.Ra
 		raw, _ = attr.Value().AsBigFloat().Float64()
 		typeStr = "number"
 	default:
-		return check.NewResult(description, r, severity)
+		return check.NewFailingResult(description, r, severity)
 	}
 
 	return Result{
@@ -194,5 +205,6 @@ func (check *Check) NewResultWithValueAnnotation(description string, r parser.Ra
 		Range:           r,
 		RangeAnnotation: fmt.Sprintf("[%s] %#v", typeStr, raw),
 		Severity:        severity,
+		Passed:          false,
 	}
 }

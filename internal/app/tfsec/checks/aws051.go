@@ -49,7 +49,7 @@ func init() {
 
 			if kmsKeyIdAttr == nil || kmsKeyIdAttr.Value().IsNull() {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
@@ -57,7 +57,7 @@ func init() {
 				}
 			} else if kmsKeyIdAttr.Equals("") {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", block.FullName()),
 						kmsKeyIdAttr.Range(),
 						kmsKeyIdAttr,
@@ -66,7 +66,7 @@ func init() {
 				}
 			} else if storageEncryptedattr == nil || storageEncryptedattr.IsFalse() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' defines a enabled RDS Cluster encryption but not the required encrypted_storage.", block.FullName()),
 						kmsKeyIdAttr.Range(),
 						kmsKeyIdAttr,
@@ -74,7 +74,7 @@ func init() {
 					),
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

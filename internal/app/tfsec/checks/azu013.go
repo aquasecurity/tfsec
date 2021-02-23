@@ -98,7 +98,7 @@ func init() {
 
 			if block.IsResourceType("azurerm_storage_account") {
 				if block.MissingChild("network_rules") {
-					return nil
+					return []scanner.Result{check.NewPassingResult(block.Range())}
 				}
 				block = block.GetBlock("network_rules")
 			}
@@ -107,7 +107,7 @@ func init() {
 				bypass := block.GetAttribute("bypass")
 				if !bypass.Contains("AzureServices") {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("Resource '%s' defines a network rule that doesn't allow bypass of Microsoft Services.", block.FullName()),
 							block.Range(),
 							scanner.SeverityError,
@@ -116,7 +116,7 @@ func init() {
 				}
 			}
 
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

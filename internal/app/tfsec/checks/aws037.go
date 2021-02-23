@@ -54,7 +54,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if attr := block.GetAttribute("password_reuse_prevention"); attr == nil {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not have a password reuse prevention count set.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
@@ -64,7 +64,7 @@ func init() {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value < 5 {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewFailingResult(
 							fmt.Sprintf("Resource '%s' has a password reuse count less than 5.", block.FullName()),
 							block.Range(),
 							scanner.SeverityWarning,
@@ -72,7 +72,7 @@ func init() {
 					}
 				}
 			}
-			return nil
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }

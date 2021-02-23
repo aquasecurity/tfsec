@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -57,9 +58,9 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudtrail"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-			if block.MissingChild("is_multi_region_trail")  {
+			if block.MissingChild("is_multi_region_trail") {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewFailingResult(
 						fmt.Sprintf("Resource '%s' does not set multi region trail config.", block.FullName()),
 						block.Range(),
 						scanner.SeverityWarning,
@@ -70,15 +71,15 @@ func init() {
 			multiRegion := block.GetAttribute("is_multi_region_trail")
 			if multiRegion.IsFalse() {
 				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
+					check.NewFailingResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' does not enable multi region trail.", block.FullName()),
 						multiRegion.Range(),
 						multiRegion,
 						scanner.SeverityWarning,
-						),
+					),
 				}
-			}/**/
-			return nil
+			} /**/
+			return []scanner.Result{check.NewPassingResult(block.Range())}
 		},
 	})
 }
