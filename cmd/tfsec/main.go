@@ -188,9 +188,9 @@ var rootCmd = &cobra.Command{
 			os.Exit(getDetailedExitCode(results))
 		}
 
-		// If all failed checks are of INFO severity, then produce a success
-		// exit code (0).
-		if allInfo(results) {
+		// If all failed checks are of INFO severity or passed, then produce
+		// a success exit code (0).
+		if allInfo(results) || allPassed(results) {
 			os.Exit(0)
 		}
 
@@ -276,6 +276,15 @@ func mergeWithoutDuplicates(left, right []string) []string {
 func allInfo(results []scanner.Result) bool {
 	for _, result := range results {
 		if result.Severity != scanner.SeverityInfo {
+			return false
+		}
+	}
+	return true
+}
+
+func allPassed(results []scanner.Result) bool {
+	for _, result := range results {
+		if result.Passed != true {
 			return false
 		}
 	}
