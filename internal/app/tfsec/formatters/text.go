@@ -18,7 +18,7 @@ func FormatText(_ io.Writer, results []scanner.Result, _ string, options ...Form
 
 	var severity string
 
-	fmt.Printf("\n%d potential problems detected:\n\n", len(results))
+	fmt.Printf("\n%d potential problems detected:\n\n", len(results)-getPassedChecksCount(results))
 	for i, result := range results {
 		fmt.Printf("Problem %d\n", i+1)
 

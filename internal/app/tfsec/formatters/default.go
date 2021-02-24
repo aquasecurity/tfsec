@@ -81,7 +81,7 @@ func FormatDefault(_ io.Writer, results []scanner.Result, _ string, options ...F
 		printStatistics(results, includePassed)
 	}
 
-	terminal.PrintErrorf("\n%d potential problems detected.\n\n", len(results))
+	terminal.PrintErrorf("\n%d potential problems detected.\n\n", len(results)-getPassedChecksCount(results))
 
 	return nil
 
@@ -100,13 +100,15 @@ func printStatistics(results []scanner.Result, includePassed bool) {
 	_ = tml.Printf("  <blue>%-20s</blue> %d\n", "files loaded", parser.CountFiles())
 
 	if includePassed {
+		var passedCount = getPassedChecksCount(results)
+
 		_ = tml.Printf("  <blue>%-20s</blue> %d\n", "total checks", len(results))
-		_ = tml.Printf("  <blue>%-20s</blue> %d\n", "passed checks", getPassedChecks(results))
-		_ = tml.Printf("  <blue>%-20s</blue> %d\n", "failed checks", len(results)-getPassedChecks(results))
+		_ = tml.Printf("  <blue>%-20s</blue> %d\n", "passed checks", passedCount)
+		_ = tml.Printf("  <blue>%-20s</blue> %d\n", "failed checks", len(results)-passedCount)
 	}
 }
 
-func getPassedChecks(results []scanner.Result) int {
+func getPassedChecksCount(results []scanner.Result) int {
 	passed := 0
 
 	for _, result := range results {
