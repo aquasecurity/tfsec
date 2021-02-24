@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/config"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/config"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
 
@@ -37,6 +38,7 @@ var tfsecConfig = &config.Config{}
 var conciseOutput = false
 var excludeDownloaded = false
 var detailedExitCode = false
+var includePassed = false
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
@@ -53,6 +55,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&detailedExitCode, "detailed-exit-code", detailedExitCode, "Produce more detailed exit status codes.")
+	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Include passed checks in the result output")
 }
 
 func main() {
@@ -162,7 +165,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Starting scanner...")
-		results := scanner.New().Scan(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks))
+		results := scanner.New().ScanWithOptions(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks), includePassed)
 		results = updateResultSeverity(results)
 		results = removeDuplicatesAndUnwanted(results)
 
@@ -183,7 +186,7 @@ var rootCmd = &cobra.Command{
 
 		// If all failed checks are of INFO severity, then produce a success
 		// exit code (0).
-		if allInfo(results)  {
+		if allInfo(results) {
 			os.Exit(0)
 		}
 
