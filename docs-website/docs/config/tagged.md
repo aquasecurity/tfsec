@@ -8,7 +8,7 @@ parent: Config
 
 Tag checking allows us to ensure that Terraform confirms to company compliance requirements.
 
-Take, for example, a requirement that all assets must be tagged as with a `CostCentre` for tracking expenditure.
+Take, for example, a requirement that all assets must be tagged with a `CostCentre` for tracking expenditure.
 
 The custom check below can be used;
 
@@ -34,3 +34,5 @@ The custom check below can be used;
   ]
 }
 ```
+
+If all AWS resources should be covered, use a value of `aws_*` in the `requiredLabels` list.
