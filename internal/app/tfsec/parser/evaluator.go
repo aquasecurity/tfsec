@@ -142,18 +142,18 @@ func (e *Evaluator) EvaluateAll() (Blocks, error) {
 }
 
 func mergeBlocks(allBlocks Blocks, newBlocks Blocks) Blocks {
-	var merge = map[*Block]bool{}
+	var merger = make(map[*Block]bool)
 	var result Blocks
 	for _, block := range allBlocks {
-		if _, ok := merge[block]; !ok {
-			merge[block] = true
+		if _, ok := merger[block]; !ok {
+			merger[block] = true
 			result = append(result, block)
 		}
 	}
 
 	for _, block := range newBlocks {
-		if _, ok := merge[block]; !ok {
-			merge[block] = true
+		if _, ok := merger[block]; !ok {
+			merger[block] = true
 			result = append(result, block)
 		}
 	}
