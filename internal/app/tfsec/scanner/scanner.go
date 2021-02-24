@@ -33,6 +33,7 @@ func checkInList(code RuleCode, list []string) bool {
 }
 
 // Scan takes all available hcl blocks and an optional context, and returns a slice of results. Each result indicates a potential security problem.
+// If the --include-passed argument is passed during execution, the resulting slice will contain all applicable checks that had matching hcl blocks.
 func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string) []Result {
 
 	if len(blocks) == 0 {
