@@ -159,6 +159,8 @@ American friends).
 You can output tfsec results as JSON, CSV, Checkstyle, Sarif, JUnit or just plain old human readable format. Use the `--format` flag
 to specify your desired format.
 
+The `--include-passed` flag will return all checks - passing or failing - that applied to the Terraform files scanned.
+
 ## Github Security Alerts
 If you want to integrate with Github Security alerts and include the output of your tfsec checks you can use the [tfsec-sarif-action](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload) Github action to run the static analysis then upload the results to the security alerts tab.
 
