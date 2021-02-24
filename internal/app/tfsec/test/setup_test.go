@@ -84,7 +84,7 @@ func assertCheckCode(t *testing.T, includeCode scanner.RuleCode, excludeCode sca
 	var foundExclude bool
 
 	for _, result := range results {
-		if result.RuleID == excludeCode {
+		if result.RuleID == excludeCode && !result.Passed {
 			foundExclude = true
 		}
 		if result.RuleID == includeCode {

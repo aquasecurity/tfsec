@@ -150,18 +150,7 @@ func wildcardMatch(pattern string, subject string) bool {
 	return true
 }
 
-func (check *Check) NewPassingResult(r parser.Range) Result {
-	return Result{
-		RuleID:          check.Code,
-		RuleDescription: check.Documentation.Summary,
-		RuleProvider:    check.Provider,
-		Description:     string(check.Documentation.Summary),
-		Range:           r,
-		Passed:          true,
-	}
-}
-
-func (check *Check) NewFailingResult(description string, r parser.Range, severity Severity) Result {
+func (check *Check) NewResult(description string, r parser.Range, severity Severity, passed bool) Result {
 	return Result{
 		RuleID:          check.Code,
 		RuleDescription: check.Documentation.Summary,
@@ -169,8 +158,16 @@ func (check *Check) NewFailingResult(description string, r parser.Range, severit
 		Description:     description,
 		Range:           r,
 		Severity:        severity,
-		Passed:          false,
+		Passed:          passed,
 	}
+}
+
+func (check *Check) NewFailingResult(description string, r parser.Range, severity Severity) Result {
+	return check.NewResult(description, r, severity, false)
+}
+
+func (check *Check) NewPassingResult(r parser.Range) Result {
+	return check.NewResult(string(check.Documentation.Summary), r, SeverityInfo, true)
 }
 
 func (check *Check) NewFailingResultWithValueAnnotation(description string, r parser.Range, attr *parser.Attribute, severity Severity) Result {
@@ -197,14 +194,8 @@ func (check *Check) NewFailingResultWithValueAnnotation(description string, r pa
 		return check.NewFailingResult(description, r, severity)
 	}
 
-	return Result{
-		RuleID:          check.Code,
-		RuleDescription: check.Documentation.Summary,
-		RuleProvider:    check.Provider,
-		Description:     description,
-		Range:           r,
-		RangeAnnotation: fmt.Sprintf("[%s] %#v", typeStr, raw),
-		Severity:        severity,
-		Passed:          false,
-	}
+	var result = check.NewFailingResult(description, r, severity)
+	result.RangeAnnotation = fmt.Sprintf("[%s] %#v", typeStr, raw)
+
+	return result
 }
