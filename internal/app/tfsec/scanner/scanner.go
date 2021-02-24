@@ -35,6 +35,10 @@ func checkInList(code RuleCode, list []string) bool {
 
 // Scan takes all available hcl blocks and an optional context, and returns a slice of results. Each result indicates a potential security problem.
 func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string) []Result {
+	return scanner.ScanWithOptions(blocks, excludedChecksList, false)
+}
+
+func (scanner *Scanner) ScanWithOptions(blocks []*parser.Block, excludedChecksList []string, includePassed bool) []Result {
 
 	if len(blocks) == 0 {
 		return nil
@@ -47,12 +51,17 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 	checks := GetRegisteredChecks()
 	for _, block := range blocks {
 		for _, check := range checks {
-			func (check Check) {
+			func(check Check) {
 				if check.IsRequiredForBlock(block) {
 					debug.Log("Running check for %s on %s.%s (%s)...", check.Code, block.Type(), block.FullName(), block.Range().Filename)
-					for _, result := range check.Run(block, context) {
-						if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
-							results = append(results, result)
+					var res = check.Run(block, context)
+					if includePassed && res == nil {
+						results = append(results, check.NewPassingResult(block.Range()))
+					} else {
+						for _, result := range res {
+							if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
+								results = append(results, result)
+							}
 						}
 					}
 				}
