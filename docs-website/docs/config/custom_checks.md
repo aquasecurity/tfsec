@@ -82,7 +82,7 @@ The check contains up of the following attributes;
 | code | The custom code that your check will be known as |
 | description | A description for the code that will be included in the output|
 |requiredTypes | The block types to apply the check to - resource, data, module, variable |
-|requiredLabels | The resource type - aws_ec2_instance for example |
+|requiredLabels | The resource type - aws_ec2_instance for example. This also supports wildcards using `*`, e.g. `aws_*` |
 |severity | How severe is the check |
 |matchSpec | See below for the MatchSpec attributes |
 |errorMessage | The error message that should be displayed in cases where the check fails |

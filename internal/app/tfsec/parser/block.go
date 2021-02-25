@@ -26,19 +26,6 @@ func (blocks Blocks) OfType(t string) Blocks {
 	return results
 }
 
-func (blocks Blocks) RemoveDuplicates() Blocks {
-	filtered := make(map[string]Block)
-	for _, block := range blocks {
-		filtered[block.identifier()] = *block
-	}
-	var blockSet Blocks
-	for key := range filtered {
-		block := filtered[key]
-		blockSet = append(blockSet, &block)
-	}
-	return blockSet
-}
-
 func NewBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock *Block) *Block {
 	return &Block{
 		ctx:         ctx,
@@ -217,7 +204,7 @@ func (block *Block) InModule() bool {
 
 func (block *Block) identifier() string {
 	// TODO use FullName() here instead? these should be unique
-	return fmt.Sprintf("%s:%s:%s", block.Range().Filename, block.Type(), strings.Join(block.Labels(), ":"))
+	return fmt.Sprintf("%s:%s", block.Range().Filename, block.FullName())
 }
 
 func (block *Block) Label() string {

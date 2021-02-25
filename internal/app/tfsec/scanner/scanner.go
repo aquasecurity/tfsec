@@ -2,10 +2,11 @@ package scanner
 
 import (
 	"fmt"
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 	"io/ioutil"
 	"strings"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 
@@ -39,7 +40,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 		return nil
 	}
 
-	checkTime := timer.Start(timer.Check)
+	checkTime := metrics.Start(metrics.Check)
 	defer checkTime.Stop()
 	var results []Result
 	context := &Context{blocks: blocks}

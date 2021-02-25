@@ -59,7 +59,6 @@ func init() {
 					),
 				}
 			}
-
 			return nil
 		},
 	})

@@ -1,6 +1,6 @@
 language: go
 go:
-- 1.15
+- 1.16
 services:
 - docker
 env:
@@ -30,7 +30,7 @@ jobs:
       - bin/windows/tfsec-windows-amd64.exe
       - bin/darwin/tfsec-checkgen-darwin-amd64
       - bin/linux/tfsec-checkgen-linux-amd64
-      - bin/windows/tfsec-checkgen-windows-amd64.exe 
+      - bin/windows/tfsec-checkgen-windows-amd64.exe
       api_key:
         secure: "gnFbED/JgihbV3zO6BgMj1YY7W+LsMHgVbamdMXcwwI4+9ouUa87D3vXIBpbAPUK7/aNmBeqDhXYX9grpy1gUAkmfPXhqH3zuOFnSiwoGFkZe0coRzZiqNU/pzxB4sZDihDLvk/E8btdNmNwSz6JkYvSbmGfN+b6M1N6Ico/kocV/XPYjfhGcArpngJ0CdbP656ixVo+s9ogwQUI3fNeelX0ppBjj1X8HZMMyLPuDvAsslWn0lb4rTqvpJitqcPaff8VRtnrQExNm5dVhEo03t+zYzPt+6EFhhx2K+dPpnWcDfl6yw7E+mKeN/LZIvGx+9pTQ3I3sclvtQ/COQ2WQn3z5wa5h9D/fsKBS/WxYMx8jWU/TcBeNpLDZhJcILwtYISKi9KfxY8Mr4FcHa+3Zl+uGZHWdbVgx8VR7SdDPi+H7QKcNrMJr7HAE/bHYNocE9qygWWpzGupznYX9RCNRhT51ebSlC497ZPugAkEdlax3yZcNf9CRXrCMLguJhoU3lOK8FyKt8Vvr/OTgbdJT7f440N5U3ETn4d+McZTIH0Gu71DfUAivixCVM2Ex6lvzcms1ZTwSsZMs888eI7mnStJoBS2vNo5AjR2jF0/FlCAjQRl9xUY+mCcRDrsQE2mFpqst4DvBhyYqzXrAiAzemcgtCVsmWpYkd9QrpBde04="
       on:

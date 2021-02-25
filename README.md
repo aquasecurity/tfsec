@@ -54,6 +54,15 @@ tfsec .
 
 As an alternative to installing and running tfsec on your system, you may run tfsec in a Docker container.
 
+There are a number of Docker options available
+
+| Image Name | Base | Comment |
+|------------|------|---------|
+|[tfsec/tfsec](https://hub.docker.com/repository/docker/tfsec/tfsec)|alpine|Normal tfsec image|
+|[tfsec/tfsec-alpine](https://hub.docker.com/repository/docker/tfsec/tfsec-alpine)|alpine|Exactly the same as tfsec/tfsec, but for those whole like to be explicit|
+|[tfsec/tfsec-ci](https://hub.docker.com/repository/docker/tfsec/tfsec-ci)|alpine|tfsec with no entrypoint - useful for CI builds where you want to override the command|
+|[tfsec/tfsec-scratch](https://hub.docker.com/repository/docker/tfsec/tfsec-scratch)|scratch|An image built on scratch - nothing frilly, just runs tfsec|
+
 To run:
 
 ```bash

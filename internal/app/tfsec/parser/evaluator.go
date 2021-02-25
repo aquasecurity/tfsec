@@ -3,7 +3,7 @@ package parser
 import (
 	"reflect"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
@@ -49,7 +49,7 @@ func (e *Evaluator) SetModuleBasePath(path string) {
 
 func (e *Evaluator) evaluateStep(i int) {
 
-	evalTime := timer.Start(timer.Evaluation)
+	evalTime := metrics.Start(metrics.Evaluation)
 	debug.Log("Starting iteration %d of context evaluation...", i+1)
 
 	e.ctx.Variables["var"] = e.getValuesByBlockType("variable")
@@ -73,7 +73,7 @@ func (e *Evaluator) evaluateModules() {
 
 	for _, module := range e.modules {
 
-		evalTime := timer.Start(timer.Evaluation)
+		evalTime := metrics.Start(metrics.Evaluation)
 		inputVars := make(map[string]cty.Value)
 		for _, attr := range module.Definition.GetAttributes() {
 			func() {
@@ -90,9 +90,9 @@ func (e *Evaluator) evaluateModules() {
 		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata)
 		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules)
 		b, _ := moduleEvaluator.EvaluateAll()
-		e.blocks = append(e.blocks, b...)
+		e.blocks = mergeBlocks(e.blocks, b)
 
-		evalTime = timer.Start(timer.Evaluation)
+		evalTime = metrics.Start(metrics.Evaluation)
 		// export module outputs
 		moduleMapRaw := e.ctx.Variables["module"]
 		if moduleMapRaw == cty.NilVal {
@@ -126,19 +126,35 @@ func (e *Evaluator) EvaluateAll() (Blocks, error) {
 			break
 		}
 
-		lastContext.Variables = make(map[string]cty.Value)
+		if len(e.ctx.Variables) != len(lastContext.Variables) {
+			lastContext.Variables = make(map[string]cty.Value, len(e.ctx.Variables))
+		}
 		for k, v := range e.ctx.Variables {
 			lastContext.Variables[k] = v
 		}
 	}
 
 	var allBlocks Blocks
-	allBlocks = append(allBlocks, e.blocks...)
+	allBlocks = e.blocks
 	for _, module := range e.modules {
-		allBlocks = append(allBlocks, module.Blocks...)
+		allBlocks = mergeBlocks(allBlocks, module.Blocks)
 	}
 
 	return allBlocks, nil
+}
+
+func mergeBlocks(allBlocks Blocks, newBlocks Blocks) Blocks {
+	var merger = make(map[*Block]bool)
+	for _, block := range allBlocks {
+		merger[block] = true
+	}
+
+	for _, block := range newBlocks {
+		if _, ok := merger[block]; !ok {
+			allBlocks = append(allBlocks, block)
+		}
+	}
+	return allBlocks
 }
 
 // returns true if all evaluations were successful

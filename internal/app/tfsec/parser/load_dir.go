@@ -2,11 +2,10 @@ package parser
 
 import (
 	"fmt"
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
 
 	"github.com/hashicorp/hcl/v2/hclparse"
 
@@ -21,7 +20,7 @@ func CountFiles() int {
 
 func LoadDirectory(fullPath string) ([]*hcl.File, error) {
 
-	t := timer.Start(timer.DiskIO)
+	t := metrics.Start(metrics.DiskIO)
 	defer t.Stop()
 
 	hclParser := hclparse.NewParser()

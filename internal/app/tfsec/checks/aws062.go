@@ -68,9 +68,10 @@ func init() {
 			if userData.Contains("AWS_ACCESS_KEY_ID", parser.IgnoreCase) &&
 				userData.RegexMatches("(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}") {
 				return []scanner.Result{
-					check.NewResult(
-						fmt.Sprintf("Resource '%s' .", block.FullName()),
+					check.NewResultWithValueAnnotation(
+						fmt.Sprintf("Resource '%s' has userdata with access key id defined.", block.FullName()),
 						userData.Range(),
+						userData,
 						scanner.SeverityError,
 					),
 				}
@@ -79,9 +80,10 @@ func init() {
 			if userData.Contains("AWS_SECRET_ACCESS_KEY", parser.IgnoreCase) &&
 				userData.RegexMatches("(?i)aws_secre.+[=:]\\s{0,}[A-Za-z0-9\\/+=]{40}.?") {
 				return []scanner.Result{
-					check.NewResult(
-						fmt.Sprintf("Resource '%s' .", block.FullName()),
+					check.NewResultWithValueAnnotation(
+						fmt.Sprintf("Resource '%s' has userdata with access secret key defined.", block.FullName()),
 						userData.Range(),
+						userData,
 						scanner.SeverityError,
 					),
 				}
