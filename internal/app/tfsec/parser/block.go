@@ -217,7 +217,7 @@ func (block *Block) InModule() bool {
 
 func (block *Block) identifier() string {
 	// TODO use FullName() here instead? these should be unique
-	return fmt.Sprintf("%s:%s:%s", block.Range().Filename, block.Type(), strings.Join(block.Labels(), ":"))
+	return fmt.Sprintf("%s:%s", block.Range().Filename, block.FullName())
 }
 
 func (block *Block) Label() string {

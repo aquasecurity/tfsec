@@ -1,4 +1,4 @@
-package timer
+package metrics
 
 import "time"
 
@@ -31,7 +31,24 @@ func (t *Timer) Stop() {
 	recordedTimes = append(recordedTimes, t)
 }
 
-func Summary() map[Operation]time.Duration {
+type Count string
+
+const (
+	ModuleLoadCount    Count = "modules"
+	BlocksLoaded       Count = "blocks"
+	ModuleBlocksLoaded Count = "module blocks"
+	BlocksEvaluated    Count = "evaluated blocks"
+	BlocksDeduped      Count = "deduped blocks"
+	FilesLoaded        Count = "files loaded"
+)
+
+var counts = map[Count]int{}
+
+func Add(c Count, delta int) {
+	counts[c] += delta
+}
+
+func TimerSummary() map[Operation]time.Duration {
 
 	times := make(map[Operation]time.Duration)
 	for _, recorded := range recordedTimes {
@@ -41,4 +58,8 @@ func Summary() map[Operation]time.Duration {
 	}
 
 	return times
+}
+
+func CountSummary() map[Count]int {
+	return counts
 }

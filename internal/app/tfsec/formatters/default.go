@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 
 	"github.com/liamg/clinch/terminal"
 	"github.com/liamg/tml"
@@ -75,16 +75,19 @@ func FormatDefault(_ io.Writer, results []scanner.Result, _ string, options ...F
 }
 
 func printStatistics() {
-	times := timer.Summary()
-	for _, operation := range []timer.Operation{
-		timer.DiskIO,
-		timer.HCLParse,
-		timer.Evaluation,
-		timer.Check,
+	metrics.Add(metrics.FilesLoaded, parser.CountFiles())
+	times := metrics.TimerSummary()
+	for _, operation := range []metrics.Operation{
+		metrics.DiskIO,
+		metrics.HCLParse,
+		metrics.Evaluation,
+		metrics.Check,
 	} {
 		_ = tml.Printf("  <blue>%-20s</blue> %s\n", operation, times[operation].String())
 	}
-	_ = tml.Printf("  <blue>%-20s</blue> %d\n", "files loaded", parser.CountFiles())
+	for name, count := range metrics.CountSummary() {
+		_ = tml.Printf("  <blue>%-20s</blue> %d\n", name, count)
+	}
 }
 
 // highlight the lines of code which caused a problem, if available
