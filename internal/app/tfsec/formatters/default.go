@@ -93,7 +93,6 @@ func printStatistics() {
 		metrics.FilesLoaded,
 		metrics.BlocksLoaded,
 		metrics.BlocksEvaluated,
-		metrics.BlocksDeduped,
 		metrics.ModuleLoadCount,
 		metrics.ModuleBlocksLoaded,
 	} {

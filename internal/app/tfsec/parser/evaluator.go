@@ -126,14 +126,16 @@ func (e *Evaluator) EvaluateAll() (Blocks, error) {
 			break
 		}
 
-		lastContext.Variables = make(map[string]cty.Value)
+		if len(e.ctx.Variables) != len(lastContext.Variables) {
+			lastContext.Variables = make(map[string]cty.Value, len(e.ctx.Variables))
+		}
 		for k, v := range e.ctx.Variables {
 			lastContext.Variables[k] = v
 		}
 	}
 
 	var allBlocks Blocks
-	allBlocks = mergeBlocks(allBlocks, e.blocks)
+	allBlocks = e.blocks
 	for _, module := range e.modules {
 		allBlocks = mergeBlocks(allBlocks, module.Blocks)
 	}
@@ -144,9 +146,7 @@ func (e *Evaluator) EvaluateAll() (Blocks, error) {
 func mergeBlocks(allBlocks Blocks, newBlocks Blocks) Blocks {
 	var merger = make(map[*Block]bool)
 	for _, block := range allBlocks {
-		if _, ok := merger[block]; !ok {
-			merger[block] = true
-		}
+		merger[block] = true
 	}
 
 	for _, block := range newBlocks {

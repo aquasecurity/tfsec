@@ -38,7 +38,6 @@ const (
 	BlocksLoaded       Count = "blocks"
 	ModuleBlocksLoaded Count = "module blocks"
 	BlocksEvaluated    Count = "evaluated blocks"
-	BlocksDeduped      Count = "deduped blocks"
 	FilesLoaded        Count = "files loaded"
 )
 

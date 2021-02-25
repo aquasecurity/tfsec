@@ -94,9 +94,7 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 		return nil, err
 	}
 	metrics.Add(metrics.BlocksEvaluated, len(evaluatedBlocks))
-	deduped := evaluatedBlocks.RemoveDuplicates()
-	metrics.Add(metrics.BlocksDeduped, len(deduped))
-	return deduped, nil
+	return evaluatedBlocks, nil
 
 }
 
