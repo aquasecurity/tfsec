@@ -3,7 +3,8 @@ package parser
 import (
 	"fmt"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
-	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
+
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -27,7 +28,7 @@ func New(initialPath string, tfvarsPath string) *Parser {
 func (parser *Parser) ParseDirectory() (Blocks, error) {
 
 	debug.Log("Finding Terraform subdirectories...")
-	t := timer.Start(timer.DiskIO)
+	t := metrics.Start(metrics.DiskIO)
 	subdirectories, err := parser.getSubdirectories(parser.initialPath)
 	if err != nil {
 		return nil, err
@@ -58,6 +59,8 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 		}
 	}
 
+	metrics.Add(metrics.BlocksLoaded, len(blocks))
+
 	if len(blocks) == 0 {
 		return nil, nil
 	}
@@ -69,7 +72,7 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	}
 
 	debug.Log("Loading TFVars...")
-	t = timer.Start(timer.DiskIO)
+	t = metrics.Start(metrics.DiskIO)
 	inputVars, err := LoadTFVars(parser.tfvarsPath)
 	if err != nil {
 		return nil, err
@@ -77,7 +80,7 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	t.Stop()
 
 	debug.Log("Loading module metadata...")
-	t = timer.Start(timer.DiskIO)
+	t = metrics.Start(metrics.DiskIO)
 	modulesMetadata, _ := LoadModuleMetadata(tfPath)
 	t.Stop()
 
@@ -90,7 +93,8 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	if err != nil {
 		return nil, err
 	}
-	return evaluatedBlocks.RemoveDuplicates(), nil
+	metrics.Add(metrics.BlocksEvaluated, len(evaluatedBlocks))
+	return evaluatedBlocks, nil
 
 }
 

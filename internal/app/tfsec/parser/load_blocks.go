@@ -2,15 +2,14 @@ package parser
 
 import (
 	"fmt"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
 	"github.com/hashicorp/hcl/v2"
 )
 
 func LoadBlocksFromFile(file *hcl.File) (hcl.Blocks, error) {
 
-	t := timer.Start(timer.HCLParse)
+	t := metrics.Start(metrics.HCLParse)
 	defer t.Stop()
 
 	contents, diagnostics := file.Body.Content(terraformSchema)
