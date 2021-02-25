@@ -89,6 +89,16 @@ var testNestedMatchSpec = MatchSpec{
 		},
 	},
 }
+var testNotMatchSpec = MatchSpec{
+	Action: "not",
+	PredicateMatchSpec: []MatchSpec{
+		{
+			Name:       "virtualization_type",
+			Action:     "equals",
+			MatchValue: "paravirtual",
+		},
+	},
+}
 
 func TestRequiresPresenceWithResourcePresent(t *testing.T) {
 	scanResults := scanTerraform(t, `
@@ -265,6 +275,33 @@ resource "aws_ami" "example" {
 			blocks := createBlocksFromSource(test.source)[0]
 			result := evalMatchSpec(blocks, &test.predicateMatchSpec, nil)
 			assert.Equal(t, result, test.expected, "Nested match functions evaluating incorrectly.")
+		})
+	}
+}
+
+func TestNotFunction(t *testing.T) {
+	var tests = []struct {
+		name               string
+		source             string
+		matchSpec          MatchSpec
+		expected           bool
+	}{
+		{
+			name: "check that not correctly inverts the outcome of a given predicateMatchSpec",
+			source: `
+resource "aws_ami" "example" {
+	virtualization_type = "paravirtual"
+}
+`,
+			matchSpec: testNotMatchSpec,
+			expected:           false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			blocks := createBlocksFromSource(test.source)[0]
+			result := evalMatchSpec(blocks, &test.matchSpec, nil)
+			assert.Equal(t, result, test.expected, "Not match functions evaluating incorrectly.")
 		})
 	}
 }
