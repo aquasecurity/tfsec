@@ -76,6 +76,8 @@ func FormatDefault(_ io.Writer, results []scanner.Result, _ string, options ...F
 
 func printStatistics() {
 	metrics.Add(metrics.FilesLoaded, parser.CountFiles())
+
+	_ = tml.Printf("  <blue>times</blue>\n  ------------------------------------------\n")
 	times := metrics.TimerSummary()
 	for _, operation := range []metrics.Operation{
 		metrics.DiskIO,
@@ -85,8 +87,17 @@ func printStatistics() {
 	} {
 		_ = tml.Printf("  <blue>%-20s</blue> %s\n", operation, times[operation].String())
 	}
-	for name, count := range metrics.CountSummary() {
-		_ = tml.Printf("  <blue>%-20s</blue> %d\n", name, count)
+	counts := metrics.CountSummary()
+	_ = tml.Printf("\n  <blue>counts</blue>\n  ------------------------------------------\n")
+	for _, name := range []metrics.Count{
+		metrics.FilesLoaded,
+		metrics.BlocksLoaded,
+		metrics.BlocksEvaluated,
+		metrics.BlocksDeduped,
+		metrics.ModuleLoadCount,
+		metrics.ModuleBlocksLoaded,
+	} {
+		_ = tml.Printf("  <blue>%-20s</blue> %d\n", name, counts[name])
 	}
 }
 

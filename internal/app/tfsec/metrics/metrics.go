@@ -61,5 +61,7 @@ func TimerSummary() map[Operation]time.Duration {
 }
 
 func CountSummary() map[Count]int {
+
+
 	return counts
 }
