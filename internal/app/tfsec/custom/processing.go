@@ -153,6 +153,10 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 		return resourceFound(spec, ctx)
 	}
 
+	if spec.Action == Not {
+		return !evalMatchSpec(block, &spec.PredicateMatchSpec[0], ctx)
+	}
+
 	// This And MatchSpec is only true if all childSpecs return true
 	if spec.Action == And {
 		for _, childSpec := range spec.PredicateMatchSpec {

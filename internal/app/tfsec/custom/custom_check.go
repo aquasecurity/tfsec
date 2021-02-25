@@ -27,6 +27,7 @@ var ValidCheckActions = []CheckAction{
 	IsNone,
 	And,
 	Or,
+	Not,
 }
 
 // InModule checks that the block is part of a module
@@ -85,6 +86,9 @@ const And CheckAction = "and"
 
 // Or checks that at least one of the given predicateMatchSpec's evaluates to True
 const Or CheckAction = "or"
+
+// Not checks that the given predicateMatchSpec evaluates to False
+const Not CheckAction = "not"
 
 // MatchSpec specifies the checks that should be performed
 type MatchSpec struct {

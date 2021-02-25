@@ -540,6 +540,28 @@ matchSpec:
         - name: kernel_id
           action: isPresent
 ```
+##### not
+The `not` check action passes when the `predicateMatchSpec` evaluates to `false`.
+
+As an example, if you want to represent that a `resource` should not be included `inModule` you might use the following `matchSpec`:
+
+```
+"matchSpec": {
+  "action": "not",
+  "predicateMatchSpec": [
+    {
+        "action": "inModule" 
+    }
+  ]
+}
+```
+
+```yaml
+matchSpec:
+  action: not
+  predicateMatchSpec:
+    - action: inModule
+```
 
 ## How do I know my JSON is valid?
 We have provided the `tfsec-checkgen` binary which will validate your check file to ensure that it is valid for use with `tfsec`. 
