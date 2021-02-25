@@ -90,7 +90,7 @@ func (e *Evaluator) evaluateModules() {
 		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata)
 		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules)
 		b, _ := moduleEvaluator.EvaluateAll()
-		e.blocks = append(e.blocks, b...)
+		e.blocks = mergeBlocks(e.blocks, b)
 
 		evalTime = timer.Start(timer.Evaluation)
 		// export module outputs
@@ -133,12 +133,31 @@ func (e *Evaluator) EvaluateAll() (Blocks, error) {
 	}
 
 	var allBlocks Blocks
-	allBlocks = append(allBlocks, e.blocks...)
+	allBlocks = mergeBlocks(allBlocks, e.blocks)
 	for _, module := range e.modules {
-		allBlocks = append(allBlocks, module.Blocks...)
+		allBlocks = mergeBlocks(allBlocks, module.Blocks)
 	}
 
 	return allBlocks, nil
+}
+
+func mergeBlocks(allBlocks Blocks, newBlocks Blocks) Blocks {
+	var merger = make(map[*Block]bool)
+	var result Blocks
+	for _, block := range allBlocks {
+		if _, ok := merger[block]; !ok {
+			merger[block] = true
+			result = append(result, block)
+		}
+	}
+
+	for _, block := range newBlocks {
+		if _, ok := merger[block]; !ok {
+			merger[block] = true
+			result = append(result, block)
+		}
+	}
+	return result
 }
 
 // returns true if all evaluations were successful
