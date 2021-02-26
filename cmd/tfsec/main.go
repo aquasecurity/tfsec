@@ -196,7 +196,7 @@ var rootCmd = &cobra.Command{
 
 func getDetailedExitCode(results []scanner.Result) int {
 	// If there are no failed checks, then produce a success exit code (0).
-	if len(results) == 0 {
+	if len(results) == 0 || len(results) == countPassedResults(results) {
 		return 0
 	}
 
@@ -263,7 +263,7 @@ func mergeWithoutDuplicates(left, right []string) []string {
 
 func allInfo(results []scanner.Result) bool {
 	for _, result := range results {
-		if result.Severity != scanner.SeverityInfo {
+		if result.Severity != scanner.SeverityInfo && !result.Passed {
 			return false
 		}
 	}
@@ -320,4 +320,16 @@ func loadConfigFile(configFilePath string) *config.Config {
 	}
 	debug.Log("loaded config file")
 	return config
+}
+
+func countPassedResults(results []scanner.Result) int {
+	passed := 0
+
+	for _, result := range results {
+		if result.Passed {
+			passed++
+		}
+	}
+
+	return passed
 }
