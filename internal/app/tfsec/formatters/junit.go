@@ -107,7 +107,7 @@ func highlightCodeJunit(result scanner.Result) string {
 
 func buildFailure(result scanner.Result) *JUnitFailure {
 	if result.Passed {
-		return (&JUnitFailure{})
+		return nil
 	}
 
 	return &JUnitFailure{
