@@ -17,6 +17,12 @@ import (
 type Scanner struct {
 }
 
+type ScannerOption int
+
+const (
+	IncludePassed ScannerOption = iota
+)
+
 // New creates a new Scanner
 func New() *Scanner {
 	return &Scanner{}
@@ -33,12 +39,15 @@ func checkInList(code RuleCode, list []string) bool {
 	return false
 }
 
-// Scan takes all available hcl blocks and an optional context, and returns a slice of results. Each result indicates a potential security problem.
-func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string) []Result {
-	return scanner.ScanWithOptions(blocks, excludedChecksList, false)
-}
+func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string, options ...ScannerOption) []Result {
 
-func (scanner *Scanner) ScanWithOptions(blocks []*parser.Block, excludedChecksList []string, includePassed bool) []Result {
+	includePassed := false
+
+	for _, option := range options {
+		if option == IncludePassed {
+			includePassed = true
+		}
+	}
 
 	if len(blocks) == 0 {
 		return nil

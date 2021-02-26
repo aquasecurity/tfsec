@@ -165,7 +165,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Starting scanner...")
-		results := scanner.New().ScanWithOptions(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks), includePassed)
+		results := scanner.New().Scan(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks), getScannerOptions()...)
 		results = updateResultSeverity(results)
 		results = removeDuplicatesAndUnwanted(results)
 
@@ -232,6 +232,14 @@ func getFormatterOptions() []formatters.FormatterOption {
 	var options []formatters.FormatterOption
 	if conciseOutput {
 		options = append(options, formatters.ConciseOutput)
+	}
+	return options
+}
+
+func getScannerOptions() []scanner.ScannerOption {
+	var options []scanner.ScannerOption
+	if includePassed {
+		options = append(options, scanner.IncludePassed)
 	}
 	return options
 }
