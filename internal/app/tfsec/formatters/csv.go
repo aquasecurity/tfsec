@@ -12,7 +12,7 @@ import (
 func FormatCSV(w io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
 
 	records := [][]string{
-		{"file", "start_line", "end_line", "rule_id", "severity", "description", "link"},
+		{"file", "start_line", "end_line", "rule_id", "severity", "description", "link", "passed"},
 	}
 
 	for _, result := range results {
@@ -24,6 +24,7 @@ func FormatCSV(w io.Writer, results []scanner.Result, _ string, options ...Forma
 			string(result.Severity),
 			result.Description,
 			result.Link,
+			strconv.FormatBool(result.Passed),
 		})
 	}
 
