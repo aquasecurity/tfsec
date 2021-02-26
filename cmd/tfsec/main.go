@@ -233,6 +233,9 @@ func getFormatterOptions() []formatters.FormatterOption {
 	if conciseOutput {
 		options = append(options, formatters.ConciseOutput)
 	}
+	if includePassed {
+		options = append(options, formatters.IncludePassed)
+	}
 	return options
 }
 
