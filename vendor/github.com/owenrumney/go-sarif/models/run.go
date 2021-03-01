@@ -1,5 +1,9 @@
 package models
 
+import (
+	"fmt"
+)
+
 // Run type represents a run of a tool
 type Run struct {
 	Tool      *tool              `json:"tool"`
@@ -80,4 +84,16 @@ func updateResultLocationIndex(result *Result, location string, index int) {
 			break
 		}
 	}
+}
+
+func (run *Run) GetRuleById(ruleId string) (*Rule, error) {
+	if run.Tool != nil || run.Tool.Driver != nil {
+		for _, rule := range run.Tool.Driver.Rules {
+			if rule.ID == ruleId {
+				return rule, nil
+			}
+		}
+	}
+
+	return nil, fmt.Errorf("couldn't find rule %s", ruleId)
 }
