@@ -3,7 +3,8 @@ package parser
 import (
 	"fmt"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
-	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
+
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -11,15 +12,15 @@ import (
 
 // Parser is a tool for parsing terraform templates at a given file system location
 type Parser struct {
-	fullPath   string
-	tfvarsPath string
+	initialPath string
+	tfvarsPath  string
 }
 
 // New creates a new Parser
-func New(fullPath string, tfvarsPath string) *Parser {
+func New(initialPath string, tfvarsPath string) *Parser {
 	return &Parser{
-		fullPath:   fullPath,
-		tfvarsPath: tfvarsPath,
+		initialPath: initialPath,
+		tfvarsPath:  tfvarsPath,
 	}
 }
 
@@ -27,8 +28,8 @@ func New(fullPath string, tfvarsPath string) *Parser {
 func (parser *Parser) ParseDirectory() (Blocks, error) {
 
 	debug.Log("Finding Terraform subdirectories...")
-	t := timer.Start(timer.DiskIO)
-	subdirectories, err := parser.getSubdirectories(parser.fullPath)
+	t := metrics.Start(metrics.DiskIO)
+	subdirectories, err := parser.getSubdirectories(parser.initialPath)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +38,7 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	var blocks Blocks
 
 	for _, dir := range subdirectories {
-		debug.Log("Beginning parse for directory '%s'...", parser.fullPath)
+		debug.Log("Beginning parse for directory '%s'...", dir)
 		files, err := LoadDirectory(dir)
 		if err != nil {
 			return nil, err
@@ -58,12 +59,20 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 		}
 	}
 
+	metrics.Add(metrics.BlocksLoaded, len(blocks))
+
 	if len(blocks) == 0 {
 		return nil, nil
 	}
 
+	tfPath := parser.initialPath
+	if len(subdirectories) > 0 {
+		tfPath = subdirectories[0]
+		debug.Log("Project root set to '%s'...", tfPath)
+	}
+
 	debug.Log("Loading TFVars...")
-	t = timer.Start(timer.DiskIO)
+	t = metrics.Start(metrics.DiskIO)
 	inputVars, err := LoadTFVars(parser.tfvarsPath)
 	if err != nil {
 		return nil, err
@@ -71,20 +80,21 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	t.Stop()
 
 	debug.Log("Loading module metadata...")
-	t = timer.Start(timer.DiskIO)
-	modulesMetadata, _ := LoadModuleMetadata(parser.fullPath)
+	t = metrics.Start(metrics.DiskIO)
+	modulesMetadata, _ := LoadModuleMetadata(tfPath)
 	t.Stop()
 
 	debug.Log("Loading modules...")
-	modules := LoadModules(blocks, parser.fullPath, modulesMetadata)
+	modules := LoadModules(blocks, tfPath, modulesMetadata)
 
 	debug.Log("Evaluating expressions...")
-	evaluator := NewEvaluator(parser.fullPath, parser.fullPath, blocks, inputVars, modulesMetadata, modules)
+	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules)
 	evaluatedBlocks, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err
 	}
-	return evaluatedBlocks.RemoveDuplicates(), nil
+	metrics.Add(metrics.BlocksEvaluated, len(evaluatedBlocks))
+	return evaluatedBlocks, nil
 
 }
 

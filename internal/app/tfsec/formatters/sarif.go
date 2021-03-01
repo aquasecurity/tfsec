@@ -27,7 +27,7 @@ func FormatSarif(w io.Writer, results []scanner.Result, baseDir string, options 
 			return err
 		}
 
-		ruleResult := run.AddResult(rule.Id).
+		ruleResult := run.AddResult(rule.ID).
 			WithMessage(string(result.RuleDescription)).
 			WithLevel(strings.ToLower(string(result.Severity))).
 			WithLocationDetails(relativePath, result.Range.StartLine, 1)

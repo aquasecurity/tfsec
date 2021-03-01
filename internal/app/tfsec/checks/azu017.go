@@ -91,6 +91,9 @@ func init() {
 			}
 
 			for _, rule := range securityRules {
+				if rule.HasChild("access") && rule.GetAttribute("access").Equals("Deny", parser.IgnoreCase) {
+					return nil
+				}
 				if rule.HasChild("destination_port_range") && rule.GetAttribute("destination_port_range").Contains("22") {
 					if rule.HasChild("source_address_prefix") {
 						if rule.GetAttribute("source_address_prefix").IsAny("*", "0.0.0.0", "/0", "internet", "any") {

@@ -2,11 +2,10 @@ package parser
 
 import (
 	"fmt"
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
@@ -34,6 +33,7 @@ func LoadModules(blocks Blocks, projectBasePath string, metadata *ModulesMetadat
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: Failed to load module: %s\n", err)
 			continue
 		}
+		metrics.Add(metrics.ModuleBlocksLoaded, len(module.Blocks))
 		modules = append(modules, module)
 	}
 
@@ -47,7 +47,7 @@ func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata)
 		return nil, fmt.Errorf("module without label at %s", block.Range())
 	}
 
-	evalTime := timer.Start(timer.Evaluation)
+	evalTime := metrics.Start(metrics.Evaluation)
 
 	var source string
 	attrs, _ := block.hclBlock.Body.JustAttributes()
@@ -93,6 +93,7 @@ func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata)
 		return nil, err
 	}
 	debug.Log("Loaded module '%s' (requested at %s)", modulePath, block.Range())
+	metrics.Add(metrics.ModuleLoadCount, 1)
 
 	return &ModuleInfo{
 		Name:       block.Label(),

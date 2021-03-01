@@ -54,7 +54,7 @@ func init() {
 					if block.MissingChild("source_arn") {
 						return []scanner.Result{
 							check.NewResult(
-								fmt.Sprintf("Resource '%s' .", block.FullName()),
+								fmt.Sprintf("Resource '%s' missing source ARN but has *.amazonaws.com Principal.", block.FullName()),
 								block.Range(),
 								scanner.SeverityError,
 							),

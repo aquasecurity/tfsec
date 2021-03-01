@@ -77,7 +77,7 @@ func init() {
 			if block.MissingChild("configuration") {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' .", block.FullName()),
+						fmt.Sprintf("Resource '%s' is missing the configuration block.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -89,8 +89,8 @@ func init() {
 				configBlock.GetAttribute("enforce_workgroup_configuration").IsFalse() {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' .", block.FullName()),
-						block.Range(),
+						fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", block.FullName()),
+						configBlock.Range(),
 						scanner.SeverityError,
 					),
 				}

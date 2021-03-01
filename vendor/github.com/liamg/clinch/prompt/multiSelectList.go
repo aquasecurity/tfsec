@@ -5,6 +5,7 @@ import (
 	"github.com/liamg/clinch/terminal"
 	"github.com/liamg/tml"
 	"github.com/pkg/term"
+	"sort"
 )
 
 const (
@@ -32,13 +33,14 @@ func (item *listItem) toString() string {
 	if item.selected {
 		check = "X"
 	}
-	return fmt.Sprintf(" <darkgrey>[</darkgrey>%v<darkgrey>]</darkgrey> <%s>%v\n", check, item.colour, item.value)
+	return fmt.Sprintf(" <darkgrey>[</darkgrey>%v<darkgrey>]</darkgrey> <%s>%v\n\r", check, item.colour, item.value)
 }
 
 func ChooseFromMultiList(message string, options []string) ([]int, []string, error) {
 	if len(options) == 0 {
 		return nil, nil, ErrNoOptionsProvided
 	}
+	sort.Strings(options)
 	var items []*listItem
 	colours := []string{"lightblue", "lightgreen", "lightyellow", "white"}
 	for index, option := range options {
@@ -49,7 +51,7 @@ func ChooseFromMultiList(message string, options []string) ([]int, []string, err
 }
 
 func getListSelection(message string, items []*listItem) ([]int, []string, error) {
-	fmt.Printf("\n %s\n\n", message)
+	fmt.Printf("\n %s\n\r", message)
 	currentPos := 0
 	drawItems(items, currentPos, false)
 
@@ -104,8 +106,8 @@ func resetPrompt(rowPosition int) {
 func drawItems(items []*listItem, currentPos int, isRedraw bool) {
 	if isRedraw {
 		terminal.MoveCursorUp(currentPos)
-		terminal.MoveCursorToColumn(-2)
 	}
+	fmt.Print("\r")
 
 	for _, item := range items {
 		_ = tml.Printf(item.toString())
