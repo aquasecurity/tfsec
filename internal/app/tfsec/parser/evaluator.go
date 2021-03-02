@@ -89,6 +89,7 @@ func (e *Evaluator) evaluateModules() {
 
 		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata)
 		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules)
+		e.SetModuleBasePath(e.projectRootPath)
 		b, _ := moduleEvaluator.EvaluateAll()
 		e.blocks = mergeBlocks(e.blocks, b)
 
