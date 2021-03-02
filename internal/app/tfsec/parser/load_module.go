@@ -84,7 +84,7 @@ func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata)
 			return nil, fmt.Errorf("missing module with source '%s' -  try to 'terraform init' first", source)
 		}
 
-		modulePath = filepath.Join(projectBasePath, source)
+		modulePath = reconstructPath(projectBasePath, source)
 	}
 
 	blocks := Blocks{}
@@ -101,6 +101,18 @@ func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata)
 		Definition: block,
 		Blocks:     blocks,
 	}, nil
+}
+
+// This function takes the relative source path provided by `source` and reconstructs the absolute path
+// based on the project base path and the relative source path
+func reconstructPath(projectBasePath string, source string) string {
+
+	// get the parent directory until we reach the shared parent directory
+	for strings.HasPrefix(source, "../") {
+		projectBasePath = filepath.Dir(projectBasePath)
+		source = strings.TrimPrefix(source, "../")
+	}
+	return filepath.Join(projectBasePath, source)
 }
 
 func getModuleBlocks(block *Block, modulePath string, blocks *Blocks) error {
