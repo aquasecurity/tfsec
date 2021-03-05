@@ -37,6 +37,7 @@ var tfsecConfig = &config.Config{}
 var conciseOutput = false
 var excludeDownloaded = false
 var detailedExitCode = false
+var allDirs = false
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
@@ -53,6 +54,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&detailedExitCode, "detailed-exit-code", detailedExitCode, "Produce more detailed exit status codes.")
+	rootCmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
 }
 
 func main() {
@@ -155,7 +157,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Starting parser...")
-		blocks, err := parser.New(dir, tfvarsPath).ParseDirectory()
+		blocks, err := parser.New(dir, tfvarsPath, getParserOptions()...).ParseDirectory()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -189,6 +191,14 @@ var rootCmd = &cobra.Command{
 
 		os.Exit(1)
 	},
+}
+
+func getParserOptions() []parser.ParserOption {
+	var opts []parser.ParserOption
+	if allDirs {
+		opts = append(opts, parser.DontSearchTfFiles)
+	}
+	return opts
 }
 
 func getDetailedExitCode(results []scanner.Result) int {
