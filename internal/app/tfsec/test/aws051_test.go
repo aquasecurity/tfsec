@@ -66,6 +66,22 @@ resource "aws_rds_cluster" "my-instance" {
 `,
 			mustExcludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
 		},
+		{
+			name: "verify issue 633 ",
+			source: `
+resource "aws_kms_key" "rds" {
+enable_key_rotation = true
+}
+
+resource "aws_rds_cluster" "rds_cluster" {
+engine                          = "aurora-mysql"
+engine_version                  = "5.7.mysql_aurora.2.09.1"
+storage_encrypted               = true
+kms_key_id                      = aws_kms_key.rds.arn
+}
+`,
+			mustExcludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
+		},
 	}
 
 	for _, test := range tests {
@@ -75,3 +91,5 @@ resource "aws_rds_cluster" "my-instance" {
 		})
 	}
 }
+
+

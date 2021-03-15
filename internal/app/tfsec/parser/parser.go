@@ -10,18 +10,34 @@ import (
 	"path/filepath"
 )
 
+type ParserOption int
+
+const (
+	DontSearchTfFiles ParserOption = iota
+)
+
 // Parser is a tool for parsing terraform templates at a given file system location
 type Parser struct {
-	initialPath string
-	tfvarsPath  string
+	initialPath    string
+	tfvarsPath     string
+	lookForTfFiles bool
 }
 
 // New creates a new Parser
-func New(initialPath string, tfvarsPath string) *Parser {
-	return &Parser{
+func New(initialPath string, tfvarsPath string, options ...ParserOption) *Parser {
+	p := &Parser{
 		initialPath: initialPath,
 		tfvarsPath:  tfvarsPath,
+		lookForTfFiles: true,
 	}
+
+	for _, option := range options {
+		switch option {
+		case DontSearchTfFiles:
+			p.lookForTfFiles = false
+		}
+	}
+	return p
 }
 
 // ParseDirectory parses all terraform files within a given directory
@@ -66,7 +82,7 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	}
 
 	tfPath := parser.initialPath
-	if len(subdirectories) > 0 {
+	if len(subdirectories) > 0 && parser.lookForTfFiles {
 		tfPath = subdirectories[0]
 		debug.Log("Project root set to '%s'...", tfPath)
 	}
