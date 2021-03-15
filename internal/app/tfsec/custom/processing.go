@@ -146,7 +146,7 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 		return block.InModule()
 	}
 	if spec.Action == RegexMatches && !matchFunctions[RegexMatches](block, spec) {
-		return true
+		return false
 	}
 
 	if spec.Action == RequiresPresence {
