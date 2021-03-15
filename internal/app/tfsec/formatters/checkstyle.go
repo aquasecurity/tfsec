@@ -32,6 +32,8 @@ func FormatCheckStyle(w io.Writer, results []scanner.Result, _ string, options .
 
 	files := make(map[string][]checkstyleResult)
 
+	// TODO - Handle if the --include-passed argument is passed.
+
 	for _, result := range results {
 		fileResults := append(
 			files[result.Range.Filename],

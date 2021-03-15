@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/config"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/config"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
 
@@ -37,6 +38,7 @@ var tfsecConfig = &config.Config{}
 var conciseOutput = false
 var excludeDownloaded = false
 var detailedExitCode = false
+var includePassed = false
 var allDirs = false
 
 func init() {
@@ -54,6 +56,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&detailedExitCode, "detailed-exit-code", detailedExitCode, "Produce more detailed exit status codes.")
+	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Include passed checks in the result output")
 	rootCmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
 }
 
@@ -164,7 +167,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Starting scanner...")
-		results := scanner.New().Scan(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks))
+		results := scanner.New().Scan(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks), getScannerOptions()...)
 		results = updateResultSeverity(results)
 		results = removeDuplicatesAndUnwanted(results)
 
@@ -185,7 +188,7 @@ var rootCmd = &cobra.Command{
 
 		// If all failed checks are of INFO severity, then produce a success
 		// exit code (0).
-		if allInfo(results)  {
+		if allInfo(results) {
 			os.Exit(0)
 		}
 
@@ -203,7 +206,7 @@ func getParserOptions() []parser.ParserOption {
 
 func getDetailedExitCode(results []scanner.Result) int {
 	// If there are no failed checks, then produce a success exit code (0).
-	if len(results) == 0 {
+	if len(results) == 0 || len(results) == countPassedResults(results) {
 		return 0
 	}
 
@@ -240,6 +243,17 @@ func getFormatterOptions() []formatters.FormatterOption {
 	if conciseOutput {
 		options = append(options, formatters.ConciseOutput)
 	}
+	if includePassed {
+		options = append(options, formatters.IncludePassed)
+	}
+	return options
+}
+
+func getScannerOptions() []scanner.ScannerOption {
+	var options []scanner.ScannerOption
+	if includePassed {
+		options = append(options, scanner.IncludePassed)
+	}
 	return options
 }
 
@@ -259,7 +273,7 @@ func mergeWithoutDuplicates(left, right []string) []string {
 
 func allInfo(results []scanner.Result) bool {
 	for _, result := range results {
-		if result.Severity != scanner.SeverityInfo {
+		if result.Severity != scanner.SeverityInfo && !result.Passed {
 			return false
 		}
 	}
@@ -316,4 +330,16 @@ func loadConfigFile(configFilePath string) *config.Config {
 	}
 	debug.Log("loaded config file")
 	return config
+}
+
+func countPassedResults(results []scanner.Result) int {
+	passed := 0
+
+	for _, result := range results {
+		if result.Passed {
+			passed++
+		}
+	}
+
+	return passed
 }
