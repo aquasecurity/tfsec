@@ -235,6 +235,8 @@ func (attr *Attribute) IsEmpty() bool {
 	}
 	if attr.Value().IsNull() {
 		switch t := attr.hclAttribute.Expr.(type) {
+		case *hclsyntax.FunctionCallExpr:
+			return false
 		case *hclsyntax.ScopeTraversalExpr:
 			return false
 		case *hclsyntax.ConditionalExpr:
