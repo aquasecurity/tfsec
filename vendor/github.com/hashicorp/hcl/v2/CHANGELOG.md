@@ -1,13 +1,25 @@
 # HCL Changelog
 
-## v2.8.2 (Unreleased)
+## v2.9.1 (March 10, 2021)
+
+### Bugs Fixed
+
+* hclsyntax: Fix panic for marked index value. ([#451](https://github.com/hashicorp/hcl/pull/451))
+
+## v2.9.0 (February 23, 2021)
+
+### Enhancements
+
+* HCL's native syntax and JSON scanners -- and thus all of the other parsing components that build on top of them -- are now using Unicode 13 rules for text segmentation when counting text characters for the purpose of reporting source location columns. Previously HCL was using Unicode 12. Unicode 13 still uses the same algorithm but includes some additions to the character tables the algorithm is defined in terms of, to properly categorize new characters defined in Unicode 13.
+
+## v2.8.2 (January 6, 2021)
 
 ### Bugs Fixed
 
 * hclsyntax: Fix panic for marked collection splat. ([#436](https://github.com/hashicorp/hcl/pull/436))
 * hclsyntax: Fix panic for marked template loops. ([#437](https://github.com/hashicorp/hcl/pull/437))
-* hclsyntax: Fix `for` expression marked conditional.([#438](https://github.com/hashicorp/hcl/pull/438))
-* hclsyntax: Mark objects with keys that are sensitive ([#440](https://github.com/hashicorp/hcl/pull/440))
+* hclsyntax: Fix `for` expression marked conditional. ([#438](https://github.com/hashicorp/hcl/pull/438))
+* hclsyntax: Mark objects with keys that are sensitive. ([#440](https://github.com/hashicorp/hcl/pull/440))
 
 ## v2.8.1 (December 17, 2020)
  
