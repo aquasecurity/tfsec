@@ -19,14 +19,14 @@ type Rule struct {
 	Properties       map[string]string `json:"properties,omitempty"`
 }
 
-func (driver *driver) getOrCreateRule(rule *Rule) int {
+func (driver *driver) getOrCreateRule(rule *Rule) uint {
 	for i, r := range driver.Rules {
 		if r.ID == rule.ID {
-			return i
+			return uint(i)
 		}
 	}
 	driver.Rules = append(driver.Rules, rule)
-	return len(driver.Rules) - 1
+	return uint(len(driver.Rules) - 1)
 }
 
 func newRule(ruleID string) *Rule {
