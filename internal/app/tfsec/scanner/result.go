@@ -15,6 +15,7 @@ type Result struct {
 	Description     string       `json:"description"`
 	RangeAnnotation string       `json:"-"`
 	Severity        Severity     `json:"severity"`
+	Passed          bool         `json:"passed"`
 }
 
 type Severity string

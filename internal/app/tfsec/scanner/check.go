@@ -162,6 +162,12 @@ func (check *Check) NewResult(description string, r parser.Range, severity Sever
 	}
 }
 
+func (check *Check) NewPassingResult(r parser.Range) Result {
+	var res = check.NewResult(string(check.Documentation.Summary), r, SeverityInfo)
+	res.Passed = true
+	return res
+}
+
 func (check *Check) NewResultWithValueAnnotation(description string, r parser.Range, attr *parser.Attribute, severity Severity) Result {
 
 	if attr == nil || attr.IsLiteral() {
