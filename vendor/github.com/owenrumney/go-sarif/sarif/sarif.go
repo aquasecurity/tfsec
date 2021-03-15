@@ -49,15 +49,15 @@ func Open(filename string) (*Report, error) {
 	if err != nil {
 		return nil, fmt.Errorf("the provided filepath could not be opened. %w", err)
 	}
-	return readBytes(content)
+	return FromBytes(content)
 }
 
 
 func FromString(content string) (*Report, error) {
-	return readBytes([]byte(content))
+	return FromBytes([]byte(content))
 }
 
-func readBytes(content []byte) (*Report, error) {
+func FromBytes(content []byte) (*Report, error) {
 	var report Report
 	if err := json.Unmarshal(content, &report); err != nil{
 		return nil, err
