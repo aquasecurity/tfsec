@@ -157,6 +157,8 @@ var rootCmd = &cobra.Command{
 				fmt.Println(err)
 				os.Exit(1)
 			}
+		} else if unusedTfvarsPresent(dir) {
+			tml.Printf("\n<yellow>Warning: A tfvars file was found but not automatically used. \nDid you mean to specify the --tf-vars flag?</yellow>\n")
 		}
 
 		debug.Log("Starting parser...")
@@ -342,4 +344,13 @@ func countPassedResults(results []scanner.Result) int {
 	}
 
 	return passed
+}
+
+func unusedTfvarsPresent(checkDir string) bool {
+	glob := fmt.Sprintf("%s/*.tfvars", checkDir)
+	debug.Log("checking for tfvars files using glob: %s", glob)
+	if matches, err := filepath.Glob(glob); err == nil && len(matches) > 0 {
+		return true
+	}
+	return false
 }
