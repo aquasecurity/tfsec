@@ -18,23 +18,23 @@ const (
 
 // Parser is a tool for parsing terraform templates at a given file system location
 type Parser struct {
-	initialPath    string
-	tfvarsPath     string
-	lookForTfFiles bool
+	initialPath   string
+	tfvarsPath    string
+	stopOnFirstTf bool
 }
 
 // New creates a new Parser
 func New(initialPath string, tfvarsPath string, options ...ParserOption) *Parser {
 	p := &Parser{
-		initialPath: initialPath,
-		tfvarsPath:  tfvarsPath,
-		lookForTfFiles: true,
+		initialPath:   initialPath,
+		tfvarsPath:    tfvarsPath,
+		stopOnFirstTf: true,
 	}
 
 	for _, option := range options {
 		switch option {
 		case DontSearchTfFiles:
-			p.lookForTfFiles = false
+			p.stopOnFirstTf = false
 		}
 	}
 	return p
@@ -77,12 +77,12 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 
 	metrics.Add(metrics.BlocksLoaded, len(blocks))
 
-	if len(blocks) == 0 {
+	if len(blocks) == 0 && parser.stopOnFirstTf {
 		return nil, nil
 	}
 
 	tfPath := parser.initialPath
-	if len(subdirectories) > 0 && parser.lookForTfFiles {
+	if len(subdirectories) > 0 && parser.stopOnFirstTf {
 		tfPath = subdirectories[0]
 		debug.Log("Project root set to '%s'...", tfPath)
 	}
@@ -120,14 +120,17 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 		return nil, err
 	}
 
+	var results []string
 	for _, entry := range entries {
 		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".tf" {
 			debug.Log("Found qualifying subdirectory containing .tf files: %s", path)
-			return []string{path}, nil
+			results = append(results, path)
+			if parser.stopOnFirstTf {
+				return results, nil
+			}
 		}
 	}
 
-	var results []string
 
 	for _, entry := range entries {
 		if entry.IsDir() {
