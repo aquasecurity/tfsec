@@ -7,7 +7,9 @@ import (
 )
 
 var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
-	IsPresent:  func(block *parser.Block, spec *MatchSpec) bool { return block.HasChild(spec.Name) },
+	IsPresent: func(block *parser.Block, spec *MatchSpec) bool {
+		return block.HasChild(spec.Name) || spec.IgnoreUndefined
+},
 	NotPresent: func(block *parser.Block, spec *MatchSpec) bool { return !block.HasChild(spec.Name) },
 	IsEmpty: func(block *parser.Block, spec *MatchSpec) bool {
 		if block.MissingChild(spec.Name) {
@@ -40,7 +42,7 @@ var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
-		return attribute.Contains(spec.MatchValue)
+		return attribute.Contains(spec.MatchValue, parser.IgnoreCase)
 	},
 	NotContains: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
@@ -144,21 +146,48 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 		return block.InModule()
 	}
 	if spec.Action == RegexMatches && !matchFunctions[RegexMatches](block, spec) {
-		return true
+		return false
 	}
 
 	if spec.Action == RequiresPresence {
 		return resourceFound(spec, ctx)
 	}
 
+	if spec.Action == Not {
+		return !evalMatchSpec(block, &spec.PredicateMatchSpec[0], ctx)
+	}
+
+	// This And MatchSpec is only true if all childSpecs return true
+	if spec.Action == And {
+		for _, childSpec := range spec.PredicateMatchSpec {
+			if !evalMatchSpec(block, &childSpec, ctx) {
+				return false
+			}
+		}
+		return true
+	}
+
+	// If a single childSpec is true then this Or matchSpec is true
+	if spec.Action == Or {
+		for _, childSpec := range spec.PredicateMatchSpec {
+			if evalMatchSpec(block, &childSpec, ctx) {
+				return true
+			}
+		}
+		return false
+	}
+
 	evalResult = matchFunctions[spec.Action](block, spec)
 
 	if spec.SubMatch != nil {
-		if block.HasBlock(spec.Name) {
-			block = block.GetBlock(spec.Name)
+		for _, block := range block.GetBlocks(spec.Name) {
+			evalResult = evalMatchSpec(block, spec.SubMatch, nil)
+			if !evalResult {
+				break
+			}
 		}
-		evalResult = evalMatchSpec(block, spec.SubMatch, nil)
 	}
+
 	return evalResult
 }
 

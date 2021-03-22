@@ -6,54 +6,59 @@ type tool struct {
 
 type driver struct {
 	Name           string  `json:"name"`
-	InformationUri string  `json:"informationUri"`
-	Rules          []*rule `json:"rules,omitempty"`
+	InformationURI string  `json:"informationUri"`
+	Rules          []*Rule `json:"rules,omitempty"`
 }
 
-type rule struct {
-	Id               string            `json:"id"`
+// Rule specifies a Sarif Rule object
+type Rule struct {
+	ID               string            `json:"id"`
 	ShortDescription *textBlock        `json:"shortDescription"`
-	HelpUri          string            `json:"helpUri,omitempty"`
+	HelpURI          string            `json:"helpUri,omitempty"`
 	Help             *textBlock        `json:"help,omitempty"`
 	Properties       map[string]string `json:"properties,omitempty"`
 }
 
-func (driver *driver) getOrCreateRule(rule *rule) int {
+func (driver *driver) getOrCreateRule(rule *Rule) uint {
 	for i, r := range driver.Rules {
-		if r.Id == rule.Id {
-			return i
+		if r.ID == rule.ID {
+			return uint(i)
 		}
 	}
 	driver.Rules = append(driver.Rules, rule)
-	return len(driver.Rules) - 1
+	return uint(len(driver.Rules) - 1)
 }
 
-func newRule(ruleId string) *rule {
-	return &rule{
-		Id: ruleId,
+func newRule(ruleID string) *Rule {
+	return &Rule{
+		ID: ruleID,
 	}
 }
 
-func (rule *rule) WithDescription(description string) *rule {
+// WithDescription specifies a description for a rule and returns the updated rule
+func (rule *Rule) WithDescription(description string) *Rule {
 	rule.ShortDescription = &textBlock{
 		Text: description,
 	}
 	return rule
 }
 
-func (rule *rule) WithHelpUri(helpUrl string) *rule {
-	rule.HelpUri = helpUrl
+// WithHelpURI specifies a helpURI for a rule and returns the updated rule
+func (rule *Rule) WithHelpURI(helpURI string) *Rule {
+	rule.HelpURI = helpURI
 	return rule
 }
 
-func (rule *rule) WithHelp(helpText string) *rule {
+// WithHelp specifies a help text  for a rule and returns the updated rule
+func (rule *Rule) WithHelp(helpText string) *Rule {
 	rule.Help = &textBlock{
 		Text: helpText,
 	}
 	return rule
 }
 
-func (rule *rule) WithProperties(properties map[string]string) *rule {
+// WithProperties specifies properties for a rule and returns the updated rule
+func (rule *Rule) WithProperties(properties map[string]string) *Rule {
 	rule.Properties = properties
 	return rule
 }

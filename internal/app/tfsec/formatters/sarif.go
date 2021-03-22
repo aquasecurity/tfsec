@@ -17,6 +17,8 @@ func FormatSarif(w io.Writer, results []scanner.Result, baseDir string, options 
 
 	run := report.AddRun("tfsec", "https://tfsec.dev")
 
+	// TODO - Handle if the --include-passed argument is passed.
+
 	for _, result := range results {
 		rule := run.AddRule(string(result.RuleID)).
 			WithDescription(result.Description).
@@ -27,7 +29,7 @@ func FormatSarif(w io.Writer, results []scanner.Result, baseDir string, options 
 			return err
 		}
 
-		ruleResult := run.AddResult(rule.Id).
+		ruleResult := run.AddResult(rule.ID).
 			WithMessage(string(result.RuleDescription)).
 			WithLevel(strings.ToLower(string(result.Severity))).
 			WithLocationDetails(relativePath, result.Range.StartLine, 1)

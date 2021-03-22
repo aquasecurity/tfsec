@@ -32,6 +32,7 @@ func MakeFileFunc(baseDir string, encBase64 bool) function.Function {
 			path := args[0].AsString()
 			src, err := readFileBytes(baseDir, path)
 			if err != nil {
+				err = function.NewArgError(0, err)
 				return cty.UnknownVal(cty.String), err
 			}
 
@@ -98,6 +99,20 @@ func MakeTemplateFileFunc(baseDir string, funcsCb func() map[string]function.Fun
 
 		ctx := &hcl.EvalContext{
 			Variables: varsVal.AsValueMap(),
+		}
+
+		// We require all of the variables to be valid HCL identifiers, because
+		// otherwise there would be no way to refer to them in the template
+		// anyway. Rejecting this here gives better feedback to the user
+		// than a syntax error somewhere in the template itself.
+		for n := range ctx.Variables {
+			if !hclsyntax.ValidIdentifier(n) {
+				// This error message intentionally doesn't describe _all_ of
+				// the different permutations that are technically valid as an
+				// HCL identifier, but rather focuses on what we might
+				// consider to be an "idiomatic" variable name.
+				return cty.DynamicVal, function.NewArgErrorf(1, "invalid template variable name %q: must start with a letter, followed by zero or more letters, digits, and underscores", n)
+			}
 		}
 
 		// We'll pre-check references in the template here so we can give a
@@ -355,7 +370,7 @@ func readFileBytes(baseDir, path string) ([]byte, error) {
 		// ReadFile does not return Terraform-user-friendly error
 		// messages, so we'll provide our own.
 		if os.IsNotExist(err) {
-			return nil, fmt.Errorf("no file exists at %s", path)
+			return nil, fmt.Errorf("no file exists at %s; this function works only with files that are distributed as part of the configuration source code, so if this file will be created by a resource in this configuration you must instead obtain this result from an attribute of that resource", path)
 		}
 		return nil, fmt.Errorf("failed to read %s", path)
 	}

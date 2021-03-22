@@ -108,7 +108,7 @@ func (check *Check) IsRequiredForBlock(block *parser.Block) bool {
 	if len(check.RequiredLabels) > 0 {
 		var found bool
 		for _, requiredLabel := range check.RequiredLabels {
-			if requiredLabel == "*" || (len(block.Labels()) > 0 && block.TypeLabel() == requiredLabel) {
+			if requiredLabel == "*" || (len(block.Labels()) > 0 && wildcardMatch(requiredLabel, block.TypeLabel())) {
 				found = true
 				break
 			}
@@ -118,6 +118,35 @@ func (check *Check) IsRequiredForBlock(block *parser.Block) bool {
 		}
 	}
 
+	return true
+}
+
+func wildcardMatch(pattern string, subject string) bool {
+	if pattern == "" {
+		return false
+	}
+	parts := strings.Split(pattern, "*")
+	var lastIndex int
+	for i, part := range parts {
+		if part == "" {
+			continue
+		}
+		if i == 0 {
+			if !strings.HasPrefix(subject, part) {
+				return false
+			}
+		}
+		if i == len(parts)-1 {
+			if !strings.HasSuffix(subject, part) {
+				return false
+			}
+		}
+		newIndex := strings.Index(subject, part)
+		if newIndex < lastIndex {
+			return false
+		}
+		lastIndex = newIndex
+	}
 	return true
 }
 
@@ -131,6 +160,12 @@ func (check *Check) NewResult(description string, r parser.Range, severity Sever
 		Range:           r,
 		Severity:        severity,
 	}
+}
+
+func (check *Check) NewPassingResult(r parser.Range) Result {
+	var res = check.NewResult(string(check.Documentation.Summary), r, SeverityInfo)
+	res.Passed = true
+	return res
 }
 
 func (check *Check) NewResultWithValueAnnotation(description string, r parser.Range, attr *parser.Attribute, severity Severity) Result {

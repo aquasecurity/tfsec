@@ -74,10 +74,27 @@ func validateMatchSpec(spec *MatchSpec, check *Check, checkErrors []error) []err
 	if !spec.Action.isValid() {
 		checkErrors = append(checkErrors, errors.New(fmt.Sprintf("matchSpec.Action[%s] is not a recognised option. Should be %s", spec.Action, ValidCheckActions)))
 	}
-	// if the check is inModule, no name is required
-	if len(spec.Name) == 0 && spec.Action != "inModule" {
+	// if the check is one of `inModule`,`or`,`and`, `not`, no name is required
+	if len(spec.Name) == 0 && spec.Action != "inModule" && spec.Action != "or" && spec.Action != "and"  && spec.Action != "not"{
 		checkErrors = append(checkErrors, errors.New("matchSpec.Name requires a value"))
 	}
+
+	// if the check is one of `or`, `and`, then all PredicateMatchSpec's must also be valid
+	if spec.Action == "or" || spec.Action == "and" {
+		for _, predicateMatchSpec := range spec.PredicateMatchSpec {
+			checkErrors = append(validateMatchSpec(&predicateMatchSpec, check, checkErrors))
+		}
+	}
+
+	// `not` specification can only have a single predicateMatchSpec associated, which must be valid
+	if spec.Action == "not" {
+		if len(spec.PredicateMatchSpec) == 1 {
+			checkErrors = append(validateMatchSpec(&spec.PredicateMatchSpec[0], check, checkErrors))
+		} else {
+			checkErrors = append(checkErrors, errors.New("`not` action must have a single predicate attached"))
+		}
+	}
+
 	if spec.SubMatch != nil {
 		return validateMatchSpec(spec.SubMatch, check, checkErrors)
 	}

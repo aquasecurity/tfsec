@@ -11,24 +11,36 @@ import (
 
 func FormatText(_ io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
 
-	if len(results) == 0 {
+	if len(results) == 0 || len(results) == countPassedResults(results) {
 		fmt.Print("\nNo problems detected!\n")
 		return nil
 	}
 
+	includePassedChecks := false
+
+	for _, option := range options {
+		if option == IncludePassed {
+			includePassedChecks = true
+		}
+	}
+
 	var severity string
 
-	fmt.Printf("\n%d potential problems detected:\n\n", len(results))
+	fmt.Printf("\n%d potential problems detected:\n\n", len(results)-countPassedResults(results))
 	for i, result := range results {
-		fmt.Printf("Problem %d\n", i+1)
+		fmt.Printf("Check %d\n", i+1)
 
-		switch result.Severity {
-		case scanner.SeverityError:
-			severity = fmt.Sprintf("%s", result.Severity)
-		case scanner.SeverityWarning:
-			severity = fmt.Sprintf("%s", result.Severity)
-		default:
-			severity = fmt.Sprintf("%s", result.Severity)
+		if includePassedChecks && result.Passed {
+			severity = "PASSED"
+		} else {
+			switch result.Severity {
+			case scanner.SeverityError:
+				severity = fmt.Sprintf("%s", result.Severity)
+			case scanner.SeverityWarning:
+				severity = fmt.Sprintf("%s", result.Severity)
+			default:
+				severity = fmt.Sprintf("%s", result.Severity)
+			}
 		}
 
 		fmt.Printf(`

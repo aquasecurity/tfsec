@@ -32,6 +32,22 @@ resource "azurerm_network_security_rule" "bad_example" {
 			mustIncludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
+			name: "check ssh access from * is ok when mode is deny",
+			source: `
+resource "azurerm_network_security_rule" "example_deny" {
+     name                        = "example_deny_security_rule"
+     direction                   = "Inbound"
+     access                      = "Deny"
+     protocol                    = "TCP"
+     source_port_range           = "*"
+     destination_port_range      = ["22"]
+     source_address_prefix       = "*"
+     destination_address_prefix  = "*"
+}
+`,
+			mustExcludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+		},
+		{
 			name: "check ssh access from 0.0.0.0 causes a failure",
 			source: `
 resource "azurerm_network_security_rule" "bad_example" {
@@ -112,6 +128,25 @@ resource "azurerm_network_security_group" "example" {
 }
 `,
 			mustIncludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+		},
+		{
+			name: "check ssh access from * is ok when access mode is deny",
+			source: `
+resource "azurerm_network_security_group" "example_deny" {
+  name                = "tf-appsecuritygroup"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  
+  security_rule {
+     access                      = "Deny"
+     source_port_range           = "any"
+     destination_port_range      = ["22", "80", "443"]
+     source_address_prefix       = "*"
+     destination_address_prefix  = "*"
+  }
+}
+`,
+			mustExcludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
 			name: "check ssh access from multiple security rules causes a failure on security group",

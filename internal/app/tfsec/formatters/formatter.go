@@ -10,6 +10,7 @@ type FormatterOption int
 
 const (
 	ConciseOutput FormatterOption = iota
+	IncludePassed FormatterOption = iota
 )
 
 // Formatter formats scan results into a specific format

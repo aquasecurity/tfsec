@@ -82,7 +82,7 @@ The check contains up of the following attributes;
 | code | The custom code that your check will be known as |
 | description | A description for the code that will be included in the output|
 |requiredTypes | The block types to apply the check to - resource, data, module, variable |
-|requiredLabels | The resource type - aws_ec2_instance for example |
+|requiredLabels | The resource type - aws_ec2_instance for example. This also supports wildcards using `*`, e.g. `aws_*` |
 |severity | How severe is the check |
 |matchSpec | See below for the MatchSpec attributes |
 |errorMessage | The error message that should be displayed in cases where the check fails |
@@ -98,6 +98,7 @@ The `MatchSpec` is the what will define the check itself - this is fairly basic 
 | value | In cases where a value is required, the value to look for |
 | ignoreUndefined | If the attribute is undefined, ignore and pass the check |
 |subMatch | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block |
+|predicateMatchSpec | An array of MatchSpec blocks to be logically aggregated by either `and` or `or` actions |
 
 #### Check Actions
 There are a number of `CheckActions` available which should allow you to quickly put together most checks.
@@ -376,8 +377,8 @@ matchSpec:
 ##### isAny
 The `isAny` check action passes when the attribute value can be found in the slice passed as the check value. This check action supports strings and numbers
 
-```
-"matchSpec" : {
+```json
+"matchSpec": {
   "name": "acl",
   "action": "isAny",
   "value": ["private", "log-delivery-write"]
@@ -396,8 +397,8 @@ matchSpec:
 ##### isNone
 The `isNone` check action passes when the attribute value cannot be found in the slice passed as the check value. This check action supports strings and numbers
 
-```
-"matchSpec" : {
+```json
+"matchSpec": {
   "name": "acl",
   "action": "isNone",
   "value": ["authenticated-read", "public-read"]
@@ -418,7 +419,7 @@ The `requiresPresence` checks that the resouce in `name` is also present in the 
 
 If you wanted to ensure that `aws_vpc_flowlogs` is present if there is a `aws_vpc`, you might use the following `matchSpec`:
 
-```
+```json
 "matchSpec" : {
   "action": "requiresPresence",
   "name": "aws_vpc_flowlogs"
@@ -429,6 +430,137 @@ If you wanted to ensure that `aws_vpc_flowlogs` is present if there is a `aws_vp
 matchSpec:
   name: aws_vpc_flowlogs
   action: requiresPresence
+```
+
+##### and
+The `and` check action passes when all the blocks provided within `predicateMatchSpec` evaluate to `true`. This action
+can be combined with `subMatch` to perform composite checks against the contents of nested blocks.
+
+Note that `or` and `and` actions can be nested as many times as needed.
+
+If you wanted to ensure that `device_name` and `encrypted` are both present in a nested `ebs_block_device` block,
+you might use the following `matchSpec`:
+
+```json
+"matchSpec": {
+  "action": "isPresent",
+  "name": "ebs_block_device",
+  "subMatch": {
+    "action": "and",
+    "predicateMatchSpec": [
+      {
+        "action": "isPresent",
+        "name": "device_name"      
+      },
+      {
+        "action": "isPresent",
+        "name": "encrypted"
+      }
+    ]
+  }
+}
+```
+
+```yaml
+matchSpec:
+  action: isPresent
+  name: ebs_block_device
+  subMatch : 
+    action : and
+    predicateMatchSpec :
+      - action : isPresent
+        name : device_name
+      - action : isPresent
+        name : encrypted 
+```
+
+##### or
+The `or` check action passes when at least one of the blocks provided within `predicateMatchSpec` evaluates to `true`.
+This action can be combined with `subMatch` to perform composite checks against the contents of nested blocks.
+
+Note that `or` and `and` actions can be nested as many times as needed.
+
+If you want to ensure that `virtualization_type` is assigned to either `hvm` or `paravirtual`, while enforcing
+that their implicitly linked required attributes are also present, you might use the following `matchSpec`:
+
+```
+"matchSpec": {
+  "action": "or",
+  "predicateMatchSpec": [
+    {
+      "action": "and",
+      "predicateMatchSpec": [
+        {
+          "name": "virtualization_type",
+          "action": "equals",
+          "value": "hvm"
+        }
+      ]
+    },
+    {
+      "action": "and",
+      "predicateMatchSpec": [
+        {
+          "name": "virtualization_type",
+          "action": "equals",
+          "value": "paravirtual"
+        },
+        {
+          "name": "image_location",
+          "action": "isPresent"
+        },
+        {
+          "name": "kernel_id",
+          "action": "isPresent"
+        }
+      ]
+    }
+  ]
+}
+```
+
+```yaml
+matchSpec:
+  action: or
+  predicateMatchSpec:
+    - action: and
+      predicateMatchSpec:
+        - name: virtualization_type
+          action: equals
+          value: hvm
+        - name: sriov_net_support
+          action: isPresent
+    - action: and
+      predicateMatchSpec:
+        - name: virtualization_type
+          action: equals
+          value: paravirtual
+        - name: image_location
+          action: isPresent
+        - name: kernel_id
+          action: isPresent
+```
+##### not
+The `not` check action passes when the `predicateMatchSpec` evaluates to `false`.
+
+As an example, if you want to represent that a `resource` should not be included `inModule` you might use the following `matchSpec`:
+
+```
+"matchSpec": {
+  "action": "not",
+  "predicateMatchSpec": [
+    {
+        "action": "inModule" 
+    }
+  ]
+}
+```
+
+```yaml
+matchSpec:
+  action: not
+  predicateMatchSpec:
+    - action: inModule
 ```
 
 ## How do I know my JSON is valid?

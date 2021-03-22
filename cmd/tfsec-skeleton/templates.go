@@ -13,12 +13,12 @@ const {{.CheckName}}Explanation = ` + "`" + `
 
 ` + "`" + `
 const {{.CheckName}}BadExample = ` + "`" + `
-resource "" "my-" {
+resource "" "bad_example" {
 
 }
 ` + "`" + `
 const {{.CheckName}}GoodExample = ` + "`" + `
-resource "" "my-" {
+resource "" "good_example" {
 
 }
 ` + "`" + `

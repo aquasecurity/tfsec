@@ -43,7 +43,7 @@ func FormatJUnit(w io.Writer, results []scanner.Result, _ string, options ...For
 
 	output := JUnitTestSuite{
 		Name:     "tfsec",
-		Failures: fmt.Sprintf("%d", len(results)),
+		Failures: fmt.Sprintf("%d", len(results)-countPassedResults(results)),
 		Tests:    fmt.Sprintf("%d", len(results)),
 	}
 
@@ -53,13 +53,7 @@ func FormatJUnit(w io.Writer, results []scanner.Result, _ string, options ...For
 				Classname: result.Range.Filename,
 				Name:      fmt.Sprintf("[%s][%s] - %s", result.RuleID, result.Severity, result.Description),
 				Time:      "0",
-				Failure: &JUnitFailure{
-					Message: result.Description,
-					Contents: fmt.Sprintf("%s\n%s\n%s",
-						result.Range.String(),
-						highlightCodeJunit(result),
-						result.Link),
-				},
+				Failure:   buildFailure(result),
 			},
 		)
 	}
@@ -109,4 +103,18 @@ func highlightCodeJunit(result scanner.Result) string {
 	}
 
 	return output
+}
+
+func buildFailure(result scanner.Result) *JUnitFailure {
+	if result.Passed {
+		return nil
+	}
+
+	return &JUnitFailure{
+		Message: result.Description,
+		Contents: fmt.Sprintf("%s\n%s\n%s",
+			result.Range.String(),
+			highlightCodeJunit(result),
+			result.Link),
+	}
 }

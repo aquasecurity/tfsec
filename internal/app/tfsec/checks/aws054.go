@@ -59,9 +59,10 @@ func init() {
 				enforceHttps := endpointOptions.GetAttribute("enforce_https")
 				if enforceHttps != nil && enforceHttps.IsFalse() {
 					return []scanner.Result{
-						check.NewResult(
+						check.NewResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' explicitly turns off enforcing https on the ElasticSearch domain.", block.FullName()),
-							block.Range(),
+							enforceHttps.Range(),
+							enforceHttps,
 							scanner.SeverityError,
 						),
 					}

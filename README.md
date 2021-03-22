@@ -8,6 +8,8 @@
 [![GitHub All Releases](https://img.shields.io/github/downloads/tfsec/tfsec/total)](https://github.com/tfsec/tfsec/releases)
 [![Join Our Slack](https://img.shields.io/badge/Slack-Join-green)](https://join.slack.com/t/tfsec/shared_invite/zt-i0vo9rp2-tEizIaT1dS4Eu2hVIsvwDg)
 [![Docker Build](https://img.shields.io/docker/v/tfsec/tfsec)](https://dockerhub.com/r/tfsec/tfsec)
+[![Homebrew](https://img.shields.io/badge/dynamic/json.svg?url=https://formulae.brew.sh/api/formula/tfsec.json&query=$.versions.stable&label=homebrew)](https://formulae.brew.sh/formula/tfsec)
+[![Chocolatey](https://img.shields.io/chocolatey/v/tfsec)](https://chocolatey.org/packages/tfsec)
 
 tfsec uses static analysis of your terraform templates to spot potential
 security issues. Now with terraform v0.12+ support.
@@ -51,6 +53,15 @@ tfsec .
 ## Use with Docker
 
 As an alternative to installing and running tfsec on your system, you may run tfsec in a Docker container.
+
+There are a number of Docker options available
+
+| Image Name | Base | Comment |
+|------------|------|---------|
+|[tfsec/tfsec](https://hub.docker.com/repository/docker/tfsec/tfsec)|alpine|Normal tfsec image|
+|[tfsec/tfsec-alpine](https://hub.docker.com/repository/docker/tfsec/tfsec-alpine)|alpine|Exactly the same as tfsec/tfsec, but for those whole like to be explicit|
+|[tfsec/tfsec-ci](https://hub.docker.com/repository/docker/tfsec/tfsec-ci)|alpine|tfsec with no entrypoint - useful for CI builds where you want to override the command|
+|[tfsec/tfsec-scratch](https://hub.docker.com/repository/docker/tfsec/tfsec-scratch)|scratch|An image built on scratch - nothing frilly, just runs tfsec|
 
 To run:
 

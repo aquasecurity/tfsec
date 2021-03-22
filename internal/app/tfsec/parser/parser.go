@@ -2,34 +2,50 @@ package parser
 
 import (
 	"fmt"
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
+
 	"io/ioutil"
 	"os"
 	"path/filepath"
+)
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
-	"github.com/tfsec/tfsec/internal/app/tfsec/timer"
+type ParserOption int
+
+const (
+	DontSearchTfFiles ParserOption = iota
 )
 
 // Parser is a tool for parsing terraform templates at a given file system location
 type Parser struct {
-	fullPath   string
-	tfvarsPath string
+	initialPath   string
+	tfvarsPath    string
+	stopOnFirstTf bool
 }
 
 // New creates a new Parser
-func New(fullPath string, tfvarsPath string) *Parser {
-	return &Parser{
-		fullPath:   fullPath,
-		tfvarsPath: tfvarsPath,
+func New(initialPath string, tfvarsPath string, options ...ParserOption) *Parser {
+	p := &Parser{
+		initialPath:   initialPath,
+		tfvarsPath:    tfvarsPath,
+		stopOnFirstTf: true,
 	}
+
+	for _, option := range options {
+		switch option {
+		case DontSearchTfFiles:
+			p.stopOnFirstTf = false
+		}
+	}
+	return p
 }
 
 // ParseDirectory parses all terraform files within a given directory
 func (parser *Parser) ParseDirectory() (Blocks, error) {
 
 	debug.Log("Finding Terraform subdirectories...")
-	t := timer.Start(timer.DiskIO)
-	subdirectories, err := parser.getSubdirectories(parser.fullPath)
+	t := metrics.Start(metrics.DiskIO)
+	subdirectories, err := parser.getSubdirectories(parser.initialPath)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +54,7 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	var blocks Blocks
 
 	for _, dir := range subdirectories {
-		debug.Log("Beginning parse for directory '%s'...", parser.fullPath)
+		debug.Log("Beginning parse for directory '%s'...", dir)
 		files, err := LoadDirectory(dir)
 		if err != nil {
 			return nil, err
@@ -59,12 +75,20 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 		}
 	}
 
-	if len(blocks) == 0 {
+	metrics.Add(metrics.BlocksLoaded, len(blocks))
+
+	if len(blocks) == 0 && parser.stopOnFirstTf {
 		return nil, nil
 	}
 
+	tfPath := parser.initialPath
+	if len(subdirectories) > 0 && parser.stopOnFirstTf {
+		tfPath = subdirectories[0]
+		debug.Log("Project root set to '%s'...", tfPath)
+	}
+
 	debug.Log("Loading TFVars...")
-	t = timer.Start(timer.DiskIO)
+	t = metrics.Start(metrics.DiskIO)
 	inputVars, err := LoadTFVars(parser.tfvarsPath)
 	if err != nil {
 		return nil, err
@@ -72,16 +96,22 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	t.Stop()
 
 	debug.Log("Loading module metadata...")
-	t = timer.Start(timer.DiskIO)
-	modulesMetadata, _ := LoadModuleMetadata(parser.fullPath)
+	t = metrics.Start(metrics.DiskIO)
+	modulesMetadata, _ := LoadModuleMetadata(tfPath)
 	t.Stop()
 
 	debug.Log("Loading modules...")
-	modules := LoadModules(blocks, parser.fullPath, modulesMetadata)
+	modules := LoadModules(blocks, tfPath, modulesMetadata)
 
 	debug.Log("Evaluating expressions...")
-	evaluator := NewEvaluator(parser.fullPath, blocks, inputVars, modulesMetadata, modules)
-	return evaluator.EvaluateAll()
+	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules)
+	evaluatedBlocks, err := evaluator.EvaluateAll()
+	if err != nil {
+		return nil, err
+	}
+	metrics.Add(metrics.BlocksEvaluated, len(evaluatedBlocks))
+	return evaluatedBlocks, nil
+
 }
 
 func (parser *Parser) getSubdirectories(path string) ([]string, error) {
@@ -90,20 +120,25 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 		return nil, err
 	}
 
-	results := make([]string, 0, 10)
-	tfDirsMap := make(map[string]bool)
+	var results []string
+	for _, entry := range entries {
+		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".tf" {
+			debug.Log("Found qualifying subdirectory containing .tf files: %s", path)
+			results = append(results, path)
+			if parser.stopOnFirstTf {
+				return results, nil
+			}
+		}
+	}
+
 
 	for _, entry := range entries {
 		if entry.IsDir() {
-			validSubDirs, err := parser.getSubdirectories(filepath.Join(path, entry.Name()))
+			dirs, err := parser.getSubdirectories(filepath.Join(path, entry.Name()))
 			if err != nil {
 				return nil, err
 			}
-			results = append(results, validSubDirs...)
-		} else if _, exists := tfDirsMap[path]; !exists && filepath.Ext(entry.Name()) == ".tf" {
-			debug.Log("Found new qualifying subdirectory containing .tf files: %s", path)
-			tfDirsMap[path] = true
-			results = append(results, path)
+			results = append(results, dirs...)
 		}
 	}
 

@@ -6,6 +6,8 @@
 # ignore windows compiled binary
 tfsec.exe
 tfsec-docs.exe
+tfsec-docs
+tfsec-skeleton
 .vscode/launch.json
 
 /docs-website/_data
@@ -13,3 +15,5 @@ tfsec-docs.exe
 /docs-website/_docs/azure
 /docs-website/_docs/general
 /docs-website/_docs/google
+
+coverage.txt
