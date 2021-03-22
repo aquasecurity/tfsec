@@ -61,7 +61,7 @@ github.com/spf13/pflag
 ## explicit
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
-# github.com/zclconf/go-cty v1.8.0
+# github.com/zclconf/go-cty v1.8.1
 ## explicit
 github.com/zclconf/go-cty/cty
 github.com/zclconf/go-cty/cty/convert
