@@ -10,6 +10,7 @@ import (
 
 // AWSNoDescriptionInSecurityGroup See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSNoDescriptionInSecurityGroup scanner.RuleCode = "AWS018"
+const AWSNoDescriptionInSecurityGroupAlias scanner.RuleAlias= "aws-security-group-description-missing"
 const AWSNoDescriptionInSecurityGroupDescription scanner.RuleSummary = "Missing description for security group/security group rule."
 const AWSNoDescriptionInSecurityGroupExplanation = `
 Security groups and security group rules should include a description for auditing purposes.
@@ -47,6 +48,7 @@ resource "aws_security_group" "http" {
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSNoDescriptionInSecurityGroup,
+		Alias: AWSNoDescriptionInSecurityGroupAlias,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSNoDescriptionInSecurityGroupDescription,
 			Explanation: AWSNoDescriptionInSecurityGroupExplanation,
