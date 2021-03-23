@@ -68,7 +68,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 						results = append(results, check.NewPassingResult(block.Range()))
 					} else {
 						for _, result := range res {
-							if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
+							if !scanner.checkRangeIgnored(result, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
 								results = append(results, result)
 							}
 						}
@@ -80,19 +80,20 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 	return results
 }
 
-func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range) bool {
+func (scanner *Scanner) checkRangeIgnored(rule Result, r parser.Range) bool {
 	raw, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return false
 	}
 	ignoreAll := "tfsec:ignore:*"
-	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", code)
+	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", rule.RuleID)
+	ignoreAlias := fmt.Sprintf("tfsec:ignore:%s", rule.RuleAlias)
 	lines := append([]string{""}, strings.Split(string(raw), "\n")...)
 	for number := r.StartLine; number <= r.EndLine; number++ {
 		if number <= 0 || number >= len(lines) {
 			continue
 		}
-		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) {
+		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) || strings.Contains(lines[number], ignoreAlias) {
 			return true
 		}
 	}
@@ -102,7 +103,7 @@ func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range) bool {
 		line = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(line, "//", ""), "#", ""))
 		segments := strings.Split(line, " ")
 		for _, segment := range segments {
-			if segment == ignoreAll || segment == ignoreCode {
+			if segment == ignoreAll || segment == ignoreCode || segment == ignoreAlias {
 				return true
 			}
 		}

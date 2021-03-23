@@ -8,6 +8,7 @@ import (
 // by, a human-readable description and a range
 type Result struct {
 	RuleID          RuleCode     `json:"rule_id"`
+	RuleAlias       RuleAlias    `json:"rule_alias"`
 	RuleDescription RuleSummary  `json:"rule_description"`
 	RuleProvider    RuleProvider `json:"rule_provider"`
 	Link            string       `json:"link"`

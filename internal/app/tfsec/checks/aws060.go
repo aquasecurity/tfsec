@@ -8,6 +8,7 @@ import (
 )
 
 const AWSAthenaWorkgroupEnforceConfiguration scanner.RuleCode = "AWS060"
+const AWSAthenaWorkgroupEnforceConfigurationAlias scanner.RuleAlias= "aws-athena-configuration-missing"
 const AWSAthenaWorkgroupEnforceConfigurationDescription scanner.RuleSummary = "Athena workgroups should enforce configuration to prevent client disabling encryption"
 const AWSAthenaWorkgroupEnforceConfigurationExplanation = `
 Athena workgroup configuration should be enforced to prevent client side changes to disable encryption settings.
@@ -59,6 +60,7 @@ resource "aws_athena_workgroup" "good_example" {
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: AWSAthenaWorkgroupEnforceConfiguration,
+		Alias: AWSAthenaWorkgroupEnforceConfigurationAlias,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSAthenaWorkgroupEnforceConfigurationDescription,
 			Explanation: AWSAthenaWorkgroupEnforceConfigurationExplanation,

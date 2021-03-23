@@ -15,6 +15,9 @@ import (
 // RuleCode is a unique identifier for a check
 type RuleCode string
 
+// RuleAlias is a alias for a check
+type RuleAlias string
+
 // RuleSummary is a summary description for a check
 type RuleSummary string
 
@@ -36,6 +39,7 @@ func RuleProviderToString(provider RuleProvider) string {
 // "resource", and the labels to run on e.g. "aws_s3_bucket".
 type Check struct {
 	Code           RuleCode
+	Alias          RuleAlias
 	Documentation  CheckDocumentation
 	Provider       RuleProvider
 	RequiredTypes  []string
@@ -154,6 +158,7 @@ func wildcardMatch(pattern string, subject string) bool {
 func (check *Check) NewResult(description string, r parser.Range, severity Severity) Result {
 	return Result{
 		RuleID:          check.Code,
+		RuleAlias:       check.Alias,
 		RuleDescription: check.Documentation.Summary,
 		RuleProvider:    check.Provider,
 		Description:     description,
@@ -194,6 +199,7 @@ func (check *Check) NewResultWithValueAnnotation(description string, r parser.Ra
 
 	return Result{
 		RuleID:          check.Code,
+		RuleAlias:       check.Alias,
 		RuleDescription: check.Documentation.Summary,
 		RuleProvider:    check.Provider,
 		Description:     description,
