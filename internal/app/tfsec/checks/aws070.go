@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"strings"
 )
 
 const AWSESDomainLoggingEnabled scanner.RuleCode = "AWS070"
-const AWSESDomainLoggingEnabledDescription scanner.RuleSummary = "ES Domain should have the logging enabled"
+const AWSESDomainLoggingEnabledDescription scanner.RuleSummary = "AWS ES Domain should have logging enabled"
 const AWSESDomainLoggingEnabledExplanation = `
-ES domain should have logging enabled by default.
+AWS ES domain should have logging enabled by default.
 `
 const AWSESDomainLoggingEnabledBadExample = `
 resource "aws_elasticsearch_domain" "example" {
@@ -48,12 +49,34 @@ func init() {
 			if block.MissingChild("log_publishing_options") {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' has no log_publishing_options block specified so no loging is enabled", block.FullName()),
+						fmt.Sprintf("Resource '%s' has no log_publishing_options block specified, no loging is enabled", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
 				}
 			}
+
+			logPublishingOptions := block.GetBlock("log_publishing_options")
+			if logPublishingOptions.MissingChild("log_type") {
+				return []scanner.Result{
+					check.NewResult(
+						fmt.Sprintf("Resource '%s' is missing log_type configuration, no loging is enabled", block.FullName()),
+						logPublishingOptions.Range(),
+						scanner.SeverityError,
+					),
+				}
+			}
+
+			logType := logPublishingOptions.GetAttribute("log_type")
+					if !strings.Contains(logType.Value().AsString(), "AUDIT_LOGS") {
+						return []scanner.Result{
+							check.NewResult(
+								fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in `log_type` so audit log is not enabled", block.FullName()),
+								logPublishingOptions.Range(),
+								scanner.SeverityError,
+							),
+						}
+					}
 
 			return nil
 		},
