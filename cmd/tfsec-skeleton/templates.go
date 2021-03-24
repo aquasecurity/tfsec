@@ -8,6 +8,7 @@ import (
 )
 
 const {{.CheckName}} scanner.RuleCode = "{{.Provider | ToUpper }}{{ .Code}}"
+const {{.CheckName}}Alias scanner.RuleAlias = "{{.Alias | ToLower }}"
 const {{.CheckName}}Description scanner.RuleSummary = "{{.Summary}}"
 const {{.CheckName}}Explanation = ` + "`" + `
 
@@ -26,6 +27,7 @@ resource "" "good_example" {
 func init() {
 	scanner.RegisterCheck(scanner.Check{
 		Code: {{.CheckName}},
+		Alias: {{.CheckName}}Alias,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     {{.CheckName}}Description,
 			Explanation: {{.CheckName}}Explanation,

@@ -17,6 +17,7 @@ type checkSkeleton struct {
 	CheckName        string
 	ShortCode        string
 	Code             string
+	Alias            string
 	Summary          string
 	RequiredTypes    string
 	RequiredLabels   string
@@ -26,6 +27,7 @@ type checkSkeleton struct {
 
 var funcMap = template.FuncMap{
 	"ToUpper": strings.ToUpper,
+	"ToLower": strings.ToLower,
 }
 
 func generateCheckBody() error {
@@ -80,8 +82,9 @@ func constructSkeleton() (*checkSkeleton, error) {
 	summary := prompt.EnterInput("Enter very slightly longer summary: ")
 	blockTypes := prompt.EnterInput("Enter the supported block types: ")
 	blockLabels := prompt.EnterInput("Enter the supported block labels: ")
+	alias := prompt.EnterInput("Enter alias for this check e.g. (aws-security-group-description-missing): ")
 
-	checkBody, skeleton, err2 := populateSkeleton(summary, selected, shortCodeContent, blockTypes, blockLabels, err)
+	checkBody, skeleton, err2 := populateSkeleton(summary, selected, shortCodeContent, blockTypes, blockLabels, alias, err)
 	if err2 != nil {
 		return skeleton, err2
 	}
@@ -89,7 +92,7 @@ func constructSkeleton() (*checkSkeleton, error) {
 	return checkBody, nil
 }
 
-func populateSkeleton(summary string, selected string, shortCodeContent string, blockTypes string, blockLabels string, err error) (*checkSkeleton, *checkSkeleton, error) {
+func populateSkeleton(summary string, selected string, shortCodeContent string, blockTypes string, blockLabels string, alias string, err error) (*checkSkeleton, *checkSkeleton, error) {
 	checkBody := &checkSkeleton{}
 
 	checkBody.Summary = summary
@@ -99,6 +102,8 @@ func populateSkeleton(summary string, selected string, shortCodeContent string, 
 	if err != nil {
 		return nil, nil, err
 	}
+
+	checkBody.Alias = alias
 
 	checkBody.CheckName = fmt.Sprintf("%s%s", strings.ToUpper(checkBody.Provider), strings.ReplaceAll(strings.Title(shortCodeContent), " ", ""))
 	checkBody.RequiredTypes = fmt.Sprintf("{\"%s\"}", strings.Join(strings.Split(blockTypes, " "), "\", \""))
