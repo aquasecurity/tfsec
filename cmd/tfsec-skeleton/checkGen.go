@@ -80,8 +80,8 @@ func constructSkeleton() (*checkSkeleton, error) {
 	}
 	shortCodeContent := prompt.EnterInput("Enter very terse description: ")
 	summary := prompt.EnterInput("Enter very slightly longer summary: ")
-	blockTypes := prompt.EnterInput("Enter the supported block types: ")
-	blockLabels := prompt.EnterInput("Enter the supported block labels: ")
+	blockTypes := prompt.EnterInput("Enter the supported block types e.g. (resource, data) : ")
+	blockLabels := prompt.EnterInput("Enter the supported block labels e.g. (aws_security_group): ")
 	alias := prompt.EnterInput("Enter alias for this check e.g. (aws-security-group-description-missing): ")
 
 	checkBody, skeleton, err2 := populateSkeleton(summary, selected, shortCodeContent, blockTypes, blockLabels, alias, err)
