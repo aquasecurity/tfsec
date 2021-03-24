@@ -14,6 +14,7 @@ Key attributes requested;
 
 - Provider: Select the provider from the list
 - Short Code: This is a very terse description of the check, it will form the check name
+- Alias: This is a alias that can be used in `tfsec:ignore` (aws-security-group-description-missing)
 - Summary: A slightly longer free text summary of the check
 - Required Types: What kind of blocks is this check for (resource, data, variable etc). Provide this as a space separated list
 - Required Label: What kind of labels is this check for (aws_instance, google_container_cluster). Provide this as a space separated list
@@ -33,6 +34,9 @@ Here's an example:
 ```go
 // The rule code for your check
 const AWSGibsonHackableCode scanner.RuleCode = "AWS123"
+
+// The alias for your check
+const AWSGibsonHackableAlias scanner.RuleAlias = "aws-gibson-hackable"
 
 // A description for your check - this message will be output to a user when the check fails.
 const AWSGibsonHackableDescription scanner.RuleSummary = "The Gibson should not be hackable"
@@ -65,8 +69,10 @@ func init() {
     
         	// our new check code
 		Code: AWSGibsonHackableCode,
-    
-        	// all of our documentation data that will be available in the output and/or at https://tfsec.dev/
+			// our alias for the check
+		Alias: AWSGibsonHackableAlias,	
+
+			// all of our documentation data that will be available in the output and/or at https://tfsec.dev/
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSGibsonHackableDescription,
 			Explanation: AWSGibsonHackableExplanation,
