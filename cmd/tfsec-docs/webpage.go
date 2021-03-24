@@ -31,6 +31,10 @@ parent: {{$.Provider | ToUpperProvider }} Checks
 
 ## {{$.Documentation.Summary}}
 
+{{if $.Alias}}
+Alias: {{ $.Alias }}
+{{end}}
+
 ### Explanation
 
 {{$.Documentation.Explanation}}
