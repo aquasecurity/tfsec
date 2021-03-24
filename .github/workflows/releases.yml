@@ -29,3 +29,5 @@ jobs:
           bin/darwin/tfsec-checkgen-darwin-amd64
           bin/linux/tfsec-checkgen-linux-amd64
           bin/windows/tfsec-checkgen-windows-amd64.exe
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
