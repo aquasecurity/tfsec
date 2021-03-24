@@ -1,0 +1,31 @@
+name: tfsec release
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    name: building tfsec
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v2
+      with:
+        stable: 'false'
+        go-version: '1.16.2' # The Go version to download (if necessary) and use.
+    - run: go version
+    - name: Build artifacts
+      run: make build
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          bin/darwin/tfsec-darwin-amd64
+          bin/linux/tfsec-linux-amd64
+          bin/windows/tfsec-windows-amd64.exe
+          bin/darwin/tfsec-checkgen-darwin-amd64
+          bin/linux/tfsec-checkgen-linux-amd64
+          bin/windows/tfsec-checkgen-windows-amd64.exe
