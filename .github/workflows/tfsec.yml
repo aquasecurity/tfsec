@@ -17,7 +17,6 @@ jobs:
         uses: tfsec/tfsec-sarif-action@master
         with:
           sarif_file: tfsec.sarif         
-          github_token: ${{ secrets.github_token }}
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
