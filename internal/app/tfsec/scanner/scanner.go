@@ -85,16 +85,27 @@ func (scanner *Scanner) checkRangeIgnored(rule Result, r parser.Range) bool {
 	if err != nil {
 		return false
 	}
-	ignoreAll := "tfsec:ignore:*"
-	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", rule.RuleID)
-	ignoreAlias := fmt.Sprintf("tfsec:ignore:%s", rule.RuleAlias)
+
+	ignoresToCheck := []string{
+		"tfsec:ignore:*", // ignore all
+		fmt.Sprintf("tfsec:ignore:%s", rule.RuleID), // ignore by Code
+	}
+
+	if len(rule.RuleAlias) > 0 {
+		ignoreAlias := fmt.Sprintf("tfsec:ignore:%s", rule.RuleAlias)
+		ignoresToCheck = append(ignoresToCheck, ignoreAlias)
+	}
+
 	lines := append([]string{""}, strings.Split(string(raw), "\n")...)
 	for number := r.StartLine; number <= r.EndLine; number++ {
 		if number <= 0 || number >= len(lines) {
 			continue
 		}
-		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) || strings.Contains(lines[number], ignoreAlias) {
-			return true
+
+		for _, ignore := range ignoresToCheck {
+			if strings.Contains(lines[number], ignore) {
+				return true
+			}
 		}
 	}
 
@@ -103,11 +114,12 @@ func (scanner *Scanner) checkRangeIgnored(rule Result, r parser.Range) bool {
 		line = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(line, "//", ""), "#", ""))
 		segments := strings.Split(line, " ")
 		for _, segment := range segments {
-			if segment == ignoreAll || segment == ignoreCode || segment == ignoreAlias {
-				return true
+			for _, ignore := range ignoresToCheck {
+				if segment == ignore {
+					return true
+				}
 			}
 		}
-
 	}
 
 	return false

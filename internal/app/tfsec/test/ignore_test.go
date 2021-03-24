@@ -24,7 +24,6 @@ resource "aws_security_group_rule" "my-rule" {
 }
 
 func Test_IgnoreSpecific(t *testing.T) {
-
 	scanner.RegisterCheck(scanner.Check{
 		Code:           "ABC123",
 		RequiredLabels: []string{"bad"},
@@ -50,5 +49,36 @@ resource "bad" "my-bad" {} //tfsec:ignore:ABC123
 `)
 	require.Len(t, results, 1)
 	assert.Equal(t, results[0].RuleID, scanner.RuleCode("DEF456"))
+
+}
+
+func Test_IgnoreSpecific_Alias(t *testing.T) {
+	scanner.RegisterCheck(scanner.Check{
+		Code:           "HJKL1234",
+		Alias:          "alias-hjkl-1234",
+		RequiredLabels: []string{"bad_one"},
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+			return []scanner.Result{
+				check.NewResult("example problem", block.Range(), scanner.SeverityError),
+			}
+		},
+	})
+
+	scanner.RegisterCheck(scanner.Check{
+		Code:           "NHYU789",
+		Alias:          "alias-NHYU-789",
+		RequiredLabels: []string{"bad_one"},
+		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+			return []scanner.Result{
+				check.NewResult("example problem", block.Range(), scanner.SeverityError),
+			}
+		},
+	})
+
+	results := scanSource(`
+resource "bad_one" "my-bad" {} //tfsec:ignore:alias-hjkl-1234
+`)
+	require.Len(t, results, 1)
+	assert.Equal(t, results[0].RuleID, scanner.RuleCode("NHYU789"))
 
 }
