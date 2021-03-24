@@ -45,7 +45,7 @@ resource "aws_elasticsearch_domain" "example" {
 
   log_publishing_options {
     cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
-    log_type                 = "SEARCH_SLOW_LOGS,ES_APPLICATION_LOGS"
+    log_type                 = "SLOW_LOGS"
   }
 }
 `,

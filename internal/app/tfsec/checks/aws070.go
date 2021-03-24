@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-	"strings"
 )
 
 const AWSESDomainLoggingEnabled scanner.RuleCode = "AWS070"
@@ -49,7 +48,7 @@ func init() {
 			if block.MissingChild("log_publishing_options") {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' has no log_publishing_options block specified, no loging is enabled", block.FullName()),
+						fmt.Sprintf("Resource '%s' has no log_publishing_options block specified, no logging is enabled", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
@@ -60,7 +59,7 @@ func init() {
 			if logPublishingOptions.MissingChild("log_type") {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Resource '%s' is missing log_type configuration, no loging is enabled", block.FullName()),
+						fmt.Sprintf("Resource '%s' is missing log_type configuration, no logging is enabled", block.FullName()),
 						logPublishingOptions.Range(),
 						scanner.SeverityError,
 					),
@@ -68,7 +67,7 @@ func init() {
 			}
 
 			logType := logPublishingOptions.GetAttribute("log_type")
-					if !strings.Contains(logType.Value().AsString(), "AUDIT_LOGS") {
+					if !logType.Equals("AUDIT_LOGS") {
 						return []scanner.Result{
 							check.NewResult(
 								fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in `log_type` so audit log is not enabled", block.FullName()),
