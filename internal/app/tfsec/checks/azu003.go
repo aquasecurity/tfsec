@@ -5,8 +5,6 @@ import (
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
@@ -46,23 +44,13 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_managed_disk"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-
 			encryptionSettingsBlock := block.GetBlock("encryption_settings")
 			if encryptionSettingsBlock == nil {
-				return []scanner.Result{
-					check.NewResult(
-						fmt.Sprintf(
-							"Resource '%s' defines an unencrypted managed disk.",
-							block.FullName(),
-						),
-						block.Range(),
-						scanner.SeverityError,
-					),
-				}
+				return nil // encryption is by default now, so this is fine
 			}
 
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
-			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
+			if enabledAttr != nil && enabledAttr.IsFalse() {
 				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
 						fmt.Sprintf(
