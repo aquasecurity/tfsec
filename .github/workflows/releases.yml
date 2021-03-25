@@ -18,6 +18,10 @@ jobs:
     - run: go version
     - name: Build artifacts
       run: make build
+    - name: Get Tag
+      id: get_tag
+      run: |
+        echo ::set-output name=TRAVIS_TAG::${GITHUB_REF#refs/tags/}
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
@@ -31,3 +35,18 @@ jobs:
           bin/windows/tfsec-checkgen-windows-amd64.exe
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Release Docs
+      run: make publish-docs
+    - uses: docker-practice/actions-setup-docker@master
+    - run: |
+        set -x
+        docker version
+        docker run --rm hello-world
+    - name: Release Docker
+      run: |
+        make image
+        make push-image
+      env:
+          TRAVIS_TAG: ${{ steps.get_tag.outputs.TRAVIS_TAG }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
