@@ -43,8 +43,7 @@ func init() {
 		RequiredLabels: []string{"aws_cloudfront_distribution"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
-			loggingConfigBlock := block.GetBlock("logging_config")
-			if loggingConfigBlock == nil {
+			if block.MissingChild("logging_config") {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Cloudfront distribution '%s' does not have Access Logging configured", block.FullName()),
