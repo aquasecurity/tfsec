@@ -36,7 +36,9 @@ func init() {
 			Explanation: AWSCloudfrontDistributionAccessLoggingEnabledExplanation,
 			BadExample:  AWSCloudfrontDistributionAccessLoggingEnabledBadExample,
 			GoodExample: AWSCloudfrontDistributionAccessLoggingEnabledGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#logging_config",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
