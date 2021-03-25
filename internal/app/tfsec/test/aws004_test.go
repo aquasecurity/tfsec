@@ -24,6 +24,14 @@ resource "aws_alb_listener" "my-listener" {
 			mustIncludeResultCode: checks.AWSPlainHTTP,
 		},
 		{
+			name: "check aws_lb_listener using plain HTTP",
+			source: `
+resource "aws_lb_listener" "my-listener" {
+	protocol = "HTTP"
+}`,
+			mustIncludeResultCode: checks.AWSPlainHTTP,
+		},
+		{
 			name: "check aws_alb_listener using plain HTTP (via non specification)",
 			source: `
 resource "aws_alb_listener" "my-listener" {
