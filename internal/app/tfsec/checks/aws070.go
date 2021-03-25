@@ -14,13 +14,19 @@ AWS ES domain should have logging enabled by default.
 const AWSESDomainLoggingEnabledBadExample = `
 resource "aws_elasticsearch_domain" "example" {
   // other config
-  // no log_publishing_options
+
+  // One of the log_publishing_options has to be AUDIT_LOGS
+  log_publishing_options {
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
+    log_type                 = "INDEX_SLOW_LOGS"
+  }
 }
 `
 const AWSESDomainLoggingEnabledGoodExample = `
 resource "aws_elasticsearch_domain" "example" {
   // other config
 
+  // At minimum we should have AUDIT_LOGS enabled
   log_publishing_options {
     cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
     log_type                 = "AUDIT_LOGS"
@@ -44,38 +50,28 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-
-			if block.MissingChild("log_publishing_options") {
-				return []scanner.Result{
-					check.NewResult(
-						fmt.Sprintf("Resource '%s' has no log_publishing_options block specified, no logging is enabled", block.FullName()),
-						block.Range(),
-						scanner.SeverityError,
-					),
-				}
-			}
-
-			logPublishingOptions := block.GetBlock("log_publishing_options")
-			if logPublishingOptions.MissingChild("log_type") {
-				return []scanner.Result{
-					check.NewResult(
-						fmt.Sprintf("Resource '%s' is missing log_type configuration, no logging is enabled", block.FullName()),
-						logPublishingOptions.Range(),
-						scanner.SeverityError,
-					),
-				}
-			}
-
-			logType := logPublishingOptions.GetAttribute("log_type")
-					if !logType.Equals("AUDIT_LOGS") {
-						return []scanner.Result{
-							check.NewResult(
-								fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in `log_type` so audit log is not enabled", block.FullName()),
-								logPublishingOptions.Range(),
-								scanner.SeverityError,
-							),
+			logPublishingOptions := block.GetBlocks("log_publishing_options")
+			if len(logPublishingOptions) > 0 {
+				auditLogFound := false
+				for _, logPublishingOption := range logPublishingOptions {
+					logType := logPublishingOption.GetAttribute("log_type")
+					if logType != nil {
+						if logType.Equals("AUDIT_LOGS") {
+							auditLogFound = true
 						}
 					}
+				}
+
+				if !auditLogFound {
+					return []scanner.Result{
+						check.NewResult(
+							fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in one of the `log_publishing_options`-`log_type` attributes so audit log is not enabled", block.FullName()),
+							block.Range(),
+							scanner.SeverityError,
+						),
+					}
+				}
+			}
 
 			return nil
 		},

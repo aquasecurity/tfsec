@@ -87,17 +87,18 @@ func init() {
 				}
 			}
 
-			logOptions := block.GetBlock("log_publishing_options")
-			enabled := logOptions.GetAttribute("enabled")
-
-			if enabled != nil && enabled.IsFalse() {
-				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
-						fmt.Sprintf("Resource '%s' explicitly disables logging on the domain.", block.FullName()),
-						enabled.Range(),
-						enabled,
-						scanner.SeverityError,
-					),
+			logOptions := block.GetBlocks("log_publishing_options")
+			for _, logOption := range logOptions {
+				enabled := logOption.GetAttribute("enabled")
+				if enabled != nil && enabled.IsFalse() {
+					return []scanner.Result{
+						check.NewResultWithValueAnnotation(
+							fmt.Sprintf("Resource '%s' explicitly disables logging on the domain.", block.FullName()),
+							enabled.Range(),
+							enabled,
+							scanner.SeverityError,
+						),
+					}
 				}
 			}
 

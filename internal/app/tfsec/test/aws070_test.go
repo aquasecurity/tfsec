@@ -16,29 +16,7 @@ func Test_AWSAWSESDomainShouldHaveAuditLogEnabled(t *testing.T) {
 		mustExcludeResultCode scanner.RuleCode
 	}{
 		{
-			name: "Test if log_type is missing throw an error",
-			source: `
-resource "aws_elasticsearch_domain" "example" {
-  // other config
-
-  log_publishing_options {
-    cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
-  }
-}
-`,
-			mustIncludeResultCode: checks.AWSESDomainLoggingEnabled,
-		},
-		{
-			name: "Test if log_publishing_options missing throw an error",
-			source: `
-resource "aws_elasticsearch_domain" "example" {
-  // other config
-}
-`,
-			mustIncludeResultCode: checks.AWSESDomainLoggingEnabled,
-		},
-		{
-			name: "Test if log_type missing AUDIT_LOGS throw an error",
+			name: "check fails if any of the log options dont specify log_type of AUDIT_LOGS",
 			source: `
 resource "aws_elasticsearch_domain" "example" {
   // other config
@@ -47,15 +25,25 @@ resource "aws_elasticsearch_domain" "example" {
     cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
     log_type                 = "SLOW_LOGS"
   }
+
+  log_publishing_options {
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
+    log_type                 = "TEST_LOGS"
+  }
 }
 `,
 			mustIncludeResultCode: checks.AWSESDomainLoggingEnabled,
 		},
 		{
-			name: "Test check passes if conditions are met",
+			name: "check passes if one of the log_type is AUDIT_LOGS and audit log is enabled",
 			source: `
 resource "aws_elasticsearch_domain" "example" {
   // other config
+
+  log_publishing_options {
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
+    log_type                 = "SLOW_LOGS"
+  }
 
   log_publishing_options {
     cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
