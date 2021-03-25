@@ -6,7 +6,7 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-const AWSCloudfrontDistributionAccessLoggingEnabled scanner.RuleCode = "AWS070"
+const AWSCloudfrontDistributionAccessLoggingEnabled scanner.RuleCode = "AWS071"
 const AWSCloudfrontDistributionAccessLoggingEnabledDescription scanner.RuleSummary = "Cloudfront distribution should have Access Logging configured"
 const AWSCloudfrontDistributionAccessLoggingEnabledExplanation = `
 You should configure CloudFront Access Logging to create log files that contain detailed information about every user request that CloudFront receives
