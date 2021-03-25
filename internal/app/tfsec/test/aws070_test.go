@@ -16,7 +16,7 @@ func Test_AWSCloudfrontDistributionAccessLoggingEnabled(t *testing.T) {
 		mustExcludeResultCode scanner.RuleCode
 	}{
 		{
-			name: "check no logging_config in aws_cloudfront_distribution",
+			name: "Check does not pass when logging_config is missing in aws_cloudfront_distribution",
 			source: `
 resource "aws_cloudfront_distribution" "bad_example" {
 	// other config
@@ -26,14 +26,11 @@ resource "aws_cloudfront_distribution" "bad_example" {
 			mustIncludeResultCode: checks.AWSCloudfrontDistributionAccessLoggingEnabled,
 		},
 		{
-			name: "check aws_cloudfront_distribution with existing logging_config",
+			name: "Check passes when logging_config is declared in aws_cloudfront_distribution",
 			source: `
 resource "aws_cloudfront_distribution" "good_example" {
 	// other config
 	logging_config {
-		include_cookies = false
-		bucket          = "mylogs.s3.amazonaws.com"
-		prefix          = "myprefix"
 	}
 }
 `,
