@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: building tfsec
+    name: releasing tfsec
     runs-on: ubuntu-latest
 
     steps:
