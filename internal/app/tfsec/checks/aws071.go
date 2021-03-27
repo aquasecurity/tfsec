@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -49,7 +50,7 @@ func init() {
 			if block.MissingChild("logging_config") {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Cloudfront distribution '%s' does not have Access Logging configured", block.FullName()),
+						fmt.Sprintf("Resource '%s' does not have Access Logging configured", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
 					),
