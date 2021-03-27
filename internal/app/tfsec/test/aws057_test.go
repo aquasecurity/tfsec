@@ -72,6 +72,28 @@ resource "aws_elasticsearch_domain" "bad_example" {
 `,
 			mustExcludeResultCode: checks.AWSElasticSearchHasDomainLogging,
 		},
+		{
+			name: "check fails when one of the log options are present but disabled",
+			source: `
+resource "aws_elasticsearch_domain" "bad_example" {
+  domain_name           = "example"
+  elasticsearch_version = "1.5"
+
+  log_publishing_options {
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
+    log_type                 = "INDEX_SLOW_LOGS"
+    enabled                  = true
+  }
+
+  log_publishing_options {
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
+    log_type                 = "AUDIT_LOGS"
+    enabled                  = false
+  }
+}
+`,
+			mustIncludeResultCode: checks.AWSElasticSearchHasDomainLogging,
+		},
 	}
 
 	for _, test := range tests {
