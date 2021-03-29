@@ -6,7 +6,7 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-const AWSCodeBuildProjectEncryptionNotDisabled scanner.RuleCode = "AWS073"
+const AWSCodeBuildProjectEncryptionNotDisabled scanner.RuleCode = "AWS078"
 const AWSCodeBuildProjectEncryptionNotDisabledDescription scanner.RuleSummary = "CodeBuild Project artifacts encryption should not be disabled"
 const AWSCodeBuildProjectEncryptionNotDisabledExplanation = `
 All artifacts produced by your CodeBuild project pipeline should always be encrypted
