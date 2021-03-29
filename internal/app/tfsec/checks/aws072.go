@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -79,7 +80,7 @@ func init() {
 			if defaultCacheBlock.GetAttribute("viewer_protocol_policy").Equals("allow-all", parser.IgnoreCase) {
 				return []scanner.Result{
 					check.NewResult(
-						fmt.Sprintf("Cloudfront distribution cache '%s' does not use HTTPS in Viewer Protocol Policy", block.FullName()),
+						fmt.Sprintf("Resource '%s' does not use HTTPS in Viewer Protocol Policy", block.FullName()),
 						defaultCacheBlock.Range(),
 						scanner.SeverityError,
 					),
@@ -91,7 +92,7 @@ func init() {
 				if orderedCacheBlock.GetAttribute("viewer_protocol_policy").Equals("allow-all", parser.IgnoreCase) {
 					return []scanner.Result{
 						check.NewResult(
-							fmt.Sprintf("Cloudfront distribution cache '%s' does not use HTTPS in Viewer Protocol Policy", block.FullName()),
+							fmt.Sprintf("Resource '%s' does not use HTTPS in Viewer Protocol Policy", block.FullName()),
 							orderedCacheBlock.Range(),
 							scanner.SeverityError,
 						),

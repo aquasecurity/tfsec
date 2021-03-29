@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"github.com/zclconf/go-cty/cty"
@@ -64,8 +65,6 @@ func init() {
 					),
 				}
 			}
-			return nil
-
 			return nil
 		},
 	})
