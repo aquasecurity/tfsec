@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/hashicorp/hcl/v2 v2.9.1
-	github.com/hashicorp/terraform v0.14.8
+	github.com/hashicorp/terraform v0.14.9
 	github.com/liamg/clinch v1.5.6
 	github.com/liamg/tml v0.4.0
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
