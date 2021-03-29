@@ -36,14 +36,13 @@ resource "aws_codebuild_project" "codebuild" {
 resource "aws_codebuild_project" "codebuild" {
 	// other config
 
-	secondary_artifacts = [
-		{
-			encryption_disabled = false
-		},
-		{
-			encryption_disabled = true
-		}
-	]
+	secondary_artifacts {
+		encryption_disabled = false
+	}
+
+	secondary_artifacts {
+		encryption_disabled = true
+	}
 }
 `,
 			mustIncludeResultCode: checks.AWSCodeBuildProjectEncryptionNotDisabled,
@@ -79,14 +78,14 @@ resource "aws_codebuild_project" "codebuild" {
 resource "aws_codebuild_project" "codebuild" {
 	// other config
 
-	secondary_artifacts = [
-		{
-			encryption_disabled = false
-		},
-		{
-			encryption_disabled = false
-		}
-	]
+	secondary_artifacts {
+		encryption_disabled = false
+	}
+
+	secondary_artifacts {
+		encryption_disabled = false
+		type = "NO_ARTIFACTS"
+	}
 }
 `,
 			mustExcludeResultCode: checks.AWSCodeBuildProjectEncryptionNotDisabled,
@@ -97,12 +96,11 @@ resource "aws_codebuild_project" "codebuild" {
 resource "aws_codebuild_project" "codebuild" {
 	// other config
 
-	secondary_artifacts = [
-		{
-		},
-		{
-		}
-	]
+	secondary_artifacts {
+	}
+
+	secondary_artifacts {
+	}
 }
 `,
 			mustExcludeResultCode: checks.AWSCodeBuildProjectEncryptionNotDisabled,
@@ -122,7 +120,7 @@ resource "aws_codebuild_project" "codebuild" {
 	// other config
 
 	artifacts {
-		encryption_disabled = true,
+		encryption_disabled = true
 		type = "NO_ARTIFACTS"
 	}
 }
