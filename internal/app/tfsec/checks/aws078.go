@@ -61,35 +61,26 @@ func init() {
 		RequiredLabels: []string{"aws_dax_cluster"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
+			result := check.NewResult(
+				"",
+				block.Range(),
+				scanner.SeverityError,
+			)
+
 			if block.MissingChild("server_side_encryption") {
-				return []scanner.Result{
-					check.NewResult(
-						fmt.Sprintf("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", block.FullName()),
-						block.Range(),
-						scanner.SeverityError,
-					),
-				}
+				result.Description = fmt.Sprintf("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", block.FullName())
+				return []scanner.Result{result}
 			}
 
 			sseBlock := block.GetBlock("server_side_encryption")
 			if sseBlock.MissingChild("enabled") {
-				return []scanner.Result{
-					check.NewResult(
-						fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", block.FullName()),
-						block.Range(),
-						scanner.SeverityError,
-					),
-				}
+				result.Description = fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", block.FullName())
+				return []scanner.Result{result}
 			}
 
 			if sseEnabledAttr := sseBlock.GetAttribute("enabled"); sseEnabledAttr == nil || sseEnabledAttr.IsFalse() {
-				return []scanner.Result{
-					check.NewResult(
-						fmt.Sprintf("DAX cluster '%s' has disabled server side encryption", block.FullName()),
-						block.Range(),
-						scanner.SeverityError,
-					),
-				}
+				result.Description = fmt.Sprintf("DAX cluster '%s' has disabled server side encryption", block.FullName())
+				return []scanner.Result{result}
 			}
 
 			return nil
