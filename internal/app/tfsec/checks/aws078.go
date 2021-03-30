@@ -75,11 +75,13 @@ func init() {
 			sseBlock := block.GetBlock("server_side_encryption")
 			if sseBlock.MissingChild("enabled") {
 				result.Description = fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", block.FullName())
+				result.Range = sseBlock.Range()
 				return []scanner.Result{result}
 			}
 
-			if sseEnabledAttr := sseBlock.GetAttribute("enabled"); sseEnabledAttr == nil || sseEnabledAttr.IsFalse() {
+			if sseEnabledAttr := sseBlock.GetAttribute("enabled"); sseEnabledAttr.IsFalse() {
 				result.Description = fmt.Sprintf("DAX cluster '%s' has disabled server side encryption", block.FullName())
+				result.Range = sseEnabledAttr.Range()
 				return []scanner.Result{result}
 			}
 
