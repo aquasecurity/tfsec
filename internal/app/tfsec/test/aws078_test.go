@@ -50,7 +50,7 @@ resource "aws_dax_cluster" "bad_example" {
 			mustIncludeResultCode: checks.AWSDAXEncryptedAtRest,
 		},
 		{
-			name: "TODO: add test name",
+			name: "Check should pass when SSE is enabled",
 			source: `
 resource "aws_dax_cluster" "good_example" {
 	// other DAX config
