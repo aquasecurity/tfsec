@@ -16,16 +16,49 @@ func Test_AWSDAXEncryptedAtRest(t *testing.T) {
 		mustExcludeResultCode scanner.RuleCode
 	}{
 		{
-			name: "TODO: add test name",
+			name: "Check should not pass when no SSE block at all",
 			source: `
-	// bad test
+resource "aws_dax_cluster" "bad_example" {
+	// no server side encryption at all
+}
+`,
+			mustIncludeResultCode: checks.AWSDAXEncryptedAtRest,
+		}, {
+			name: "Check should not pass when SSE block empty",
+			source: `
+resource "aws_dax_cluster" "bad_example" {
+	// other DAX config
+
+	server_side_encryption {
+		// empty server side encryption config
+	}
+}
+`,
+			mustIncludeResultCode: checks.AWSDAXEncryptedAtRest,
+		},
+		{
+			name: "Check should not pass when SSE disabled",
+			source: `
+resource "aws_dax_cluster" "bad_example" {
+	// other DAX config
+
+	server_side_encryption {
+		enabled = false // disabled server side encryption
+	}
+}
 `,
 			mustIncludeResultCode: checks.AWSDAXEncryptedAtRest,
 		},
 		{
 			name: "TODO: add test name",
 			source: `
-	// good test
+resource "aws_dax_cluster" "good_example" {
+	// other DAX config
+
+	server_side_encryption {
+		enabled = true // enabled server side encryption
+	}
+}
 `,
 			mustExcludeResultCode: checks.AWSDAXEncryptedAtRest,
 		},
