@@ -4,20 +4,35 @@ import (
 	"strings"
 )
 
-func IsSensitiveAttribute(name string) bool {
+var sensitiveAttributeTokens = []string{
+	"password",
+	"secret",
+	"private_key",
+	"aws_access_key_id",
+	"aws_secret_access_key",
+	"token",
+	"api_key",
+}
 
+var whitelistTokens = []string{
+	"version",
+}
+
+func IsSensitiveAttribute(name string) bool {
 	name = strings.ToLower(name)
 
-	switch {
-	case
-		strings.Contains(name, "password"),
-		strings.Contains(name, "secret"),
-		strings.Contains(name, "private_key"),
-		strings.Contains(name, "aws_access_key_id"),
-		strings.Contains(name, "aws_secret_access_key"),
-		strings.Contains(name, "token"),
-		strings.Contains(name, "api_key"):
-		return true
+	for _, criterionToken := range sensitiveAttributeTokens {
+		if name == criterionToken {
+			return true
+		}
+		if strings.Contains(name, criterionToken) {
+			for _, exclusionToken := range whitelistTokens {
+				if strings.HasSuffix(name, exclusionToken) {
+					return false
+				}
+			}
+			return true
+		}
 	}
 
 	return false
