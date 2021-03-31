@@ -51,7 +51,7 @@ func init() {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing viewer_certificate block)", block.FullName()),
-						viewerCertificateBlock.Range(),
+						block.Range(),
 						scanner.SeverityError,
 					),
 				}

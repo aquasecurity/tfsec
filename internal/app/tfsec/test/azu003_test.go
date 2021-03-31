@@ -21,7 +21,7 @@ func Test_AzureUnencryptedManagedDisk(t *testing.T) {
 resource "azurerm_managed_disk" "my-disk" {
 	
 }`,
-			mustIncludeResultCode: checks.AzureUnencryptedManagedDisk,
+			mustExcludeResultCode: checks.AzureUnencryptedManagedDisk,
 		},
 		{
 			name: "check azurerm_managed_disk with encryption disabled",

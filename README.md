@@ -6,7 +6,7 @@
 [![GoReportCard](https://goreportcard.com/badge/github.com/tfsec/tfsec)](https://goreportcard.com/report/github.com/tfsec/tfsec)
 [![Github Release](https://img.shields.io/github/release/tfsec/tfsec.svg)](https://github.com/tfsec/tfsec/releases)
 [![GitHub All Releases](https://img.shields.io/github/downloads/tfsec/tfsec/total)](https://github.com/tfsec/tfsec/releases)
-[![Join Our Slack](https://img.shields.io/badge/Slack-Join-green)](https://join.slack.com/t/tfsec/shared_invite/zt-i0vo9rp2-tEizIaT1dS4Eu2hVIsvwDg)
+[![Join Our Slack](https://img.shields.io/badge/Slack-Join-green)](https://join.slack.com/t/tfsec/shared_invite/zt-o6c7mgoj-eJ1sLDv595sKiP5OPoHJww)
 [![Docker Build](https://img.shields.io/docker/v/tfsec/tfsec)](https://dockerhub.com/r/tfsec/tfsec)
 [![Homebrew](https://img.shields.io/badge/dynamic/json.svg?url=https://formulae.brew.sh/api/formula/tfsec.json&query=$.versions.stable&label=homebrew)](https://formulae.brew.sh/formula/tfsec)
 [![Chocolatey](https://img.shields.io/chocolatey/v/tfsec)](https://chocolatey.org/packages/tfsec)
@@ -68,6 +68,10 @@ To run:
 ```bash
 docker run --rm -it -v "$(pwd):/src" liamg/tfsec /src
 ```
+
+## Use with Visual Studio Code
+
+A Visual Studio Code extension is being developed to integrate with tfsec results. More information can be found on the [tfsec Marketplace page](https://marketplace.visualstudio.com/items?itemName=tfsec.tfsec)
 
 ## Use as GitHub Action
 

@@ -66,8 +66,6 @@ func init() {
 						scanner.SeverityError,
 					),
 				}
-
-				return nil
 			}
 
 			if tlsPolicyAttr.Value().Equals(cty.StringVal("Policy-Min-TLS-1-0-2019-07")).True() {
