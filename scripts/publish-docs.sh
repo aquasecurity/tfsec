@@ -14,7 +14,7 @@ function deploy {
 	echo "deploying changes"
 	pushd _site
 	git config user.name "GitHub Actions Build"
-  git config user.email github-actions@tfsec
+	git config user.email github-actions@tfsec
 	git add -A
 	git commit -m "GitHub Actions Build: ${GITHUB_RUN_ID}. ${MESSAGE}" || true
 	git push "${DEPLOY_REPO}" main:main || true
