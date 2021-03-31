@@ -69,6 +69,10 @@ To run:
 docker run --rm -it -v "$(pwd):/src" liamg/tfsec /src
 ```
 
+## Use with Visual Studio Code
+
+A Visual Studio Code extension is being developed to integrate with tfsec results. More information can be found on the [tfsec Marketplace page](https://marketplace.visualstudio.com/items?itemName=tfsec.tfsec)
+
 ## Use as GitHub Action
 
 If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/triat/terraform-security-scan](https://github.com/triat/terraform-security-scan).
