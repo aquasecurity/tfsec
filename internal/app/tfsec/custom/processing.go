@@ -2,6 +2,8 @@ package custom
 
 import (
 	"fmt"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -9,7 +11,7 @@ import (
 var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 	IsPresent: func(block *parser.Block, spec *MatchSpec) bool {
 		return block.HasChild(spec.Name) || spec.IgnoreUndefined
-},
+	},
 	NotPresent: func(block *parser.Block, spec *MatchSpec) bool { return !block.HasChild(spec.Name) },
 	IsEmpty: func(block *parser.Block, spec *MatchSpec) bool {
 		if block.MissingChild(spec.Name) {
@@ -109,7 +111,7 @@ var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 func processFoundChecks(checks ChecksFile) {
 	for _, customCheck := range checks.Checks {
 		func(customCheck Check) {
-			fmt.Printf("Loading check: %s\n", customCheck.Code)
+			debug.Log("Loading check: %s\n", customCheck.Code)
 			scanner.RegisterCheck(scanner.Check{
 				Code: customCheck.Code,
 				Documentation: scanner.CheckDocumentation{
