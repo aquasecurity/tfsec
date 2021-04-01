@@ -12,22 +12,11 @@ function clone_site {
 
 function deploy {
 	echo "deploying changes"
-
-	if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
-	    echo "except don't publish site for pull requests"
-	    exit 0
-	fi
-
-	if [[ "$TRAVIS_BRANCH" != "master" ]]; then
-	    echo "except we should only publish the master branch. stopping here"
-	    exit 0
-	fi
-
 	pushd _site
-	git config user.name "Travis Build"
-  git config user.email travis@tfsec
+	git config user.name "GitHub Actions Build"
+	git config user.email github-actions@tfsec
 	git add -A
-	git commit -m "Travis Build: ${TRAVIS_BUILD_NUMBER}. ${MESSAGE}" || true
+	git commit -m "GitHub Actions Build: ${GITHUB_RUN_ID}. ${MESSAGE}" || true
 	git push "${DEPLOY_REPO}" main:main || true
 	popd
 }
