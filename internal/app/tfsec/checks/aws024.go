@@ -63,7 +63,7 @@ func init() {
 				}
 			} else {
 				keyIDAttr := block.GetAttribute("kms_key_id")
-				if keyIDAttr == nil || keyIDAttr.Value().AsString() == "" || keyIDAttr.Value().AsString() == "alias/aws/kinesis" {
+				if keyIDAttr == nil || keyIDAttr.IsEmpty() || keyIDAttr.Equals("alias/aws/kinesis") {
 					return []scanner.Result{
 						check.NewResult(
 							fmt.Sprintf("Resource '%s' defines a Kinesis Stream encrypted with the default Kinesis key.", block.FullName()),
@@ -73,7 +73,6 @@ func init() {
 					}
 				}
 			}
-
 			return nil
 		},
 	})
