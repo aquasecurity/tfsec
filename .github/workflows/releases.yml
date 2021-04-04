@@ -48,7 +48,7 @@ jobs:
         hash-type: sha256
         file-name: checksums.txt
     
-    - names: Upload checksums file
+    - name: Upload checksums file
       uses: actions/upload-artifact@v2
       with:
         name: Asset Checksums
