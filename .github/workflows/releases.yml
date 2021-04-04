@@ -42,18 +42,6 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Update release hashes
-      uses: MCJack123/ghaction-generate-release-hashes@v1
-      with:
-        hash-type: sha256
-        file-name: checksums.txt
-    
-    - name: Upload checksums file
-      uses: actions/upload-artifact@v2
-      with:
-        name: Asset Checksums
-        path: checksums.txt
-
     - name: Release Docs
       run: make publish-docs
     
