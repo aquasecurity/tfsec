@@ -13,12 +13,12 @@ function clone_site {
 function deploy {
 	echo "deploying changes"
 	pushd _site
-	git config user.name "GitHub Actions Build"
-	git config user.email github-actions@tfsec
-	git remote set-url origin "${DEPLOY_REPO}"
+	git config --global user.name "GitHub Actions Build"
+	git config --global user.email github-actions@tfsec.dev
 	git add -A
+	git remote set-url origin "${DEPLOY_REPO}"
 	git commit -m "GitHub Actions Build: ${GITHUB_RUN_ID}. ${MESSAGE}" || true
-	git push "${DEPLOY_REPO}" main:main || true
+	git push --set-upstream main main || true
 	popd
 }
 
