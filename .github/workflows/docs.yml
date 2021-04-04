@@ -1,0 +1,61 @@
+name: tfsec release
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    name: releasing tfsec
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - uses: actions/setup-go@v2
+      with:
+        stable: 'false'
+        go-version: '1.16.2' # The Go version to download (if necessary) and use.
+    - run: go version
+    
+    - name: Get Tag
+      id: get_tag
+      run: |
+        echo ::set-output name=TRAVIS_TAG::${GITHUB_REF#refs/tags/}
+    
+    - name: Build artifacts
+      run: make build
+      env:
+        TRAVIS_TAG: ${{ steps.get_tag.outputs.TRAVIS_TAG }}
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          bin/darwin/tfsec-darwin-amd64
+          bin/linux/tfsec-linux-amd64
+          bin/windows/tfsec-windows-amd64.exe
+          bin/darwin/tfsec-checkgen-darwin-amd64
+          bin/linux/tfsec-checkgen-linux-amd64
+          bin/windows/tfsec-checkgen-windows-amd64.exe
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Release Docs
+      run: make publish-docs
+    
+    - uses: docker-practice/actions-setup-docker@master
+    - run: |
+        set -x
+        docker version
+        docker run --rm hello-world
+    
+    - name: Release Docker
+      run: |
+        make image
+        make push-image
+      env:
+          TRAVIS_TAG: ${{ steps.get_tag.outputs.TRAVIS_TAG }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
