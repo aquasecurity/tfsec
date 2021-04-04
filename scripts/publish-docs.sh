@@ -18,7 +18,7 @@ function deploy {
 	git add -A
 	git remote set-url origin "${DEPLOY_REPO}"
 	git commit -m "GitHub Actions Build: ${GITHUB_RUN_ID}. ${MESSAGE}" || true
-	git push --set-upstream main main || true
+	git push --set-upstream origin main || true
 	popd
 }
 
