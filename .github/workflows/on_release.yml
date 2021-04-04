@@ -1,4 +1,4 @@
-name: tfsec release
+name: tfsec checksums
 on:
   release:
     types: [published]
