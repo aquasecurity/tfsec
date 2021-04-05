@@ -101,10 +101,10 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	t.Stop()
 
 	debug.Log("Loading modules...")
-	modules := LoadModules(blocks, tfPath, modulesMetadata)
-
+	modules := LoadModules(blocks, tfPath, modulesMetadata, nil)
+	var visitedModule []*VisitedModule
 	debug.Log("Evaluating expressions...")
-	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules)
+	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules, visitedModule )
 	evaluatedBlocks, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err

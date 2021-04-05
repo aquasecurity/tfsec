@@ -20,7 +20,7 @@ type ModuleInfo struct {
 }
 
 // reads all module blocks and loads the underlying modules, adding blocks to e.moduleBlocks
-func LoadModules(blocks Blocks, projectBasePath string, metadata *ModulesMetadata) []*ModuleInfo {
+func LoadModules(blocks Blocks, projectBasePath string, metadata *ModulesMetadata, visitedModules []*VisitedModule) []*ModuleInfo {
 
 	var modules []*ModuleInfo
 
@@ -28,6 +28,14 @@ func LoadModules(blocks Blocks, projectBasePath string, metadata *ModulesMetadat
 		if moduleBlock.Label() == "" {
 			continue
 		}
+
+		for _, v := range visitedModules {
+			if v.Name == moduleBlock.NameLabel()   {
+				debug.Log("Module %s has already been seen", v.Name)
+				continue
+			}
+		}
+
 		module, err := loadModule(moduleBlock, projectBasePath, metadata)
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: Failed to load module: %s\n", err)
