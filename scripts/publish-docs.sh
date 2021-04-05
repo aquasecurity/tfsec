@@ -2,7 +2,7 @@
 
 set -ex
 
-DEPLOY_REPO="https://${GITHUB_TOKEN}@github.com/tfsec/tfsec.github.io.git"
+DEPLOY_REPO="https://${DOCS_GITHUB_TOKEN}@github.com/tfsec/tfsec.github.io.git"
 MESSAGE=$(git log -1 HEAD --pretty=format:%s)
 
 function clone_site {
