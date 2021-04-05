@@ -12,14 +12,14 @@ import (
 
 const maxContextIterations = 32
 
-type VisitedModule struct {
-	Name string
-	Path string
+type visitedModules struct {
+	name string
+	path string
 }
 
 type Evaluator struct {
 	ctx             *hcl.EvalContext
-	visitedModules  []*VisitedModule
+	visitedModules  []*visitedModules
 	blocks          Blocks
 	modules         []*ModuleInfo
 	inputVars       map[string]cty.Value
@@ -27,7 +27,7 @@ type Evaluator struct {
 	projectRootPath string // root of the current scan
 }
 
-func NewEvaluator(projectRootPath string, modulePath string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo, visitedModules []*VisitedModule) *Evaluator {
+func NewEvaluator(projectRootPath string, modulePath string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo, visitedModules []*visitedModules) *Evaluator {
 
 	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
@@ -79,18 +79,19 @@ func (e *Evaluator) evaluateStep(i int) {
 func (e *Evaluator) evaluateModules() {
 
 	for _, module := range e.modules {
-		found := false
-		for _, v := range e.visitedModules {
-			if v.Name == module.Name && v.Path == module.Path {
-				debug.Log("Module %s has already been seen", v.Name)
-				found = true
-				break
+		if found := func(module *ModuleInfo) bool {
+			for _, v := range e.visitedModules {
+				if v.name == module.Name && v.path == module.Path {
+					debug.Log("Module %s has already been seen", v.name)
+					return true
+				}
 			}
-		}
-		if found {
+			return false
+		}(module); found {
 			continue
 		}
-		e.visitedModules = append(e.visitedModules, &VisitedModule{module.Name, module.Path})
+
+		e.visitedModules = append(e.visitedModules, &visitedModules{module.Name, module.Path})
 
 		evalTime := metrics.Start(metrics.Evaluation)
 		inputVars := make(map[string]cty.Value)

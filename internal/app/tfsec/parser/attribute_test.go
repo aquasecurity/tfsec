@@ -74,13 +74,13 @@ func Test_AttributeEndsWith(t *testing.T) {
 		expectedResult bool
 	}{
 		{
-			name: "bucket name ends with Name",
+			name: "bucket name ends with name",
 			source: `
 resource "aws_s3_bucket" "my-bucket" {
- 	bucket_name = "bucketName"
+ 	bucket_name = "bucketname"
 }`,
 			checkAttribute: "bucket_name",
-			checkValue:     "Name",
+			checkValue:     "name",
 			expectedResult: true,
 		},
 		{
@@ -119,7 +119,7 @@ resource "aws_s3_bucket" "my-bucket" {
 					t.Fail()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
-				assert.Equal(t, attr.EndsWith(test.checkValue), test.expectedResult)
+				assert.Equal(t,test.expectedResult, attr.EndsWith(test.checkValue))
 			}
 		})
 	}
@@ -135,7 +135,7 @@ func Test_AttributeContains(t *testing.T) {
 		ignoreCase     bool
 	}{
 		{
-			name: "bucket name contains Name",
+			name: "bucket name contains name",
 			source: `
 resource "aws_s3_bucket" "my-bucket" {
  	bucket_name = "bucketName"
@@ -185,7 +185,7 @@ resource "aws_security_group" "my-security_group" {
 resource "aws_autoscaling_group" "my-aws_autoscaling_group" {		
 	tags = [
 		{
-			"key"                 = "Name"
+			"key"                 = "name"
 			"propagate_at_launch" = "true"
 			"value"               = "couchbase-seb-develop-dev"
 		},
@@ -197,7 +197,7 @@ resource "aws_autoscaling_group" "my-aws_autoscaling_group" {
 		]
 }`,
 			checkAttribute: "tags",
-			checkValue:     "Name",
+			checkValue:     "name",
 			expectedResult: true,
 		},
 		{
@@ -206,7 +206,7 @@ resource "aws_autoscaling_group" "my-aws_autoscaling_group" {
 resource "aws_autoscaling_group" "my-aws_autoscaling_group" {		
 	tags = [
 		{
-			"key"                 = "Name"
+			"key"                 = "name"
 			"propagate_at_launch" = "true"
 			"value"               = "couchbase-seb-develop-dev"
 		},
@@ -227,7 +227,7 @@ resource "aws_autoscaling_group" "my-aws_autoscaling_group" {
 resource "aws_autoscaling_group" "my-aws_autoscaling_group" {		
 	tags = [
 		{
-			"key"                 = "Name"
+			"key"                 = "name"
 			"propagate_at_launch" = "true"
 			"value"               = "couchbase-seb-develop-dev"
 		},

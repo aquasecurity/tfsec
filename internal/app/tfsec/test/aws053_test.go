@@ -114,7 +114,7 @@ resource "aws_rds_cluster_instance" "covidshield_server_instances" {
   performance_insights_enabled = true 
   performance_insights_kms_key_id = "arn:aws:kms:${var.region}:${data.aws_caller_identity.current.account_id}:alias/aws/rds"
   tags = {
-    Name                  = "${var.rds_server_db_name}-instance"
+    name                  = "${var.rds_server_db_name}-instance"
     (var.billing_tag_key) = var.billing_tag_value
   }
 }`,

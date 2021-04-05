@@ -76,7 +76,7 @@ func validateMatchSpec(spec *MatchSpec, check *Check, checkErrors []error) []err
 	}
 	// if the check is one of `inModule`,`or`,`and`, `not`, no name is required
 	if len(spec.Name) == 0 && spec.Action != "inModule" && spec.Action != "or" && spec.Action != "and"  && spec.Action != "not"{
-		checkErrors = append(checkErrors, errors.New("matchSpec.Name requires a value"))
+		checkErrors = append(checkErrors, errors.New("matchSpec.name requires a value"))
 	}
 
 	// if the check is one of `or`, `and`, then all PredicateMatchSpec's must also be valid

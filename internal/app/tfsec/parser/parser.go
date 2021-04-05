@@ -102,9 +102,9 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 
 	debug.Log("Loading modules...")
 	modules := LoadModules(blocks, tfPath, modulesMetadata, nil)
-	var visitedModule []*VisitedModule
+	var visitedModule []*visitedModules
 	debug.Log("Evaluating expressions...")
-	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules, visitedModule )
+	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules, visitedModule)
 	evaluatedBlocks, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err
@@ -130,7 +130,6 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 			}
 		}
 	}
-
 
 	for _, entry := range entries {
 		if entry.IsDir() {
