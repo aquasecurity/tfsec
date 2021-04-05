@@ -12,16 +12,22 @@ import (
 
 const maxContextIterations = 32
 
+type visitedModule struct {
+	name string
+	path string
+}
+
 type Evaluator struct {
 	ctx             *hcl.EvalContext
 	blocks          Blocks
 	modules         []*ModuleInfo
+	visitedModules  []*visitedModule
 	inputVars       map[string]cty.Value
 	moduleMetadata  *ModulesMetadata
 	projectRootPath string // root of the current scan
 }
 
-func NewEvaluator(projectRootPath string, modulePath string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo) *Evaluator {
+func NewEvaluator(projectRootPath string, modulePath string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo, visitedModules []*visitedModule) *Evaluator {
 
 	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
@@ -40,6 +46,7 @@ func NewEvaluator(projectRootPath string, modulePath string, blocks Blocks, inpu
 		inputVars:       inputVars,
 		moduleMetadata:  moduleMetadata,
 		modules:         modules,
+		visitedModules:  visitedModules,
 	}
 }
 
@@ -72,6 +79,19 @@ func (e *Evaluator) evaluateStep(i int) {
 func (e *Evaluator) evaluateModules() {
 
 	for _, module := range e.modules {
+		if visited := func(module *ModuleInfo) bool {
+			for _, v := range e.visitedModules {
+				if v.name == module.Name && v.path == module.Path {
+					debug.Log("Module [%s:%s] has already been seen", v.name, v.path)
+					return true
+				}
+			}
+			return false
+		}(module); visited {
+			continue
+		}
+
+		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path})
 
 		evalTime := metrics.Start(metrics.Evaluation)
 		inputVars := make(map[string]cty.Value)
@@ -88,7 +108,7 @@ func (e *Evaluator) evaluateModules() {
 		evalTime.Stop()
 
 		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata)
-		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules)
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules, e.visitedModules)
 		e.SetModuleBasePath(e.projectRootPath)
 		b, _ := moduleEvaluator.EvaluateAll()
 		e.blocks = mergeBlocks(e.blocks, b)
