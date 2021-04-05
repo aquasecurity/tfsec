@@ -20,4 +20,6 @@ jobs:
 
     - name: Release Docs
       run: make publish-docs
+      env:
+          GITHUB_TOKEN: ${{ secrets.DOCS_GITHUB_TOKEN }}
   

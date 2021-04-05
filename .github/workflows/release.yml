@@ -45,7 +45,7 @@ jobs:
     - name: Release Docs
       run: make publish-docs
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DOCS_GITHUB_TOKEN }}
     
     - uses: docker-practice/actions-setup-docker@master
     - run: |
