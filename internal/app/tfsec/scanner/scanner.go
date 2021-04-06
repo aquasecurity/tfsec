@@ -2,11 +2,10 @@ package scanner
 
 import (
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 	"io/ioutil"
 	"strings"
 
-
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 
@@ -68,7 +67,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 						results = append(results, check.NewPassingResult(block.Range()))
 					} else {
 						for _, result := range res {
-							if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
+							if !scanner.checkRangeIgnored(result.RuleID, result.Range, block.Range()) && !checkInList(result.RuleID, excludedChecksList) {
 								results = append(results, result)
 							}
 						}
@@ -80,7 +79,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 	return results
 }
 
-func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range) bool {
+func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range, b parser.Range) bool {
 	raw, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return false
@@ -88,6 +87,7 @@ func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range) bool {
 	ignoreAll := "tfsec:ignore:*"
 	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", code)
 	lines := append([]string{""}, strings.Split(string(raw), "\n")...)
+	// check the line itself
 	for number := r.StartLine; number <= r.EndLine; number++ {
 		if number <= 0 || number >= len(lines) {
 			continue
@@ -97,17 +97,32 @@ func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range) bool {
 		}
 	}
 
+	// check the line above the relevant range
 	if r.StartLine-1 > 0 {
 		line := lines[r.StartLine-1]
-		line = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(line, "//", ""), "#", ""))
-		segments := strings.Split(line, " ")
-		for _, segment := range segments {
-			if segment == ignoreAll || segment == ignoreCode {
-				return true
-			}
+		if ignored := checkLineForIgnore(line, ignoreAll, ignoreCode); ignored {
+			return true
 		}
-
 	}
 
+	// check the line above the block
+	if b.StartLine-1 > 0 {
+		line := lines[b.StartLine-1]
+		if ignored := checkLineForIgnore(line, ignoreAll, ignoreCode); ignored {
+			return true
+		}
+	}
+
+	return false
+}
+
+func checkLineForIgnore(line, ignoreAll, ignoreCode string) bool {
+	line = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(line, "//", ""), "#", ""))
+	segments := strings.Split(line, " ")
+	for _, segment := range segments {
+		if segment == ignoreAll || segment == ignoreCode {
+			return true
+		}
+	}
 	return false
 }
