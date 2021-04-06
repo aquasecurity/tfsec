@@ -2,7 +2,7 @@
 
 set -ex
 
-DEPLOY_REPO="https://${GITHUB_TOKEN}@github.com/tfsec/tfsec.github.io.git"
+DEPLOY_REPO="https://${DOCS_GITHUB_TOKEN}@github.com/tfsec/tfsec.github.io.git"
 MESSAGE=$(git log -1 HEAD --pretty=format:%s)
 
 function clone_site {
@@ -13,11 +13,12 @@ function clone_site {
 function deploy {
 	echo "deploying changes"
 	pushd _site
-	git config user.name "GitHub Actions Build"
-	git config user.email github-actions@tfsec
+	git config --global user.name "GitHub Actions Build"
+	git config --global user.email github-actions@tfsec.dev
 	git add -A
+	git remote set-url origin "${DEPLOY_REPO}"
 	git commit -m "GitHub Actions Build: ${GITHUB_RUN_ID}. ${MESSAGE}" || true
-	git push "${DEPLOY_REPO}" main:main || true
+	git push --set-upstream origin main || true
 	popd
 }
 
