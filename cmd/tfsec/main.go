@@ -39,6 +39,7 @@ var conciseOutput = false
 var excludeDownloaded = false
 var detailedExitCode = false
 var includePassed = false
+var includeIgnored = false
 var allDirs = false
 
 func init() {
@@ -57,6 +58,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&detailedExitCode, "detailed-exit-code", detailedExitCode, "Produce more detailed exit status codes.")
 	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Include passed checks in the result output")
+	rootCmd.Flags().BoolVar(&includeIgnored, "include-ignored", includeIgnored, "Include ignored checks in the result output")
 	rootCmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
 }
 
@@ -255,6 +257,9 @@ func getScannerOptions() []scanner.ScannerOption {
 	var options []scanner.ScannerOption
 	if includePassed {
 		options = append(options, scanner.IncludePassed)
+	}
+	if includeIgnored {
+		options = append(options, scanner.IncludeIgnored)
 	}
 	return options
 }

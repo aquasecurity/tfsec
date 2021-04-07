@@ -19,7 +19,8 @@ type Scanner struct {
 type ScannerOption int
 
 const (
-	IncludePassed ScannerOption = iota
+	IncludePassed  ScannerOption = iota
+	IncludeIgnored ScannerOption = iota
 )
 
 // New creates a new Scanner
@@ -41,10 +42,15 @@ func checkInList(code RuleCode, list []string) bool {
 func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string, options ...ScannerOption) []Result {
 
 	includePassed := false
+	includeIgnored := false
 
 	for _, option := range options {
 		if option == IncludePassed {
 			includePassed = true
+		}
+
+		if option == IncludeIgnored {
+			includeIgnored = true
 		}
 	}
 
@@ -67,7 +73,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 						results = append(results, check.NewPassingResult(block.Range()))
 					} else {
 						for _, result := range res {
-							if !scanner.checkRangeIgnored(result.RuleID, result.Range, block.Range()) && !checkInList(result.RuleID, excludedChecksList) {
+							if includeIgnored || (!scanner.checkRangeIgnored(result.RuleID, result.Range, block.Range()) && !checkInList(result.RuleID, excludedChecksList)) {
 								results = append(results, result)
 							}
 						}
@@ -87,13 +93,15 @@ func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range, b parse
 	ignoreAll := "tfsec:ignore:*"
 	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", code)
 	lines := append([]string{""}, strings.Split(string(raw), "\n")...)
+	ignoreCheck := false
 	// check the line itself
 	for number := r.StartLine; number <= r.EndLine; number++ {
 		if number <= 0 || number >= len(lines) {
 			continue
 		}
 		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) {
-			return true
+			ignoreCheck = true
+			break
 		}
 	}
 
@@ -113,7 +121,12 @@ func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range, b parse
 		}
 	}
 
-	return false
+	if ignoreCheck {
+		metrics.Add(metrics.IgnoredChecks, 1)
+		debug.Log("Ignoring '%s' based on tfsec:ignore statement", code)
+	}
+
+	return ignoreCheck
 }
 
 func checkLineForIgnore(line, ignoreAll, ignoreCode string) bool {
