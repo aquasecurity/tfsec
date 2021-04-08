@@ -23,6 +23,17 @@ resource "aws_security_group_rule" "my-rule" {
 
 }
 
+func Test_IgnoreLineAboveTheBlock(t *testing.T) {
+	results := scanSource(`
+// tfsec:ignore:*
+resource "aws_security_group_rule" "my-rule" {
+    type        = "ingress"
+    cidr_blocks = ["0.0.0.0/0"] 
+}
+`)
+	assert.Len(t, results, 0)
+}
+
 func Test_IgnoreSpecific(t *testing.T) {
 
 	scanner.RegisterCheck(scanner.Check{

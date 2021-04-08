@@ -75,6 +75,10 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 						for _, result := range res {
 							if includeIgnored || (!scanner.checkRangeIgnored(result.RuleID, result.Range, block.Range()) && !checkInList(result.RuleID, excludedChecksList)) {
 								results = append(results, result)
+							} else {
+								// check was ignored
+								metrics.Add(metrics.IgnoredChecks, 1)
+								debug.Log("Ignoring '%s' based on tfsec:ignore statement", result.RuleID)
 							}
 						}
 					}
@@ -93,22 +97,20 @@ func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range, b parse
 	ignoreAll := "tfsec:ignore:*"
 	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", code)
 	lines := append([]string{""}, strings.Split(string(raw), "\n")...)
-	ignoreCheck := false
+	startLine := r.StartLine
+
+	// include the line above the line if available
+	if r.StartLine-1 > 0 {
+		startLine = r.StartLine - 1
+	}
+
 	// check the line itself
-	for number := r.StartLine; number <= r.EndLine; number++ {
+	for number := startLine; number <= r.EndLine; number++ {
 		if number <= 0 || number >= len(lines) {
 			continue
 		}
-		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) {
-			ignoreCheck = true
-			break
-		}
-	}
 
-	// check the line above the relevant range
-	if r.StartLine-1 > 0 {
-		line := lines[r.StartLine-1]
-		if ignored := checkLineForIgnore(line, ignoreAll, ignoreCode); ignored {
+		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) {
 			return true
 		}
 	}
@@ -121,12 +123,7 @@ func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range, b parse
 		}
 	}
 
-	if ignoreCheck {
-		metrics.Add(metrics.IgnoredChecks, 1)
-		debug.Log("Ignoring '%s' based on tfsec:ignore statement", code)
-	}
-
-	return ignoreCheck
+	return false
 }
 
 func checkLineForIgnore(line, ignoreAll, ignoreCode string) bool {
