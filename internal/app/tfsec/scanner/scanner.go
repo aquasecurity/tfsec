@@ -104,15 +104,14 @@ func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range, b parse
 		startLine = r.StartLine - 1
 	}
 
-	ignoreCheck := false
 	// check the line itself
 	for number := startLine; number <= r.EndLine; number++ {
 		if number <= 0 || number >= len(lines) {
 			continue
 		}
+
 		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) {
-			ignoreCheck = true
-			break
+			return true
 		}
 	}
 
@@ -124,12 +123,7 @@ func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range, b parse
 		}
 	}
 
-	if ignoreCheck {
-		metrics.Add(metrics.IgnoredChecks, 1)
-		debug.Log("Ignoring '%s' based on tfsec:ignore statement", code)
-	}
-
-	return ignoreCheck
+	return false
 }
 
 func checkLineForIgnore(line, ignoreAll, ignoreCode string) bool {
