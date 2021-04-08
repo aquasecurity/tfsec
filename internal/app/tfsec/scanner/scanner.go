@@ -19,8 +19,8 @@ type Scanner struct {
 type ScannerOption int
 
 const (
-	IncludePassed  ScannerOption = iota
-	IncludeIgnored ScannerOption = iota
+	IncludePassed ScannerOption = iota
+	IncludeIgnored
 )
 
 // New creates a new Scanner
@@ -30,7 +30,7 @@ func New() *Scanner {
 
 // Find element in list
 func checkInList(code RuleCode, list []string) bool {
-	codeCurrent := fmt.Sprintf("%s", code)
+	codeCurrent := string(code)
 	for _, codeIgnored := range list {
 		if codeIgnored == codeCurrent {
 			return true
