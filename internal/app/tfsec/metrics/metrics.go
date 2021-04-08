@@ -39,6 +39,7 @@ const (
 	ModuleBlocksLoaded Count = "module blocks"
 	BlocksEvaluated    Count = "evaluated blocks"
 	FilesLoaded        Count = "files loaded"
+	IgnoredChecks      Count = "ignored checks"
 )
 
 var counts = map[Count]int{}
@@ -60,7 +61,5 @@ func TimerSummary() map[Operation]time.Duration {
 }
 
 func CountSummary() map[Count]int {
-
-
 	return counts
 }

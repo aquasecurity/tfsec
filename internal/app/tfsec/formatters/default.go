@@ -110,6 +110,7 @@ func printStatistics() {
 		metrics.BlocksEvaluated,
 		metrics.ModuleLoadCount,
 		metrics.ModuleBlocksLoaded,
+		metrics.IgnoredChecks,
 	} {
 		_ = tml.Printf("  <blue>%-20s</blue> %d\n", name, counts[name])
 	}
