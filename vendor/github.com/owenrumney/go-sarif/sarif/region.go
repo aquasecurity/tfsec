@@ -18,6 +18,12 @@ func NewRegion() *Region {
 	return &Region{}
 }
 
+func NewSimpleRegion(startLine, endLine int) *Region {
+	return NewRegion().
+		WithStartLine(startLine).
+		WithEndLine(endLine)
+}
+
 func (r *Region) WithStartLine(startLine int) *Region {
 	r.StartLine = &startLine
 	return r

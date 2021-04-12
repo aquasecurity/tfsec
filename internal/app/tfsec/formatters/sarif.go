@@ -30,21 +30,18 @@ func FormatSarif(w io.Writer, results []scanner.Result, baseDir string, options 
 			return err
 		}
 
-		message := sarif.NewMessage().
-			WithText(string(result.Description))
-		region := sarif.NewRegion().
-			WithStartLine(result.Range.StartLine).
-			WithEndLine(result.Range.EndLine)
+		message := sarif.NewTextMessage(string(result.Description))
+		region := sarif.NewSimpleRegion(result.Range.StartLine, result.Range.EndLine)
+		level := strings.ToLower(string(result.Severity))
 
 		location := sarif.NewPhysicalLocation().
-			WithArtifactLocation(
-				sarif.NewArtifactLocation().
-					WithUri(relativePath)).
+			WithArtifactLocation(sarif.NewSimpleArtifactLocation(relativePath)).
 			WithRegion(region)
 
 		ruleResult := run.AddResult(rule.ID)
+
 		ruleResult.WithMessage(*message).
-			WithLevel(strings.ToLower(string(result.Severity))).
+			WithLevel(level).
 			WithLocation(sarif.NewLocation().WithPhysicalLocation(location))
 	}
 

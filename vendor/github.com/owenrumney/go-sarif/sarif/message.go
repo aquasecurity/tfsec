@@ -11,6 +11,14 @@ func NewMessage() *Message {
 	return &Message{}
 }
 
+func NewTextMessage(text string) *Message {
+	return NewMessage().WithText(text)
+}
+
+func NewMarkdownMessage(markdown string) *Message {
+	return NewMessage().WithMarkdown(markdown)
+}
+
 func (m *Message) WithText(text string) *Message {
 	m.Text = &text
 	return m

@@ -11,6 +11,10 @@ func NewArtifactLocation() *ArtifactLocation {
 	return &ArtifactLocation{}
 }
 
+func NewSimpleArtifactLocation(uri string) *ArtifactLocation {
+	return NewArtifactLocation().WithUri(uri)
+}
+
 func (a *ArtifactLocation) WithUri(uri string) *ArtifactLocation {
 	a.URI = &uri
 	return a

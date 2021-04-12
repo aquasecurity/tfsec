@@ -390,6 +390,8 @@ github.com/owenrumney/go-sarif v0.0.8 h1:rxNjz+/hm8s4+NUtq1mnvY5NbAr6RqppTzlT+QH
 github.com/owenrumney/go-sarif v0.0.8/go.mod h1:fcYnVdYRfXWB943S0WaZrjAMuoTEj7vqS7JpOMf6CG0=
 github.com/owenrumney/go-sarif v0.0.9 h1:oplzE8qP8wd63Li57Vt3rB0g1HixVo4OzE5p73FHZis=
 github.com/owenrumney/go-sarif v0.0.9/go.mod h1:fcYnVdYRfXWB943S0WaZrjAMuoTEj7vqS7JpOMf6CG0=
+github.com/owenrumney/go-sarif v1.0.0 h1:Hgic6pTAAV+ozlNDuwIZAU89h0LAdN7UnGXxQvOnHSg=
+github.com/owenrumney/go-sarif v1.0.0/go.mod h1:fcYnVdYRfXWB943S0WaZrjAMuoTEj7vqS7JpOMf6CG0=
 github.com/packer-community/winrmcp v0.0.0-20180921211025-c76d91c1e7db/go.mod h1:f6Izs6JvFTdnRbziASagjZ2vmf55NSIkC/weStxCHqk=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
