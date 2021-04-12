@@ -15,13 +15,14 @@ func FormatSarif(w io.Writer, results []scanner.Result, baseDir string, options 
 		return err
 	}
 
-	run := report.AddRun("tfsec", "https://tfsec.dev")
+	run := sarif.NewRun("tfsec", "https://tfsec.dev")
+	report.AddRun(run)
 
 	// TODO - Handle if the --include-passed argument is passed.
 
 	for _, result := range results {
 		rule := run.AddRule(string(result.RuleID)).
-			WithDescription(result.Description).
+			WithDescription(string(result.RuleDescription)).
 			WithHelp(result.Link)
 
 		relativePath, err := filepath.Rel(baseDir, result.Range.Filename)
@@ -29,12 +30,22 @@ func FormatSarif(w io.Writer, results []scanner.Result, baseDir string, options 
 			return err
 		}
 
-		ruleResult := run.AddResult(rule.ID).
-			WithMessage(string(result.RuleDescription)).
-			WithLevel(strings.ToLower(string(result.Severity))).
-			WithLocationDetails(relativePath, result.Range.StartLine, 1)
+		message := sarif.NewMessage().
+			WithText(string(result.Description))
+		region := sarif.NewRegion().
+			WithStartLine(result.Range.StartLine).
+			WithEndLine(result.Range.EndLine)
 
-		run.AddResultDetails(rule, ruleResult, result.Range.Filename)
+		location := sarif.NewPhysicalLocation().
+			WithArtifactLocation(
+				sarif.NewArtifactLocation().
+					WithUri(relativePath)).
+			WithRegion(region)
+
+		ruleResult := run.AddResult(rule.ID)
+		ruleResult.WithMessage(*message).
+			WithLevel(strings.ToLower(string(result.Severity))).
+			WithLocation(sarif.NewLocation().WithPhysicalLocation(location))
 	}
 
 	return report.PrettyWrite(w)
