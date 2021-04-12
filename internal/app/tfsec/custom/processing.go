@@ -115,7 +115,7 @@ func processFoundChecks(checks ChecksFile) {
 			scanner.RegisterCheck(scanner.Check{
 				Code: customCheck.Code,
 				Documentation: scanner.CheckDocumentation{
-					Summary: scanner.RuleSummary(customCheck.Code),
+					Summary: scanner.RuleSummary(customCheck.Description),
 					Links:   customCheck.RelatedLinks,
 				},
 				Provider:       "custom",
