@@ -55,7 +55,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' should have purge protection enabled.", block.FullName()),
 						block.Range(),
-						scanner.SeverityWarning,
+						scanner.SeverityError,
 					),
 				}
 			}
