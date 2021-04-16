@@ -48,7 +48,6 @@ resource "azurerm_key_vault" "bad_example" {
     name                        = "examplekeyvault"
     location                    = azurerm_resource_group.bad_example.location
     enabled_for_disk_encryption = true
-    soft_delete_retention_days  = 0
     purge_protection_enabled    = false
 }
 `,
@@ -61,12 +60,11 @@ resource "azurerm_key_vault" "bad_example" {
     name                        = "examplekeyvault"
     location                    = azurerm_resource_group.bad_example.location
     enabled_for_disk_encryption = true
-    soft_delete_retention_days  = 0
     purge_protection_enabled    = true
 }
 `,
 			mustIncludeResultCode: checks.AZUKeyVaultPurgeProtection,
-		},		
+		},
 	}
 
 	for _, test := range tests {
