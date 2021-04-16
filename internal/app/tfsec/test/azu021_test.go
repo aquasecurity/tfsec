@@ -16,7 +16,7 @@ func Test_AZUKeyVaultPurgeProtection(t *testing.T) {
 		mustExcludeResultCode scanner.RuleCode
 	}{
 		{
-			name: "check when mpurge_protection_enabled not set check fails",
+			name: "check if purge_protection_enabled not set, check fails",
 			source: `
 resource "azurerm_key_vault" "bad_example" {
     name                        = "examplekeyvault"
@@ -29,7 +29,7 @@ resource "azurerm_key_vault" "bad_example" {
 			mustIncludeResultCode: checks.AZUKeyVaultPurgeProtection,
 		},
 		{
-			name: "TODO: add test name",
+			name: "check if purge_protection_enabled is set, check passes",
 			source: `
 resource "azurerm_key_vault" "good_example" {
     name                        = "examplekeyvault"
