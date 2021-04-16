@@ -18,7 +18,6 @@ resource "azurerm_key_vault" "bad_example" {
     name                        = "examplekeyvault"
     location                    = azurerm_resource_group.bad_example.location
     enabled_for_disk_encryption = true
-    soft_delete_retention_days  = 7
     purge_protection_enabled    = false
 }
 `
@@ -51,7 +50,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 
-			if block.MissingChild("purge_protection_enabled") || block.GetAttribute("purge_protection_enabled").IsFalse() {
+			if (block.MissingChild("purge_protection_enabled") || block.GetAttribute("purge_protection_enabled").IsFalse()) && (block.MissingChild("soft_delete_retention_days") || block.GetAttribute("soft_delete_retention_days")>0) {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' should have purge protection enabled.", block.FullName()),
