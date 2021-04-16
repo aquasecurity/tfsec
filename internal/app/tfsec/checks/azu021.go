@@ -51,7 +51,7 @@ func init() {
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
 
-			if block.MissingChild("purge_protection_enabled") || block.GetAttribute("purge_protection_enabled").IsNone("true") {
+			if block.MissingChild("purge_protection_enabled") || block.GetAttribute("purge_protection_enabled").IsFalse() {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' should have purge protection enabled.", block.FullName()),
