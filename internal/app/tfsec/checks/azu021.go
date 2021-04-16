@@ -50,16 +50,24 @@ func init() {
 		RequiredLabels: []string{"azurerm_key_vault"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
-			if block.MissingChild("purge_protection_enabled") || block.GetAttribute("purge_protection_enabled").IsFalse() || (block.GetAttribute("purge_protection_enabled").IsTrue() && (block.MissingChild("soft_delete_retention_days") || block.GetAttribute("soft_delete_retention_days").LessThan(1))) {
+			if block.MissingChild("purge_protection_enabled") || block.GetAttribute("purge_protection_enabled").IsFalse() {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' should have purge protection enabled.", block.FullName()),
 						block.Range(),
-						scanner.SeverityError,
+						scanner.SeverityWarning,
 					),
 				}
 			}
-
+			if block.GetAttribute("purge_protection_enabled").IsTrue() && (block.MissingChild("soft_delete_retention_days") || block.GetAttribute("soft_delete_retention_days").LessThan(1)) {
+				return []scanner.Result{
+					check.NewResult(
+						fmt.Sprintf("Resource '%s' should have soft_delete_retention_days set in order to enabled purge protection.", block.FullName()),
+						block.Range(),
+						scanner.SeverityWarning,
+					),
+				}
+			}
 			return nil
 		},
 	})
