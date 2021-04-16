@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -49,8 +50,7 @@ func init() {
 		RequiredLabels: []string{"azurerm_key_vault"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
-
-			if (block.MissingChild("purge_protection_enabled") || block.GetAttribute("purge_protection_enabled").IsFalse()) && (block.MissingChild("soft_delete_retention_days") || block.GetAttribute("soft_delete_retention_days")>0) {
+			if (block.MissingChild("purge_protection_enabled") || block.GetAttribute("purge_protection_enabled").IsFalse()) && (block.MissingChild("soft_delete_retention_days") || block.GetAttribute("soft_delete_retention_days").Value() > 0) {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' should have purge protection enabled.", block.FullName()),
@@ -59,7 +59,6 @@ func init() {
 					),
 				}
 			}
-
 
 			return nil
 		},
