@@ -19,3 +19,8 @@ jobs:
     
     - name: Run test
       run: make test
+
+    - name: Run Snyk to check for vulnerabilities
+      uses: snyk/actions/golang@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
