@@ -41,9 +41,11 @@ jobs:
           bin/windows/tfsec-checkgen-windows-amd64.exe
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+
     - name: Release Docs
       run: make publish-docs
+      env:
+          DOCS_GITHUB_TOKEN: ${{ secrets.DOCS_GITHUB_TOKEN }}
     
     - uses: docker-practice/actions-setup-docker@master
     - run: |

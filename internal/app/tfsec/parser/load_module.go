@@ -2,10 +2,11 @@ package parser
 
 import (
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
@@ -136,4 +137,3 @@ func getModuleBlocks(block *Block, modulePath string, blocks *Blocks) error {
 	}
 	return nil
 }
-
