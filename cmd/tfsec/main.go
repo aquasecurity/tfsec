@@ -41,6 +41,7 @@ var detailedExitCode = false
 var includePassed = false
 var includeIgnored = false
 var allDirs = false
+var runStatistics bool
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
@@ -60,6 +61,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Include passed checks in the result output")
 	rootCmd.Flags().BoolVar(&includeIgnored, "include-ignored", includeIgnored, "Include ignored checks in the result output")
 	rootCmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
+	rootCmd.Flags().BoolVar(&runStatistics, "run-statistics", runStatistics, "View statistics table of current findings.")
 }
 
 func main() {
@@ -174,6 +176,15 @@ var rootCmd = &cobra.Command{
 		results := scanner.New().Scan(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks), getScannerOptions()...)
 		results = updateResultSeverity(results)
 		results = removeDuplicatesAndUnwanted(results)
+
+		if runStatistics {
+			statistics := scanner.Statistics{}
+			for _, result := range results {
+				statistics = scanner.AddStatisticsCount(statistics, result)
+			}
+			statistics.PrintStatisticsTable()
+			os.Exit(0)
+		}
 
 		if err := formatter(outputFile, results, dir, getFormatterOptions()...); err != nil {
 			fmt.Println(err)
