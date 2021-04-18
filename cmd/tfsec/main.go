@@ -29,7 +29,7 @@ var showVersion = false
 var disableColours = false
 var format string
 var softFail = false
-var filterChecks string
+var filterResults string
 var excludedChecks string
 var tfvarsPath string
 var outputFlag string
@@ -50,7 +50,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
 	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit, sarif")
 	rootCmd.Flags().StringVarP(&excludedChecks, "exclude", "e", excludedChecks, "Provide checks via , without space to exclude from run.")
-	rootCmd.Flags().StringVar(&filterChecks, "filter-checks", filterChecks, "Filter checks to return specific checks only (supports comma-delimited input).")
+	rootCmd.Flags().StringVar(&filterResults, "filter-results", filterResults, "Filter results to return specific checks only (supports comma-delimited input).")
 	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
 	rootCmd.Flags().StringVar(&tfvarsPath, "tfvars-file", tfvarsPath, "Path to .tfvars file")
 	rootCmd.Flags().StringVar(&outputFlag, "out", outputFlag, "Set output file")
@@ -94,7 +94,7 @@ var rootCmd = &cobra.Command{
 
 		var dir string
 		var err error
-		var filterChecksList []string
+		var filterResultsList []string
 		var excludedChecksList []string
 		var outputFile *os.File
 
@@ -136,8 +136,8 @@ var rootCmd = &cobra.Command{
 		}
 		debug.Log("Custom checks loaded")
 
-		if len(filterChecks) > 0 {
-			filterChecksList = strings.Split(filterChecks, ",")
+		if len(filterResults) > 0 {
+			filterResultsList = strings.Split(filterResults, ",")
 		}
 
 		if len(excludedChecks) > 0 {
@@ -183,10 +183,10 @@ var rootCmd = &cobra.Command{
 		results := scanner.New().Scan(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks), getScannerOptions()...)
 		results = updateResultSeverity(results)
 		results = removeDuplicatesAndUnwanted(results)
-		if len(filterChecksList) > 0 {
+		if len(filterResultsList) > 0 {
 			var filteredResult []scanner.Result
 			for _, result := range results {
-				for _, checkID := range filterChecksList {
+				for _, checkID := range filterResultsList {
 					if string(result.RuleID) == checkID {
 						filteredResult = append(filteredResult, result)
 					}
