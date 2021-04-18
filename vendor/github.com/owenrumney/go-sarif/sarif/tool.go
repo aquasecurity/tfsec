@@ -1,10 +1,10 @@
-package models
+package sarif
 
-type tool struct {
-	Driver *driver `json:"driver"`
+type Tool struct {
+	Driver *Driver `json:"driver"`
 }
 
-type driver struct {
+type Driver struct {
 	Name           string  `json:"name"`
 	InformationURI string  `json:"informationUri"`
 	Rules          []*Rule `json:"rules,omitempty"`
@@ -13,13 +13,13 @@ type driver struct {
 // Rule specifies a Sarif Rule object
 type Rule struct {
 	ID               string            `json:"id"`
-	ShortDescription *textBlock        `json:"shortDescription"`
+	ShortDescription *TextBlock        `json:"shortDescription"`
 	HelpURI          string            `json:"helpUri,omitempty"`
-	Help             *textBlock        `json:"help,omitempty"`
+	Help             *TextBlock        `json:"help,omitempty"`
 	Properties       map[string]string `json:"properties,omitempty"`
 }
 
-func (driver *driver) getOrCreateRule(rule *Rule) uint {
+func (driver *Driver) getOrCreateRule(rule *Rule) uint {
 	for i, r := range driver.Rules {
 		if r.ID == rule.ID {
 			return uint(i)
@@ -37,7 +37,7 @@ func newRule(ruleID string) *Rule {
 
 // WithDescription specifies a description for a rule and returns the updated rule
 func (rule *Rule) WithDescription(description string) *Rule {
-	rule.ShortDescription = &textBlock{
+	rule.ShortDescription = &TextBlock{
 		Text: description,
 	}
 	return rule
@@ -51,7 +51,7 @@ func (rule *Rule) WithHelpURI(helpURI string) *Rule {
 
 // WithHelp specifies a help text  for a rule and returns the updated rule
 func (rule *Rule) WithHelp(helpText string) *Rule {
-	rule.Help = &textBlock{
+	rule.Help = &TextBlock{
 		Text: helpText,
 	}
 	return rule
