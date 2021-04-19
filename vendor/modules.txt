@@ -8,11 +8,11 @@ github.com/apparentlymart/go-textseg/v13/textseg
 github.com/bmatcuk/doublestar
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/google/uuid v1.1.1
+# github.com/google/uuid v1.2.0
 github.com/google/uuid
-# github.com/hashicorp/errwrap v1.0.0
+# github.com/hashicorp/errwrap v1.1.0
 github.com/hashicorp/errwrap
-# github.com/hashicorp/go-multierror v1.0.0
+# github.com/hashicorp/go-multierror v1.1.1
 github.com/hashicorp/go-multierror
 # github.com/hashicorp/go-uuid v1.0.1
 github.com/hashicorp/go-uuid
@@ -24,7 +24,7 @@ github.com/hashicorp/hcl/v2/ext/tryfunc
 github.com/hashicorp/hcl/v2/hclparse
 github.com/hashicorp/hcl/v2/hclsyntax
 github.com/hashicorp/hcl/v2/json
-# github.com/hashicorp/terraform v0.14.10
+# github.com/hashicorp/terraform v0.15.0
 ## explicit
 github.com/hashicorp/terraform/lang/funcs
 github.com/hashicorp/terraform/tfdiags
@@ -81,7 +81,7 @@ github.com/zclconf/go-cty/cty/set
 # github.com/zclconf/go-cty-yaml v1.0.2
 ## explicit
 github.com/zclconf/go-cty-yaml
-# golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+# golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
 golang.org/x/crypto/chacha20
@@ -93,11 +93,14 @@ golang.org/x/crypto/poly1305
 golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
+# golang.org/x/sys v0.0.0-20201119102817-f84b799fce68
 golang.org/x/sys/cpu
 golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
+# golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf
+golang.org/x/term
 # golang.org/x/text v0.3.5
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
