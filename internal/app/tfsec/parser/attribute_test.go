@@ -1,8 +1,9 @@
 package parser
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_AttributeStartsWith(t *testing.T) {
@@ -59,7 +60,7 @@ resource "aws_s3_bucket" "my-bucket" {
 					t.Fail()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
-				assert.Equal(t, attr.StartsWith(test.checkValue), test.expectedResult)
+				assert.Equal(t, test.expectedResult, attr.StartsWith(test.checkValue))
 			}
 		})
 	}
@@ -119,7 +120,7 @@ resource "aws_s3_bucket" "my-bucket" {
 					t.Fail()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
-				assert.Equal(t, attr.EndsWith(test.checkValue), test.expectedResult)
+				assert.Equal(t, test.expectedResult, attr.EndsWith(test.checkValue))
 			}
 		})
 	}
@@ -274,9 +275,9 @@ resource "aws_security_group" "my-security_group" {
 				}
 				attr := block.GetAttribute(test.checkAttribute)
 				if test.ignoreCase {
-					assert.Equal(t, attr.Contains(test.checkValue, IgnoreCase), test.expectedResult)
+					assert.Equal(t, test.expectedResult, attr.Contains(test.checkValue, IgnoreCase))
 				} else {
-					assert.Equal(t, attr.Contains(test.checkValue), test.expectedResult)
+					assert.Equal(t, test.expectedResult, attr.Contains(test.checkValue))
 				}
 			}
 		})
@@ -339,7 +340,7 @@ resource "aws_security_group" "my-security_group" {
 					t.Fail()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
-				assert.Equal(t, attr.IsAny(test.checkValue...), test.expectedResult)
+				assert.Equal(t, test.expectedResult, attr.IsAny(test.checkValue...))
 			}
 		})
 	}
@@ -395,7 +396,7 @@ resource "aws_security_group" "my-security_group" {
 					t.Fail()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
-				assert.Equal(t, attr.IsNone(test.checkValue...), test.expectedResult)
+				assert.Equal(t, test.expectedResult, attr.IsNone(test.checkValue...))
 			}
 		})
 	}
@@ -505,7 +506,7 @@ resource "aws_security_group_rule" "example" {
 					t.Fail()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
-				assert.Equal(t, attr.IsEmpty(), test.expectedResult)
+				assert.Equal(t, test.expectedResult, attr.IsEmpty())
 			}
 		})
 	}
@@ -548,7 +549,7 @@ resource "numerical_something" "my-bucket" {
 					t.Fail()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
-				assert.Equal(t, attr.LessThan(test.checkValue), test.expectedResult)
+				assert.Equal(t, test.expectedResult, attr.LessThan(test.checkValue))
 			}
 		})
 	}
@@ -591,7 +592,7 @@ resource "numerical_something" "my-bucket" {
 					t.Fail()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
-				assert.Equal(t, attr.LessThanOrEqualTo(test.checkValue), test.expectedResult)
+				assert.Equal(t, test.expectedResult, attr.LessThanOrEqualTo(test.checkValue))
 			}
 		})
 	}

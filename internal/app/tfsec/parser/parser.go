@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
@@ -102,9 +103,10 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 
 	debug.Log("Loading modules...")
 	modules := LoadModules(blocks, tfPath, modulesMetadata)
+	var visited []*visitedModule
 
 	debug.Log("Evaluating expressions...")
-	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules)
+	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules, visited)
 	evaluatedBlocks, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err
@@ -130,7 +132,6 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 			}
 		}
 	}
-
 
 	for _, entry := range entries {
 		if entry.IsDir() {

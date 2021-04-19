@@ -29,6 +29,7 @@ var showVersion = false
 var disableColours = false
 var format string
 var softFail = false
+var filterResults string
 var excludedChecks string
 var tfvarsPath string
 var outputFlag string
@@ -39,7 +40,9 @@ var conciseOutput = false
 var excludeDownloaded = false
 var detailedExitCode = false
 var includePassed = false
+var includeIgnored = false
 var allDirs = false
+var runStatistics bool
 
 func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
@@ -47,6 +50,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
 	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit, sarif")
 	rootCmd.Flags().StringVarP(&excludedChecks, "exclude", "e", excludedChecks, "Provide checks via , without space to exclude from run.")
+	rootCmd.Flags().StringVar(&filterResults, "filter-results", filterResults, "Filter results to return specific checks only (supports comma-delimited input).")
 	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
 	rootCmd.Flags().StringVar(&tfvarsPath, "tfvars-file", tfvarsPath, "Path to .tfvars file")
 	rootCmd.Flags().StringVar(&outputFlag, "out", outputFlag, "Set output file")
@@ -57,7 +61,9 @@ func init() {
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&detailedExitCode, "detailed-exit-code", detailedExitCode, "Produce more detailed exit status codes.")
 	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Include passed checks in the result output")
+	rootCmd.Flags().BoolVar(&includeIgnored, "include-ignored", includeIgnored, "Include ignored checks in the result output")
 	rootCmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
+	rootCmd.Flags().BoolVar(&runStatistics, "run-statistics", runStatistics, "View statistics table of current findings.")
 }
 
 func main() {
@@ -88,6 +94,7 @@ var rootCmd = &cobra.Command{
 
 		var dir string
 		var err error
+		var filterResultsList []string
 		var excludedChecksList []string
 		var outputFile *os.File
 
@@ -128,6 +135,10 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		debug.Log("Custom checks loaded")
+
+		if len(filterResults) > 0 {
+			filterResultsList = strings.Split(filterResults, ",")
+		}
 
 		if len(excludedChecks) > 0 {
 			excludedChecksList = strings.Split(excludedChecks, ",")
@@ -172,6 +183,26 @@ var rootCmd = &cobra.Command{
 		results := scanner.New().Scan(blocks, mergeWithoutDuplicates(excludedChecksList, tfsecConfig.ExcludedChecks), getScannerOptions()...)
 		results = updateResultSeverity(results)
 		results = removeDuplicatesAndUnwanted(results)
+		if len(filterResultsList) > 0 {
+			var filteredResult []scanner.Result
+			for _, result := range results {
+				for _, checkID := range filterResultsList {
+					if string(result.RuleID) == checkID {
+						filteredResult = append(filteredResult, result)
+					}
+				}
+			}
+			results = filteredResult
+		}
+
+		if runStatistics {
+			statistics := scanner.Statistics{}
+			for _, result := range results {
+				statistics = scanner.AddStatisticsCount(statistics, result)
+			}
+			statistics.PrintStatisticsTable()
+			os.Exit(0)
+		}
 
 		if err := formatter(outputFile, results, dir, getFormatterOptions()...); err != nil {
 			fmt.Println(err)
@@ -255,6 +286,9 @@ func getScannerOptions() []scanner.ScannerOption {
 	var options []scanner.ScannerOption
 	if includePassed {
 		options = append(options, scanner.IncludePassed)
+	}
+	if includeIgnored {
+		options = append(options, scanner.IncludeIgnored)
 	}
 	return options
 }

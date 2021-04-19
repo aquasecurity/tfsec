@@ -2,11 +2,10 @@ package scanner
 
 import (
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 	"io/ioutil"
 	"strings"
 
-
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 
@@ -21,6 +20,7 @@ type ScannerOption int
 
 const (
 	IncludePassed ScannerOption = iota
+	IncludeIgnored
 )
 
 // New creates a new Scanner
@@ -30,7 +30,7 @@ func New() *Scanner {
 
 // Find element in list
 func checkInList(code RuleCode, list []string) bool {
-	codeCurrent := fmt.Sprintf("%s", code)
+	codeCurrent := string(code)
 	for _, codeIgnored := range list {
 		if codeIgnored == codeCurrent {
 			return true
@@ -42,10 +42,15 @@ func checkInList(code RuleCode, list []string) bool {
 func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string, options ...ScannerOption) []Result {
 
 	includePassed := false
+	includeIgnored := false
 
 	for _, option := range options {
 		if option == IncludePassed {
 			includePassed = true
+		}
+
+		if option == IncludeIgnored {
+			includeIgnored = true
 		}
 	}
 
@@ -68,8 +73,12 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 						results = append(results, check.NewPassingResult(block.Range()))
 					} else {
 						for _, result := range res {
-							if !scanner.checkRangeIgnored(result.RuleID, result.Range) && !checkInList(result.RuleID, excludedChecksList) {
+							if includeIgnored || (!scanner.checkRangeIgnored(result.RuleID, result.Range, block.Range()) && !checkInList(result.RuleID, excludedChecksList)) {
 								results = append(results, result)
+							} else {
+								// check was ignored
+								metrics.Add(metrics.IgnoredChecks, 1)
+								debug.Log("Ignoring '%s' based on tfsec:ignore statement", result.RuleID)
 							}
 						}
 					}
@@ -80,7 +89,7 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 	return results
 }
 
-func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range) bool {
+func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range, b parser.Range) bool {
 	raw, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return false
@@ -88,26 +97,42 @@ func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range) bool {
 	ignoreAll := "tfsec:ignore:*"
 	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", code)
 	lines := append([]string{""}, strings.Split(string(raw), "\n")...)
-	for number := r.StartLine; number <= r.EndLine; number++ {
+	startLine := r.StartLine
+
+	// include the line above the line if available
+	if r.StartLine-1 > 0 {
+		startLine = r.StartLine - 1
+	}
+
+	// check the line itself
+	for number := startLine; number <= r.EndLine; number++ {
 		if number <= 0 || number >= len(lines) {
 			continue
 		}
+
 		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) {
 			return true
 		}
 	}
 
-	if r.StartLine-1 > 0 {
-		line := lines[r.StartLine-1]
-		line = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(line, "//", ""), "#", ""))
-		segments := strings.Split(line, " ")
-		for _, segment := range segments {
-			if segment == ignoreAll || segment == ignoreCode {
-				return true
-			}
+	// check the line above the block
+	if b.StartLine-1 > 0 {
+		line := lines[b.StartLine-1]
+		if ignored := checkLineForIgnore(line, ignoreAll, ignoreCode); ignored {
+			return true
 		}
-
 	}
 
+	return false
+}
+
+func checkLineForIgnore(line, ignoreAll, ignoreCode string) bool {
+	line = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(line, "//", ""), "#", ""))
+	segments := strings.Split(line, " ")
+	for _, segment := range segments {
+		if segment == ignoreAll || segment == ignoreCode {
+			return true
+		}
+	}
 	return false
 }

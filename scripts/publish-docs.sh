@@ -2,7 +2,7 @@
 
 set -ex
 
-DEPLOY_REPO="https://${GITHUB_TOKEN}@github.com/tfsec/tfsec.github.io.git"
+DEPLOY_REPO="https://${DOCS_GITHUB_TOKEN}@github.com/tfsec/tfsec.github.io.git"
 MESSAGE=$(git log -1 HEAD --pretty=format:%s)
 
 function clone_site {
@@ -12,23 +12,13 @@ function clone_site {
 
 function deploy {
 	echo "deploying changes"
-
-	if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
-	    echo "except don't publish site for pull requests"
-	    exit 0
-	fi
-
-	if [[ "$TRAVIS_BRANCH" != "master" ]]; then
-	    echo "except we should only publish the master branch. stopping here"
-	    exit 0
-	fi
-
 	pushd _site
-	git config user.name "Travis Build"
-  git config user.email travis@tfsec
+	git config --global user.name "GitHub Actions Build"
+	git config --global user.email github-actions@tfsec.dev
 	git add -A
-	git commit -m "Travis Build: ${TRAVIS_BUILD_NUMBER}. ${MESSAGE}" || true
-	git push "${DEPLOY_REPO}" main:main || true
+	git remote set-url origin "${DEPLOY_REPO}"
+	git commit -m "GitHub Actions Build: ${GITHUB_RUN_ID}. ${MESSAGE}" || true
+	git push --set-upstream origin main || true
 	popd
 }
 

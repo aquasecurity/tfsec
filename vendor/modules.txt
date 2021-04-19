@@ -24,7 +24,7 @@ github.com/hashicorp/hcl/v2/ext/tryfunc
 github.com/hashicorp/hcl/v2/hclparse
 github.com/hashicorp/hcl/v2/hclsyntax
 github.com/hashicorp/hcl/v2/json
-# github.com/hashicorp/terraform v0.14.9
+# github.com/hashicorp/terraform v0.14.10
 ## explicit
 github.com/hashicorp/terraform/lang/funcs
 github.com/hashicorp/terraform/tfdiags
@@ -37,21 +37,29 @@ github.com/liamg/clinch/terminal
 # github.com/liamg/tml v0.4.0
 ## explicit
 github.com/liamg/tml
+# github.com/mattn/go-runewidth v0.0.12
+## explicit
+github.com/mattn/go-runewidth
 # github.com/mitchellh/go-homedir v1.1.0
 github.com/mitchellh/go-homedir
 # github.com/mitchellh/go-wordwrap v1.0.0
 github.com/mitchellh/go-wordwrap
 # github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e
 ## explicit
-# github.com/owenrumney/go-sarif v0.0.8
+# github.com/olekukonko/tablewriter v0.0.5
 ## explicit
-github.com/owenrumney/go-sarif/models
+github.com/olekukonko/tablewriter
+# github.com/owenrumney/go-sarif v1.0.0
+## explicit
 github.com/owenrumney/go-sarif/sarif
 # github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942
 github.com/pkg/term
 github.com/pkg/term/termios
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
+# github.com/rivo/uniseg v0.2.0
+## explicit
+github.com/rivo/uniseg
 # github.com/spf13/cobra v1.1.3
 ## explicit
 github.com/spf13/cobra
