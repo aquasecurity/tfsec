@@ -15,7 +15,7 @@ const AWSUnencryptedMSKBrokerExplanation = `
 Encryption should be forced for Kafka clusters, including for communication between nodes. This ensure sensitive data is kept private.
 `
 const AWSUnencryptedMSKBrokerBadExample = `
-resource "aws_msk_cluster" "msk-cluster" {
+resource "aws_msk_cluster" "bad_example" {
 	encryption_info {
 		encryption_in_transit {
 			client_broker = "TLS_PLAINTEXT"
@@ -25,7 +25,7 @@ resource "aws_msk_cluster" "msk-cluster" {
 }
 `
 const AWSUnencryptedMSKBrokerGoodExample = `
-resource "aws_msk_cluster" "msk-cluster" {
+resource "aws_msk_cluster" "good_example" {
 	encryption_info {
 		encryption_in_transit {
 			client_broker = "TLS"

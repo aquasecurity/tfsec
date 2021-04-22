@@ -12,16 +12,18 @@ import (
 
 const AWSExternallyExposedLoadBalancer scanner.RuleCode = "AWS005"
 const AWSExternallyExposedLoadBalancerDescription scanner.RuleSummary = "Load balancer is exposed to the internet."
+const AWSExternallyExposedLoadBalancerImpact = "The load balancer is exposed on the internet"
+const AWSExternallyExposedLoadBalancerResolution = "Switch to an internal load balancer or add a tfsec ignore"
 const AWSExternallyExposedLoadBalancerExplanation = `
 There are many scenarios in which you would want to expose a load balancer to the wider internet, but this check exists as a warning to prevent accidental exposure of internal assets. You should ensure that this resource should be exposed publicly.
 `
 const AWSExternallyExposedLoadBalancerBadExample = `
-resource "aws_alb" "my-resource" {
+resource "aws_alb" "bad_example" {
 	internal = false
 }
 `
 const AWSExternallyExposedLoadBalancerGoodExample = `
-resource "aws_alb" "my-resource" {
+resource "aws_alb" "good_example" {
 	internal = true
 }
 `
@@ -32,6 +34,8 @@ func init() {
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSExternallyExposedLoadBalancerDescription,
 			Explanation: AWSExternallyExposedLoadBalancerExplanation,
+			Impact:      AWSExternallyExposedLoadBalancerImpact,
+			Resolution:  AWSExternallyExposedLoadBalancerResolution,
 			BadExample:  AWSExternallyExposedLoadBalancerBadExample,
 			GoodExample: AWSExternallyExposedLoadBalancerGoodExample,
 			Links: []string{

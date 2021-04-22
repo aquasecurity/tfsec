@@ -18,14 +18,14 @@ Plain HTTP is unencrypted and human-readable. This means that if a malicious act
 You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning eavesdroppers cannot read your traffic.
 `
 const AWSUnencryptedCloudFrontCommunicationsBadExample = `
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "bad_example" {
 	default_cache_behavior {
 	    viewer_protocol_policy = "allow-all"
 	  }
 }
 `
 const AWSUnencryptedCloudFrontCommunicationsGoodExample = `
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "good_example" {
 	default_cache_behavior {
 	    viewer_protocol_policy = "redirect-to-https"
 	  }

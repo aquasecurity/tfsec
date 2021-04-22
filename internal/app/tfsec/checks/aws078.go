@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -14,7 +15,7 @@ ECR images should be set to IMMUTABLE to prevent code injection through image mu
 This can be done by setting <code>image_tab_mutability</code> to <code>IMMUTABLE</code>
 `
 const AWSEnsureEcrImagesHaveImmutableTagsBadExample = `
-resource "aws_ecr_repository" "foo" {
+resource "aws_ecr_repository" "bad_example" {
   name                 = "bar"
   image_tag_mutability = "MUTABLE"
 
@@ -24,7 +25,7 @@ resource "aws_ecr_repository" "foo" {
 }
 `
 const AWSEnsureEcrImagesHaveImmutableTagsGoodExample = `
-resource "aws_ecr_repository" "foo" {
+resource "aws_ecr_repository" "good_example" {
   name                 = "bar"
   image_tag_mutability = "IMMUTABLE"
 

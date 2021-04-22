@@ -22,13 +22,13 @@ Pod Security Policy allows you to set smart defaults for your Pods, and enforce 
 The policies you define should be specific to the needs of your application
 `
 const GkeEnforcePSPBadExample = `
-resource "google_container_cluster" "gke" {
+resource "google_container_cluster" "bad_example" {
 	pod_security_policy_config {
         enabled = "false"
 	}
 }`
 const GkeEnforcePSPGoodExample = `
-resource "google_container_cluster" "gke" {
+resource "google_container_cluster" "good_example" {
 	pod_security_policy_config {
         enabled = "true"
 	}

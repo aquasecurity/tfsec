@@ -21,24 +21,24 @@ Granting permissions to users quickly become unwieldy and complex to make large 
 Permissions should be granted on roles, groups, services accounts instead.
 `
 const GoogleUserIAMGrantBadExample = `
-resource "google_project_iam_binding" "project-binding" {
+resource "google_project_iam_binding" "bad_example" {
 	members = [
 		"user:test@example.com",
 		]
 }
 
-resource "google_project_iam_member" "project-member" {
+resource "google_project_iam_member" "bad_example" {
 	member = "user:test@example.com"
 }
 `
 const GoogleUserIAMGrantGoodExample = `
-resource "google_project_iam_binding" "project-binding" {
+resource "google_project_iam_binding" "good_example" {
 	members = [
 		"group:test@example.com",
 		]
 }
 
-resource "google_storage_bucket_iam_member" "bucket-member" {
+resource "google_storage_bucket_iam_member" "good_example" {
 	member = "serviceAccount:test@example.com"
 }`
 

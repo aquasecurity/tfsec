@@ -16,12 +16,12 @@ const AWSPubliclyAccessibleResourceExplanation = `
 Database resources should not publicly available. You should limit all access to the minimum that is required for your application to function. 
 `
 const AWSPubliclyAccessibleResourceBadExample = `
-resource "aws_db_instance" "my-resource" {
+resource "aws_db_instance" "bad_example" {
 	publicly_accessible = true
 }
 `
 const AWSPubliclyAccessibleResourceGoodExample = `
-resource "aws_db_instance" "my-resource" {
+resource "aws_db_instance" "good_example" {
 	publicly_accessible = false
 }
 `

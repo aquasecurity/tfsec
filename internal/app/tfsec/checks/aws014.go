@@ -16,14 +16,14 @@ const AWSLaunchConfigurationWithUnencryptedBlockDeviceExplanation = `
 Blocks devices should be encrypted to ensure sensitive data is hel securely at rest.
 `
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceBadExample = `
-resource "aws_launch_configuration" "my-launch-config" {
+resource "aws_launch_configuration" "bad_example" {
 	root_block_device {
 		encrypted = false
 	}
 }
 `
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceGoodExample = `
-resource "aws_launch_configuration" "my-launch-config" {
+resource "aws_launch_configuration" "good_example" {
 	root_block_device {
 		encrypted = true
 	}

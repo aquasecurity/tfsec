@@ -20,7 +20,7 @@ The attribute should be set to <code>SECURE</code> to use metadata concealment, 
 
 `
 const GkeNodeMetadataExposedBadExample = `
-resource "google_container_node_pool" "gke" {
+resource "google_container_node_pool" "bad_example" {
 	node_config {
 		workload_metadata_config {
 			node_metadata = "EXPOSE"
@@ -28,7 +28,7 @@ resource "google_container_node_pool" "gke" {
 	}
 }`
 const GkeNodeMetadataExposedGoodExample = `
-resource "google_container_node_pool" "gke" {
+resource "google_container_node_pool" "good_example" {
 	node_config {
 		workload_metadata_config {
 			node_metadata = "SECURE"

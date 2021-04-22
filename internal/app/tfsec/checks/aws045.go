@@ -14,7 +14,7 @@ const AWSCloudFrontDoesNotHaveAWafExplanation = `
 You should configure a Web Application Firewall in front of your CloudFront distribution. This will mitigate many types of attacks on your web application.
 `
 const AWSCloudFrontDoesNotHaveAWafBadExample = `
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "bad_example" {
   origin_group {
     origin_id = "groupS3"
 
@@ -51,7 +51,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 }
 `
 const AWSCloudFrontDoesNotHaveAWafGoodExample = `
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "good_example" {
 
   origin {
     domain_name = aws_s3_bucket.primary.bucket_regional_domain_name

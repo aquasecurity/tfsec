@@ -15,13 +15,13 @@ const AzureUnencryptedManagedDiskExplanation = `
 Manage disks should be encrypted at rest. When specifying the <code>encryption_settings</code> block, the enabled attribute should be set to <code>true</code>.
 `
 const AzureUnencryptedManagedDiskBadExample = `
-resource "azurerm_managed_disk" "my-disk" {
+resource "azurerm_managed_disk" "bad_example" {
 	encryption_settings {
 		enabled = false
 	}
 }`
 const AzureUnencryptedManagedDiskGoodExample = `
-resource "azurerm_managed_disk" "my-disk" {
+resource "azurerm_managed_disk" "good_example" {
 	encryption_settings {
 		enabled = true
 	}

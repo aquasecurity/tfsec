@@ -26,7 +26,7 @@ EOF
 }
 `
 const AWSEC2InstanceSensitiveUserdataGoodExample = `
-resource "aws_iam_instance_profile" "good_profile" {
+resource "aws_iam_instance_profile" "good_example" {
     // ...
 }
 

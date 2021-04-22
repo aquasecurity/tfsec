@@ -20,13 +20,13 @@ Network security rules should not use very broad subnets.
 Where possible, segements should be broken into smaller subnets.
 `
 const AzureOpenInboundNetworkSecurityGroupRuleBadExample = `
-resource "azurerm_network_security_rule" "my-rule" {
+resource "azurerm_network_security_rule" "bad_example" {
 	direction = "Inbound"
 	source_address_prefix = "0.0.0.0/0"
 	access = "Allow"
 }`
 const AzureOpenInboundNetworkSecurityGroupRuleGoodExample = `
-resource "azurerm_network_security_rule" "my-rule" {
+resource "azurerm_network_security_rule" "good_example" {
 	direction = "Inbound"
 	destination_address_prefix = "10.0.0.0/16"
 	access = "Allow"

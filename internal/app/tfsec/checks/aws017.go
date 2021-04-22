@@ -14,12 +14,12 @@ const AWSUnencryptedS3BucketExplanation = `
 S3 Buckets should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific buckets.
 `
 const AWSUnencryptedS3BucketBadExample = `
-resource "aws_s3_bucket" "my-bucket" {
+resource "aws_s3_bucket" "bad_example" {
   bucket = "mybucket"
 }
 `
 const AWSUnencryptedS3BucketGoodExample = `
-resource "aws_s3_bucket" "my-bucket" {
+resource "aws_s3_bucket" "good_example" {
   bucket = "mybucket"
 
   server_side_encryption_configuration {

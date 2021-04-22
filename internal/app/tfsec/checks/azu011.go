@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
@@ -16,7 +17,7 @@ Storage container public access should be off. It can be configured for blobs on
 Explicitly overriding publicAccess to anything other than off should be avoided.
 `
 const AZUBlobStorageContainerNoPublicAccessBadExample = `
-resource "azure_storage_container" "blob_storage_container" {
+resource "azure_storage_container" "bad_example" {
 	name                  = "terraform-container-storage"
 	container_access_type = "blob"
 	
@@ -26,7 +27,7 @@ resource "azure_storage_container" "blob_storage_container" {
 }
 `
 const AZUBlobStorageContainerNoPublicAccessGoodExample = `
-resource "azure_storage_container" "blob_storage_container" {
+resource "azure_storage_container" "good_example" {
 	name                  = "terraform-container-storage"
 	container_access_type = "blob"
 	

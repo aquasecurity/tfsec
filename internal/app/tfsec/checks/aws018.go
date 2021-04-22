@@ -17,7 +17,7 @@ Security groups and security group rules should include a description for auditi
 Simplifies auditing, debugging, and managing security groups.
 `
 const AWSNoDescriptionInSecurityGroupBadExample = `
-resource "aws_security_group" "http" {
+resource "aws_security_group" "bad_example" {
   name        = "http"
 
   ingress {
@@ -30,7 +30,7 @@ resource "aws_security_group" "http" {
 }
 `
 const AWSNoDescriptionInSecurityGroupGoodExample = `
-resource "aws_security_group" "http" {
+resource "aws_security_group" "good_example" {
   name        = "http"
   description = "Allow inbound HTTP traffic"
 

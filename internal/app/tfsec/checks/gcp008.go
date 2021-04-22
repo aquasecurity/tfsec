@@ -19,7 +19,7 @@ It is recommended to use Serivce Accounts and OAuth as authentication methods fo
 Basic authentication should be disabled by explicitly unsetting the <code>username</code> and <code>password</code> on the <code>master_auth</code> block.
 `
 const GkeLegacyAuthEnabledBadExample = `
-resource "google_container_cluster" "gke" {
+resource "google_container_cluster" "bad_example" {
 }
 
 resource "google_container_cluster" "gke" {
@@ -33,7 +33,7 @@ resource "google_container_cluster" "gke" {
 }
 `
 const GkeLegacyAuthEnabledGoodExample = `
-resource "google_container_cluster" "gke" {
+resource "google_container_cluster" "good_example" {
 	master_auth {
 	    username = ""
 	    password = ""

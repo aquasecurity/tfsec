@@ -17,11 +17,11 @@ const AzureUnencryptedDataLakeStoreExplanation = `
 Datalake storage encryption defaults to Enabled, it shouldn't be overridden to Disabled.
 `
 const AzureUnencryptedDataLakeStoreBadExample = `
-resource "azurerm_data_lake_store" "my-lake-store" {
+resource "azurerm_data_lake_store" "bad_example" {
 	encryption_state = "Disabled"
 }`
 const AzureUnencryptedDataLakeStoreGoodExample = `
-resource "azurerm_data_lake_store" "my-lake-store" {
+resource "azurerm_data_lake_store" "good_example" {
 	encryption_state = "Enabled"
 }`
 

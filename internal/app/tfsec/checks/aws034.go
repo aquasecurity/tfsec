@@ -16,7 +16,7 @@ const AWSOutdatedTLSPolicyElasticsearchDomainEndpointExplanation = `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointBadExample = `
-resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
   domain_endpoint_options {
@@ -26,7 +26,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 }
 `
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointGoodExample = `
-resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
   domain_endpoint_options {

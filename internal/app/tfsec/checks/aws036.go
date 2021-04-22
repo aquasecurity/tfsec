@@ -14,7 +14,7 @@ const AWSUnencryptedInTransitElasticacheReplicationGroupExplanation = `
 Traffic flowing between Elasticache replication nodes should be encrypted to ensure sensitive data is kept private.
 `
 const AWSUnencryptedInTransitElasticacheReplicationGroupBadExample = `
-resource "aws_elasticache_replication_group" "my-resource" {
+resource "aws_elasticache_replication_group" "bad_example" {
         replication_group_id = "foo"
         replication_group_description = "my foo cluster"
 
@@ -22,7 +22,7 @@ resource "aws_elasticache_replication_group" "my-resource" {
 }
 `
 const AWSUnencryptedInTransitElasticacheReplicationGroupGoodExample = `
-resource "aws_elasticache_replication_group" "my-resource" {
+resource "aws_elasticache_replication_group" "good_example" {
         replication_group_id = "foo"
         replication_group_description = "my foo cluster"
 

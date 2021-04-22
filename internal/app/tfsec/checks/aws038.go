@@ -19,14 +19,14 @@ IAM account password policies should have a maximum age specified.
 The account password policy should be set to expire passwords after 90 days or less.
 `
 	AWSIAMPasswordExpiryBadExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# max_password_age not set
 	# ...
 }
 `
 	AWSIAMPasswordExpiryGoodExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	max_password_age = 90
 	# ...

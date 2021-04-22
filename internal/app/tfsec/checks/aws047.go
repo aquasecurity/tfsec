@@ -3,8 +3,9 @@ package checks
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/zclconf/go-cty/cty"
 	"strings"
+
+	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
@@ -18,7 +19,7 @@ SQS Policy actions should always be restricted to a specific set.
 This ensures that the queue itself cannot be modified or deleted, and prevents possible future additions to queue actions to be implicitly allowed.
 `
 const AWSSqsPolicyWildcardActionsBadExample = `
-resource "aws_sqs_queue_policy" "test" {
+resource "aws_sqs_queue_policy" "bad_example" {
   queue_url = aws_sqs_queue.q.id
 
   policy = <<POLICY
@@ -35,7 +36,7 @@ POLICY
 }
 `
 const AWSSqsPolicyWildcardActionsGoodExample = `
-resource "aws_sqs_queue_policy" "test" {
+resource "aws_sqs_queue_policy" "good_example" {
   queue_url = aws_sqs_queue.q.id
 
   policy = <<POLICY

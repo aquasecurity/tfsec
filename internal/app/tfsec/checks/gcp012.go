@@ -15,13 +15,13 @@ You should create and use a minimally privileged service account to run your GKE
 `
 
 const GCPGKENodeServiceAccountBadExample = `
-resource "google_container_cluster" "my-cluster" {
+resource "google_container_cluster" "bad_example" {
 	node_config {
 	}
 }
 `
 const GCPGKENodeServiceAccountGoodExample = `
-resource "google_container_cluster" "my-cluster" {
+resource "google_container_cluster" "good_example" {
 	node_config {
 		service_account = "cool-service-account@example.com"
 	}
@@ -60,7 +60,7 @@ func init() {
 			}
 			displayBlock := block.GetBlock("node_config")
 			serviceAccount := displayBlock.GetAttribute("service_account")
-			
+
 			if serviceAccount == nil || serviceAccount.IsEmpty() {
 				if displayBlock == nil {
 					displayBlock = block

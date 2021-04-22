@@ -17,14 +17,14 @@ const (
 IAM account password policies should ensure that passwords content including a symbol.
 `
 	AWSIAMPasswordRequiresSymbolBadExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# require_symbols not set
 	# ...
 }
 `
 	AWSIAMPasswordRequiresSymbolGoodExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	require_symbols = true
 	# ...

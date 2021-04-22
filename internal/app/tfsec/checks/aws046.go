@@ -18,7 +18,7 @@ const AWSIamPolicyWildcardActionsExplanation = `
 IAM profiles should be configured with the specific, minimum set of permissions required.
 `
 const AWSIamPolicyWildcardActionsBadExample = `
-data "aws_iam_policy_document" "my-policy" {
+data "aws_iam_policy_document" "bad_example" {
 	statement {
 		sid = "1"
 
@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "my-policy" {
 }
 `
 const AWSIamPolicyWildcardActionsGoodExample = `
-data "aws_iam_policy_document" "my-policy" {
+data "aws_iam_policy_document" "good_example" {
 	statement {
 		sid = "1"
 

@@ -17,12 +17,12 @@ const AWSUnencryptedKinesisStreamExplanation = `
 Kinesis streams should be encrypted to ensure sensitive data is kept private. Additionally, non-default KMS keys should be used so granularity of access control can be ensured.
 `
 const AWSUnencryptedKinesisStreamBadExample = `
-resource "aws_kinesis_stream" "test_stream" {
+resource "aws_kinesis_stream" "bad_example" {
 	encryption_type = "NONE"
 }
 `
 const AWSUnencryptedKinesisStreamGoodExample = `
-resource "aws_kinesis_stream" "test_stream" {
+resource "aws_kinesis_stream" "good_example" {
 	encryption_type = "KMS"
 	kms_key_id = "my/special/key"
 }
