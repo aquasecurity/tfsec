@@ -14,7 +14,7 @@ const AWSUnencryptedAtRestElasticacheReplicationGroupExplanation = `
 You should ensure your Elasticache data is encrypted at rest to help prevent sensitive information from being read by unauthorised users.
 `
 const AWSUnencryptedAtRestElasticacheReplicationGroupBadExample = `
-resource "aws_elasticache_replication_group" "my-resource" {
+resource "aws_elasticache_replication_group" "bad_example" {
         replication_group_id = "foo"
         replication_group_description = "my foo cluster"
 
@@ -22,7 +22,7 @@ resource "aws_elasticache_replication_group" "my-resource" {
 }
 `
 const AWSUnencryptedAtRestElasticacheReplicationGroupGoodExample = `
-resource "aws_elasticache_replication_group" "my-resource" {
+resource "aws_elasticache_replication_group" "good_example" {
         replication_group_id = "foo"
         replication_group_description = "my foo cluster"
 

@@ -23,13 +23,13 @@ Unless specifically required, we recommend you disable these legacy APIs.
 When setting the <code>metadata</code> block, the default value for <code>disable-legacy-endpoints</code> is set to true, they should not be explicitly enabled.
 `
 const GkeLegacyMetadataEndpointsBadExample = `
-resource "google_container_cluster" "gke" {
+resource "google_container_cluster" "bad_example" {
 	metadata {
     disable-legacy-endpoints = false
   }
 }`
 const GkeLegacyMetadataEndpointsGoodExample = `
-resource "google_container_cluster" "gke" {
+resource "google_container_cluster" "good_example" {
 	metadata {
     disable-legacy-endpoints = true
   }

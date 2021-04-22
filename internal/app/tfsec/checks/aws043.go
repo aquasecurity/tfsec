@@ -18,14 +18,14 @@ const (
 IAM account password policies should ensure that passwords content including at least one uppercase character.
 `
 	AWSIAMPasswordRequiresUppercaseCharacterBadExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# require_uppercase_characters not set
 	# ...
 }
 `
 	AWSIAMPasswordRequiresUppercaseCharacterGoodExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	require_uppercase_characters = true
 	# ...

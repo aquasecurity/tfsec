@@ -15,12 +15,12 @@ const AWSApiGatewayDomainNameOutdatedSecurityPolicyExplanation = `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyBadExample = `
-resource "aws_api_gateway_domain_name" "my-resource" {
+resource "aws_api_gateway_domain_name" "bad_example" {
 	security_policy = "TLS_1_0"
 }
 `
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyGoodExample = `
-resource "aws_api_gateway_domain_name" "my-resource" {
+resource "aws_api_gateway_domain_name" "good_example" {
 	security_policy = "TLS_1_2"
 }
 `

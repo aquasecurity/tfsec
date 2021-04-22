@@ -51,6 +51,12 @@ type CheckDocumentation struct {
 	// Explanation (markdown) contains reasoning for the check, details on it's value, and remediation info
 	Explanation string
 
+	// Impact contains a brief summary of the impact of failing the check
+	Impact string
+
+	// Resolution contains a brief summary of the resolution for the failing check
+	Resolution string
+
 	// BadExample (hcl) contains Terraform code which would cause the check to fail
 	BadExample string
 

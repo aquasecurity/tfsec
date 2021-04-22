@@ -17,7 +17,7 @@ const AWSEcrImageScanNotEnabledExplanation = `
 Repository image scans should be enabled to ensure vulnerable software can be discovered and remediated as soon as possible.
 `
 const AWSEcrImageScanNotEnabledBadExample = `
-resource "aws_ecr_repository" "foo" {
+resource "aws_ecr_repository" "bad_example" {
   name                 = "bar"
   image_tag_mutability = "MUTABLE"
 
@@ -27,7 +27,7 @@ resource "aws_ecr_repository" "foo" {
 }
 `
 const AWSEcrImageScanNotEnabledGoodExample = `
-resource "aws_ecr_repository" "foo" {
+resource "aws_ecr_repository" "good_example" {
   name                 = "bar"
   image_tag_mutability = "MUTABLE"
 

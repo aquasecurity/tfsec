@@ -21,7 +21,7 @@ Sensitive attributes such as passwords and API tokens should not be available in
 *NOTE: It is also recommended to store your Terraform state in an encrypted form.*
 `
 const GenericSensitiveAttributesBadExample = `
-resource "evil_corp" "virtual_machine" {
+resource "evil_corp" "bad_example" {
 	root_password = "p4ssw0rd"
 }
 `
@@ -31,7 +31,7 @@ variable "password" {
   type        = string
 }
 
-resource "evil_corp" "virtual_machine" {
+resource "evil_corp" "good_example" {
 	root_password = var.password
 }
 `

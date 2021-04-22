@@ -25,7 +25,7 @@ locals {
   password = "p4ssw0rd"
 }
 
-resource "evil_corp" "virtual_machine" {
+resource "evil_corp" "bad_example" {
 	root_password = local.password
 }
 `
@@ -35,7 +35,7 @@ variable "password" {
   type        = string
 }
 
-resource "evil_corp" "virtual_machine" {
+resource "evil_corp" "good_example" {
 	root_password = var.password
 }
 `

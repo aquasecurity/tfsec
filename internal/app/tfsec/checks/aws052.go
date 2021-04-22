@@ -15,12 +15,12 @@ Encryption should be enabled for an RDS Database instances.
 When enabling encryption by setting the kms_key_id. 
 `
 const AWSRDSEncryptionNotEnabledBadExample = `
-resource "aws_db_instance" "my-db-instance" {
+resource "aws_db_instance" "bad_example" {
 	
 }
 `
 const AWSRDSEncryptionNotEnabledGoodExample = `
-resource "aws_db_instance" "my-db-instance" {
+resource "aws_db_instance" "good_example" {
 	storage_encrypted  = true
 }
 `
@@ -61,7 +61,7 @@ func init() {
 						storageEncrypted.Range(),
 						storageEncrypted,
 						scanner.SeverityError,
-						),
+					),
 				}
 			}
 			return nil

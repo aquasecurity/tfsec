@@ -18,19 +18,19 @@ If the <code>disk_encryption_key</code> block is included in the resource declar
 To use the default offering of Google managed keys, do not include a <code>disk_encryption_key</code> block at all.
 `
 const GoogleUnencryptedDiskBadExample = `
-resource "google_compute_disk" "my-disk" {
+resource "google_compute_disk" "bad_example" {
 	# ... 
 	disk_encryption_key {}
 	# ...
 }`
 const GoogleUnencryptedDiskGoodExample = `
-resource "google_compute_disk" "my-disk" {
+resource "google_compute_disk" "good_example" {
 	disk_encryption_key {
 		kms_key_self_link = "something"
 	}
 }
 
-resource "google_compute_disk" "another-my-disk" {
+resource "google_compute_disk" "good_example" {
 	disk_encryption_key {
 		raw_key = "something"
 	}

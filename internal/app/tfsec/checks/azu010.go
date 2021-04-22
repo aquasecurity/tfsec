@@ -14,12 +14,12 @@ const AZUStorageAccountHTTPSenabledExplanation = `
 Requiring HTTPS in Storage Account helps to minimize the risk of eavesdropping.
 `
 const AZUStorageAccountHTTPSenabledBadExample = `
-resource "azurerm_storage_account" "my-storage-account" {
+resource "azurerm_storage_account" "bad_example" {
 	enable_https_traffic_only = false
 }
 `
 const AZUStorageAccountHTTPSenabledGoodExample = `
-resource "azurerm_storage_account" "my-storage-account" {
+resource "azurerm_storage_account" "good_example" {
 	enable_https_traffic_only = true
 }
 `

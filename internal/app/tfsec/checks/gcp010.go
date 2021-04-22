@@ -19,11 +19,11 @@ CIS GKE Benchmark Recommendation: 6.5.5. Ensure Shielded GKE Nodes are Enabled
 Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.
 `
 const GkeShieldedNodesDisabledBadExample = `
-resource "google_container_cluster" "gke" {
+resource "google_container_cluster" "bad_example" {
 	enable_shielded_nodes = "false"
 }`
 const GkeShieldedNodesDisabledGoodExample = `
-resource "google_container_cluster" "gke" {
+resource "google_container_cluster" "good_example" {
 	enable_shielded_nodes = "true"
 }`
 

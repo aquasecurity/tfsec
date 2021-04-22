@@ -19,7 +19,7 @@ const AWSTaskDefinitionWithSensitiveEnvironmentVariablesExplanation = `
 You should not make secrets available to a user in plaintext in any scenario. Secrets can instead be pulled from a secure secret storage system by the service requiring them.  
 `
 const AWSTaskDefinitionWithSensitiveEnvironmentVariablesBadExample = `
-resource "aws_ecs_task_definition" "my-task" {
+resource "aws_ecs_task_definition" "bad_example" {
   container_definitions = <<EOF
 [
   {
@@ -37,7 +37,7 @@ EOF
 }
 `
 const AWSTaskDefinitionWithSensitiveEnvironmentVariablesGoodExample = `
-resource "aws_ecs_task_definition" "my-task" {
+resource "aws_ecs_task_definition" "good_example" {
   container_definitions = <<EOF
 [
   {

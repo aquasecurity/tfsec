@@ -14,12 +14,12 @@ const AWSNoBucketLoggingExplanation = `
 Buckets should have logging enabled so that access can be audited. 
 `
 const AWSNoBucketLoggingBadExample = `
-resource "aws_s3_bucket" "my-bucket" {
+resource "aws_s3_bucket" "bad_example" {
 
 }
 `
 const AWSNoBucketLoggingGoodExample = `
-resource "aws_s3_bucket" "my-bucket" {
+resource "aws_s3_bucket" "good_example" {
 	logging {
 		target_bucket = "target-bucket"
 	}

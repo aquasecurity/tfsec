@@ -16,12 +16,12 @@ const AWSUnencryptedSNSTopicExplanation = `
 Queues should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific queues.
 `
 const AWSUnencryptedSNSTopicBadExample = `
-resource "aws_sns_topic" "my-topic" {
+resource "aws_sns_topic" "bad_example" {
 	# no key id specified
 }
 `
 const AWSUnencryptedSNSTopicGoodExample = `
-resource "aws_sns_topic" "my-topic" {
+resource "aws_sns_topic" "good_example" {
 	kms_master_key_id = "/blah"
 }
 `

@@ -20,7 +20,7 @@ Plain HTTP is unencrypted and human-readable. This means that if a malicious act
 You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning eavesdroppers cannot read your traffic.
 `
 const AWSUnenforcedHTTPSElasticsearchDomainEndpointBadExample = `
-resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
   domain_endpoint_options {
@@ -29,7 +29,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 }
 `
 const AWSUnenforcedHTTPSElasticsearchDomainEndpointGoodExample = `
-resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
   domain_endpoint_options {

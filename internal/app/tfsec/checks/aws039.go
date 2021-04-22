@@ -19,14 +19,14 @@ IAM account password policies should ensure that passwords have a minimum length
 The account password policy should be set to enforce minimum password length of at least 14 characters.
 `
 	AWSIAMPasswordMinimumLengthBadExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# minimum_password_length not set
 	# ...
 }
 `
 	AWSIAMPasswordMinimumLengthGoodExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	minimum_password_length = 14
 	# ...

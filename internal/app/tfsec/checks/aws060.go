@@ -13,7 +13,7 @@ const AWSAthenaWorkgroupEnforceConfigurationExplanation = `
 Athena workgroup configuration should be enforced to prevent client side changes to disable encryption settings.
 `
 const AWSAthenaWorkgroupEnforceConfigurationBadExample = `
-resource "aws_athena_workgroup" "good_example" {
+resource "aws_athena_workgroup" "bad_example" {
   name = "example"
 
   configuration {
@@ -31,7 +31,7 @@ resource "aws_athena_workgroup" "good_example" {
   }
 }
 
-resource "aws_athena_workgroup" "good_example" {
+resource "aws_athena_workgroup" "bad_example" {
   name = "example"
 
 }

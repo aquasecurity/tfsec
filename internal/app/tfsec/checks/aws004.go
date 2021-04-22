@@ -18,12 +18,12 @@ Plain HTTP is unencrypted and human-readable. This means that if a malicious act
 You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning eavesdroppers cannot read your traffic.
 `
 const AWSPlainHTTPBadExample = `
-resource "aws_alb_listener" "my-listener" {
+resource "aws_alb_listener" "bad_example" {
 	protocol = "HTTP"
 }
 `
 const AWSPlainHTTPGoodExample = `
-resource "aws_alb_listener" "my-listener" {
+resource "aws_alb_listener" "good_example" {
 	protocol = "HTTPS"
 }
 `

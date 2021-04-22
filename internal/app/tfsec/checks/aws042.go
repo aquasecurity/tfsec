@@ -17,14 +17,14 @@ const (
 IAM account password policies should ensure that passwords content including at least one lowercase character.
 `
 	AWSIAMPasswordRequiresLowercaseCharacterBadExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# require_lowercase_characters not set
 	# ...
 }
 `
 	AWSIAMPasswordRequiresLowercaseCharacterGoodExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	require_lowercase_characters = true
 	# ...

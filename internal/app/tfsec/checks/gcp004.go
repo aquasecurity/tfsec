@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -15,11 +16,11 @@ Network security rules should not use very broad subnets.
 Where possible, segments should be broken into smaller subnets and avoid using the <code>/0</code> subnet.
 `
 const GoogleOpenOutboundFirewallRuleBadExample = `
-resource "google_compute_firewall" "my-firewall" {
+resource "google_compute_firewall" "bad_example" {
 	destination_ranges = ["0.0.0.0/0"]
 }`
 const GoogleOpenOutboundFirewallRuleGoodExample = `
-resource "google_compute_firewall" "my-firewall" {
+resource "google_compute_firewall" "good_example" {
 	destination_ranges = ["1.2.3.4/32"]
 }`
 

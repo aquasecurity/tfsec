@@ -3,8 +3,6 @@ package checks
 import (
 	"fmt"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -19,15 +17,18 @@ Granting write access publicly with <code>public-read-write</code> is especially
 Additionally, you should not use the <code>authenticated-read</code> canned ACL, as this provides read access to any authenticated AWS user, not just AWS users within your organisation.
 `
 const AWSBadBucketACLBadExample = `
-resource "aws_s3_bucket" "my-bucket" {
+resource "aws_s3_bucket" "bad_example" {
 	acl = "public-read"
 }
 `
 const AWSBadBucketACLGoodExample = `
-resource "aws_s3_bucket" "my-bucket" {
+resource "aws_s3_bucket" "good_example" {
 	acl = "private"
 }
 `
+const AWSBadBucketACLImpact = "The contents of the bucket can be accessed publicly"
+
+const AWSBadBucketACLResolution = "Apply a more restrictive bucket ACL"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
@@ -35,6 +36,8 @@ func init() {
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AwsBadBucketACLDescription,
 			Explanation: AWSBadBucketACLExplanation,
+			Impact:      AWSBadBucketACLImpact,
+			Resolution:  AWSBadBucketACLResolution,
 			BadExample:  AWSBadBucketACLBadExample,
 			GoodExample: AWSBadBucketACLGoodExample,
 			Links: []string{
@@ -46,9 +49,8 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_s3_bucket"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-			if attr := block.GetAttribute("acl"); attr != nil && attr.Value().Type() == cty.String {
-				acl := attr.Value().AsString()
-				if acl == "public-read" || acl == "public-read-write" || acl == "website" {
+			if attr := block.GetAttribute("acl"); attr != nil {
+				if attr.IsAny("public-read", "public-read-write", "website") {
 					return []scanner.Result{
 						check.NewResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' has an ACL which allows public access.", block.FullName()),
@@ -58,7 +60,7 @@ func init() {
 						),
 					}
 				}
-				if acl == "authenticated-read" {
+				if attr.Equals("authenticated-read") {
 					return []scanner.Result{
 						check.NewResultWithValueAnnotation(
 							fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", block.FullName()),

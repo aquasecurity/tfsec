@@ -18,12 +18,12 @@ You should disable Attribute-Based Access Control (ABAC), and instead use Role-B
 RBAC has significant security advantages and is now stable in Kubernetes, so it’s time to disable ABAC.
 `
 const GkeAbacEnabledBadExample = `
-resource "google_container_cluster" "gke" {
+resource "google_container_cluster" "bad_example" {
 	enable_legacy_abac = "true"
 }
 `
 const GkeAbacEnabledGoodExample = `
-resource "google_container_cluster" "gke" {
+resource "google_container_cluster" "good_example" {
 	# ...
 	# enable_legacy_abac not set
 	# ...

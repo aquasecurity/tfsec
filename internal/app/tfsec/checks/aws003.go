@@ -15,12 +15,12 @@ AWS Classic resources run in a shared environment with infrastructure owned by o
 resources in a VPC instead.
 `
 const AWSClassicUsageBadExample = `
-resource "aws_db_security_group" "my-group" {
+resource "aws_db_security_group" "bad_example" {
   # ...
 }
 `
 const AWSClassicUsageGoodExample = `
-resource "aws_security_group" "allow-db-access" {
+resource "aws_security_group" "good_example" {
   # ...
 }
 `

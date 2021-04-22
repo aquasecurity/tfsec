@@ -16,12 +16,12 @@ const AWSUnencryptedSQSQueueExplanation = `
 Queues should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific queues.
 `
 const AWSUnencryptedSQSQueueBadExample = `
-resource "aws_sqs_queue" "my-queue" {
+resource "aws_sqs_queue" "bad_example" {
 	# no key specified
 }
 `
 const AWSUnencryptedSQSQueueGoodExample = `
-resource "aws_sqs_queue" "my-queue" {
+resource "aws_sqs_queue" "good_example" {
 	kms_master_key_id = "/blah"
 }
 `

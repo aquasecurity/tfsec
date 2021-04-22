@@ -17,7 +17,7 @@ const AWSPlaintextNodeToNodeElasticsearchTrafficExplanation = `
 Traffic flowing between Elasticsearch nodes should be encrypted to ensure sensitive data is kept private.
 `
 const AWSPlaintextNodeToNodeElasticsearchTrafficBadExample = `
-resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
   node_to_node_encryption {
@@ -26,7 +26,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 }
 `
 const AWSPlaintextNodeToNodeElasticsearchTrafficGoodExample = `
-resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
   node_to_node_encryption {

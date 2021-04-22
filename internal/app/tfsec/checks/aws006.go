@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
@@ -15,13 +16,13 @@ const AWSOpenIngressSecurityGroupRuleExplanation = `
 Opening up ports to the public internet is generally to be avoided. You should restrict access to IP addresses or ranges that explicitly require it where possible.
 `
 const AWSOpenIngressSecurityGroupRuleBadExample = `
-resource "aws_security_group_rule" "my-rule" {
+resource "aws_security_group_rule" "bad_example" {
 	type = "ingress"
 	cidr_blocks = ["0.0.0.0/0"]
 }
 `
 const AWSOpenIngressSecurityGroupRuleGoodExample = `
-resource "aws_security_group_rule" "my-rule" {
+resource "aws_security_group_rule" "good_example" {
 	type = "ingress"
 	cidr_blocks = ["10.0.0.0/16"]
 }

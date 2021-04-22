@@ -14,14 +14,14 @@ const AZUAKSClusterRBACenabledExplanation = `
 Using Kubernetes role-based access control (RBAC), you can grant users, groups, and service accounts access to only the resources they need.
 `
 const AZUAKSClusterRBACenabledBadExample = `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+resource "azurerm_kubernetes_cluster" "bad_example" {
 	role_based_access_control {
 		enabled = false
 	}
 }
 `
 const AZUAKSClusterRBACenabledGoodExample = `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+resource "azurerm_kubernetes_cluster" "good_example" {
 	role_based_access_control {
 		enabled = true
 	}

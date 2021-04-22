@@ -15,7 +15,7 @@ const AWSCloudFrontOutdatedProtocolExplanation = `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `
 const AWSCloudFrontOutdatedProtocolBadExample = `
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "bad_example" {
   viewer_certificate {
     cloudfront_default_certificate = true
 	minimum_protocol_version = "TLSv1.0"
@@ -23,7 +23,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 }
 `
 const AWSCloudFrontOutdatedProtocolGoodExample = `
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "good_example" {
   viewer_certificate {
     cloudfront_default_certificate = true
 	minimum_protocol_version = "TLSv1.2_2019"

@@ -13,12 +13,12 @@ const AZUAKSAPIServerAuthorizedIPRangesExplanation = `
 The API server is the central way to interact with and manage a cluster. To improve cluster security and minimize attacks, the API server should only be accessible from a limited set of IP address ranges.
 `
 const AZUAKSAPIServerAuthorizedIPRangesBadExample = `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+resource "azurerm_kubernetes_cluster" "bad_example" {
 
 }
 `
 const AZUAKSAPIServerAuthorizedIPRangesGoodExample = `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+resource "azurerm_kubernetes_cluster" "good_example" {
     api_server_authorized_ip_ranges = [
 		"1.2.3.4/32"
 	]

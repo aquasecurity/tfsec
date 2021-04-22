@@ -17,12 +17,12 @@ const AWSNoKMSAutoRotateExplanation = `
 You should configure your KMS keys to auto rotate to maintain security and defend against compromise.
 `
 const AWSNoKMSAutoRotateBadExample = `
-resource "aws_kms_key" "kms_key" {
+resource "aws_kms_key" "bad_example" {
 	enable_key_rotation = false
 }
 `
 const AWSNoKMSAutoRotateGoodExample = `
-resource "aws_kms_key" "kms_key" {
+resource "aws_kms_key" "good_example" {
 	enable_key_rotation = true
 }
 `

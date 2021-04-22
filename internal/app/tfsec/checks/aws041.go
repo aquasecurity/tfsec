@@ -17,14 +17,14 @@ const (
 IAM account password policies should ensure that passwords content including at least one number.
 `
 	AWSIAMPasswordRequiresNumberBadExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# require_numbers not set
 	# ...
 }
 `
 	AWSIAMPasswordRequiresNumberGoodExample = `
-resource "aws_iam_account_password_policy" "strict" {
+resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	require_numbers = true
 	# ...
