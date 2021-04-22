@@ -10,6 +10,8 @@ import (
 
 const AWSNoBucketLogging scanner.RuleCode = "AWS002"
 const AWSNoBucketLoggingDescription scanner.RuleSummary = "S3 Bucket does not have logging enabled."
+const AWSNoBucketLoggingImpact = "There is no way to determine the access to this bucket"
+const AWSNoBucketLoggingResolution = "Add a logging block to the resource to enable access logging"
 const AWSNoBucketLoggingExplanation = `
 Buckets should have logging enabled so that access can be audited. 
 `
@@ -32,6 +34,8 @@ func init() {
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSNoBucketLoggingDescription,
 			Explanation: AWSNoBucketLoggingExplanation,
+			Impact:      AWSNoBucketLoggingImpact,
+			Resolution:  AWSNoBucketLoggingResolution,
 			BadExample:  AWSNoBucketLoggingBadExample,
 			GoodExample: AWSNoBucketLoggingGoodExample,
 			Links: []string{
@@ -44,7 +48,7 @@ func init() {
 		RequiredLabels: []string{"aws_s3_bucket"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 			if loggingBlock := block.GetBlock("logging"); loggingBlock == nil {
-				if block.GetAttribute("acl") != nil && block.GetAttribute("acl").Value().AsString() == "log-delivery-write" {
+				if block.GetAttribute("acl") != nil && block.GetAttribute("acl").Equals("log-delivery-write") {
 					return nil
 				}
 				return []scanner.Result{

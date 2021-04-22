@@ -10,6 +10,8 @@ import (
 
 const AWSClassicUsage scanner.RuleCode = "AWS003"
 const AWSClassicUsageDescription scanner.RuleSummary = "AWS Classic resource usage."
+const AWSClassicUsageImpact = "Classic resources are running in a shared environment with other customers"
+const AWSClassicUsageResolution = "Switch to VPC resources"
 const AWSClassicUsageExplanation = `
 AWS Classic resources run in a shared environment with infrastructure owned by other AWS customers. You should run
 resources in a VPC instead.
@@ -31,6 +33,8 @@ func init() {
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSClassicUsageDescription,
 			Explanation: AWSClassicUsageExplanation,
+			Impact:      AWSClassicUsageImpact,
+			Resolution:  AWSClassicUsageResolution,
 			BadExample:  AWSClassicUsageBadExample,
 			GoodExample: AWSClassicUsageGoodExample,
 			Links: []string{

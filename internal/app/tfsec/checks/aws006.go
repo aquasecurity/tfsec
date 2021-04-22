@@ -12,6 +12,8 @@ import (
 
 const AWSOpenIngressSecurityGroupRule scanner.RuleCode = "AWS006"
 const AWSOpenIngressSecurityGroupRuleDescription scanner.RuleSummary = "An ingress security group rule allows traffic from `/0`."
+const AWSOpenIngressSecurityGroupRuleImpact = "Your port exposed to the internet"
+const AWSOpenIngressSecurityGroupRuleResolution = "Set a more restrictive cidr range"
 const AWSOpenIngressSecurityGroupRuleExplanation = `
 Opening up ports to the public internet is generally to be avoided. You should restrict access to IP addresses or ranges that explicitly require it where possible.
 `
@@ -34,6 +36,8 @@ func init() {
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSOpenIngressSecurityGroupRuleDescription,
 			Explanation: AWSOpenIngressSecurityGroupRuleExplanation,
+			Impact:      AWSOpenIngressSecurityGroupRuleImpact,
+			Resolution:  AWSOpenIngressSecurityGroupRuleResolution,
 			BadExample:  AWSOpenIngressSecurityGroupRuleBadExample,
 			GoodExample: AWSOpenIngressSecurityGroupRuleGoodExample,
 			Links: []string{

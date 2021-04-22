@@ -9,6 +9,8 @@ import (
 
 const AWSBadBucketACL scanner.RuleCode = "AWS001"
 const AwsBadBucketACLDescription scanner.RuleSummary = "S3 Bucket has an ACL defined which allows public access."
+const AWSBadBucketACLImpact = "The contents of the bucket can be accessed publicly"
+const AWSBadBucketACLResolution = "Apply a more restrictive bucket ACL"
 const AWSBadBucketACLExplanation = `
 S3 bucket permissions should be set to deny public access unless explicitly required.
 
@@ -26,9 +28,6 @@ resource "aws_s3_bucket" "good_example" {
 	acl = "private"
 }
 `
-const AWSBadBucketACLImpact = "The contents of the bucket can be accessed publicly"
-
-const AWSBadBucketACLResolution = "Apply a more restrictive bucket ACL"
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
