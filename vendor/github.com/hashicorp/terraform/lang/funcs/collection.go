@@ -208,74 +208,6 @@ var IndexFunc = function.New(&function.Spec{
 	},
 })
 
-// Flatten until it's not a cty.List, and return whether the value is known.
-// We can flatten lists with unknown values, as long as they are not
-// lists themselves.
-func flattener(flattenList cty.Value) ([]cty.Value, bool) {
-	out := make([]cty.Value, 0)
-	for it := flattenList.ElementIterator(); it.Next(); {
-		_, val := it.Element()
-		if val.Type().IsListType() || val.Type().IsSetType() || val.Type().IsTupleType() {
-			if !val.IsKnown() {
-				return out, false
-			}
-
-			res, known := flattener(val)
-			if !known {
-				return res, known
-			}
-			out = append(out, res...)
-		} else {
-			out = append(out, val)
-		}
-	}
-	return out, true
-}
-
-// ListFunc constructs a function that takes an arbitrary number of arguments
-// and returns a list containing those values in the same order.
-//
-// This function is deprecated in Terraform v0.12
-var ListFunc = function.New(&function.Spec{
-	Params: []function.Parameter{},
-	VarParam: &function.Parameter{
-		Name:             "vals",
-		Type:             cty.DynamicPseudoType,
-		AllowUnknown:     true,
-		AllowDynamicType: true,
-		AllowNull:        true,
-	},
-	Type: func(args []cty.Value) (ret cty.Type, err error) {
-		if len(args) == 0 {
-			return cty.NilType, errors.New("at least one argument is required")
-		}
-
-		argTypes := make([]cty.Type, len(args))
-
-		for i, arg := range args {
-			argTypes[i] = arg.Type()
-		}
-
-		retType, _ := convert.UnifyUnsafe(argTypes)
-		if retType == cty.NilType {
-			return cty.NilType, errors.New("all arguments must have the same type")
-		}
-
-		return cty.List(retType), nil
-	},
-	Impl: func(args []cty.Value, retType cty.Type) (ret cty.Value, err error) {
-		newList := make([]cty.Value, 0, len(args))
-
-		for _, arg := range args {
-			// We already know this will succeed because of the checks in our Type func above
-			arg, _ = convert.Convert(arg, retType.ElementType())
-			newList = append(newList, arg)
-		}
-
-		return cty.ListVal(newList), nil
-	},
-})
-
 // LookupFunc constructs a function that performs dynamic lookups of map types.
 var LookupFunc = function.New(&function.Spec{
 	Params: []function.Parameter{
@@ -366,81 +298,6 @@ var LookupFunc = function.New(&function.Spec{
 	},
 })
 
-// MapFunc constructs a function that takes an even number of arguments and
-// returns a map whose elements are constructed from consecutive pairs of arguments.
-//
-// This function is deprecated in Terraform v0.12
-var MapFunc = function.New(&function.Spec{
-	Params: []function.Parameter{},
-	VarParam: &function.Parameter{
-		Name:             "vals",
-		Type:             cty.DynamicPseudoType,
-		AllowUnknown:     true,
-		AllowDynamicType: true,
-		AllowNull:        true,
-	},
-	Type: func(args []cty.Value) (ret cty.Type, err error) {
-		if len(args) < 2 || len(args)%2 != 0 {
-			return cty.NilType, fmt.Errorf("map requires an even number of two or more arguments, got %d", len(args))
-		}
-
-		argTypes := make([]cty.Type, len(args)/2)
-		index := 0
-
-		for i := 0; i < len(args); i += 2 {
-			argTypes[index] = args[i+1].Type()
-			index++
-		}
-
-		valType, _ := convert.UnifyUnsafe(argTypes)
-		if valType == cty.NilType {
-			return cty.NilType, errors.New("all arguments must have the same type")
-		}
-
-		return cty.Map(valType), nil
-	},
-	Impl: func(args []cty.Value, retType cty.Type) (ret cty.Value, err error) {
-		for _, arg := range args {
-			if !arg.IsWhollyKnown() {
-				return cty.UnknownVal(retType), nil
-			}
-		}
-
-		outputMap := make(map[string]cty.Value)
-
-		for i := 0; i < len(args); i += 2 {
-
-			keyVal, err := convert.Convert(args[i], cty.String)
-			if err != nil {
-				return cty.NilVal, err
-			}
-			if keyVal.IsNull() {
-				return cty.NilVal, fmt.Errorf("argument %d is a null key", i+1)
-			}
-			key := keyVal.AsString()
-
-			val := args[i+1]
-
-			var variable cty.Value
-			err = gocty.FromCtyValue(val, &variable)
-			if err != nil {
-				return cty.NilVal, err
-			}
-
-			// We already know this will succeed because of the checks in our Type func above
-			variable, _ = convert.Convert(variable, retType.ElementType())
-
-			// Check for duplicate keys
-			if _, ok := outputMap[key]; ok {
-				return cty.NilVal, fmt.Errorf("argument %d is a duplicate key: %q", i+1, key)
-			}
-			outputMap[key] = variable
-		}
-
-		return cty.MapVal(outputMap), nil
-	},
-})
-
 // MatchkeysFunc constructs a function that constructs a new list by taking a
 // subset of elements from one list whose indexes match the corresponding
 // indexes of values in another list.
@@ -522,6 +379,83 @@ var MatchkeysFunc = function.New(&function.Spec{
 			return cty.ListValEmpty(retType.ElementType()), nil
 		}
 		return cty.ListVal(output), nil
+	},
+})
+
+// OneFunc returns either the first element of a one-element list, or null
+// if given a zero-element list.
+var OneFunc = function.New(&function.Spec{
+	Params: []function.Parameter{
+		{
+			Name: "list",
+			Type: cty.DynamicPseudoType,
+		},
+	},
+	Type: func(args []cty.Value) (cty.Type, error) {
+		ty := args[0].Type()
+		switch {
+		case ty.IsListType() || ty.IsSetType():
+			return ty.ElementType(), nil
+		case ty.IsTupleType():
+			etys := ty.TupleElementTypes()
+			switch len(etys) {
+			case 0:
+				// No specific type information, so we'll ultimately return
+				// a null value of unknown type.
+				return cty.DynamicPseudoType, nil
+			case 1:
+				return etys[0], nil
+			}
+		}
+		return cty.NilType, function.NewArgErrorf(0, "must be a list, set, or tuple value with either zero or one elements")
+	},
+	Impl: func(args []cty.Value, retType cty.Type) (ret cty.Value, err error) {
+		val := args[0]
+		ty := val.Type()
+
+		// Our parameter spec above doesn't set AllowUnknown or AllowNull,
+		// so we can assume our top-level collection is both known and non-null
+		// in here.
+
+		switch {
+		case ty.IsListType() || ty.IsSetType():
+			lenVal := val.Length()
+			if !lenVal.IsKnown() {
+				return cty.UnknownVal(retType), nil
+			}
+			var l int
+			err := gocty.FromCtyValue(lenVal, &l)
+			if err != nil {
+				// It would be very strange to get here, because that would
+				// suggest that the length is either not a number or isn't
+				// an integer, which would suggest a bug in cty.
+				return cty.NilVal, fmt.Errorf("invalid collection length: %s", err)
+			}
+			switch l {
+			case 0:
+				return cty.NullVal(retType), nil
+			case 1:
+				var ret cty.Value
+				// We'll use an iterator here because that works for both lists
+				// and sets, whereas indexing directly would only work for lists.
+				// Since we've just checked the length, we should only actually
+				// run this loop body once.
+				for it := val.ElementIterator(); it.Next(); {
+					_, ret = it.Element()
+				}
+				return ret, nil
+			}
+		case ty.IsTupleType():
+			etys := ty.TupleElementTypes()
+			switch len(etys) {
+			case 0:
+				return cty.NullVal(retType), nil
+			case 1:
+				ret := val.Index(cty.NumberIntVal(0))
+				return ret, nil
+			}
+		}
+		return cty.NilVal, function.NewArgErrorf(0, "must be a list, set, or tuple value with either zero or one elements")
 	},
 })
 
@@ -644,19 +578,47 @@ var TransposeFunc = function.New(&function.Spec{
 	},
 })
 
-// helper function to add an element to a list, if it does not already exist
-func appendIfMissing(slice []cty.Value, element cty.Value) ([]cty.Value, error) {
-	for _, ele := range slice {
-		eq, err := stdlib.Equal(ele, element)
-		if err != nil {
-			return slice, err
-		}
-		if eq.True() {
-			return slice, nil
-		}
-	}
-	return append(slice, element), nil
-}
+// ListFunc constructs a function that takes an arbitrary number of arguments
+// and returns a list containing those values in the same order.
+//
+// This function is deprecated in Terraform v0.12
+var ListFunc = function.New(&function.Spec{
+	Params: []function.Parameter{},
+	VarParam: &function.Parameter{
+		Name:             "vals",
+		Type:             cty.DynamicPseudoType,
+		AllowUnknown:     true,
+		AllowDynamicType: true,
+		AllowNull:        true,
+	},
+	Type: func(args []cty.Value) (ret cty.Type, err error) {
+		return cty.DynamicPseudoType, fmt.Errorf("the \"list\" function was deprecated in Terraform v0.12 and is no longer available; use tolist([ ... ]) syntax to write a literal list")
+	},
+	Impl: func(args []cty.Value, retType cty.Type) (ret cty.Value, err error) {
+		return cty.DynamicVal, fmt.Errorf("the \"list\" function was deprecated in Terraform v0.12 and is no longer available; use tolist([ ... ]) syntax to write a literal list")
+	},
+})
+
+// MapFunc constructs a function that takes an even number of arguments and
+// returns a map whose elements are constructed from consecutive pairs of arguments.
+//
+// This function is deprecated in Terraform v0.12
+var MapFunc = function.New(&function.Spec{
+	Params: []function.Parameter{},
+	VarParam: &function.Parameter{
+		Name:             "vals",
+		Type:             cty.DynamicPseudoType,
+		AllowUnknown:     true,
+		AllowDynamicType: true,
+		AllowNull:        true,
+	},
+	Type: func(args []cty.Value) (ret cty.Type, err error) {
+		return cty.DynamicPseudoType, fmt.Errorf("the \"map\" function was deprecated in Terraform v0.12 and is no longer available; use tomap({ ... }) syntax to write a literal map")
+	},
+	Impl: func(args []cty.Value, retType cty.Type) (ret cty.Value, err error) {
+		return cty.DynamicVal, fmt.Errorf("the \"map\" function was deprecated in Terraform v0.12 and is no longer available; use tomap({ ... }) syntax to write a literal map")
+	},
+})
 
 // Length returns the number of elements in the given collection or number of
 // Unicode characters in the given string.
@@ -709,6 +671,12 @@ func Map(args ...cty.Value) (cty.Value, error) {
 // whose indexes match the corresponding indexes of values in another list.
 func Matchkeys(values, keys, searchset cty.Value) (cty.Value, error) {
 	return MatchkeysFunc.Call([]cty.Value{values, keys, searchset})
+}
+
+// One returns either the first element of a one-element list, or null
+// if given a zero-element list..
+func One(list cty.Value) (cty.Value, error) {
+	return OneFunc.Call([]cty.Value{list})
 }
 
 // Sum adds numbers in a list, set, or tuple
