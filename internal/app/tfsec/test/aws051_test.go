@@ -67,6 +67,16 @@ resource "aws_rds_cluster" "my-instance" {
 			mustExcludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
 		},
 		{
+			name: "check rds encryption with storage_encrypted but no kms_id",
+			source: `
+resource "aws_rds_cluster" "my-instance" {
+	name              = "cluster-1"
+	storage_encrypted = true
+}
+`,
+			mustExcludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
+		},
+		{
 			name: "verify issue 633 ",
 			source: `
 resource "aws_kms_key" "rds" {
@@ -91,5 +101,3 @@ kms_key_id                      = aws_kms_key.rds.arn
 		})
 	}
 }
-
-
