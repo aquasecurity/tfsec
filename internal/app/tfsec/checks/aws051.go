@@ -47,7 +47,8 @@ func init() {
 			kmsKeyIdAttr := block.GetAttribute("kms_key_id")
 			storageEncryptedattr := block.GetAttribute("storage_encrypted")
 
-			if kmsKeyIdAttr == nil || kmsKeyIdAttr.IsEmpty() {
+			if (kmsKeyIdAttr == nil || kmsKeyIdAttr.IsEmpty()) &&
+				(storageEncryptedattr == nil || storageEncryptedattr.IsFalse()) {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", block.FullName()),
