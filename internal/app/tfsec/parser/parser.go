@@ -106,7 +106,7 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	var visited []*visitedModule
 
 	debug.Log("Evaluating expressions...")
-	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules, visited)
+	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules, visited, nil)
 	evaluatedBlocks, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err

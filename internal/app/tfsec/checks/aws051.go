@@ -46,7 +46,7 @@ func init() {
 
 			kmsKeyIdAttr := block.GetAttribute("kms_key_id")
 			storageEncryptedattr := block.GetAttribute("storage_encrypted")
-
+			
 			if (kmsKeyIdAttr == nil || kmsKeyIdAttr.IsEmpty()) &&
 				(storageEncryptedattr == nil || storageEncryptedattr.IsFalse()) {
 				return []scanner.Result{

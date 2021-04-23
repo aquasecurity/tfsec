@@ -27,11 +27,15 @@ type Evaluator struct {
 	projectRootPath string // root of the current scan
 }
 
-func NewEvaluator(projectRootPath string, modulePath string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo, visitedModules []*visitedModule) *Evaluator {
+func NewEvaluator(projectRootPath string, modulePath string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo, visitedModules []*visitedModule, runningCtx *hcl.EvalContext) *Evaluator {
 
 	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
 		Functions: Functions(modulePath),
+	}
+
+	if runningCtx != nil {
+		ctx.Variables = runningCtx.Variables
 	}
 
 	// attach context to blocks
@@ -108,7 +112,7 @@ func (e *Evaluator) evaluateModules() {
 		evalTime.Stop()
 
 		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata)
-		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules, e.visitedModules)
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules, e.visitedModules, e.ctx)
 		e.SetModuleBasePath(e.projectRootPath)
 		b, _ := moduleEvaluator.EvaluateAll()
 		e.blocks = mergeBlocks(e.blocks, b)
