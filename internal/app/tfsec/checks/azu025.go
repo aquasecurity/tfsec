@@ -8,7 +8,7 @@ import (
 )
 
 const AZUDataFactoryPublicNetwork scanner.RuleCode = "AZU025"
-const AZUDataFactoryPublicNetworkDescription scanner.RuleSummary = "Data Factory should have public access disabled, the default is true."
+const AZUDataFactoryPublicNetworkDescription scanner.RuleSummary = "Data Factory should have public access disabled, the default is enabled."
 const AZUDataFactoryPublicNetworkExplanation = `
 Data Factory has public access set to true by default.
 
