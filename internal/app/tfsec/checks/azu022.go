@@ -53,7 +53,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' should have a content type set.", block.FullName()),
 						block.Range(),
-						scanner.SeverityError,
+						scanner.SeverityWarning,
 					),
 				}
 			}
