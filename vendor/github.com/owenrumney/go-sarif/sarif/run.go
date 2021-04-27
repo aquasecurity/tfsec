@@ -29,6 +29,7 @@ func NewRun(toolName, informationURI string) *Run {
 				InformationURI: &informationURI,
 			},
 		},
+		Results: []*Result{},
 	}
 
 	return run

@@ -416,8 +416,10 @@ github.com/onsi/ginkgo v1.8.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+W
 github.com/onsi/gomega v0.0.0-20170829124025-dcabb60a477c/go.mod h1:C1qb7wdrVGGVU+Z6iS04AVkA3Q65CEZX59MT0QO5uiA=
 github.com/onsi/gomega v0.0.0-20190113212917-5533ce8a0da3/go.mod h1:ex+gbHU/CVuBBDIJjb2X0qEXbFg53c61hWP/1CpauHY=
 github.com/onsi/gomega v1.5.0/go.mod h1:ex+gbHU/CVuBBDIJjb2X0qEXbFg53c61hWP/1CpauHY=
-github.com/owenrumney/go-sarif v1.0.2 h1:nOSnHKgkOXoeXS7tWBVC/XCcu86kHUwxbWQxSgBN/5k=
-github.com/owenrumney/go-sarif v1.0.2/go.mod h1:DXUGbHwQcCMvqcvZbxh8l/7diHsJVztOKZgmPt88RNI=
+github.com/owenrumney/go-sarif v1.0.3 h1:UwyOz3gmaRISeHB+5JpRmAAxJ5yvETgaN+Yna/LhpBk=
+github.com/owenrumney/go-sarif v1.0.3/go.mod h1:DXUGbHwQcCMvqcvZbxh8l/7diHsJVztOKZgmPt88RNI=
+github.com/owenrumney/go-sarif v1.0.4 h1:0LFC5eHP6amc/9ajM1jDiE52UfXFcl/oozay+X3KgV4=
+github.com/owenrumney/go-sarif v1.0.4/go.mod h1:DXUGbHwQcCMvqcvZbxh8l/7diHsJVztOKZgmPt88RNI=
 github.com/packer-community/winrmcp v0.0.0-20180921211025-c76d91c1e7db/go.mod h1:f6Izs6JvFTdnRbziASagjZ2vmf55NSIkC/weStxCHqk=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
