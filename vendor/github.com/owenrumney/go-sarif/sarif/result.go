@@ -2,6 +2,7 @@ package sarif
 
 // Result represents the results block in the sarif report
 type Result struct {
+	PropertyBag
 	Guid            *string                         `json:"guid,omitempty"`
 	CorrelationGuid *string                         `json:"correlationGuid,omitempty"`
 	RuleID          *string                         `json:"ruleId,omitempty"`
@@ -75,8 +76,8 @@ func (r *Result) WithLevel(level string) *Result {
 	return r
 }
 
-func (r *Result) WithMessage(message Message) *Result {
-	r.Message = message
+func (r *Result) WithMessage(message *Message) *Result {
+	r.Message = *message
 	return r
 }
 

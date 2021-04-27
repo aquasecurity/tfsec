@@ -49,7 +49,7 @@ github.com/mitchellh/go-wordwrap
 # github.com/olekukonko/tablewriter v0.0.5
 ## explicit
 github.com/olekukonko/tablewriter
-# github.com/owenrumney/go-sarif v1.0.0
+# github.com/owenrumney/go-sarif v1.0.2
 ## explicit
 github.com/owenrumney/go-sarif/sarif
 # github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942

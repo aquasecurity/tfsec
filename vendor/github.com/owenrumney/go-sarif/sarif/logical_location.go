@@ -1,6 +1,7 @@
 package sarif
 
 type LogicalLocation struct { // https://docs.oasis-open.org/sarif/sarif/v2.1.0/csprd01/sarif-v2.1.0-csprd01.html#_Ref493404505
+	PropertyBag
 	Index              *uint   `json:"index,omitempty"`
 	Name               *string `json:"name,omitempty"`
 	FullyQualifiedName *string `json:"fullyQualifiedName,omitempty"`

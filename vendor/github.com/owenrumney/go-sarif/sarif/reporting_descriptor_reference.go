@@ -1,6 +1,7 @@
 package sarif
 
 type ReportingDescriptorReference struct {
+	PropertyBag
 	Id            *string                 `json:"id,omitempty"`
 	Index         *uint                   `json:"index,omitempty"`
 	Guid          *string                 `json:"guid,omitempty"`

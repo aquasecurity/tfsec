@@ -40,7 +40,7 @@ func FormatSarif(w io.Writer, results []scanner.Result, baseDir string, options 
 
 		ruleResult := run.AddResult(rule.ID)
 
-		ruleResult.WithMessage(*message).
+		ruleResult.WithMessage(message).
 			WithLevel(level).
 			WithLocation(sarif.NewLocation().WithPhysicalLocation(location))
 	}

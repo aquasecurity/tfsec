@@ -1,6 +1,7 @@
 package sarif
 
 type LocationRelationship struct {
+	PropertyBag
 	Target      uint     `json:"target"`
 	Kinds       []string `json:"kinds,omitempty"`
 	Description *Message `json:"description,omitempty"`

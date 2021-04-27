@@ -1,6 +1,7 @@
 package sarif
 
 type ArtifactChange struct {
+	PropertyBag
 	ArtifactLocation ArtifactLocation `json:"artifactLocation"`
 	Replacements     []*Replacement   `json:"replacements"` //required
 }

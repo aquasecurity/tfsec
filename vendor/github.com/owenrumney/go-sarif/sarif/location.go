@@ -1,6 +1,7 @@
 package sarif
 
 type Location struct {
+	PropertyBag
 	Id               *uint                   `json:"id,omitempty"`
 	PhysicalLocation *PhysicalLocation       `json:"physicalLocation,omitempty"`
 	LogicalLocations []*LogicalLocation      `json:"logicalLocations,omitempty"`
@@ -11,6 +12,10 @@ type Location struct {
 
 func NewLocation() *Location {
 	return &Location{}
+}
+
+func NewLocationWithPhysicalLocation(physicalLocation *PhysicalLocation) *Location {
+	return NewLocation().WithPhysicalLocation(physicalLocation)
 }
 
 func (l *Location) WithId(id int) *Location {

@@ -1,6 +1,7 @@
 package sarif
 
 type Fix struct {
+	PropertyBag
 	Description     *Message          `json:"description,omitempty"`
 	ArtifactChanges []*ArtifactChange `json:"artifactChanges"` //	required
 }
