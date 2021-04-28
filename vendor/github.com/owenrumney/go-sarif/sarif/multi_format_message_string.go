@@ -1,6 +1,7 @@
 package sarif
 
 type MultiformatMessageString struct {
+	PropertyBag
 	Text     string  `json:"text"`
 	Markdown *string `json:"markdown,omitempty"`
 }

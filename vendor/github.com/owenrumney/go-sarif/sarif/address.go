@@ -1,6 +1,7 @@
 package sarif
 
 type Address struct { // https://docs.oasis-open.org/sarif/sarif/v2.1.0/csprd01/sarif-v2.1.0-csprd01.html#_Toc10541049
+	PropertyBag
 	Index              *uint   `json:"index,omitempty"`
 	AbsoluteAddress    *uint   `json:"absoluteAddress,omitempty"`
 	RelativeAddress    *int    `json:"relativeAddress,omitempty"`

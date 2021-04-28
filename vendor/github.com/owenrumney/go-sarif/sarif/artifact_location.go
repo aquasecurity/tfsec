@@ -1,6 +1,7 @@
 package sarif
 
 type ArtifactLocation struct { // https://docs.oasis-open.org/sarif/sarif/v2.1.0/csprd01/sarif-v2.1.0-csprd01.html#_Toc10540865
+	PropertyBag
 	URI         *string  `json:"uri,omitempty"`
 	URIBaseId   *string  `json:"uriBaseId,omitempty"`
 	Index       *uint    `json:"index,omitempty"`

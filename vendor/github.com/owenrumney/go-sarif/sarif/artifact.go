@@ -1,6 +1,7 @@
 package sarif
 
 type Artifact struct { // https://docs.oasis-open.org/sarif/sarif/v2.1.0/csprd01/sarif-v2.1.0-csprd01.html#_Toc10541049
+	PropertyBag
 	Location            *ArtifactLocation `json:"location,omitempty"`
 	ParentIndex         *uint             `json:"parentIndex,omitempty"`
 	Offset              *uint             `json:"offset,omitempty"`

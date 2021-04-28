@@ -2,13 +2,22 @@ package sarif
 
 import (
 	"fmt"
+
+	"github.com/zclconf/go-cty/cty"
 )
+
+type RunOption int
+
+const IncludeEmptyResults RunOption = iota
 
 // Run type represents a run of a tool
 type Run struct { // https://docs.oasis-open.org/sarif/sarif/v2.1.0/csprd01/sarif-v2.1.0-csprd01.html#_Toc10540922
-	Tool      Tool        `json:"tool"`
-	Artifacts []*Artifact `json:"artifacts,omitempty"`
-	Results   []*Result   `json:"results,omitempty"` //	can	be	null
+	PropertyBag
+	Tool        Tool          `json:"tool"`
+	Invocations []*Invocation `json:"invocations,omitempty"`
+	Artifacts   []*Artifact   `json:"artifacts,omitempty"`
+	Results     []*Result     `json:"results"`
+	Properties  Properties    `json:"properties,omitempty"`
 }
 
 // NewRun allows the creation of a new Run
@@ -17,11 +26,22 @@ func NewRun(toolName, informationURI string) *Run {
 		Tool: Tool{
 			Driver: &Driver{
 				Name:           toolName,
-				InformationURI: informationURI,
+				InformationURI: &informationURI,
 			},
 		},
+		Results: []*Result{},
 	}
+
 	return run
+}
+
+// AddInvocation adds an invocation to the run and returns a pointer to it
+func (run *Run) AddInvocation(executionSuccessful bool) *Invocation {
+	i := &Invocation{
+		ExecutionSuccessful: executionSuccessful,
+	}
+	run.Invocations = append(run.Invocations, i)
+	return i
 }
 
 // AddArtifact adds an artifact to the run and returns a pointer to it
@@ -50,6 +70,10 @@ func (run *Run) AddResult(ruleID string) *Result {
 	result := newRuleResult(ruleID)
 	run.Results = append(run.Results, result)
 	return result
+}
+
+func (run *Run) AttachPropertyBag(pb *PropertyBag) {
+	run.Properties = pb.Properties
 }
 
 // GetRuleById finds a rule by a given rule ID and returns a pointer to it
@@ -86,4 +110,8 @@ func (run *Run) DedupeArtifacts() error {
 	}
 	run.Artifacts = deduped
 	return nil
+}
+
+func (run *Run) AddProperties(key string, value cty.Value) {
+	run.Properties[key] = value
 }

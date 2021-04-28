@@ -1,6 +1,7 @@
 package sarif
 
 type Replacement struct {
+	PropertyBag
 	DeletedRegion   Region           `json:"deletedRegion"`
 	InsertedContent *ArtifactContent `json:"insertedContent,omitempty"`
 }

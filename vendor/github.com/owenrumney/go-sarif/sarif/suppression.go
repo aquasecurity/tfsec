@@ -1,6 +1,7 @@
 package sarif
 
 type Suppression struct {
+	PropertyBag
 	Kind          string    `json:"kind"`
 	Status        *string   `json:"status"`
 	Location      *Location `json:"location"`

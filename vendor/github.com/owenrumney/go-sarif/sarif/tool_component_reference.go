@@ -1,6 +1,7 @@
 package sarif
 
 type ToolComponentReference struct {
+	PropertyBag
 	Name  *string `json:"name"`
 	Index *uint   `json:"index"`
 	Guid  *string `json:"guid"`
