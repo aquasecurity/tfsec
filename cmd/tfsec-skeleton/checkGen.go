@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/liamg/clinch/prompt"
 	"os"
 	"sort"
 	"strings"
 	"text/template"
+
+	"github.com/liamg/clinch/prompt"
 )
 
 var providers = map[string]string{"AWS": "aws", "Azure": "azu", "GCP": "gcp", "General": "gen"}
@@ -18,6 +19,8 @@ type checkSkeleton struct {
 	ShortCode        string
 	Code             string
 	Summary          string
+	Impact           string
+	Resolution       string
 	RequiredTypes    string
 	RequiredLabels   string
 	CheckFilename    string
@@ -77,27 +80,31 @@ func constructSkeleton() (*checkSkeleton, error) {
 		return nil, err
 	}
 	shortCodeContent := prompt.EnterInput("Enter very terse description: ")
+	impact := prompt.EnterInput("Enter a brief impact of not complying with check: ")
+	resolution := prompt.EnterInput("Enter a brief resolution to pass check: ")
 	summary := prompt.EnterInput("Enter very slightly longer summary: ")
 	blockTypes := prompt.EnterInput("Enter the supported block types: ")
 	blockLabels := prompt.EnterInput("Enter the supported block labels: ")
 
-	checkBody, skeleton, err2 := populateSkeleton(summary, selected, shortCodeContent, blockTypes, blockLabels, err)
-	if err2 != nil {
-		return skeleton, err2
+	checkBody, err := populateSkeleton(summary, selected, shortCodeContent, impact, resolution, blockTypes, blockLabels)
+	if err != nil {
+		return nil, err
 	}
 
 	return checkBody, nil
 }
 
-func populateSkeleton(summary string, selected string, shortCodeContent string, blockTypes string, blockLabels string, err error) (*checkSkeleton, *checkSkeleton, error) {
+func populateSkeleton(summary, selected, shortCodeContent, impact, resolution, blockTypes, blockLabels string) (*checkSkeleton, error) {
 	checkBody := &checkSkeleton{}
-
+	var err error
 	checkBody.Summary = summary
+	checkBody.Impact = impact
+	checkBody.Resolution = resolution
 	checkBody.Provider = providers[selected]
 	checkBody.ProviderLongName = selected
 	checkBody.Code, err = calculateNextCode(checkBody.Provider)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	checkBody.CheckName = fmt.Sprintf("%s%s", strings.ToUpper(checkBody.Provider), strings.ReplaceAll(strings.Title(shortCodeContent), " ", ""))
@@ -107,5 +114,5 @@ func populateSkeleton(summary string, selected string, shortCodeContent string, 
 	checkBody.CheckFilename = fmt.Sprintf("%s.go", strings.ToLower(filename))
 	checkBody.TestFileName = fmt.Sprintf("%s_test.go", strings.ToLower(filename))
 
-	return checkBody, nil, nil
+	return checkBody, nil
 }
