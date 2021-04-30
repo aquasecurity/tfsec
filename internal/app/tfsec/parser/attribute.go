@@ -33,11 +33,16 @@ func (attr *Attribute) Type() cty.Type {
 	return attr.Value().Type()
 }
 
-func (attr *Attribute) Value() cty.Value {
+func (attr *Attribute) Value() (ctyVal cty.Value) {
 	if attr == nil {
 		return cty.NilVal
 	}
-	ctyVal, _ := attr.hclAttribute.Expr.Value(attr.ctx)
+	defer func() {
+		if err := recover(); err != nil {
+			ctyVal = cty.NilVal
+		}
+	}()
+	ctyVal, _ = attr.hclAttribute.Expr.Value(attr.ctx)
 	if !ctyVal.IsKnown() {
 		return cty.NilVal
 	}
