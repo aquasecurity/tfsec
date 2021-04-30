@@ -27,7 +27,7 @@ resource "azurerm_data_factory" "bad_example" {
 			mustIncludeResultCode: checks.AZUDataFactoryPublicNetwork,
 		},
 		{
-			name: "check if public_network_enabled is set false, check passes",
+			name: "check if public_network_enabled is set to false, check passes",
 			source: `
 resource "azurerm_data_factory" "good_example" {
   name                = "example"
