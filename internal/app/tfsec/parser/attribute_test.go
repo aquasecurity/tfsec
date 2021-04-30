@@ -597,3 +597,101 @@ resource "numerical_something" "my-bucket" {
 		})
 	}
 }
+
+func Test_AttributeIsTrue(t *testing.T) {
+	var tests = []struct {
+		name           string
+		source         string
+		checkAttribute string
+		expectedResult bool
+	}{
+		{
+			name: "check attribute is true",
+			source: `
+resource "boolean_something" "my-something" {
+	value = true
+}`,
+			checkAttribute: "value",
+			expectedResult: true,
+		},
+		{
+			name: "check attribute as string is true",
+			source: `
+resource "boolean_something" "my-something" {
+	value = "true"
+}`,
+			checkAttribute: "value",
+			expectedResult: true,
+		},
+		{
+			name: "check attribute as string is false",
+			source: `
+resource "boolean_something" "my-something" {
+	value = "true"
+}`,
+			checkAttribute: "value",
+			expectedResult: true,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			blocks := createBlocksFromSource(test.source)
+			for _, block := range blocks {
+				if !block.HasChild(test.checkAttribute) {
+					t.Fail()
+				}
+				attr := block.GetAttribute(test.checkAttribute)
+				assert.Equal(t, test.expectedResult, attr.IsTrue())
+			}
+		})
+	}
+}
+
+func Test_AttributeIsFalse(t *testing.T) {
+	var tests = []struct {
+		name           string
+		source         string
+		checkAttribute string
+		expectedResult bool
+	}{
+		{
+			name: "check attribute is false",
+			source: `
+resource "boolean_something" "my-something" {
+	value = false
+}`,
+			checkAttribute: "value",
+			expectedResult: true,
+		},
+		{
+			name: "check attribute as string is false",
+			source: `
+resource "boolean_something" "my-something" {
+	value = "false"
+}`,
+			checkAttribute: "value",
+			expectedResult: true,
+		},
+		{
+			name: "check attribute true",
+			source: `
+resource "boolean_something" "my-something" {
+	value = "true"
+}`,
+			checkAttribute: "value",
+			expectedResult: false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			blocks := createBlocksFromSource(test.source)
+			for _, block := range blocks {
+				if !block.HasChild(test.checkAttribute) {
+					t.Fail()
+				}
+				attr := block.GetAttribute(test.checkAttribute)
+				assert.Equal(t, test.expectedResult, attr.IsFalse())
+			}
+		})
+	}
+}
