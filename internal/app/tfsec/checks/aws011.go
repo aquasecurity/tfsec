@@ -11,7 +11,7 @@ import (
 )
 
 const AWSPubliclyAccessibleResource scanner.RuleCode = "AWS011"
-const AWSPubliclyAccessibleResourceDescription scanner.RuleSummary = "A resource is marked as publicly accessible."
+const AWSPubliclyAccessibleResourceDescription scanner.RuleSummary = "A database resource is marked as publicly accessible."
 const AWSPubliclyAccessibleResourceExplanation = `
 Database resources should not publicly available. You should limit all access to the minimum that is required for your application to function. 
 `
