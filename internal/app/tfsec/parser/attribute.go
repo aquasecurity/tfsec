@@ -217,11 +217,27 @@ func (attr *Attribute) IsNone(options ...interface{}) bool {
 }
 
 func (attr *Attribute) IsTrue() bool {
-	return attr.Value().Type() == cty.Bool && attr.Value().True()
+	switch attr.Value().Type() {
+	case cty.Bool:
+		return attr.Value().True()
+	case cty.String:
+		val := attr.Value().AsString()
+		val = strings.Trim(val, "\"")
+		return strings.ToLower(val) == "true"
+	}
+	return false
 }
 
 func (attr *Attribute) IsFalse() bool {
-	return attr.Value().Type() == cty.Bool && attr.Value().False()
+	switch attr.Value().Type() {
+	case cty.Bool:
+		return attr.Value().False()
+	case cty.String:
+		val := attr.Value().AsString()
+		val = strings.Trim(val, "\"")
+		return strings.ToLower(val) == "false"
+	}
+	return false
 }
 
 func (attr *Attribute) IsEmpty() bool {
