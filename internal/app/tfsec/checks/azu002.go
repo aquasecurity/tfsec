@@ -12,6 +12,8 @@ import (
 
 const AzureOpenOutboundNetworkSecurityGroupRule scanner.RuleCode = "AZU002"
 const AzureOpenOutboundNetworkSecurityGroupRuleDescription scanner.RuleSummary = "An outbound network security rule allows traffic to `/0`."
+const AzureOpenOutboundNetworkSecurityGroupRuleImpact = "The port is exposed for egress to the internet"
+const AzureOpenOutboundNetworkSecurityGroupRuleResolution = "Set a more restrictive cidr range"
 const AzureOpenOutboundNetworkSecurityGroupRuleExplanation = `
 Network security rules should not use very broad subnets.
 
@@ -35,6 +37,8 @@ func init() {
 		Code: AzureOpenOutboundNetworkSecurityGroupRule,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AzureOpenOutboundNetworkSecurityGroupRuleDescription,
+			Impact:      AzureOpenOutboundNetworkSecurityGroupRuleImpact,
+			Resolution:  AzureOpenOutboundNetworkSecurityGroupRuleResolution,
 			Explanation: AzureOpenOutboundNetworkSecurityGroupRuleExplanation,
 			BadExample:  AzureOpenOutboundNetworkSecurityGroupRuleBadExample,
 			GoodExample: AzureOpenOutboundNetworkSecurityGroupRuleGoodExample,

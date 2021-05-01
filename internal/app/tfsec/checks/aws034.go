@@ -12,6 +12,8 @@ import (
 
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpoint scanner.RuleCode = "AWS034"
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointDescription scanner.RuleSummary = "Elasticsearch domain endpoint is using outdated TLS policy."
+const AWSOutdatedTLSPolicyElasticsearchDomainEndpointImpact = "Outdated SSL policies increase exposure to known vulnerabilites"
+const AWSOutdatedTLSPolicyElasticsearchDomainEndpointResolution = "Use the most modern TLS/SSL policies available"
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointExplanation = `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `
@@ -41,6 +43,8 @@ func init() {
 		Code: AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSOutdatedTLSPolicyElasticsearchDomainEndpointDescription,
+			Impact:      AWSOutdatedTLSPolicyElasticsearchDomainEndpointImpact,
+			Resolution:  AWSOutdatedTLSPolicyElasticsearchDomainEndpointResolution,
 			Explanation: AWSOutdatedTLSPolicyElasticsearchDomainEndpointExplanation,
 			BadExample:  AWSOutdatedTLSPolicyElasticsearchDomainEndpointBadExample,
 			GoodExample: AWSOutdatedTLSPolicyElasticsearchDomainEndpointGoodExample,

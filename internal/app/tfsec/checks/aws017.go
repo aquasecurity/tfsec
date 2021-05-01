@@ -10,6 +10,8 @@ import (
 
 const AWSUnencryptedS3Bucket scanner.RuleCode = "AWS017"
 const AWSUnencryptedS3BucketDescription scanner.RuleSummary = "Unencrypted S3 bucket."
+const AWSUnencryptedS3BucketImpact = "The bucket objects could be read if compromised"
+const AWSUnencryptedS3BucketResolution = "Configure bucket encryption"
 const AWSUnencryptedS3BucketExplanation = `
 S3 Buckets should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific buckets.
 `
@@ -38,6 +40,8 @@ func init() {
 		Code: AWSUnencryptedS3Bucket,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSUnencryptedS3BucketDescription,
+			Impact:      AWSUnencryptedS3BucketImpact,
+			Resolution:  AWSUnencryptedS3BucketResolution,
 			Explanation: AWSUnencryptedS3BucketExplanation,
 			BadExample:  AWSUnencryptedS3BucketBadExample,
 			GoodExample: AWSUnencryptedS3BucketGoodExample,

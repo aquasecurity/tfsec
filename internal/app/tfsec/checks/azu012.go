@@ -9,6 +9,8 @@ import (
 
 const AZUDefaultActionOnNetworkRuleSetToDeny scanner.RuleCode = "AZU012"
 const AZUDefaultActionOnNetworkRuleSetToDenyDescription scanner.RuleSummary = "The default action on Storage account network rules should be set to deny"
+const AZUDefaultActionOnNetworkRuleSetToDenyImpact = "Network rules that allow could cause data to be exposed publically"
+const AZUDefaultActionOnNetworkRuleSetToDenyResolution = "Set network rules to deny"
 const AZUDefaultActionOnNetworkRuleSetToDenyExplanation = `
 The default_action for network rules should come into effect when no other rules are matched.
 
@@ -38,6 +40,8 @@ func init() {
 		Code: AZUDefaultActionOnNetworkRuleSetToDeny,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUDefaultActionOnNetworkRuleSetToDenyDescription,
+			Impact:      AZUDefaultActionOnNetworkRuleSetToDenyImpact,
+			Resolution:  AZUDefaultActionOnNetworkRuleSetToDenyResolution,
 			Explanation: AZUDefaultActionOnNetworkRuleSetToDenyExplanation,
 			BadExample:  AZUDefaultActionOnNetworkRuleSetToDenyBadExample,
 			GoodExample: AZUDefaultActionOnNetworkRuleSetToDenyGoodExample,

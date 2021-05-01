@@ -17,6 +17,18 @@ func TestExampleCode(t *testing.T) {
 			}
 		})
 
+		t.Run(fmt.Sprintf("Check impact for %s", check.Code), func(t *testing.T) {
+			if strings.TrimSpace(check.Documentation.Impact) == "" {
+				t.Fatalf("No impact found for %s", check.Code)
+			}
+		})
+
+		t.Run(fmt.Sprintf("Check resolution for %s", check.Code), func(t *testing.T) {
+			if strings.TrimSpace(check.Documentation.Resolution) == "" {
+				t.Fatalf("No resolution found for %s", check.Code)
+			}
+		})
+
 		t.Run(fmt.Sprintf("Check 'good' example code for %s", check.Code), func(t *testing.T) {
 			if strings.TrimSpace(check.Documentation.GoodExample) == "" {
 				t.Fatalf("good example code not provided for %s", check.Code)

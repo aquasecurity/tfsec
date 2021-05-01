@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSCloudtrailEncryptedAtRest scanner.RuleCode = "AWS065"
 const AWSCloudtrailEncryptedAtRestDescription scanner.RuleSummary = "Cloudtrail should be encrypted at rest to secure access to sensitive trail data"
+const AWSCloudtrailEncryptedAtRestImpact = "Data can be read if compromised"
+const AWSCloudtrailEncryptedAtRestResolution = "Enable encryption at rest"
 const AWSCloudtrailEncryptedAtRestExplanation = `
 Cloudtrail logs should be encrypted at rest to secure the sensitive data. Cloudtrail logs record all activity that occurs in the the account through API calls and would be one of the first places to look when reacting to a breach.
 `
@@ -49,6 +52,8 @@ func init() {
 		Code: AWSCloudtrailEncryptedAtRest,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSCloudtrailEncryptedAtRestDescription,
+			Impact:      AWSCloudtrailEncryptedAtRestImpact,
+			Resolution:  AWSCloudtrailEncryptedAtRestResolution,
 			Explanation: AWSCloudtrailEncryptedAtRestExplanation,
 			BadExample:  AWSCloudtrailEncryptedAtRestBadExample,
 			GoodExample: AWSCloudtrailEncryptedAtRestGoodExample,
@@ -61,14 +66,14 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudtrail"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-				
+
 			if block.MissingChild("kms_key_id") {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not have a kms_key_id set.", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
-						),
+					),
 				}
 			}
 
@@ -80,7 +85,7 @@ func init() {
 						kmsKeyId.Range(),
 						kmsKeyId,
 						scanner.SeverityError,
-						),
+					),
 				}
 			}
 

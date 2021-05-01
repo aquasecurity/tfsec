@@ -12,8 +12,9 @@ import (
 const (
 	AWSIAMPasswordExpiry            scanner.RuleCode    = "AWS038"
 	AWSIAMPasswordExpiryDescription scanner.RuleSummary = "IAM Password policy should have expiry less than or equal to 90 days."
-
-	AWSIAMPasswordExpiryExplanation = `
+	AWSIAMPasswordExpiryImpact                          = "Long life password increase the likelihood of a password eventually being compromised"
+	AWSIAMPasswordExpiryResolution                      = "Limit the password duration with an expiry in the policy"
+	AWSIAMPasswordExpiryExplanation                     = `
 IAM account password policies should have a maximum age specified. 
 
 The account password policy should be set to expire passwords after 90 days or less.
@@ -39,6 +40,8 @@ func init() {
 		Code: AWSIAMPasswordExpiry,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSIAMPasswordExpiryDescription,
+			Impact:      AWSIAMPasswordExpiryImpact,
+			Resolution:  AWSIAMPasswordExpiryResolution,
 			Explanation: AWSIAMPasswordExpiryExplanation,
 			BadExample:  AWSIAMPasswordExpiryBadExample,
 			GoodExample: AWSIAMPasswordExpiryGoodExample,

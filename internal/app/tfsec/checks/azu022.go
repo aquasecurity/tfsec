@@ -9,6 +9,8 @@ import (
 
 const AZUKeyVaultSecretContentType scanner.RuleCode = "AZU022"
 const AZUKeyVaultSecretContentTypeDescription scanner.RuleSummary = "Key vault Secret should have a content type set"
+const AZUKeyVaultSecretContentTypeImpact = "The secret's type is unclear without a content type"
+const AZUKeyVaultSecretContentTypeResolution = "Provide content type for secrets to aid interpretation on retrieval"
 const AZUKeyVaultSecretContentTypeExplanation = `
 Content Type is an optional Key Vault Secret behavior and is not enabled by default.
 
@@ -35,6 +37,8 @@ func init() {
 		Code: AZUKeyVaultSecretContentType,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUKeyVaultSecretContentTypeDescription,
+			Impact:      AZUKeyVaultSecretContentTypeImpact,
+			Resolution:  AZUKeyVaultSecretContentTypeResolution,
 			Explanation: AZUKeyVaultSecretContentTypeExplanation,
 			BadExample:  AZUKeyVaultSecretContentTypeBadExample,
 			GoodExample: AZUKeyVaultSecretContentTypeGoodExample,

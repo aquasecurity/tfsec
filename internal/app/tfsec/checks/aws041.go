@@ -12,8 +12,9 @@ import (
 const (
 	AWSIAMPasswordRequiresNumber            scanner.RuleCode    = "AWS041"
 	AWSIAMPasswordRequiresNumberDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one number in the password."
-
-	AWSIAMPasswordRequiresNumberExplanation = `
+	AWSIAMPasswordRequiresNumberImpact                          = "Short, simple passwords are easier to compromise"
+	AWSIAMPasswordRequiresNumberResolution                      = "Enforce longer, more complex passwords in the policy"
+	AWSIAMPasswordRequiresNumberExplanation                     = `
 IAM account password policies should ensure that passwords content including at least one number.
 `
 	AWSIAMPasswordRequiresNumberBadExample = `
@@ -37,6 +38,8 @@ func init() {
 		Code: AWSIAMPasswordRequiresNumber,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSIAMPasswordRequiresNumberDescription,
+			Impact:      AWSIAMPasswordRequiresNumberImpact,
+			Resolution:  AWSIAMPasswordRequiresNumberResolution,
 			Explanation: AWSIAMPasswordRequiresNumberExplanation,
 			BadExample:  AWSIAMPasswordRequiresNumberBadExample,
 			GoodExample: AWSIAMPasswordRequiresNumberGoodExample,

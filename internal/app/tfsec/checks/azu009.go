@@ -10,6 +10,8 @@ import (
 
 const AZUAKSAzureMonitor scanner.RuleCode = "AZU009"
 const AZUAKSAzureMonitorDescription scanner.RuleSummary = "Ensure AKS logging to Azure Monitoring is Configured"
+const AZUAKSAzureMonitorImpact = "Logging provides valuable information about access and usage"
+const AZUAKSAzureMonitorResolution = "Enable logging for AKS"
 const AZUAKSAzureMonitorExplanation = `
 Ensure AKS logging to Azure Monitoring is configured for containers to monitor the performance of workloads.
 `
@@ -33,6 +35,8 @@ func init() {
 		Code: AZUAKSAzureMonitor,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUAKSAzureMonitorDescription,
+			Impact:      AZUAKSAzureMonitorImpact,
+			Resolution:  AZUAKSAzureMonitorResolution,
 			Explanation: AZUAKSAzureMonitorExplanation,
 			BadExample:  AZUAKSAzureMonitorBadExample,
 			GoodExample: AZUAKSAzureMonitorGoodExample,

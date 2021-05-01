@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AZUKeyVaultNetworkAcl scanner.RuleCode = "AZU020"
 const AZUKeyVaultNetworkAclDescription scanner.RuleSummary = "Key vault should have the network acl block specified"
+const AZUKeyVaultNetworkAclImpact = "Without a network ACL the key vault is freely accessible"
+const AZUKeyVaultNetworkAclResolution = "Set a network ACL for the key vault"
 const AZUKeyVaultNetworkAclExplanation = `
 Network ACLs allow you to reduce your exposure to risk by limiting what can access your key vault. 
 
@@ -42,6 +45,8 @@ func init() {
 		Code: AZUKeyVaultNetworkAcl,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUKeyVaultNetworkAclDescription,
+			Impact:      AZUKeyVaultNetworkAclImpact,
+			Resolution:  AZUKeyVaultNetworkAclResolution,
 			Explanation: AZUKeyVaultNetworkAclExplanation,
 			BadExample:  AZUKeyVaultNetworkAclBadExample,
 			GoodExample: AZUKeyVaultNetworkAclGoodExample,
@@ -76,7 +81,7 @@ func init() {
 				}
 			}
 
-			if networkAcls.MissingChild("default_action"){
+			if networkAcls.MissingChild("default_action") {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' specifies does not specify a default action in the network acl.", block.FullName()),
@@ -88,16 +93,15 @@ func init() {
 
 			defaultAction := networkAcls.GetAttribute("default_action")
 			if !defaultAction.Equals("Deny") {
-				return []scanner.Result {
+				return []scanner.Result{
 					check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", block.FullName()),
 						defaultAction.Range(),
 						defaultAction,
 						scanner.SeverityError,
-						),
+					),
 				}
 			}
-
 
 			return nil
 		},

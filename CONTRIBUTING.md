@@ -15,6 +15,8 @@ Key attributes requested;
 - Provider: Select the provider from the list
 - Short Code: This is a very terse description of the check, it will form the check name
 - Summary: A slightly longer free text summary of the check
+- Impact: A terse note on the impact associated with the check
+- Resolution: A terse note on the resolution in code to pass the check
 - Required Types: What kind of blocks is this check for (resource, data, variable etc). Provide this as a space separated list
 - Required Label: What kind of labels is this check for (aws_instance, google_container_cluster). Provide this as a space separated list
 
@@ -22,11 +24,9 @@ The generator will determine the next available code and create the check and th
 
 ### Writing Your Check Code
 
-First you'll need to generate a `Rule Code` for your check. This is prefixed with 3 characters describing the provider for your check, so for AWS resources, it would begin with `AWS`. You've probably guessed that if the "highest" check rule ID for the provider is `AWS122` on the master branch, your check code should be `AWS123`. If your check will target multiple providers, you can prefix it with `GEN`.
+Run `make new-check` to create the stub
 
-You can now create your check file in `./internal/app/tfsec/checks/`.
-
-You'll need to set up some constants that explain what your check is for and give some code examples. The constants should be named in a way that generally describes your check functionality. 
+Find your new check in `internal/apps/tfsec/checks` abd the associated test in `internal/app/tfsec/tests` and complete the check logic
 
 Here's an example:
 
@@ -36,6 +36,12 @@ const AWSGibsonHackableCode scanner.RuleCode = "AWS123"
 
 // A description for your check - this message will be output to a user when the check fails.
 const AWSGibsonHackableDescription scanner.RuleSummary = "The Gibson should not be hackable"
+
+// A note on the impact associated to the check
+const AWSGibsonHackableCodeImpact = "The Gibson might get hacked"
+
+// A note on the resolution to pass the check
+const AWSGibsonHackableCodeResolution = "Set hackable to false"
 
 // An explanation for your check. This should contain reasoning why this check enforces good practice. Full markdown is supported here.
 const AWSGibsonHackableExplanation = `
@@ -69,6 +75,8 @@ func init() {
         	// all of our documentation data that will be available in the output and/or at https://tfsec.dev/
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSGibsonHackableDescription,
+			Impact:      AWSGibsonHackableCodeImpact,
+			Resolution:  AWSGibsonHackableCodeResolution,
 			Explanation: AWSGibsonHackableExplanation,
 			BadExample:  AWSGibsonHackableBadExample,
 			GoodExample: AWSGibsonHackableGoodExample,

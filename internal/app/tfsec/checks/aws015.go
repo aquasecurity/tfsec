@@ -12,6 +12,8 @@ import (
 
 const AWSUnencryptedSQSQueue scanner.RuleCode = "AWS015"
 const AWSUnencryptedSQSQueueDescription scanner.RuleSummary = "Unencrypted SQS queue."
+const AWSUnencryptedSQSQueueImpact = "The SQS queue messages could be read if compromised"
+const AWSUnencryptedSQSQueueResolution = "Turn on SQS Queue encryption"
 const AWSUnencryptedSQSQueueExplanation = `
 Queues should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific queues.
 `
@@ -31,6 +33,8 @@ func init() {
 		Code: AWSUnencryptedSQSQueue,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSUnencryptedSQSQueueDescription,
+			Impact:      AWSUnencryptedSQSQueueImpact,
+			Resolution:  AWSUnencryptedSQSQueueResolution,
 			Explanation: AWSUnencryptedSQSQueueExplanation,
 			BadExample:  AWSUnencryptedSQSQueueBadExample,
 			GoodExample: AWSUnencryptedSQSQueueGoodExample,

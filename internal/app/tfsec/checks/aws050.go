@@ -10,6 +10,8 @@ import (
 
 const AWSOpenAllIngressNetworkACLRule scanner.RuleCode = "AWS050"
 const AWSOpenAllIngressNetworkACLRuleDescription scanner.RuleSummary = "An ingress Network ACL rule allows ALL ports from `/0`."
+const AWSOpenAllIngressNetworkACLRuleImpact = "All ports exposed for egressing data to the internet"
+const AWSOpenAllIngressNetworkACLRuleResolution = "Set a more restrictive cidr range"
 const AWSOpenAllIngressNetworkACLRuleExplanation = `
 Opening up ACLs to the public internet is potentially dangerous. You should restrict access to IP addresses or ranges that explicitly require it where possible, and ensure that you specify required ports.
 
@@ -38,6 +40,8 @@ func init() {
 		Code: AWSOpenAllIngressNetworkACLRule,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSOpenAllIngressNetworkACLRuleDescription,
+			Impact:      AWSOpenAllIngressNetworkACLRuleImpact,
+			Resolution:  AWSOpenAllIngressNetworkACLRuleResolution,
 			Explanation: AWSOpenAllIngressNetworkACLRuleExplanation,
 			BadExample:  AWSOpenAllIngressNetworkACLRuleBadExample,
 			GoodExample: AWSOpenAllIngressNetworkACLRuleGoodExample,

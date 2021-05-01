@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSInstanceMetadataChec scanner.RuleCode = "AWS079"
 const AWSInstanceMetadataChecDescription scanner.RuleSummary = "aws_instance should activate session tokens for Instance Metadata Service."
+const AWSInstanceMetadataChecImpact = "Instance metadata service can be interacted with freely"
+const AWSInstanceMetadataChecResolution = "Enable HTTP token requirement for IMDS"
 const AWSInstanceMetadataChecExplanation = `
 IMDS v2 (Instance Metadata Service) introduced session authentication tokens which improve security when talking to IMDS.
 By default <code>aws_instance</code> resource sets IMDS session auth tokens to be optional. 
@@ -34,6 +37,8 @@ func init() {
 		Code: AWSInstanceMetadataChec,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSInstanceMetadataChecDescription,
+			Impact:      AWSInstanceMetadataChecImpact,
+			Resolution:  AWSInstanceMetadataChecResolution,
 			Explanation: AWSInstanceMetadataChecExplanation,
 			BadExample:  AWSInstanceMetadataChecBadExample,
 			GoodExample: AWSInstanceMetadataChecGoodExample,
@@ -46,7 +51,7 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_instance"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-				
+
 			metaDataOptions := block.GetBlock("metadata_options")
 			if metaDataOptions == nil {
 				return []scanner.Result{

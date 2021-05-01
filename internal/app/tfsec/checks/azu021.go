@@ -9,6 +9,8 @@ import (
 
 const AZUKeyVaultPurgeProtection scanner.RuleCode = "AZU021"
 const AZUKeyVaultPurgeProtectionDescription scanner.RuleSummary = "Key vault should have purge protection enabled"
+const AZUKeyVaultPurgeProtectionImpact = "Keys could be purged from the vault without protection"
+const AZUKeyVaultPurgeProtectionResolution = "Enable purge protection for key vaults"
 const AZUKeyVaultPurgeProtectionExplanation = `
 Purge protection is an optional Key Vault behavior and is not enabled by default.
 
@@ -37,6 +39,8 @@ func init() {
 		Code: AZUKeyVaultPurgeProtection,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUKeyVaultPurgeProtectionDescription,
+			Impact:      AZUKeyVaultPurgeProtectionImpact,
+			Resolution:  AZUKeyVaultPurgeProtectionResolution,
 			Explanation: AZUKeyVaultPurgeProtectionExplanation,
 			BadExample:  AZUKeyVaultPurgeProtectionBadExample,
 			GoodExample: AZUKeyVaultPurgeProtectionGoodExample,

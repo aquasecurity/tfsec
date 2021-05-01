@@ -15,6 +15,8 @@ import (
 // GenericSensitiveLocals See https://github.com/tfsec/tfsec#included-checks for check info
 const GenericSensitiveLocals scanner.RuleCode = "GEN002"
 const GenericSensitiveLocalsDescription scanner.RuleSummary = "Potentially sensitive data stored in local value."
+const GenericSensitiveLocalsImpact = "Local value could be leaking secrets"
+const GenericSensitiveLocalsResolution = "Don't include sensitive data in locals"
 const GenericSensitiveLocalsExplanation = `
 Sensitive attributes such as passwords and API tokens should not be available in your templates, especially in a plaintext form. You can declare variables to hold the secrets, assuming you can provide values for those variables in a secure fashion. Alternatively, you can store these secrets in a secure secret store, such as AWS KMS.
 
@@ -45,6 +47,8 @@ func init() {
 		Code: GenericSensitiveLocals,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     GenericSensitiveLocalsDescription,
+			Impact:      GenericSensitiveLocalsImpact,
+			Resolution:  GenericSensitiveLocalsResolution,
 			Explanation: GenericSensitiveLocalsExplanation,
 			BadExample:  GenericSensitiveLocalsBadExample,
 			GoodExample: GenericSensitiveLocalsGoodExample,

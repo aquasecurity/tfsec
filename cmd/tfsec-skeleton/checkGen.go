@@ -8,6 +8,7 @@ import (
 	"text/template"
 
 	"github.com/liamg/clinch/prompt"
+	"github.com/liamg/tml"
 )
 
 var providers = map[string]string{"AWS": "aws", "Azure": "azu", "GCP": "gcp", "General": "gen"}
@@ -49,7 +50,11 @@ func generateCheckBody() error {
 	if err = writeTemplate(checkPath, checkTmpl, details); err != nil {
 		return err
 	}
-	return writeTemplate(testPath, checkTestTmpl, details)
+	if err = writeTemplate(testPath, checkTestTmpl, details); err != nil {
+		return err
+	}
+	tml.Printf("The new check has the code: %s%s\n", strings.ToUpper(details.Provider), details.Code)
+	return nil
 }
 
 func writeTemplate(checkPath string, checkTmpl *template.Template, details *checkSkeleton) error {
@@ -62,6 +67,7 @@ func writeTemplate(checkPath string, checkTmpl *template.Template, details *chec
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -80,9 +86,9 @@ func constructSkeleton() (*checkSkeleton, error) {
 		return nil, err
 	}
 	shortCodeContent := prompt.EnterInput("Enter very terse description: ")
+	summary := prompt.EnterInput("Enter very slightly longer summary: ")
 	impact := prompt.EnterInput("Enter a brief impact of not complying with check: ")
 	resolution := prompt.EnterInput("Enter a brief resolution to pass check: ")
-	summary := prompt.EnterInput("Enter very slightly longer summary: ")
 	blockTypes := prompt.EnterInput("Enter the supported block types: ")
 	blockLabels := prompt.EnterInput("Enter the supported block labels: ")
 

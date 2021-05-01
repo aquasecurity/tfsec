@@ -12,6 +12,8 @@ import (
 
 const AWSLaunchConfigurationWithUnencryptedBlockDevice scanner.RuleCode = "AWS014"
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceDescription scanner.RuleSummary = "Launch configuration with unencrypted block device."
+const AWSLaunchConfigurationWithUnencryptedBlockDeviceImpact = "The block device is could be compromised and read from"
+const AWSLaunchConfigurationWithUnencryptedBlockDeviceResolution = "Turn on encryption for all block devices"
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceExplanation = `
 Blocks devices should be encrypted to ensure sensitive data is hel securely at rest.
 `
@@ -35,6 +37,8 @@ func init() {
 		Code: AWSLaunchConfigurationWithUnencryptedBlockDevice,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSLaunchConfigurationWithUnencryptedBlockDeviceDescription,
+			Impact:      AWSLaunchConfigurationWithUnencryptedBlockDeviceImpact,
+			Resolution:  AWSLaunchConfigurationWithUnencryptedBlockDeviceResolution,
 			Explanation: AWSLaunchConfigurationWithUnencryptedBlockDeviceExplanation,
 			BadExample:  AWSLaunchConfigurationWithUnencryptedBlockDeviceBadExample,
 			GoodExample: AWSLaunchConfigurationWithUnencryptedBlockDeviceGoodExample,

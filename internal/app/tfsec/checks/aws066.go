@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSEKSSecretsEncryptionEnabled scanner.RuleCode = "AWS066"
 const AWSEKSSecretsEncryptionEnabledDescription scanner.RuleSummary = "EKS should have the encryption of secrets enabled"
+const AWSEKSSecretsEncryptionEnabledImpact = "EKS secrets could be read if compromised"
+const AWSEKSSecretsEncryptionEnabledResolution = "Enable encryption of EKS secrets"
 const AWSEKSSecretsEncryptionEnabledExplanation = `
 EKS cluster resources should have the encryption_config block set with protection of the secrets resource.
 `
@@ -43,6 +46,8 @@ func init() {
 		Code: AWSEKSSecretsEncryptionEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSEKSSecretsEncryptionEnabledDescription,
+			Impact:      AWSEKSSecretsEncryptionEnabledImpact,
+			Resolution:  AWSEKSSecretsEncryptionEnabledResolution,
 			Explanation: AWSEKSSecretsEncryptionEnabledExplanation,
 			BadExample:  AWSEKSSecretsEncryptionEnabledBadExample,
 			GoodExample: AWSEKSSecretsEncryptionEnabledGoodExample,
@@ -55,14 +60,14 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_eks_cluster"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-				
+
 			if block.MissingChild("encryption_config") {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' has no encryption_config block", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
-						),
+					),
 				}
 			}
 
@@ -100,7 +105,7 @@ func init() {
 			}
 
 			providerBlock := encryption_config.GetBlock("provider")
-			if providerBlock.MissingChild("key_arn"){
+			if providerBlock.MissingChild("key_arn") {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' has encryption_config block with provider block specified missing key arn", block.FullName()),

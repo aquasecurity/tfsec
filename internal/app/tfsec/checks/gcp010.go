@@ -13,6 +13,8 @@ import (
 // GkeShieldedNodesDisabled See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeShieldedNodesDisabled scanner.RuleCode = "GCP010"
 const GkeShieldedNodesDisabledDescription scanner.RuleSummary = "Shielded GKE nodes not enabled."
+const GkeShieldedNodesDisabledImpact = "Node identity and integrity can't be verified without shielded GKE nodes"
+const GkeShieldedNodesDisabledResolution = "Enable node shielding"
 const GkeShieldedNodesDisabledExplanation = `
 CIS GKE Benchmark Recommendation: 6.5.5. Ensure Shielded GKE Nodes are Enabled
 
@@ -32,6 +34,8 @@ func init() {
 		Code: GkeShieldedNodesDisabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     GkeShieldedNodesDisabledDescription,
+			Impact:      GkeShieldedNodesDisabledImpact,
+			Resolution:  GkeShieldedNodesDisabledResolution,
 			Explanation: GkeShieldedNodesDisabledExplanation,
 			BadExample:  GkeShieldedNodesDisabledBadExample,
 			GoodExample: GkeShieldedNodesDisabledGoodExample,

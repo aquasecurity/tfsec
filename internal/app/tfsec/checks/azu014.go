@@ -9,6 +9,8 @@ import (
 
 const AZURequireSecureTransferForStorageAccounts scanner.RuleCode = "AZU014"
 const AZURequireSecureTransferForStorageAccountsDescription scanner.RuleSummary = "Storage accounts should be configured to only accept transfers that are over secure connections"
+const AZURequireSecureTransferForStorageAccountsImpact = "Insecure transfer of data into secure accounts could be read if intercepted"
+const AZURequireSecureTransferForStorageAccountsResolution = "Only allow secure connection for transfering data into storage accounts"
 const AZURequireSecureTransferForStorageAccountsExplanation = `
 You can configure your storage account to accept requests from secure connections only by setting the Secure transfer required property for the storage account. 
 
@@ -42,6 +44,8 @@ func init() {
 		Code: AZURequireSecureTransferForStorageAccounts,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZURequireSecureTransferForStorageAccountsDescription,
+			Impact:      AZURequireSecureTransferForStorageAccountsImpact,
+			Resolution:  AZURequireSecureTransferForStorageAccountsResolution,
 			Explanation: AZURequireSecureTransferForStorageAccountsExplanation,
 			BadExample:  AZURequireSecureTransferForStorageAccountsBadExample,
 			GoodExample: AZURequireSecureTransferForStorageAccountsGoodExample,
