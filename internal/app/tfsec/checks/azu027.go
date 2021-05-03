@@ -84,11 +84,13 @@ func init() {
 					),
 				}
 			}
-			if block.GetAttribute("managed_virtual_network_enabled").IsFalse() || block.GetAttribute("managed_virtual_network_enabled").Equals("false") || block.GetAttribute("managed_virtual_network_enabled").Equals(false) {
+			managedNetwork := block.GetAttribute("managed_virtual_network_enabled")
+			if managedNetwork.IsFalse() {
 				return []scanner.Result{
-					check.NewResult(
+					check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", block.FullName()),
-						block.Range(),
+						managedNetwork.Range(),
+						managedNetwork,
 						scanner.SeverityWarning,
 					),
 				}
