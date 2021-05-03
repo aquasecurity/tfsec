@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/hashicorp/hcl/v2 v2.10.0
-	github.com/hashicorp/terraform v0.15.0
+	github.com/hashicorp/terraform v0.15.1
 	github.com/liamg/clinch v1.5.6
 	github.com/liamg/tml v0.4.0
 	github.com/mattn/go-runewidth v0.0.12 // indirect
