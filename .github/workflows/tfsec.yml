@@ -1,8 +1,5 @@
-name: tfsec
+name: tfsec code scanning
 on:
-  push:
-    branches:
-      - master
   pull_request:
 jobs:
   tfsec:

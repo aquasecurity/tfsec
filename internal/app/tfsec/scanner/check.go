@@ -161,6 +161,8 @@ func (check *Check) NewResult(description string, r parser.Range, severity Sever
 	return Result{
 		RuleID:          check.Code,
 		RuleDescription: check.Documentation.Summary,
+		Impact:          check.Documentation.Impact,
+		Resolution:      check.Documentation.Resolution,
 		RuleProvider:    check.Provider,
 		Description:     description,
 		Range:           r,

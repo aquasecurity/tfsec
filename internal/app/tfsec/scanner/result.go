@@ -13,6 +13,8 @@ type Result struct {
 	Link            string       `json:"link"`
 	Range           parser.Range `json:"location"`
 	Description     string       `json:"description"`
+	Impact          string       `json:"impact"`
+	Resolution      string       `json:"resolution"`
 	RangeAnnotation string       `json:"-"`
 	Severity        Severity     `json:"severity"`
 	Passed          bool         `json:"passed"`
