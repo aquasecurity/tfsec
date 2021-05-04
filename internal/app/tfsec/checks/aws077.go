@@ -9,6 +9,8 @@ import (
 
 const AWSS3DataShouldBeVersioned scanner.RuleCode = "AWS077"
 const AWSS3DataShouldBeVersionedDescription scanner.RuleSummary = "S3 Data should be versioned"
+const AWSS3DataShouldBeVersionedImpact = "Deleted or modified data would not be recoverable"
+const AWSS3DataShouldBeVersionedResolution = "Enable versioning to protect against accidental/malicious removal or modification"
 const AWSS3DataShouldBeVersionedExplanation = `
 Versioning in Amazon S3 is a means of keeping multiple variants of an object in the same bucket. 
 You can use the S3 Versioning feature to preserve, retrieve, and restore every version of every object stored in your buckets. 
@@ -33,6 +35,8 @@ func init() {
 		Code: AWSS3DataShouldBeVersioned,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSS3DataShouldBeVersionedDescription,
+			Impact:      AWSS3DataShouldBeVersionedImpact,
+			Resolution:  AWSS3DataShouldBeVersionedResolution,
 			Explanation: AWSS3DataShouldBeVersionedExplanation,
 			BadExample:  AWSS3DataShouldBeVersionedBadExample,
 			GoodExample: AWSS3DataShouldBeVersionedGoodExample,

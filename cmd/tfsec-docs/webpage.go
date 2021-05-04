@@ -21,16 +21,11 @@ const (
 `
 
 	baseWebPageTemplate = `---
-title: {{$.Code}}
-summary: {{$.Documentation.Summary}} {{$.RequiredLabels}} 
-resources: 
+title: {{$.Code}} - {{$.Documentation.Summary}}
+summary: {{$.Documentation.Summary}} 
+resources: {{$.RequiredLabels}} 
 permalink: /docs/{{$.Provider}}/{{$.Code}}/
-nav_order: 2
-parent: {{$.Provider | ToUpperProvider }} Checks
 ---
-
-## {{$.Documentation.Summary}}
-
 ### Explanation
 
 {{$.Documentation.Explanation}}
@@ -55,10 +50,12 @@ The following example will pass the {{$.Code}} check.
 {% endhighlight %}
 {{end}}
 
+{{if $.Documentation.Links}}
 ### Related Links
 
 {{range $link := $.Documentation.Links}}
 - [{{.}}]({{.}}){:target="_blank" rel="nofollow noreferrer noopener"}
+{{end}}
 {{end}}
 `
 )

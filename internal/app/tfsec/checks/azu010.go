@@ -10,6 +10,8 @@ import (
 
 const AZUStorageAccountHTTPSenabled scanner.RuleCode = "AZU010"
 const AZUStorageAccountHTTPSenabledDescription scanner.RuleSummary = "Ensure HTTPS is enabled on Azure Storage Account"
+const AZUStorageAccountHTTPSenabledImpact = "HTTP access to storage account could be read if intercepted"
+const AZUStorageAccountHTTPSenabledResolution = "Only use HTTPS for storage account"
 const AZUStorageAccountHTTPSenabledExplanation = `
 Requiring HTTPS in Storage Account helps to minimize the risk of eavesdropping.
 `
@@ -29,6 +31,8 @@ func init() {
 		Code: AZUStorageAccountHTTPSenabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUStorageAccountHTTPSenabledDescription,
+			Impact:      AZUStorageAccountHTTPSenabledImpact,
+			Resolution:  AZUStorageAccountHTTPSenabledResolution,
 			Explanation: AZUStorageAccountHTTPSenabledExplanation,
 			BadExample:  AZUStorageAccountHTTPSenabledBadExample,
 			GoodExample: AZUStorageAccountHTTPSenabledGoodExample,

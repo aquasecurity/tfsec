@@ -10,6 +10,8 @@ import (
 // AWSCloudFrontDoesNotHaveAWaf See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSCloudFrontDoesNotHaveAWaf scanner.RuleCode = "AWS045"
 const AWSCloudFrontDoesNotHaveAWafDescription scanner.RuleSummary = "CloudFront distribution does not have a WAF in front."
+const AWSCloudFrontDoesNotHaveAWafImpact = "Complex web application attacks can more easily be performed without a WAF"
+const AWSCloudFrontDoesNotHaveAWafResolution = "Enable WAF for the CloudFront distribution"
 const AWSCloudFrontDoesNotHaveAWafExplanation = `
 You should configure a Web Application Firewall in front of your CloudFront distribution. This will mitigate many types of attacks on your web application.
 `
@@ -84,6 +86,8 @@ func init() {
 		Code: AWSCloudFrontDoesNotHaveAWaf,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSCloudFrontDoesNotHaveAWafDescription,
+			Impact:      AWSCloudFrontDoesNotHaveAWafImpact,
+			Resolution:  AWSCloudFrontDoesNotHaveAWafResolution,
 			Explanation: AWSCloudFrontDoesNotHaveAWafExplanation,
 			BadExample:  AWSCloudFrontDoesNotHaveAWafBadExample,
 			GoodExample: AWSCloudFrontDoesNotHaveAWafGoodExample,

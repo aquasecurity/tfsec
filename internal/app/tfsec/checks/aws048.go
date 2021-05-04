@@ -10,6 +10,8 @@ import (
 
 const AWSEfsEncryptionNotEnabled scanner.RuleCode = "AWS048"
 const AWSEfsEncryptionNotEnabledDescription scanner.RuleSummary = "EFS Encryption has not been enabled"
+const AWSEfsEncryptionNotEnabledImpact = "Data can be read from the EFS if compromised"
+const AWSEfsEncryptionNotEnabledResolution = "Enable encryption for EFS"
 const AWSEfsEncryptionNotEnabledExplanation = `
 If your organization is subject to corporate or regulatory policies that require encryption of data and metadata at rest, we recommend creating a file system that is encrypted at rest, and mounting your file system using encryption of data in transit.
 
@@ -32,6 +34,8 @@ func init() {
 		Code: AWSEfsEncryptionNotEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSEfsEncryptionNotEnabledDescription,
+			Impact:      AWSEfsEncryptionNotEnabledImpact,
+			Resolution:  AWSEfsEncryptionNotEnabledResolution,
 			Explanation: AWSEfsEncryptionNotEnabledExplanation,
 			BadExample:  AWSEfsEncryptionNotEnabledBadExample,
 			GoodExample: AWSEfsEncryptionNotEnabledGoodExample,

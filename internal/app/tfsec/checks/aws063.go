@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSCloudtrailEnabledInAllRegions scanner.RuleCode = "AWS063"
 const AWSCloudtrailEnabledInAllRegionsDescription scanner.RuleSummary = "Cloudtrail should be enabled in all regions regardless of where your AWS resources are generally homed"
+const AWSCloudtrailEnabledInAllRegionsImpact = "Activity could be happening in your account in a different region"
+const AWSCloudtrailEnabledInAllRegionsResolution = "Enable Cloudtrail in all regions"
 const AWSCloudtrailEnabledInAllRegionsExplanation = `
 When creating Cloudtrail in the AWS Management Console the trail is configured by default to be multi-region, this isn't the case with the Terraform resource. Cloudtrail should cover the full AWS account to ensure you can track changes in regions you are not actively operting in.
 `
@@ -45,6 +48,8 @@ func init() {
 		Code: AWSCloudtrailEnabledInAllRegions,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSCloudtrailEnabledInAllRegionsDescription,
+			Impact:      AWSCloudtrailEnabledInAllRegionsImpact,
+			Resolution:  AWSCloudtrailEnabledInAllRegionsResolution,
 			Explanation: AWSCloudtrailEnabledInAllRegionsExplanation,
 			BadExample:  AWSCloudtrailEnabledInAllRegionsBadExample,
 			GoodExample: AWSCloudtrailEnabledInAllRegionsGoodExample,
@@ -57,7 +62,7 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudtrail"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-			if block.MissingChild("is_multi_region_trail")  {
+			if block.MissingChild("is_multi_region_trail") {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not set multi region trail config.", block.FullName()),
@@ -75,9 +80,9 @@ func init() {
 						multiRegion.Range(),
 						multiRegion,
 						scanner.SeverityWarning,
-						),
+					),
 				}
-			}/**/
+			} /**/
 			return nil
 		},
 	})

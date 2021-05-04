@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSCodeBuildProjectEncryptionNotDisabled scanner.RuleCode = "AWS080"
 const AWSCodeBuildProjectEncryptionNotDisabledDescription scanner.RuleSummary = "CodeBuild Project artifacts encryption should not be disabled"
+const AWSCodeBuildProjectEncryptionNotDisabledImpact = "CodeBuild project artifacts are unencrypted"
+const AWSCodeBuildProjectEncryptionNotDisabledResolution = "Enable encryption for CodeBuild project artifacts"
 const AWSCodeBuildProjectEncryptionNotDisabledExplanation = `
 All artifacts produced by your CodeBuild project pipeline should always be encrypted
 `
@@ -77,6 +80,8 @@ func init() {
 		Code: AWSCodeBuildProjectEncryptionNotDisabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSCodeBuildProjectEncryptionNotDisabledDescription,
+			Impact:      AWSCodeBuildProjectEncryptionNotDisabledImpact,
+			Resolution:  AWSCodeBuildProjectEncryptionNotDisabledResolution,
 			Explanation: AWSCodeBuildProjectEncryptionNotDisabledExplanation,
 			BadExample:  AWSCodeBuildProjectEncryptionNotDisabledBadExample,
 			GoodExample: AWSCodeBuildProjectEncryptionNotDisabledGoodExample,

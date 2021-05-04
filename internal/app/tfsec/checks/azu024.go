@@ -9,6 +9,8 @@ import (
 
 const AZURDPAccessNotAllowedFromInternet scanner.RuleCode = "AZU024"
 const AZURDPAccessNotAllowedFromInternetDescription scanner.RuleSummary = "RDP access should not be accessible from the Internet, should be blocked on port 3389"
+const AZURDPAccessNotAllowedFromInternetImpact = "Anyone from the internet can potentially RDP onto an instance"
+const AZURDPAccessNotAllowedFromInternetResolution = "Block RDP port from internet"
 const AZURDPAccessNotAllowedFromInternetExplanation = `
 RDP access can be configured on either the network security group or in the network security group rule.
 
@@ -71,6 +73,8 @@ func init() {
 		Code: AZURDPAccessNotAllowedFromInternet,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZURDPAccessNotAllowedFromInternetDescription,
+			Impact:      AZURDPAccessNotAllowedFromInternetImpact,
+			Resolution:  AZURDPAccessNotAllowedFromInternetResolution,
 			Explanation: AZURDPAccessNotAllowedFromInternetExplanation,
 			BadExample:  AZURDPAccessNotAllowedFromInternetBadExample,
 			GoodExample: AZURDPAccessNotAllowedFromInternetGoodExample,

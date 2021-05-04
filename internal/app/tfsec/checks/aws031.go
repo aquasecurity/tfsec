@@ -12,6 +12,8 @@ import (
 
 const AWSUnencryptedElasticsearchDomain scanner.RuleCode = "AWS031"
 const AWSUnencryptedElasticsearchDomainDescription scanner.RuleSummary = "Elasticsearch domain isn't encrypted at rest."
+const AWSUnencryptedElasticsearchDomainImpact = "Data will be readable if compromised"
+const AWSUnencryptedElasticsearchDomainResolution = "Enable ElasticSearch domain encryption"
 const AWSUnencryptedElasticsearchDomainExplanation = `
 You should ensure your Elasticsearch data is encrypted at rest to help prevent sensitive information from being read by unauthorised users. 
 `
@@ -39,6 +41,8 @@ func init() {
 		Code: AWSUnencryptedElasticsearchDomain,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSUnencryptedElasticsearchDomainDescription,
+			Impact:      AWSUnencryptedElasticsearchDomainImpact,
+			Resolution:  AWSUnencryptedElasticsearchDomainResolution,
 			Explanation: AWSUnencryptedElasticsearchDomainExplanation,
 			BadExample:  AWSUnencryptedElasticsearchDomainBadExample,
 			GoodExample: AWSUnencryptedElasticsearchDomainGoodExample,

@@ -9,6 +9,8 @@ import (
 
 const AWSRDSPerformanceInsughtsEncryptionNotEnabled scanner.RuleCode = "AWS053"
 const AWSRDSPerformanceInsughtsEncryptionNotEnabledDescription scanner.RuleSummary = "Encryption for RDS Perfomance Insights should be enabled."
+const AWSRDSPerformanceInsughtsEncryptionNotEnabledImpact = "Data can be read from the RDS Performance Insights if it is compromised"
+const AWSRDSPerformanceInsughtsEncryptionNotEnabledResolution = "Enable encryption for RDS clusters and instances"
 const AWSRDSPerformanceInsughtsEncryptionNotEnabledExplanation = `
 When enabling Performance Insights on an RDS cluster or RDS DB Instance, and encryption key should be provided.
 
@@ -34,6 +36,8 @@ func init() {
 		Code: AWSRDSPerformanceInsughtsEncryptionNotEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSRDSPerformanceInsughtsEncryptionNotEnabledDescription,
+			Impact:      AWSRDSPerformanceInsughtsEncryptionNotEnabledImpact,
+			Resolution:  AWSRDSPerformanceInsughtsEncryptionNotEnabledResolution,
 			Explanation: AWSRDSPerformanceInsughtsEncryptionNotEnabledExplanation,
 			BadExample:  AWSRDSPerformanceInsughtsEncryptionNotEnabledBadExample,
 			GoodExample: AWSRDSPerformanceInsughtsEncryptionNotEnabledGoodExample,

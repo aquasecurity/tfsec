@@ -13,6 +13,8 @@ import (
 // AWSNoKMSAutoRotate See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSNoKMSAutoRotate scanner.RuleCode = "AWS019"
 const AWSNoKMSAutoRotateDescription scanner.RuleSummary = "A KMS key is not configured to auto-rotate."
+const AWSNoKMSAutoRotateImpact = "Long life KMS keys increase the attack surface when compromised"
+const AWSNoKMSAutoRotateResolution = "Configure KMS key to auto rotate"
 const AWSNoKMSAutoRotateExplanation = `
 You should configure your KMS keys to auto rotate to maintain security and defend against compromise.
 `
@@ -32,6 +34,8 @@ func init() {
 		Code: AWSNoKMSAutoRotate,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSNoKMSAutoRotateDescription,
+			Impact:      AWSNoKMSAutoRotateImpact,
+			Resolution:  AWSNoKMSAutoRotateResolution,
 			Explanation: AWSNoKMSAutoRotateExplanation,
 			BadExample:  AWSNoKMSAutoRotateBadExample,
 			GoodExample: AWSNoKMSAutoRotateGoodExample,

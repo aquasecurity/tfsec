@@ -9,6 +9,8 @@ import (
 
 const AWSCloudfrontDistributionViewerProtocolPolicyHTTPS scanner.RuleCode = "AWS072"
 const AWSCloudfrontDistributionViewerProtocolPolicyHTTPSDescription scanner.RuleSummary = "Viewer Protocol Policy in Cloudfront Distribution Cache should always be set to HTTPS"
+const AWSCloudfrontDistributionViewerProtocolPolicyHTTPSImpact = "HTTP traffic can be read if intercepted"
+const AWSCloudfrontDistributionViewerProtocolPolicyHTTPSResolution = "Only use HTTPS in the Viewer Protocol Policy"
 const AWSCloudfrontDistributionViewerProtocolPolicyHTTPSExplanation = `
 CloudFront connections should be encrypted during transmission over networks that can be accessed by malicious individuals. 
 A CloudFront distribution should only use HTTPS or Redirect HTTP to HTTPS for communication between viewers and CloudFront.
@@ -63,6 +65,8 @@ func init() {
 		Code: AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSCloudfrontDistributionViewerProtocolPolicyHTTPSDescription,
+			Impact:      AWSCloudfrontDistributionViewerProtocolPolicyHTTPSImpact,
+			Resolution:  AWSCloudfrontDistributionViewerProtocolPolicyHTTPSResolution,
 			Explanation: AWSCloudfrontDistributionViewerProtocolPolicyHTTPSExplanation,
 			BadExample:  AWSCloudfrontDistributionViewerProtocolPolicyHTTPSBadExample,
 			GoodExample: AWSCloudfrontDistributionViewerProtocolPolicyHTTPSGoodExample,

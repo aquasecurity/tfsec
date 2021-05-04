@@ -9,6 +9,8 @@ import (
 
 const AWSAPIGatewayHasAccessLoggingEnabled scanner.RuleCode = "AWS061"
 const AWSAPIGatewayHasAccessLoggingEnabledDescription scanner.RuleSummary = "API Gateway stages for V1 and V2 should have access logging enabled"
+const AWSAPIGatewayHasAccessLoggingEnabledImpact = "Logging provides vital information about access and usage"
+const AWSAPIGatewayHasAccessLoggingEnabledResolution = "Enable logging for API Gateway stages"
 const AWSAPIGatewayHasAccessLoggingEnabledExplanation = `
 API Gateway stages should have access log settings block configured to track all access to a particular stage. This should be applied to both v1 and v2 gateway stages.
 `
@@ -52,6 +54,8 @@ func init() {
 		Code: AWSAPIGatewayHasAccessLoggingEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSAPIGatewayHasAccessLoggingEnabledDescription,
+			Impact:      AWSAPIGatewayHasAccessLoggingEnabledImpact,
+			Resolution:  AWSAPIGatewayHasAccessLoggingEnabledResolution,
 			Explanation: AWSAPIGatewayHasAccessLoggingEnabledExplanation,
 			BadExample:  AWSAPIGatewayHasAccessLoggingEnabledBadExample,
 			GoodExample: AWSAPIGatewayHasAccessLoggingEnabledGoodExample,

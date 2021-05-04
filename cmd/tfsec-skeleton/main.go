@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
 func main() {
@@ -21,7 +22,7 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		err := generateCheckBody()
 		if err != nil {
-			panic(err)
+			fmt.Println(err.Error())
 		}
 	},
 }

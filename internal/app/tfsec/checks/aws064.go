@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSCloudtrailLogValidationEnabled scanner.RuleCode = "AWS064"
 const AWSCloudtrailLogValidationEnabledDescription scanner.RuleSummary = "Cloudtrail log validation should be enabled to prevent tampering of log data"
+const AWSCloudtrailLogValidationEnabledImpact = "Illicit activity could be removed from the logs"
+const AWSCloudtrailLogValidationEnabledResolution = "Turn on log validation for Cloudtrail"
 const AWSCloudtrailLogValidationEnabledExplanation = `
 Log validation should be activated on Cloudtrail logs to prevent the tampering of the underlying data in the S3 bucket. It is feasible that a rogue actor compromising an AWS account might want to modify the log data to remove trace of their actions.
 `
@@ -48,6 +51,8 @@ func init() {
 		Code: AWSCloudtrailLogValidationEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSCloudtrailLogValidationEnabledDescription,
+			Impact:      AWSCloudtrailLogValidationEnabledImpact,
+			Resolution:  AWSCloudtrailLogValidationEnabledResolution,
 			Explanation: AWSCloudtrailLogValidationEnabledExplanation,
 			BadExample:  AWSCloudtrailLogValidationEnabledBadExample,
 			GoodExample: AWSCloudtrailLogValidationEnabledGoodExample,
@@ -60,7 +65,7 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudtrail"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-			if block.MissingChild("enable_log_file_validation")  {
+			if block.MissingChild("enable_log_file_validation") {
 				return []scanner.Result{
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not enable log file validation.", block.FullName()),
@@ -80,7 +85,7 @@ func init() {
 						scanner.SeverityWarning,
 					),
 				}
-			}/**/
+			} /**/
 			return nil
 		},
 	})

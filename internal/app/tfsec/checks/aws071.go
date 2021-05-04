@@ -9,6 +9,8 @@ import (
 
 const AWSCloudfrontDistributionAccessLoggingEnabled scanner.RuleCode = "AWS071"
 const AWSCloudfrontDistributionAccessLoggingEnabledDescription scanner.RuleSummary = "Cloudfront distribution should have Access Logging configured"
+const AWSCloudfrontDistributionAccessLoggingEnabledImpact = "Logging provides vital information about access and usage"
+const AWSCloudfrontDistributionAccessLoggingEnabledResolution = "Enable logging for CloudFront distributions"
 const AWSCloudfrontDistributionAccessLoggingEnabledExplanation = `
 You should configure CloudFront Access Logging to create log files that contain detailed information about every user request that CloudFront receives
 `
@@ -34,6 +36,8 @@ func init() {
 		Code: AWSCloudfrontDistributionAccessLoggingEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSCloudfrontDistributionAccessLoggingEnabledDescription,
+			Impact:      AWSCloudfrontDistributionAccessLoggingEnabledImpact,
+			Resolution:  AWSCloudfrontDistributionAccessLoggingEnabledResolution,
 			Explanation: AWSCloudfrontDistributionAccessLoggingEnabledExplanation,
 			BadExample:  AWSCloudfrontDistributionAccessLoggingEnabledBadExample,
 			GoodExample: AWSCloudfrontDistributionAccessLoggingEnabledGoodExample,

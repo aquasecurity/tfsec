@@ -9,6 +9,8 @@ import (
 
 const AWSBlockPublicAclS3 scanner.RuleCode = "AWS074"
 const AWSBlockPublicAclS3Description scanner.RuleSummary = "S3 Access block should block public ACL"
+const AWSBlockPublicAclS3Impact = "PUT calls with public ACLs specified can make objects public"
+const AWSBlockPublicAclS3Resolution = "Enable blocking any PUT calls with a public ACL specified"
 const AWSBlockPublicAclS3Explanation = `
 S3 buckets should block public ACLs on buckets and any objects they contain. By blocking, PUTs with fail if the object has any public ACL a.
 `
@@ -36,6 +38,8 @@ func init() {
 		Code: AWSBlockPublicAclS3,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSBlockPublicAclS3Description,
+			Impact:      AWSBlockPublicAclS3Impact,
+			Resolution:  AWSBlockPublicAclS3Resolution,
 			Explanation: AWSBlockPublicAclS3Explanation,
 			BadExample:  AWSBlockPublicAclS3BadExample,
 			GoodExample: AWSBlockPublicAclS3GoodExample,

@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AZUDatabaseAuditingRetention90Days scanner.RuleCode = "AZU019"
 const AZUDatabaseAuditingRetention90DaysDescription scanner.RuleSummary = "Database auditing rentention period should be longer than 90 days"
+const AZUDatabaseAuditingRetention90DaysImpact = "Short logging retention could result in missing valuable historical information"
+const AZUDatabaseAuditingRetention90DaysResolution = "Set retention periods of database auditing to greater than 90 days"
 const AZUDatabaseAuditingRetention90DaysExplanation = `
 When Auditing is configured for a SQL database, if the retention period is not set, the retention will be unlimited.
 
@@ -45,6 +48,8 @@ func init() {
 		Code: AZUDatabaseAuditingRetention90Days,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUDatabaseAuditingRetention90DaysDescription,
+			Impact:      AZUDatabaseAuditingRetention90DaysImpact,
+			Resolution:  AZUDatabaseAuditingRetention90DaysResolution,
 			Explanation: AZUDatabaseAuditingRetention90DaysExplanation,
 			BadExample:  AZUDatabaseAuditingRetention90DaysBadExample,
 			GoodExample: AZUDatabaseAuditingRetention90DaysGoodExample,

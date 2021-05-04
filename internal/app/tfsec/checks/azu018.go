@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AZUSQLDatabaseAuditingEnabled scanner.RuleCode = "AZU018"
 const AZUSQLDatabaseAuditingEnabledDescription scanner.RuleSummary = "Auditing should be enabled on Azure SQL Databases"
+const AZUSQLDatabaseAuditingEnabledImpact = "Auditing provides valuable information about access and usage"
+const AZUSQLDatabaseAuditingEnabledResolution = "Enable auditing on Azure SQL databases"
 const AZUSQLDatabaseAuditingEnabledExplanation = `
 Auditing helps you maintain regulatory compliance, understand database activity, and gain insight into discrepancies and anomalies that could indicate business concerns or suspected security violations.
 `
@@ -44,6 +47,8 @@ func init() {
 		Code: AZUSQLDatabaseAuditingEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUSQLDatabaseAuditingEnabledDescription,
+			Impact:      AZUSQLDatabaseAuditingEnabledImpact,
+			Resolution:  AZUSQLDatabaseAuditingEnabledResolution,
 			Explanation: AZUSQLDatabaseAuditingEnabledExplanation,
 			BadExample:  AZUSQLDatabaseAuditingEnabledBadExample,
 			GoodExample: AZUSQLDatabaseAuditingEnabledGoodExample,

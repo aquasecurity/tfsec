@@ -12,6 +12,8 @@ import (
 
 const AWSUnencryptedCloudFrontCommunications scanner.RuleCode = "AWS020"
 const AWSUnencryptedCloudFrontCommunicationsDescription scanner.RuleSummary = "CloudFront distribution allows unencrypted (HTTP) communications."
+const AWSUnencryptedCloudFrontCommunicationsImpact = "CloudFront is available through an unencrypted connection"
+const AWSUnencryptedCloudFrontCommunicationsResolution = "Only allow HTTPS for CloudFront distribution communication"
 const AWSUnencryptedCloudFrontCommunicationsExplanation = `
 Plain HTTP is unencrypted and human-readable. This means that if a malicious actor was to eavesdrop on your connection, they would be able to see all of your data flowing back and forth.
 
@@ -37,6 +39,8 @@ func init() {
 		Code: AWSUnencryptedCloudFrontCommunications,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSUnencryptedCloudFrontCommunicationsDescription,
+			Impact:      AWSUnencryptedCloudFrontCommunicationsImpact,
+			Resolution:  AWSUnencryptedCloudFrontCommunicationsResolution,
 			Explanation: AWSUnencryptedCloudFrontCommunicationsExplanation,
 			BadExample:  AWSUnencryptedCloudFrontCommunicationsBadExample,
 			GoodExample: AWSUnencryptedCloudFrontCommunicationsGoodExample,

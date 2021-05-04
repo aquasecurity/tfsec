@@ -9,6 +9,8 @@ import (
 
 const AWSBlockPublicPolicyS3 scanner.RuleCode = "AWS076"
 const AWSBlockPublicPolicyS3Description scanner.RuleSummary = "S3 Access block should block public policy"
+const AWSBlockPublicPolicyS3Impact = "Users could put a policy that allows public access"
+const AWSBlockPublicPolicyS3Resolution = "Prevent policies that allow public access being PUT"
 const AWSBlockPublicPolicyS3Explanation = `
 S3 bucket policy should have block public policy to prevent users from PUTing a policy that enable public access.
 `
@@ -36,6 +38,8 @@ func init() {
 		Code: AWSBlockPublicPolicyS3,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSBlockPublicPolicyS3Description,
+			Impact:      AWSBlockPublicPolicyS3Impact,
+			Resolution:  AWSBlockPublicPolicyS3Resolution,
 			Explanation: AWSBlockPublicPolicyS3Explanation,
 			BadExample:  AWSBlockPublicPolicyS3BadExample,
 			GoodExample: AWSBlockPublicPolicyS3GoodExample,

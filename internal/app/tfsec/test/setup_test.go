@@ -23,6 +23,8 @@ func TestMain(t *testing.M) {
 		Code: exampleCheckCode,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     "A stupid example check for a test.",
+			Impact:      "You will look stupid",
+			Resolution:  "Don't do stupid stuff",
 			Explanation: "Bad should not be set.",
 			BadExample: `
 resource "problem" "x" {

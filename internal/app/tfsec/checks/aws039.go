@@ -12,8 +12,9 @@ import (
 const (
 	AWSIAMPasswordMinimumLength            scanner.RuleCode    = "AWS039"
 	AWSIAMPasswordMinimumLengthDescription scanner.RuleSummary = "IAM Password policy should have minimum password length of 14 or more characters."
-
-	AWSIAMPasswordMinimumLengthExplanation = `
+	AWSIAMPasswordMinimumLengthImpact                          = "Short, simple passwords are easier to compromise"
+	AWSIAMPasswordMinimumLengthResolution                      = "Enforce longer, more complex passwords in the policy"
+	AWSIAMPasswordMinimumLengthExplanation                     = `
 IAM account password policies should ensure that passwords have a minimum length. 
 
 The account password policy should be set to enforce minimum password length of at least 14 characters.
@@ -39,6 +40,8 @@ func init() {
 		Code: AWSIAMPasswordMinimumLength,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSIAMPasswordMinimumLengthDescription,
+			Impact:      AWSIAMPasswordMinimumLengthImpact,
+			Resolution:  AWSIAMPasswordMinimumLengthResolution,
 			Explanation: AWSIAMPasswordMinimumLengthExplanation,
 			BadExample:  AWSIAMPasswordMinimumLengthBadExample,
 			GoodExample: AWSIAMPasswordMinimumLengthGoodExample,

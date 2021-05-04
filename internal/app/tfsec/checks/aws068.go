@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSEKSClusterNotOpenPublicly scanner.RuleCode = "AWS068"
 const AWSEKSClusterNotOpenPubliclyDescription scanner.RuleSummary = "EKS cluster should not have open CIDR range for public access"
+const AWSEKSClusterNotOpenPubliclyImpact = "EKS can be access from the internet"
+const AWSEKSClusterNotOpenPubliclyResolution = "Don't enable public access to EKS Clusters"
 const AWSEKSClusterNotOpenPubliclyExplanation = `
 EKS Clusters have public access cidrs set to 0.0.0.0/0 by default which is wide open to the internet. This should be explicitly set to a more specific CIDR range
 `
@@ -40,6 +43,8 @@ func init() {
 		Code: AWSEKSClusterNotOpenPublicly,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSEKSClusterNotOpenPubliclyDescription,
+			Impact:      AWSEKSClusterNotOpenPubliclyImpact,
+			Resolution:  AWSEKSClusterNotOpenPubliclyResolution,
 			Explanation: AWSEKSClusterNotOpenPubliclyExplanation,
 			BadExample:  AWSEKSClusterNotOpenPubliclyBadExample,
 			GoodExample: AWSEKSClusterNotOpenPubliclyGoodExample,
