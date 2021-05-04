@@ -24,8 +24,10 @@ function deploy {
 
 clone_site
 go run ./cmd/tfsec-docs
-cp -r docs-website/docs/aws/* ./_site/_docs/aws/
-cp -r docs-website/docs/azure/* ./_site/_docs/azure/
-cp -r docs-website/docs/google/* ./_site/_docs/google/
-cp -r docs-website/docs/general/* ./_site/_docs/general/
+cp -r checkdocs/docs/aws/* ./_site/_docs/aws/
+cp -r checkdocs/docs/azure/* ./_site/_docs/azure/
+cp -r checkdocs/docs/google/* ./_site/_docs/google/
+cp -r checkdocs/docs/general/* ./_site/_docs/general/
 deploy
+
+rm -rf checkdocs

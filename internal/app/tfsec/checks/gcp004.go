@@ -9,7 +9,7 @@ import (
 
 // GoogleOpenOutboundFirewallRule See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleOpenOutboundFirewallRule scanner.RuleCode = "GCP004"
-const GoogleOpenOutboundFirewallRuleDescription scanner.RuleSummary = "An outbound firewall rule allows traffic to `/0`."
+const GoogleOpenOutboundFirewallRuleDescription scanner.RuleSummary = "An outbound firewall rule allows traffic to /0."
 const GoogleOpenOutboundFirewallRuleImpact = "The port is exposed for egress to the internet"
 const GoogleOpenOutboundFirewallRuleResolution = "Set a more restrictive cidr range"
 const GoogleOpenOutboundFirewallRuleExplanation = `

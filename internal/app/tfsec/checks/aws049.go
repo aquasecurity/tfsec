@@ -9,7 +9,7 @@ import (
 )
 
 const AWSOpenIngressNetworkACLRule scanner.RuleCode = "AWS049"
-const AWSOpenIngressNetworkACLRuleDescription scanner.RuleSummary = "An ingress Network ACL rule allows specific ports from `/0`."
+const AWSOpenIngressNetworkACLRuleDescription scanner.RuleSummary = "An ingress Network ACL rule allows specific ports from /0."
 const AWSOpenIngressNetworkACLRuleImpact = "The ports are exposed for ingressing data to the internet"
 const AWSOpenIngressNetworkACLRuleResolution = "Set a more restrictive cidr range"
 const AWSOpenIngressNetworkACLRuleExplanation = `
