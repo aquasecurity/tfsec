@@ -42,6 +42,8 @@ func init() {
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUFunctionAppHTTPSDescription,
 			Explanation: AZUFunctionAppHTTPSExplanation,
+			Impact:      AZUFunctionAppHTTPSImpact,
+			Resolution:  AZUFunctionAppHTTPSResolution,			
 			BadExample:  AZUFunctionAppHTTPSBadExample,
 			GoodExample: AZUFunctionAppHTTPSGoodExample,
 			Links: []string{
