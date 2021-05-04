@@ -9,6 +9,8 @@ import (
 
 const AZUFunctionAppHTTPS scanner.RuleCode = "AZU028"
 const AZUFunctionAppHTTPSDescription scanner.RuleSummary = "Ensure the Function App can only be accessed via HTTPS. The default is false."
+const AZUFunctionAppHTTPSImpact = "Anyone can access the Function App using HTTP."
+const AZUFunctionAppHTTPSResolution = "You can redirect all HTTP requests to the HTTPS port."
 const AZUFunctionAppHTTPSExplanation = `
 By default, clients can connect to function endpoints by using both HTTP or HTTPS. You should redirect HTTP to HTTPs because HTTPS uses the SSL/TLS protocol to provide a secure connection, which is both encrypted and authenticated.
 `
@@ -43,7 +45,7 @@ func init() {
 			Summary:     AZUFunctionAppHTTPSDescription,
 			Explanation: AZUFunctionAppHTTPSExplanation,
 			Impact:      AZUFunctionAppHTTPSImpact,
-			Resolution:  AZUFunctionAppHTTPSResolution,			
+			Resolution:  AZUFunctionAppHTTPSResolution,
 			BadExample:  AZUFunctionAppHTTPSBadExample,
 			GoodExample: AZUFunctionAppHTTPSGoodExample,
 			Links: []string{
