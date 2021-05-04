@@ -47,7 +47,7 @@ resource "azurerm_function_app" "good_example" {
 			mustExcludeResultCode: checks.AZUFunctionAppHTTPS,
 		},
 		{
-			name: "check if managed_virtual_network_enabled is set to false, check fails",
+			name: "check if https_only is set to false, check fails",
 			source: `
 resource "azurerm_function_app" "bad_example" {
   name                       = "test-azure-functions"
