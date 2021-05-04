@@ -13,6 +13,8 @@ import (
 // AWSPlaintextNodeToNodeElasticsearchTraffic See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSPlaintextNodeToNodeElasticsearchTraffic scanner.RuleCode = "AWS032"
 const AWSPlaintextNodeToNodeElasticsearchTrafficDescription scanner.RuleSummary = "Elasticsearch domain uses plaintext traffic for node to node communication."
+const AWSPlaintextNodeToNodeElasticsearchTrafficImpact = "In transit data between nodes could be read if intercepted"
+const AWSPlaintextNodeToNodeElasticsearchTrafficResolution = "Enable encrypted node to node communication"
 const AWSPlaintextNodeToNodeElasticsearchTrafficExplanation = `
 Traffic flowing between Elasticsearch nodes should be encrypted to ensure sensitive data is kept private.
 `
@@ -40,6 +42,8 @@ func init() {
 		Code: AWSPlaintextNodeToNodeElasticsearchTraffic,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSPlaintextNodeToNodeElasticsearchTrafficDescription,
+			Impact:      AWSPlaintextNodeToNodeElasticsearchTrafficImpact,
+			Resolution:  AWSPlaintextNodeToNodeElasticsearchTrafficResolution,
 			Explanation: AWSPlaintextNodeToNodeElasticsearchTrafficExplanation,
 			BadExample:  AWSPlaintextNodeToNodeElasticsearchTrafficBadExample,
 			GoodExample: AWSPlaintextNodeToNodeElasticsearchTrafficGoodExample,

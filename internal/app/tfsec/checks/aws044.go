@@ -13,6 +13,8 @@ import (
 // AWSProviderHasAccessCredentials See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSProviderHasAccessCredentials scanner.RuleCode = "AWS044"
 const AWSProviderHasAccessCredentialsDescription scanner.RuleSummary = "AWS provider has access credentials specified."
+const AWSProviderHasAccessCredentialsImpact = "Exposing the credentials in the Terraform provider increases the risk of secret leakage"
+const AWSProviderHasAccessCredentialsResolution = "Don't include access credentials in plain text"
 const AWSProviderHasAccessCredentialsExplanation = `
 The AWS provider block should not contain hardcoded credentials. These can be passed in securely as runtime using environment variables.
 `
@@ -32,6 +34,8 @@ func init() {
 		Code: AWSProviderHasAccessCredentials,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSProviderHasAccessCredentialsDescription,
+			Impact:      AWSProviderHasAccessCredentialsImpact,
+			Resolution:  AWSProviderHasAccessCredentialsResolution,
 			Explanation: AWSProviderHasAccessCredentialsExplanation,
 			BadExample:  AWSProviderHasAccessCredentialsBadExample,
 			GoodExample: AWSProviderHasAccessCredentialsGoodExample,

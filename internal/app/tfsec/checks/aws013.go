@@ -15,6 +15,8 @@ import (
 
 const AWSTaskDefinitionWithSensitiveEnvironmentVariables scanner.RuleCode = "AWS013"
 const AWSTaskDefinitionWithSensitiveEnvironmentVariablesDescription scanner.RuleSummary = "Task definition defines sensitive environment variable(s)."
+const AWSTaskDefinitionWithSensitiveEnvironmentVariablesImpact = "Sensitive data could be exposed in the AWS Management Console"
+const AWSTaskDefinitionWithSensitiveEnvironmentVariablesResolution = "Use secrets for the task definition"
 const AWSTaskDefinitionWithSensitiveEnvironmentVariablesExplanation = `
 You should not make secrets available to a user in plaintext in any scenario. Secrets can instead be pulled from a secure secret storage system by the service requiring them.  
 `
@@ -59,6 +61,8 @@ func init() {
 		Code: AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSTaskDefinitionWithSensitiveEnvironmentVariablesDescription,
+			Impact:      AWSTaskDefinitionWithSensitiveEnvironmentVariablesImpact,
+			Resolution:  AWSTaskDefinitionWithSensitiveEnvironmentVariablesResolution,
 			Explanation: AWSTaskDefinitionWithSensitiveEnvironmentVariablesExplanation,
 			BadExample:  AWSTaskDefinitionWithSensitiveEnvironmentVariablesBadExample,
 			GoodExample: AWSTaskDefinitionWithSensitiveEnvironmentVariablesGoodExample,

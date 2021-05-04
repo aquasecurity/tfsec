@@ -11,6 +11,8 @@ import (
 // AWSUnencryptedMSKBroker See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSUnencryptedMSKBroker scanner.RuleCode = "AWS022"
 const AWSUnencryptedMSKBrokerDescription scanner.RuleSummary = "A MSK cluster allows unencrypted data in transit."
+const AWSUnencryptedMSKBrokerImpact = "Intercepted data can be read in transit"
+const AWSUnencryptedMSKBrokerResolution = "Enable in transit encryption"
 const AWSUnencryptedMSKBrokerExplanation = `
 Encryption should be forced for Kafka clusters, including for communication between nodes. This ensure sensitive data is kept private.
 `
@@ -40,6 +42,8 @@ func init() {
 		Code: AWSUnencryptedMSKBroker,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSUnencryptedMSKBrokerDescription,
+			Impact:      AWSUnencryptedMSKBrokerImpact,
+			Resolution:  AWSUnencryptedMSKBrokerResolution,
 			Explanation: AWSUnencryptedMSKBrokerExplanation,
 			BadExample:  AWSUnencryptedMSKBrokerBadExample,
 			GoodExample: AWSUnencryptedMSKBrokerGoodExample,

@@ -13,6 +13,8 @@ import (
 // AWSEcrImageScanNotEnabled See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSEcrImageScanNotEnabled scanner.RuleCode = "AWS023"
 const AWSEcrImageScanNotEnabledDescription scanner.RuleSummary = "ECR repository has image scans disabled."
+const AWSEcrImageScanNotEnabledImpact = "The ability to scan images is not being used and vulnerabilities will not be highlighted"
+const AWSEcrImageScanNotEnabledResolution = "Enable ECR image scanning"
 const AWSEcrImageScanNotEnabledExplanation = `
 Repository image scans should be enabled to ensure vulnerable software can be discovered and remediated as soon as possible.
 `
@@ -42,6 +44,8 @@ func init() {
 		Code: AWSEcrImageScanNotEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSEcrImageScanNotEnabledDescription,
+			Impact:      AWSEcrImageScanNotEnabledImpact,
+			Resolution:  AWSEcrImageScanNotEnabledResolution,
 			Explanation: AWSEcrImageScanNotEnabledExplanation,
 			BadExample:  AWSEcrImageScanNotEnabledBadExample,
 			GoodExample: AWSEcrImageScanNotEnabledGoodExample,

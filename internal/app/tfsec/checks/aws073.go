@@ -9,6 +9,8 @@ import (
 
 const AWSIngorePublicAclS3 scanner.RuleCode = "AWS073"
 const AWSIngorePublicAclS3Description scanner.RuleSummary = "S3 Access Block should Ignore Public Acl"
+const AWSIngorePublicAclS3Impact = "PUT calls with public ACLs specified can make objects public"
+const AWSIngorePublicAclS3Resolution = "Enable ignoring the application of public ACLs in PUT calls"
 const AWSIngorePublicAclS3Explanation = `
 S3 buckets should ignore public ACLs on buckets and any objects they contain. By ignoring rather than blocking, PUT calls with public ACLs will still be applied but the ACL will be ignored.
 `
@@ -36,6 +38,8 @@ func init() {
 		Code: AWSIngorePublicAclS3,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSIngorePublicAclS3Description,
+			Impact:      AWSIngorePublicAclS3Impact,
+			Resolution:  AWSIngorePublicAclS3Resolution,
 			Explanation: AWSIngorePublicAclS3Explanation,
 			BadExample:  AWSIngorePublicAclS3BadExample,
 			GoodExample: AWSIngorePublicAclS3GoodExample,

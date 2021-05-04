@@ -9,6 +9,8 @@ import (
 
 const AWSRDSAuroraClusterEncryptionDisabled scanner.RuleCode = "AWS051"
 const AWSRDSAuroraClusterEncryptionDisabledDescription scanner.RuleSummary = "There is no encryption specified or encryption is disabled on the RDS Cluster."
+const AWSRDSAuroraClusterEncryptionDisabledImpact = "Data can be read from the RDS cluster if it is compromised"
+const AWSRDSAuroraClusterEncryptionDisabledResolution = "Enable encryption for RDS clusters and instances"
 const AWSRDSAuroraClusterEncryptionDisabledExplanation = `
 Encryption should be enabled for an RDS Aurora cluster. 
 
@@ -31,6 +33,8 @@ func init() {
 		Code: AWSRDSAuroraClusterEncryptionDisabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSRDSAuroraClusterEncryptionDisabledDescription,
+			Impact:      AWSRDSAuroraClusterEncryptionDisabledImpact,
+			Resolution:  AWSRDSAuroraClusterEncryptionDisabledResolution,
 			Explanation: AWSRDSAuroraClusterEncryptionDisabledExplanation,
 			BadExample:  AWSRDSAuroraClusterEncryptionDisabledBadExample,
 			GoodExample: AWSRDSAuroraClusterEncryptionDisabledGoodExample,

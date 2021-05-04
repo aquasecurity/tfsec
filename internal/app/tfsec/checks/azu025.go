@@ -9,6 +9,8 @@ import (
 
 const AZUDataFactoryPublicNetwork scanner.RuleCode = "AZU025"
 const AZUDataFactoryPublicNetworkDescription scanner.RuleSummary = "Data Factory should have public access disabled, the default is enabled."
+const AZUDataFactoryPublicNetworkImpact = "Data factory is publicly accessible"
+const AZUDataFactoryPublicNetworkResolution = "Set public access to disabled for Data Factory"
 const AZUDataFactoryPublicNetworkExplanation = `
 Data Factory has public access set to true by default.
 
@@ -35,6 +37,8 @@ func init() {
 		Code: AZUDataFactoryPublicNetwork,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUDataFactoryPublicNetworkDescription,
+			Impact:      AZUDataFactoryPublicNetworkImpact,
+			Resolution:  AZUDataFactoryPublicNetworkResolution,
 			Explanation: AZUDataFactoryPublicNetworkExplanation,
 			BadExample:  AZUDataFactoryPublicNetworkBadExample,
 			GoodExample: AZUDataFactoryPublicNetworkGoodExample,

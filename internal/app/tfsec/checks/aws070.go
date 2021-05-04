@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSESDomainLoggingEnabled scanner.RuleCode = "AWS070"
 const AWSESDomainLoggingEnabledDescription scanner.RuleSummary = "AWS ES Domain should have logging enabled"
+const AWSESDomainLoggingEnabledImpact = "Logging provides vital information about access and usage"
+const AWSESDomainLoggingEnabledResolution = "Enable logging for ElasticSearch domains"
 const AWSESDomainLoggingEnabledExplanation = `
 AWS ES domain should have logging enabled by default.
 `
@@ -39,6 +42,8 @@ func init() {
 		Code: AWSESDomainLoggingEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSESDomainLoggingEnabledDescription,
+			Impact:      AWSESDomainLoggingEnabledImpact,
+			Resolution:  AWSESDomainLoggingEnabledResolution,
 			Explanation: AWSESDomainLoggingEnabledExplanation,
 			BadExample:  AWSESDomainLoggingEnabledBadExample,
 			GoodExample: AWSESDomainLoggingEnabledGoodExample,

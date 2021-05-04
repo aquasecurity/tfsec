@@ -10,6 +10,8 @@ import (
 
 const AWSEnsureAthenaDbEncrypted scanner.RuleCode = "AWS059"
 const AWSEnsureAthenaDbEncryptedDescription scanner.RuleSummary = "Athena databases and workgroup configurations are created unencrypted at rest by default, they should be encrypted"
+const AWSEnsureAthenaDbEncryptedImpact = "Data can be read if the Athena Database is compromised"
+const AWSEnsureAthenaDbEncryptedResolution = "Enable encryption at rest for Athena databases and workgroup configurations"
 const AWSEnsureAthenaDbEncryptedExplanation = `
 Athena databases and workspace result sets should be encrypted at rests. These databases and query sets are generally derived from data in S3 buckets and should have the same level of at rest protection.
 
@@ -68,6 +70,8 @@ func init() {
 		Code: AWSEnsureAthenaDbEncrypted,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSEnsureAthenaDbEncryptedDescription,
+			Impact:      AWSEnsureAthenaDbEncryptedImpact,
+			Resolution:  AWSEnsureAthenaDbEncryptedResolution,
 			Explanation: AWSEnsureAthenaDbEncryptedExplanation,
 			BadExample:  AWSEnsureAthenaDbEncryptedBadExample,
 			GoodExample: AWSEnsureAthenaDbEncryptedGoodExample,

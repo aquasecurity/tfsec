@@ -9,6 +9,8 @@ import (
 
 const AZUTrustedMicrosoftServicesHaveStroageAccountAccess scanner.RuleCode = "AZU013"
 const AZUTrustedMicrosoftServicesHaveStroageAccountAccessDescription scanner.RuleSummary = "Trusted Microsoft Services should have bypass access to Storage accounts"
+const AZUTrustedMicrosoftServicesHaveStroageAccountAccessImpact = "Trusted Microsoft Services won't be able to access storage account unless rules set to allow"
+const AZUTrustedMicrosoftServicesHaveStroageAccountAccessResolution = "Allow Trusted Microsoft Services to bypass"
 const AZUTrustedMicrosoftServicesHaveStroageAccountAccessExplanation = `
 Some Microsoft services that interact with storage accounts operate from networks that can't be granted access through network rules. 
 
@@ -82,6 +84,8 @@ func init() {
 		Code: AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUTrustedMicrosoftServicesHaveStroageAccountAccessDescription,
+			Impact:      AZUTrustedMicrosoftServicesHaveStroageAccountAccessImpact,
+			Resolution:  AZUTrustedMicrosoftServicesHaveStroageAccountAccessResolution,
 			Explanation: AZUTrustedMicrosoftServicesHaveStroageAccountAccessExplanation,
 			BadExample:  AZUTrustedMicrosoftServicesHaveStroageAccountAccessBadExample,
 			GoodExample: AZUTrustedMicrosoftServicesHaveStroageAccountAccessGoodExample,

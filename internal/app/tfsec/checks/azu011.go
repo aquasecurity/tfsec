@@ -11,6 +11,8 @@ import (
 
 const AZUBlobStorageContainerNoPublicAccess scanner.RuleCode = "AZU011"
 const AZUBlobStorageContainerNoPublicAccessDescription scanner.RuleSummary = "Storage containers in blob storage mode should not have public access"
+const AZUBlobStorageContainerNoPublicAccessImpact = "Data in the storage container could be exposed publically"
+const AZUBlobStorageContainerNoPublicAccessResolution = "Disable public access to storage containers"
 const AZUBlobStorageContainerNoPublicAccessExplanation = `
 Storage container public access should be off. It can be configured for blobs only, containers and blobs or off entirely. The default is off, with no public access.
 
@@ -42,6 +44,8 @@ func init() {
 		Code: AZUBlobStorageContainerNoPublicAccess,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUBlobStorageContainerNoPublicAccessDescription,
+			Impact:      AZUBlobStorageContainerNoPublicAccessImpact,
+			Resolution:  AZUBlobStorageContainerNoPublicAccessResolution,
 			Explanation: AZUBlobStorageContainerNoPublicAccessExplanation,
 			BadExample:  AZUBlobStorageContainerNoPublicAccessBadExample,
 			GoodExample: AZUBlobStorageContainerNoPublicAccessGoodExample,

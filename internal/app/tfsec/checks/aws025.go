@@ -11,6 +11,8 @@ import (
 
 const AWSApiGatewayDomainNameOutdatedSecurityPolicy scanner.RuleCode = "AWS025"
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyDescription scanner.RuleSummary = "API Gateway domain name uses outdated SSL/TLS protocols."
+const AWSApiGatewayDomainNameOutdatedSecurityPolicyImpact = "Outdated SSL policies increase exposure to known vulnerabilites"
+const AWSApiGatewayDomainNameOutdatedSecurityPolicyResolution = "Use the most modern TLS/SSL policies available"
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyExplanation = `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `
@@ -30,6 +32,8 @@ func init() {
 		Code: AWSApiGatewayDomainNameOutdatedSecurityPolicy,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSApiGatewayDomainNameOutdatedSecurityPolicyDescription,
+			Impact:      AWSApiGatewayDomainNameOutdatedSecurityPolicyImpact,
+			Resolution:  AWSApiGatewayDomainNameOutdatedSecurityPolicyResolution,
 			Explanation: AWSApiGatewayDomainNameOutdatedSecurityPolicyExplanation,
 			BadExample:  AWSApiGatewayDomainNameOutdatedSecurityPolicyBadExample,
 			GoodExample: AWSApiGatewayDomainNameOutdatedSecurityPolicyGoodExample,

@@ -9,6 +9,8 @@ import (
 
 const AWSAthenaWorkgroupEnforceConfiguration scanner.RuleCode = "AWS060"
 const AWSAthenaWorkgroupEnforceConfigurationDescription scanner.RuleSummary = "Athena workgroups should enforce configuration to prevent client disabling encryption"
+const AWSAthenaWorkgroupEnforceConfigurationImpact = "Clients can ginore encryption requirements"
+const AWSAthenaWorkgroupEnforceConfigurationResolution = "Enforce the configuration to prevent client overrides"
 const AWSAthenaWorkgroupEnforceConfigurationExplanation = `
 Athena workgroup configuration should be enforced to prevent client side changes to disable encryption settings.
 `
@@ -61,6 +63,8 @@ func init() {
 		Code: AWSAthenaWorkgroupEnforceConfiguration,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSAthenaWorkgroupEnforceConfigurationDescription,
+			Impact:      AWSAthenaWorkgroupEnforceConfigurationImpact,
+			Resolution:  AWSAthenaWorkgroupEnforceConfigurationResolution,
 			Explanation: AWSAthenaWorkgroupEnforceConfigurationExplanation,
 			BadExample:  AWSAthenaWorkgroupEnforceConfigurationBadExample,
 			GoodExample: AWSAthenaWorkgroupEnforceConfigurationGoodExample,

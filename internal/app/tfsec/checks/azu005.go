@@ -13,6 +13,8 @@ import (
 // AzureVMWithPasswordAuthentication See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureVMWithPasswordAuthentication scanner.RuleCode = "AZU005"
 const AzureVMWithPasswordAuthenticationDescription scanner.RuleSummary = "Password authentication in use instead of SSH keys."
+const AzureVMWithPasswordAuthenticationImpact = "Passwords are potentially easier to compromise than SSH Keys"
+const AzureVMWithPasswordAuthenticationResolution = "Use SSH keys for authentication"
 const AzureVMWithPasswordAuthenticationExplanation = `
 Access to instances should be authenticated using SSH keys. Removing the option of password authentication enforces more secure methods while removing the risks inherent with passwords.
 `
@@ -34,6 +36,8 @@ func init() {
 		Code: AzureVMWithPasswordAuthentication,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AzureVMWithPasswordAuthenticationDescription,
+			Impact:      AzureVMWithPasswordAuthenticationImpact,
+			Resolution:  AzureVMWithPasswordAuthenticationResolution,
 			Explanation: AzureVMWithPasswordAuthenticationExplanation,
 			BadExample:  AzureVMWithPasswordAuthenticationBadExample,
 			GoodExample: AzureVMWithPasswordAuthenticationGoodExample,

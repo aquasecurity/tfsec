@@ -9,6 +9,8 @@ import (
 
 const AZUKeyVaultSecretExpirationDate scanner.RuleCode = "AZU023"
 const AZUKeyVaultSecretExpirationDateDescription scanner.RuleSummary = "Key Vault Secret should have an expiration date set"
+const AZUKeyVaultSecretExpirationDateImpact = "Long life secrets increase the opportunity for compromise"
+const AZUKeyVaultSecretExpirationDateResolution = "Set an expiry for secrets"
 const AZUKeyVaultSecretExpirationDateExplanation = `
 Expiration Date is an optional Key Vault Secret behavior and is not set by default.
 
@@ -35,6 +37,8 @@ func init() {
 		Code: AZUKeyVaultSecretExpirationDate,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUKeyVaultSecretExpirationDateDescription,
+			Impact:      AZUKeyVaultSecretExpirationDateImpact,
+			Resolution:  AZUKeyVaultSecretExpirationDateResolution,
 			Explanation: AZUKeyVaultSecretExpirationDateExplanation,
 			BadExample:  AZUKeyVaultSecretExpirationDateBadExample,
 			GoodExample: AZUKeyVaultSecretExpirationDateGoodExample,

@@ -9,6 +9,8 @@ import (
 
 const AWSEnsureEcrImagesHaveImmutableTags scanner.RuleCode = "AWS078"
 const AWSEnsureEcrImagesHaveImmutableTagsDescription scanner.RuleSummary = "ECR images tags shouldn't be mutable."
+const AWSEnsureEcrImagesHaveImmutableTagsImpact = "Image tags could be overwritten with compromised images"
+const AWSEnsureEcrImagesHaveImmutableTagsResolution = "Only use immutable images in ECR"
 const AWSEnsureEcrImagesHaveImmutableTagsExplanation = `
 ECR images should be set to IMMUTABLE to prevent code injection through image mutation.
 
@@ -40,6 +42,8 @@ func init() {
 		Code: AWSEnsureEcrImagesHaveImmutableTags,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSEnsureEcrImagesHaveImmutableTagsDescription,
+			Impact:      AWSEnsureEcrImagesHaveImmutableTagsImpact,
+			Resolution:  AWSEnsureEcrImagesHaveImmutableTagsResolution,
 			Explanation: AWSEnsureEcrImagesHaveImmutableTagsExplanation,
 			BadExample:  AWSEnsureEcrImagesHaveImmutableTagsBadExample,
 			GoodExample: AWSEnsureEcrImagesHaveImmutableTagsGoodExample,

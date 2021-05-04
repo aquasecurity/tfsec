@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSEKSHasControlPlaneLoggingEnabled scanner.RuleCode = "AWS067"
 const AWSEKSHasControlPlaneLoggingEnabledDescription scanner.RuleSummary = "EKS Clusters should have cluster control plane logging turned on"
+const AWSEKSHasControlPlaneLoggingEnabledImpact = "Logging provides valuable information about access and usage"
+const AWSEKSHasControlPlaneLoggingEnabledResolution = "Enable logging for the EKS control plane"
 const AWSEKSHasControlPlaneLoggingEnabledExplanation = `
 By default cluster control plane logging is not turned on. Logging is available for audit, api, authenticator, controllerManager and scheduler. All logging should be turned on for cluster control plane.
 `
@@ -51,6 +54,8 @@ func init() {
 		Code: AWSEKSHasControlPlaneLoggingEnabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSEKSHasControlPlaneLoggingEnabledDescription,
+			Impact:      AWSEKSHasControlPlaneLoggingEnabledImpact,
+			Resolution:  AWSEKSHasControlPlaneLoggingEnabledResolution,
 			Explanation: AWSEKSHasControlPlaneLoggingEnabledExplanation,
 			BadExample:  AWSEKSHasControlPlaneLoggingEnabledBadExample,
 			GoodExample: AWSEKSHasControlPlaneLoggingEnabledGoodExample,
@@ -72,20 +77,20 @@ func init() {
 						fmt.Sprintf("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
-						),
+					),
 				}
 			}
 
 			configuredLogging := block.GetAttribute("enabled_cluster_log_types")
 			var logTypeResults []scanner.Result
 			for _, logType := range controlPlaneLogging {
-				if ! configuredLogging.Contains(logType) {
+				if !configuredLogging.Contains(logType) {
 					logTypeResults = append(logTypeResults, check.NewResultWithValueAnnotation(
 						fmt.Sprintf("Resource '%s' is missing the control plane log type '%s'", block.FullName(), logType),
 						configuredLogging.Range(),
 						configuredLogging,
 						scanner.SeverityError,
-						))
+					))
 				}
 			}
 
