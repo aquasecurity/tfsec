@@ -73,9 +73,13 @@ func FormatDefault(_ io.Writer, results []scanner.Result, _ string, options ...F
   <blue>[</blue>%s<blue>]</blue><blue>[</blue>%s<blue>]</blue> %s
   <blue>%s</blue>
 
+
 `, result.RuleID, severity, result.Description, result.Range.String())
 		highlightCode(result)
-		tml.Printf("  <blue> %s </blue>\n\n", result.Link)
+		tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", result.Impact)
+		tml.Printf("  <white>Resolution: </white><blue>%s</blue>\n", result.Resolution)
+		tml.Printf("\n  <blue>%s </blue>\n\n", result.Link)
+
 	}
 
 	// TODO show files processed
