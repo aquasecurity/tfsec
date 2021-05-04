@@ -9,6 +9,8 @@ import (
 
 const AZUSynapseWorkspaceManagedNetwork scanner.RuleCode = "AZU027"
 const AZUSynapseWorkspaceManagedNetworkDescription scanner.RuleSummary = "Synapse Workspace should have managed virtual network enabled, the default is disabled."
+const AZUSynapseWorkspaceManagedNetworkImpact = "Your Synapse workspace is not using the private endpoints"
+const AZUSynapseWorkspaceManagedNetworkResolution = "Set manage virtual network to enabled"
 const AZUSynapseWorkspaceManagedNetworkExplanation = `
 Synapse Workspace does not have managed virtual network enabled by default.
 
@@ -61,6 +63,8 @@ func init() {
 		Code: AZUSynapseWorkspaceManagedNetwork,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUSynapseWorkspaceManagedNetworkDescription,
+			Impact:      AZUSynapseWorkspaceManagedNetworkImpact,
+			Resolution:  AZUSynapseWorkspaceManagedNetworkResolution,
 			Explanation: AZUSynapseWorkspaceManagedNetworkExplanation,
 			BadExample:  AZUSynapseWorkspaceManagedNetworkBadExample,
 			GoodExample: AZUSynapseWorkspaceManagedNetworkGoodExample,
