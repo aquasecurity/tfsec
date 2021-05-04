@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 	"text/template"
 
@@ -11,26 +10,12 @@ import (
 )
 
 const (
-	docsDataFile = `
-{{range $p := .}}
-- title: {{$p.Provider | ToUpper }} Checks
-  docs:
-  - {{$p.Provider}}/home
-{{range $check := $p.Checks}}  - {{$check.Provider}}/{{$check.Code}}
-{{end}}{{end}}
-`
-
 	baseWebPageTemplate = `---
-title: {{$.Code}}
-summary: {{$.Documentation.Summary}} {{$.RequiredLabels}} 
-resources: 
+title: {{$.Code}} - {{$.Documentation.Summary}}
+summary: {{$.Documentation.Summary}} 
+resources: {{$.RequiredLabels}} 
 permalink: /docs/{{$.Provider}}/{{$.Code}}/
-nav_order: 2
-parent: {{$.Provider | ToUpperProvider }} Checks
 ---
-
-## {{$.Documentation.Summary}}
-
 ### Explanation
 
 {{$.Documentation.Explanation}}
@@ -55,10 +40,12 @@ The following example will pass the {{$.Code}} check.
 {% endhighlight %}
 {{end}}
 
+{{if $.Documentation.Links}}
 ### Related Links
 
 {{range $link := $.Documentation.Links}}
 - [{{.}}]({{.}}){:target="_blank" rel="nofollow noreferrer noopener"}
+{{end}}
 {{end}}
 `
 )
@@ -71,7 +58,7 @@ func generateWebPages(fileContents []*FileContent) error {
 			}
 		}
 	}
-	return generateDocsDataFile(fileContents)
+	return nil
 }
 
 var funcMap = template.FuncMap{
@@ -86,15 +73,6 @@ func join(s []string) string {
 		return ""
 	}
 	return strings.Join(s[1:], s[0])
-}
-
-func generateDocsDataFile(contents []*FileContent) error {
-	docsFilePath := fmt.Sprintf("%s/_data/docs.yml", webPath)
-	if err := os.MkdirAll(filepath.Dir(docsFilePath), os.ModePerm); err != nil {
-		return err
-	}
-	docTmpl := template.Must(template.New("web").Funcs(funcMap).Parse(docsDataFile))
-	return writeTemplate(contents, docsFilePath, docTmpl)
 }
 
 func generateWebPage(check scanner.Check) error {

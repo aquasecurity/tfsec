@@ -10,6 +10,8 @@ import (
 
 const AWSUnencryptedAtRestElasticacheReplicationGroup scanner.RuleCode = "AWS035"
 const AWSUnencryptedAtRestElasticacheReplicationGroupDescription scanner.RuleSummary = "Unencrypted Elasticache Replication Group."
+const AWSUnencryptedAtRestElasticacheReplicationGroupImpact = "Data in the replication group could be readable if compromised"
+const AWSUnencryptedAtRestElasticacheReplicationGroupResolution = "Enable encryption for replication group"
 const AWSUnencryptedAtRestElasticacheReplicationGroupExplanation = `
 You should ensure your Elasticache data is encrypted at rest to help prevent sensitive information from being read by unauthorised users.
 `
@@ -35,6 +37,8 @@ func init() {
 		Code: AWSUnencryptedAtRestElasticacheReplicationGroup,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSUnencryptedAtRestElasticacheReplicationGroupDescription,
+			Impact:      AWSUnencryptedAtRestElasticacheReplicationGroupImpact,
+			Resolution:  AWSUnencryptedAtRestElasticacheReplicationGroupResolution,
 			Explanation: AWSUnencryptedAtRestElasticacheReplicationGroupExplanation,
 			BadExample:  AWSUnencryptedAtRestElasticacheReplicationGroupBadExample,
 			GoodExample: AWSUnencryptedAtRestElasticacheReplicationGroupGoodExample,

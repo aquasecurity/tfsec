@@ -9,6 +9,8 @@ import (
 
 const AWSRestrictPublicBucketS3 scanner.RuleCode = "AWS075"
 const AWSRestrictPublicBucketS3Description scanner.RuleSummary = "S3 Access block should restrict public bucket to limit access"
+const AWSRestrictPublicBucketS3Impact = "Public buckets can be accessed by anyone"
+const AWSRestrictPublicBucketS3Resolution = "Limit the access to public buckets to only the owner or AWS Services (eg; CloudFront)"
 const AWSRestrictPublicBucketS3Explanation = `
 S3 buckets should restrict public policies for the bucket. By enabling, the restrict_public_buckets, only the bucket owner and AWS Services can access if it has a public policy.
 `
@@ -36,6 +38,8 @@ func init() {
 		Code: AWSRestrictPublicBucketS3,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSRestrictPublicBucketS3Description,
+			Impact:      AWSRestrictPublicBucketS3Impact,
+			Resolution:  AWSRestrictPublicBucketS3Resolution,
 			Explanation: AWSRestrictPublicBucketS3Explanation,
 			BadExample:  AWSRestrictPublicBucketS3BadExample,
 			GoodExample: AWSRestrictPublicBucketS3GoodExample,

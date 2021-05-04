@@ -13,6 +13,8 @@ import (
 // GkeLegacyMetadataEndpoints See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeLegacyMetadataEndpoints scanner.RuleCode = "GCP007"
 const GkeLegacyMetadataEndpointsDescription scanner.RuleSummary = "Legacy metadata endpoints enabled."
+const GkeLegacyMetadataEndpointsImpact = "Legacy metadata endpoints don't require metadata headers"
+const GkeLegacyMetadataEndpointsResolution = "Disable legacy metadata endpoints"
 const GkeLegacyMetadataEndpointsExplanation = `
 The Compute Engine instance metadata server exposes legacy v0.1 and v1beta1 endpoints, which do not enforce metadata query headers. 
 
@@ -40,6 +42,8 @@ func init() {
 		Code: GkeLegacyMetadataEndpoints,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     GkeLegacyMetadataEndpointsDescription,
+			Impact:      GkeLegacyMetadataEndpointsImpact,
+			Resolution:  GkeLegacyMetadataEndpointsResolution,
 			Explanation: GkeLegacyMetadataEndpointsExplanation,
 			BadExample:  GkeLegacyMetadataEndpointsBadExample,
 			GoodExample: GkeLegacyMetadataEndpointsGoodExample,

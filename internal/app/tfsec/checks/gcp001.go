@@ -10,6 +10,8 @@ import (
 // GoogleUnencryptedDisk See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleUnencryptedDisk scanner.RuleCode = "GCP001"
 const GoogleUnencryptedDiskDescription scanner.RuleSummary = "Unencrypted compute disk."
+const GoogleUnencryptedDiskImpact = "Data could be readable if compromised"
+const GoogleUnencryptedDiskResolution = "Enable encrytion for compute disks"
 const GoogleUnencryptedDiskExplanation = `
 By default, Compute Engine encrypts all data at rest. Compute Engine handles and manages this encryption for you without any additional actions on your part.
 
@@ -41,6 +43,8 @@ func init() {
 		Code: GoogleUnencryptedDisk,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     GoogleUnencryptedDiskDescription,
+			Impact:      GoogleUnencryptedDiskImpact,
+			Resolution:  GoogleUnencryptedDiskResolution,
 			Explanation: GoogleUnencryptedDiskExplanation,
 			BadExample:  GoogleUnencryptedDiskBadExample,
 			GoodExample: GoogleUnencryptedDiskGoodExample,

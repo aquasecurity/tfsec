@@ -13,6 +13,8 @@ import (
 // AWSOutdatedSSLPolicy See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSOutdatedSSLPolicy scanner.RuleCode = "AWS010"
 const AWSOutdatedSSLPolicyDescription scanner.RuleSummary = "An outdated SSL policy is in use by a load balancer."
+const AWSOutdatedSSLPolicyImpact = "The SSL policy is outdated and has known vulnerabilities"
+const AWSOutdatedSSLPolicyResolution = "Use a more recent TLS/SSL policy for the load balancer"
 const AWSOutdatedSSLPolicyExplanation = `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+. 
 `
@@ -41,6 +43,8 @@ func init() {
 		Code: AWSOutdatedSSLPolicy,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSOutdatedSSLPolicyDescription,
+			Impact:      AWSOutdatedSSLPolicyImpact,
+			Resolution:  AWSOutdatedSSLPolicyResolution,
 			Explanation: AWSOutdatedSSLPolicyExplanation,
 			BadExample:  AWSOutdatedSSLPolicyBadExample,
 			GoodExample: AWSOutdatedSSLPolicyGoodExample,

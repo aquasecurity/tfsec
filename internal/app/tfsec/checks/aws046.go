@@ -14,6 +14,8 @@ import (
 // AWSIamPolicyWildcardActions See https://github.com/tfsec/tfsec#included-checks for check info
 const AWSIamPolicyWildcardActions scanner.RuleCode = "AWS046"
 const AWSIamPolicyWildcardActionsDescription scanner.RuleSummary = "AWS IAM policy document has wildcard action statement."
+const AWSIamPolicyWildcardActionsImpact = "IAM policies with wildcard actions allow more that is required"
+const AWSIamPolicyWildcardActionsResolution = "Keep policy scope to the minimum that is required to be effective"
 const AWSIamPolicyWildcardActionsExplanation = `
 IAM profiles should be configured with the specific, minimum set of permissions required.
 `
@@ -46,6 +48,8 @@ func init() {
 		Code: AWSIamPolicyWildcardActions,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSIamPolicyWildcardActionsDescription,
+			Impact:      AWSIamPolicyWildcardActionsImpact,
+			Resolution:  AWSIamPolicyWildcardActionsResolution,
 			Explanation: AWSIamPolicyWildcardActionsExplanation,
 			BadExample:  AWSIamPolicyWildcardActionsBadExample,
 			GoodExample: AWSIamPolicyWildcardActionsGoodExample,

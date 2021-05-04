@@ -13,6 +13,8 @@ import (
 // GkeNodeMetadataExposed See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeNodeMetadataExposed scanner.RuleCode = "GCP006"
 const GkeNodeMetadataExposedDescription scanner.RuleSummary = "Node metadata value disables metadata concealment."
+const GkeNodeMetadataExposedImpact = "Metadata that isn't concealed potentially risks leakage of sensitive data"
+const GkeNodeMetadataExposedResolution = "Set node metadata to SECURE or GKE_METADATA_SERVER"
 const GkeNodeMetadataExposedExplanation = `
 If the <code>workload_metadata_config</code> block within <code>node_config</code> is included, the <code>node_metadata</code> attribute should be configured securely.
 
@@ -41,6 +43,8 @@ func init() {
 		Code: GkeNodeMetadataExposed,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     GkeNodeMetadataExposedDescription,
+			Impact:      GkeNodeMetadataExposedImpact,
+			Resolution:  GkeNodeMetadataExposedResolution,
 			Explanation: GkeNodeMetadataExposedExplanation,
 			BadExample:  GkeNodeMetadataExposedBadExample,
 			GoodExample: GkeNodeMetadataExposedGoodExample,

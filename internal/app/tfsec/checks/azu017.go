@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AZUSSHAccessNotAllowedFromInternet scanner.RuleCode = "AZU017"
 const AZUSSHAccessNotAllowedFromInternetDescription scanner.RuleSummary = "SSH access should not be accessible from the Internet, should be blocked on port 22"
+const AZUSSHAccessNotAllowedFromInternetImpact = "Its dangerous to allow SSH access from the internet"
+const AZUSSHAccessNotAllowedFromInternetResolution = "Block port 22 access from the internet"
 const AZUSSHAccessNotAllowedFromInternetExplanation = `
 SSH access can be configured on either the network security group or in the network security group rule. 
 
@@ -70,6 +73,8 @@ func init() {
 		Code: AZUSSHAccessNotAllowedFromInternet,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUSSHAccessNotAllowedFromInternetDescription,
+			Impact:      AZUSSHAccessNotAllowedFromInternetImpact,
+			Resolution:  AZUSSHAccessNotAllowedFromInternetResolution,
 			Explanation: AZUSSHAccessNotAllowedFromInternetExplanation,
 			BadExample:  AZUSSHAccessNotAllowedFromInternetBadExample,
 			GoodExample: AZUSSHAccessNotAllowedFromInternetGoodExample,

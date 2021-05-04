@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSDAXEncryptedAtRest scanner.RuleCode = "AWS081"
 const AWSDAXEncryptedAtRestDescription scanner.RuleSummary = "DAX Cluster should always encrypt data at rest"
+const AWSDAXEncryptedAtRestImpact = "Data can be read if compromised"
+const AWSDAXEncryptedAtRestResolution = "Enable encryption at rest for DAX Cluster"
 const AWSDAXEncryptedAtRestExplanation = `
 Amazon DynamoDB Accelerator (DAX) encryption at rest provides an additional layer of data protection by helping secure your data from unauthorized access to the underlying storage.
 `
@@ -47,6 +50,8 @@ func init() {
 		Code: AWSDAXEncryptedAtRest,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSDAXEncryptedAtRestDescription,
+			Impact:      AWSDAXEncryptedAtRestImpact,
+			Resolution:  AWSDAXEncryptedAtRestResolution,
 			Explanation: AWSDAXEncryptedAtRestExplanation,
 			BadExample:  AWSDAXEncryptedAtRestBadExample,
 			GoodExample: AWSDAXEncryptedAtRestGoodExample,

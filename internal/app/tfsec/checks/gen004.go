@@ -9,6 +9,8 @@ import (
 
 const GENEnsureGithubRepositoryIsPrivate scanner.RuleCode = "GEN004"
 const GENEnsureGithubRepositoryIsPrivateDescription scanner.RuleSummary = "Github repository shouldn't be public."
+const GENEnsureGithubRepositoryIsPrivateImpact = "Anyone can read the contents of the GitHub repository and leak IP"
+const GENEnsureGithubRepositoryIsPrivateResolution = "Make sensitive or commercially importnt repositories private"
 const GENEnsureGithubRepositoryIsPrivateExplanation = `
 Github repository should be set to be private.
 
@@ -46,6 +48,8 @@ func init() {
 		Code: GENEnsureGithubRepositoryIsPrivate,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     GENEnsureGithubRepositoryIsPrivateDescription,
+			Impact:      GENEnsureGithubRepositoryIsPrivateImpact,
+			Resolution:  GENEnsureGithubRepositoryIsPrivateResolution,
 			Explanation: GENEnsureGithubRepositoryIsPrivateExplanation,
 			BadExample:  GENEnsureGithubRepositoryIsPrivateBadExample,
 			GoodExample: GENEnsureGithubRepositoryIsPrivateGoodExample,

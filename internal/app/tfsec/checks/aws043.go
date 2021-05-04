@@ -13,8 +13,9 @@ import (
 const (
 	AWSIAMPasswordRequiresUppercaseCharacter            scanner.RuleCode    = "AWS043"
 	AWSIAMPasswordRequiresUppercaseCharacterDescription scanner.RuleSummary = "IAM Password policy should have requirement for at least one uppercase character."
-
-	AWSIAMPasswordRequiresUppercaseCharacterExplanation = `
+	AWSIAMPasswordRequiresUppercaseCharacterImpact                          = "Short, simple passwords are easier to compromise"
+	AWSIAMPasswordRequiresUppercaseCharacterResolution                      = "Enforce longer, more complex passwords in the policy"
+	AWSIAMPasswordRequiresUppercaseCharacterExplanation                     = `
 IAM account password policies should ensure that passwords content including at least one uppercase character.
 `
 	AWSIAMPasswordRequiresUppercaseCharacterBadExample = `
@@ -38,6 +39,8 @@ func init() {
 		Code: AWSIAMPasswordRequiresUppercaseCharacter,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSIAMPasswordRequiresUppercaseCharacterDescription,
+			Impact:      AWSIAMPasswordRequiresUppercaseCharacterImpact,
+			Resolution:  AWSIAMPasswordRequiresUppercaseCharacterResolution,
 			Explanation: AWSIAMPasswordRequiresUppercaseCharacterExplanation,
 			BadExample:  AWSIAMPasswordRequiresUppercaseCharacterBadExample,
 			GoodExample: AWSIAMPasswordRequiresUppercaseCharacterGoodExample,

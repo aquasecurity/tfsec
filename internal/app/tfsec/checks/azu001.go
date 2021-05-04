@@ -13,7 +13,9 @@ import (
 
 // AzureOpenInboundNetworkSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureOpenInboundNetworkSecurityGroupRule scanner.RuleCode = "AZU001"
-const AzureOpenInboundNetworkSecurityGroupRuleDescription scanner.RuleSummary = "An inbound network security rule allows traffic from `/0`."
+const AzureOpenInboundNetworkSecurityGroupRuleDescription scanner.RuleSummary = "An inbound network security rule allows traffic from /0."
+const AzureOpenInboundNetworkSecurityGroupRuleImpact = "The port is exposed for ingress from the internet"
+const AzureOpenInboundNetworkSecurityGroupRuleResolution = "Set a more restrictive cidr range"
 const AzureOpenInboundNetworkSecurityGroupRuleExplanation = `
 Network security rules should not use very broad subnets.
 
@@ -37,6 +39,8 @@ func init() {
 		Code: AzureOpenInboundNetworkSecurityGroupRule,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AzureOpenInboundNetworkSecurityGroupRuleDescription,
+			Impact:      AzureOpenInboundNetworkSecurityGroupRuleImpact,
+			Resolution:  AzureOpenInboundNetworkSecurityGroupRuleResolution,
 			Explanation: AzureOpenInboundNetworkSecurityGroupRuleExplanation,
 			BadExample:  AzureOpenInboundNetworkSecurityGroupRuleBadExample,
 			GoodExample: AzureOpenInboundNetworkSecurityGroupRuleGoodExample,

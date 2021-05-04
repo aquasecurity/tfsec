@@ -12,6 +12,8 @@ import (
 // GkeEnforcePSP See https://github.com/tfsec/tfsec#included-checks for check info
 const GkeEnforcePSP scanner.RuleCode = "GCP009"
 const GkeEnforcePSPDescription scanner.RuleSummary = "Pod security policy enforcement not defined."
+const GkeEnforcePSPImpact = "Pods could be operating with more permissions than required to be effective"
+const GkeEnforcePSPResolution = "Use security policies for pods to restrict permissions to those needed to be effective"
 const GkeEnforcePSPExplanation = `
 By default, Pods in Kubernetes can operate with capabilities beyond what they require. You should constrain the Pod's capabilities to only those required for that workload.
 
@@ -39,6 +41,8 @@ func init() {
 		Code: GkeEnforcePSP,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     GkeEnforcePSPDescription,
+			Impact:      GkeEnforcePSPImpact,
+			Resolution:  GkeEnforcePSPResolution,
 			Explanation: GkeEnforcePSPExplanation,
 			BadExample:  GkeEnforcePSPBadExample,
 			GoodExample: GkeEnforcePSPGoodExample,

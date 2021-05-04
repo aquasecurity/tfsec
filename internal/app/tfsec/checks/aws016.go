@@ -12,6 +12,8 @@ import (
 
 const AWSUnencryptedSNSTopic scanner.RuleCode = "AWS016"
 const AWSUnencryptedSNSTopicDescription scanner.RuleSummary = "Unencrypted SNS topic."
+const AWSUnencryptedSNSTopicImpact = "The SNS topic messages could be read if compromised"
+const AWSUnencryptedSNSTopicResolution = "Turn on SNS Topic encryption"
 const AWSUnencryptedSNSTopicExplanation = `
 Queues should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific queues.
 `
@@ -31,6 +33,8 @@ func init() {
 		Code: AWSUnencryptedSNSTopic,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSUnencryptedSNSTopicDescription,
+			Impact:      AWSUnencryptedSNSTopicImpact,
+			Resolution:  AWSUnencryptedSNSTopicResolution,
 			Explanation: AWSUnencryptedSNSTopicExplanation,
 			BadExample:  AWSUnencryptedSNSTopicBadExample,
 			GoodExample: AWSUnencryptedSNSTopicGoodExample,

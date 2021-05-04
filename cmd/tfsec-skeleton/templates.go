@@ -9,6 +9,8 @@ import (
 
 const {{.CheckName}} scanner.RuleCode = "{{.Provider | ToUpper }}{{ .Code}}"
 const {{.CheckName}}Description scanner.RuleSummary = "{{.Summary}}"
+const {{.CheckName}}Impact = "{{.Impact}}"
+const {{.CheckName}}Resolution = "{{.Resolution}}"
 const {{.CheckName}}Explanation = ` + "`" + `
 
 ` + "`" + `
@@ -28,6 +30,9 @@ func init() {
 		Code: {{.CheckName}},
 		Documentation: scanner.CheckDocumentation{
 			Summary:     {{.CheckName}}Description,
+			Explanation: {{.CheckName}}Explanation,
+			Impact:      {{.CheckName}}Impact,
+			Resolution:  {{.CheckName}}Resolution,
 			Explanation: {{.CheckName}}Explanation,
 			BadExample:  {{.CheckName}}BadExample,
 			GoodExample: {{.CheckName}}GoodExample,

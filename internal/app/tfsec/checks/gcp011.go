@@ -13,6 +13,8 @@ import (
 // GoogleUserIAMGrant See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleUserIAMGrant scanner.RuleCode = "GCP011"
 const GoogleUserIAMGrantDescription scanner.RuleSummary = "IAM granted directly to user."
+const GoogleUserIAMGrantImpact = "Users shouldn't have permissions granted to them directly"
+const GoogleUserIAMGrantResolution = "Roles should be granted permissions and assigned to users"
 const GoogleUserIAMGrantExplanation = `
 Permissions should not be directly granted to users, you identify roles that contain the appropriate permissions, and then grant those roles to the user. 
 
@@ -47,6 +49,8 @@ func init() {
 		Code: GoogleUserIAMGrant,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     GoogleUserIAMGrantDescription,
+			Impact:      GoogleUserIAMGrantImpact,
+			Resolution:  GoogleUserIAMGrantResolution,
 			Explanation: GoogleUserIAMGrantExplanation,
 			BadExample:  GoogleUserIAMGrantBadExample,
 			GoodExample: GoogleUserIAMGrantGoodExample,

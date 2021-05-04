@@ -9,6 +9,8 @@ import (
 
 const AWSEC2InstanceSensitiveUserdata scanner.RuleCode = "AWS062"
 const AWSEC2InstanceSensitiveUserdataDescription scanner.RuleSummary = "User data for EC2 instances must not contain sensitive AWS keys"
+const AWSEC2InstanceSensitiveUserdataImpact = "User data is visible through the AWS Management console"
+const AWSEC2InstanceSensitiveUserdataResolution = "Remove sensitive data from the EC2 instance user-data"
 const AWSEC2InstanceSensitiveUserdataExplanation = `
 EC2 instance data is used to pass start up information into the EC2 instance. This userdata must not contain access key credentials. Instead use an IAM Instance Profile assigned to the instance to grant access to other AWS Services.
 `
@@ -47,6 +49,8 @@ func init() {
 		Code: AWSEC2InstanceSensitiveUserdata,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSEC2InstanceSensitiveUserdataDescription,
+			Impact:      AWSEC2InstanceSensitiveUserdataImpact,
+			Resolution:  AWSEC2InstanceSensitiveUserdataResolution,
 			Explanation: AWSEC2InstanceSensitiveUserdataExplanation,
 			BadExample:  AWSEC2InstanceSensitiveUserdataBadExample,
 			GoodExample: AWSEC2InstanceSensitiveUserdataGoodExample,

@@ -11,6 +11,8 @@ import (
 // AzureUnencryptedManagedDisk See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureUnencryptedManagedDisk scanner.RuleCode = "AZU003"
 const AzureUnencryptedManagedDiskDescription scanner.RuleSummary = "Unencrypted managed disk."
+const AzureUnencryptedManagedDiskImpact = "Data could be read if compromised"
+const AzureUnencryptedManagedDiskResolution = "Enable encryption on managed disks"
 const AzureUnencryptedManagedDiskExplanation = `
 Manage disks should be encrypted at rest. When specifying the <code>encryption_settings</code> block, the enabled attribute should be set to <code>true</code>.
 `
@@ -32,6 +34,8 @@ func init() {
 		Code: AzureUnencryptedManagedDisk,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AzureUnencryptedManagedDiskDescription,
+			Impact:      AzureUnencryptedManagedDiskImpact,
+			Resolution:  AzureUnencryptedManagedDiskResolution,
 			Explanation: AzureUnencryptedManagedDiskExplanation,
 			BadExample:  AzureUnencryptedManagedDiskBadExample,
 			GoodExample: AzureUnencryptedManagedDiskGoodExample,

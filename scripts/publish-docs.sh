@@ -23,7 +23,11 @@ function deploy {
 }
 
 clone_site
-go build ./cmd/tfsec-docs/
-./tfsec-docs
-cp -r docs-website/* ./_site/
+go run ./cmd/tfsec-docs
+cp -r checkdocs/docs/aws/* ./_site/_docs/aws/
+cp -r checkdocs/docs/azure/* ./_site/_docs/azure/
+cp -r checkdocs/docs/google/* ./_site/_docs/google/
+cp -r checkdocs/docs/general/* ./_site/_docs/general/
 deploy
+
+rm -rf checkdocs

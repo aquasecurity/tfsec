@@ -9,6 +9,8 @@ import (
 
 const AZUQueueStorageAnalyticsTurnedOn scanner.RuleCode = "AZU016"
 const AZUQueueStorageAnalyticsTurnedOnDescription scanner.RuleSummary = "When using Queue Services for a storage account, logging should be enabled."
+const AZUQueueStorageAnalyticsTurnedOnImpact = "Logging provides valuable information about access and usage"
+const AZUQueueStorageAnalyticsTurnedOnResolution = "Enable logging for Queue Services"
 const AZUQueueStorageAnalyticsTurnedOnExplanation = `
 Storage Analytics logs detailed information about successful and failed requests to a storage service. 
 
@@ -51,6 +53,8 @@ func init() {
 		Code: AZUQueueStorageAnalyticsTurnedOn,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUQueueStorageAnalyticsTurnedOnDescription,
+			Impact:      AZUQueueStorageAnalyticsTurnedOnImpact,
+			Resolution:  AZUQueueStorageAnalyticsTurnedOnResolution,
 			Explanation: AZUQueueStorageAnalyticsTurnedOnExplanation,
 			BadExample:  AZUQueueStorageAnalyticsTurnedOnBadExample,
 			GoodExample: AZUQueueStorageAnalyticsTurnedOnGoodExample,

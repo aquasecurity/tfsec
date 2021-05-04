@@ -9,6 +9,8 @@ import (
 
 const AZUMinTLSForStorageAccountsSet scanner.RuleCode = "AZU015"
 const AZUMinTLSForStorageAccountsSetDescription scanner.RuleSummary = "The minimum TLS version for Storage Accounts should be TLS1_2"
+const AZUMinTLSForStorageAccountsSetImpact = "The TLS version being outdated and has known vulnerabilities"
+const AZUMinTLSForStorageAccountsSetResolution = "Use a more recent TLS/SSL policy for the load balancer"
 const AZUMinTLSForStorageAccountsSetExplanation = `
 Azure Storage currently supports three versions of the TLS protocol: 1.0, 1.1, and 1.2. 
 
@@ -37,6 +39,8 @@ func init() {
 		Code: AZUMinTLSForStorageAccountsSet,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AZUMinTLSForStorageAccountsSetDescription,
+			Impact:      AZUMinTLSForStorageAccountsSetImpact,
+			Resolution:  AZUMinTLSForStorageAccountsSetResolution,
 			Explanation: AZUMinTLSForStorageAccountsSetExplanation,
 			BadExample:  AZUMinTLSForStorageAccountsSetBadExample,
 			GoodExample: AZUMinTLSForStorageAccountsSetGoodExample,

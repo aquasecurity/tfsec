@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSCheckLambdaFunctionForSourceARN scanner.RuleCode = "AWS058"
 const AWSCheckLambdaFunctionForSourceARNDescription scanner.RuleSummary = "Ensure that lambda function permission has a source arn specified"
+const AWSCheckLambdaFunctionForSourceARNImpact = "Not providing the source ARN allows any resource from principal, even from other accounts"
+const AWSCheckLambdaFunctionForSourceARNResolution = "Always provide a source arn for Lambda permissions"
 const AWSCheckLambdaFunctionForSourceARNExplanation = `When the principal is an AWS service, the ARN of the specific resource within that service to grant permission to. 
 
 Without this, any resource from principal will be granted permission – even if that resource is from another account. 
@@ -36,6 +39,8 @@ func init() {
 		Code: AWSCheckLambdaFunctionForSourceARN,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSCheckLambdaFunctionForSourceARNDescription,
+			Impact:      AWSCheckLambdaFunctionForSourceARNImpact,
+			Resolution:  AWSCheckLambdaFunctionForSourceARNResolution,
 			Explanation: AWSCheckLambdaFunctionForSourceARNExplanation,
 			BadExample:  AWSCheckLambdaFunctionForSourceARNBadExample,
 			GoodExample: AWSCheckLambdaFunctionForSourceARNGoodExample,

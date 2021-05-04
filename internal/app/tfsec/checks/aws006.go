@@ -11,7 +11,7 @@ import (
 )
 
 const AWSOpenIngressSecurityGroupRule scanner.RuleCode = "AWS006"
-const AWSOpenIngressSecurityGroupRuleDescription scanner.RuleSummary = "An ingress security group rule allows traffic from `/0`."
+const AWSOpenIngressSecurityGroupRuleDescription scanner.RuleSummary = "An ingress security group rule allows traffic from /0."
 const AWSOpenIngressSecurityGroupRuleImpact = "Your port exposed to the internet"
 const AWSOpenIngressSecurityGroupRuleResolution = "Set a more restrictive cidr range"
 const AWSOpenIngressSecurityGroupRuleExplanation = `

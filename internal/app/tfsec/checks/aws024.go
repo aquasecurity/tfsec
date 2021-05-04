@@ -13,6 +13,8 @@ import (
 
 const AWSUnencryptedKinesisStream scanner.RuleCode = "AWS024"
 const AWSUnencryptedKinesisStreamDescription scanner.RuleSummary = "Kinesis stream is unencrypted."
+const AWSUnencryptedKinesisStreamImpact = "Intercepted data can be read in transit"
+const AWSUnencryptedKinesisStreamResolution = "Enable in transit encryption"
 const AWSUnencryptedKinesisStreamExplanation = `
 Kinesis streams should be encrypted to ensure sensitive data is kept private. Additionally, non-default KMS keys should be used so granularity of access control can be ensured.
 `
@@ -33,6 +35,8 @@ func init() {
 		Code: AWSUnencryptedKinesisStream,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSUnencryptedKinesisStreamDescription,
+			Impact:      AWSUnencryptedKinesisStreamImpact,
+			Resolution:  AWSUnencryptedKinesisStreamResolution,
 			Explanation: AWSUnencryptedKinesisStreamExplanation,
 			BadExample:  AWSUnencryptedKinesisStreamBadExample,
 			GoodExample: AWSUnencryptedKinesisStreamGoodExample,

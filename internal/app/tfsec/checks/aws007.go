@@ -10,7 +10,7 @@ import (
 )
 
 const AWSOpenEgressSecurityGroupRule scanner.RuleCode = "AWS007"
-const AWSOpenEgressSecurityGroupRuleDescription scanner.RuleSummary = "An egress security group rule allows traffic to `/0`."
+const AWSOpenEgressSecurityGroupRuleDescription scanner.RuleSummary = "An egress security group rule allows traffic to /0."
 const AWSOpenEgressSecurityGroupRuleImpact = "Your port is egressing data to the internet"
 const AWSOpenEgressSecurityGroupRuleResolution = "Set a more restrictive cidr range"
 const AWSOpenEgressSecurityGroupRuleExplanation = `

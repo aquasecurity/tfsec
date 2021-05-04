@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSElasticSearchHasDomainLogging scanner.RuleCode = "AWS057"
 const AWSElasticSearchHasDomainLoggingDescription scanner.RuleSummary = "Domain logging should be enabled for Elastic Search domains"
+const AWSElasticSearchHasDomainLoggingImpact = "Logging provides vital information about access and usage"
+const AWSElasticSearchHasDomainLoggingResolution = "Enable logging for ElasticSearch domains"
 const AWSElasticSearchHasDomainLoggingExplanation = `
 Amazon ES exposes four Elasticsearch logs through Amazon CloudWatch Logs: error logs, search slow logs, index slow logs, and audit logs. 
 
@@ -64,6 +67,8 @@ func init() {
 		Code: AWSElasticSearchHasDomainLogging,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSElasticSearchHasDomainLoggingDescription,
+			Impact:      AWSElasticSearchHasDomainLoggingImpact,
+			Resolution:  AWSElasticSearchHasDomainLoggingResolution,
 			Explanation: AWSElasticSearchHasDomainLoggingExplanation,
 			BadExample:  AWSElasticSearchHasDomainLoggingBadExample,
 			GoodExample: AWSElasticSearchHasDomainLoggingGoodExample,

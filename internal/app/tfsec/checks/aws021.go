@@ -11,6 +11,8 @@ import (
 
 const AWSCloudFrontOutdatedProtocol scanner.RuleCode = "AWS021"
 const AWSCloudFrontOutdatedProtocolDescription scanner.RuleSummary = "CloudFront distribution uses outdated SSL/TLS protocols."
+const AWSCloudFrontOutdatedProtocolImpact = "Outdated SSL policies increase exposure to known vulnerabilites"
+const AWSCloudFrontOutdatedProtocolResolution = "Use the most modern TLS/SSL policies available"
 const AWSCloudFrontOutdatedProtocolExplanation = `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `
@@ -36,6 +38,8 @@ func init() {
 		Code: AWSCloudFrontOutdatedProtocol,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSCloudFrontOutdatedProtocolDescription,
+			Impact:      AWSCloudFrontOutdatedProtocolImpact,
+			Resolution:  AWSCloudFrontOutdatedProtocolResolution,
 			Explanation: AWSCloudFrontOutdatedProtocolExplanation,
 			BadExample:  AWSCloudFrontOutdatedProtocolBadExample,
 			GoodExample: AWSCloudFrontOutdatedProtocolGoodExample,

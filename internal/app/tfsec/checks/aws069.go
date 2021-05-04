@@ -2,12 +2,15 @@ package checks
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 const AWSEKSClusterPublicAccessDisabled scanner.RuleCode = "AWS069"
 const AWSEKSClusterPublicAccessDisabledDescription scanner.RuleSummary = "EKS Clusters should have the public access disabled"
+const AWSEKSClusterPublicAccessDisabledImpact = "EKS can be access from the internet"
+const AWSEKSClusterPublicAccessDisabledResolution = "Don't enable public access to EKS Clusters"
 const AWSEKSClusterPublicAccessDisabledExplanation = `
 EKS clusters are available publicly by default, this should be explicitly disabled in the vpc_config of the EKS cluster resource.
 `
@@ -40,6 +43,8 @@ func init() {
 		Code: AWSEKSClusterPublicAccessDisabled,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSEKSClusterPublicAccessDisabledDescription,
+			Impact:      AWSEKSClusterPublicAccessDisabledImpact,
+			Resolution:  AWSEKSClusterPublicAccessDisabledResolution,
 			Explanation: AWSEKSClusterPublicAccessDisabledExplanation,
 			BadExample:  AWSEKSClusterPublicAccessDisabledBadExample,
 			GoodExample: AWSEKSClusterPublicAccessDisabledGoodExample,

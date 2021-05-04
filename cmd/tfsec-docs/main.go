@@ -22,8 +22,8 @@ type FileContent struct {
 }
 
 func init() {
-	defaultWebDocsPath := fmt.Sprintf("%s/docs-website", projectRoot)
-	rootCmd.Flags().StringVar(&webPath, "web-path", defaultWebDocsPath, "The path to generate web into, defaults to ./docs-website")
+	defaultWebDocsPath := fmt.Sprintf("%s/checkdocs", projectRoot)
+	rootCmd.Flags().StringVar(&webPath, "web-path", defaultWebDocsPath, "The path to generate web into, defaults to ./checkdocs")
 }
 
 func main() {

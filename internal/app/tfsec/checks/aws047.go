@@ -13,6 +13,8 @@ import (
 
 const AWSSqsPolicyWildcardActions scanner.RuleCode = "AWS047"
 const AWSSqsPolicyWildcardActionsDescription scanner.RuleSummary = "AWS SQS policy document has wildcard action statement."
+const AWSSqsPolicyWildcardActionsImpact = "SQS policies with wildcard actions allow more that is required"
+const AWSSqsPolicyWildcardActionsResolution = "Keep policy scope to the minimum that is required to be effective"
 const AWSSqsPolicyWildcardActionsExplanation = `
 SQS Policy actions should always be restricted to a specific set.
 
@@ -58,6 +60,8 @@ func init() {
 		Code: AWSSqsPolicyWildcardActions,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     AWSSqsPolicyWildcardActionsDescription,
+			Impact:      AWSSqsPolicyWildcardActionsImpact,
+			Resolution:  AWSSqsPolicyWildcardActionsResolution,
 			Explanation: AWSSqsPolicyWildcardActionsExplanation,
 			BadExample:  AWSSqsPolicyWildcardActionsBadExample,
 			GoodExample: AWSSqsPolicyWildcardActionsGoodExample,

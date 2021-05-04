@@ -10,6 +10,8 @@ import (
 
 const GCPGKENodeServiceAccount scanner.RuleCode = "GCP012"
 const GCPGKENodeServiceAccountDescription scanner.RuleSummary = "Checks for service account defined for GKE nodes"
+const GCPGKENodeServiceAccountImpact = "Service accounts with wide permissions can increase the risk of compromise"
+const GCPGKENodeServiceAccountResolution = "Use limited permissions for service accounts to be effective"
 const GCPGKENodeServiceAccountExplanation = `
 You should create and use a minimally privileged service account to run your GKE cluster instead of using the Compute Engine default service account.
 `
@@ -33,6 +35,8 @@ func init() {
 		Code: GCPGKENodeServiceAccount,
 		Documentation: scanner.CheckDocumentation{
 			Summary:     GCPGKENodeServiceAccountDescription,
+			Impact:      GCPGKENodeServiceAccountImpact,
+			Resolution:  GCPGKENodeServiceAccountResolution,
 			Explanation: GCPGKENodeServiceAccountExplanation,
 			BadExample:  GCPGKENodeServiceAccountBadExample,
 			GoodExample: GCPGKENodeServiceAccountGoodExample,
