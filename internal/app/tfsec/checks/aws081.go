@@ -9,7 +9,7 @@ import (
 
 const AWSDAXEncryptedAtRest scanner.RuleCode = "AWS081"
 const AWSDAXEncryptedAtRestDescription scanner.RuleSummary = "DAX Cluster should always encrypt data at rest"
-const AWSDAXEncryptedAtRestImpact = "Data can be read if compromised"
+const AWSDAXEncryptedAtRestImpact = "Data can be freely read if compromised"
 const AWSDAXEncryptedAtRestResolution = "Enable encryption at rest for DAX Cluster"
 const AWSDAXEncryptedAtRestExplanation = `
 Amazon DynamoDB Accelerator (DAX) encryption at rest provides an additional layer of data protection by helping secure your data from unauthorized access to the underlying storage.

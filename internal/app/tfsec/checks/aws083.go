@@ -1,6 +1,8 @@
 package checks
 
 import (
+	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
@@ -10,7 +12,9 @@ const AWSALBDropsInvalidHeadersDescription scanner.RuleSummary = "Load balancers
 const AWSALBDropsInvalidHeadersImpact = "Invalid headers being passed through to the target of the load balance may exploit vulnerabilities"
 const AWSALBDropsInvalidHeadersResolution = "Set drop_invalid_header_fields to true"
 const AWSALBDropsInvalidHeadersExplanation = `
-Passing unknown or invalid headers through to the target poses a potential risk of compromise. By setting drop_invalid_header_fields to true, anything that doe not conform to well known, defined headers will be removed by the load balancer.
+Passing unknown or invalid headers through to the target poses a potential risk of compromise. 
+
+By setting drop_invalid_header_fields to true, anything that doe not conform to well known, defined headers will be removed by the load balancer.
 `
 const AWSALBDropsInvalidHeadersBadExample = `
 resource "aws_alb" "bad_example" {
@@ -57,10 +61,30 @@ func init() {
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_alb,", "aws_lb"},
+		RequiredLabels: []string{"aws_alb", "aws_lb"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
-			// function contents here
+			if block.MissingChild("drop_invalid_header_fields") {
+				return []scanner.Result{
+					check.NewResult(
+						fmt.Sprintf("Resource '%s' does not drop invalid header fields", block.FullName()),
+						block.Range(),
+						scanner.SeverityError,
+					),
+				}
+			}
+
+			attr := block.GetAttribute("drop_invalid_header_fields")
+			if attr.IsFalse() {
+				return []scanner.Result{
+					check.NewResultWithValueAnnotation(
+						fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", block.FullName()),
+						attr.Range(),
+						attr,
+						scanner.SeverityError,
+					),
+				}
+			}
 
 			return nil
 		},

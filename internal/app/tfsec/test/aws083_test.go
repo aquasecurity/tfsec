@@ -23,11 +23,6 @@ resource "aws_alb" "bad_example" {
 	internal           = false
 	load_balancer_type = "application"
 	
-	access_logs {
-	  bucket  = aws_s3_bucket.lb_logs.bucket
-	  prefix  = "test-lb"
-	  enabled = true
-	}
   }
 `,
 			mustIncludeResultCode: checks.AWSALBDropsInvalidHeaders,
@@ -57,12 +52,6 @@ resource "aws_alb" "bad_example" {
 	internal           = false
 	load_balancer_type = "application"
 	
-	access_logs {
-	  bucket  = aws_s3_bucket.lb_logs.bucket
-	  prefix  = "test-lb"
-	  enabled = true
-	}
-  
 	drop_invalid_header_fields = false
   }
 `,
@@ -75,12 +64,6 @@ resource "aws_lb" "bad_example" {
 	name               = "bad_alb"
 	internal           = false
 	load_balancer_type = "application"
-	
-	access_logs {
-	  bucket  = aws_s3_bucket.lb_logs.bucket
-	  prefix  = "test-lb"
-	  enabled = true
-	}
   
 	drop_invalid_header_fields = false
   }
@@ -95,12 +78,6 @@ resource "aws_alb" "good_example" {
 	internal           = false
 	load_balancer_type = "application"
 	
-	access_logs {
-	  bucket  = aws_s3_bucket.lb_logs.bucket
-	  prefix  = "test-lb"
-	  enabled = true
-	}
-  
 	drop_invalid_header_fields = true
   }
 `,
@@ -113,13 +90,7 @@ resource "aws_lb" "good_example" {
 	name               = "good_alb"
 	internal           = false
 	load_balancer_type = "application"
-	
-	access_logs {
-	  bucket  = aws_s3_bucket.lb_logs.bucket
-	  prefix  = "test-lb"
-	  enabled = true
-	}
-  
+
 	drop_invalid_header_fields = true
   }
 `,
