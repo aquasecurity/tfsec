@@ -1,8 +1,9 @@
 package checks
 
 import (
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"testing"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
@@ -42,7 +43,7 @@ func Test_isBooleanOrStringTrue(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		expr, _ := hclsyntax.ParseExpression([]byte(test.rawExpr), "", hcl.Pos{0, 0, 0})
+		expr, _ := hclsyntax.ParseExpression([]byte(test.rawExpr), "", hcl.Pos{Line: 0, Column: 0, Byte: 0})
 		attr := parser.NewAttribute(
 			&hclsyntax.Attribute{
 				Expr: expr,
@@ -154,7 +155,7 @@ func Test_isOpenCidr(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		expr, _ := hclsyntax.ParseExpression([]byte(test.rawExpr), "", hcl.Pos{0, 0, 0})
+		expr, _ := hclsyntax.ParseExpression([]byte(test.rawExpr), "", hcl.Pos{Line: 0, Column: 0, Byte: 0})
 		attr := parser.NewAttribute(
 			&hclsyntax.Attribute{
 				Expr: expr,

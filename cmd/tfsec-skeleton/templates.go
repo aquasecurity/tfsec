@@ -33,7 +33,6 @@ func init() {
 			Explanation: {{.CheckName}}Explanation,
 			Impact:      {{.CheckName}}Impact,
 			Resolution:  {{.CheckName}}Resolution,
-			Explanation: {{.CheckName}}Explanation,
 			BadExample:  {{.CheckName}}BadExample,
 			GoodExample: {{.CheckName}}GoodExample,
 			Links: []string{
