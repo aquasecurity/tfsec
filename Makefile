@@ -10,7 +10,7 @@ push-image:
 
 .PHONY: test
 test:
-	go test -v ./...
+	go test -mod=vendor -v ./...
 
 .PHONY: build
 build:
