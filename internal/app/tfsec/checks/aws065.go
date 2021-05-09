@@ -9,7 +9,7 @@ import (
 
 const AWSCloudtrailEncryptedAtRest scanner.RuleCode = "AWS065"
 const AWSCloudtrailEncryptedAtRestDescription scanner.RuleSummary = "Cloudtrail should be encrypted at rest to secure access to sensitive trail data"
-const AWSCloudtrailEncryptedAtRestImpact = "Data can be read if compromised"
+const AWSCloudtrailEncryptedAtRestImpact = "Data can be freely read if compromised"
 const AWSCloudtrailEncryptedAtRestResolution = "Enable encryption at rest"
 const AWSCloudtrailEncryptedAtRestExplanation = `
 Cloudtrail logs should be encrypted at rest to secure the sensitive data. Cloudtrail logs record all activity that occurs in the the account through API calls and would be one of the first places to look when reacting to a breach.
