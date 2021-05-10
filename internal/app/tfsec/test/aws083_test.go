@@ -96,6 +96,17 @@ resource "aws_lb" "good_example" {
 `,
 			mustExcludeResultCode: checks.AWSALBDropsInvalidHeaders,
 		},
+		{
+			name: "Network LB passes check as not applicablt",
+			source: `
+resource "aws_lb" "good_example" {
+	name               = "good_alb"
+	internal           = false
+	load_balancer_type = "network"
+  }
+`,
+			mustExcludeResultCode: checks.AWSALBDropsInvalidHeaders,
+		},
 	}
 
 	for _, test := range tests {
