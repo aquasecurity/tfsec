@@ -10,6 +10,7 @@
 [![Docker Build](https://img.shields.io/docker/v/tfsec/tfsec)](https://hub.docker.com/r/tfsec/tfsec)
 [![Homebrew](https://img.shields.io/badge/dynamic/json.svg?url=https://formulae.brew.sh/api/formula/tfsec.json&query=$.versions.stable&label=homebrew)](https://formulae.brew.sh/formula/tfsec)
 [![Chocolatey](https://img.shields.io/chocolatey/v/tfsec)](https://chocolatey.org/packages/tfsec)
+[![AUR version](https://img.shields.io/aur/version/tfsec)](https://aur.archlinux.org/packages/tfsec)
 
 tfsec uses static analysis of your terraform templates to spot potential
 security issues. Now with terraform v0.12+ support.
