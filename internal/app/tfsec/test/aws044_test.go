@@ -47,6 +47,40 @@ provider "aws" {
 }`,
 			mustExcludeResultCode: checks.AWSProviderHasAccessCredentials,
 		},
+		{
+			name: "check aws provider with access or secret key specified as vars passes",
+			source: `
+variable "access_key" {
+	type = string
+}
+
+variable "access_id" {
+	type = string
+}
+
+provider "aws" {
+	access_key = var.access_id
+	secret_key = var.access_key
+}`,
+			mustExcludeResultCode: checks.AWSProviderHasAccessCredentials,
+		},
+		{
+			name: "check aws provider with access or secret key specified as vars map passes",
+			source: `
+variable "account_deets" {
+	type = map
+	default = {
+		access_id,
+		access_key 
+	}
+}
+
+provider "aws" {
+	access_key = var.account_deets.access_id
+	secret_key = var.account_deets.access_key
+}`,
+			mustExcludeResultCode: checks.AWSProviderHasAccessCredentials,
+		},
 	}
 
 	for _, test := range tests {
