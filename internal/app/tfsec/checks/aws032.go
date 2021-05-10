@@ -47,7 +47,10 @@ func init() {
 			Explanation: AWSPlaintextNodeToNodeElasticsearchTrafficExplanation,
 			BadExample:  AWSPlaintextNodeToNodeElasticsearchTrafficBadExample,
 			GoodExample: AWSPlaintextNodeToNodeElasticsearchTrafficGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#encrypt_at_rest",
+				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/ntn.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

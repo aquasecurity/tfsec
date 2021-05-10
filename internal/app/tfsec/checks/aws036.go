@@ -42,7 +42,10 @@ func init() {
 			Explanation: AWSUnencryptedInTransitElasticacheReplicationGroupExplanation,
 			BadExample:  AWSUnencryptedInTransitElasticacheReplicationGroupBadExample,
 			GoodExample: AWSUnencryptedInTransitElasticacheReplicationGroupGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_replication_group#transit_encryption_enabled",
+				"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/in-transit-encryption.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

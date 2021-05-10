@@ -39,7 +39,9 @@ func init() {
 			Explanation: AWSProviderHasAccessCredentialsExplanation,
 			BadExample:  AWSProviderHasAccessCredentialsBadExample,
 			GoodExample: AWSProviderHasAccessCredentialsGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"provider"},

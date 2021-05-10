@@ -91,7 +91,10 @@ func init() {
 			Explanation: AWSCloudFrontDoesNotHaveAWafExplanation,
 			BadExample:  AWSCloudFrontDoesNotHaveAWafBadExample,
 			GoodExample: AWSCloudFrontDoesNotHaveAWafGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#web_acl_id",
+				"https://docs.aws.amazon.com/waf/latest/developerguide/cloudfront-features.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

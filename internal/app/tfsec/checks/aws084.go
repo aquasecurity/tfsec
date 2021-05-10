@@ -58,7 +58,10 @@ func init() {
 			Resolution:  AWSAWSWorkspaceVolumesEncryptedResolution,
 			BadExample:  AWSAWSWorkspaceVolumesEncryptedBadExample,
 			GoodExample: AWSAWSWorkspaceVolumesEncryptedGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/workspaces_workspace#root_volume_encryption_enabled",
+				"https://docs.aws.amazon.com/workspaces/latest/adminguide/encrypt-workspaces.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

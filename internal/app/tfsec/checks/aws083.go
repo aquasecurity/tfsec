@@ -57,7 +57,10 @@ func init() {
 			Resolution:  AWSALBDropsInvalidHeadersResolution,
 			BadExample:  AWSALBDropsInvalidHeadersBadExample,
 			GoodExample: AWSALBDropsInvalidHeadersGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#drop_invalid_header_fields",
+				"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

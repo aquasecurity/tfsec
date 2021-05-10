@@ -50,7 +50,10 @@ func init() {
 			Explanation: AWSUnenforcedHTTPSElasticsearchDomainEndpointExplanation,
 			BadExample:  AWSUnenforcedHTTPSElasticsearchDomainEndpointBadExample,
 			GoodExample: AWSUnenforcedHTTPSElasticsearchDomainEndpointGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#enforce_https",
+				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-data-protection.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

@@ -40,7 +40,10 @@ func init() {
 			Explanation: AWSUnencryptedKinesisStreamExplanation,
 			BadExample:  AWSUnencryptedKinesisStreamBadExample,
 			GoodExample: AWSUnencryptedKinesisStreamGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kinesis_stream#encryption_type",
+				"https://docs.aws.amazon.com/streams/latest/dev/server-side-encryption.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

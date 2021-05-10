@@ -39,6 +39,11 @@ func (l *linter) lint(check scanner.Check) {
 		errorFound = true
 	}
 
+	if len(docs.Links) == 0 {
+		fmt.Printf("%s: Has no links configure\n", check.Code)
+		errorFound = true
+	}
+
 	if errorFound {
 		l.count += 1
 	}

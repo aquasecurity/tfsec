@@ -44,7 +44,10 @@ func init() {
 			Explanation: AWSUnencryptedCloudFrontCommunicationsExplanation,
 			BadExample:  AWSUnencryptedCloudFrontCommunicationsBadExample,
 			GoodExample: AWSUnencryptedCloudFrontCommunicationsGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#viewer_protocol_policy",
+				"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-cloudfront-to-s3-origin.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

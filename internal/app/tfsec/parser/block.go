@@ -58,6 +58,16 @@ func (block *Block) Range() Range {
 	}
 }
 
+func (block *Block) GetFirstMatchingBlock(names ...string) *Block {
+	for _, name := range names {
+		b := block.GetBlock(name)
+		if b != nil {
+			return b
+		}
+	}
+	return nil
+}
+
 func (block *Block) GetBlock(name string) *Block {
 	if block == nil || block.hclBlock == nil {
 		return nil

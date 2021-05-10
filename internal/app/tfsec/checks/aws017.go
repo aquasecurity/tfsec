@@ -45,7 +45,10 @@ func init() {
 			Explanation: AWSUnencryptedS3BucketExplanation,
 			BadExample:  AWSUnencryptedS3BucketBadExample,
 			GoodExample: AWSUnencryptedS3BucketGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#enable-default-server-side-encryption",
+				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

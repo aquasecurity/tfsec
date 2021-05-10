@@ -42,7 +42,10 @@ func init() {
 			Explanation: AWSLaunchConfigurationWithUnencryptedBlockDeviceExplanation,
 			BadExample:  AWSLaunchConfigurationWithUnencryptedBlockDeviceBadExample,
 			GoodExample: AWSLaunchConfigurationWithUnencryptedBlockDeviceGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#ebs-ephemeral-and-root-block-devices",
+				"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/RootDeviceStorage.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

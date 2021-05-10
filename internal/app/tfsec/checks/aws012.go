@@ -38,7 +38,11 @@ func init() {
 			Explanation: AWSResourceHasPublicIPExplanation,
 			BadExample:  AWSResourceHasPublicIPBadExample,
 			GoodExample: AWSResourceHasPublicIPGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_configuration#associate_public_ip_address",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#associate_public_ip_address",
+				"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

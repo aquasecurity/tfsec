@@ -39,7 +39,10 @@ func init() {
 			Explanation: AWSNoKMSAutoRotateExplanation,
 			BadExample:  AWSNoKMSAutoRotateBadExample,
 			GoodExample: AWSNoKMSAutoRotateGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key#enable_key_rotation",
+				"https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

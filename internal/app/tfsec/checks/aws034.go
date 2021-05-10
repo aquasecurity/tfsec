@@ -48,7 +48,10 @@ func init() {
 			Explanation: AWSOutdatedTLSPolicyElasticsearchDomainEndpointExplanation,
 			BadExample:  AWSOutdatedTLSPolicyElasticsearchDomainEndpointBadExample,
 			GoodExample: AWSOutdatedTLSPolicyElasticsearchDomainEndpointGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#tls_security_policy",
+				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-data-protection.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

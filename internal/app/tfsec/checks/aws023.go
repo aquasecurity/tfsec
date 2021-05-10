@@ -49,7 +49,10 @@ func init() {
 			Explanation: AWSEcrImageScanNotEnabledExplanation,
 			BadExample:  AWSEcrImageScanNotEnabledBadExample,
 			GoodExample: AWSEcrImageScanNotEnabledGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository#image_scanning_configuration",
+				"https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

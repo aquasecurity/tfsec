@@ -47,7 +47,10 @@ func init() {
 			Explanation: AWSUnencryptedMSKBrokerExplanation,
 			BadExample:  AWSUnencryptedMSKBrokerBadExample,
 			GoodExample: AWSUnencryptedMSKBrokerGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#encryption_info-argument-reference",
+				"https://docs.aws.amazon.com/msk/latest/developerguide/msk-encryption.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

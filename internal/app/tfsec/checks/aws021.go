@@ -43,7 +43,10 @@ func init() {
 			Explanation: AWSCloudFrontOutdatedProtocolExplanation,
 			BadExample:  AWSCloudFrontOutdatedProtocolBadExample,
 			GoodExample: AWSCloudFrontOutdatedProtocolGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#minimum_protocol_version",
+				"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},

@@ -38,7 +38,10 @@ func init() {
 			Explanation: AWSUnencryptedSNSTopicExplanation,
 			BadExample:  AWSUnencryptedSNSTopicBadExample,
 			GoodExample: AWSUnencryptedSNSTopicGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic#example-with-server-side-encryption-sse",
+				"https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html",
+			},
 		},
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
