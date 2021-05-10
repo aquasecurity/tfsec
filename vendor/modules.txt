@@ -24,7 +24,7 @@ github.com/hashicorp/hcl/v2/ext/tryfunc
 github.com/hashicorp/hcl/v2/hclparse
 github.com/hashicorp/hcl/v2/hclsyntax
 github.com/hashicorp/hcl/v2/json
-# github.com/hashicorp/terraform v0.15.1
+# github.com/hashicorp/terraform v0.15.3
 ## explicit
 github.com/hashicorp/terraform/lang/funcs
 github.com/hashicorp/terraform/tfdiags
@@ -69,7 +69,7 @@ github.com/spf13/pflag
 ## explicit
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
-# github.com/zclconf/go-cty v1.8.2
+# github.com/zclconf/go-cty v1.8.3
 ## explicit
 github.com/zclconf/go-cty/cty
 github.com/zclconf/go-cty/cty/convert
