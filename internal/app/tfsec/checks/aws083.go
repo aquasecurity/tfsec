@@ -67,28 +67,30 @@ func init() {
 		RequiredLabels: []string{"aws_alb", "aws_lb"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
-			if block.MissingChild("drop_invalid_header_fields") {
-				return []scanner.Result{
-					check.NewResult(
-						fmt.Sprintf("Resource '%s' does not drop invalid header fields", block.FullName()),
-						block.Range(),
-						scanner.SeverityError,
-					),
+			if block.GetAttribute("load_balancer_type").Equals("application", parser.IgnoreCase) {
+				if block.MissingChild("drop_invalid_header_fields") {
+					return []scanner.Result{
+						check.NewResult(
+							fmt.Sprintf("Resource '%s' does not drop invalid header fields", block.FullName()),
+							block.Range(),
+							scanner.SeverityError,
+						),
+					}
 				}
-			}
 
-			attr := block.GetAttribute("drop_invalid_header_fields")
-			if attr.IsFalse() {
-				return []scanner.Result{
-					check.NewResultWithValueAnnotation(
-						fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", block.FullName()),
-						attr.Range(),
-						attr,
-						scanner.SeverityError,
-					),
+				attr := block.GetAttribute("drop_invalid_header_fields")
+				if attr.IsFalse() {
+					return []scanner.Result{
+						check.NewResultWithValueAnnotation(
+							fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", block.FullName()),
+							attr.Range(),
+							attr,
+							scanner.SeverityError,
+						),
+					}
 				}
-			}
 
+			}
 			return nil
 		},
 	})
