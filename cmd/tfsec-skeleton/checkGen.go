@@ -11,7 +11,7 @@ import (
 	"github.com/liamg/tml"
 )
 
-var providers = map[string]string{"AWS": "aws", "Azure": "azu", "GCP": "gcp", "General": "gen"}
+var providers = map[string]string{"AWS": "aws", "Azure": "azu", "GCP": "gcp", "Oracle": "oci", "General": "gen"}
 
 type checkSkeleton struct {
 	Provider         string
