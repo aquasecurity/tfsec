@@ -26,6 +26,7 @@ const (
 	AzureProvider   RuleProvider = "azure"
 	GCPProvider     RuleProvider = "google"
 	GeneralProvider RuleProvider = "general"
+	OracleProvider  RuleProvider = "oracle"
 )
 
 func RuleProviderToString(provider RuleProvider) string {
