@@ -170,8 +170,9 @@ func (attr *Attribute) RegexMatches(pattern interface{}) bool {
 
 func (attr *Attribute) IsAny(options ...interface{}) bool {
 	if attr.Value().Type() == cty.String {
+		value := attr.Value().AsString()
 		for _, option := range options {
-			if option == attr.Value().AsString() {
+			if option == value {
 				return true
 			}
 		}
