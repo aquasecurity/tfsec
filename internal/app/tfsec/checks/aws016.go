@@ -2,6 +2,7 @@ package checks
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/zclconf/go-cty/cty"
 
@@ -46,7 +47,7 @@ func init() {
 		Provider:       scanner.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_sns_topic"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block, context *scanner.Context) []scanner.Result {
+		CheckFunc: func(check *scanner.Check, block *parser.Block, ctx *scanner.Context) []scanner.Result {
 
 			kmsKeyIDAttr := block.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr == nil {
@@ -65,6 +66,33 @@ func init() {
 						kmsKeyIDAttr,
 						scanner.SeverityError,
 					),
+				}
+			}
+
+			if kmsKeyIDAttr.ReferencesDataBlock() {
+				ref := kmsKeyIDAttr.ReferenceAsString()
+				dataReferenceParts := strings.Split(ref, ".")
+				if len(dataReferenceParts) < 3 {
+					return nil
+				}
+				blockType := dataReferenceParts[0]
+				blockName := dataReferenceParts[1]
+				kmsKeyDatas := ctx.GetDatasByType(blockType)
+				for _, kmsData := range kmsKeyDatas {
+					if kmsData.NameLabel() == blockName {
+						keyIdAttr := kmsData.GetAttribute("key_id")
+						if keyIdAttr != nil && keyIdAttr.Equals("alias/aws/sns") {
+							return []scanner.Result{
+								check.NewResultWithValueAnnotation(
+									fmt.Sprintf("Resource '%s' explicitly uses the default CMK", block.FullName()),
+									kmsKeyIDAttr.Range(),
+									kmsKeyIDAttr,
+									scanner.SeverityWarning,
+								),
+							}
+						}
+					}
+
 				}
 			}
 

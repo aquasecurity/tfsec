@@ -15,3 +15,13 @@ func (c *Context) GetResourcesByType(t string) parser.Blocks {
 	}
 	return results
 }
+
+func (c *Context) GetDatasByType(t string) parser.Blocks {
+	var results parser.Blocks
+	for _, block := range c.blocks {
+		if block.Type() == "data" && len(block.Labels()) > 0 && block.TypeLabel() == t {
+			results = append(results, block)
+		}
+	}
+	return results
+}

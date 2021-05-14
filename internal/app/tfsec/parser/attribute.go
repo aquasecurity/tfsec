@@ -339,3 +339,30 @@ func (attr *Attribute) GreaterThanOrEqualTo(checkValue interface{}) bool {
 	}
 	return false
 }
+
+func (attr *Attribute) ReferencesDataBlock() bool {
+	switch t := attr.hclAttribute.Expr.(type) {
+	case *hclsyntax.ScopeTraversalExpr:
+		split := t.Traversal.SimpleSplit()
+		return split.Abs.RootName() == "data"
+	}
+	return false
+}
+
+func (attr *Attribute) ReferenceAsString() string {
+	var refParts []string
+	switch t := attr.hclAttribute.Expr.(type) {
+	case *hclsyntax.ScopeTraversalExpr:
+		parts := t.Traversal.SimpleSplit()
+		for _, p := range parts.Rel {
+			switch part := p.(type) {
+			case hcl.TraverseAttr:
+				refParts = append(refParts, part.Name)
+			}
+		}
+	}
+	if len(refParts) > 0 {
+		return strings.Join(refParts, ".")
+	}
+	return ""
+}
