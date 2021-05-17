@@ -68,7 +68,7 @@ There are a number of Docker options available
 To run:
 
 ```bash
-docker run --rm -it -v "$(pwd):/src" liamg/tfsec /src
+docker run --rm -it -v "$(pwd):/src" tfsec/tfsec /src
 ```
 
 ## Use with Visual Studio Code
