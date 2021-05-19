@@ -1,9 +1,7 @@
-# This is an example .goreleaser.yml file with some sane defaults.
-# Make sure to check the documentation at http://goreleaser.com
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
+    - go mod vendor
 builds:
   -
     id: tfsec
@@ -25,7 +23,7 @@ builds:
     main: ./cmd/tfsec-checkgen
     binary: tfsec-checkgen
     ldflags:
-    - "-X github.com/tfsec/tfsec/version.Version={{.VERSION}} -s -w -extldflags '-fno-PIC -static'"
+    - "-X github.com/tfsec/tfsec/version.Version={{.Version}} -s -w -extldflags '-fno-PIC -static'"
     env:
       - CGO_ENABLED=0
       - GOFLAGS=-mod=vendor
@@ -35,16 +33,31 @@ builds:
       - darwin
     goarch:
       - amd64
+
 checksum:
-  ids:
-  - tfsec
-  - tfsec-checkgen
   name_template: '{{ .ProjectName }}_checksums.txt'
+
 snapshot:
   name_template: "{{ .Tag }}-next"
+
 changelog:
   sort: asc
   filters:
     exclude:
       - '^docs:'
       - '^test:'
+
+signs:
+  - artifacts: all
+
+archives:
+  -
+    format: binary
+    name_template: "{{ .Binary}}-{{ .Os }}-{{ .Arch }}"
+
+release:
+  github:
+    owner: tfsec
+    name: tfsec
+
+  draft: true
