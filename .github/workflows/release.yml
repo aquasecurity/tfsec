@@ -46,6 +46,11 @@ jobs:
         docker version
         docker run --rm hello-world
     
+    - name: Get Tag
+      id: get_tag
+      run: |
+        echo ::set-output name=TRAVIS_TAG::${GITHUB_REF#refs/tags/}
+
     - name: Release Docker
       run: |
         make image
