@@ -7,16 +7,16 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-const AWSEnsureEcrImagesHaveImmutableTags scanner.RuleCode = "AWS078"
-const AWSEnsureEcrImagesHaveImmutableTagsDescription scanner.RuleSummary = "ECR images tags shouldn't be mutable."
-const AWSEnsureEcrImagesHaveImmutableTagsImpact = "Image tags could be overwritten with compromised images"
-const AWSEnsureEcrImagesHaveImmutableTagsResolution = "Only use immutable images in ECR"
-const AWSEnsureEcrImagesHaveImmutableTagsExplanation = `
+const AWSEcrImagesHaveImmutableTags scanner.RuleCode = "AWS078"
+const AWSEcrImagesHaveImmutableTagsDescription scanner.RuleSummary = "ECR images tags shouldn't be mutable."
+const AWSEcrImagesHaveImmutableTagsImpact = "Image tags could be overwritten with compromised images"
+const AWSEcrImagesHaveImmutableTagsResolution = "Only use immutable images in ECR"
+const AWSEcrImagesHaveImmutableTagsExplanation = `
 ECR images should be set to IMMUTABLE to prevent code injection through image mutation.
 
 This can be done by setting <code>image_tab_mutability</code> to <code>IMMUTABLE</code>
 `
-const AWSEnsureEcrImagesHaveImmutableTagsBadExample = `
+const AWSEcrImagesHaveImmutableTagsBadExample = `
 resource "aws_ecr_repository" "bad_example" {
   name                 = "bar"
   image_tag_mutability = "MUTABLE"
@@ -26,7 +26,7 @@ resource "aws_ecr_repository" "bad_example" {
   }
 }
 `
-const AWSEnsureEcrImagesHaveImmutableTagsGoodExample = `
+const AWSEcrImagesHaveImmutableTagsGoodExample = `
 resource "aws_ecr_repository" "good_example" {
   name                 = "bar"
   image_tag_mutability = "IMMUTABLE"
@@ -39,14 +39,14 @@ resource "aws_ecr_repository" "good_example" {
 
 func init() {
 	scanner.RegisterCheck(scanner.Check{
-		Code: AWSEnsureEcrImagesHaveImmutableTags,
+		Code: AWSEcrImagesHaveImmutableTags,
 		Documentation: scanner.CheckDocumentation{
-			Summary:     AWSEnsureEcrImagesHaveImmutableTagsDescription,
-			Impact:      AWSEnsureEcrImagesHaveImmutableTagsImpact,
-			Resolution:  AWSEnsureEcrImagesHaveImmutableTagsResolution,
-			Explanation: AWSEnsureEcrImagesHaveImmutableTagsExplanation,
-			BadExample:  AWSEnsureEcrImagesHaveImmutableTagsBadExample,
-			GoodExample: AWSEnsureEcrImagesHaveImmutableTagsGoodExample,
+			Summary:     AWSEcrImagesHaveImmutableTagsDescription,
+			Impact:      AWSEcrImagesHaveImmutableTagsImpact,
+			Resolution:  AWSEcrImagesHaveImmutableTagsResolution,
+			Explanation: AWSEcrImagesHaveImmutableTagsExplanation,
+			BadExample:  AWSEcrImagesHaveImmutableTagsBadExample,
+			GoodExample: AWSEcrImagesHaveImmutableTagsGoodExample,
 			Links: []string{
 				"https://sysdig.com/blog/toctou-tag-mutability/",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository",

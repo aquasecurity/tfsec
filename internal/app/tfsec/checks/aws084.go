@@ -68,51 +68,47 @@ func init() {
 		RequiredLabels: []string{"aws_workspaces_workspace"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
 
+			var results []scanner.Result
+
 			if block.MissingChild("root_volume_encryption_enabled") {
-				return []scanner.Result{
+				results = append(results,
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' should have root volume encryption enables", block.FullName()),
 						block.Range(),
 						scanner.SeverityError,
-					),
-				}
+					))
 			} else {
 				attr := block.GetAttribute("root_volume_encryption_enabled")
 				if attr.IsFalse() {
-					return []scanner.Result{
-						check.NewResultWithValueAnnotation(
-							fmt.Sprintf("Resource '%s' has the root volumnet encyption set to false", block.FullName()),
-							attr.Range(),
-							attr,
-							scanner.SeverityError,
-						),
-					}
+					results = append(results, check.NewResultWithValueAnnotation(
+						fmt.Sprintf("Resource '%s' has the root volume encyption set to false", block.FullName()),
+						attr.Range(),
+						attr,
+						scanner.SeverityError,
+					))
 				}
 			}
 
 			if block.MissingChild("user_volume_encryption_enabled") {
-				return []scanner.Result{
-					check.NewResult(
-						fmt.Sprintf("Resource '%s' should have user volume encryption enables", block.FullName()),
-						block.Range(),
-						scanner.SeverityError,
-					),
-				}
+				results = append(results, check.NewResult(
+					fmt.Sprintf("Resource '%s' should have user volume encryption enables", block.FullName()),
+					block.Range(),
+					scanner.SeverityError,
+				))
 			} else {
 				attr := block.GetAttribute("user_volume_encryption_enabled")
 				if attr.IsFalse() {
-					return []scanner.Result{
+					results = append(results,
 						check.NewResultWithValueAnnotation(
-							fmt.Sprintf("Resource '%s' has the user volumnet encyption set to false", block.FullName()),
+							fmt.Sprintf("Resource '%s' has the user volume encyption set to false", block.FullName()),
 							attr.Range(),
 							attr,
 							scanner.SeverityError,
-						),
-					}
+						))
 				}
 			}
 
-			return nil
+			return results
 		},
 	})
 }

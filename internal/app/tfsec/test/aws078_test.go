@@ -7,7 +7,7 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-func Test_AWSEnsureEcrImagesHaveImmutableTags(t *testing.T) {
+func Test_AWSEcrImagesHaveImmutableTags(t *testing.T) {
 
 	var tests = []struct {
 		name                  string
@@ -26,7 +26,7 @@ resource "aws_ecr_repository" "foo" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSEnsureEcrImagesHaveImmutableTags,
+			mustIncludeResultCode: checks.AWSEcrImagesHaveImmutableTags,
 		},
 		{
 			name: "should fire when image_tab_mutability not set to IMMUTABLE",
@@ -40,7 +40,7 @@ resource "aws_ecr_repository" "foo" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSEnsureEcrImagesHaveImmutableTags,
+			mustIncludeResultCode: checks.AWSEcrImagesHaveImmutableTags,
 		},
 		{
 			name: "should not fire when image_tab_mutability set to IMMUTABLE",
@@ -54,7 +54,7 @@ resource "aws_ecr_repository" "foo" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSEnsureEcrImagesHaveImmutableTags,
+			mustExcludeResultCode: checks.AWSEcrImagesHaveImmutableTags,
 		},
 	}
 
