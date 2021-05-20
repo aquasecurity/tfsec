@@ -169,7 +169,7 @@ var rootCmd = &cobra.Command{
 				os.Exit(1)
 			}
 		} else if unusedTfvarsPresent(dir) {
-			tml.Printf("\n<yellow>Warning: A tfvars file was found but not automatically used. \nDid you mean to specify the --tf-vars flag?</yellow>\n")
+			tml.Printf("\n<yellow>Warning: A tfvars file was found but not automatically used. \nDid you mean to specify the --tfvars-file flag?</yellow>\n")
 		}
 
 		debug.Log("Starting parser...")
