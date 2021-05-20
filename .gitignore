@@ -13,3 +13,4 @@ tfsec-skeleton
 /checkdocs
 
 coverage.txt
+dist/
