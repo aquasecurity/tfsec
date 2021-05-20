@@ -85,6 +85,9 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_rds_cluster", "aws_db_instance"},
 		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+			if block.HasChild("replicate_source_db") {
+				return nil
+			}
 
 			if block.MissingChild("backup_retention_period") {
 				return []scanner.Result{

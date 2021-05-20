@@ -103,7 +103,7 @@ func Test_AWSRDSRetentionPeriod(t *testing.T) {
 		{
 			name: "db instance with retention greater than default passes check",
 			source: `
-	        resource "aws_db_instance" "bad_example" {
+	        resource "aws_db_instance" "good_example" {
 				allocated_storage       = 10
 				engine                  = "mysql"
 				engine_version          = "5.7"
@@ -113,6 +113,38 @@ func Test_AWSRDSRetentionPeriod(t *testing.T) {
 				password                = "foobarbaz"
 				parameter_group_name    = "default.mysql5.7"
 				backup_retention_period = 5
+				skip_final_snapshot     = true
+			}
+`,
+			mustExcludeResultCode: checks.AWSRDSRetentionPeriod,
+		},
+		{
+			name: "db instance with which is a replica with no retention period set  passes check",
+			source: `
+			resource "aws_db_instance" "good_example" {
+				allocated_storage       = 10
+				engine                  = "mysql"
+				engine_version          = "5.7"
+				instance_class          = "db.t3.micro"
+				name                    = "mydb"
+				username                = "foo"
+				password                = "foobarbaz"
+				parameter_group_name    = "default.mysql5.7"
+				backup_retention_period = 5
+				skip_final_snapshot     = true
+			}
+
+
+	        resource "aws_db_instance" "good_example_replica" {
+				allocated_storage       = 10
+				engine                  = "mysql"
+				engine_version          = "5.7"
+				instance_class          = "db.t3.micro"
+				name                    = "mydb"
+				username                = "foo"
+				password                = "foobarbaz"
+				parameter_group_name    = "default.mysql5.7"
+				replicate_source_db     = aws_db_instance.good_example_replica.id
 				skip_final_snapshot     = true
 			}
 `,
