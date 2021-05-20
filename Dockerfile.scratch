@@ -1,5 +1,8 @@
+FROM alpine as nobody
+
 FROM scratch
-# use a non-privileged user
+# use a non-privileged user but need to add it in
+COPY --from=nobody /etc/group /etc/passwd /etc/
 USER nobody
 # work somewhere where we can write
 COPY tfsec /usr/bin/tfsec
