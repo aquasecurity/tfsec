@@ -59,3 +59,41 @@ release:
   github:
     owner: tfsec
     name: tfsec
+
+dockers:
+  - 
+    goos: linux
+    goarch: amd64
+    ids:
+    - tfsec
+
+    dockerfile: Dockerfile
+    image_templates:
+    - "tfsec/tfsec:latest"
+    - "tfsec/tfsec:{{ .Tag }}"
+    - "tfsec/tfsec:v{{ .Major }}.{{ .Minor }}"
+    - "tfsec/tfsec-alpine:latest"
+    - "tfsec/tfsec-alpine:{{ .Tag }}"
+    - "tfsec/tfsec-alpine:v{{ .Major }}.{{ .Minor }}"
+  - 
+    goos: linux
+    goarch: amd64
+    ids:
+    - tfsec
+
+    dockerfile: Dockerfile.scratch
+    image_templates:
+    - "tfsec/tfsec-scratch:latest"
+    - "tfsec/tfsec-scratch:{{ .Tag }}"
+    - "tfsec/tfsec-scratch:v{{ .Major }}.{{ .Minor }}"
+  - 
+    goos: linux
+    goarch: amd64
+    ids:
+    - tfsec
+
+    dockerfile: Dockerfile.ci
+    image_templates:
+    - "tfsec/tfsec-ci:latest"
+    - "tfsec/tfsec-ci:{{ .Tag }}"
+    - "tfsec/tfsec-ci:v{{ .Major }}.{{ .Minor }}"
