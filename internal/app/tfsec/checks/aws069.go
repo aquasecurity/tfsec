@@ -21,7 +21,8 @@ resource "aws_eks_cluster" "bad_example" {
     name = "bad_example_cluster"
     role_arn = var.cluster_arn
     vpc_config {
-        endpoint_public_access = true
+		endpoint_public_access = true
+		public_access_cidrs = ["0.0.0.0/0"]
     }
 }
 `
@@ -33,7 +34,6 @@ resource "aws_eks_cluster" "good_example" {
     role_arn = var.cluster_arn
     vpc_config {
         endpoint_public_access = false
-        public_access_cidrs = ["10.2.0.0/8"]
     }
 }
 `
