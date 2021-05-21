@@ -8,7 +8,7 @@ builds:
     main: ./cmd/tfsec
     binary: tfsec
     ldflags:
-    - "-X github.com/tfsec/tfsec/version.Version=${TAG} -s -w -extldflags '-fno-PIC -static'"
+    - "-X github.com/tfsec/tfsec/version.Version={{.Version}} -s -w -extldflags '-fno-PIC -static'"
     env:
       - CGO_ENABLED=0
       - GOFLAGS=-mod=vendor
@@ -48,7 +48,7 @@ changelog:
       - '^test:'
 
 signs:
-  - artifacts: all
+  - artifacts: checksum
 
 archives:
   -
