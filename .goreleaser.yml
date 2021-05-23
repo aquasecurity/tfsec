@@ -48,7 +48,8 @@ changelog:
       - '^test:'
 
 signs:
-  - artifacts: checksum
+  - artifacts: all
+    signature: "${artifact}.D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE.sig"
 
 archives:
   -
