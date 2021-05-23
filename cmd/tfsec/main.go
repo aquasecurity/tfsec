@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/config"
+	"github.com/tfsec/tfsec/internal/app/tfsec/updater"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
 
@@ -26,6 +27,7 @@ import (
 )
 
 var showVersion = false
+var runUpdate = false
 var disableColours = false
 var format string
 var softFail = false
@@ -49,6 +51,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
+	rootCmd.Flags().BoolVar(&runUpdate, "update", runUpdate, "Update to latest version")
 	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit, sarif")
 	rootCmd.Flags().StringVarP(&excludedChecks, "exclude", "e", excludedChecks, "Provide checks via , without space to exclude from run.")
 	rootCmd.Flags().StringVar(&filterResults, "filter-results", filterResults, "Filter results to return specific checks only (supports comma-delimited input).")
@@ -89,6 +92,13 @@ var rootCmd = &cobra.Command{
 
 		if showVersion {
 			fmt.Println(version.Version)
+			os.Exit(0)
+		}
+
+		if runUpdate {
+			if err := updater.Update(); err != nil {
+				tml.Printf("Not updating, %s\n", err.Error())
+			}
 			os.Exit(0)
 		}
 	},

@@ -3,8 +3,10 @@ module github.com/tfsec/tfsec
 go 1.16
 
 require (
+	github.com/hashicorp/go-version v1.3.0
 	github.com/hashicorp/hcl/v2 v2.10.0
 	github.com/hashicorp/terraform v0.15.3
+	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/liamg/clinch v1.5.6
 	github.com/liamg/tml v0.4.0
 	github.com/mattn/go-runewidth v0.0.12 // indirect
