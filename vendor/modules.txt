@@ -16,6 +16,9 @@ github.com/hashicorp/errwrap
 github.com/hashicorp/go-multierror
 # github.com/hashicorp/go-uuid v1.0.1
 github.com/hashicorp/go-uuid
+# github.com/hashicorp/go-version v1.3.0
+## explicit
+github.com/hashicorp/go-version
 # github.com/hashicorp/hcl/v2 v2.10.0
 ## explicit
 github.com/hashicorp/hcl/v2
@@ -28,6 +31,11 @@ github.com/hashicorp/hcl/v2/json
 ## explicit
 github.com/hashicorp/terraform/lang/funcs
 github.com/hashicorp/terraform/tfdiags
+# github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
+## explicit
+github.com/inconshreveable/go-update
+github.com/inconshreveable/go-update/internal/binarydist
+github.com/inconshreveable/go-update/internal/osext
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
 # github.com/liamg/clinch v1.5.6
