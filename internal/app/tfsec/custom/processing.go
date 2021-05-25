@@ -115,8 +115,10 @@ func processFoundChecks(checks ChecksFile) {
 			scanner.RegisterCheck(scanner.Check{
 				Code: customCheck.Code,
 				Documentation: scanner.CheckDocumentation{
-					Summary: scanner.RuleSummary(customCheck.Description),
-					Links:   customCheck.RelatedLinks,
+					Summary:    scanner.RuleSummary(customCheck.Description),
+					Links:      customCheck.RelatedLinks,
+					Impact:     customCheck.Impact,
+					Resolution: customCheck.Resolution,
 				},
 				Provider:       "custom",
 				RequiredTypes:  customCheck.RequiredTypes,
@@ -203,10 +205,7 @@ func unpackInterfaceToInterfaceSlice(t interface{}) []interface{} {
 	switch t := t.(type) {
 	case []interface{}:
 		var result []interface{}
-		for _, i := range t {
-			result = append(result, i)
-		}
-		return result
+		return append(result, t...)
 	}
 	return nil
 }
