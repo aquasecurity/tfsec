@@ -116,7 +116,6 @@ type Check struct {
 	RelatedLinks   []string            `json:"relatedLinks,omitempty" yaml:"relatedLinks,omitempty"`
 	Impact         string              `json:"impact,omitempty" yaml:"impact,omitempty"`
 	Resolution     string              `json:"resolution,omitempty" yaml:"resolution,omitempty"`
-
 }
 
 func (action *CheckAction) isValid() bool {
