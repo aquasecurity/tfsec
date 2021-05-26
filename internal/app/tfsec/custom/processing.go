@@ -153,6 +153,10 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 		return false
 	}
 
+	if spec.Action == HasTag {
+		return checkTags(block, spec, ctx)
+	}
+
 	if spec.Action == RequiresPresence {
 		return resourceFound(spec, ctx)
 	}
@@ -208,4 +212,34 @@ func unpackInterfaceToInterfaceSlice(t interface{}) []interface{} {
 		return append(result, t...)
 	}
 	return nil
+}
+
+func checkTags(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) bool {
+	expectedTag := fmt.Sprintf("%v", spec.MatchValue)
+
+	if block.HasChild("tags") {
+		tagsBlock := block.GetAttribute("tags")
+		if tagsBlock.Contains(expectedTag) {
+			return true
+		}
+	}
+
+	var alias string
+	if block.HasChild("provider") {
+		alias = block.GetAttribute("provider").ReferenceAsString()
+	}
+
+	awsProviders := ctx.GetProviderBlocksByProvider("aws", alias)
+	for _, providerBlock := range awsProviders {
+		if providerBlock.HasChild("default_tags") {
+			defaultTags := providerBlock.GetBlock("default_tags")
+			if defaultTags.HasChild("tags") {
+				tags := defaultTags.GetAttribute("tags")
+				if tags.Contains(expectedTag) {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }

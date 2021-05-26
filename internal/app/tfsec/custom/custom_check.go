@@ -28,6 +28,7 @@ var ValidCheckActions = []CheckAction{
 	And,
 	Or,
 	Not,
+	HasTag,
 }
 
 // InModule checks that the block is part of a module
@@ -90,6 +91,9 @@ const Or CheckAction = "or"
 // Not checks that the given predicateMatchSpec evaluates to False
 const Not CheckAction = "not"
 
+// HasTag checks if there is an expected check for the resource, taking into account provider default checks
+const HasTag CheckAction = "hasTag"
+
 // MatchSpec specifies the checks that should be performed
 type MatchSpec struct {
 	Name               string      `json:"name,omitempty" yaml:"name,omitempty"`
@@ -110,8 +114,9 @@ type Check struct {
 	ErrorMessage   string              `json:"errorMessage,omitempty" yaml:"errorMessage,omitempty"`
 	MatchSpec      *MatchSpec          `json:"matchSpec" yaml:"matchSpec"`
 	RelatedLinks   []string            `json:"relatedLinks,omitempty" yaml:"relatedLinks,omitempty"`
-	Impact         string              `json:"impact,omitempty yaml:"impact,omitempty"`
-	Resolution     string              `json:"resolution,omitempty yaml:"resolution,omitempty"`
+	Impact         string              `json:"impact,omitempty" yaml:"impact,omitempty"`
+	Resolution     string              `json:"resolution,omitempty" yaml:"resolution,omitempty"`
+
 }
 
 func (action *CheckAction) isValid() bool {
