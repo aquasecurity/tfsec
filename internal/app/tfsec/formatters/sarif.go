@@ -33,6 +33,9 @@ func FormatSarif(w io.Writer, results []scanner.Result, baseDir string, options 
 		message := sarif.NewTextMessage(string(result.Description))
 		region := sarif.NewSimpleRegion(result.Range.StartLine, result.Range.EndLine)
 		level := strings.ToLower(string(result.Severity))
+		if result.Severity == scanner.SeverityInfo {
+			level = "note"
+		}
 
 		location := sarif.NewPhysicalLocation().
 			WithArtifactLocation(sarif.NewSimpleArtifactLocation(relativePath)).
