@@ -52,7 +52,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' is only using default encryption", block.FullName()),
 						block.Range(),
-						scanner.SeverityWarning,
+						scanner.SeverityInfo,
 					),
 				}
 			}

@@ -44,6 +44,7 @@ var detailedExitCode = false
 var includePassed = false
 var includeIgnored = false
 var ignoreWarnings = false
+var ignoreInfo = false
 var allDirs = false
 var runStatistics bool
 
@@ -69,6 +70,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
 	rootCmd.Flags().BoolVar(&runStatistics, "run-statistics", runStatistics, "View statistics table of current findings.")
 	rootCmd.Flags().BoolVar(&ignoreWarnings, "ignore-warnings", ignoreWarnings, "Don't show warnings in the output.")
+	rootCmd.Flags().BoolVar(&ignoreInfo, "ignore-info", ignoreWarnings, "Don't show info results in the output.")
 }
 
 func main() {
@@ -282,6 +284,11 @@ func RemoveDuplicatesAndUnwanted(results []scanner.Result, ignoreWarnings bool, 
 		if ignoreWarnings && r.Severity == scanner.SeverityWarning {
 			continue
 		}
+
+		if ignoreInfo && r.Severity == scanner.SeverityInfo {
+			continue
+		}
+
 		returnVal = append(returnVal, r)
 	}
 	return returnVal

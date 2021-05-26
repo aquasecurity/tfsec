@@ -93,7 +93,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", block.FullName()),
 						block.Range(),
-						scanner.SeverityWarning,
+						scanner.SeverityInfo,
 					),
 				}
 			}
@@ -106,7 +106,7 @@ func init() {
 						fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", block.FullName()),
 						enabledAttr.Range(),
 						enabledAttr,
-						scanner.SeverityWarning,
+						scanner.SeverityInfo,
 					),
 				}
 			}
@@ -119,7 +119,7 @@ func init() {
 							fmt.Sprintf("Resource '%s' has KMS encryption configured but is using the default aws key", block.FullName()),
 							keyIdAttr.Range(),
 							keyIdAttr,
-							scanner.SeverityWarning,
+							scanner.SeverityInfo,
 						),
 					}
 				}

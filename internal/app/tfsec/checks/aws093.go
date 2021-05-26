@@ -70,7 +70,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not have CMK encryption configured", block.FullName()),
 						block.Range(),
-						scanner.SeverityWarning,
+						scanner.SeverityInfo,
 					),
 				}
 			}
@@ -81,7 +81,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' configures encryption without using CMK", block.FullName()),
 						encBlock.Range(),
-						scanner.SeverityWarning,
+						scanner.SeverityInfo,
 					),
 				}
 			}
@@ -91,7 +91,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", block.FullName()),
 						encBlock.Range(),
-						scanner.SeverityWarning,
+						scanner.SeverityInfo,
 					),
 				}
 			}

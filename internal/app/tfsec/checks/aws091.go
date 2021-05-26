@@ -94,7 +94,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not have backup retention explicitly set", block.FullName()),
 						block.Range(),
-						scanner.SeverityWarning,
+						scanner.SeverityInfo,
 					),
 				}
 			}
@@ -106,7 +106,7 @@ func init() {
 						fmt.Sprintf("Resource '%s' has backup retention period set to a low value", block.FullName()),
 						retentionAttr.Range(),
 						retentionAttr,
-						scanner.SeverityWarning,
+						scanner.SeverityInfo,
 					),
 				}
 			}
