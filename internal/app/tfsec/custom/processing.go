@@ -102,7 +102,7 @@ var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 	IsNone: func(block *parser.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
-			return true
+			return spec.IgnoreUndefined
 		}
 		return attribute.IsNone(unpackInterfaceToInterfaceSlice(spec.MatchValue)...)
 	},
@@ -150,7 +150,7 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 		return block.InModule()
 	}
 	if spec.Action == RegexMatches && !matchFunctions[RegexMatches](block, spec) {
-		return false
+		return spec.IgnoreUnmatched
 	}
 
 	if spec.Action == HasTag {
