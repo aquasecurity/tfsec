@@ -56,7 +56,7 @@ func init() {
 					check.NewResult(
 						fmt.Sprintf("Resource '%s' does not use CMK", block.FullName()),
 						block.Range(),
-						scanner.SeverityWarning,
+						scanner.SeverityInfo,
 					),
 				}
 			}
@@ -80,7 +80,7 @@ func init() {
 									fmt.Sprintf("Resource '%s' explicitly uses the default CMK", block.FullName()),
 									kmsKeyAttr.Range(),
 									kmsKeyAttr,
-									scanner.SeverityWarning,
+									scanner.SeverityInfo,
 								),
 							}
 						}

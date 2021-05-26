@@ -61,7 +61,7 @@ func init() {
 								fmt.Sprintf("Resource '%s' has containerInsights set to disabled", block.FullName()),
 								setting.Range(),
 								setting.GetAttribute("value"),
-								scanner.SeverityWarning,
+								scanner.SeverityInfo,
 							),
 						}
 					}
@@ -71,7 +71,7 @@ func init() {
 				check.NewResult(
 					fmt.Sprintf("Resoure '%s' does not have codeInsights enabled", block.FullName()),
 					block.Range(),
-					scanner.SeverityWarning,
+					scanner.SeverityInfo,
 				),
 			}
 		},
