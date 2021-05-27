@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+	"time"
 
 	"github.com/tfsec/tfsec/pkg/severity"
 
@@ -95,6 +96,9 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Rang
 	lines := append([]string{""}, strings.Split(string(raw), "\n")...)
 	startLine := r.StartLine
 
+	foundValidIgnore := false
+	lineValidIgnoreFound := 0
+
 	// include the line above the line if available
 	if r.StartLine-1 > 0 {
 		startLine = r.StartLine - 1
@@ -107,7 +111,9 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Rang
 		}
 
 		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) {
-			return true
+			foundValidIgnore = true
+			lineValidIgnoreFound = number
+			break
 		}
 	}
 
@@ -115,11 +121,25 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Rang
 	if b.StartLine-1 > 0 {
 		line := lines[b.StartLine-1]
 		if ignored := checkLineForIgnore(line, ignoreAll, ignoreCode); ignored {
-			return true
+			foundValidIgnore = true
+			//lineValidIgnoreFound = number
 		}
 	}
 
-	return false
+	if foundValidIgnore {
+		lineWithPotentialExp := lines[lineValidIgnoreFound]
+		if indexExpFound := strings.Index(lineWithPotentialExp, "exp:"); indexExpFound > 0 {
+			//TODO: edge cases in extracting date value
+			expDate := lineWithPotentialExp[indexExpFound+4:indexExpFound+14]
+			//TODO: try to prase if unable - post warning that date format is incorrect and dont ignore the ignore
+			//TODO: which layout to use? should it be configurable?
+			parsedDate, _ := time.Parse("2006-01-02", expDate)
+			currentTime := time.Now()
+			foundValidIgnore = currentTime.After(parsedDate)
+		}
+	}
+
+	return foundValidIgnore
 }
 
 func checkLineForIgnore(line, ignoreAll, ignoreCode string) bool {
