@@ -13,6 +13,7 @@ func main() {
 	_ = scanner.AddFile("../custom/modules/public_custom_bucket/main.tf")
 	_ = scanner.AddFile("../good/good.tf")
 	_ = scanner.AddFile("../withVars/main.tf")
+	_ = scanner.AddFile("../withVars/variables.tf")
 
 	results, err := scanner.Scan()
 	if err != nil {
