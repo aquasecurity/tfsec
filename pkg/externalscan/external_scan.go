@@ -3,7 +3,6 @@ package externalscan
 import (
 	"fmt"
 	"os"
-	"path"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -14,19 +13,19 @@ import (
 )
 
 type ExternalScanner struct {
-	files []string
+	paths []string
 }
 
 func NewExternalScanner() *ExternalScanner {
 	return &ExternalScanner{}
 }
 
-func (t *ExternalScanner) AddFile(file string) error {
-	abs, err := filepath.Abs(file)
+func (t *ExternalScanner) AddPath(path string) error {
+	abs, err := filepath.Abs(path)
 	if err != nil {
 		return err
 	}
-	t.files = append(t.files, abs)
+	t.paths = append(t.paths, abs)
 	return nil
 }
 
@@ -34,7 +33,10 @@ func (t *ExternalScanner) Scan() ([]scanner.Result, error) {
 
 	projectBlocks := make(map[string]parser.Blocks)
 
-	dirs := findTFRootModules(t.files)
+	dirs, err := findTFRootModules(t.paths)
+	if err != nil {
+		return nil, err
+	}
 
 	for _, dir := range dirs {
 		blocks, err := parser.New(dir, "").ParseDirectory()
@@ -54,18 +56,26 @@ func (t *ExternalScanner) Scan() ([]scanner.Result, error) {
 	return results, nil
 }
 
-func findTFRootModules(files []string) []string {
+func findTFRootModules(paths []string) ([]string, error) {
 
 	var output []string
 
-	if len(files) == 0 {
-		return nil
+	if len(paths) == 0 {
+		return nil, fmt.Errorf("no files to scan")
 	}
 
 	dirMap := make(map[string]bool)
-	for _, file := range files {
-		dir := path.Dir(file)
-		dirMap[dir] = true
+	for _, path := range paths {
+		stat, err := os.Stat(path)
+		if err != nil {
+			return nil, err
+		}
+		if stat.IsDir() {
+			dirMap[path] = true
+		} else {
+			dirMap[filepath.Dir(path)] = true
+		}
+
 	}
 
 	var dirs []string
@@ -85,5 +95,5 @@ func findTFRootModules(files []string) []string {
 		previous = dirs[i]
 	}
 
-	return output
+	return output, nil
 }
