@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	
 	scanner := externalscan.NewExternalScanner()
 
 	_ = scanner.AddFile("../custom/custom_check.tf")
