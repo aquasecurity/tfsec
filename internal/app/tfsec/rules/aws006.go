@@ -60,23 +60,22 @@ func init() {
 
 			typeAttr := block.GetAttribute("type")
 			if typeAttr == nil || typeAttr.Type() != cty.String {
-				return nil
+				return
 			}
 
 			if typeAttr.Value().AsString() != "ingress" {
-				return nil
+				return
 			}
 
 			if cidrBlocksAttr := block.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 				if isOpenCidr(cidrBlocksAttr) {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", block.FullName()),
-							cidrBlocksAttr.Range(),
-							severity.Warning,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", block.FullName())).
+							WithRange(cidrBlocksAttr.Range()).
+							WithSeverity(severity.Warning),
+					)
 				}
 
 			}
@@ -85,18 +84,14 @@ func init() {
 
 				if isOpenCidr(ipv6CidrBlocksAttr) {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", block.FullName()),
-							ipv6CidrBlocksAttr.Range(),
-							ipv6CidrBlocksAttr,
-							severity.Warning,
-						),
-					}
+						result.New().WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", block.FullName())).
+							WithRange(ipv6CidrBlocksAttr.Range()).
+							WithAttributeAnnotation(ipv6CidrBlocksAttr).
+							WithSeverity(severity.Warning),
+					)
 				}
 
 			}
-
-			return nil
 		},
 	})
 }

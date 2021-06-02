@@ -57,23 +57,18 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if internalAttr := block.GetAttribute("internal"); internalAttr == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			} else if internalAttr.Type() == cty.Bool && internalAttr.Value().False() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName()),
-						internalAttr.Range(),
-						internalAttr,
-						severity.Warning,
-					),
-				}
+					result.New().WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName())).
+						WithRange(internalAttr.Range()).
+						WithAttributeAnnotation(internalAttr).
+						WithSeverity(severity.Warning),
+				)
 			}
-			return nil
 		},
 	})
 }

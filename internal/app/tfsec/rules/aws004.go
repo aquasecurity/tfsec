@@ -76,15 +76,12 @@ func init() {
 					reportRange = protocolAttr.Range()
 				}
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.FullName()),
-						reportRange,
-						protocolAttr,
-						severity.Error,
-					),
-				}
+					result.New().WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.FullName())).
+						WithRange(reportRange).
+						WithAttributeAnnotation(protocolAttr).
+						WithSeverity(severity.Error),
+				)
 			}
-			return nil
 		},
 	})
 }

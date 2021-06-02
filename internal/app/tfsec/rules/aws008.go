@@ -75,18 +75,15 @@ func init() {
 				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr != nil {
 
 					if isOpenCidr(cidrBlocksAttr) {
-						results = append(results,
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.FullName()),
-								cidrBlocksAttr.Range(),
-								severity.Warning,
-							),
+						resultSet.Add(
+							result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.FullName())).
+								WithRange(cidrBlocksAttr.Range()).
+								WithSeverity(severity.Warning),
 						)
 					}
 				}
 			}
-
-			return results
 		},
 	})
 }

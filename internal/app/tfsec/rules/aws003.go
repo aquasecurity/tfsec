@@ -55,11 +55,9 @@ func init() {
 		RequiredLabels: []string{"aws_db_security_group", "aws_redshift_security_group", "aws_elasticache_security_group"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			set.Add(
-				result.New().WithDescription(
-					fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", block.FullName()),
-				).WithRange(block.Range()).WithSeverity(
-					severity.Error,
-				),
+				result.New().WithDescription(fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", block.FullName())).
+					WithRange(block.Range()).
+					WithSeverity(severity.Error),
 			)
 		},
 	})

@@ -61,9 +61,9 @@ func init() {
 					return
 				}
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have logging enabled.", block.FullName()),
-					).WithRange(block.Range()).WithSeverity(severity.Error),
+					result.New().WithDescription(fmt.Sprintf("Resource '%s' does not have logging enabled.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
 				)
 			}
 		},
