@@ -72,48 +72,46 @@ func init() {
 
 			if block.MissingChild("network_acls") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
 			networkAcls := block.GetBlock("network_acls")
 			if networkAcls == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
 			if networkAcls.MissingChild("default_action") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' specifies does not specify a default action in the network acl.", block.FullName()),
-						networkAcls.Range(),
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a default action in the network acl.", block.FullName())).
+						WithRange(networkAcls.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
-			defaultAction := networkAcls.GetAttribute("default_action")
-			if !defaultAction.Equals("Deny") {
+			defaultActionAttr := networkAcls.GetAttribute("default_action")
+			if !defaultActionAttr.Equals("Deny") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", block.FullName()),
-						defaultAction.Range(),
-						defaultAction,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", block.FullName())).
+						WithRange(defaultActionAttr.Range()).
+						WithAttributeAnnotation(defaultActionAttr).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

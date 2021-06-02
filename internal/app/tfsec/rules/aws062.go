@@ -72,37 +72,33 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_instance"},
-		CheckFunc: func(resourceBlock *block.Block, _ *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("user_data") {
-				return nil
 			}
 
-			userData := resourceBlock.GetAttribute("user_data")
-			if userData.Contains("AWS_ACCESS_KEY_ID", block.IgnoreCase) &&
-				userData.RegexMatches("(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}") {
+			userDataAttr := resourceBlock.GetAttribute("user_data")
+			if userDataAttr.Contains("AWS_ACCESS_KEY_ID", block.IgnoreCase) &&
+				userDataAttr.RegexMatches("(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has userdata with access key id defined.", resourceBlock.FullName()),
-						userData.Range(),
-						userData,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has userdata with access key id defined.", resourceBlock.FullName())).
+						WithRange(userDataAttr.Range()).
+						WithAttributeAnnotation(userDataAttr).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			if userData.Contains("AWS_SECRET_ACCESS_KEY", block.IgnoreCase) &&
-				userData.RegexMatches("(?i)aws_secre.+[=:]\\s{0,}[A-Za-z0-9\\/+=]{40}.?") {
+			if userDataAttr.Contains("AWS_SECRET_ACCESS_KEY", block.IgnoreCase) &&
+				userDataAttr.RegexMatches("(?i)aws_secre.+[=:]\\s{0,}[A-Za-z0-9\\/+=]{40}.?") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has userdata with access secret key defined.", resourceBlock.FullName()),
-						userData.Range(),
-						userData,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has userdata with access secret key defined.", resourceBlock.FullName())).
+						WithRange(userDataAttr.Range()).
+						WithAttributeAnnotation(userDataAttr).
+						WithSeverity(severity.Error),
+				)
 			}
-			return nil
 		},
 	})
 }

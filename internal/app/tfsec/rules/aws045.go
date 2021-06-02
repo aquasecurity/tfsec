@@ -109,19 +109,17 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudfront_distribution"},
-		CheckFunc: func(block *block.Block, context *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, block *block.Block, context *hclcontext.Context) {
 
 			wafAclIdBlock := block.GetAttribute("web_acl_id")
 			if wafAclIdBlock == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
-			return nil
 		},
 	})
 }

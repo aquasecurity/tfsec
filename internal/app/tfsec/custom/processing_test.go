@@ -325,7 +325,7 @@ func scanTerraform(t *testing.T, mainTf string) []result.Result {
 	err = ioutil.WriteFile(fmt.Sprintf("%s/%s", dirName, "main.tf"), []byte(mainTf), os.ModePerm)
 	assert.NoError(t, err)
 
-	blocks, err := parser.New(dirName, "").ParseDirectory()
+	blocks, err := parser.New(dirName, parser.OptionStopOnHCLError()).ParseDirectory()
 	assert.NoError(t, err)
 
 	return scanner.New().Scan(blocks)
@@ -335,7 +335,7 @@ func scanTerraform(t *testing.T, mainTf string) []result.Result {
 // TODO: Extract into a testing utility package once the amount of duplication justifies introducing an extra package.
 func createBlocksFromSource(source string) []*block.Block {
 	path := createTestFile("test.tf", source)
-	blocks, err := parser.New(filepath.Dir(path), "").ParseDirectory()
+	blocks, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {
 		panic(err)
 	}

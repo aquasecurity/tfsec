@@ -59,15 +59,13 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if block.MissingChild("kms_key_id") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is only using default encryption", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Info,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' is only using default encryption", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Info),
+				)
 			}
 
-			return nil
 		},
 	})
 }

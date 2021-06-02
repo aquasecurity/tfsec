@@ -77,36 +77,32 @@ func init() {
 
 			if block.MissingChild("encryption_configuration") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have CMK encryption configured", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Info,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have CMK encryption configured", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Info),
+				)
 			}
 
 			encBlock := block.GetBlock("encryption_configuration")
 			if encBlock.MissingChild("kms_key") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' configures encryption without using CMK", block.FullName()),
-						enc).WithRange(block.Range()).WithSeverity(
-						severity.Info,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' configures encryption without using CMK", block.FullName())).
+WithRange(encBlock.Range()).
+						WithSeverity(severity.Info),
+				)
 			}
 
 			if encBlock.MissingChild("encryption_type") || encBlock.GetAttribute("encryption_type").Equals("AES256") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", block.FullName()),
-						enc).WithRange(block.Range()).WithSeverity(
-						severity.Info,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", block.FullName())).
+WithRange(encBlock.Range()).
+						WithSeverity(severity.Info),
+				)
 			}
 
-			return nil
 		},
 	})
 }

@@ -13,33 +13,25 @@ import (
 	"path/filepath"
 )
 
-type ParserOption int
-
-const (
-	DontSearchTfFiles ParserOption = iota
-)
-
 // Parser is a tool for parsing terraform templates at a given file system location
 type Parser struct {
-	initialPath   string
-	tfvarsPath    string
-	stopOnFirstTf bool
+	initialPath    string
+	tfvarsPath     string
+	stopOnFirstTf  bool
+	stopOnHCLError bool
 }
 
 // New creates a new Parser
-func New(initialPath string, tfvarsPath string, options ...ParserOption) *Parser {
+func New(initialPath string, options ...Option) *Parser {
 	p := &Parser{
 		initialPath:   initialPath,
-		tfvarsPath:    tfvarsPath,
 		stopOnFirstTf: true,
 	}
 
 	for _, option := range options {
-		switch option {
-		case DontSearchTfFiles:
-			p.stopOnFirstTf = false
-		}
+		option(p)
 	}
+
 	return p
 }
 
@@ -58,7 +50,7 @@ func (parser *Parser) ParseDirectory() (block.Blocks, error) {
 
 	for _, dir := range subdirectories {
 		debug.Log("Beginning parse for directory '%s'...", dir)
-		files, err := LoadDirectory(dir)
+		files, err := LoadDirectory(dir, parser.stopOnHCLError)
 		if err != nil {
 			return nil, err
 		}
@@ -66,6 +58,9 @@ func (parser *Parser) ParseDirectory() (block.Blocks, error) {
 		for _, file := range files {
 			fileBlocks, err := LoadBlocksFromFile(file)
 			if err != nil {
+				if parser.stopOnHCLError {
+					return nil, err
+				}
 				_, _ = fmt.Fprintf(os.Stderr, "WARNING: HCL error: %s\n", err)
 				continue
 			}
@@ -104,11 +99,11 @@ func (parser *Parser) ParseDirectory() (block.Blocks, error) {
 	t.Stop()
 
 	debug.Log("Loading modules...")
-	modules := LoadModules(blocks, tfPath, modulesMetadata)
+	modules := LoadModules(blocks, tfPath, modulesMetadata, parser.stopOnHCLError)
 	var visited []*visitedModule
 
 	debug.Log("Evaluating expressions...")
-	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules, visited)
+	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules, visited, parser.stopOnHCLError)
 	evaluatedBlocks, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err

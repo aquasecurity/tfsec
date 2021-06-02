@@ -66,14 +66,12 @@ func init() {
 
 			if block.MissingChild("min_tls_version") || block.GetAttribute("min_tls_version").IsNone("TLS1_2") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have the min tls version set to TLS1_2 .", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have the min tls version set to TLS1_2 .", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
-			return nil
 		},
 	})
 }

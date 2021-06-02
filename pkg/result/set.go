@@ -10,6 +10,7 @@ type Set interface {
 	WithImpact(impact string) Set
 	WithResolution(resolution string) Set
 	WithLinks(links []string) Set
+	All() []Result
 }
 
 func NewSet() *resultSet {
@@ -17,7 +18,7 @@ func NewSet() *resultSet {
 }
 
 type resultSet struct {
-	results      []*Result
+	results      []Result
 	ruleID       string
 	ruleSummary  string
 	ruleProvider provider.Provider
@@ -27,19 +28,16 @@ type resultSet struct {
 }
 
 func (s *resultSet) Add(result *Result) {
-	if result == nil {
-		return
-	}
 	result.
 		WithRuleID(s.ruleID).
 		WithRuleSummary(s.ruleSummary).
 		WithImpact(s.impact).
 		WithResolution(s.resolution).
 		WithRuleProvider(s.ruleProvider)
-	s.results = append(s.results, result)
+	s.results = append(s.results, *result)
 }
 
-func (s *resultSet) All() []*Result {
+func (s *resultSet) All() []Result {
 	return s.results
 }
 

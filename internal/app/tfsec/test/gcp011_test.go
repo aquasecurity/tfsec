@@ -87,7 +87,7 @@ data "google_iam_policy" "test-policy" {
 data "google_iam_policy" "test-policy" {
 	binding {
 		members = [
-			"serviceAccount:${google_service_account.service_account.email}"]
+			"serviceAccount:${google_service_account.service_account.email}"
 		]
 	}
 }`,

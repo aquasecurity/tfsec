@@ -113,7 +113,6 @@ resource "aws_workspaces_workspace" "good_example" {
 		  running_mode                              = "AUTO_STOP"
 		  running_mode_auto_stop_timeout_in_minutes = 60
 		}
-	  }
 }
 `,
 			mustExcludeResultCode: rules.AWSAWSWorkspaceVolumesEncrypted,

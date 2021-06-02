@@ -47,7 +47,7 @@ func (t *ExternalScanner) Scan() ([]result.Result, error) {
 	}
 
 	for _, dir := range dirs {
-		blocks, err := parser.New(dir, "").ParseDirectory()
+		blocks, err := parser.New(dir).ParseDirectory()
 		if err != nil {
 			return nil, err
 		}

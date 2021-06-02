@@ -76,17 +76,15 @@ func init() {
 					value := properties.MapValue("publicAccess")
 					if value == cty.StringVal("blob") || value == cty.StringVal("container") {
 						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' defines publicAccess as '%s', should be 'off .", block.FullName(), value),
-								).WithRange(block.Range()).WithSeverity(
-								severity.Error,
-							),
-						}
+							result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' defines publicAccess as '%s', should be 'off .", block.FullName(), value)).
+								WithRange(block.Range()).
+								WithSeverity(severity.Error),
+						)
 					}
 				}
 			}
 
-			return nil
 		},
 	})
 }

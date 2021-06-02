@@ -69,26 +69,23 @@ func init() {
 			pspBlock := block.GetBlock("pod_security_policy_config")
 			if pspBlock == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			enforcePSP := pspBlock.GetAttribute("enabled")
 			if enforcePSP.Type() == cty.Bool && enforcePSP.Value().False() || enforcePSP.Type() == cty.String && enforcePSP.Value().AsString() != "true" {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", block.FullName()),
-						enforcePSP.Range(),
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", block.FullName())).
+						WithRange(enforcePSP.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

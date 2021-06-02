@@ -67,25 +67,22 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if attr := block.GetAttribute("password_reuse_prevention"); attr == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have a password reuse prevention count set.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a password reuse prevention count set.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value < 5 {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' has a password reuse count less than 5.", block.FullName()),
-							).WithRange(block.Range()).WithSeverity(
-							severity.Warning,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' has a password reuse count less than 5.", block.FullName())).
+							WithRange(block.Range()).
+							WithSeverity(severity.Warning),
+					)
 				}
 			}
-			return nil
 		},
 	})
 }

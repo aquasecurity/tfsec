@@ -68,17 +68,15 @@ func init() {
 				if block.GetAttribute("principal").EndsWith("amazonaws.com") {
 					if block.MissingChild("source_arn") {
 						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' missing source ARN but has *.amazonaws.com Principal.", block.FullName()),
-								).WithRange(block.Range()).WithSeverity(
-								severity.Error,
-							),
-						}
+							result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' missing source ARN but has *.amazonaws.com Principal.", block.FullName())).
+								WithRange(block.Range()).
+								WithSeverity(severity.Error),
+						)
 					}
 				}
 			}
 
-			return nil
 		},
 	})
 }

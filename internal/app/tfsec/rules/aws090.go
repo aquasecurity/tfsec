@@ -58,32 +58,31 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecs_cluster"},
-		CheckFunc: func(resourceBlock *block.Block, _ *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			settings := resourceBlock.GetBlocks("setting")
-			for _, setting := range settings {
+			settingsBlock := resourceBlock.GetBlocks("setting")
+			for _, setting := range settingsBlock {
 				if name := setting.GetAttribute("name"); name.Equals("containerinsights", block.IgnoreCase) {
-					if setting.GetAttribute("value").Equals("enabled", block.IgnoreCase) {
-						return nil
-					} else {
-						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName()),
-								setting.Range(),
-								setting.GetAttribute("value"),
-								severity.Info,
-							),
+					if valueAttr := setting.GetAttribute("value"); valueAttr != nil {
+						if !valueAttr.Equals("enabled", block.IgnoreCase) {
+							set.Add(
+								result.New().
+									WithDescription(fmt.Sprintf("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName())).
+									WithRange(setting.Range()).
+									WithAttributeAnnotation(valueAttr).
+									WithSeverity(severity.Info),
+							)
 						}
+						return
 					}
 				}
 			}
 			set.Add(
-				result.New().WithDescription(
-					fmt.Sprintf("Resoure '%s' does not have codeInsights enabled", resourceBlock.FullName()),
-					resource).WithRange(block.Range()).WithSeverity(
-					severity.Info,
-				),
-			}
+				result.New().
+					WithDescription(fmt.Sprintf("Resoure '%s' does not have codeInsights enabled", resourceBlock.FullName())).
+					WithRange(resourceBlock.Range()).
+					WithSeverity(severity.Info),
+			)
 		},
 	})
 }

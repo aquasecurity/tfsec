@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/tfsec/tfsec/pkg/severity"
+
 	"github.com/tfsec/tfsec/pkg/result"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/block"
@@ -62,9 +64,10 @@ func (scanner *Scanner) Scan(blocks []*block.Block) []result.Result {
 					debug.Log("Running rule for %s on %s.%s (%s)...", r.ID, checkBlock.Type(), checkBlock.FullName(), checkBlock.Range().Filename)
 					ruleResults := rule.CheckRule(r, checkBlock, context)
 					if scanner.includePassed && ruleResults == nil {
-						results = append(results, NewPassingResult(checkBlock.Range()))
-					} else {
-						for _, ruleResult := range ruleResults {
+						res := result.New().WithRange(checkBlock.Range()).WithStatus(result.Passed).WithSeverity(severity.None)
+						results = append(results, *res)
+					} else if ruleResults != nil {
+						for _, ruleResult := range ruleResults.All() {
 							if scanner.includeIgnored || (!scanner.checkRangeIgnored(ruleResult.RuleID, ruleResult.Range, checkBlock.Range()) && !checkInList(ruleResult.RuleID, scanner.excludedRuleIDs)) {
 								results = append(results, ruleResult)
 							} else {

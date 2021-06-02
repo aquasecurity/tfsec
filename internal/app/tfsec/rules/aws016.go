@@ -56,33 +56,32 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_sns_topic"},
-		CheckFunc: func(block *block.Block, ctx *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, block *block.Block, ctx *hclcontext.Context) {
 
 			kmsKeyIDAttr := block.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.FullName()),
-						kmsKeyIDAttr.Range(),
-						kmsKeyIDAttr,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.FullName())).
+						WithRange(kmsKeyIDAttr.Range()).
+						WithAttributeAnnotation(kmsKeyIDAttr).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
 			if kmsKeyIDAttr.ReferencesDataBlock() {
 				ref := kmsKeyIDAttr.ReferenceAsString()
 				dataReferenceParts := strings.Split(ref, ".")
 				if len(dataReferenceParts) < 3 {
-					return nil
 				}
 				blockType := dataReferenceParts[0]
 				blockName := dataReferenceParts[1]
@@ -92,20 +91,18 @@ func init() {
 						keyIdAttr := kmsData.GetAttribute("key_id")
 						if keyIdAttr != nil && keyIdAttr.Equals("alias/aws/sns") {
 							set.Add(
-								result.New().WithDescription(
-									fmt.Sprintf("Resource '%s' explicitly uses the default CMK", block.FullName()),
-									kmsKeyIDAttr.Range(),
-									kmsKeyIDAttr,
-									severity.Warning,
-								),
-							}
+								result.New().
+									WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", block.FullName())).
+									WithRange(kmsKeyIDAttr.Range()).
+									WithAttributeAnnotation(kmsKeyIDAttr).
+									WithSeverity(severity.Warning),
+							)
 						}
 					}
 
 				}
 			}
 
-			return nil
 		},
 	})
 }

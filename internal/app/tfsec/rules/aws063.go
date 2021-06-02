@@ -74,26 +74,23 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if block.MissingChild("is_multi_region_trail") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not set multi region trail config.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not set multi region trail config.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
 
-			multiRegion := block.GetAttribute("is_multi_region_trail")
-			if multiRegion.IsFalse() {
+			multiRegionAttr := block.GetAttribute("is_multi_region_trail")
+			if multiRegionAttr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not enable multi region trail.", block.FullName()),
-						multiRegion.Range(),
-						multiRegion,
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not enable multi region trail.", block.FullName())).
+						WithRange(multiRegionAttr.Range()).
+						WithAttributeAnnotation(multiRegionAttr).
+						WithSeverity(severity.Warning),
+				)
 			} /**/
-			return nil
 		},
 	})
 }

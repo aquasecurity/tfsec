@@ -71,25 +71,23 @@ func init() {
 
 			if block.MissingChild("https_only") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
-			httpsonly := block.GetAttribute("https_only")
-			if httpsonly.IsFalse() {
+			httpsOnlyAttr := block.GetAttribute("https_only")
+			if httpsOnlyAttr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", block.FullName()),
-						httpsonly.Range(),
-						httpsonly,
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", block.FullName())).
+						WithRange(httpsOnlyAttr.Range()).
+						WithAttributeAnnotation(httpsOnlyAttr).
+						WithSeverity(severity.Warning),
+				)
 			}
-			return nil
 		},
 	})
 }

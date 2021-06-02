@@ -91,25 +91,23 @@ func init() {
 
 			if block.MissingChild("managed_virtual_network_enabled") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
-			managedNetwork := block.GetAttribute("managed_virtual_network_enabled")
-			if managedNetwork.IsFalse() {
+			managedNetworkAttr := block.GetAttribute("managed_virtual_network_enabled")
+			if managedNetworkAttr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", block.FullName()),
-						managedNetwork.Range(),
-						managedNetwork,
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", block.FullName())).
+						WithRange(managedNetworkAttr.Range()).
+						WithAttributeAnnotation(managedNetworkAttr).
+						WithSeverity(severity.Warning),
+				)
 			}
-			return nil
 		},
 	})
 }

@@ -65,25 +65,25 @@ func init() {
 			if block.HasChild("performance_insights_enabled") && block.GetAttribute("performance_insights_enabled").IsTrue() {
 				if block.MissingChild("performance_insights_kms_key_id") {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", block.FullName()),
-							).WithRange(block.Range()).WithSeverity(
-							severity.Error,
-						),
-					}
-				} else if block.GetAttribute("performance_insights_kms_key_id").IsEmpty() {
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", block.FullName())).
+							WithRange(block.Range()).
+							WithSeverity(severity.Error),
+					)
+					return
+				}
+
+				if keyAttr := block.GetAttribute("performance_insights_kms_key_id"); keyAttr.IsEmpty() {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", block.FullName()),
-							block.GetAttribute("performance_insights_kms_key_id").Range(),
-							block.GetAttribute("performance_insights_kms_key_id"),
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", block.FullName())).
+							WithRange(keyAttr.Range()).
+							WithAttributeAnnotation(keyAttr).
+							WithSeverity(severity.Error),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

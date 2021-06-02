@@ -55,29 +55,27 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_sqs_queue"},
-		CheckFunc: func(block *block.Block, context *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, block *block.Block, context *hclcontext.Context) {
 
 			kmsKeyIDAttr := block.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", block.FullName()),
-						kmsKeyIDAttr.Range(),
-						kmsKeyIDAttr,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", block.FullName())).
+						WithRange(kmsKeyIDAttr.Range()).
+						WithAttributeAnnotation(kmsKeyIDAttr).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

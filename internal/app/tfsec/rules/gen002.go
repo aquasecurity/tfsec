@@ -69,22 +69,19 @@ func init() {
 		RequiredTypes: []string{"locals"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 
-			var results []result.Result
-
 			for _, attribute := range block.GetAttributes() {
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String && attribute.Value().AsString() != "" {
-						results = append(results, result.New().WithDescription(
-							fmt.Sprintf("Local '%s' includes a potentially sensitive value which is defined within the project.", block.FullName()),
-							attribute.Range(),
-							attribute,
-							severity.Warning,
-						))
+						set.Add(result.New().
+							WithDescription(fmt.Sprintf("Local '%s' includes a potentially sensitive value which is defined within the project.", block.FullName())).
+							WithRange(attribute.Range()).
+							WithAttributeAnnotation(attribute).
+							WithSeverity(severity.Warning),
+						)
 					}
 				}
 			}
 
-			return results
 		},
 	})
 }

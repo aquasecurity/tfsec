@@ -104,47 +104,36 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_codebuild_project"},
-		CheckFunc: func(b *block.Block, _ *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, b *block.Block, _ *hclcontext.Context) {
 
-			artifactBlockChecker := func(artifactBlock *block.Block) []result.Result {
+			blocks := b.GetBlocks("secondary_artifacts")
+			if artifact := b.GetBlock("artifacts"); artifact != nil {
+				blocks = append(blocks, artifact)
+			}
+
+			for _, artifactBlock := range blocks {
 				if encryptionDisabledAttr := artifactBlock.GetAttribute("encryption_disabled"); encryptionDisabledAttr != nil && encryptionDisabledAttr.IsTrue() {
-					artifactType := artifactBlock.GetAttribute("type")
+					artifactTypeAttr := artifactBlock.GetAttribute("type")
 
-					if artifactType.Equals("NO_ARTIFACTS", block.IgnoreCase) {
+					if artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
 						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", b.FullName()),
-								artifact).WithRange(block.Range()).WithSeverity(
-								severity.Warning,
-							),
-						}
+							result.New().
+								WithDescription(fmt.Sprintf("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", b.FullName())).
+								WithRange(artifactBlock.Range()).
+								WithAttributeAnnotation(artifactTypeAttr).
+								WithSeverity(severity.Warning),
+						)
 					} else {
 						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf("CodeBuild project '%s' does not encrypt produced artifacts", b.FullName()),
-								artifact).WithRange(block.Range()).WithSeverity(
-								severity.Error,
-							),
-						}
+							result.New().
+								WithDescription(fmt.Sprintf("CodeBuild project '%s' does not encrypt produced artifacts", b.FullName())).
+								WithRange(artifactBlock.Range()).
+								WithAttributeAnnotation(encryptionDisabledAttr).
+								WithSeverity(severity.Error),
+						)
 					}
 				}
-
-				set.Add(}
 			}
-
-			artifact := b.GetBlock("artifacts")
-			results := artifactBlockChecker(artifact)
-
-			if secondaryArtifacts := b.GetBlocks("secondary_artifacts"); secondaryArtifacts != nil && len(secondaryArtifacts) > 0 {
-				for _, secondaryArtifact := range secondaryArtifacts {
-					results = append(results, artifactBlockChecker(secondaryArtifact)...)
-				}
-			}
-
-			if len(results) == 0 {
-				return nil
-			}
-			return results
 		},
 	})
 }

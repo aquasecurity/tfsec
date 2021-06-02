@@ -63,28 +63,26 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
-		CheckFunc: func(block *block.Block, context *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, block *block.Block, context *hclcontext.Context) {
 
 			encryptionBlock := block.GetBlock("encrypt_at_rest")
 			if encryptionBlock == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			enabledAttr := encryptionBlock.GetAttribute("enabled")
 			if enabledAttr == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", block.FullName()),
-						encryption).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", block.FullName())).
+						WithRange(encryptionBlock.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			isTrueBool := enabledAttr.Type() == cty.Bool && enabledAttr.Value().True()
@@ -93,15 +91,13 @@ func init() {
 			encryptionEnabled := isTrueBool || isTrueString
 			if !encryptionEnabled {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", block.FullName()),
-						encryption).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", block.FullName())).
+						WithRange(encryptionBlock.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

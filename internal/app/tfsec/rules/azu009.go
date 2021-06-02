@@ -60,44 +60,42 @@ func init() {
 		RequiredLabels: []string{"azurerm_kubernetes_cluster"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 
-			addonprofileBlock := block.GetBlock("addon_profile")
-			if addonprofileBlock == nil {
+			addonProfileBlock := block.GetBlock("addon_profile")
+			if addonProfileBlock == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
-			omsagentBlock := addonprofileBlock.GetBlock("oms_agent")
-			if omsagentBlock == nil {
+			omsAgentBlock := addonProfileBlock.GetBlock("oms_agent")
+			if omsAgentBlock == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
-			enabledAttr := omsagentBlock.GetAttribute("enabled")
-			if enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() || enabledAttr == nil {
+			enabledAttr := omsAgentBlock.GetAttribute("enabled")
+			if enabledAttr == nil || (enabledAttr.Type() == cty.Bool && enabledAttr.Value().False()) {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf(
+					result.New().
+						WithDescription(fmt.Sprintf(
 							"Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).",
 							block.FullName(),
-						),
-						enabledAttr.Range(),
-						enabledAttr,
-						severity.Error,
-					),
-				}
+						)).
+						WithRange(enabledAttr.Range()).
+						WithAttributeAnnotation(enabledAttr).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

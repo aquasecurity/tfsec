@@ -77,26 +77,23 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if block.MissingChild("enable_log_file_validation") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not enable log file validation.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not enable log file validation.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
 
-			logFileValidation := block.GetAttribute("enable_log_file_validation")
-			if logFileValidation.IsFalse() {
+			logFileValidationAttr := block.GetAttribute("enable_log_file_validation")
+			if logFileValidationAttr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not enable log file validation.", block.FullName()),
-						logFileValidation.Range(),
-						logFileValidation,
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not enable log file validation.", block.FullName())).
+						WithRange(logFileValidationAttr.Range()).
+						WithAttributeAnnotation(logFileValidationAttr).
+						WithSeverity(severity.Warning),
+				)
 			} /**/
-			return nil
 		},
 	})
 }

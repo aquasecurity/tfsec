@@ -76,31 +76,34 @@ func init() {
 		RequiredLabels: []string{"aws_dax_cluster"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 
-			res := result.New().WithDescription(
-				"",
-				).WithRange(block.Range()).WithSeverity(
-				severity.Error,
-			)
-
 			if block.MissingChild("server_side_encryption") {
-				res.Description = fmt.Sprintf("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", block.FullName())
-				set.Add(res}
+				res := result.New().
+					WithDescription(fmt.Sprintf("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", block.FullName())).
+					WithRange(block.Range()).
+					WithSeverity(severity.Error)
+				set.Add(res)
+				return
 			}
 
 			sseBlock := block.GetBlock("server_side_encryption")
 			if sseBlock.MissingChild("enabled") {
-				res.Description = fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", block.FullName())
-				res.Range = sseBlock.Range()
-				set.Add(res}
+				res := result.New().
+					WithDescription(fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", block.FullName())).
+					WithRange(sseBlock.Range()).
+					WithSeverity(severity.Error)
+				set.Add(res)
+				return
 			}
 
 			if sseEnabledAttr := sseBlock.GetAttribute("enabled"); sseEnabledAttr.IsFalse() {
-				res.Description = fmt.Sprintf("DAX cluster '%s' has disabled server side encryption", block.FullName())
-				res.Range = sseEnabledAttr.Range()
-				set.Add(res}
+				res := result.New().
+					WithDescription(fmt.Sprintf("DAX cluster '%s' has disabled server side encryption", block.FullName())).
+					WithRange(sseEnabledAttr.Range()).
+					WithAttributeAnnotation(sseEnabledAttr).
+					WithSeverity(severity.Error)
+				set.Add(res)
 			}
 
-			return nil
 		},
 	})
 }

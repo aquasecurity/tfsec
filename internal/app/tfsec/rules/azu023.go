@@ -64,14 +64,12 @@ func init() {
 
 			if block.MissingChild("expiration_date") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have an expiration date set.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have an expiration date set.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
-			return nil
 		},
 	})
 }

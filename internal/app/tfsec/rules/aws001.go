@@ -67,8 +67,7 @@ func init() {
 							WithRange(attr.Range()).
 							WithSeverity(severity.Warning),
 					)
-				}
-				if attr.Equals("authenticated-read") {
+				} else if attr.Equals("authenticated-read") {
 					set.Add(
 						result.New().
 							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", block.FullName())).

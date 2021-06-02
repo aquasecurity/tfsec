@@ -50,7 +50,7 @@ data "cats_cat" "the-cats-mother" {
 `)
 
 	debug.Enabled = true
-	parser := New(filepath.Dir(path), "")
+	parser := New(filepath.Dir(path), OptionStopOnHCLError())
 	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
@@ -132,7 +132,7 @@ output "result" {
 		"module",
 	)
 
-	parser := New(path, "")
+	parser := New(path, OptionStopOnHCLError())
 	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
@@ -188,7 +188,7 @@ output "result" {
 		"",
 	)
 
-	parser := New(path, "")
+	parser := New(path, OptionStopOnHCLError())
 	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)

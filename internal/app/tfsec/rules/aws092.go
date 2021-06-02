@@ -100,42 +100,38 @@ func init() {
 
 			if block.MissingChild("server_side_encryption") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Info,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Info),
+				)
 			}
 
 			sseBlock := block.GetBlock("server_side_encryption")
 			enabledAttr := sseBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", block.FullName()),
-						enabledAttr.Range(),
-						enabledAttr,
-						severity.Info,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", block.FullName())).
+						WithRange(enabledAttr.Range()).
+						WithAttributeAnnotation(enabledAttr).
+						WithSeverity(severity.Info),
+				)
 			}
 
 			if sseBlock.HasChild("kms_key_arn") {
 				keyIdAttr := sseBlock.GetAttribute("kms_key_arn")
 				if keyIdAttr.Equals("alias/aws/dynamodb") {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' has KMS encryption configured but is using the default aws key", block.FullName()),
-							keyIdAttr.Range(),
-							keyIdAttr,
-							severity.Info,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' has KMS encryption configured but is using the default aws key", block.FullName())).
+							WithRange(keyIdAttr.Range()).
+							WithAttributeAnnotation(keyIdAttr).
+							WithSeverity(severity.Info),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

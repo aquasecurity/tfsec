@@ -83,28 +83,26 @@ func init() {
 
 			if block.MissingChild("enabled_cluster_log_types") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
-			configuredLogging := block.GetAttribute("enabled_cluster_log_types")
-			var logTypeResults []result.Result
+			configuredLoggingAttr := block.GetAttribute("enabled_cluster_log_types")
 			for _, logType := range controlPlaneLogging {
-				if !configuredLogging.Contains(logType) {
-					logTypeResults = append(logTypeResults, result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is missing the control plane log type '%s'", block.FullName(), logType),
-						configuredLogging.Range(),
-						configuredLogging,
-						severity.Error,
-					))
+				if !configuredLoggingAttr.Contains(logType) {
+					set.Add(
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' is missing the control plane log type '%s'", block.FullName(), logType)).
+							WithRange(configuredLoggingAttr.Range()).
+							WithAttributeAnnotation(configuredLoggingAttr).
+							WithSeverity(severity.Error),
+					)
 				}
 			}
-
-			return logTypeResults
 		},
 	})
 }

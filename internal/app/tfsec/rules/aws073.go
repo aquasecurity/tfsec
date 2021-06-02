@@ -65,26 +65,23 @@ func init() {
 
 			if block.MissingChild("ignore_public_acls") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not specify ignore_public_acls, defaults to false", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not specify ignore_public_acls, defaults to false", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			attr := block.GetAttribute("ignore_public_acls")
 			if attr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' sets ignore_public_acls explicitly to false", block.FullName()),
-						attr.Range(),
-						attr,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' sets ignore_public_acls explicitly to false", block.FullName())).
+						WithRange(attr.Range()).
+						WithAttributeAnnotation(attr).
+						WithSeverity(severity.Error),
+				)
 			}
-			return nil
 		},
 	})
 }

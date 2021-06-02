@@ -103,21 +103,19 @@ func init() {
 					HasChild("result_configuration") {
 					block = block.GetBlock("configuration").GetBlock("result_configuration")
 				} else {
-					return nil
+					return
 				}
 			}
 
 			if block.MissingChild("encryption_configuration") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' missing encryption configuration block.", blockName),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' missing encryption configuration block.", blockName)).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

@@ -64,20 +64,18 @@ func init() {
 				passwordAuthDisabledAttr := linuxConfigBlock.GetAttribute("disable_password_authentication")
 				if passwordAuthDisabledAttr != nil && passwordAuthDisabledAttr.Type() == cty.Bool && passwordAuthDisabledAttr.Value().False() {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf(
+						result.New().
+							WithDescription(fmt.Sprintf(
 								"Resource '%s' has password authentication enabled. Use SSH keys instead.",
 								block.FullName(),
-							),
-							passwordAuthDisabledAttr.Range(),
-							passwordAuthDisabledAttr,
-							severity.Error,
-						),
-					}
+							)).
+							WithRange(passwordAuthDisabledAttr.Range()).
+							WithAttributeAnnotation(passwordAuthDisabledAttr).
+							WithSeverity(severity.Error),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

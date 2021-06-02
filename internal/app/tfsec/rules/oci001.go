@@ -65,7 +65,8 @@ func init() {
 							WithDescription(fmt.Sprintf("Resource '%s' is using an IP from a public IP pool", block.FullName())).
 							WithRange(attr.Range()).
 							WithAttributeAnnotation(attr).
-							WithSeverity(severity.Warning))
+							WithSeverity(severity.Warning),
+					)
 				}
 			}
 		},

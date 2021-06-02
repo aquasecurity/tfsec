@@ -81,37 +81,33 @@ func init() {
 
 			if block.MissingChild("point_in_time_recovery") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' doesn't have point in time recovery", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
 
 			poitBlock := block.GetBlock("point_in_time_recovery")
 			if poitBlock.MissingChild("enabled") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
 			enabledAttr := poitBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", block.FullName()),
-						enabledAttr.Range(),
-						enabledAttr,
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", block.FullName())).
+						WithRange(enabledAttr.Range()).
+						WithAttributeAnnotation(enabledAttr).
+						WithSeverity(severity.Warning),
+				)
 			}
 
-			return nil
 		},
 	})
 }

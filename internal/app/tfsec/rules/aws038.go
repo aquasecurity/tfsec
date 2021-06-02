@@ -66,26 +66,23 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if attr := block.GetAttribute("max_password_age"); attr == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have a max password age set.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a max password age set.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value > 90 {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' has high password age.", block.FullName()),
-							attr.Range(),
-							attr,
-							severity.Warning,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' has high password age.", block.FullName())).
+							WithRange(attr.Range()).
+							WithAttributeAnnotation(attr).
+							WithSeverity(severity.Warning),
+					)
 				}
 			}
-			return nil
 		},
 	})
 }

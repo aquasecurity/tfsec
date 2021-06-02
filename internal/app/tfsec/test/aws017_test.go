@@ -87,7 +87,6 @@ resource "aws_s3_bucket" "this" {
  
      #checkov:skip=CKV_AWS_18:This S3 does not need logging to be enabled
      #tfsec:ignore:AWS002 This S3 does not need logging to be enabled
-   }
  }
 `,
 			mustExcludeResultCode: rules.AWSUnencryptedS3Bucket,

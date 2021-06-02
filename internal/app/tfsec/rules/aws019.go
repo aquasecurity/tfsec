@@ -60,33 +60,31 @@ func init() {
 			keyUsageAttr := block.GetAttribute("key_usage")
 
 			if keyUsageAttr != nil && keyUsageAttr.Equals("SIGN_VERIFY") {
-				return nil
+				return
 			}
 
 			keyRotationAttr := block.GetAttribute("enable_key_rotation")
 
 			if keyRotationAttr == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
+				return
 			}
 
 			if keyRotationAttr.Type() == cty.Bool && keyRotationAttr.Value().False() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.FullName()),
-						keyRotationAttr.Range(),
-						keyRotationAttr,
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.FullName())).
+						WithRange(keyRotationAttr.Range()).
+						WithAttributeAnnotation(keyRotationAttr).
+						WithSeverity(severity.Warning),
+				)
 			}
 
-			return nil
 		},
 	})
 }

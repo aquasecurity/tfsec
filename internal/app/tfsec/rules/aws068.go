@@ -70,37 +70,33 @@ func init() {
 
 			if block.MissingChild("vpc_config") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access cidrs is set", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access cidrs is set", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			vpcConfig := block.GetBlock("vpc_config")
 			if vpcConfig.MissingChild("public_access_cidrs") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is using default public access cidrs in the vpc config", block.FullName()),
-						vpcConfig.Range(),
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' is using default public access cidrs in the vpc config", block.FullName())).
+						WithRange(vpcConfig.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			publicAccessCidrs := vpcConfig.GetAttribute("public_access_cidrs")
-			if isOpenCidr(publicAccessCidrs) {
+			publicAccessCidrsAttr := vpcConfig.GetAttribute("public_access_cidrs")
+			if isOpenCidr(publicAccessCidrsAttr) {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has public access cidr explicitly set to wide open", block.FullName()),
-						publicAccessCidrs.Range(),
-						publicAccessCidrs,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has public access cidr explicitly set to wide open", block.FullName())).
+						WithRange(publicAccessCidrsAttr.Range()).
+						WithAttributeAnnotation(publicAccessCidrsAttr).
+						WithSeverity(severity.Error),
+				)
 			}
-			return nil
 		},
 	})
 }

@@ -35,7 +35,7 @@ resource "problem" "uhoh" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			path := createTestFileWithModule(test.source, test.moduleSource)
-			blocks, err := parser.New(path, "").ParseDirectory()
+			blocks, err := parser.New(path, parser.OptionStopOnHCLError()).ParseDirectory()
 			if err != nil {
 				t.Fatal(err)
 			}

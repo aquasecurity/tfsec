@@ -64,23 +64,20 @@ func init() {
 
 			if block.MissingChild("public_network_enabled") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have public_network_enabled set to false, the default is true.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have public_network_enabled set to false, the default is true.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 			if block.GetAttribute("public_network_enabled").IsTrue() || block.GetAttribute("public_network_enabled").Equals("true") || block.GetAttribute("public_network_enabled").Equals(true) {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should not have public network set to true.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should not have public network set to true.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
-			return nil
 		},
 	})
 }

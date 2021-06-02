@@ -64,26 +64,23 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if block.MissingChild("restrict_public_buckets") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not specify restrict_public_buckets, defaults to false", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not specify restrict_public_buckets, defaults to false", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			attr := block.GetAttribute("restrict_public_buckets")
 			if attr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' sets restrict_public_buckets explicitly to false", block.FullName()),
-						attr.Range(),
-						attr,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' sets restrict_public_buckets explicitly to false", block.FullName())).
+						WithRange(attr.Range()).
+						WithAttributeAnnotation(attr).
+						WithSeverity(severity.Error),
+				)
 			}
-			return nil
 		},
 	})
 }

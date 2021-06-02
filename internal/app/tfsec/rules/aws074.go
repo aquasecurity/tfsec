@@ -64,26 +64,23 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if block.MissingChild("block_public_acls") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not specify block_public_acls, defaults to false", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not specify block_public_acls, defaults to false", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			attr := block.GetAttribute("block_public_acls")
 			if attr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' sets block_public_acls explicitly to false", block.FullName()),
-						attr.Range(),
-						attr,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' sets block_public_acls explicitly to false", block.FullName())).
+						WithRange(attr.Range()).
+						WithAttributeAnnotation(attr).
+						WithSeverity(severity.Error),
+				)
 			}
-			return nil
 		},
 	})
 }

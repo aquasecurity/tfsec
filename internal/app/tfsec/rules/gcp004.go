@@ -60,16 +60,14 @@ func init() {
 
 				if isOpenCidr(destinationRanges) {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines a fully open outbound firewall rule.", block.FullName()),
-							destinationRanges.Range(),
-							severity.Warning,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open outbound firewall rule.", block.FullName())).
+							WithRange(destinationRanges.Range()).
+							WithSeverity(severity.Warning),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

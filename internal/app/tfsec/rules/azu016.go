@@ -82,16 +82,14 @@ func init() {
 				queueProps := block.GetBlock("queue_properties")
 				if queueProps.MissingChild("logging") {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", block.FullName()),
-							).WithRange(block.Range()).WithSeverity(
-							severity.Warning,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", block.FullName())).
+							WithRange(block.Range()).
+							WithSeverity(severity.Warning),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

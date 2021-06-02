@@ -75,26 +75,22 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if !block.IsResourceType("azurerm_mssql_database_extended_auditing_policy") {
 				if block.MissingChild("extended_auditing_policy") {
-					return nil
 				}
 				block = block.GetBlock("extended_auditing_policy")
 			}
 
 			if block.MissingChild("retention_in_days") {
 				// using default of unlimited
-				return nil
 			}
 			if block.GetAttribute("retention_in_days").LessThan(90) {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' specifies a retention period of less than 90 days.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' specifies a retention period of less than 90 days.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

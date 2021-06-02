@@ -77,26 +77,24 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if block.MissingChild("description") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
 			descriptionAttr := block.GetAttribute("description")
 			if descriptionAttr.IsEmpty() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should include a non-empty description for auditing purposes.", block.FullName()),
-						descriptionAttr.Range(),
-						descriptionAttr,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should include a non-empty description for auditing purposes.", block.FullName())).
+						WithRange(descriptionAttr.Range()).
+						WithAttributeAnnotation(descriptionAttr).
+						WithSeverity(severity.Error),
+				)
 			}
-			return nil
 		},
 	})
 }

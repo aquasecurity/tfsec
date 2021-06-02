@@ -59,16 +59,16 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_secretsmanager_secret"},
-		CheckFunc: func(block *block.Block, ctx *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, block *block.Block, ctx *hclcontext.Context) {
 
 			if block.MissingChild("kms_key_id") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not use CMK", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Info,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not use CMK", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Info),
+				)
+				return
 			}
 
 			kmsKeyAttr := block.GetAttribute("kms_key_id")
@@ -76,7 +76,7 @@ func init() {
 				ref := kmsKeyAttr.ReferenceAsString()
 				dataReferenceParts := strings.Split(ref, ".")
 				if len(dataReferenceParts) < 3 {
-					return nil
+					return
 				}
 				blockType := dataReferenceParts[0]
 				blockName := dataReferenceParts[1]
@@ -86,20 +86,18 @@ func init() {
 						keyIdAttr := kmsData.GetAttribute("key_id")
 						if keyIdAttr != nil && keyIdAttr.Equals("alias/aws/secretsmanager") {
 							set.Add(
-								result.New().WithDescription(
-									fmt.Sprintf("Resource '%s' explicitly uses the default CMK", block.FullName()),
-									kmsKeyAttr.Range(),
-									kmsKeyAttr,
-									severity.Info,
-								),
-							}
+								result.New().
+									WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", block.FullName())).
+									WithRange(kmsKeyAttr.Range()).
+									WithAttributeAnnotation(kmsKeyAttr).
+									WithSeverity(severity.Info),
+							)
 						}
 					}
 
 				}
 			}
 
-			return nil
 		},
 	})
 }

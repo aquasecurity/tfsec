@@ -15,8 +15,6 @@ import (
 	"github.com/tfsec/tfsec/pkg/rule"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 // GkeShieldedNodesDisabled See https://github.com/tfsec/tfsec#included-checks for check info
@@ -58,29 +56,27 @@ func init() {
 		RequiredLabels: []string{"google_container_cluster"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 
-			enable_shielded_nodes := block.GetAttribute("enable_shielded_nodes")
-
-			if enable_shielded_nodes == nil {
+			if block.MissingChild("enable_shielded_nodes") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
-			if enable_shielded_nodes.Type() == cty.Bool && enable_shielded_nodes.Value().False() || enable_shielded_nodes.Type() == cty.String && enable_shielded_nodes.Value().AsString() != "true" {
+			enableShieldedNodesAttr := block.GetAttribute("enable_shielded_nodes")
+
+			if enableShieldedNodesAttr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", block.FullName()),
-						enable_shielded_nodes.Range(),
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", block.FullName())).
+						WithRange(enableShieldedNodesAttr.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

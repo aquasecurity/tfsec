@@ -66,25 +66,22 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if attr := block.GetAttribute("minimum_password_length"); attr == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have a minimum password length set.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a minimum password length set.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value < 14 {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' has a minimum password length which is less than 14 characters.", block.FullName()),
-							).WithRange(block.Range()).WithSeverity(
-							severity.Warning,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' has a minimum password length which is less than 14 characters.", block.FullName())).
+							WithRange(block.Range()).
+							WithSeverity(severity.Warning),
+					)
 				}
 			}
-			return nil
 		},
 	})
 }

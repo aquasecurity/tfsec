@@ -79,27 +79,25 @@ func init() {
 
 			if block.MissingChild("kms_key_id") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have a kms_key_id set.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a kms_key_id set.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
-			kmsKeyId := block.GetAttribute("kms_key_id")
-			if kmsKeyId.IsEmpty() {
+			kmsKeyIdAttr := block.GetAttribute("kms_key_id")
+			if kmsKeyIdAttr.IsEmpty() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has a kms_key_id but it is not set.", block.FullName()),
-						kmsKeyId.Range(),
-						kmsKeyId,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has a kms_key_id but it is not set.", block.FullName())).
+						WithRange(kmsKeyIdAttr.Range()).
+						WithAttributeAnnotation(kmsKeyIdAttr).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

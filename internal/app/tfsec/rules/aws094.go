@@ -73,37 +73,33 @@ func init() {
 
 			if block.MissingChild("encrypted") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have encryption enabled", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have encryption enabled", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
 
 			if block.MissingChild("kms_key_id") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have a customer managed key specified", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a customer managed key specified", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
 
 			encryptedAttr := block.GetAttribute("encrypted")
 			if encryptedAttr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has encryption explicitly dissabled", block.FullName()),
-						encryptedAttr.Range(),
-						encryptedAttr,
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has encryption explicitly dissabled", block.FullName())).
+						WithRange(encryptedAttr.Range()).
+						WithAttributeAnnotation(encryptedAttr).
+						WithSeverity(severity.Warning),
+				)
 			}
 
-			return nil
 		},
 	})
 }

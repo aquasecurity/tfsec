@@ -75,33 +75,30 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_alb", "aws_lb"},
-		CheckFunc: func(b *block.Block, _ *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, b *block.Block, _ *hclcontext.Context) {
 
 			if b.GetAttribute("load_balancer_type").Equals("application", block.IgnoreCase) {
 				if b.MissingChild("drop_invalid_header_fields") {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' does not drop invalid header fields", b.FullName()),
-							b.Range(),
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' does not drop invalid header fields", b.FullName())).
+							WithRange(b.Range()).
+							WithSeverity(severity.Error),
+					)
 				}
 
 				attr := b.GetAttribute("drop_invalid_header_fields")
 				if attr.IsFalse() {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", b.FullName()),
-							attr.Range(),
-							attr,
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", b.FullName())).
+							WithRange(attr.Range()).
+							WithAttributeAnnotation(attr).
+							WithSeverity(severity.Error),
+					)
 				}
 
 			}
-			return nil
 		},
 	})
 }

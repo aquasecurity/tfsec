@@ -66,23 +66,20 @@ func init() {
 
 			if block.MissingChild("purge_protection_enabled") || block.GetAttribute("purge_protection_enabled").IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have purge protection enabled.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have purge protection enabled.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
 			if block.GetAttribute("purge_protection_enabled").IsTrue() && (block.MissingChild("soft_delete_retention_days") || block.GetAttribute("soft_delete_retention_days").LessThan(1)) {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have soft_delete_retention_days set in order to enabled purge protection.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have soft_delete_retention_days set in order to enabled purge protection.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
-			return nil
 		},
 	})
 }

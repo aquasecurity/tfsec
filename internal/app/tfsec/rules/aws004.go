@@ -58,7 +58,9 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_lb_listener", "aws_alb_listener"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+
 			if protocolAttr := block.GetAttribute("protocol"); protocolAttr == nil || (protocolAttr.Type() == cty.String && protocolAttr.Value().AsString() == "HTTP") {
+
 				// check if this is a redirect to HTTPS - if it is, then no problem
 				if actionBlock := block.GetBlock("default_action"); actionBlock != nil {
 					actionTypeAttr := actionBlock.GetAttribute("type")
@@ -71,16 +73,19 @@ func init() {
 						}
 					}
 				}
-				reportRange := block.Range()
+
+				res := result.New().
+					WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.FullName())).
+					WithSeverity(severity.Error)
+
 				if protocolAttr != nil {
-					reportRange = protocolAttr.Range()
+					res.WithRange(protocolAttr.Range()).
+						WithAttributeAnnotation(protocolAttr)
+				} else {
+					res.WithRange(block.Range())
 				}
-				set.Add(
-					result.New().WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", block.FullName())).
-						WithRange(reportRange).
-						WithAttributeAnnotation(protocolAttr).
-						WithSeverity(severity.Error),
-				)
+
+				set.Add(res)
 			}
 		},
 	})

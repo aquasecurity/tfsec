@@ -27,9 +27,19 @@ type Evaluator struct {
 	inputVars       map[string]cty.Value
 	moduleMetadata  *ModulesMetadata
 	projectRootPath string // root of the current scan
+	stopOnHCLError  bool
 }
 
-func NewEvaluator(projectRootPath string, modulePath string, blocks block.Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo, visitedModules []*visitedModule) *Evaluator {
+func NewEvaluator(
+	projectRootPath string,
+	modulePath string,
+	blocks block.Blocks,
+	inputVars map[string]cty.Value,
+	moduleMetadata *ModulesMetadata,
+	modules []*ModuleInfo,
+	visitedModules []*visitedModule,
+	stopOnHCLError bool,
+) *Evaluator {
 
 	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
@@ -48,6 +58,7 @@ func NewEvaluator(projectRootPath string, modulePath string, blocks block.Blocks
 		moduleMetadata:  moduleMetadata,
 		modules:         modules,
 		visitedModules:  visitedModules,
+		stopOnHCLError:  stopOnHCLError,
 	}
 }
 
@@ -108,8 +119,8 @@ func (e *Evaluator) evaluateModules() {
 		}
 		evalTime.Stop()
 
-		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata)
-		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules, e.visitedModules)
+		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata, e.stopOnHCLError)
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules, e.visitedModules, e.stopOnHCLError)
 		e.SetModuleBasePath(e.projectRootPath)
 		b, _ := moduleEvaluator.EvaluateAll()
 		e.blocks = mergeBlocks(e.blocks, b)

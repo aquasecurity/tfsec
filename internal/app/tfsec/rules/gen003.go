@@ -93,7 +93,6 @@ func init() {
 
 			attributes := block.GetAttributes()
 
-			var results []result.Result
 		SKIP:
 			for _, attribute := range attributes {
 				for _, whitelisted := range sensitiveWhitelist {
@@ -103,18 +102,17 @@ func init() {
 				}
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String && attribute.Value().AsString() != "" {
-						results = append(results, result.New().WithDescription(
-							fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", block.FullName()),
-							attribute.Range(),
-							attribute,
-							severity.Warning,
-						))
+						set.Add(result.New().
+							WithDescription(fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", block.FullName())).
+							WithRange(attribute.Range()).
+							WithAttributeAnnotation(attribute).
+							WithSeverity(severity.Warning),
+						)
 					}
 
 				}
 			}
 
-			return results
 		},
 	})
 }

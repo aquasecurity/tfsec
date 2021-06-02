@@ -112,7 +112,6 @@ func init() {
 
 			if block.IsResourceType("azurerm_storage_account") {
 				if block.MissingChild("network_rules") {
-					return nil
 				}
 				block = block.GetBlock("network_rules")
 			}
@@ -121,16 +120,14 @@ func init() {
 				bypass := block.GetAttribute("bypass")
 				if !bypass.Contains("AzureServices") {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines a network rule that doesn't allow bypass of Microsoft Services.", block.FullName()),
-							).WithRange(block.Range()).WithSeverity(
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a network rule that doesn't allow bypass of Microsoft Services.", block.FullName())).
+							WithRange(block.Range()).
+							WithSeverity(severity.Error),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

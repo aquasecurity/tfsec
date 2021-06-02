@@ -59,25 +59,22 @@ func init() {
 
 			if accessKeyAttribute := block.GetAttribute("access_key"); accessKeyAttribute != nil && accessKeyAttribute.Type() == cty.String {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Provider '%s' has an access key specified.", block.FullName()),
-						accessKeyAttribute.Range(),
-						accessKeyAttribute,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Provider '%s' has an access key specified.", block.FullName())).
+						WithRange(accessKeyAttribute.Range()).
+						WithAttributeAnnotation(accessKeyAttribute).
+						WithSeverity(severity.Error),
+				)
 			} else if secretKeyAttribute := block.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Provider '%s' has a secret key specified.", block.FullName()),
-						secretKeyAttribute.Range(),
-						secretKeyAttribute,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Provider '%s' has a secret key specified.", block.FullName())).
+						WithRange(secretKeyAttribute.Range()).
+						WithAttributeAnnotation(secretKeyAttribute).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

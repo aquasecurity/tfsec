@@ -113,11 +113,8 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
             if attr := block.GetAttribute("hackable"); attr != nil && attr.Value().Type() == cty.Bool {
                 if attr.Value().True() {
                     return []scanner.Result{
-                        result.New().WithDescription( 
-                            fmt.Sprintf("The Gibson '%s' is configured to be hackable.", block.Name()),
-                            attr.Range(),
-                            attr,
-                            scanner.SeverityWarning,
+                        result.New().WithDescription(fmt.Sprintf("The Gibson '%s' is configured to be hackable.", block.Name())).WithRange(attr.Range()).WithAttributeAnnotation(attr).
+                            scanner.WithSeverity(SeverityWarning),
                         ),
                     }
                 }

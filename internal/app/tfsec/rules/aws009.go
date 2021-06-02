@@ -58,19 +58,16 @@ func init() {
 		RequiredLabels: []string{"aws_security_group"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 
-			var results []result.Result
-
 			for _, directionBlock := range block.GetBlocks("egress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 					if isOpenCidr(cidrBlocksAttr) {
-						results = append(results,
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.FullName()),
-								cidrBlocksAttr.Range(),
-								cidrBlocksAttr,
-								severity.Warning,
-							),
+						set.Add(
+							result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.FullName())).
+								WithRange(cidrBlocksAttr.Range()).
+								WithAttributeAnnotation(cidrBlocksAttr).
+								WithSeverity(severity.Warning),
 						)
 					}
 				}
@@ -78,19 +75,16 @@ func init() {
 				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr != nil {
 
 					if isOpenCidr(cidrBlocksAttr) {
-						results = append(results,
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.FullName()),
-								cidrBlocksAttr.Range(),
-								cidrBlocksAttr,
-								severity.Warning,
-							),
+						set.Add(
+							result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", block.FullName())).
+								WithRange(cidrBlocksAttr.Range()).
+								WithAttributeAnnotation(cidrBlocksAttr).
+								WithSeverity(severity.Warning),
 						)
 					}
 				}
 			}
-
-			return results
 		},
 	})
 }

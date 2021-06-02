@@ -79,16 +79,14 @@ func init() {
 
 				if !auditLogFound {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in one of the `log_publishing_options`-`log_type` attributes so audit log is not enabled", block.FullName()),
-							).WithRange(block.Range()).WithSeverity(
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in one of the `log_publishing_options`-`log_type` attributes so audit log is not enabled", block.FullName())).
+							WithRange(block.Range()).
+							WithSeverity(severity.Error),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

@@ -51,8 +51,10 @@ var ignoreWarnings = false
 var ignoreInfo = false
 var allDirs = false
 var runStatistics bool
+var stopOnHCLError bool
 
 func init() {
+	rootCmd.Flags().BoolVar(&stopOnHCLError, "stop-on-hcl-error", stopOnHCLError, "Stop and report an error if an HCL parse error is encountered")
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
@@ -184,18 +186,12 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if tfvarsPath != "" {
-			tfvarsPath, err = filepath.Abs(tfvarsPath)
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-		} else if unusedTfvarsPresent(dir) {
+		if tfvarsPath == "" && unusedTfvarsPresent(dir) {
 			_ = tml.Printf("\n<yellow>Warning: A tfvars file was found but not automatically used. \nDid you mean to specify the --tfvars-file flag?</yellow>\n")
 		}
 
 		debug.Log("Starting parser...")
-		blocks, err := parser.New(dir, tfvarsPath, getParserOptions()...).ParseDirectory()
+		blocks, err := parser.New(dir, getParserOptions()...).ParseDirectory()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -251,10 +247,21 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func getParserOptions() []parser.ParserOption {
-	var opts []parser.ParserOption
+func getParserOptions() []parser.Option {
+	var opts []parser.Option
 	if allDirs {
-		opts = append(opts, parser.DontSearchTfFiles)
+		opts = append(opts, parser.OptionDoNotSearchTfFiles())
+	}
+	if tfvarsPath != "" {
+		tfvarsPath, err := filepath.Abs(tfvarsPath)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		opts = append(opts, parser.OptionWithTFVarsPath(tfvarsPath))
+	}
+	if stopOnHCLError {
+		opts = append(opts, parser.OptionStopOnHCLError())
 	}
 	return opts
 }

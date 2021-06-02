@@ -69,8 +69,6 @@ provider "aws" {
 variable "account_deets" {
 	type = map
 	default = {
-		access_id,
-		access_key 
 	}
 }
 

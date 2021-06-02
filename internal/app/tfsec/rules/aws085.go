@@ -70,37 +70,33 @@ func init() {
 			aggBlock := block.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")
 			if aggBlock == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have account aggregation sources set", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources set", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			if aggBlock.MissingChild("all_regions") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have account aggregation sources to all regions", block.FullName()),
-						agg).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources to all regions", block.FullName())).
+WithRange(aggBlock.Range()).
+						WithSeverity(severity.Warning),
+				)
 			}
 
 			allRegionsAttr := aggBlock.GetAttribute("all_regions")
 			if allRegionsAttr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has all_regions set to false", block.FullName()),
-						allRegionsAttr.Range(),
-						allRegionsAttr,
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has all_regions set to false", block.FullName())).
+						WithRange(allRegionsAttr.Range()).
+						WithAttributeAnnotation(allRegionsAttr).
+						WithSeverity(severity.Warning),
+				)
 			}
 
-			return nil
 		},
 	})
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/owenrumney/go-sarif/sarif"
 )
 
-func FormatSarif(w io.Writer, results []result.Result, baseDir string, options ...FormatterOption) error {
+func FormatSarif(w io.Writer, results []result.Result, baseDir string, _ ...FormatterOption) error {
 	report, err := sarif.New(sarif.Version210)
 	if err != nil {
 		return err
@@ -31,8 +31,8 @@ func FormatSarif(w io.Writer, results []result.Result, baseDir string, options .
 		if len(res.Links) > 0 {
 			link = res.Links[0]
 		}
-		rule := run.AddRule(string(res.RuleID)).
-			WithDescription(string(res.RuleSummary)).
+		rule := run.AddRule(res.RuleID).
+			WithDescription(res.RuleSummary).
 			WithHelp(link)
 
 		relativePath, err := filepath.Rel(baseDir, res.Range.Filename)
@@ -40,7 +40,7 @@ func FormatSarif(w io.Writer, results []result.Result, baseDir string, options .
 			return err
 		}
 
-		message := sarif.NewTextMessage(string(res.Description))
+		message := sarif.NewTextMessage(res.Description)
 		region := sarif.NewSimpleRegion(res.Range.StartLine, res.Range.EndLine)
 		level := strings.ToLower(string(res.Severity))
 		if res.Severity == severity.Info {

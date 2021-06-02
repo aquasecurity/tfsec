@@ -88,33 +88,30 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudfront_distribution"},
-		CheckFunc: func(b *block.Block, _ *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, b *block.Block, _ *hclcontext.Context) {
 
 			defaultCacheBlock := b.GetBlock("default_cache_behavior")
 			if defaultCacheBlock.GetAttribute("viewer_protocol_policy").Equals("allow-all", block.IgnoreCase) {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not use HTTPS in Viewer Protocol Policy", b.FullName()),
-						defaultCache).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not use HTTPS in Viewer Protocol Policy", b.FullName())).
+						WithRange(defaultCacheBlock.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			orderedCacheBlocks := b.GetBlocks("ordered_cache_behavior")
 			for _, orderedCacheBlock := range orderedCacheBlocks {
 				if orderedCacheBlock.GetAttribute("viewer_protocol_policy").Equals("allow-all", block.IgnoreCase) {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' does not use HTTPS in Viewer Protocol Policy", b.FullName()),
-							orderedCache).WithRange(block.Range()).WithSeverity(
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' does not use HTTPS in Viewer Protocol Policy", b.FullName())).
+							WithRange(orderedCacheBlock.Range()).
+							WithSeverity(severity.Error),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

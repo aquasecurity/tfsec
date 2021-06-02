@@ -81,15 +81,13 @@ func init() {
 
 			if block.MissingChild("access_log_settings") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is missing access log settings block.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' is missing access log settings block.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

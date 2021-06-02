@@ -55,12 +55,11 @@ func init() {
 		RequiredLabels: []string{"aws_default_vpc"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			set.Add(
-				result.New().WithDescription(
-					fmt.Sprintf("Resource '%s' should not exist", block.FullName()),
-					).WithRange(block.Range()).WithSeverity(
-					severity.Error,
-				),
-			}
+				result.New().
+					WithDescription(fmt.Sprintf("Resource '%s' should not exist", block.FullName())).
+					WithRange(block.Range()).
+					WithSeverity(severity.Error),
+			)
 		},
 	})
 }

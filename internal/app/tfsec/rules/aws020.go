@@ -61,65 +61,56 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudfront_distribution"},
-		CheckFunc: func(block *block.Block, context *hclcontext.Context) []result.Result {
-
-			var results []result.Result
+		CheckFunc: func(set result.Set, block *block.Block, context *hclcontext.Context) {
 
 			defaultBehaviorBlock := block.GetBlock("default_cache_behavior")
 			if defaultBehaviorBlock == nil {
-				results = append(results,
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing default_cache_behavior block).", block.FullName()),
-					).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
+				set.Add(
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing default_cache_behavior block).", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
 				)
 			} else {
-				protocolPolicy := defaultBehaviorBlock.GetAttribute("viewer_protocol_policy")
-				if protocolPolicy == nil {
-					results = append(results,
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-							severity.Error,
-						),
+				protocolPolicyAttr := defaultBehaviorBlock.GetAttribute("viewer_protocol_policy")
+				if protocolPolicyAttr == nil {
+					set.Add(
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", block.FullName())).
+							WithRange(block.Range()).
+							WithSeverity(severity.Error),
 					)
-				} else if protocolPolicy.Type() == cty.String && protocolPolicy.Value().AsString() == "allow-all" {
-					results = append(results,
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", block.FullName()),
-							protocolPolicy.Range(),
-							protocolPolicy,
-							severity.Error,
-						),
+				} else if protocolPolicyAttr.Type() == cty.String && protocolPolicyAttr.Value().AsString() == "allow-all" {
+					set.Add(
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", block.FullName())).
+							WithRange(protocolPolicyAttr.Range()).
+							WithAttributeAnnotation(protocolPolicyAttr).
+							WithSeverity(severity.Error),
 					)
 				}
 			}
 
 			orderedBehaviorBlocks := block.GetBlocks("ordered_cache_behavior")
 			for _, orderedBehaviorBlock := range orderedBehaviorBlocks {
-				orderedProtocolPolicy := orderedBehaviorBlock.GetAttribute("viewer_protocol_policy")
-				if orderedProtocolPolicy == nil {
-					results = append(results,
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-							severity.Error,
-						),
+				orderedProtocolPolicyAttr := orderedBehaviorBlock.GetAttribute("viewer_protocol_policy")
+				if orderedProtocolPolicyAttr == nil {
+					set.Add(
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", block.FullName())).
+							WithRange(block.Range()).
+							WithSeverity(severity.Error),
 					)
-				} else if orderedProtocolPolicy != nil && orderedProtocolPolicy.Type() == cty.String && orderedProtocolPolicy.Value().AsString() == "allow-all" {
-					results = append(results,
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", block.FullName()),
-							orderedProtocolPolicy.Range(),
-							orderedProtocolPolicy,
-							severity.Error,
-						),
+				} else if orderedProtocolPolicyAttr.Type() == cty.String && orderedProtocolPolicyAttr.Value().AsString() == "allow-all" {
+					set.Add(
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", block.FullName())).
+							WithRange(orderedProtocolPolicyAttr.Range()).
+							WithAttributeAnnotation(orderedProtocolPolicyAttr).
+							WithSeverity(severity.Error),
 					)
 				}
 			}
-
-			return results
 
 		},
 	})

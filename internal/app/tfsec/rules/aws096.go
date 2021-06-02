@@ -84,10 +84,9 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecs_task_definition"},
-		CheckFunc: func(b *block.Block, _ *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, b *block.Block, _ *hclcontext.Context) {
 
 			if b.MissingChild("volume") {
-				return nil
 			}
 
 			volumeBlocks := b.GetBlocks("volume")
@@ -98,28 +97,25 @@ func init() {
 				efsConfigBlock := v.GetBlock("efs_volume_configuration")
 				if efsConfigBlock.MissingChild("transit_encryption") {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' has efs configuration with in transit encryption implicitly disabled", b.FullName()),
-							b.Range(),
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' has efs configuration with in transit encryption implicitly disabled", b.FullName())).
+							WithRange(b.Range()).
+							WithSeverity(severity.Error),
+					)
 				}
 				transitAttr := efsConfigBlock.GetAttribute("transit_encryption")
 
 				if transitAttr.Equals("disabled", block.IgnoreCase) {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' has efs configuration with transit encryption explicitly disabled", b.FullName()),
-							transitAttr.Range(),
-							transitAttr,
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' has efs configuration with transit encryption explicitly disabled", b.FullName())).
+							WithRange(transitAttr.Range()).
+							WithAttributeAnnotation(transitAttr).
+							WithSeverity(severity.Error),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

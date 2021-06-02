@@ -54,7 +54,6 @@ resource "aws_workspaces_workspace" "good_example" {
 		  running_mode                              = "AUTO_STOP"
 		  running_mode_auto_stop_timeout_in_minutes = 60
 		}
-	  }
 }
 `
 
@@ -78,47 +77,44 @@ func init() {
 		RequiredLabels: []string{"aws_workspaces_workspace"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 
-			var results []result.Result
-
 			if block.MissingChild("root_volume_encryption_enabled") {
-				results = append(results,
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' should have root volume encryption enables", block.FullName()),
-					).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					))
+				set.Add(
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' should have root volume encryption enables", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			} else {
 				attr := block.GetAttribute("root_volume_encryption_enabled")
 				if attr.IsFalse() {
-					results = append(results, result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has the root volume encyption set to false", block.FullName()),
-						attr.Range(),
-						attr,
-						severity.Error,
-					))
+					set.Add(result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has the root volume encyption set to false", block.FullName())).
+						WithRange(attr.Range()).
+						WithAttributeAnnotation(attr).
+						WithSeverity(severity.Error),
+					)
 				}
 			}
 
 			if block.MissingChild("user_volume_encryption_enabled") {
-				results = append(results, result.New().WithDescription(
-					fmt.Sprintf("Resource '%s' should have user volume encryption enables", block.FullName()),
-				).WithRange(block.Range()).WithSeverity(
-					severity.Error,
-				))
+				set.Add(result.New().
+					WithDescription(fmt.Sprintf("Resource '%s' should have user volume encryption enables", block.FullName())).
+					WithRange(block.Range()).
+					WithSeverity(severity.Error),
+				)
 			} else {
 				attr := block.GetAttribute("user_volume_encryption_enabled")
 				if attr.IsFalse() {
-					results = append(results,
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' has the user volume encyption set to false", block.FullName()),
-							attr.Range(),
-							attr,
-							severity.Error,
-						))
+					set.Add(
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' has the user volume encyption set to false", block.FullName())).
+							WithRange(attr.Range()).
+							WithAttributeAnnotation(attr).
+							WithSeverity(severity.Error),
+					)
 				}
 			}
 
-			return results
 		},
 	})
 }

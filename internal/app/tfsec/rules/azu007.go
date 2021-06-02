@@ -63,30 +63,27 @@ func init() {
 			rbacBlock := block.GetBlock("role_based_access_control")
 			if rbacBlock == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' defines without RBAC", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			enabledAttr := rbacBlock.GetAttribute("enabled")
 			if enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf(
+					result.New().
+						WithDescription(fmt.Sprintf(
 							"Resource '%s' RBAC disabled.",
 							block.FullName(),
-						),
-						enabledAttr.Range(),
-						enabledAttr,
-						severity.Error,
-					),
-				}
+						)).
+						WithRange(enabledAttr.Range()).
+						WithAttributeAnnotation(enabledAttr).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

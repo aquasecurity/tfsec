@@ -52,11 +52,9 @@ resource "problem" "x" {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if block.GetAttribute("bad") != nil {
 				set.Add(
-					result.New().WithDescription("example problem", ).WithRange(block.Range()).WithSeverity( severity.Error),
-				}
+					result.New().WithDescription("example problem").WithRange(block.Range()).WithSeverity(severity.Error),
+				)
 			}
-
-			return nil
 		},
 	})
 
@@ -70,7 +68,7 @@ func scanSource(source string) []result.Result {
 
 func createBlocksFromSource(source string) []*block.Block {
 	path := createTestFile("test.tf", source)
-	blocks, err := parser.New(filepath.Dir(path), "").ParseDirectory()
+	blocks, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {
 		panic(err)
 	}
@@ -94,18 +92,23 @@ func assertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 	var foundInclude bool
 	var foundExclude bool
 
+	var excludeText string
+	var includeText string
+
 	for _, res := range results {
 		if res.RuleID == excludeCode {
 			foundExclude = true
+			excludeText = res.Description
 		}
 		if res.RuleID == includeCode {
 			foundInclude = true
+			includeText = res.Description
 		}
 	}
 
-	assert.False(t, foundExclude, fmt.Sprintf("res with code '%s' was found but should not have been", excludeCode))
+	assert.False(t, foundExclude, fmt.Sprintf("res with code '%s' was found but should not have been: %s", excludeCode, excludeText))
 	if includeCode != "" {
-		assert.True(t, foundInclude, fmt.Sprintf("res with code '%s' was not found but should have been", includeCode))
+		assert.True(t, foundInclude, fmt.Sprintf("res with code '%s' was not found but should have been: %s", includeCode, includeText))
 	}
 }
 

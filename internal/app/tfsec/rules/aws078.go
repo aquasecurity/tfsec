@@ -67,28 +67,27 @@ func init() {
 		RequiredLabels: []string{"aws_ecr_repository"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 
-			imageTagMutability := block.GetAttribute("image_tag_mutability")
-			if imageTagMutability == nil {
+			imageTagMutabilityAttr := block.GetAttribute("image_tag_mutability")
+			if imageTagMutabilityAttr == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
-			if !imageTagMutability.Equals("IMMUTABLE") {
+			if !imageTagMutabilityAttr.Equals("IMMUTABLE") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has `image_tag_mutability` attribute  not set to `IMMUTABLE`", block.FullName()),
-						imageTagMutability.Range(),
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has `image_tag_mutability` attribute  not set to `IMMUTABLE`", block.FullName())).
+						WithRange(imageTagMutabilityAttr.Range()).
+						WithAttributeAnnotation(imageTagMutabilityAttr).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

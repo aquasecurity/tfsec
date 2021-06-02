@@ -43,7 +43,7 @@ func FormatCheckStyle(w io.Writer, results []result.Result, _ string, _ ...Forma
 		fileResults := append(
 			files[res.Range.Filename],
 			checkstyleResult{
-				Rule:     string(res.RuleID),
+				Rule:     res.RuleID,
 				Line:     res.Range.StartLine,
 				Severity: string(res.Severity),
 				Message:  res.Description,

@@ -71,30 +71,25 @@ func init() {
 			protoAttr := block.GetAttribute("protocol")
 
 			if egressAttr.Type() == cty.Bool && egressAttr.Value().True() {
-				return nil
 			}
 
 			if actionAttr == nil || actionAttr.Type() != cty.String {
-				return nil
 			}
 
 			if actionAttr.Value().AsString() != "allow" {
-				return nil
 			}
 
 			if cidrBlockAttr := block.GetAttribute("cidr_block"); cidrBlockAttr != nil {
 
 				if isOpenCidr(cidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-						return nil
 					} else {
 						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", block.FullName()),
-								cidrBlockAttr.Range(),
-								severity.Warning,
-							),
-						}
+							result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", block.FullName())).
+								WithRange(cidrBlockAttr.Range()).
+								WithSeverity(severity.Warning),
+						)
 					}
 				}
 
@@ -104,22 +99,19 @@ func init() {
 
 				if isOpenCidr(ipv6CidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-						return nil
 					} else {
 						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", block.FullName()),
-								ipv6CidrBlockAttr.Range(),
-								ipv6CidrBlockAttr,
-								severity.Warning,
-							),
-						}
+							result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", block.FullName())).
+								WithRange(ipv6CidrBlockAttr.Range()).
+								WithAttributeAnnotation(ipv6CidrBlockAttr).
+								WithSeverity(severity.Warning),
+						)
 					}
 				}
 
 			}
 
-			return nil
 		},
 	})
 }

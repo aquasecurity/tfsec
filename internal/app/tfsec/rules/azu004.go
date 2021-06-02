@@ -59,19 +59,17 @@ func init() {
 			encryptionStateAttr := block.GetAttribute("encryption_state")
 			if encryptionStateAttr != nil && encryptionStateAttr.Type() == cty.String && encryptionStateAttr.Value().AsString() == "Disabled" {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf(
+					result.New().
+						WithDescription(fmt.Sprintf(
 							"Resource '%s' defines an unencrypted data lake store.",
 							block.FullName(),
-						),
-						encryptionStateAttr.Range(),
-						encryptionStateAttr,
-						severity.Error,
-					),
-				}
+						)).
+						WithRange(encryptionStateAttr.Range()).
+						WithAttributeAnnotation(encryptionStateAttr).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

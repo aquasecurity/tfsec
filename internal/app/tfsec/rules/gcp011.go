@@ -99,7 +99,7 @@ func init() {
 			"google_storage_bucket_iam_member",
 			"google_iam_policy",
 		},
-		CheckFunc: func(b *block.Block, _ *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, b *block.Block, _ *hclcontext.Context) {
 
 			var members []cty.Value
 			var attributes *block.Attribute
@@ -114,16 +114,14 @@ func init() {
 			for _, identities := range members {
 				if identities.IsKnown() && identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", b.FullName()),
-							attributes.Range(),
-							severity.Warning,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", b.FullName())).
+							WithRange(attributes.Range()).
+							WithSeverity(severity.Warning),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

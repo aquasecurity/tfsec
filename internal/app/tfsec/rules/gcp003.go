@@ -59,16 +59,14 @@ func init() {
 			if sourceRanges := block.GetAttribute("source_ranges"); sourceRanges != nil {
 				if isOpenCidr(sourceRanges) {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", block.FullName()),
-							sourceRanges.Range(),
-							severity.Warning,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", block.FullName())).
+							WithRange(sourceRanges.Range()).
+							WithSeverity(severity.Warning),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 

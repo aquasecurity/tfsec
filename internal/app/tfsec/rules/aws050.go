@@ -69,15 +69,12 @@ func init() {
 			protoAttr := block.GetAttribute("protocol")
 
 			if egressAttr.Type() == cty.Bool && egressAttr.Value().True() {
-				return nil
 			}
 
 			if actionAttr == nil || actionAttr.Type() != cty.String {
-				return nil
 			}
 
 			if actionAttr.Value().AsString() != "allow" {
-				return nil
 			}
 
 			if cidrBlockAttr := block.GetAttribute("cidr_block"); cidrBlockAttr != nil {
@@ -85,15 +82,13 @@ func init() {
 				if isOpenCidr(cidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", block.FullName()),
-								cidrBlockAttr.Range(),
-								cidrBlockAttr,
-								severity.Error,
-							),
-						}
+							result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", block.FullName())).
+								WithRange(cidrBlockAttr.Range()).
+								WithAttributeAnnotation(cidrBlockAttr).
+								WithSeverity(severity.Error),
+						)
 					} else {
-						return nil
 					}
 				}
 
@@ -104,21 +99,18 @@ func init() {
 				if isOpenCidr(ipv6CidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", block.FullName()),
-								ipv6CidrBlockAttr.Range(),
-								ipv6CidrBlockAttr,
-								severity.Error,
-							),
-						}
+							result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", block.FullName())).
+								WithRange(ipv6CidrBlockAttr.Range()).
+								WithAttributeAnnotation(ipv6CidrBlockAttr).
+								WithSeverity(severity.Error),
+						)
 					} else {
-						return nil
 					}
 				}
 
 			}
 
-			return nil
 		},
 	})
 }

@@ -97,7 +97,7 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_group", "azurerm_network_security_rule"},
-		CheckFunc: func(resourceBlock *block.Block, _ *hclcontext.Context) []result.Result {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			var securityRules block.Blocks
 			if resourceBlock.IsResourceType("azurerm_network_security_group") {
@@ -108,23 +108,21 @@ func init() {
 
 			for _, securityRule := range securityRules {
 				if securityRule.HasChild("access") && securityRule.GetAttribute("access").Equals("Deny", block.IgnoreCase) {
-					return nil
+					continue
 				}
 				if securityRule.HasChild("destination_port_range") && securityRule.GetAttribute("destination_port_range").Contains("3389") {
 					if securityRule.HasChild("source_address_prefix") {
 						if securityRule.GetAttribute("source_address_prefix").IsAny("*", "0.0.0.0", "/0", "internet", "any") {
 							set.Add(
-								result.New().WithDescription(
-									fmt.Sprintf("Resource '%s' has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", resourceBlock.FullName()),
-									resource).WithRange(block.Range()).WithSeverity(
-									severity.Error,
-								),
-							}
+								result.New().
+									WithDescription(fmt.Sprintf("Resource '%s' has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", resourceBlock.FullName())).
+									WithRange(resourceBlock.Range()).
+									WithSeverity(severity.Error),
+							)
 						}
 					}
 				}
 			}
-			return nil
 		},
 	})
 }

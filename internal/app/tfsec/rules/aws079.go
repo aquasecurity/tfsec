@@ -65,19 +65,19 @@ func init() {
 			metaDataOptions := block.GetBlock("metadata_options")
 			if metaDataOptions == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
 			}
 
 			httpEndpointAttr := metaDataOptions.GetAttribute("http_endpoint")
 			if httpEndpointAttr != nil {
 				if httpEndpointAttr.Equals("disabled") {
 					// IMDS disabled and we don't need to check if http_tokens are correctly set up
-					return nil
+					return
 				}
 			}
 
@@ -85,16 +85,14 @@ func init() {
 			if httpTokensAttr != nil {
 				if !httpTokensAttr.Equals("required") {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", block.FullName()),
-							httpTokensAttr.Range(),
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", block.FullName())).
+							WithRange(httpTokensAttr.Range()).
+							WithSeverity(severity.Error),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

@@ -85,8 +85,6 @@ func init() {
 		RequiredLabels: []string{"aws_ecs_task_definition"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 
-			var results []result.Result
-
 			if definitionsAttr := block.GetAttribute("container_definitions"); definitionsAttr != nil && definitionsAttr.Type() == cty.String {
 				rawJSON := []byte(definitionsAttr.Value().AsString())
 
@@ -98,25 +96,23 @@ func init() {
 				}
 
 				if err := json.Unmarshal(rawJSON, &definitions); err != nil {
-					return nil
 				}
 
 				for _, definition := range definitions {
 					for _, env := range definition.EnvVars {
 						if security.IsSensitiveAttribute(env.Name) && env.Value != "" {
-							results = append(results, result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", block.FullName(), env.Name),
-								definitionsAttr.Range(),
-								definitionsAttr,
-								severity.Warning,
-							))
+							set.Add(result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", block.FullName(), env.Name)).
+								WithRange(definitionsAttr.Range()).
+								WithAttributeAnnotation(definitionsAttr).
+								WithSeverity(severity.Warning),
+							)
 						}
 					}
 				}
 
 			}
 
-			return results
 		},
 	})
 }

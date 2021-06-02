@@ -72,14 +72,10 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 
 			if len(block.Labels()) == 0 {
-				return nil
 			}
 
 			if !security.IsSensitiveAttribute(block.TypeLabel()) {
-				return nil
 			}
-
-			var results []result.Result
 
 			for _, attribute := range block.GetAttributes() {
 				if attribute.Name() == "default" {
@@ -88,17 +84,16 @@ func init() {
 						continue
 					}
 					if val.AsString() != "" {
-						results = append(results, result.New().WithDescription(
-							fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", block.FullName()),
-							attribute.Range(),
-							attribute,
-							severity.Warning,
-						))
+						set.Add(result.New().
+							WithDescription(fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", block.FullName())).
+							WithRange(attribute.Range()).
+							WithAttributeAnnotation(attribute).
+							WithSeverity(severity.Warning),
+						)
 					}
 				}
 			}
 
-			return results
 		},
 	})
 }

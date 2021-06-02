@@ -63,23 +63,20 @@ func init() {
 
 			if efsEnabledAttr == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not specify if encryption should be used.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not specify if encryption should be used.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			} else if efsEnabledAttr.Type() == cty.Bool && efsEnabledAttr.Value().False() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' actively does not have encryption applied.", block.FullName()),
-						efsEnabledAttr.Range(),
-						efsEnabledAttr,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' actively does not have encryption applied.", block.FullName())).
+						WithRange(efsEnabledAttr.Range()).
+						WithAttributeAnnotation(efsEnabledAttr).
+						WithSeverity(severity.Error),
+				)
 			}
-			return nil
 		},
 	})
 }

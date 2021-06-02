@@ -64,24 +64,21 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if attr := block.GetAttribute("require_numbers"); attr == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not require a number in the password.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Warning,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not require a number in the password.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Warning),
+				)
 			} else if attr.Value().Type() == cty.Bool {
 				if attr.Value().False() {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least one number in the password.", block.FullName()),
-							).WithRange(block.Range()).WithSeverity(
-							severity.Warning,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least one number in the password.", block.FullName())).
+							WithRange(block.Range()).
+							WithSeverity(severity.Warning),
+					)
 				}
 			}
-			return nil
 		},
 	})
 }

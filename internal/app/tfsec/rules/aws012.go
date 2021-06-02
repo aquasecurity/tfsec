@@ -61,17 +61,15 @@ func init() {
 			if publicAttr := block.GetAttribute("associate_public_ip_address"); publicAttr != nil && publicAttr.Type() == cty.Bool {
 				if publicAttr.Value().True() {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' has a public IP address associated.", block.FullName()),
-							publicAttr.Range(),
-							publicAttr,
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' has a public IP address associated.", block.FullName())).
+							WithRange(publicAttr.Range()).
+							WithAttributeAnnotation(publicAttr).
+							WithSeverity(severity.Error),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

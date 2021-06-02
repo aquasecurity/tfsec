@@ -59,25 +59,23 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			encryptionSettingsBlock := block.GetBlock("encryption_settings")
 			if encryptionSettingsBlock == nil {
-				return nil // encryption is by default now, so this is fine
+				return // encryption is by default now, so this is fine
 			}
 
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
 			if enabledAttr != nil && enabledAttr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf(
+					result.New().
+						WithDescription(fmt.Sprintf(
 							"Resource '%s' defines an unencrypted managed disk.",
 							block.FullName(),
-						),
-						enabledAttr.Range(),
-						enabledAttr,
-						severity.Error,
-					),
-				}
+						)).
+						WithRange(enabledAttr.Range()).
+						WithAttributeAnnotation(enabledAttr).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

@@ -86,7 +86,6 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 
 			if block.GetAttribute("policy").Value().Type() != cty.String {
-				return nil
 			}
 
 			rawJSON := []byte(block.GetAttribute("policy").Value().AsString())
@@ -101,17 +100,15 @@ func init() {
 				for _, statement := range policy.Statement {
 					if strings.ToLower(statement.Effect) == "allow" && (statement.Action == "*" || statement.Action == "sqs:*") {
 						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", block.FullName()),
-								).WithRange(block.Range()).WithSeverity(
-								severity.Error,
-							),
-						}
+							result.New().
+								WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", block.FullName())).
+								WithRange(block.Range()).
+								WithSeverity(severity.Error),
+						)
 					}
 				}
 			}
 
-			return nil
 		},
 	})
 }

@@ -65,46 +65,40 @@ func init() {
 
 			directionAttr := block.GetAttribute("direction")
 			if directionAttr == nil || directionAttr.Type() != cty.String || directionAttr.Value().AsString() != "Inbound" {
-				return nil
 			}
 
 			if prefixAttr := block.GetAttribute("source_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
 				if isOpenCidr(prefixAttr) {
 					if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
 						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf(
+							result.New().
+								WithDescription(fmt.Sprintf(
 									"Resource '%s' defines a fully open %s network security group rule.",
 									block.FullName(),
 									strings.ToLower(directionAttr.Value().AsString()),
-								),
-								prefixAttr.Range(),
-								prefixAttr,
-								severity.Warning,
-							),
-						}
-					}
-				}
-			}
-
-			var results []result.Result
-
-			if prefixesAttr := block.GetAttribute("source_address_prefixes"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
-				if isOpenCidr(prefixesAttr) {
-					if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
-						results = append(results,
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' defines a fully open security group rule.", block.FullName()),
-								prefixesAttr.Range(),
-								prefixesAttr,
-								severity.Warning,
-							),
+								)).
+								WithRange(prefixAttr.Range()).
+								WithAttributeAnnotation(prefixAttr).
+								WithSeverity(severity.Warning),
 						)
 					}
 				}
 			}
 
-			return results
+			if prefixesAttr := block.GetAttribute("source_address_prefixes"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
+				if isOpenCidr(prefixesAttr) {
+					if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
+						set.Add(
+							result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open security group rule.", block.FullName())).
+								WithRange(prefixesAttr.Range()).
+								WithAttributeAnnotation(prefixesAttr).
+								WithSeverity(severity.Warning),
+						)
+					}
+				}
+			}
+
 		},
 	})
 }

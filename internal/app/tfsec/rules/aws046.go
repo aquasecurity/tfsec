@@ -81,19 +81,17 @@ func init() {
 						for _, actionValue := range actionValues {
 							if actionValue.AsString() == "*" {
 								set.Add(
-									result.New().WithDescription(
-										fmt.Sprintf("Resource '%s' has a wildcard action specified.", block.FullName()),
-										statement).WithRange(block.Range()).WithSeverity(
-										severity.Error,
-									),
-								}
+									result.New().
+										WithDescription(fmt.Sprintf("Resource '%s' has a wildcard action specified.", block.FullName())).
+WithRange(statementBlock.Range()).
+										WithSeverity(severity.Error),
+								)
 							}
 						}
 					}
 
 				}
 			}
-			return nil
 		},
 	})
 }

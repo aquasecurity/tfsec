@@ -70,37 +70,33 @@ func init() {
 
 			if block.MissingChild("vpc_config") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			vpcConfig := block.GetBlock("vpc_config")
 			if vpcConfig.MissingChild("endpoint_public_access") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is using default public access in the vpc config", block.FullName()),
-						vpcConfig.Range(),
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", block.FullName())).
+						WithRange(vpcConfig.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			publicAccessEnabled := vpcConfig.GetAttribute("endpoint_public_access")
-			if publicAccessEnabled.IsTrue() {
+			publicAccessEnabledAttr := vpcConfig.GetAttribute("endpoint_public_access")
+			if publicAccessEnabledAttr.IsTrue() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", block.FullName()),
-						publicAccessEnabled.Range(),
-						publicAccessEnabled,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", block.FullName())).
+						WithRange(publicAccessEnabledAttr.Range()).
+						WithAttributeAnnotation(publicAccessEnabledAttr).
+						WithSeverity(severity.Error),
+				)
 			}
-			return nil
 		},
 	})
 }

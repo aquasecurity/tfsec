@@ -72,16 +72,14 @@ func init() {
 			if keyBlock != nil {
 				if keyBlock.GetAttribute("raw_key") == nil && keyBlock.GetAttribute("kms_key_self_link") == nil {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defines an unencrypted disk. You should specify raw_key or kms_key_self_link.", block.FullName()),
-							key).WithRange(block.Range()).WithSeverity(
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted disk. You should specify raw_key or kms_key_self_link.", block.FullName())).
+WithRange(keyBlock.Range()).
+							WithSeverity(severity.Error),
+					)
 
 				}
 			}
-			return nil
 		},
 	})
 }

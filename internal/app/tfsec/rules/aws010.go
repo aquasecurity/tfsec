@@ -70,18 +70,16 @@ func init() {
 				for _, policy := range outdatedSSLPolicies {
 					if policy == sslPolicyAttr.Value().AsString() {
 						set.Add(
-							result.New().WithDescription(
-								fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", block.FullName()),
-								sslPolicyAttr.Range(),
-								sslPolicyAttr,
-								severity.Error,
-							),
-						}
+							result.New().
+								WithDescription(fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", block.FullName())).
+								WithRange(sslPolicyAttr.Range()).
+								WithAttributeAnnotation(sslPolicyAttr).
+								WithSeverity(severity.Error),
+						)
 					}
 				}
 			}
 
-			return nil
 		},
 	})
 }

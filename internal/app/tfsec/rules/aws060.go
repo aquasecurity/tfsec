@@ -90,27 +90,24 @@ func init() {
 
 			if block.MissingChild("configuration") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is missing the configuration block.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' is missing the configuration block.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
 			configBlock := block.GetBlock("configuration")
 			if configBlock.HasChild("enforce_workgroup_configuration") &&
 				configBlock.GetAttribute("enforce_workgroup_configuration").IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", block.FullName()),
-						config).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", block.FullName())).
+WithRange(configBlock.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			return nil
 		},
 	})
 }

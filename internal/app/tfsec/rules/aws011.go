@@ -59,17 +59,15 @@ func init() {
 			if publicAttr := block.GetAttribute("publicly_accessible"); publicAttr != nil && publicAttr.Type() == cty.Bool {
 				if publicAttr.Value().True() {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName()),
-							publicAttr.Range(),
-							publicAttr,
-							severity.Warning,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName())).
+							WithRange(publicAttr.Range()).
+							WithAttributeAnnotation(publicAttr).
+							WithSeverity(severity.Warning),
+					)
 				}
 			}
 
-			return nil
 		},
 	})
 }

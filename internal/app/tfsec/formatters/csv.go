@@ -24,7 +24,7 @@ func FormatCSV(w io.Writer, results []result.Result, _ string, _ ...FormatterOpt
 			res.Range.Filename,
 			strconv.Itoa(res.Range.StartLine),
 			strconv.Itoa(res.Range.EndLine),
-			string(res.RuleID),
+			res.RuleID,
 			string(res.Severity),
 			res.Description,
 			link,

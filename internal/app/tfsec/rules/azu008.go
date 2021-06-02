@@ -63,15 +63,13 @@ func init() {
 					block.GetAttribute("private_cluster_enabled").IsFalse()) {
 				{
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", block.FullName()),
-							).WithRange(block.Range()).WithSeverity(
-							severity.Error,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", block.FullName())).
+							WithRange(block.Range()).
+							WithSeverity(severity.Error),
+					)
 				}
 			}
-			return nil
 		},
 	})
 }

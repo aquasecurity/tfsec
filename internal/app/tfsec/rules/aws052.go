@@ -59,26 +59,23 @@ func init() {
 
 			if block.MissingChild("storage_encrypted") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has no storage encryption defined.", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has no storage encryption defined.", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 
-			storageEncrypted := block.GetAttribute("storage_encrypted")
-			if storageEncrypted.IsFalse() {
+			storageEncryptedAttr := block.GetAttribute("storage_encrypted")
+			if storageEncryptedAttr.IsFalse() {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has storage encrypted set to false", block.FullName()),
-						storageEncrypted.Range(),
-						storageEncrypted,
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has storage encrypted set to false", block.FullName())).
+						WithRange(storageEncryptedAttr.Range()).
+						WithAttributeAnnotation(storageEncryptedAttr).
+						WithSeverity(severity.Error),
+				)
 			}
-			return nil
 		},
 	})
 }

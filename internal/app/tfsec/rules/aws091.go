@@ -96,32 +96,30 @@ func init() {
 		RequiredLabels: []string{"aws_rds_cluster", "aws_db_instance"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if block.HasChild("replicate_source_db") {
-				return nil
+				return
 			}
 
 			if block.MissingChild("backup_retention_period") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' does not have backup retention explicitly set", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Info,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have backup retention explicitly set", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Info),
+				)
+				return
 			}
 
 			retentionAttr := block.GetAttribute("backup_retention_period")
 			if retentionAttr.LessThanOrEqualTo(1) {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' has backup retention period set to a low value", block.FullName()),
-						retentionAttr.Range(),
-						retentionAttr,
-						severity.Info,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' has backup retention period set to a low value", block.FullName())).
+						WithRange(retentionAttr.Range()).
+						WithAttributeAnnotation(retentionAttr).
+						WithSeverity(severity.Info),
+				)
 			}
 
-			return nil
 		},
 	})
 }

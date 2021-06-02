@@ -70,14 +70,12 @@ func init() {
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if block.MissingChild("cluster_subnet_group_name") {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is being deployed outside of a VPC", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
-				}
+					result.New().
+						WithDescription(fmt.Sprintf("Resource '%s' is being deployed outside of a VPC", block.FullName())).
+						WithRange(block.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
-			return nil
 		},
 	})
 }
