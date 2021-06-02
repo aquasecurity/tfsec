@@ -1,19 +1,25 @@
 package main
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"testing"
+
+	"github.com/tfsec/tfsec/pkg/result"
+
+	"github.com/tfsec/tfsec/pkg/severity"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_IfIgnoreWarningsSetShouldRemoveWarningScanResults(t *testing.T) {
 	expectedResultsAfterFiltering := 1
-	twoScanResultsWithOneWarning := []scanner.Result {
+	twoScanResultsWithOneWarning := []result.Result{
 		{
-			Severity: scanner.SeverityError,
+			RuleID:   "1",
+			Severity: severity.Error,
 		},
 		{
-			Severity: scanner.SeverityWarning,
+			RuleID:   "2",
+			Severity: severity.Warning,
 		},
 	}
 
@@ -23,12 +29,14 @@ func Test_IfIgnoreWarningsSetShouldRemoveWarningScanResults(t *testing.T) {
 
 func Test_IfIgnoreWarningsIsNotSetThenWarningShouldBeInScanResults(t *testing.T) {
 	expectedResultsAfterFiltering := 2
-	twoScanResultsWithOneWarning := []scanner.Result {
+	twoScanResultsWithOneWarning := []result.Result{
 		{
-			Severity: scanner.SeverityError,
+			RuleID:   "1",
+			Severity: severity.Error,
 		},
 		{
-			Severity: scanner.SeverityWarning,
+			RuleID:   "2",
+			Severity: severity.Warning,
 		},
 	}
 

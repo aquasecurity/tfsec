@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSInstanceMetadataChec(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSInstanceMetadataChec(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "should fire as http_tokens not specified and by default are optional",
@@ -23,7 +22,7 @@ resource "aws_instance" "working example"{
   instance_type = "t2.micro"
 }
 `,
-			mustIncludeResultCode: checks.AWSInstanceMetadataChec,
+			mustIncludeResultCode: rules.AWSInstanceMetadataChec,
 		},
 		{
 			name: "should fire as http_tokens explicitly set to optional and should be required",
@@ -36,7 +35,7 @@ resource "aws_instance" "working example"{
   }	
 }
 `,
-			mustIncludeResultCode: checks.AWSInstanceMetadataChec,
+			mustIncludeResultCode: rules.AWSInstanceMetadataChec,
 		},
 		{
 			name: "should not fire when http_tokens set to required",
@@ -49,7 +48,7 @@ resource "aws_instance" "working example"{
   }	
 }
 `,
-			mustExcludeResultCode: checks.AWSInstanceMetadataChec,
+			mustExcludeResultCode: rules.AWSInstanceMetadataChec,
 		},
 		{
 			name: "should not fire when http_endpoint disabled as IMDS is not available",
@@ -63,7 +62,7 @@ resource "aws_instance" "working example"{
   }	
 }
 `,
-			mustExcludeResultCode: checks.AWSInstanceMetadataChec,
+			mustExcludeResultCode: rules.AWSInstanceMetadataChec,
 		},
 	}
 

@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUDefaultActionOnNetworkRuleSetToDeny(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUDefaultActionOnNetworkRuleSetToDeny(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check default action of allow causes a failure",
@@ -26,7 +25,7 @@ resource "azurerm_storage_account_network_rules" "test" {
   bypass                     = ["Metrics"]
 }
 `,
-			mustIncludeResultCode: checks.AZUDefaultActionOnNetworkRuleSetToDeny,
+			mustIncludeResultCode: rules.AZUDefaultActionOnNetworkRuleSetToDeny,
 		},
 		{
 			name: "check default action of allow causes a failure, regardless of casing",
@@ -39,7 +38,7 @@ resource "azurerm_storage_account_network_rules" "test" {
   bypass                     = ["Metrics"]
 }
 `,
-			mustIncludeResultCode: checks.AZUDefaultActionOnNetworkRuleSetToDeny,
+			mustIncludeResultCode: rules.AZUDefaultActionOnNetworkRuleSetToDeny,
 		},
 		{
 			name: "check default action of Allow on storage account causes a failure",
@@ -64,7 +63,7 @@ resource "azurerm_storage_account" "example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AZUDefaultActionOnNetworkRuleSetToDeny,
+			mustIncludeResultCode: rules.AZUDefaultActionOnNetworkRuleSetToDeny,
 		},
 		{
 			name: "check no error when the default action is set to deny",
@@ -77,7 +76,7 @@ resource "azurerm_storage_account_network_rules" "test" {
   bypass                     = ["Metrics"]
 }
 `,
-			mustExcludeResultCode: checks.AZUDefaultActionOnNetworkRuleSetToDeny,
+			mustExcludeResultCode: rules.AZUDefaultActionOnNetworkRuleSetToDeny,
 		},
 		{
 			name: "check no error when the default action is set to deny, regardless of case",
@@ -90,7 +89,7 @@ resource "azurerm_storage_account_network_rules" "test" {
   bypass                     = ["Metrics"]
 }
 `,
-			mustExcludeResultCode: checks.AZUDefaultActionOnNetworkRuleSetToDeny,
+			mustExcludeResultCode: rules.AZUDefaultActionOnNetworkRuleSetToDeny,
 		},
 	}
 

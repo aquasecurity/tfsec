@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSIngorePublicAclS3(t *testing.T) {
@@ -12,20 +11,20 @@ func Test_AWSIngorePublicAclS3(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
-			name: "Check fails when ignore public acls not set (default false)",
+			name: "Rule fails when ignore public acls not set (default false)",
 			source: `
 resource "aws_s3_bucket_public_access_block" "bad_example" {
 	bucket = aws_s3_bucket.example.id
 }
 `,
-			mustIncludeResultCode: checks.AWSIngorePublicAclS3,
+			mustIncludeResultCode: rules.AWSIngorePublicAclS3,
 		},
 		{
-			name: "Check fails when ignore public acls explicitly set to false",
+			name: "Rule fails when ignore public acls explicitly set to false",
 			source: `
 resource "aws_s3_bucket_public_access_block" "bad_example" {
 	bucket = aws_s3_bucket.example.id
@@ -33,10 +32,10 @@ resource "aws_s3_bucket_public_access_block" "bad_example" {
 	ignore_public_acls = false
 }
 `,
-			mustIncludeResultCode: checks.AWSIngorePublicAclS3,
+			mustIncludeResultCode: rules.AWSIngorePublicAclS3,
 		},
 		{
-			name: "Check passes when ignore_public_acls present and set to true",
+			name: "Rule passes when ignore_public_acls present and set to true",
 			source: `
 resource "aws_s3_bucket_public_access_block" "good_example" {
 	bucket = aws_s3_bucket.example.id
@@ -44,7 +43,7 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 	ignore_public_acls = true
 }
 `,
-			mustExcludeResultCode: checks.AWSIngorePublicAclS3,
+			mustExcludeResultCode: rules.AWSIngorePublicAclS3,
 		},
 	}
 

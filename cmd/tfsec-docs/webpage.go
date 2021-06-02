@@ -6,15 +6,16 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/pkg/provider"
+	"github.com/tfsec/tfsec/pkg/rule"
 )
 
 const (
 	baseWebPageTemplate = `---
-title: {{$.Code}} - {{$.Documentation.Summary}}
+title: {{$.ID}} - {{$.Documentation.Summary}}
 summary: {{$.Documentation.Summary}} 
 resources: {{$.RequiredLabels}} 
-permalink: /docs/{{$.Provider}}/{{$.Code}}/
+permalink: /docs/{{$.Provider}}/{{$.ID}}/
 ---
 ### Explanation
 
@@ -23,7 +24,7 @@ permalink: /docs/{{$.Provider}}/{{$.Code}}/
 {{if $.Documentation.BadExample }}
 ### Insecure Example
 
-The following example will fail the {{$.Code}} check.
+The following example will fail the {{$.ID}} check.
 
 {% highlight terraform %}
 {{$.Documentation.BadExample}}
@@ -33,7 +34,7 @@ The following example will fail the {{$.Code}} check.
 {{if $.Documentation.GoodExample }}
 ### Secure Example
 
-The following example will pass the {{$.Code}} check.
+The following example will pass the {{$.ID}} check.
 
 {% highlight terraform %}
 {{$.Documentation.GoodExample}}
@@ -62,9 +63,11 @@ func generateWebPages(fileContents []*FileContent) error {
 }
 
 var funcMap = template.FuncMap{
-	"ToUpper":         strings.ToUpper,
-	"ToUpperProvider": scanner.RuleProviderToString,
-	"Join":            join,
+	"ToUpper": strings.ToUpper,
+	"ToUpperProvider": func(provider provider.Provider) string {
+		return strings.ToUpper(string(provider))
+	},
+	"Join": join,
 }
 
 func join(s []string) string {
@@ -75,17 +78,17 @@ func join(s []string) string {
 	return strings.Join(s[1:], s[0])
 }
 
-func generateWebPage(check scanner.Check) error {
-	webProviderPath := fmt.Sprintf("%s/docs/%s", webPath, strings.ToLower(string(check.Provider)))
+func generateWebPage(r rule.Rule) error {
+	webProviderPath := fmt.Sprintf("%s/docs/%s", webPath, strings.ToLower(string(r.Provider)))
 	if err := os.MkdirAll(webProviderPath, os.ModePerm); err != nil {
 		return err
 	}
 
-	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, check.Code)
+	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.ID)
 
-	fmt.Printf("Generating page for %s at %s\n", check.Code, filePath)
+	fmt.Printf("Generating page for %s at %s\n", r.ID, filePath)
 	webTmpl := template.Must(template.New("web").Funcs(funcMap).Parse(baseWebPageTemplate))
-	return writeTemplate(check, filePath, webTmpl)
+	return writeTemplate(r, filePath, webTmpl)
 }
 
 func writeTemplate(contents interface{}, path string, tmpl *template.Template) error {

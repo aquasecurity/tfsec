@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUAKSClusterRBACenabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUAKSClusterRBACenabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check azurerm_kubernetes_cluster with no role_based_access_control define",
@@ -21,7 +20,7 @@ func Test_AZUAKSClusterRBACenabled(t *testing.T) {
 resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 
 }`,
-			mustIncludeResultCode: checks.AZUAKSClusterRBACenabled,
+			mustIncludeResultCode: rules.AZUAKSClusterRBACenabled,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with role_based_access_control disabled",
@@ -31,7 +30,7 @@ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 		enabled = false
 	}
 }`,
-			mustIncludeResultCode: checks.AZUAKSClusterRBACenabled,
+			mustIncludeResultCode: rules.AZUAKSClusterRBACenabled,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with RBAC enabled",
@@ -41,7 +40,7 @@ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 		enabled = true
 	}
 }`,
-			mustExcludeResultCode: checks.AZUAKSClusterRBACenabled,
+			mustExcludeResultCode: rules.AZUAKSClusterRBACenabled,
 		},
 	}
 

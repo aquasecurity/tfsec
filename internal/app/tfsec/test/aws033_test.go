@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSUnenforcedHTTPSElasticsearchDomainEndpoint(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSUnenforcedHTTPSElasticsearchDomainEndpoint(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check no  domain_endpoint_options aws_elasticsearch_domain",
@@ -21,7 +20,7 @@ func Test_AWSUnenforcedHTTPSElasticsearchDomainEndpoint(t *testing.T) {
 resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSUnenforcedHTTPSElasticsearchDomainEndpoint,
+			mustIncludeResultCode: rules.AWSUnenforcedHTTPSElasticsearchDomainEndpoint,
 		},
 		{
 			name: "check false enforce_https attr aws_elasticsearch_domain",
@@ -33,7 +32,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     enforce_https = false
   }
 }`,
-			mustIncludeResultCode: checks.AWSUnenforcedHTTPSElasticsearchDomainEndpoint,
+			mustIncludeResultCode: rules.AWSUnenforcedHTTPSElasticsearchDomainEndpoint,
 		},
 		{
 			name: "check true enforce_https aws_elasticsearch_domain",
@@ -45,7 +44,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     enforce_https = true
   }
 }`,
-			mustExcludeResultCode: checks.AWSUnenforcedHTTPSElasticsearchDomainEndpoint,
+			mustExcludeResultCode: rules.AWSUnenforcedHTTPSElasticsearchDomainEndpoint,
 		},
 	}
 

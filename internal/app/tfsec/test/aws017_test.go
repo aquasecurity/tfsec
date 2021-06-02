@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSUnencryptedS3Bucket(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSUnencryptedS3Bucket(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check no server_side_encryption_configuration aws_s3_bucket",
@@ -21,7 +20,7 @@ func Test_AWSUnencryptedS3Bucket(t *testing.T) {
 resource "aws_s3_bucket" "my-bucket" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedS3Bucket,
+			mustIncludeResultCode: rules.AWSUnencryptedS3Bucket,
 		},
 		{
 			name: "check no server_side_encryption_configuration aws_s3_bucket",
@@ -38,7 +37,7 @@ resource "aws_s3_bucket" "my-bucket" {
     }
   }
 }`,
-			mustExcludeResultCode: checks.AWSUnencryptedS3Bucket,
+			mustExcludeResultCode: rules.AWSUnencryptedS3Bucket,
 		},
 		{
 			name: "no error when server_side_encryption_configuration provided",
@@ -91,7 +90,7 @@ resource "aws_s3_bucket" "this" {
    }
  }
 `,
-			mustExcludeResultCode: checks.AWSUnencryptedS3Bucket,
+			mustExcludeResultCode: rules.AWSUnencryptedS3Bucket,
 		},
 	}
 

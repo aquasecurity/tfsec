@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSSqsPolicyWildcardActions(t *testing.T) {
@@ -12,18 +11,18 @@ func Test_AWSSqsPolicyWildcardActions(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name:                  "check with bad example",
-			source:                checks.AWSSqsPolicyWildcardActionsBadExample,
-			mustIncludeResultCode: checks.AWSSqsPolicyWildcardActions,
+			source:                rules.AWSSqsPolicyWildcardActionsBadExample,
+			mustIncludeResultCode: rules.AWSSqsPolicyWildcardActions,
 		},
 		{
 			name:                  "check with good example",
-			source:                checks.AWSSqsPolicyWildcardActionsGoodExample,
-			mustExcludeResultCode: checks.AWSSqsPolicyWildcardActions,
+			source:                rules.AWSSqsPolicyWildcardActionsGoodExample,
+			mustExcludeResultCode: rules.AWSSqsPolicyWildcardActions,
 		},
 		{
 			name: "check with actions defined as an array",
@@ -44,7 +43,7 @@ resource "aws_sqs_queue_policy" "test" {
 POLICY
 }
 `,
-			mustExcludeResultCode: checks.AWSSqsPolicyWildcardActions,
+			mustExcludeResultCode: rules.AWSSqsPolicyWildcardActions,
 		},
 		{
 			name: "check with prefixed wildcard action",
@@ -64,7 +63,7 @@ resource "aws_sqs_queue_policy" "test" {
 POLICY
 }
 `,
-			mustIncludeResultCode: checks.AWSSqsPolicyWildcardActions,
+			mustIncludeResultCode: rules.AWSSqsPolicyWildcardActions,
 		},
 	}
 

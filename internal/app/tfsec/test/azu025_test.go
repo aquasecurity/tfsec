@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUDataFactoryPublicNetwork(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUDataFactoryPublicNetwork(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check if public_network_enabled not set, check fails",
@@ -24,7 +23,7 @@ resource "azurerm_data_factory" "bad_example" {
   resource_group_name = azurerm_resource_group.example.name
 }
 `,
-			mustIncludeResultCode: checks.AZUDataFactoryPublicNetwork,
+			mustIncludeResultCode: rules.AZUDataFactoryPublicNetwork,
 		},
 		{
 			name: "check if public_network_enabled is set to false, check passes",
@@ -36,7 +35,7 @@ resource "azurerm_data_factory" "good_example" {
   public_network_enabled = false
 }
 `,
-			mustExcludeResultCode: checks.AZUDataFactoryPublicNetwork,
+			mustExcludeResultCode: rules.AZUDataFactoryPublicNetwork,
 		},
 		{
 			name: "check if public_network_enabled is set to true, check fails",
@@ -48,7 +47,7 @@ resource "azurerm_data_factory" "bad_example" {
   public_network_enabled = true
 }
 `,
-			mustIncludeResultCode: checks.AZUDataFactoryPublicNetwork,
+			mustIncludeResultCode: rules.AZUDataFactoryPublicNetwork,
 		},
 	}
 

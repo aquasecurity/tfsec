@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUAKSAzureMonitor(t *testing.T) {
@@ -12,15 +11,15 @@ func Test_AZUAKSAzureMonitor(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check azurerm_kubernetes_cluster with no addon_profile define",
 			source: `
 resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 }`,
-			mustIncludeResultCode: checks.AZUAKSAzureMonitor,
+			mustIncludeResultCode: rules.AZUAKSAzureMonitor,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with no oms_agent define",
@@ -28,7 +27,7 @@ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 	addon_profile {}
 }`,
-			mustIncludeResultCode: checks.AZUAKSAzureMonitor,
+			mustIncludeResultCode: rules.AZUAKSAzureMonitor,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with oms_agent disabled",
@@ -40,7 +39,7 @@ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 		}
 	}
 }`,
-			mustIncludeResultCode: checks.AZUAKSAzureMonitor,
+			mustIncludeResultCode: rules.AZUAKSAzureMonitor,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with oms_agent enabled",
@@ -52,7 +51,7 @@ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 		}
 	}
 }`,
-			mustExcludeResultCode: checks.AZUAKSAzureMonitor,
+			mustExcludeResultCode: rules.AZUAKSAzureMonitor,
 		},
 	}
 

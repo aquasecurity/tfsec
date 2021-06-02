@@ -4,14 +4,17 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"strings"
+
+	"github.com/tfsec/tfsec/pkg/result"
 
 	"github.com/olekukonko/tablewriter"
 )
 
 type StatisticsItem struct {
-	RuleID          RuleCode
-	RuleDescription RuleSummary
-	Link            string
+	RuleID          string
+	RuleDescription string
+	Links           []string
 	Count           int
 }
 
@@ -31,16 +34,16 @@ func (statistics Statistics) PrintStatisticsTable() {
 	table.SetRowLine(true)
 
 	for _, item := range statistics {
-		table.Append([]string{string(item.RuleID),
-			string(item.RuleDescription),
-			item.Link,
+		table.Append([]string{item.RuleID,
+			item.RuleDescription,
+			strings.Join(item.Links, "\n"),
 			strconv.Itoa(item.Count)})
 	}
 
 	table.Render()
 }
 
-func AddStatisticsCount(StatisticsSlice Statistics, result Result) Statistics {
+func AddStatisticsCount(StatisticsSlice Statistics, result result.Result) Statistics {
 	for i, statistics := range StatisticsSlice {
 		if statistics.RuleID == result.RuleID {
 			StatisticsSlice[i].Count += 1
@@ -48,8 +51,8 @@ func AddStatisticsCount(StatisticsSlice Statistics, result Result) Statistics {
 		}
 	}
 	StatisticsSlice = append(StatisticsSlice, StatisticsItem{RuleID: result.RuleID,
-		RuleDescription: result.RuleDescription,
-		Link:            result.Link,
+		RuleDescription: result.RuleSummary,
+		Links:           result.Links,
 		Count:           1,
 	})
 

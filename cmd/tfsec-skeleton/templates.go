@@ -5,10 +5,11 @@ const checkTemplate = `package checks
 import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/pkg/rule"
 )
 
-const {{.CheckName}} scanner.RuleCode = "{{.Provider | ToUpper }}{{ .Code}}"
-const {{.CheckName}}Description scanner.RuleSummary = "{{.Summary}}"
+const {{.CheckName}} = "{{.Provider | ToUpper }}{{ .ID}}"
+const {{.CheckName}}Description = "{{.Summary}}"
 const {{.CheckName}}Impact = "{{.Impact}}"
 const {{.CheckName}}Resolution = "{{.Resolution}}"
 const {{.CheckName}}Explanation = ` + "`" + `
@@ -26,8 +27,8 @@ resource "" "good_example" {
 ` + "`" + `
 
 func init() {
-	scanner.RegisterCheck(scanner.Check{
-		Code: {{.CheckName}},
+	scanner.RegisterCheckRule(rule.Rule{
+		ID: {{.CheckName}},
 		Documentation: scanner.CheckDocumentation{
 			Summary:     {{.CheckName}}Description,
 			Explanation: {{.CheckName}}Explanation,
@@ -42,7 +43,7 @@ func init() {
 		Provider:       scanner.{{.ProviderLongName}}Provider,
 		RequiredTypes:  []string{{.RequiredTypes}},
 		RequiredLabels: []string{{.RequiredLabels}},
-		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+		CheckFunc: func(block *parser.Block, _ *scanner.Context) []scanner.Result {
 				
 			// function contents here
 
@@ -57,7 +58,7 @@ const checkTestTemplate = `package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -66,8 +67,8 @@ func Test_{{.CheckName}}(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "TODO: add test name",
@@ -86,7 +87,7 @@ func Test_{{.CheckName}}(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+		t.Check(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})

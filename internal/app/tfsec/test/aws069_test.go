@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSEKSClusterPublicAccessDisabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSEKSClusterPublicAccessDisabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "Test eks cluster without vpc_config defaults to public access fails check",
@@ -25,7 +24,7 @@ resource "aws_eks_cluster" "bad_example" {
     role_arn = var.cluster_arn
 }
 `,
-			mustIncludeResultCode: checks.AWSEKSClusterPublicAccessDisabled,
+			mustIncludeResultCode: rules.AWSEKSClusterPublicAccessDisabled,
 		},
 		{
 			name: "Test vpc config with public access fails check",
@@ -41,7 +40,7 @@ resource "aws_eks_cluster" "bad_example" {
     }
 }
 `,
-			mustIncludeResultCode: checks.AWSEKSClusterPublicAccessDisabled,
+			mustIncludeResultCode: rules.AWSEKSClusterPublicAccessDisabled,
 		},
 		{
 			name: "Test eks cluster with the public access disabled passes check",
@@ -57,7 +56,7 @@ resource "aws_eks_cluster" "good_example" {
     }
 }
 `,
-			mustExcludeResultCode: checks.AWSEKSClusterPublicAccessDisabled,
+			mustExcludeResultCode: rules.AWSEKSClusterPublicAccessDisabled,
 		},
 	}
 

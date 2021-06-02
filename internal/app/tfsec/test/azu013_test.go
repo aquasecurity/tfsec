@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUTrustedMicrosoftServicesHaveStroageAccountAccess(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUTrustedMicrosoftServicesHaveStroageAccountAccess(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check storage account without MicrosoftServices causes failure",
@@ -38,7 +37,7 @@ resource "azurerm_storage_account" "example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
+			mustIncludeResultCode: rules.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
 		},
 		{
 			name: "check storage account network rules without MicrosoftServices bypass causes failure",
@@ -53,7 +52,7 @@ storage_account_name = azurerm_storage_account.test.name
 	bypass                     = ["Metrics"]
 }
 `,
-			mustIncludeResultCode: checks.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
+			mustIncludeResultCode: rules.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
 		},
 		{
 			name: "check storage account network rules with empty bypass fails",
@@ -68,7 +67,7 @@ storage_account_name = azurerm_storage_account.test.name
 	bypass                     = []
 }
 `,
-			mustIncludeResultCode: checks.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
+			mustIncludeResultCode: rules.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
 		},
 		{
 			name: "check storage account that has MicrosoftServices bypass passes",
@@ -93,7 +92,7 @@ resource "azurerm_storage_account" "example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
+			mustExcludeResultCode: rules.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
 		},
 		{
 			name: "check storage account with no network rules passes",
@@ -111,7 +110,7 @@ resource "azurerm_storage_account" "example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
+			mustExcludeResultCode: rules.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
 		},
 		{
 			name: "check storage account network rules that has MicrosoftServices bypass passes",
@@ -126,7 +125,7 @@ storage_account_name = azurerm_storage_account.test.name
 	bypass                     = ["Metrics", "AzureServices"]
 }
 `,
-			mustExcludeResultCode: checks.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
+			mustExcludeResultCode: rules.AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
 		},
 	}
 

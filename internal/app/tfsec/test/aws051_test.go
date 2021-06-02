@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSRDSAuroraClusterEncryptionDisabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSRDSAuroraClusterEncryptionDisabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check rds is not specified",
@@ -22,7 +21,7 @@ resource "aws_rds_cluster" "my-instance" {
 	name = "cluster-1"
 }
 `,
-			mustIncludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
+			mustIncludeResultCode: rules.AWSRDSAuroraClusterEncryptionDisabled,
 		},
 		{
 			name: "check rds kms is specified but false",
@@ -32,7 +31,7 @@ resource "aws_rds_cluster" "my-instance" {
 	kms_key_id  = ""
 }
 `,
-			mustIncludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
+			mustIncludeResultCode: rules.AWSRDSAuroraClusterEncryptionDisabled,
 		},
 		{
 			name: "check rds kms is specified but not storage_encrypted",
@@ -42,7 +41,7 @@ resource "aws_rds_cluster" "my-instance" {
 	kms_key_id  = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
 }
 `,
-			mustIncludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
+			mustIncludeResultCode: rules.AWSRDSAuroraClusterEncryptionDisabled,
 		},
 		{
 			name: "check rds storage_encrypted is false and key_id is null",
@@ -53,7 +52,7 @@ resource "aws_rds_cluster" "my-instance" {
 	kms_key_id = null
 }
 `,
-			mustIncludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
+			mustIncludeResultCode: rules.AWSRDSAuroraClusterEncryptionDisabled,
 		},
 		{
 			name: "check rds encryption is enabled correctly",
@@ -64,7 +63,7 @@ resource "aws_rds_cluster" "my-instance" {
 	storage_encrypted = true
 }
 `,
-			mustExcludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
+			mustExcludeResultCode: rules.AWSRDSAuroraClusterEncryptionDisabled,
 		},
 		{
 			name: "check rds encryption with storage_encrypted but no kms_id",
@@ -74,7 +73,7 @@ resource "aws_rds_cluster" "my-instance" {
 	storage_encrypted = true
 }
 `,
-			mustExcludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
+			mustExcludeResultCode: rules.AWSRDSAuroraClusterEncryptionDisabled,
 		},
 		{
 			name: "verify issue 633 ",
@@ -90,7 +89,7 @@ storage_encrypted               = true
 kms_key_id                      = aws_kms_key.rds.arn
 }
 `,
-			mustExcludeResultCode: checks.AWSRDSAuroraClusterEncryptionDisabled,
+			mustExcludeResultCode: rules.AWSRDSAuroraClusterEncryptionDisabled,
 		},
 	}
 

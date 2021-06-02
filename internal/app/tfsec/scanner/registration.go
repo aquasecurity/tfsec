@@ -4,30 +4,32 @@ import (
 	"fmt"
 	"sort"
 	"sync"
+
+	"github.com/tfsec/tfsec/pkg/rule"
 )
 
-var checkLock sync.Mutex
-var registeredChecks []Check
+var rulesLock sync.Mutex
+var registeredRules []rule.Rule
 
-// RegisterCheck registers a new Check which should be run on future scans
-func RegisterCheck(check Check) {
-	if check.Code == "" {
-		panic("check code was not set")
+// RegisterCheckRule registers a new Rule which should be run on future scans
+func RegisterCheckRule(rule rule.Rule) {
+	if rule.ID == "" {
+		panic("rule code was not set")
 	}
-	checkLock.Lock()
-	defer checkLock.Unlock()
-	for _, existing := range registeredChecks {
-		if existing.Code == check.Code {
-			panic(fmt.Errorf("check already exists with code '%s'", check.Code))
+	rulesLock.Lock()
+	defer rulesLock.Unlock()
+	for _, existing := range registeredRules {
+		if existing.ID == rule.ID {
+			panic(fmt.Errorf("rule already exists with code '%s'", rule.ID))
 		}
 	}
-	registeredChecks = append(registeredChecks, check)
+	registeredRules = append(registeredRules, rule)
 }
 
-// GetRegisteredChecks provides all Checks which have been registered with this package
-func GetRegisteredChecks() []Check {
-	sort.Slice(registeredChecks, func(i, j int) bool {
-		return registeredChecks[i].Code < registeredChecks[j].Code
+// GetRegisteredRules provides all Checks which have been registered with this package
+func GetRegisteredRules() []rule.Rule {
+	sort.Slice(registeredRules, func(i, j int) bool {
+		return registeredRules[i].ID < registeredRules[j].ID
 	})
-	return registeredChecks
+	return registeredRules
 }

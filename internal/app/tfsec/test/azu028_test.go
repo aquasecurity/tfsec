@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUFunctionAppHTTPS(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUFunctionAppHTTPS(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check if https_only not set, check fails",
@@ -28,7 +27,7 @@ resource "azurerm_function_app" "bad_example" {
   os_type                    = "linux"
 }
 `,
-			mustIncludeResultCode: checks.AZUFunctionAppHTTPS,
+			mustIncludeResultCode: rules.AZUFunctionAppHTTPS,
 		},
 		{
 			name: "check if https_only is set true, check passes",
@@ -44,7 +43,7 @@ resource "azurerm_function_app" "good_example" {
   https_only                 = true
 }
 `,
-			mustExcludeResultCode: checks.AZUFunctionAppHTTPS,
+			mustExcludeResultCode: rules.AZUFunctionAppHTTPS,
 		},
 		{
 			name: "check if https_only is set to false, check fails",
@@ -60,7 +59,7 @@ resource "azurerm_function_app" "bad_example" {
   https_only                 = false
 }
 `,
-			mustIncludeResultCode: checks.AZUFunctionAppHTTPS,
+			mustIncludeResultCode: rules.AZUFunctionAppHTTPS,
 		},
 	}
 

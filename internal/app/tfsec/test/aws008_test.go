@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSOpenIngressSecurityGroup(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSOpenIngressSecurityGroup(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_security_group ingress on 0.0.0.0/0",
@@ -23,7 +22,7 @@ func Test_AWSOpenIngressSecurityGroup(t *testing.T) {
 				cidr_blocks = ["0.0.0.0/0"]
 			}
 		}`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
+			mustIncludeResultCode: rules.AWSOpenIngressSecurityGroupInlineRule,
 		},
 		{
 			name: "check dynamic blocks using for_each",
@@ -71,7 +70,7 @@ func Test_AWSOpenIngressSecurityGroup(t *testing.T) {
 		 }
 		}
 					`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
+			mustIncludeResultCode: rules.AWSOpenIngressSecurityGroupInlineRule,
 		},
 		{
 			name: "check aws_security_group multiple ingress on 0.0.0.0/0",
@@ -84,7 +83,7 @@ func Test_AWSOpenIngressSecurityGroup(t *testing.T) {
 				cidr_blocks = ["0.0.0.0/0"]
 			}
 		}`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
+			mustIncludeResultCode: rules.AWSOpenIngressSecurityGroupInlineRule,
 		},
 		{
 			name: "check aws_security_group ingress on ::/0",
@@ -94,7 +93,7 @@ func Test_AWSOpenIngressSecurityGroup(t *testing.T) {
 				ipv6_cidr_blocks = ["0.0.0.0/0"]
 			}
 		}`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
+			mustIncludeResultCode: rules.AWSOpenIngressSecurityGroupInlineRule,
 		},
 		{
 			name: "check aws_security_group ingress on 10.10.0.0/16",
@@ -104,7 +103,7 @@ func Test_AWSOpenIngressSecurityGroup(t *testing.T) {
 				ipv6_cidr_blocks = ["10.10.0.0/16"]
 			}
 		}`,
-			mustExcludeResultCode: checks.AWSOpenIngressSecurityGroupInlineRule,
+			mustExcludeResultCode: rules.AWSOpenIngressSecurityGroupInlineRule,
 		},
 	}
 

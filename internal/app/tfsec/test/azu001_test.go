@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AzureOpenNetworkSecurityGroupRule(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AzureOpenNetworkSecurityGroupRule(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check azurerm_network_security_rule inbound on 0.0.0.0/0",
@@ -23,7 +22,7 @@ resource "azurerm_network_security_rule" "my-rule" {
 	source_address_prefix = "0.0.0.0/0"
 	access = "Allow"
 }`,
-			mustIncludeResultCode: checks.AzureOpenInboundNetworkSecurityGroupRule,
+			mustIncludeResultCode: rules.AzureOpenInboundNetworkSecurityGroupRule,
 		},
 		{
 			name: "check azurerm_network_security_rule inbound on *",
@@ -33,7 +32,7 @@ resource "azurerm_network_security_rule" "my-rule" {
 	source_address_prefix = "*"
 	access = "Allow"
 }`,
-			mustIncludeResultCode: checks.AzureOpenInboundNetworkSecurityGroupRule,
+			mustIncludeResultCode: rules.AzureOpenInboundNetworkSecurityGroupRule,
 		},
 		{
 			name: "check azurerm_network_security_rule inbound on 0.0.0.0/0 in list",
@@ -43,7 +42,7 @@ resource "azurerm_network_security_rule" "my-rule" {
 	source_address_prefixes = ["0.0.0.0/0"]
 	access = "Allow"
 }`,
-			mustIncludeResultCode: checks.AzureOpenInboundNetworkSecurityGroupRule,
+			mustIncludeResultCode: rules.AzureOpenInboundNetworkSecurityGroupRule,
 		},
 		{
 			name: "check azurerm_network_security_rule inbound on * in list",
@@ -53,7 +52,7 @@ resource "azurerm_network_security_rule" "my-rule" {
 	source_address_prefixes = ["*"]
 	access = "Allow"
 }`,
-			mustIncludeResultCode: checks.AzureOpenInboundNetworkSecurityGroupRule,
+			mustIncludeResultCode: rules.AzureOpenInboundNetworkSecurityGroupRule,
 		},
 		{
 			name: "check azurerm_network_security_rule outbound on 0.0.0.0/0",
@@ -63,7 +62,7 @@ resource "azurerm_network_security_rule" "my-rule" {
 	destination_address_prefix = "0.0.0.0/0"
 	access = "Allow"
 }`,
-			mustIncludeResultCode: checks.AzureOpenOutboundNetworkSecurityGroupRule,
+			mustIncludeResultCode: rules.AzureOpenOutboundNetworkSecurityGroupRule,
 		},
 		{
 			name: "check azurerm_network_security_rule outbound on 0.0.0.0/0 in list",
@@ -73,7 +72,7 @@ resource "azurerm_network_security_rule" "my-rule" {
 	destination_address_prefixes = ["0.0.0.0/0"]
 	access = "Allow"
 }`,
-			mustIncludeResultCode: checks.AzureOpenOutboundNetworkSecurityGroupRule,
+			mustIncludeResultCode: rules.AzureOpenOutboundNetworkSecurityGroupRule,
 		},
 		{
 			name: "check azurerm_network_security_rule outbound on 10.0.0.0/16",
@@ -83,7 +82,7 @@ resource "azurerm_network_security_rule" "my-rule" {
 	destination_address_prefix = "10.0.0.0/16"
 	access = "Allow"
 }`,
-			mustExcludeResultCode: checks.AzureOpenOutboundNetworkSecurityGroupRule,
+			mustExcludeResultCode: rules.AzureOpenOutboundNetworkSecurityGroupRule,
 		},
 		{
 			name: "check azurerm_network_security_rule inbound on 0.0.0.0/0",
@@ -93,7 +92,7 @@ resource "azurerm_network_security_rule" "my-rule" {
 	source_address_prefix = "0.0.0.0/0"
 	access = "Deny"
 }`,
-			mustExcludeResultCode: checks.AzureOpenInboundNetworkSecurityGroupRule,
+			mustExcludeResultCode: rules.AzureOpenInboundNetworkSecurityGroupRule,
 		},
 	}
 

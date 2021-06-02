@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"io"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/pkg/result"
 )
 
 type checkstyleResult struct {
@@ -26,26 +26,31 @@ type checkstyleOutput struct {
 	Files   []checkstyleFile `xml:"file"`
 }
 
-func FormatCheckStyle(w io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
+func FormatCheckStyle(w io.Writer, results []result.Result, _ string, _ ...FormatterOption) error {
 
 	output := checkstyleOutput{}
 
 	files := make(map[string][]checkstyleResult)
 
-	// TODO - Handle if the --include-passed argument is passed.
-
-	for _, result := range results {
+	for _, res := range results {
+		if res.Status == result.Passed {
+			continue
+		}
+		var link string
+		if len(res.Links) > 0 {
+			link = res.Links[0]
+		}
 		fileResults := append(
-			files[result.Range.Filename],
+			files[res.Range.Filename],
 			checkstyleResult{
-				Rule:     string(result.RuleID),
-				Line:     result.Range.StartLine,
-				Severity: string(result.Severity),
-				Message:  result.Description,
-				Link:     result.Link,
+				Rule:     string(res.RuleID),
+				Line:     res.Range.StartLine,
+				Severity: string(res.Severity),
+				Message:  res.Description,
+				Link:     link,
 			},
 		)
-		files[result.Range.Filename] = fileResults
+		files[res.Range.Filename] = fileResults
 	}
 
 	for name, fileResults := range files {

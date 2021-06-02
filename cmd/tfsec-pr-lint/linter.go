@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/pkg/rule"
 )
 
 type linter struct {
@@ -11,36 +11,36 @@ type linter struct {
 	exitCode int
 }
 
-func (l *linter) lint(check scanner.Check) {
+func (l *linter) lint(check rule.Rule) {
 	docs := check.Documentation
 	var errorFound = false
 	if err := l.checkDocPart(string(docs.Summary), "Summary"); err != nil {
-		fmt.Printf("%s: %s\n", check.Code, err.Error())
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
 		errorFound = true
 	}
 	if err := l.checkDocPart(docs.Impact, "Impact"); err != nil {
-		fmt.Printf("%s: %s\n", check.Code, err.Error())
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
 		errorFound = true
 	}
 	if err := l.checkDocPart(docs.Resolution, "Resolution"); err != nil {
-		fmt.Printf("%s: %s\n", check.Code, err.Error())
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
 		errorFound = true
 	}
 	if err := l.checkDocPart(docs.Explanation, "Explanation"); err != nil {
-		fmt.Printf("%s: %s\n", check.Code, err.Error())
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
 		errorFound = true
 	}
 	if err := l.checkDocPart(docs.GoodExample, "GoodExample"); err != nil {
-		fmt.Printf("%s: %s\n", check.Code, err.Error())
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
 		errorFound = true
 	}
 	if err := l.checkDocPart(docs.BadExample, "BadExample"); err != nil {
-		fmt.Printf("%s: %s\n", check.Code, err.Error())
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
 		errorFound = true
 	}
 
 	if len(docs.Links) == 0 {
-		fmt.Printf("%s: Has no links configure\n", check.Code)
+		fmt.Printf("%s: Has no links configure\n", check.ID)
 		errorFound = true
 	}
 

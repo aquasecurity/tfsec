@@ -13,8 +13,8 @@ func Test_ProblemInModule(t *testing.T) {
 		name                  string
 		source                string
 		moduleSource          string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check problem in module",
@@ -39,7 +39,7 @@ resource "problem" "uhoh" {
 			if err != nil {
 				t.Fatal(err)
 			}
-			results := scanner.New().Scan(blocks, excludedChecksList)
+			results := scanner.New(scanner.OptionExcludeRules(excludedChecksList)).Scan(blocks)
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}

@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSAPIGatewayHasAccessLoggingEnabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSAPIGatewayHasAccessLoggingEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "test missing access log settings has error v2",
@@ -23,7 +22,7 @@ resource "aws_apigatewayv2_stage" "bad_example" {
   name   = "example-stage"
 }
 `,
-			mustIncludeResultCode: checks.AWSAPIGatewayHasAccessLoggingEnabled,
+			mustIncludeResultCode: rules.AWSAPIGatewayHasAccessLoggingEnabled,
 		},
 		{
 			name: "test missing access log settings has error",
@@ -34,7 +33,7 @@ resource "aws_api_gateway_stage" "bad_example" {
   stage_name    = "example"
 }
 `,
-			mustIncludeResultCode: checks.AWSAPIGatewayHasAccessLoggingEnabled,
+			mustIncludeResultCode: rules.AWSAPIGatewayHasAccessLoggingEnabled,
 		},
 		{
 			name: "test access log settings present has no error v2",
@@ -49,7 +48,7 @@ resource "aws_apigatewayv2_stage" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSAPIGatewayHasAccessLoggingEnabled,
+			mustExcludeResultCode: rules.AWSAPIGatewayHasAccessLoggingEnabled,
 		},
 		{
 			name: "test access log settings present has no error",
@@ -65,7 +64,7 @@ resource "aws_api_gateway_stage" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSAPIGatewayHasAccessLoggingEnabled,
+			mustExcludeResultCode: rules.AWSAPIGatewayHasAccessLoggingEnabled,
 		},
 	}
 

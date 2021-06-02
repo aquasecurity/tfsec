@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSEKSClusterNotOpenPublicly(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSEKSClusterNotOpenPublicly(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "Test public access cidrs left to default causes check to fail",
@@ -27,7 +26,7 @@ resource "aws_eks_cluster" "bad_example" {
     }
 }
 `,
-			mustIncludeResultCode: checks.AWSEKSClusterNotOpenPublicly,
+			mustIncludeResultCode: rules.AWSEKSClusterNotOpenPublicly,
 		},
 		{
 			name: "Test public access cidrs actively set to open check to fail",
@@ -42,7 +41,7 @@ resource "aws_eks_cluster" "bad_example" {
     }
 }
 `,
-			mustIncludeResultCode: checks.AWSEKSClusterNotOpenPublicly,
+			mustIncludeResultCode: rules.AWSEKSClusterNotOpenPublicly,
 		},
 		{
 			name: "Test public access cidrs correctly configured passess check",
@@ -57,7 +56,7 @@ resource "aws_eks_cluster" "good_example" {
     }
 }
 `,
-			mustExcludeResultCode: checks.AWSEKSClusterNotOpenPublicly,
+			mustExcludeResultCode: rules.AWSEKSClusterNotOpenPublicly,
 		},
 	}
 

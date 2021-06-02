@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSPublicIP(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSPublicIP(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_launch_configuration with public ip associated",
@@ -21,7 +20,7 @@ func Test_AWSPublicIP(t *testing.T) {
 resource "aws_launch_configuration" "my-resource" {
 	associate_public_ip_address = true
 }`,
-			mustIncludeResultCode: checks.AWSResourceHasPublicIP,
+			mustIncludeResultCode: rules.AWSResourceHasPublicIP,
 		},
 		{
 			name: "check aws_instance with public ip associated",
@@ -29,7 +28,7 @@ resource "aws_launch_configuration" "my-resource" {
 resource "aws_instance" "my-resource" {
 	associate_public_ip_address = true
 }`,
-			mustIncludeResultCode: checks.AWSResourceHasPublicIP,
+			mustIncludeResultCode: rules.AWSResourceHasPublicIP,
 		},
 		{
 			name: "check aws_instance without public ip associated",
@@ -37,14 +36,14 @@ resource "aws_instance" "my-resource" {
 resource "aws_instance" "my-resource" {
 	associate_public_ip_address = false
 }`,
-			mustExcludeResultCode: checks.AWSResourceHasPublicIP,
+			mustExcludeResultCode: rules.AWSResourceHasPublicIP,
 		},
 		{
 			name: "check aws_instance without public ip explicitly associated",
 			source: `
 resource "aws_instance" "my-resource" {
 }`,
-			mustExcludeResultCode: checks.AWSResourceHasPublicIP,
+			mustExcludeResultCode: rules.AWSResourceHasPublicIP,
 		},
 	}
 

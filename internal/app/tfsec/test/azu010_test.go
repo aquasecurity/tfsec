@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUStorageAccountHTTPSenabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUStorageAccountHTTPSenabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check azurerm_storage_account with no enable_https_traffic_only define",
@@ -21,7 +20,7 @@ func Test_AZUStorageAccountHTTPSenabled(t *testing.T) {
 resource "azurerm_storage_account" "my-storage-account" {
 
 }`,
-mustExcludeResultCode: checks.AZUStorageAccountHTTPSenabled,
+			mustExcludeResultCode: rules.AZUStorageAccountHTTPSenabled,
 		},
 		{
 			name: "check azurerm_storage_account with enable_https_traffic_only disabled",
@@ -29,7 +28,7 @@ mustExcludeResultCode: checks.AZUStorageAccountHTTPSenabled,
 resource "azurerm_storage_account" "my-storage-account" {
 	enable_https_traffic_only = false
 }`,
-			mustIncludeResultCode: checks.AZUStorageAccountHTTPSenabled,
+			mustIncludeResultCode: rules.AZUStorageAccountHTTPSenabled,
 		},
 		{
 			name: "check azurerm_storage_account with enable_https_traffic_only enabled",
@@ -37,7 +36,7 @@ resource "azurerm_storage_account" "my-storage-account" {
 resource "azurerm_storage_account" "my-storage-account" {
 	enable_https_traffic_only = true
 }`,
-			mustExcludeResultCode: checks.AZUStorageAccountHTTPSenabled,
+			mustExcludeResultCode: rules.AZUStorageAccountHTTPSenabled,
 		},
 	}
 

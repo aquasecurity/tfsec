@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSSensitiveLocals(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSSensitiveLocals(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check sensitive local with value",
@@ -21,7 +20,7 @@ func Test_AWSSensitiveLocals(t *testing.T) {
 locals {
 	password = "secret"
 }`,
-			mustIncludeResultCode: checks.GenericSensitiveLocals,
+			mustIncludeResultCode: rules.GenericSensitiveLocals,
 		},
 		{
 			name: "check non-sensitive local",
@@ -29,7 +28,7 @@ locals {
 locals {
 	something = "something"
 }`,
-			mustExcludeResultCode: checks.GenericSensitiveLocals,
+			mustExcludeResultCode: rules.GenericSensitiveLocals,
 		},
 	}
 

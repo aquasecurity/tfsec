@@ -3,7 +3,7 @@ package formatters
 import (
 	"io"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/pkg/result"
 )
 
 type FormatterOption int
@@ -14,4 +14,4 @@ const (
 )
 
 // Formatter formats scan results into a specific format
-type Formatter func(w io.Writer, results []scanner.Result, baseDir string, options ...FormatterOption) error
+type Formatter func(w io.Writer, results []result.Result, baseDir string, options ...FormatterOption) error

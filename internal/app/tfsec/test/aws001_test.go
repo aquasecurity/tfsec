@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSACL(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSACL(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_s3_bucket with acl=public-read",
@@ -22,7 +21,7 @@ resource "aws_s3_bucket" "my-bucket" {
 	acl = "public-read"
 	logging {}
 }`,
-			mustIncludeResultCode: checks.AWSBadBucketACL,
+			mustIncludeResultCode: rules.AWSBadBucketACL,
 		},
 		{
 			name: "check aws_s3_bucket with acl=public-read-write",
@@ -31,7 +30,7 @@ resource "aws_s3_bucket" "my-bucket" {
 	acl = "public-read-write"
 	logging {}
 }`,
-			mustIncludeResultCode: checks.AWSBadBucketACL,
+			mustIncludeResultCode: rules.AWSBadBucketACL,
 		},
 		{
 			name: "check aws_s3_bucket with acl=website",
@@ -39,7 +38,7 @@ resource "aws_s3_bucket" "my-bucket" {
 resource "aws_s3_bucket" "my-bucket" {
 	acl = "website"
 }`,
-			mustIncludeResultCode: checks.AWSBadBucketACL,
+			mustIncludeResultCode: rules.AWSBadBucketACL,
 		},
 		{
 			name: "check aws_s3_bucket with acl=private",
@@ -47,7 +46,7 @@ resource "aws_s3_bucket" "my-bucket" {
 resource "aws_s3_bucket" "my-bucket" {
 	acl = "private"
 }`,
-			mustExcludeResultCode: checks.AWSBadBucketACL,
+			mustExcludeResultCode: rules.AWSBadBucketACL,
 		},
 	}
 

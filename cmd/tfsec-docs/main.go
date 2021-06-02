@@ -5,9 +5,11 @@ import (
 	"os"
 	"sort"
 
+	"github.com/tfsec/tfsec/pkg/rule"
+
 	"github.com/spf13/cobra"
 
-	_ "github.com/tfsec/tfsec/internal/app/tfsec/checks"
+	_ "github.com/tfsec/tfsec/internal/app/tfsec/rules"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -18,7 +20,7 @@ var (
 
 type FileContent struct {
 	Provider string
-	Checks   []scanner.Check
+	Checks   []rule.Rule
 }
 
 func init() {
@@ -49,12 +51,12 @@ var rootCmd = &cobra.Command{
 }
 
 func getSortedFileContents() []*FileContent {
-	checks := scanner.GetRegisteredChecks()
-	checkMap := make(map[string][]scanner.Check)
+	rules := scanner.GetRegisteredRules()
+	checkMap := make(map[string][]rule.Rule)
 
-	for _, check := range checks {
-		provider := string(check.Provider)
-		checkMap[provider] = append(checkMap[provider], check)
+	for _, r := range rules {
+		provider := string(r.Provider)
+		checkMap[provider] = append(checkMap[provider], r)
 	}
 
 	var fileContents []*FileContent
@@ -70,9 +72,9 @@ func getSortedFileContents() []*FileContent {
 	return fileContents
 }
 
-func sortChecks(checks []scanner.Check) {
+func sortChecks(checks []rule.Rule) {
 	sort.Slice(checks, func(i, j int) bool {
-		return checks[i].Code < checks[j].Code
+		return checks[i].ID < checks[j].ID
 	})
 }
 

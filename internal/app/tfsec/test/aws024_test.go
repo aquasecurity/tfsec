@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSUnencryptedKinesisStream(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSUnencryptedKinesisStream(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check no encryption specified for aws_kinesis_stream",
@@ -21,7 +20,7 @@ func Test_AWSUnencryptedKinesisStream(t *testing.T) {
 resource "aws_kinesis_stream" "test_stream" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedKinesisStream,
+			mustIncludeResultCode: rules.AWSUnencryptedKinesisStream,
 		},
 		{
 			name: "check encryption disabled for aws_kinesis_stream",
@@ -29,7 +28,7 @@ resource "aws_kinesis_stream" "test_stream" {
 resource "aws_kinesis_stream" "test_stream" {
 	encryption_type = "NONE"
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedKinesisStream,
+			mustIncludeResultCode: rules.AWSUnencryptedKinesisStream,
 		},
 		{
 			name: "check no encryption key id specified for aws_kinesis_stream",
@@ -37,7 +36,7 @@ resource "aws_kinesis_stream" "test_stream" {
 resource "aws_kinesis_stream" "test_stream" {
 	encryption_type = "KMS"
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedKinesisStream,
+			mustIncludeResultCode: rules.AWSUnencryptedKinesisStream,
 		},
 		{
 			name: "check encryption key id specified for aws_sqs_queue",
@@ -46,7 +45,7 @@ resource "aws_kinesis_stream" "test_stream" {
 	encryption_type = "KMS"
 	kms_key_id = "my/key"
 }`,
-			mustExcludeResultCode: checks.AWSUnencryptedKinesisStream,
+			mustExcludeResultCode: rules.AWSUnencryptedKinesisStream,
 		},
 	}
 

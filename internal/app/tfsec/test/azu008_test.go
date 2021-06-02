@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUAKSAPIServerAuthorizedIPRanges(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUAKSAPIServerAuthorizedIPRanges(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check azurerm_kubernetes_cluster without api_server_authorized_ip_ranges defined",
@@ -21,7 +20,7 @@ func Test_AZUAKSAPIServerAuthorizedIPRanges(t *testing.T) {
 			resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 
 }`,
-			mustIncludeResultCode: checks.AZUAKSAPIServerAuthorizedIPRanges,
+			mustIncludeResultCode: rules.AZUAKSAPIServerAuthorizedIPRanges,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster api_server_authorized_ip_ranges without value defined",
@@ -30,7 +29,7 @@ func Test_AZUAKSAPIServerAuthorizedIPRanges(t *testing.T) {
 				api_server_authorized_ip_ranges = []
 
 }`,
-			mustIncludeResultCode: checks.AZUAKSAPIServerAuthorizedIPRanges,
+			mustIncludeResultCode: rules.AZUAKSAPIServerAuthorizedIPRanges,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with api_server_authorized_ip_ranges defined",
@@ -40,7 +39,7 @@ func Test_AZUAKSAPIServerAuthorizedIPRanges(t *testing.T) {
 					"1.2.3.4/32"
 				]
 }`,
-			mustExcludeResultCode: checks.AZUAKSAPIServerAuthorizedIPRanges,
+			mustExcludeResultCode: rules.AZUAKSAPIServerAuthorizedIPRanges,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster without api_server_authorized_ip_ranges defined but private cluster enabled true",
@@ -48,7 +47,7 @@ func Test_AZUAKSAPIServerAuthorizedIPRanges(t *testing.T) {
 			resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 				private_cluster_enabled = true
 }`,
-			mustExcludeResultCode: checks.AZUAKSAPIServerAuthorizedIPRanges,
+			mustExcludeResultCode: rules.AZUAKSAPIServerAuthorizedIPRanges,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with api_server_authorized_ip_ranges defined but private cluster enabled true",
@@ -59,7 +58,7 @@ func Test_AZUAKSAPIServerAuthorizedIPRanges(t *testing.T) {
 					"1.2.3.4/32"
 				]
 }`,
-			mustExcludeResultCode: checks.AZUAKSAPIServerAuthorizedIPRanges,
+			mustExcludeResultCode: rules.AZUAKSAPIServerAuthorizedIPRanges,
 		},
 	}
 

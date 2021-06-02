@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSEKSHasControlPlaneLoggingEnabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSEKSHasControlPlaneLoggingEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "Test eks cluster with no logging configured fails check",
@@ -33,7 +32,7 @@ resource "aws_eks_cluster" "bad_example" {
     }
 }
 `,
-			mustIncludeResultCode: checks.AWSEKSHasControlPlaneLoggingEnabled,
+			mustIncludeResultCode: rules.AWSEKSHasControlPlaneLoggingEnabled,
 		},
 		{
 			name: "Test EKS cluster with only some cluster logging enabled fails check",
@@ -55,7 +54,7 @@ resource "aws_eks_cluster" "bad_example" {
     }
 }
 `,
-			mustIncludeResultCode: checks.AWSEKSHasControlPlaneLoggingEnabled,
+			mustIncludeResultCode: rules.AWSEKSHasControlPlaneLoggingEnabled,
 		},
 		{
 			name: "Test eks cluster with all logging enabled passes check",
@@ -77,7 +76,7 @@ resource "aws_eks_cluster" "good_example" {
     }
 }
 `,
-			mustExcludeResultCode: checks.AWSEKSHasControlPlaneLoggingEnabled,
+			mustExcludeResultCode: rules.AWSEKSHasControlPlaneLoggingEnabled,
 		},
 	}
 

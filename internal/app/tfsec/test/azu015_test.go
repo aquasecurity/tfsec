@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUMinTLSForStorageAccountsSet(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUMinTLSForStorageAccountsSet(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check when min_tls not set check fails",
@@ -25,7 +24,7 @@ resource "azurerm_storage_account" "example" {
   min_tls_version          = "TLS1_0"
 }
 `,
-			mustIncludeResultCode: checks.AZUMinTLSForStorageAccountsSet,
+			mustIncludeResultCode: rules.AZUMinTLSForStorageAccountsSet,
 		},
 		{
 			name: "check when min_tls set to TLS1_0 check fails",
@@ -37,7 +36,7 @@ resource "azurerm_storage_account" "example" {
   min_tls_version          = "TLS1_0"
 }
 `,
-			mustIncludeResultCode: checks.AZUMinTLSForStorageAccountsSet,
+			mustIncludeResultCode: rules.AZUMinTLSForStorageAccountsSet,
 		},
 		{
 			name: "check when min_tls set to TLS1_1 check fails",
@@ -49,7 +48,7 @@ resource "azurerm_storage_account" "example" {
   min_tls_version          = "TLS1_1"
 }
 `,
-			mustIncludeResultCode: checks.AZUMinTLSForStorageAccountsSet,
+			mustIncludeResultCode: rules.AZUMinTLSForStorageAccountsSet,
 		},
 		{
 			name: "TODO: add test name",
@@ -61,7 +60,7 @@ resource "azurerm_storage_account" "example" {
   min_tls_version          = "TLS1_2"
 }
 `,
-			mustExcludeResultCode: checks.AZUMinTLSForStorageAccountsSet,
+			mustExcludeResultCode: rules.AZUMinTLSForStorageAccountsSet,
 		},
 	}
 

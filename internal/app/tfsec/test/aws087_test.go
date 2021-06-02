@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSRedshiftNotDeployedInEC2Classic(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSRedshiftNotDeployedInEC2Classic(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "TODO: add test name",
@@ -27,7 +26,7 @@ resource "aws_redshift_cluster" "bad_example" {
 	cluster_type       = "single-node"
 }
 `,
-			mustIncludeResultCode: checks.AWSRedshiftNotDeployedInEC2Classic,
+			mustIncludeResultCode: rules.AWSRedshiftNotDeployedInEC2Classic,
 		},
 		{
 			name: "TODO: add test name",
@@ -43,7 +42,7 @@ resource "aws_redshift_cluster" "good_example" {
 	cluster_subnet_group_name = "redshift_subnet"
 }
 `,
-			mustExcludeResultCode: checks.AWSRedshiftNotDeployedInEC2Classic,
+			mustExcludeResultCode: rules.AWSRedshiftNotDeployedInEC2Classic,
 		},
 	}
 

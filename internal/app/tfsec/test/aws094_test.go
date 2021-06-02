@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSRedshiftAtRestEncryption(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSRedshiftAtRestEncryption(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "redshift cluster without encryption fails check",
@@ -27,7 +26,7 @@ resource "aws_redshift_cluster" "bad_example" {
   cluster_type       = "single-node"
 }
 `,
-			mustIncludeResultCode: checks.AWSRedshiftAtRestEncryption,
+			mustIncludeResultCode: rules.AWSRedshiftAtRestEncryption,
 		},
 		{
 			name: "redshift cluster with encryption disabled fails check",
@@ -42,7 +41,7 @@ resource "aws_redshift_cluster" "bad_example" {
   encrypted          = false
 }
 `,
-			mustIncludeResultCode: checks.AWSRedshiftAtRestEncryption,
+			mustIncludeResultCode: rules.AWSRedshiftAtRestEncryption,
 		},
 		{
 			name: "redshift cluster with encryption enabled but no CMK specified fails check",
@@ -57,7 +56,7 @@ resource "aws_redshift_cluster" "bad_example" {
   encrypted          = true
 }
 `,
-			mustIncludeResultCode: checks.AWSRedshiftAtRestEncryption,
+			mustIncludeResultCode: rules.AWSRedshiftAtRestEncryption,
 		},
 		{
 			name: "redshift cluster with encryption enabled and CMK specified passes check",
@@ -77,7 +76,7 @@ resource "aws_redshift_cluster" "good_example" {
   kms_key_id         = aws_kms_key.redshift.key_id
 }
 `,
-			mustExcludeResultCode: checks.AWSRedshiftAtRestEncryption,
+			mustExcludeResultCode: rules.AWSRedshiftAtRestEncryption,
 		},
 	}
 

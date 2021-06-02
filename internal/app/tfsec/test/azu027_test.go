@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUSynapseWorkspaceManagedNetwork(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUSynapseWorkspaceManagedNetwork(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check if managed_virtual_network_enabled not set, check fails",
@@ -37,7 +36,7 @@ resource "azurerm_synapse_workspace" "bad_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AZUSynapseWorkspaceManagedNetwork,
+			mustIncludeResultCode: rules.AZUSynapseWorkspaceManagedNetwork,
 		},
 		{
 			name: "check if managed_virtual_network_enabled is set true, check passes",
@@ -61,7 +60,7 @@ resource "azurerm_synapse_workspace" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AZUSynapseWorkspaceManagedNetwork,
+			mustExcludeResultCode: rules.AZUSynapseWorkspaceManagedNetwork,
 		},
 		{
 			name: "check if managed_virtual_network_enabled is set to false, check fails",
@@ -85,7 +84,7 @@ resource "azurerm_synapse_workspace" "bad_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AZUSynapseWorkspaceManagedNetwork,
+			mustIncludeResultCode: rules.AZUSynapseWorkspaceManagedNetwork,
 		},
 	}
 

@@ -6,10 +6,12 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/pkg/severity"
+
+	"github.com/tfsec/tfsec/pkg/result"
 )
 
-func FormatText(_ io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
+func FormatText(_ io.Writer, results []result.Result, _ string, options ...FormatterOption) error {
 
 	if len(results) == 0 || len(results) == countPassedResults(results) {
 		fmt.Print("\nNo problems detected!\n")
@@ -24,22 +26,28 @@ func FormatText(_ io.Writer, results []scanner.Result, _ string, options ...Form
 		}
 	}
 
-	var severity string
+	var sev string
 
 	fmt.Printf("\n%d potential problems detected:\n\n", len(results)-countPassedResults(results))
-	for i, result := range results {
+	for i, res := range results {
+
+		var link string
+		if len(res.Links) > 0 {
+			link = res.Links[0]
+		}
+
 		fmt.Printf("Check %d\n", i+1)
 
-		if includePassedChecks && result.Passed {
-			severity = "PASSED"
+		if includePassedChecks && res.Passed() {
+			sev = "PASSED"
 		} else {
-			switch result.Severity {
-			case scanner.SeverityError:
-				severity = fmt.Sprintf("%s", result.Severity)
-			case scanner.SeverityWarning:
-				severity = fmt.Sprintf("%s", result.Severity)
+			switch res.Severity {
+			case severity.Error:
+				sev = fmt.Sprintf("%s", res.Severity)
+			case severity.Warning:
+				sev = fmt.Sprintf("%s", res.Severity)
 			default:
-				severity = fmt.Sprintf("%s", result.Severity)
+				sev = fmt.Sprintf("%s", res.Severity)
 			}
 		}
 
@@ -47,9 +55,9 @@ func FormatText(_ io.Writer, results []scanner.Result, _ string, options ...Form
   [%s][%s] %s
   %s
 
-`, result.RuleID, severity, result.Description, result.Range.String())
-		outputCode(result)
-		fmt.Printf("  %s\n\n", result.Link)
+`, res.RuleID, sev, res.Description, res.Range.String())
+		outputCode(res)
+		fmt.Printf("  %s\n\n", link)
 	}
 
 	return nil
@@ -57,7 +65,7 @@ func FormatText(_ io.Writer, results []scanner.Result, _ string, options ...Form
 }
 
 // output the lines of code which caused a problem, if available
-func outputCode(result scanner.Result) {
+func outputCode(result result.Result) {
 	data, err := ioutil.ReadFile(result.Range.Filename)
 	if err != nil {
 		return

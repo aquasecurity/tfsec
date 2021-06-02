@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSDynamoDBRecoveryEnabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSDynamoDBRecoveryEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "table with no point in time recovery fails check",
@@ -31,7 +30,7 @@ resource "aws_dynamodb_table" "bad_example" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSDynamoDBRecoveryEnabled,
+			mustIncludeResultCode: rules.AWSDynamoDBRecoveryEnabled,
 		},
 		{
 			name: "table with point in time recovery set but disabled fails check",
@@ -53,7 +52,7 @@ resource "aws_dynamodb_table" "bad_example" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSDynamoDBRecoveryEnabled,
+			mustIncludeResultCode: rules.AWSDynamoDBRecoveryEnabled,
 		},
 		{
 			name: "table with point in time recovery passes check",
@@ -75,7 +74,7 @@ resource "aws_dynamodb_table" "good_example" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSDynamoDBRecoveryEnabled,
+			mustExcludeResultCode: rules.AWSDynamoDBRecoveryEnabled,
 		},
 	}
 

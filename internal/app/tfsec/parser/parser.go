@@ -3,6 +3,8 @@ package parser
 import (
 	"fmt"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
@@ -42,7 +44,7 @@ func New(initialPath string, tfvarsPath string, options ...ParserOption) *Parser
 }
 
 // ParseDirectory parses all terraform files within a given directory
-func (parser *Parser) ParseDirectory() (Blocks, error) {
+func (parser *Parser) ParseDirectory() (block.Blocks, error) {
 
 	debug.Log("Finding Terraform subdirectories...")
 	t := metrics.Start(metrics.DiskIO)
@@ -52,7 +54,7 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	}
 	t.Stop()
 
-	var blocks Blocks
+	var blocks block.Blocks
 
 	for _, dir := range subdirectories {
 		debug.Log("Beginning parse for directory '%s'...", dir)
@@ -71,7 +73,7 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 				debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 			}
 			for _, fileBlock := range fileBlocks {
-				blocks = append(blocks, NewBlock(fileBlock, nil, nil))
+				blocks = append(blocks, block.New(fileBlock, nil, nil))
 			}
 		}
 	}

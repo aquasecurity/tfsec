@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSOpenEgressSecurityGroupRule(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSOpenEgressSecurityGroupRule(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_security_group_rule egress on 0.0.0.0/0",
@@ -22,7 +21,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "egress"
 	cidr_blocks = ["0.0.0.0/0"]
 }`,
-			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
+			mustIncludeResultCode: rules.AWSOpenEgressSecurityGroupRule,
 		},
 		{
 			name: "check aws_security_group_rule egress on 0.0.0.0/0 in list",
@@ -31,7 +30,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "egress"
 	cidr_blocks = ["10.0.0.0/16", "0.0.0.0/0"]
 }`,
-			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
+			mustIncludeResultCode: rules.AWSOpenEgressSecurityGroupRule,
 		},
 		{
 			name: "check aws_security_group_rule egress on 10.0.0.0/16",
@@ -40,7 +39,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "egress"
 	cidr_blocks = ["10.0.0.0/16"]
 }`,
-			mustExcludeResultCode: checks.AWSOpenEgressSecurityGroupRule,
+			mustExcludeResultCode: rules.AWSOpenEgressSecurityGroupRule,
 		},
 	}
 

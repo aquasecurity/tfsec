@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSCloudWatchLogGroupsCMKEncrypted(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSCloudWatchLogGroupsCMKEncrypted(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "cloudwatch without cmk fails check",
@@ -22,7 +21,7 @@ resource "aws_cloudwatch_log_group" "bad_exampe" {
 	name = "bad_example"
 }
 `,
-			mustIncludeResultCode: checks.AWSCloudWatchLogGroupsCMKEncrypted,
+			mustIncludeResultCode: rules.AWSCloudWatchLogGroupsCMKEncrypted,
 		},
 		{
 			name: "cloudwatch with cmk passes check",
@@ -33,7 +32,7 @@ resource "aws_cloudwatch_log_group" "good_example" {
 	kms_key_id = aws_kms_key.log_key.id
 }
 `,
-			mustExcludeResultCode: checks.AWSCloudWatchLogGroupsCMKEncrypted,
+			mustExcludeResultCode: rules.AWSCloudWatchLogGroupsCMKEncrypted,
 		},
 	}
 

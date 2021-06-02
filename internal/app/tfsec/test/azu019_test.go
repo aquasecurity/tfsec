@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUDatabaseAuditingRetention90Days(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUDatabaseAuditingRetention90Days(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check fails if retention period is less than 90",
@@ -26,7 +25,7 @@ resource "azurerm_mssql_database_extended_auditing_policy" "bad_example" {
   retention_in_days                       = 10
 }
 `,
-			mustIncludeResultCode: checks.AZUDatabaseAuditingRetention90Days,
+			mustIncludeResultCode: rules.AZUDatabaseAuditingRetention90Days,
 		},
 		{
 			name: "check fails if extended_auditing_policy has retention less than 90 days",
@@ -47,7 +46,7 @@ resource "azurerm_sql_server" "good_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AZUDatabaseAuditingRetention90Days,
+			mustIncludeResultCode: rules.AZUDatabaseAuditingRetention90Days,
 		},
 		{
 			name: "check passes if retention not specified",
@@ -59,7 +58,7 @@ resource "azurerm_mssql_database_extended_auditing_policy" "good_example" {
   storage_account_access_key_is_secondary = false
 }
 `,
-			mustExcludeResultCode: checks.AZUDatabaseAuditingRetention90Days,
+			mustExcludeResultCode: rules.AZUDatabaseAuditingRetention90Days,
 		}, {
 			name: "check passes if the extended_auditing_policy has retention not specified",
 			source: `
@@ -78,7 +77,7 @@ resource "azurerm_sql_server" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AZUDatabaseAuditingRetention90Days,
+			mustExcludeResultCode: rules.AZUDatabaseAuditingRetention90Days,
 		},
 		{
 			name: "check passes if retention period is greatet than or equal 90",
@@ -91,7 +90,7 @@ resource "azurerm_mssql_database_extended_auditing_policy" "good_example" {
   retention_in_days                       = 90
 }
 `,
-			mustExcludeResultCode: checks.AZUDatabaseAuditingRetention90Days,
+			mustExcludeResultCode: rules.AZUDatabaseAuditingRetention90Days,
 		},
 		{
 			name: "check passes if extended auditing policy has retention period is greatet than or equal 90",
@@ -112,7 +111,7 @@ resource "azurerm_sql_server" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AZUDatabaseAuditingRetention90Days,
+			mustExcludeResultCode: rules.AZUDatabaseAuditingRetention90Days,
 		},
 	}
 

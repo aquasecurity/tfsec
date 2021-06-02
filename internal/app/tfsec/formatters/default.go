@@ -6,16 +6,19 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/tfsec/tfsec/pkg/result"
+
+	severity2 "github.com/tfsec/tfsec/pkg/severity"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 
 	"github.com/liamg/clinch/terminal"
 	"github.com/liamg/tml"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-func FormatDefault(_ io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
+func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...FormatterOption) error {
 
 	showStatistics := true
 	showSuccessOutput := true
@@ -46,27 +49,23 @@ func FormatDefault(_ io.Writer, results []scanner.Result, _ string, options ...F
 
 	var severity string
 
-	severityFormat := map[scanner.Severity]string{
-		scanner.SeverityInfo:    tml.Sprintf("<white>%s</white>", scanner.SeverityInfo),
-		scanner.SeverityWarning: tml.Sprintf("<yellow>%s</yellow>", scanner.SeverityWarning),
-		scanner.SeverityError:   tml.Sprintf("<red>%s</red>", scanner.SeverityError),
-		"":                      tml.Sprintf("<white>%s</white>", scanner.SeverityInfo),
+	severityFormat := map[severity2.Severity]string{
+		severity2.Info:    tml.Sprintf("<white>%s</white>", severity2.Info),
+		severity2.Warning: tml.Sprintf("<yellow>%s</yellow>", severity2.Warning),
+		severity2.Error:   tml.Sprintf("<red>%s</red>", severity2.Error),
+		"":                tml.Sprintf("<white>%s</white>", severity2.Info),
 	}
 
 	fmt.Println("")
-	for i, result := range results {
+	for i, res := range results {
 		resultHeader := fmt.Sprintf("<underline>Check %d</underline>\n", i+1)
 
-		if includePassedChecks && result.Passed {
+		if includePassedChecks && res.Status == result.Passed {
 			terminal.PrintSuccessf(resultHeader)
-		} else {
-			terminal.PrintErrorf(resultHeader)
-		}
-
-		if includePassedChecks && result.Passed {
 			severity = tml.Sprintf("<green>PASSED</green>")
 		} else {
-			severity = severityFormat[result.Severity]
+			terminal.PrintErrorf(resultHeader)
+			severity = severityFormat[res.Severity]
 		}
 
 		_ = tml.Printf(`
@@ -74,15 +73,16 @@ func FormatDefault(_ io.Writer, results []scanner.Result, _ string, options ...F
   <blue>%s</blue>
 
 
-`, result.RuleID, severity, result.Description, result.Range.String())
-		highlightCode(result)
-		tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", result.Impact)
-		tml.Printf("  <white>Resolution: </white><blue>%s</blue>\n", result.Resolution)
-		tml.Printf("\n  <blue>%s </blue>\n\n", result.Link)
-
+`, res.RuleID, severity, res.Description, res.Range.String())
+		highlightCode(res)
+		_ = tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", res.Impact)
+		_ = tml.Printf("  <white>Resolution: </white><blue>%s</blue>\n", res.Resolution)
+		for _, link := range res.Links {
+			_ = tml.Printf("\n  <blue>%s </blue>", link)
+		}
+		fmt.Printf("\n\n")
 	}
 
-	// TODO show files processed
 	if showStatistics {
 		printStatistics()
 	}
@@ -121,7 +121,7 @@ func printStatistics() {
 }
 
 // highlight the lines of code which caused a problem, if available
-func highlightCode(result scanner.Result) {
+func highlightCode(result result.Result) {
 
 	data, err := ioutil.ReadFile(result.Range.Filename)
 	if err != nil {
@@ -142,7 +142,7 @@ func highlightCode(result scanner.Result) {
 	for lineNo := start; lineNo <= end; lineNo++ {
 		_ = tml.Printf("  <blue>% 6d</blue> | ", lineNo)
 		if lineNo >= result.Range.StartLine && lineNo <= result.Range.EndLine {
-			if result.Passed {
+			if result.Passed() {
 				_ = tml.Printf("<bold><green>%s</green></bold>", lines[lineNo])
 			} else if lineNo == result.Range.StartLine && result.RangeAnnotation != "" {
 				_ = tml.Printf("<bold><red>%s</red>    <blue>%s</blue></bold>", lines[lineNo], result.RangeAnnotation)
@@ -159,11 +159,11 @@ func highlightCode(result scanner.Result) {
 	fmt.Println("")
 }
 
-func countPassedResults(results []scanner.Result) int {
+func countPassedResults(results []result.Result) int {
 	passed := 0
 
-	for _, result := range results {
-		if result.Passed {
+	for _, res := range results {
+		if res.Passed() {
 			passed++
 		}
 	}

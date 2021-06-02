@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_GENEnsureGithubRepositoryIsPrivate(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_GENEnsureGithubRepositoryIsPrivate(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "should fire if there is no visibility or private attribute",
@@ -28,7 +27,7 @@ resource "github_repository" "good_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.GENEnsureGithubRepositoryIsPrivate,
+			mustIncludeResultCode: rules.GENEnsureGithubRepositoryIsPrivate,
 		},
 		{
 			name: "should not fire if private is set to true",
@@ -45,7 +44,7 @@ resource "github_repository" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.GENEnsureGithubRepositoryIsPrivate,
+			mustExcludeResultCode: rules.GENEnsureGithubRepositoryIsPrivate,
 		},
 		{
 			name: "should not fire if visibility is set to private",
@@ -62,7 +61,7 @@ resource "github_repository" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.GENEnsureGithubRepositoryIsPrivate,
+			mustExcludeResultCode: rules.GENEnsureGithubRepositoryIsPrivate,
 		},
 		{
 			name: "should not fire if visibility is set to internal",
@@ -79,7 +78,7 @@ resource "github_repository" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.GENEnsureGithubRepositoryIsPrivate,
+			mustExcludeResultCode: rules.GENEnsureGithubRepositoryIsPrivate,
 		},
 		{
 			name: "should not fire as visibility is overriding private",
@@ -97,7 +96,7 @@ resource "github_repository" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.GENEnsureGithubRepositoryIsPrivate,
+			mustExcludeResultCode: rules.GENEnsureGithubRepositoryIsPrivate,
 		},
 	}
 

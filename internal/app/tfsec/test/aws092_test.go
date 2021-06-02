@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSDynamoDBTableEncryption(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSDynamoDBTableEncryption(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "DynamoDB table using default encryption fails check",
@@ -39,7 +38,7 @@ resource "aws_dynamodb_table" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSDynamoDBTableEncryption,
+			mustIncludeResultCode: rules.AWSDynamoDBTableEncryption,
 		},
 		{
 			name: "DynamoDB Table with disabled server side encryption fails check",
@@ -70,7 +69,7 @@ resource "aws_dynamodb_table" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSDynamoDBTableEncryption,
+			mustIncludeResultCode: rules.AWSDynamoDBTableEncryption,
 		},
 		{
 			name: "DynamoDB Table with enabled server side encryption using default key fails check",
@@ -101,7 +100,7 @@ resource "aws_dynamodb_table" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSDynamoDBTableEncryption,
+			mustIncludeResultCode: rules.AWSDynamoDBTableEncryption,
 		},
 		{
 			name: "DynamoDB table that uses KMS CMK passes check",
@@ -136,7 +135,7 @@ resource "aws_dynamodb_table" "good_example" {
 	}
   }
 `,
-			mustExcludeResultCode: checks.AWSDynamoDBTableEncryption,
+			mustExcludeResultCode: rules.AWSDynamoDBTableEncryption,
 		},
 	}
 

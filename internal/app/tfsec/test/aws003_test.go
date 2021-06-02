@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSClassicUsage(t *testing.T) {
@@ -12,28 +11,28 @@ func Test_AWSClassicUsage(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name:                  "check aws_db_security_group",
 			source:                `resource "aws_db_security_group" "my-group" {}`,
-			mustIncludeResultCode: checks.AWSClassicUsage,
+			mustIncludeResultCode: rules.AWSClassicUsage,
 		},
 		{
 			name:                  "check aws_redshift_security_group",
 			source:                `resource "aws_redshift_security_group" "my-group" {}`,
-			mustIncludeResultCode: checks.AWSClassicUsage,
+			mustIncludeResultCode: rules.AWSClassicUsage,
 		},
 		{
 			name:                  "check aws_elasticache_security_group",
 			source:                `resource "aws_elasticache_security_group" "my-group" {}`,
-			mustIncludeResultCode: checks.AWSClassicUsage,
+			mustIncludeResultCode: rules.AWSClassicUsage,
 		},
 		{
 			name:                  "check for false positives",
 			source:                `resource "my_resource" "my-resource" {}`,
-			mustExcludeResultCode: checks.AWSClassicUsage,
+			mustExcludeResultCode: rules.AWSClassicUsage,
 		},
 	}
 

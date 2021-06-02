@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_GkeLegacyAuthEnabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_GkeLegacyAuthEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check google_container_cluster with master_auth static user/pass not disable",
@@ -21,7 +20,7 @@ func Test_GkeLegacyAuthEnabled(t *testing.T) {
 resource "google_container_cluster" "gke" {
 
 }`,
-			mustIncludeResultCode: checks.GkeLegacyAuthEnabled,
+			mustIncludeResultCode: rules.GkeLegacyAuthEnabled,
 		},
 		{
 			name: "check google_container_cluster with master_auth static user/pass disabled",
@@ -32,7 +31,7 @@ resource "google_container_cluster" "gke" {
     password = ""
 	}
 }`,
-			mustExcludeResultCode: checks.GkeLegacyAuthEnabled,
+			mustExcludeResultCode: rules.GkeLegacyAuthEnabled,
 		},
 		{
 			name: "check google_container_cluster with client cert enabled and master_auth static user/pass disabled",
@@ -46,7 +45,7 @@ resource "google_container_cluster" "gke" {
         }
 	}
 }`,
-			mustIncludeResultCode: checks.GkeLegacyAuthEnabled,
+			mustIncludeResultCode: rules.GkeLegacyAuthEnabled,
 		},
 	}
 

@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_GCPGKENodeServiceAccount(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_GCPGKENodeServiceAccount(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "does not define service account in container cluster and uses default node pool",
@@ -24,7 +23,7 @@ resource "google_container_cluster" "my-cluster" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.GCPGKENodeServiceAccount,
+			mustIncludeResultCode: rules.GCPGKENodeServiceAccount,
 		},
 		{
 			name: "does not define service account in container cluster but removes default node pool",
@@ -33,7 +32,7 @@ resource "google_container_cluster" "my-cluster" {
 	remove_default_node_pool = true
 }
 `,
-			mustExcludeResultCode: checks.GCPGKENodeServiceAccount,
+			mustExcludeResultCode: rules.GCPGKENodeServiceAccount,
 		},
 		{
 			name: "does not define node_config in container cluster and uses default node pool",
@@ -41,7 +40,7 @@ resource "google_container_cluster" "my-cluster" {
 resource "google_container_cluster" "my-cluster" {
 }
 `,
-			mustIncludeResultCode: checks.GCPGKENodeServiceAccount,
+			mustIncludeResultCode: rules.GCPGKENodeServiceAccount,
 		},
 		{
 			name: "defines service account in container cluster",
@@ -52,7 +51,7 @@ resource "google_container_cluster" "my-cluster" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.GCPGKENodeServiceAccount,
+			mustExcludeResultCode: rules.GCPGKENodeServiceAccount,
 		},
 		{
 			name: "does not define service account in container node pool",
@@ -62,7 +61,7 @@ resource "google_container_node_pool" "my-np-cluster" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.GCPGKENodeServiceAccount,
+			mustIncludeResultCode: rules.GCPGKENodeServiceAccount,
 		},
 		{
 			name: "does not define node_config in container node pool",
@@ -70,7 +69,7 @@ resource "google_container_node_pool" "my-np-cluster" {
 resource "google_container_node_pool" "my-np-cluster" {
 }
 `,
-			mustIncludeResultCode: checks.GCPGKENodeServiceAccount,
+			mustIncludeResultCode: rules.GCPGKENodeServiceAccount,
 		},
 		{
 			name: "defines service account in container node pool",
@@ -81,7 +80,7 @@ resource "google_container_node_pool" "my-np-cluster" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.GCPGKENodeServiceAccount,
+			mustExcludeResultCode: rules.GCPGKENodeServiceAccount,
 		},
 		{
 			name: "defines service account in container node pool using reference",
@@ -92,7 +91,7 @@ resource "google_container_node_pool" "my-np-cluster" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.GCPGKENodeServiceAccount,
+			mustExcludeResultCode: rules.GCPGKENodeServiceAccount,
 		},
 	}
 

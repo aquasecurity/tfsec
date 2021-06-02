@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSEcrImagesHaveImmutableTags(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSEcrImagesHaveImmutableTags(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "should fire when image_tab_mutability attribute missing",
@@ -26,7 +25,7 @@ resource "aws_ecr_repository" "foo" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSEcrImagesHaveImmutableTags,
+			mustIncludeResultCode: rules.AWSEcrImagesHaveImmutableTags,
 		},
 		{
 			name: "should fire when image_tab_mutability not set to IMMUTABLE",
@@ -40,7 +39,7 @@ resource "aws_ecr_repository" "foo" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSEcrImagesHaveImmutableTags,
+			mustIncludeResultCode: rules.AWSEcrImagesHaveImmutableTags,
 		},
 		{
 			name: "should not fire when image_tab_mutability set to IMMUTABLE",
@@ -54,7 +53,7 @@ resource "aws_ecr_repository" "foo" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSEcrImagesHaveImmutableTags,
+			mustExcludeResultCode: rules.AWSEcrImagesHaveImmutableTags,
 		},
 	}
 

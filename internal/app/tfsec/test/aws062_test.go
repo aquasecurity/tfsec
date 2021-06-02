@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSEC2InstanceSensitiveUserdata(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSEC2InstanceSensitiveUserdata(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "test block containing access keys",
@@ -30,7 +29,7 @@ export AWS_DEFAULT_REGION=us-west-2
 EOF
 }
 `,
-			mustIncludeResultCode: checks.AWSEC2InstanceSensitiveUserdata,
+			mustIncludeResultCode: rules.AWSEC2InstanceSensitiveUserdata,
 		},
 		{
 			name: "test block with no user data",
@@ -46,7 +45,7 @@ resource "aws_instance" "good_example" {
   iam_instance_profile = aws_iam_instance_profile.good_profile.arn
 }
 `,
-			mustExcludeResultCode: checks.AWSEC2InstanceSensitiveUserdata,
+			mustExcludeResultCode: rules.AWSEC2InstanceSensitiveUserdata,
 		},
 		{
 			name: "test block with no user data",
@@ -64,7 +63,7 @@ resource "aws_instance" "good_example" {
   user_data = "echo Hello, World! > /var/tmp/hello"
 }
 `,
-			mustExcludeResultCode: checks.AWSEC2InstanceSensitiveUserdata,
+			mustExcludeResultCode: rules.AWSEC2InstanceSensitiveUserdata,
 		},
 	}
 

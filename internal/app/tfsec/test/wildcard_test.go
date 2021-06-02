@@ -4,7 +4,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/tfsec/tfsec/pkg/severity"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+
+	"github.com/tfsec/tfsec/pkg/rule"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -44,22 +52,22 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 
 	for i, test := range tests {
 
-		code := scanner.RuleCode(fmt.Sprintf("WILD%d", i))
+		code := fmt.Sprintf("WILD%d", i)
 
-		scanner.RegisterCheck(scanner.Check{
-			Code: code,
-			Documentation: scanner.CheckDocumentation{
+		scanner.RegisterCheckRule(rule.Rule{
+			ID: code,
+			Documentation: rule.RuleDocumentation{
 				Summary: "blah",
 			},
 			Provider:       "custom",
 			RequiredTypes:  []string{"resource"},
 			RequiredLabels: []string{test.pattern},
-			CheckFunc: func(check *scanner.Check, rootBlock *parser.Block, ctx *scanner.Context) []scanner.Result {
-				return []scanner.Result{
-					check.NewResult(
+			CheckFunc: func(rootBlock *block.Block, ctx *hclcontext.Context) []result.Result {
+				set.Add(
+					result.New().WithDescription(
 						fmt.Sprintf("Custom check failed for resource %s.", rootBlock.FullName()),
-						rootBlock.Range(),
-						scanner.SeverityError,
+						root).WithRange(block.Range()).WithSeverity(
+						severity.Error,
 					),
 				}
 			},

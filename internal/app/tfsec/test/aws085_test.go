@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSConfigAggregatorCoveringAllRegions(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSConfigAggregatorCoveringAllRegions(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "Account aggregation not set fails check",
@@ -22,7 +21,7 @@ resource "aws_config_configuration_aggregator" "bad_example" {
 	name = "example"
 }
 `,
-			mustIncludeResultCode: checks.AWSConfigAggregatorCoveringAllRegions,
+			mustIncludeResultCode: rules.AWSConfigAggregatorCoveringAllRegions,
 		},
 		{
 			name: "Account aggregation using specific regions fails check",
@@ -36,7 +35,7 @@ resource "aws_config_configuration_aggregator" "bad_example" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSConfigAggregatorCoveringAllRegions,
+			mustIncludeResultCode: rules.AWSConfigAggregatorCoveringAllRegions,
 		}, {
 			name: "All regions set to false fails check",
 			source: `
@@ -49,7 +48,7 @@ resource "aws_config_configuration_aggregator" "bad_example" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSConfigAggregatorCoveringAllRegions,
+			mustIncludeResultCode: rules.AWSConfigAggregatorCoveringAllRegions,
 		},
 		{
 			name: "All regions set to true passes check",
@@ -63,7 +62,7 @@ resource "aws_config_configuration_aggregator" "good_example" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSConfigAggregatorCoveringAllRegions,
+			mustExcludeResultCode: rules.AWSConfigAggregatorCoveringAllRegions,
 		},
 		{
 			name: "All regions set to true passes check",
@@ -77,7 +76,7 @@ resource "aws_config_configuration_aggregator" "good_example" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSConfigAggregatorCoveringAllRegions,
+			mustExcludeResultCode: rules.AWSConfigAggregatorCoveringAllRegions,
 		},
 	}
 

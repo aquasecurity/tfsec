@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSAthenaWorkgroupEnforceConfiguration(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSAthenaWorkgroupEnforceConfiguration(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "test athena workgroup with configration but enforce set to false",
@@ -35,7 +34,7 @@ resource "aws_athena_workgroup" "good_example" {
     }
   }
 }`,
-			mustIncludeResultCode: checks.AWSAthenaWorkgroupEnforceConfiguration,
+			mustIncludeResultCode: rules.AWSAthenaWorkgroupEnforceConfiguration,
 		},
 		{
 			name: "test athena workgroup with no configuration at all",
@@ -44,7 +43,7 @@ resource "aws_athena_workgroup" "good_example" {
 
 }
 `,
-			mustIncludeResultCode: checks.AWSAthenaWorkgroupEnforceConfiguration,
+			mustIncludeResultCode: rules.AWSAthenaWorkgroupEnforceConfiguration,
 		},
 		{
 			name: "test athena workgoup with configuration and enforce true",
@@ -67,7 +66,7 @@ resource "aws_athena_workgroup" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSAthenaWorkgroupEnforceConfiguration,
+			mustExcludeResultCode: rules.AWSAthenaWorkgroupEnforceConfiguration,
 		},
 		{
 			name: "test athena workgoup with configuration and enforce not set (default true)",
@@ -89,7 +88,7 @@ resource "aws_athena_workgroup" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSAthenaWorkgroupEnforceConfiguration,
+			mustExcludeResultCode: rules.AWSAthenaWorkgroupEnforceConfiguration,
 		},
 	}
 

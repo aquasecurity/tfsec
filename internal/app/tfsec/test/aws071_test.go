@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSCloudfrontDistributionAccessLoggingEnabled(t *testing.T) {
@@ -12,21 +11,21 @@ func Test_AWSCloudfrontDistributionAccessLoggingEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
-			name: "Check does not pass when logging_config is missing in aws_cloudfront_distribution",
+			name: "Rule does not pass when logging_config is missing in aws_cloudfront_distribution",
 			source: `
 resource "aws_cloudfront_distribution" "bad_example" {
 	// other config
 	// no logging_config
 }
 `,
-			mustIncludeResultCode: checks.AWSCloudfrontDistributionAccessLoggingEnabled,
+			mustIncludeResultCode: rules.AWSCloudfrontDistributionAccessLoggingEnabled,
 		},
 		{
-			name: "Check passes when logging_config is declared in aws_cloudfront_distribution",
+			name: "Rule passes when logging_config is declared in aws_cloudfront_distribution",
 			source: `
 resource "aws_cloudfront_distribution" "good_example" {
 	// other config
@@ -34,7 +33,7 @@ resource "aws_cloudfront_distribution" "good_example" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSCloudfrontDistributionAccessLoggingEnabled,
+			mustExcludeResultCode: rules.AWSCloudfrontDistributionAccessLoggingEnabled,
 		},
 	}
 

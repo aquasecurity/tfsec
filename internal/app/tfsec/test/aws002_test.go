@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSBucketLogging(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSBucketLogging(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check bucket with logging disabled",
@@ -21,7 +20,7 @@ func Test_AWSBucketLogging(t *testing.T) {
 resource "aws_s3_bucket" "my-bucket" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSNoBucketLogging,
+			mustIncludeResultCode: rules.AWSNoBucketLogging,
 		},
 		{
 			name: "check bucket with logging enabled",
@@ -31,7 +30,7 @@ resource "aws_s3_bucket" "my-bucket" {
 		target_bucket = "target-bucket"
 	}
 }`,
-			mustExcludeResultCode: checks.AWSNoBucketLogging,
+			mustExcludeResultCode: rules.AWSNoBucketLogging,
 		},
 		{
 			name: "check bucket with acl 'log-delivery-write' for logging",
@@ -39,7 +38,7 @@ resource "aws_s3_bucket" "my-bucket" {
 resource "aws_s3_bucket" "my-bucket" {
 	acl = "log-delivery-write"
 }`,
-			mustExcludeResultCode: checks.AWSNoBucketLogging,
+			mustExcludeResultCode: rules.AWSNoBucketLogging,
 		},
 	}
 

@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSOpenAllIngressNetworkACLRule(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSOpenAllIngressNetworkACLRule(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_network_acl_rule ingress on 0.0.0.0/0",
@@ -24,8 +23,8 @@ resource "aws_network_acl_rule" "my-rule" {
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
 }`,
-			mustIncludeResultCode: checks.AWSOpenAllIngressNetworkACLRule,
-		},{
+			mustIncludeResultCode: rules.AWSOpenAllIngressNetworkACLRule,
+		}, {
 			name: "check aws_network_acl_rule ingress on 0.0.0.0/0 implied egress",
 			source: `
 resource "aws_network_acl_rule" "my-rule" {
@@ -33,7 +32,7 @@ resource "aws_network_acl_rule" "my-rule" {
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
 }`,
-			mustIncludeResultCode: checks.AWSOpenAllIngressNetworkACLRule,
+			mustIncludeResultCode: rules.AWSOpenAllIngressNetworkACLRule,
 		},
 		{
 			name: "check variable containing 0.0.0.0/0",
@@ -50,7 +49,7 @@ variable "cidr" {
 }
 
 `,
-			mustIncludeResultCode: checks.AWSOpenAllIngressNetworkACLRule,
+			mustIncludeResultCode: rules.AWSOpenAllIngressNetworkACLRule,
 		},
 		{
 			name: "check aws_network_acl_rule ingress on ::/0",
@@ -62,7 +61,7 @@ resource "aws_network_acl_rule" "my-rule" {
   rule_action    = "allow"
   ipv6_cidr_block = "::/0"
 }`,
-			mustIncludeResultCode: checks.AWSOpenAllIngressNetworkACLRule,
+			mustIncludeResultCode: rules.AWSOpenAllIngressNetworkACLRule,
 		},
 	}
 

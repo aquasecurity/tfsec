@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/pkg/result"
 )
 
 // see https://github.com/windyroad/JUnit-Schema/blob/master/JUnit.xsd
@@ -39,7 +39,7 @@ type JUnitFailure struct {
 	Contents string `xml:",chardata"`
 }
 
-func FormatJUnit(w io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
+func FormatJUnit(w io.Writer, results []result.Result, _ string, options ...FormatterOption) error {
 
 	output := JUnitTestSuite{
 		Name:     "tfsec",
@@ -69,7 +69,7 @@ func FormatJUnit(w io.Writer, results []scanner.Result, _ string, options ...For
 }
 
 // highlight the lines of code which caused a problem, if available
-func highlightCodeJunit(result scanner.Result) string {
+func highlightCodeJunit(result result.Result) string {
 
 	data, err := ioutil.ReadFile(result.Range.Filename)
 	if err != nil {
@@ -105,16 +105,22 @@ func highlightCodeJunit(result scanner.Result) string {
 	return output
 }
 
-func buildFailure(result scanner.Result) *JUnitFailure {
-	if result.Passed {
+func buildFailure(res result.Result) *JUnitFailure {
+	if res.Passed() {
 		return nil
 	}
 
+	var link string
+	if len(res.Links) > 0 {
+		link = res.Links[0]
+	}
+
 	return &JUnitFailure{
-		Message: result.Description,
+		Message: res.Description,
 		Contents: fmt.Sprintf("%s\n%s\n%s",
-			result.Range.String(),
-			highlightCodeJunit(result),
-			result.Link),
+			res.Range.String(),
+			highlightCodeJunit(res),
+			link,
+		),
 	}
 }

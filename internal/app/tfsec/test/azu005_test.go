@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AzureVMWithPasswordAuth(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AzureVMWithPasswordAuth(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check azurerm_virtual_machine with password auth",
@@ -23,7 +22,7 @@ resource "azurerm_virtual_machine" "my-disk" {
 		disable_password_authentication = false
 	}
 }`,
-			mustIncludeResultCode: checks.AzureVMWithPasswordAuthentication,
+			mustIncludeResultCode: rules.AzureVMWithPasswordAuthentication,
 		},
 		{
 			name: "check azurerm_virtual_machine without password auth",
@@ -33,7 +32,7 @@ resource "azurerm_virtual_machine" "my-disk" {
 		disable_password_authentication = true
 	}
 }`,
-			mustExcludeResultCode: checks.AzureVMWithPasswordAuthentication,
+			mustExcludeResultCode: rules.AzureVMWithPasswordAuthentication,
 		},
 	}
 

@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSEKSSecretsEncryptionEnabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSEKSSecretsEncryptionEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "Test eks cluster with no encryption block causes check to fail",
@@ -27,7 +26,7 @@ resource "aws_eks_cluster" "bad_example" {
     }
 }
 `,
-			mustIncludeResultCode: checks.AWSEKSSecretsEncryptionEnabled,
+			mustIncludeResultCode: rules.AWSEKSSecretsEncryptionEnabled,
 		},
 		{
 			name: "Test eks cluster with encryption block causes check to fail when no resources",
@@ -46,7 +45,7 @@ resource "aws_eks_cluster" "bad_example" {
     }
 }
 `,
-			mustIncludeResultCode: checks.AWSEKSSecretsEncryptionEnabled,
+			mustIncludeResultCode: rules.AWSEKSSecretsEncryptionEnabled,
 		},
 		{
 			name: "Test eks cluster with secrets no in the resources attribute causes check to fail",
@@ -66,7 +65,7 @@ resource "aws_eks_cluster" "bad_example" {
     }
 }
 `,
-			mustIncludeResultCode: checks.AWSEKSSecretsEncryptionEnabled,
+			mustIncludeResultCode: rules.AWSEKSSecretsEncryptionEnabled,
 		},
 		{
 			name: "Test eks cluster with secrets in the resources attribute but no provider block causes check to fail",
@@ -83,7 +82,7 @@ resource "aws_eks_cluster" "bad_example" {
     }
 }
 `,
-			mustIncludeResultCode: checks.AWSEKSSecretsEncryptionEnabled,
+			mustIncludeResultCode: rules.AWSEKSSecretsEncryptionEnabled,
 		},
 		{
 			name: "Test eks cluster with secrets in the resources and provider block but no key_arn set causes check to fail",
@@ -103,7 +102,7 @@ resource "aws_eks_cluster" "bad_example" {
     }
 }
 `,
-			mustIncludeResultCode: checks.AWSEKSSecretsEncryptionEnabled,
+			mustIncludeResultCode: rules.AWSEKSSecretsEncryptionEnabled,
 		},
 		{
 			name: "Test correctly configured eks cluster passes check",
@@ -123,7 +122,7 @@ resource "aws_eks_cluster" "good_example" {
     }
 }
 `,
-			mustExcludeResultCode: checks.AWSEKSSecretsEncryptionEnabled,
+			mustExcludeResultCode: rules.AWSEKSSecretsEncryptionEnabled,
 		},
 	}
 

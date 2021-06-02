@@ -5,11 +5,14 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/tfsec/tfsec/pkg/severity"
+
+	"github.com/tfsec/tfsec/pkg/result"
+
 	"github.com/owenrumney/go-sarif/sarif"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-func FormatSarif(w io.Writer, results []scanner.Result, baseDir string, options ...FormatterOption) error {
+func FormatSarif(w io.Writer, results []result.Result, baseDir string, options ...FormatterOption) error {
 	report, err := sarif.New(sarif.Version210)
 	if err != nil {
 		return err
@@ -18,22 +21,29 @@ func FormatSarif(w io.Writer, results []scanner.Result, baseDir string, options 
 	run := sarif.NewRun("tfsec", "https://tfsec.dev")
 	report.AddRun(run)
 
-	// TODO - Handle if the --include-passed argument is passed.
+	for _, res := range results {
 
-	for _, result := range results {
-		rule := run.AddRule(string(result.RuleID)).
-			WithDescription(string(result.RuleDescription)).
-			WithHelp(result.Link)
+		if res.Passed() {
+			continue
+		}
 
-		relativePath, err := filepath.Rel(baseDir, result.Range.Filename)
+		var link string
+		if len(res.Links) > 0 {
+			link = res.Links[0]
+		}
+		rule := run.AddRule(string(res.RuleID)).
+			WithDescription(string(res.RuleSummary)).
+			WithHelp(link)
+
+		relativePath, err := filepath.Rel(baseDir, res.Range.Filename)
 		if err != nil {
 			return err
 		}
 
-		message := sarif.NewTextMessage(string(result.Description))
-		region := sarif.NewSimpleRegion(result.Range.StartLine, result.Range.EndLine)
-		level := strings.ToLower(string(result.Severity))
-		if result.Severity == scanner.SeverityInfo {
+		message := sarif.NewTextMessage(string(res.Description))
+		region := sarif.NewSimpleRegion(res.Range.StartLine, res.Range.EndLine)
+		level := strings.ToLower(string(res.Severity))
+		if res.Severity == severity.Info {
 			level = "note"
 		}
 

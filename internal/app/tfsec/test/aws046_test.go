@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSIamPolicyDocument(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSIamPolicyDocument(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_iam_policy_document does not have any wildcard actions.",
@@ -28,7 +27,7 @@ data "aws_iam_policy_document" "my-policy" {
     	]
 	}
 }`,
-			mustExcludeResultCode: checks.AWSIamPolicyWildcardActions,
+			mustExcludeResultCode: rules.AWSIamPolicyWildcardActions,
 		},
 		{
 			name: "check aws_iam_policy_document does not have any wildcard actions.",
@@ -42,7 +41,7 @@ data "aws_iam_policy_document" "my-policy" {
     	]
 	}
 }`,
-			mustExcludeResultCode: checks.AWSIamPolicyWildcardActions,
+			mustExcludeResultCode: rules.AWSIamPolicyWildcardActions,
 		},
 		{
 			name: "check aws_iam_policy_document has wildcard actions.",
@@ -57,7 +56,7 @@ data "aws_iam_policy_document" "my-policy" {
     	]
 	}
 }`,
-			mustIncludeResultCode: checks.AWSIamPolicyWildcardActions,
+			mustIncludeResultCode: rules.AWSIamPolicyWildcardActions,
 		},
 	}
 

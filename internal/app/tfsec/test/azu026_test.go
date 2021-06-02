@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUKeyVaultKeyExpirationDate(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUKeyVaultKeyExpirationDate(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check if expiration_date is not set, check fails",
@@ -34,7 +33,7 @@ resource "azurerm_key_vault_key" "bad_example" {
   ]
 }
 `,
-			mustIncludeResultCode: checks.AZUKeyVaultKeyExpirationDate,
+			mustIncludeResultCode: rules.AZUKeyVaultKeyExpirationDate,
 		},
 		{
 			name: "check if expiration_date is set, check passes",
@@ -56,7 +55,7 @@ resource "azurerm_key_vault_key" "good_example" {
   ]
 }
 `,
-			mustExcludeResultCode: checks.AZUKeyVaultKeyExpirationDate,
+			mustExcludeResultCode: rules.AZUKeyVaultKeyExpirationDate,
 		},
 	}
 

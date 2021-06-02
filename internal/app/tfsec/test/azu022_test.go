@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUKeyVaultSecretContentType(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUKeyVaultSecretContentType(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check if content_type is not set, check fails",
@@ -24,7 +23,7 @@ resource "azurerm_key_vault_secret" "bad_example" {
   key_vault_id = azurerm_key_vault.example.id
 }
 `,
-			mustIncludeResultCode: checks.AZUKeyVaultSecretContentType,
+			mustIncludeResultCode: rules.AZUKeyVaultSecretContentType,
 		},
 		{
 			name: "check if content_type is set, check passes",
@@ -36,7 +35,7 @@ resource "azurerm_key_vault_secret" "good_example" {
   content_type = "password"
 }
 `,
-			mustExcludeResultCode: checks.AZUKeyVaultSecretContentType,
+			mustExcludeResultCode: rules.AZUKeyVaultSecretContentType,
 		},
 	}
 

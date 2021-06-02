@@ -3,14 +3,18 @@ package custom
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stretchr/testify/assert"
-	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/tfsec/tfsec/pkg/result"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 func init() {
@@ -281,10 +285,10 @@ resource "aws_ami" "example" {
 
 func TestNotFunction(t *testing.T) {
 	var tests = []struct {
-		name               string
-		source             string
-		matchSpec          MatchSpec
-		expected           bool
+		name      string
+		source    string
+		matchSpec MatchSpec
+		expected  bool
 	}{
 		{
 			name: "check that not correctly inverts the outcome of a given predicateMatchSpec",
@@ -294,7 +298,7 @@ resource "aws_ami" "example" {
 }
 `,
 			matchSpec: testNotMatchSpec,
-			expected:           false,
+			expected:  false,
 		},
 	}
 	for _, test := range tests {
@@ -314,7 +318,7 @@ func givenCheck(jsonContent string) {
 	processFoundChecks(checksfile)
 }
 
-func scanTerraform(t *testing.T, mainTf string) []scanner.Result {
+func scanTerraform(t *testing.T, mainTf string) []result.Result {
 	dirName, err := ioutil.TempDir("", "tfsec-testing-")
 	assert.NoError(t, err)
 
@@ -324,12 +328,12 @@ func scanTerraform(t *testing.T, mainTf string) []scanner.Result {
 	blocks, err := parser.New(dirName, "").ParseDirectory()
 	assert.NoError(t, err)
 
-	return scanner.New().Scan(blocks, []string{})
+	return scanner.New().Scan(blocks)
 }
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.
 // TODO: Extract into a testing utility package once the amount of duplication justifies introducing an extra package.
-func createBlocksFromSource(source string) []*parser.Block {
+func createBlocksFromSource(source string) []*block.Block {
 	path := createTestFile("test.tf", source)
 	blocks, err := parser.New(filepath.Dir(path), "").ParseDirectory()
 	if err != nil {

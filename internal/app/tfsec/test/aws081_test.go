@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSDAXEncryptedAtRest(t *testing.T) {
@@ -12,19 +11,19 @@ func Test_AWSDAXEncryptedAtRest(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
-			name: "Check should not pass when no SSE block at all",
+			name: "Rule should not pass when no SSE block at all",
 			source: `
 resource "aws_dax_cluster" "bad_example" {
 	// no server side encryption at all
 }
 `,
-			mustIncludeResultCode: checks.AWSDAXEncryptedAtRest,
+			mustIncludeResultCode: rules.AWSDAXEncryptedAtRest,
 		}, {
-			name: "Check should not pass when SSE block empty",
+			name: "Rule should not pass when SSE block empty",
 			source: `
 resource "aws_dax_cluster" "bad_example" {
 	// other DAX config
@@ -34,10 +33,10 @@ resource "aws_dax_cluster" "bad_example" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSDAXEncryptedAtRest,
+			mustIncludeResultCode: rules.AWSDAXEncryptedAtRest,
 		},
 		{
-			name: "Check should not pass when SSE disabled",
+			name: "Rule should not pass when SSE disabled",
 			source: `
 resource "aws_dax_cluster" "bad_example" {
 	// other DAX config
@@ -47,10 +46,10 @@ resource "aws_dax_cluster" "bad_example" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSDAXEncryptedAtRest,
+			mustIncludeResultCode: rules.AWSDAXEncryptedAtRest,
 		},
 		{
-			name: "Check should pass when SSE is enabled",
+			name: "Rule should pass when SSE is enabled",
 			source: `
 resource "aws_dax_cluster" "good_example" {
 	// other DAX config
@@ -60,7 +59,7 @@ resource "aws_dax_cluster" "good_example" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSDAXEncryptedAtRest,
+			mustExcludeResultCode: rules.AWSDAXEncryptedAtRest,
 		},
 	}
 

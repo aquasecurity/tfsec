@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSRDSRetentionPeriod(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSRDSRetentionPeriod(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "db instance with default retention fails check",
@@ -30,7 +29,7 @@ func Test_AWSRDSRetentionPeriod(t *testing.T) {
 				skip_final_snapshot  = true
 			}
 `,
-			mustIncludeResultCode: checks.AWSRDSRetentionPeriod,
+			mustIncludeResultCode: rules.AWSRDSRetentionPeriod,
 		},
 		{
 			name: "rds cluster with default retention fails check",
@@ -46,7 +45,7 @@ func Test_AWSRDSRetentionPeriod(t *testing.T) {
 				preferred_backup_window = "07:00-09:00"
 			}
 `,
-			mustIncludeResultCode: checks.AWSRDSRetentionPeriod,
+			mustIncludeResultCode: rules.AWSRDSRetentionPeriod,
 		},
 		{
 			name: "db instance with explicit retention of 1 fails check",
@@ -64,7 +63,7 @@ func Test_AWSRDSRetentionPeriod(t *testing.T) {
 				skip_final_snapshot  = true
 			}
 `,
-			mustIncludeResultCode: checks.AWSRDSRetentionPeriod,
+			mustIncludeResultCode: rules.AWSRDSRetentionPeriod,
 		},
 		{
 			name: "rds cluster with explicit retention of 1 fails check",
@@ -81,7 +80,7 @@ func Test_AWSRDSRetentionPeriod(t *testing.T) {
 				preferred_backup_window = "07:00-09:00"
 			}
 `,
-			mustIncludeResultCode: checks.AWSRDSRetentionPeriod,
+			mustIncludeResultCode: rules.AWSRDSRetentionPeriod,
 		},
 		{
 			name: "rds cluster with retention greater than default passes check",
@@ -98,7 +97,7 @@ func Test_AWSRDSRetentionPeriod(t *testing.T) {
 				preferred_backup_window = "07:00-09:00"
 			}
 `,
-			mustExcludeResultCode: checks.AWSRDSRetentionPeriod,
+			mustExcludeResultCode: rules.AWSRDSRetentionPeriod,
 		},
 		{
 			name: "db instance with retention greater than default passes check",
@@ -116,7 +115,7 @@ func Test_AWSRDSRetentionPeriod(t *testing.T) {
 				skip_final_snapshot     = true
 			}
 `,
-			mustExcludeResultCode: checks.AWSRDSRetentionPeriod,
+			mustExcludeResultCode: rules.AWSRDSRetentionPeriod,
 		},
 		{
 			name: "db instance with which is a replica with no retention period set  passes check",
@@ -148,7 +147,7 @@ func Test_AWSRDSRetentionPeriod(t *testing.T) {
 				skip_final_snapshot     = true
 			}
 `,
-			mustExcludeResultCode: checks.AWSRDSRetentionPeriod,
+			mustExcludeResultCode: rules.AWSRDSRetentionPeriod,
 		},
 	}
 
