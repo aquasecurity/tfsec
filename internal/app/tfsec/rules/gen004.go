@@ -78,28 +78,26 @@ func init() {
 			visibilityAttribute := block.GetAttribute("visibility")
 			if visibilityAttribute == nil && privateAttribute == nil {
 				set.Add(
-					result.New().WithDescription(
-						fmt.Sprintf("Resource '%s' is missing `private` or `visibility` attribute - one of these is required to make repository private", block.FullName()),
-						).WithRange(block.Range()).WithSeverity(
-						severity.Error,
-					),
+					result.New().WithDescription(						fmt.Sprintf("Resource '%s' is missing `private` or `visibility` attribute - one of these is required to make repository private", block.FullName())).
+						WithRange(block.Range()).
+						WithAttributeAnnotation(visibilityAttribute).
+						WithSeverity(						severity.Error					),
 				}
-			}
+			
 
 			// this should be evaluated first as visibility overrides private
 			if visibilityAttribute != nil {
 				if visibilityAttribute.Equals("public") {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' has visibility set to public - visibility should be set to `private` or `internal` to make repository private", block.FullName()),
-							visibilityAttribute.Range(),
+						result.New().
+						WithDescription(							fmt.Sprintf("Resource '%s' has visibility set to public - visibility should be set to `private` or `internal` to make repository private", block.FullName())).
+							WithRange(visibilityAttribute.Range()).
+							WithAttributeAnnotation(visibilityAttribute).
+							WithSeverity(severity.Error)
 							severity.Error,
 						),
 					}
-				} else {
-					// we can assume that visibility is either internal or private so the check is ok
-					return nil
-				}
+				} 
 			}
 
 			// this should be evaluated first as visibility overrides private
@@ -107,9 +105,10 @@ func init() {
 				if privateAttribute.Equals(false) {
 					set.Add(
 						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' has private set to false - it should be set to `true` to make repository private", block.FullName()),
-							privateAttribute.Range(),
-							severity.Error,
+							fmt.Sprintf("Resource '%s' has private set to false - it should be set to `true` to make repository private", block.FullName())).
+							WithRange(privateAttribute.Range()).
+							WithAttributeAnnotation(privateAttribute).
+							WithSeverity(severity.Error)
 						),
 					}
 				}

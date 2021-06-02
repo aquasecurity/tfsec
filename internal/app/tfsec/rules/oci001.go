@@ -61,16 +61,13 @@ func init() {
 			if attr := block.GetAttribute("ip_address_pool"); attr != nil {
 				if attr.IsAny("public-ippool") {
 					set.Add(
-						result.New().WithDescription(
-							fmt.Sprintf("Resource '%s' is using an IP from a public IP pool", block.FullName()),
-							attr.Range(),
-							attr,
-							severity.Warning,
-						),
-					}
+						result.New().
+							WithDescription(fmt.Sprintf("Resource '%s' is using an IP from a public IP pool", block.FullName())).
+							WithRange(attr.Range()).
+							WithAttributeAnnotation(attr).
+							WithSeverity(severity.Warning))
 				}
 			}
-			return nil
 		},
 	})
 }
