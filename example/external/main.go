@@ -15,7 +15,7 @@ func main() {
 	_ = scanner.AddPath("../withVars/main.tf")
 	_ = scanner.AddPath("../withVars/variables.tf")
 
-	results, err := scanner.Scan()
+	results, err := scanner.Scan(externalscan.WithIncludedPassed())
 	if err != nil {
 		panic(err)
 	}

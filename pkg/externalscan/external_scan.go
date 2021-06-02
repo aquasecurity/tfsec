@@ -12,9 +12,26 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
+type options []scanner.ScannerOption
+
+type option func(*options)
+
+func WithIncludedPassed() option {
+	return func(opts *options) {
+		*opts = append(*opts, scanner.IncludePassed)
+	}
+}
+
+func WithIncludedIgnored() option {
+	return func(opts *options) {
+		*opts = append(*opts, scanner.IncludeIgnored)
+	}
+}
+
 type ExternalScanner struct {
 	paths []string
 }
+
 
 func NewExternalScanner() *ExternalScanner {
 	return &ExternalScanner{}
@@ -29,7 +46,12 @@ func (t *ExternalScanner) AddPath(path string) error {
 	return nil
 }
 
-func (t *ExternalScanner) Scan() ([]scanner.Result, error) {
+func (t *ExternalScanner) Scan( opts...option) ([]scanner.Result, error) {
+
+	scannerOptions := new(options)
+	for _, opt := range opts {
+		opt(scannerOptions)
+	}
 
 	projectBlocks := make(map[string]parser.Blocks)
 
@@ -49,7 +71,7 @@ func (t *ExternalScanner) Scan() ([]scanner.Result, error) {
 	var results []scanner.Result
 
 	for _, blockset := range projectBlocks {
-		projectResults := scanner.New().Scan(blockset, nil)
+		projectResults := scanner.New().Scan(blockset, nil, *scannerOptions...)
 		results = append(results, projectResults...)
 	}
 
