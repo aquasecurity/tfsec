@@ -4,13 +4,13 @@
 /.idea
 
 # ignore windows compiled binary
-tfsec.exe
-tfsec-docs.exe
-tfsec-docs
-tfsec-skeleton
-.vscode/launch.json
+/tfsec.exe
+/tfsec-docs.exe
+/tfsec-docs
+/tfsec-skeleton
+/.vscode/launch.json
 
 /checkdocs
 
-coverage.txt
-dist/
+/coverage.txt
+/dist
