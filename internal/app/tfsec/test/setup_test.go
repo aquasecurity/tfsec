@@ -93,7 +93,6 @@ func assertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 	var foundExclude bool
 
 	var excludeText string
-	var includeText string
 
 	for _, res := range results {
 		if res.RuleID == excludeCode {
@@ -102,13 +101,12 @@ func assertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 		}
 		if res.RuleID == includeCode {
 			foundInclude = true
-			includeText = res.Description
 		}
 	}
 
 	assert.False(t, foundExclude, fmt.Sprintf("res with code '%s' was found but should not have been: %s", excludeCode, excludeText))
 	if includeCode != "" {
-		assert.True(t, foundInclude, fmt.Sprintf("res with code '%s' was not found but should have been: %s", includeCode, includeText))
+		assert.True(t, foundInclude, fmt.Sprintf("res with code '%s' was not found but should have been", includeCode))
 	}
 }
 

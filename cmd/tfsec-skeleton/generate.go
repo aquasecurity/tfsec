@@ -18,7 +18,7 @@ type checkSkeleton struct {
 	ProviderLongName string
 	CheckName        string
 	ShortCode        string
-	Code             string
+	ID               string
 	Summary          string
 	Impact           string
 	Resolution       string
@@ -39,7 +39,7 @@ func generateCheckBody() error {
 	}
 	checkTmpl := template.Must(template.New("check").Funcs(funcMap).Parse(checkTemplate))
 	checkTestTmpl := template.Must(template.New("checkTest").Funcs(funcMap).Parse(checkTestTemplate))
-	checkPath := fmt.Sprintf("internal/app/tfsec/checks/%s", details.CheckFilename)
+	checkPath := fmt.Sprintf("internal/app/tfsec/rules/%s", details.CheckFilename)
 	testPath := fmt.Sprintf("internal/app/tfsec/test/%s", details.TestFileName)
 	if err = verifyCheckPath(checkPath); err != nil {
 		return err
@@ -53,7 +53,7 @@ func generateCheckBody() error {
 	if err = writeTemplate(testPath, checkTestTmpl, details); err != nil {
 		return err
 	}
-	_ = tml.Printf("The new check has the code: %s%s\n", strings.ToUpper(details.Provider), details.Code)
+	_ = tml.Printf("The new check has the code: %s%s\n", strings.ToUpper(details.Provider), details.ID)
 	return nil
 }
 
@@ -108,7 +108,7 @@ func populateSkeleton(summary, selected, shortCodeContent, impact, resolution, b
 	checkBody.Resolution = resolution
 	checkBody.Provider = providers[selected]
 	checkBody.ProviderLongName = selected
-	checkBody.Code, err = calculateNextCode(checkBody.Provider)
+	checkBody.ID, err = calculateNextCode(checkBody.Provider)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +116,7 @@ func populateSkeleton(summary, selected, shortCodeContent, impact, resolution, b
 	checkBody.CheckName = fmt.Sprintf("%s%s", strings.ToUpper(checkBody.Provider), strings.ReplaceAll(strings.Title(shortCodeContent), " ", ""))
 	checkBody.RequiredTypes = fmt.Sprintf("{\"%s\"}", strings.Join(strings.Split(blockTypes, " "), "\", \""))
 	checkBody.RequiredLabels = fmt.Sprintf("{\"%s\"}", strings.Join(strings.Split(blockLabels, " "), "\", \""))
-	filename := fmt.Sprintf("%s%s", checkBody.Provider, checkBody.Code)
+	filename := fmt.Sprintf("%s%s", checkBody.Provider, checkBody.ID)
 	checkBody.CheckFilename = fmt.Sprintf("%s.go", strings.ToLower(filename))
 	checkBody.TestFileName = fmt.Sprintf("%s_test.go", strings.ToLower(filename))
 

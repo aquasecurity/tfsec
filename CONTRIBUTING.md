@@ -26,7 +26,7 @@ The generator will determine the next available code and create the check and th
 
 Run `make new-check` to create the stub
 
-Find your new check in `internal/apps/tfsec/checks` abd the associated test in `internal/app/tfsec/tests` and complete the check logic
+Find your new check in `internal/apps/tfsec/rules` and the associated test in `internal/app/tfsec/tests` and complete the check logic
 
 Here's an example:
 
@@ -86,7 +86,7 @@ func init() {
 		},
         
         	// the provider your check targets
-		Provider:       scanner.AWSProvider,
+		Provider:       provider.AWSProvider,
 
         	// which terraform blocks do you want to check - usually "resource"
 		RequiredTypes:  []string{"resource"},
@@ -95,9 +95,8 @@ func init() {
 		RequiredLabels: []string{"aws_gibson"},
         
         	// the actual logic for your check
-		CheckFunc: func(block *parser.Block, _ *scanner.Context) []scanner.Result {
-            		// TODO: add check logic here
-			return nil
+		CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
+			// TODO: add check logic here
 		},
 	})
 }
@@ -108,22 +107,24 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
 ```go
 ...
 
-        CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+        CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
 
             if attr := block.GetAttribute("hackable"); attr != nil && attr.Value().Type() == cty.Bool {
                 if attr.Value().True() {
-                    return []scanner.Result{
-                        result.New().WithDescription(fmt.Sprintf("The Gibson '%s' is configured to be hackable.", block.Name())).WithRange(attr.Range()).WithAttributeAnnotation(attr).
-                            scanner.WithSeverity(SeverityWarning),
-                        ),
-                    }
+                    set.Add(
+                        result.New().
+						WithDescription(fmt.Sprintf("The Gibson '%s' is configured to be hackable.", block.Name())).
+						WithRange(attr.Range()).
+						WithAttributeAnnotation(attr).
+						WithSeverity(SeverityWarning),
+					)
                 }
             }
         },
 ...
 ```
 
-You can see a good example of a real check file [here](https://github.com/tfsec/tfsec/blob/master/internal/app/tfsec/checks/aws001.go).
+You can see a good example of a real check file [here](https://github.com/tfsec/tfsec/blob/master/internal/app/tfsec/rules/aws001.go).
 
 ### Writing Tests
 
@@ -146,8 +147,8 @@ func Test_AWSGibsonHackable(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		// this makes sure the check works in the most basic scenario
 		{
