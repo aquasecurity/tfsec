@@ -51,10 +51,10 @@ var ignoreWarnings = false
 var ignoreInfo = false
 var allDirs = false
 var runStatistics bool
-var stopOnHCLError bool
+var ignoreHCLErrors bool
 
 func init() {
-	rootCmd.Flags().BoolVar(&stopOnHCLError, "stop-on-hcl-error", stopOnHCLError, "Stop and report an error if an HCL parse error is encountered")
+	rootCmd.Flags().BoolVar(&ignoreHCLErrors, "ignore-hcl-errors", ignoreHCLErrors, "Stop and report an error if an HCL parse error is encountered")
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
@@ -260,7 +260,7 @@ func getParserOptions() []parser.Option {
 		}
 		opts = append(opts, parser.OptionWithTFVarsPath(tfvarsPath))
 	}
-	if stopOnHCLError {
+	if !ignoreHCLErrors {
 		opts = append(opts, parser.OptionStopOnHCLError())
 	}
 	return opts
