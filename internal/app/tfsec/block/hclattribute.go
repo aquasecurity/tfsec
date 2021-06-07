@@ -166,6 +166,10 @@ func (attr *HCLAttribute) listContains(val cty.Value, stringToLookFor string, ig
 			valueMap := value.AsValueMap()
 			stringToTest = valueMap["key"]
 		}
+		if value.Type().HasDynamicTypes() {
+			// References without a value can't logically "contain" a some string to check against.
+			return false
+		}
 		if !value.IsKnown() {
 			continue
 		}
@@ -703,4 +707,18 @@ func (attr *HCLAttribute) IsNil() bool {
 
 func (attr *HCLAttribute) IsNotNil() bool {
 	return !attr.IsNil()
+}
+
+func (attr *HCLAttribute) HasIntersect(checkValues ...interface{}) bool {
+	if !attr.Type().IsListType() && !attr.Type().IsTupleType() {
+		return false
+	}
+
+	for _, item := range checkValues {
+		if attr.Contains(item) {
+			return true
+		}
+	}
+	return false
+
 }
