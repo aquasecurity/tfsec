@@ -25,7 +25,7 @@ const AWSCloudWatchLogGroupsCMKEncryptedExplanation = `
 CloudWatch log groups are encrypted by default, however, to get the full benefit of controlling key rotation and other KMS aspects a KMS CMK should be used.
 `
 const AWSCloudWatchLogGroupsCMKEncryptedBadExample = `
-resource "aws_cloudwatch_log_group" "bad_exampe" {
+resource "aws_cloudwatch_log_group" "bad_example" {
 	name = "bad_example"
 
 }
@@ -34,7 +34,7 @@ const AWSCloudWatchLogGroupsCMKEncryptedGoodExample = `
 resource "aws_cloudwatch_log_group" "good_example" {
 	name = "good_example"
 
-	kms_key_id = aws_kms_key.log_key.id
+	kms_key_id = aws_kms_key.log_key.arn
 }
 `
 
