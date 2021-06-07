@@ -26,16 +26,16 @@ The generator will determine the next available code and create the check and th
 
 Run `make new-check` to create the stub
 
-Find your new check in `internal/apps/tfsec/checks` abd the associated test in `internal/app/tfsec/tests` and complete the check logic
+Find your new check in `internal/apps/tfsec/rules` and the associated test in `internal/app/tfsec/tests` and complete the check logic
 
 Here's an example:
 
 ```go
 // The rule code for your check
-const AWSGibsonHackableCode scanner.RuleCode = "AWS123"
+const AWSGibsonHackableCode = "AWS123"
 
 // A description for your check - this message will be output to a user when the check fails.
-const AWSGibsonHackableDescription scanner.RuleSummary = "The Gibson should not be hackable"
+const AWSGibsonHackableDescription = "The Gibson should not be hackable"
 
 // A note on the impact associated to the check
 const AWSGibsonHackableCodeImpact = "The Gibson might get hacked"
@@ -67,10 +67,10 @@ Next up, you need to tell the scanner about your check. You can do this by calli
 
 ```go
 func init() {
-	scanner.RegisterCheck(scanner.Check{
+	scanner.RegisterCheckRule(rule.Rule{
     
         	// our new check code
-		Code: AWSGibsonHackableCode,
+		ID: AWSGibsonHackableCode,
     
         	// all of our documentation data that will be available in the output and/or at https://tfsec.dev/
 		Documentation: scanner.CheckDocumentation{
@@ -86,7 +86,7 @@ func init() {
 		},
         
         	// the provider your check targets
-		Provider:       scanner.AWSProvider,
+		Provider:       provider.AWSProvider,
 
         	// which terraform blocks do you want to check - usually "resource"
 		RequiredTypes:  []string{"resource"},
@@ -95,9 +95,8 @@ func init() {
 		RequiredLabels: []string{"aws_gibson"},
         
         	// the actual logic for your check
-		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-            		// TODO: add check logic here
-			return nil
+		CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
+			// TODO: add check logic here
 		},
 	})
 }
@@ -108,25 +107,24 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
 ```go
 ...
 
-        CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+        CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
 
             if attr := block.GetAttribute("hackable"); attr != nil && attr.Value().Type() == cty.Bool {
                 if attr.Value().True() {
-                    return []scanner.Result{
-                        check.NewResultWithValueAnnotation(
-                            fmt.Sprintf("The Gibson '%s' is configured to be hackable.", block.Name()),
-                            attr.Range(),
-                            attr,
-                            scanner.SeverityWarning,
-                        ),
-                    }
+                    set.Add(
+                        result.New().
+						WithDescription(fmt.Sprintf("The Gibson '%s' is configured to be hackable.", block.Name())).
+						WithRange(attr.Range()).
+						WithAttributeAnnotation(attr).
+						WithSeverity(SeverityWarning),
+					)
                 }
             }
         },
 ...
 ```
 
-You can see a good example of a real check file [here](https://github.com/tfsec/tfsec/blob/master/internal/app/tfsec/checks/aws001.go).
+You can see a good example of a real check file [here](https://github.com/tfsec/tfsec/blob/master/internal/app/tfsec/rules/aws001.go).
 
 ### Writing Tests
 
@@ -149,8 +147,8 @@ func Test_AWSGibsonHackable(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		// this makes sure the check works in the most basic scenario
 		{
@@ -161,7 +159,7 @@ resource "aws_gibson" "my-gibson" {
 }`,
 			mustIncludeResultCode: checks.AWSGibsonHackableCode,
        		},
-		// this checks for a false positive
+		// this rules for a false positive
 		{ 
 			name: "check passes when hackable is set to false on an aws_gibson resource",
 			source: `

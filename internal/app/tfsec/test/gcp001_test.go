@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_GoogleUnencryptedDisk(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_GoogleUnencryptedDisk(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check google_compute_disk with empty disk_encryption_key block",
@@ -21,7 +20,7 @@ func Test_GoogleUnencryptedDisk(t *testing.T) {
 resource "google_compute_disk" "my-disk" {
 	disk_encryption_key {}
 }`,
-			mustIncludeResultCode: checks.GoogleUnencryptedDisk,
+			mustIncludeResultCode: rules.GoogleUnencryptedDisk,
 		},
 		{
 			name: "check google_compute_disk with raw key encryption",
@@ -31,7 +30,7 @@ resource "google_compute_disk" "my-disk" {
 		raw_key = "something"
 	}
 }`,
-			mustExcludeResultCode: checks.GoogleUnencryptedDisk,
+			mustExcludeResultCode: rules.GoogleUnencryptedDisk,
 		},
 		{
 			name: "check google_compute_disk with kms link",
@@ -41,7 +40,7 @@ resource "google_compute_disk" "my-disk" {
 		kms_key_self_link = "something"
 	}
 }`,
-			mustExcludeResultCode: checks.GoogleUnencryptedDisk,
+			mustExcludeResultCode: rules.GoogleUnencryptedDisk,
 		},
 	}
 

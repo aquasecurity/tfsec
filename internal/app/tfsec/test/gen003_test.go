@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSSensitiveAttributes(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSSensitiveAttributes(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check sensitive attribute",
@@ -21,7 +20,7 @@ func Test_AWSSensitiveAttributes(t *testing.T) {
 resource "evil_corp" "virtual_machine" {
 	root_password = "secret"
 }`,
-			mustIncludeResultCode: checks.GenericSensitiveAttributes,
+			mustIncludeResultCode: rules.GenericSensitiveAttributes,
 		},
 		{
 			name: "check non-sensitive local",
@@ -29,7 +28,7 @@ resource "evil_corp" "virtual_machine" {
 resource "evil_corp" "virtual_machine" {
 	memory = 512
 }`,
-			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+			mustExcludeResultCode: rules.GenericSensitiveAttributes,
 		},
 		{
 			name: "avoid false positive for aws_efs_file_system",
@@ -37,7 +36,7 @@ resource "evil_corp" "virtual_machine" {
 resource "aws_efs_file_system" "myfs" {
 	creation_token = "something"
 }`,
-			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+			mustExcludeResultCode: rules.GenericSensitiveAttributes,
 		},
 		{
 			name: "avoid false positive for google_secret_manager_secret",
@@ -45,7 +44,7 @@ resource "aws_efs_file_system" "myfs" {
 resource "google_secret_manager_secret" "secret" {
 	secret_id = "secret"
 }`,
-			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+			mustExcludeResultCode: rules.GenericSensitiveAttributes,
 		},
 	}
 
@@ -62,8 +61,8 @@ func Test_GitHubSensitiveAttributes(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "avoid false positive for github_actions_secret",
@@ -71,7 +70,7 @@ func Test_GitHubSensitiveAttributes(t *testing.T) {
 resource "github_actions_secret" "infrastructure_digitalocean_deploy_user" {
 	secret_name = "digitalocean_deploy_user"
 }`,
-			mustExcludeResultCode: checks.GenericSensitiveAttributes,
+			mustExcludeResultCode: rules.GenericSensitiveAttributes,
 		},
 	}
 

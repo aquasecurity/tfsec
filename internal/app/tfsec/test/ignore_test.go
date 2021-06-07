@@ -3,9 +3,17 @@ package test
 import (
 	"testing"
 
+	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/tfsec/tfsec/pkg/severity"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+
+	"github.com/tfsec/tfsec/pkg/rule"
+
 	"github.com/stretchr/testify/require"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/stretchr/testify/assert"
@@ -59,23 +67,23 @@ resource "aws_security_group_rule" "my-rule" {
 }
 func Test_IgnoreSpecific(t *testing.T) {
 
-	scanner.RegisterCheck(scanner.Check{
-		Code:           "ABC123",
+	scanner.RegisterCheckRule(rule.Rule{
+		ID:             "ABC123",
 		RequiredLabels: []string{"bad"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-			return []scanner.Result{
-				check.NewResult("example problem", block.Range(), scanner.SeverityError),
-			}
+		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+			set.Add(
+				result.New().WithDescription("example problem").WithRange(block.Range()).WithSeverity(severity.Error),
+			)
 		},
 	})
 
-	scanner.RegisterCheck(scanner.Check{
-		Code:           "DEF456",
+	scanner.RegisterCheckRule(rule.Rule{
+		ID:             "DEF456",
 		RequiredLabels: []string{"bad"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
-			return []scanner.Result{
-				check.NewResult("example problem", block.Range(), scanner.SeverityError),
-			}
+		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+			set.Add(
+				result.New().WithDescription("example problem").WithRange(block.Range()).WithSeverity(severity.Error),
+			)
 		},
 	})
 
@@ -83,6 +91,6 @@ func Test_IgnoreSpecific(t *testing.T) {
 resource "bad" "my-bad" {} //tfsec:ignore:ABC123
 `)
 	require.Len(t, results, 1)
-	assert.Equal(t, results[0].RuleID, scanner.RuleCode("DEF456"))
+	assert.Equal(t, results[0].RuleID, "DEF456")
 
 }

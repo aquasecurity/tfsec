@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUBlobStorageContainerNoPublicAccess(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUBlobStorageContainerNoPublicAccess(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check there is an error when the public access is set to blob",
@@ -27,7 +26,7 @@ resource "azure_storage_container" "blob_storage_container" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AZUBlobStorageContainerNoPublicAccess,
+			mustIncludeResultCode: rules.AZUBlobStorageContainerNoPublicAccess,
 		},
 		{
 			name: "check there is an error when the public access is set to container",
@@ -41,7 +40,7 @@ resource "azure_storage_container" "blob_storage_container" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AZUBlobStorageContainerNoPublicAccess,
+			mustIncludeResultCode: rules.AZUBlobStorageContainerNoPublicAccess,
 		},
 		{
 			name: "check there is no failure when the public access is set to off",
@@ -55,7 +54,7 @@ resource "azure_storage_container" "blob_storage_container" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AZUBlobStorageContainerNoPublicAccess,
+			mustExcludeResultCode: rules.AZUBlobStorageContainerNoPublicAccess,
 		},
 		{
 			name: "check there is no failure when public access level is not set",
@@ -69,7 +68,7 @@ resource "azure_storage_container" "blob_storage_container" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AZUBlobStorageContainerNoPublicAccess,
+			mustExcludeResultCode: rules.AZUBlobStorageContainerNoPublicAccess,
 		},
 		{
 			name: "check there is no failure when no properties are supplied",
@@ -80,7 +79,7 @@ resource "azure_storage_container" "blob_storage_container" {
 
 }
 `,
-			mustExcludeResultCode: checks.AZUBlobStorageContainerNoPublicAccess,
+			mustExcludeResultCode: rules.AZUBlobStorageContainerNoPublicAccess,
 		},
 	}
 

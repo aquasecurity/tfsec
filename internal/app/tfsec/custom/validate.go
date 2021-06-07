@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 	"os"
 	"strings"
+
+	"github.com/tfsec/tfsec/pkg/severity"
 )
 
 func Validate(checkFilePath string) error {
@@ -53,13 +54,13 @@ func getErrorStrings(errs []error) string {
 func validate(check *Check) []error {
 	var checkErrors []error
 	if len(check.Code) == 0 {
-		checkErrors = append(checkErrors, errors.New("check.Code requires a value"))
+		checkErrors = append(checkErrors, errors.New("check.ID requires a value"))
 	}
 	if len(check.Description) == 0 {
 		checkErrors = append(checkErrors, errors.New("check.Description requires a value"))
 	}
 	if !check.Severity.IsValid() {
-		checkErrors = append(checkErrors, errors.New(fmt.Sprintf("check.Severity[%s] is not a recognised option. Should be %s", check.Severity, scanner.ValidSeverity)))
+		checkErrors = append(checkErrors, errors.New(fmt.Sprintf("check.Severity[%s] is not a recognised option. Should be %s", check.Severity, severity.ValidSeverity)))
 	}
 	if len(check.RequiredTypes) == 0 {
 		checkErrors = append(checkErrors, errors.New("check.RequiredTypes requires a value"))
@@ -75,7 +76,7 @@ func validateMatchSpec(spec *MatchSpec, check *Check, checkErrors []error) []err
 		checkErrors = append(checkErrors, errors.New(fmt.Sprintf("matchSpec.Action[%s] is not a recognised option. Should be %s", spec.Action, ValidCheckActions)))
 	}
 	// if the check is one of `inModule`,`or`,`and`, `not`, no name is required
-	if len(spec.Name) == 0 && spec.Action != "inModule" && spec.Action != "or" && spec.Action != "and"  && spec.Action != "not"{
+	if len(spec.Name) == 0 && spec.Action != "inModule" && spec.Action != "or" && spec.Action != "and" && spec.Action != "not" {
 		checkErrors = append(checkErrors, errors.New("matchSpec.Name requires a value"))
 	}
 

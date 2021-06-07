@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUAKSClusterNetworkPolicy(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUAKSClusterNetworkPolicy(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check if network_policy set",
@@ -21,7 +20,7 @@ func Test_AZUAKSClusterNetworkPolicy(t *testing.T) {
 resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 	network_profile {}
 }`,
-			mustIncludeResultCode: checks.AZUAKSClusterNetworkPolicy,
+			mustIncludeResultCode: rules.AZUAKSClusterNetworkPolicy,
 		},
 		{
 			name: "check network_policy set",
@@ -31,7 +30,7 @@ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
 		network_policy = "calico"
 		}
 }`,
-			mustExcludeResultCode: checks.AZUAKSClusterNetworkPolicy,
+			mustExcludeResultCode: rules.AZUAKSClusterNetworkPolicy,
 		},
 	}
 

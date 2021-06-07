@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSTaskDefinitionIncludesSensitiveData(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSTaskDefinitionIncludesSensitiveData(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are included",
@@ -34,7 +33,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			mustIncludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+			mustIncludeResultCode: rules.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are not included",
@@ -55,7 +54,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			mustExcludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+			mustExcludeResultCode: rules.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are included but ignored",
@@ -77,7 +76,7 @@ resource "aws_ecs_task_definition" "my-task" {
 EOF
 
 }`,
-			mustExcludeResultCode: checks.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+			mustExcludeResultCode: rules.AWSTaskDefinitionWithSensitiveEnvironmentVariables,
 		},
 	}
 

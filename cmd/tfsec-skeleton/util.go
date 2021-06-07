@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -33,7 +32,7 @@ func listFiles(dir, pattern string) ([]os.FileInfo, error) {
 }
 
 func calculateNextCode(provider string) (string, error) {
-	files, err := listFiles("internal/app/tfsec/checks", fmt.Sprintf("%s.*", provider))
+	files, err := listFiles("internal/app/tfsec/rules", fmt.Sprintf("%s.*", provider))
 	if err != nil {
 		return "", err
 	}
@@ -51,7 +50,7 @@ func calculateNextCode(provider string) (string, error) {
 func verifyCheckPath(checkPath string) error {
 	stat, _ := os.Stat(checkPath)
 	if stat != nil {
-		return errors.New(fmt.Sprintf("file [%s] already exists so not creating check", checkPath))
+		return fmt.Errorf("file [%s] already exists so not creating check", checkPath)
 	}
 	return nil
 }

@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSEfsEncryptionNotEnabled(t *testing.T) {
@@ -12,13 +11,13 @@ func Test_AWSEfsEncryptionNotEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name:                  "check if EFS Encryption is disabled",
 			source:                `resource "aws_efs_file_system" "foo" {}`,
-			mustIncludeResultCode: checks.AWSEfsEncryptionNotEnabled,
+			mustIncludeResultCode: rules.AWSEfsEncryptionNotEnabled,
 		},
 		{
 			name: "check if EFS Encryption is set to false",
@@ -28,7 +27,7 @@ resource "aws_efs_file_system" "foo" {
   encrypted = false
   kms_key_id = ""
 }`,
-			mustIncludeResultCode: checks.AWSEfsEncryptionNotEnabled,
+			mustIncludeResultCode: rules.AWSEfsEncryptionNotEnabled,
 		},
 		{
 			name: "Encryption key is provided",
@@ -38,7 +37,7 @@ resource "aws_efs_file_system" "foo" {
   encrypted = true
   kms_key_id = "my_encryption_key"
 }`,
-			mustExcludeResultCode: checks.AWSEfsEncryptionNotEnabled,
+			mustExcludeResultCode: rules.AWSEfsEncryptionNotEnabled,
 		},
 	}
 

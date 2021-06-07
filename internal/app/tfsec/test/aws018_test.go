@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSMissingDescriptionForSecurityGroup(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSMissingDescriptionForSecurityGroup(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_security_group without description",
@@ -21,7 +20,7 @@ func Test_AWSMissingDescriptionForSecurityGroup(t *testing.T) {
 resource "aws_security_group" "my-group" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
+			mustIncludeResultCode: rules.AWSNoDescriptionInSecurityGroup,
 		},
 		{
 			name: "check aws_security_group_rule without description",
@@ -29,7 +28,7 @@ resource "aws_security_group" "my-group" {
 resource "aws_security_group_rule" "my-rule" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
+			mustIncludeResultCode: rules.AWSNoDescriptionInSecurityGroup,
 		},
 		{
 			name: "check aws_security_group with description",
@@ -37,7 +36,7 @@ resource "aws_security_group_rule" "my-rule" {
 resource "aws_security_group" "my-group" {
 	description = "this is a group for allowing shiz"
 }`,
-			mustExcludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
+			mustExcludeResultCode: rules.AWSNoDescriptionInSecurityGroup,
 		},
 		{
 			name: "check aws_security_group_rule with description",
@@ -45,17 +44,17 @@ resource "aws_security_group" "my-group" {
 resource "aws_security_group_rule" "my-rule" {
 	description = "this is a group for allowing shiz"
 }`,
-			mustExcludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
+			mustExcludeResultCode: rules.AWSNoDescriptionInSecurityGroup,
 		},
 		{
 			name:                  "check aws_security_group good example",
-			source:                checks.AWSNoDescriptionInSecurityGroupGoodExample,
-			mustExcludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
+			source:                rules.AWSNoDescriptionInSecurityGroupGoodExample,
+			mustExcludeResultCode: rules.AWSNoDescriptionInSecurityGroup,
 		},
 		{
 			name:                  "check aws_security_group bad example",
-			source:                checks.AWSNoDescriptionInSecurityGroupBadExample,
-			mustIncludeResultCode: checks.AWSNoDescriptionInSecurityGroup,
+			source:                rules.AWSNoDescriptionInSecurityGroupBadExample,
+			mustIncludeResultCode: rules.AWSNoDescriptionInSecurityGroup,
 		},
 	}
 

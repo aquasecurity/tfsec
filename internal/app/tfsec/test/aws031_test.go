@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func TestAWSUnencryptedElasticsearchDomain(t *testing.T) {
@@ -12,8 +11,8 @@ func TestAWSUnencryptedElasticsearchDomain(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check no encrypt_at_rest block aws_elasticsearch_domain",
@@ -21,7 +20,7 @@ func TestAWSUnencryptedElasticsearchDomain(t *testing.T) {
 resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedElasticsearchDomain,
+			mustIncludeResultCode: rules.AWSUnencryptedElasticsearchDomain,
 		},
 		{
 			name: "check false enabled attr aws_elasticsearch_domain",
@@ -31,7 +30,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 
   encrypt_at_rest { }
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedElasticsearchDomain,
+			mustIncludeResultCode: rules.AWSUnencryptedElasticsearchDomain,
 		},
 		{
 			name: "check true enabled attr aws_elasticsearch_domain",
@@ -43,7 +42,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     enabled = true
   }
 }`,
-			mustExcludeResultCode: checks.AWSUnencryptedElasticsearchDomain,
+			mustExcludeResultCode: rules.AWSUnencryptedElasticsearchDomain,
 		},
 	}
 

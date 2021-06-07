@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSUnencryptedSNSTopic(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSUnencryptedSNSTopic(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check no encryption key id specified for aws_sns_topic",
@@ -21,7 +20,7 @@ func Test_AWSUnencryptedSNSTopic(t *testing.T) {
 resource "aws_sns_topic" "my-topic" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedSNSTopic,
+			mustIncludeResultCode: rules.AWSUnencryptedSNSTopic,
 		},
 		{
 			name: "check with default encryption key id specified for aws_sns_topic fails check",
@@ -34,7 +33,7 @@ resource "aws_sns_topic" "test" {
   name              = "sns_ecnrypted"
   kms_master_key_id = data.aws_kms_key.by_alias.arn
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedSNSTopic,
+			mustIncludeResultCode: rules.AWSUnencryptedSNSTopic,
 		},
 		{
 			name: "check blank encryption key id specified for aws_sns_topic",
@@ -42,7 +41,7 @@ resource "aws_sns_topic" "test" {
 resource "aws_sns_topic" "my-topic" {
 	kms_master_key_id = ""
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedSNSTopic,
+			mustIncludeResultCode: rules.AWSUnencryptedSNSTopic,
 		},
 		{
 			name: "check encryption key id specified for aws_sns_topic",
@@ -50,7 +49,7 @@ resource "aws_sns_topic" "my-topic" {
 resource "aws_sns_topic" "my-topic" {
 	kms_master_key_id = "/blah"
 }`,
-			mustExcludeResultCode: checks.AWSUnencryptedSNSTopic,
+			mustExcludeResultCode: rules.AWSUnencryptedSNSTopic,
 		},
 	}
 

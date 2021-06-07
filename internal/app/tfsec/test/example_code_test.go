@@ -9,29 +9,29 @@ import (
 )
 
 func TestExampleCode(t *testing.T) {
-	for _, check := range scanner.GetRegisteredChecks() {
+	for _, check := range scanner.GetRegisteredRules() {
 
-		t.Run(fmt.Sprintf("Check explanation for %s", check.Code), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Rule explanation for %s", check.ID), func(t *testing.T) {
 			if strings.TrimSpace(check.Documentation.Explanation) == "" {
-				t.Fatalf("No explanation found for %s", check.Code)
+				t.Fatalf("No explanation found for %s", check.ID)
 			}
 		})
 
-		t.Run(fmt.Sprintf("Check impact for %s", check.Code), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Rule impact for %s", check.ID), func(t *testing.T) {
 			if strings.TrimSpace(check.Documentation.Impact) == "" {
-				t.Fatalf("No impact found for %s", check.Code)
+				t.Fatalf("No impact found for %s", check.ID)
 			}
 		})
 
-		t.Run(fmt.Sprintf("Check resolution for %s", check.Code), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Rule resolution for %s", check.ID), func(t *testing.T) {
 			if strings.TrimSpace(check.Documentation.Resolution) == "" {
-				t.Fatalf("No resolution found for %s", check.Code)
+				t.Fatalf("No resolution found for %s", check.ID)
 			}
 		})
 
-		t.Run(fmt.Sprintf("Check 'good' example code for %s", check.Code), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Rule 'good' example code for %s", check.ID), func(t *testing.T) {
 			if strings.TrimSpace(check.Documentation.GoodExample) == "" {
-				t.Fatalf("good example code not provided for %s", check.Code)
+				t.Fatalf("good example code not provided for %s", check.ID)
 			}
 			defer func() {
 				if err := recover(); err != nil {
@@ -39,12 +39,12 @@ func TestExampleCode(t *testing.T) {
 				}
 			}()
 			results := scanSource(check.Documentation.GoodExample)
-			assertCheckCode(t, "", check.Code, results)
+			assertCheckCode(t, "", check.ID, results)
 		})
 
-		t.Run(fmt.Sprintf("Check 'bad' example code for %s", check.Code), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Rule 'bad' example code for %s", check.ID), func(t *testing.T) {
 			if strings.TrimSpace(check.Documentation.BadExample) == "" {
-				t.Fatalf("bad example code not provided for %s", check.Code)
+				t.Fatalf("bad example code not provided for %s", check.ID)
 			}
 			defer func() {
 				if err := recover(); err != nil {
@@ -52,7 +52,7 @@ func TestExampleCode(t *testing.T) {
 				}
 			}()
 			results := scanSource(check.Documentation.BadExample)
-			assertCheckCode(t, check.Code, "", results)
+			assertCheckCode(t, check.ID, "", results)
 		})
 
 	}

@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZURequireSecureTransferForStorageAccounts(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZURequireSecureTransferForStorageAccounts(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check the storage account with explicit enable_https_traffic_only set to false fails",
@@ -27,7 +26,7 @@ resource "azurerm_storage_account" "example" {
   enable_https_traffic_only = false
 }
 `,
-			mustIncludeResultCode: checks.AZURequireSecureTransferForStorageAccounts,
+			mustIncludeResultCode: rules.AZURequireSecureTransferForStorageAccounts,
 		},
 		{
 			name: "check the storage account with no explicit enable_https_traffic_only set passes",
@@ -40,7 +39,7 @@ resource "azurerm_storage_account" "example" {
   account_replication_type  = "GRS"
 }
 `,
-			mustExcludeResultCode: checks.AZURequireSecureTransferForStorageAccounts,
+			mustExcludeResultCode: rules.AZURequireSecureTransferForStorageAccounts,
 		},
 		{
 			name: "check the storage account with explicit enable_https_traffic_only set to true passes",
@@ -54,7 +53,7 @@ resource "azurerm_storage_account" "example" {
   enable_https_traffic_only = true
 }
 `,
-			mustExcludeResultCode: checks.AZURequireSecureTransferForStorageAccounts,
+			mustExcludeResultCode: rules.AZURequireSecureTransferForStorageAccounts,
 		},
 	}
 

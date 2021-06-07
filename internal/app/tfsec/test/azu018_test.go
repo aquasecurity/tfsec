@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUSQLDatabaseAuditingEnabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUSQLDatabaseAuditingEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check fails when extended audit policy not configured",
@@ -27,7 +26,7 @@ resource "azurerm_sql_server" "back_example" {
   administrator_login_password = "tfsecRocks"
 }
 `,
-			mustIncludeResultCode: checks.AZUSQLDatabaseAuditingEnabled,
+			mustIncludeResultCode: rules.AZUSQLDatabaseAuditingEnabled,
 		},
 		{
 			name: "check fails when extended audit policy not configured on mssql server",
@@ -41,7 +40,7 @@ resource "azurerm_mssql_server" "bad_example" {
   administrator_login_password = "tfsecRocks"
 }
 `,
-			mustIncludeResultCode: checks.AZUSQLDatabaseAuditingEnabled,
+			mustIncludeResultCode: rules.AZUSQLDatabaseAuditingEnabled,
 		},
 		{
 			name: "check passes when extended audit policy is configured",
@@ -62,7 +61,7 @@ resource "azurerm_sql_server" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AZUSQLDatabaseAuditingEnabled,
+			mustExcludeResultCode: rules.AZUSQLDatabaseAuditingEnabled,
 		},
 		{
 			name: "check passes when extended audit policy is configured on MSSQL",
@@ -83,7 +82,7 @@ resource "azurerm_mssql_server" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AZUSQLDatabaseAuditingEnabled,
+			mustExcludeResultCode: rules.AZUSQLDatabaseAuditingEnabled,
 		},
 	}
 

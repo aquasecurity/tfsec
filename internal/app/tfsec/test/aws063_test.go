@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSCloudtrailEnabledInAllRegions(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSCloudtrailEnabledInAllRegions(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "Test cloudtrail not configured for multi region use",
@@ -30,7 +29,7 @@ resource "aws_cloudtrail" "bad_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSCloudtrailEnabledInAllRegions,
+			mustIncludeResultCode: rules.AWSCloudtrailEnabledInAllRegions,
 		},
 		{
 			name: "Test multiregion set to false fails",
@@ -49,7 +48,7 @@ resource "aws_cloudtrail" "bad_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSCloudtrailEnabledInAllRegions,
+			mustIncludeResultCode: rules.AWSCloudtrailEnabledInAllRegions,
 		},
 		{
 			name: "Test multi region correctly configured",
@@ -68,7 +67,7 @@ resource "aws_cloudtrail" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSCloudtrailEnabledInAllRegions,
+			mustExcludeResultCode: rules.AWSCloudtrailEnabledInAllRegions,
 		},
 	}
 

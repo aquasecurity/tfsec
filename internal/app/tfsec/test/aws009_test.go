@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSOpenEgressSecurityGroup(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSOpenEgressSecurityGroup(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_security_group egress on 0.0.0.0/0",
@@ -23,7 +22,7 @@ func Test_AWSOpenEgressSecurityGroup(t *testing.T) {
 				cidr_blocks = ["0.0.0.0/0"]
 			}
 		}`,
-			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupInlineRule,
+			mustIncludeResultCode: rules.AWSOpenEgressSecurityGroupInlineRule,
 		},
 		{
 			name: "check aws_security_group egress on 0.0.0.0/0 in list",
@@ -33,7 +32,7 @@ func Test_AWSOpenEgressSecurityGroup(t *testing.T) {
 				cidr_blocks = ["10.0.0.0/16", "0.0.0.0/0"]
 			}
 		}`,
-			mustIncludeResultCode: checks.AWSOpenEgressSecurityGroupInlineRule,
+			mustIncludeResultCode: rules.AWSOpenEgressSecurityGroupInlineRule,
 		},
 		{
 			name: "check aws_security_group egress on 10.0.0.0/16",
@@ -43,7 +42,7 @@ func Test_AWSOpenEgressSecurityGroup(t *testing.T) {
 				cidr_blocks = ["10.0.0.0/16"]
 			}
 		}`,
-			mustExcludeResultCode: checks.AWSOpenEgressSecurityGroupInlineRule,
+			mustExcludeResultCode: rules.AWSOpenEgressSecurityGroupInlineRule,
 		},
 	}
 

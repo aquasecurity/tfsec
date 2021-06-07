@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_GkeEnforcePSPTest(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_GkeEnforcePSPTest(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check google_container_cluster with pod_security_policy_config.enabled set to false",
@@ -23,7 +22,7 @@ resource "google_container_cluster" "gke" {
     enabled = "false"
   }
 }`,
-			mustIncludeResultCode: checks.GkeEnforcePSP,
+			mustIncludeResultCode: rules.GkeEnforcePSP,
 		},
 		{
 			name: "check google_container_cluster with pod_security_policy_config block not set",
@@ -31,7 +30,7 @@ resource "google_container_cluster" "gke" {
 resource "google_container_cluster" "gke" {
 
 }`,
-			mustIncludeResultCode: checks.GkeEnforcePSP,
+			mustIncludeResultCode: rules.GkeEnforcePSP,
 		},
 		{
 			name: "check google_container_cluster with pod_security_policy_config.enabled set to true",
@@ -41,7 +40,7 @@ resource "google_container_cluster" "gke" {
     enabled = "true"
   }
 }`,
-			mustExcludeResultCode: checks.GkeEnforcePSP,
+			mustExcludeResultCode: rules.GkeEnforcePSP,
 		},
 	}
 

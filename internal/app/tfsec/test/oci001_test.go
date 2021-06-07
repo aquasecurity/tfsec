@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_OCIComputeIpReservation(t *testing.T) {
@@ -12,24 +11,24 @@ func Test_OCIComputeIpReservation(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
-			name: "Check OCI compute IP reservation with ip_address_pool = public-ippool",
+			name: "Rule OCI compute IP reservation with ip_address_pool = public-ippool",
 			source: `
 resource "opc_compute_ip_address_reservation" "my-ip-address" {
 	ip_address_pool = "public-ippool"
 }`,
-			mustIncludeResultCode: checks.OCIComputeIpReservation,
+			mustIncludeResultCode: rules.OCIComputeIpReservation,
 		},
 		{
-			name: "Check OCI compute IP reservation with ip_address_pool = cloud-ippool",
+			name: "Rule OCI compute IP reservation with ip_address_pool = cloud-ippool",
 			source: `
 resource "opc_compute_ip_address_reservation" "my-ip-address" {
 	ip_address_pool = "cloud-ippool"
 }`,
-			mustExcludeResultCode: checks.OCIComputeIpReservation,
+			mustExcludeResultCode: rules.OCIComputeIpReservation,
 		},
 	}
 

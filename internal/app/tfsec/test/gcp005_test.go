@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_GkeAbacEnabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_GkeAbacEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check google_container_cluster with enable_legacy_abac set to true",
@@ -22,7 +21,7 @@ resource "google_container_cluster" "gke" {
 	enable_legacy_abac = "true"
 	
 }`,
-			mustIncludeResultCode: checks.GkeAbacEnabled,
+			mustIncludeResultCode: rules.GkeAbacEnabled,
 		},
 	}
 

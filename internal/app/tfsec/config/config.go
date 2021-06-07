@@ -3,11 +3,12 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -19,12 +20,12 @@ func LoadConfig(configFilePath string) (*Config, error) {
 	var config = &Config{}
 
 	if _, err := os.Stat(configFilePath); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to access config file '%s': %s", configFilePath, err)
 	}
 
 	configFileContent, err := ioutil.ReadFile(configFilePath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read config file '%s': %s", configFilePath, err)
 	}
 
 	ext := filepath.Ext(configFilePath)
@@ -32,12 +33,12 @@ func LoadConfig(configFilePath string) (*Config, error) {
 	case ".json":
 		err = json.Unmarshal(configFileContent, config)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to load config file '%s': %s", configFilePath, err)
 		}
 	case ".yaml", ".yml":
 		err = yaml.Unmarshal(configFileContent, config)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to load config file '%s': %s", configFilePath, err)
 		}
 	default:
 		return nil, fmt.Errorf("couldn't process the file %s", configFilePath)

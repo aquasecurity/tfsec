@@ -6,25 +6,29 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/pkg/result"
 )
 
-func FormatCSV(w io.Writer, results []scanner.Result, _ string, options ...FormatterOption) error {
+func FormatCSV(w io.Writer, results []result.Result, _ string, _ ...FormatterOption) error {
 
 	records := [][]string{
 		{"file", "start_line", "end_line", "rule_id", "severity", "description", "link", "passed"},
 	}
 
-	for _, result := range results {
+	for _, res := range results {
+		var link string
+		if len(res.Links) > 0 {
+			link = res.Links[0]
+		}
 		records = append(records, []string{
-			result.Range.Filename,
-			strconv.Itoa(result.Range.StartLine),
-			strconv.Itoa(result.Range.EndLine),
-			string(result.RuleID),
-			string(result.Severity),
-			result.Description,
-			result.Link,
-			strconv.FormatBool(result.Passed),
+			res.Range.Filename,
+			strconv.Itoa(res.Range.StartLine),
+			strconv.Itoa(res.Range.EndLine),
+			res.RuleID,
+			string(res.Severity),
+			res.Description,
+			link,
+			strconv.FormatBool(res.Status == result.Passed),
 		})
 	}
 

@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSRedisClusterBackupRetention(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSRedisClusterBackupRetention(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "cluster with no snapshot retention fails check",
@@ -28,7 +27,7 @@ resource "aws_elasticache_cluster" "bad_example" {
 	port                 = 6379
 }
 `,
-			mustIncludeResultCode: checks.AWSRedisClusterBackupRetention,
+			mustIncludeResultCode: rules.AWSRedisClusterBackupRetention,
 		},
 		{
 			name: "cluster with snapshot retention set to 0 fails check",
@@ -45,7 +44,7 @@ resource "aws_elasticache_cluster" "bad_example" {
 	snapshot_retention_limit = 0
 }
 `,
-			mustIncludeResultCode: checks.AWSRedisClusterBackupRetention,
+			mustIncludeResultCode: rules.AWSRedisClusterBackupRetention,
 		},
 		{
 			name: "Cluster which is memcached but no retention passes check",
@@ -59,7 +58,7 @@ resource "aws_elasticache_cluster" "good_example" {
 	port                 = 11211
 }
 `,
-			mustExcludeResultCode: checks.AWSRedisClusterBackupRetention,
+			mustExcludeResultCode: rules.AWSRedisClusterBackupRetention,
 		},
 		{
 			name: "Cluster with small node type passes without snapshot retention passes check",
@@ -74,7 +73,7 @@ resource "aws_elasticache_cluster" "good_example" {
 	port                 = 6379
 }
 `,
-			mustExcludeResultCode: checks.AWSRedisClusterBackupRetention,
+			mustExcludeResultCode: rules.AWSRedisClusterBackupRetention,
 		},
 		{
 			name: "Cluster with small node type passes without snapshot retention passes check",
@@ -91,7 +90,7 @@ resource "aws_elasticache_cluster" "good_example" {
 	snapshot_retention_limit = 5
 }
 `,
-			mustExcludeResultCode: checks.AWSRedisClusterBackupRetention,
+			mustExcludeResultCode: rules.AWSRedisClusterBackupRetention,
 		},
 	}
 

@@ -2,10 +2,11 @@ package parser
 
 import (
 	"fmt"
-	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
 	"github.com/hashicorp/hcl/v2/hclparse"
 
@@ -18,7 +19,7 @@ func CountFiles() int {
 	return len(knownFiles)
 }
 
-func LoadDirectory(fullPath string) ([]*hcl.File, error) {
+func LoadDirectory(fullPath string, stopOnHCLError bool) ([]*hcl.File, error) {
 
 	t := metrics.Start(metrics.DiskIO)
 	defer t.Stop()
@@ -42,7 +43,10 @@ func LoadDirectory(fullPath string) ([]*hcl.File, error) {
 		path := filepath.Join(fullPath, info.Name())
 		_, diag := hclParser.ParseHCLFile(path)
 		if diag != nil && diag.HasErrors() {
-			_,_ = fmt.Fprintf(os.Stderr, "WARNING: HCL error: %s\n", diag)
+			if stopOnHCLError {
+				return nil, diag
+			}
+			_, _ = fmt.Fprintf(os.Stderr, "WARNING: HCL error: %s\n", diag)
 			continue
 		}
 

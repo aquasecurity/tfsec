@@ -3,6 +3,8 @@ package parser
 import (
 	"reflect"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
 	"github.com/hashicorp/hcl/v2"
@@ -19,24 +21,33 @@ type visitedModule struct {
 
 type Evaluator struct {
 	ctx             *hcl.EvalContext
-	blocks          Blocks
+	blocks          block.Blocks
 	modules         []*ModuleInfo
 	visitedModules  []*visitedModule
 	inputVars       map[string]cty.Value
 	moduleMetadata  *ModulesMetadata
 	projectRootPath string // root of the current scan
+	stopOnHCLError  bool
 }
 
-func NewEvaluator(projectRootPath string, modulePath string, blocks Blocks, inputVars map[string]cty.Value, moduleMetadata *ModulesMetadata, modules []*ModuleInfo, visitedModules []*visitedModule) *Evaluator {
+func NewEvaluator(
+	projectRootPath string,
+	modulePath string,
+	blocks block.Blocks,
+	inputVars map[string]cty.Value,
+	moduleMetadata *ModulesMetadata,
+	modules []*ModuleInfo,
+	visitedModules []*visitedModule,
+	stopOnHCLError bool,
+) *Evaluator {
 
 	ctx := &hcl.EvalContext{
 		Variables: make(map[string]cty.Value),
 		Functions: Functions(modulePath),
 	}
 
-	// attach context to blocks
-	for _, block := range blocks {
-		block.ctx = ctx
+	for _, b := range blocks {
+		b.AttachEvalContext(ctx)
 	}
 
 	return &Evaluator{
@@ -47,6 +58,7 @@ func NewEvaluator(projectRootPath string, modulePath string, blocks Blocks, inpu
 		moduleMetadata:  moduleMetadata,
 		modules:         modules,
 		visitedModules:  visitedModules,
+		stopOnHCLError:  stopOnHCLError,
 	}
 }
 
@@ -57,7 +69,7 @@ func (e *Evaluator) SetModuleBasePath(path string) {
 func (e *Evaluator) evaluateStep(i int) {
 
 	evalTime := metrics.Start(metrics.Evaluation)
-	debug.Log("Starting iteration %d of context evaluation...", i+1)
+	debug.Log("Starting iteration %d of hclcontext evaluation...", i+1)
 
 	e.ctx.Variables["var"] = e.getValuesByBlockType("variable")
 	e.ctx.Variables["local"] = e.getValuesByBlockType("locals")
@@ -107,8 +119,8 @@ func (e *Evaluator) evaluateModules() {
 		}
 		evalTime.Stop()
 
-		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata)
-		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules, e.visitedModules)
+		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata, e.stopOnHCLError)
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules, e.visitedModules, e.stopOnHCLError)
 		e.SetModuleBasePath(e.projectRootPath)
 		b, _ := moduleEvaluator.EvaluateAll()
 		e.blocks = mergeBlocks(e.blocks, b)
@@ -129,12 +141,12 @@ func (e *Evaluator) evaluateModules() {
 	}
 }
 
-// export module outputs to a parent context
+// export module outputs to a parent hclcontext
 func (e *Evaluator) ExportOutputs() cty.Value {
 	return e.ctx.Variables["output"]
 }
 
-func (e *Evaluator) EvaluateAll() (Blocks, error) {
+func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 
 	var lastContext hcl.EvalContext
 
@@ -155,7 +167,7 @@ func (e *Evaluator) EvaluateAll() (Blocks, error) {
 		}
 	}
 
-	var allBlocks Blocks
+	var allBlocks block.Blocks
 	allBlocks = e.blocks
 	for _, module := range e.modules {
 		allBlocks = mergeBlocks(allBlocks, module.Blocks)
@@ -164,15 +176,15 @@ func (e *Evaluator) EvaluateAll() (Blocks, error) {
 	return allBlocks, nil
 }
 
-func mergeBlocks(allBlocks Blocks, newBlocks Blocks) Blocks {
-	var merger = make(map[*Block]bool)
-	for _, block := range allBlocks {
-		merger[block] = true
+func mergeBlocks(allBlocks block.Blocks, newBlocks block.Blocks) block.Blocks {
+	var merger = make(map[*block.Block]bool)
+	for _, b := range allBlocks {
+		merger[b] = true
 	}
 
-	for _, block := range newBlocks {
-		if _, ok := merger[block]; !ok {
-			allBlocks = append(allBlocks, block)
+	for _, b := range newBlocks {
+		if _, ok := merger[b]; !ok {
+			allBlocks = append(allBlocks, b)
 		}
 	}
 	return allBlocks
@@ -184,32 +196,32 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 	blocksOfType := e.blocks.OfType(blockType)
 	values := make(map[string]cty.Value)
 
-	for _, block := range blocksOfType {
+	for _, b := range blocksOfType {
 
-		switch block.Type() {
+		switch b.Type() {
 		case "variable": // variables are special in that their value comes from the "default" attribute
 
-			if block.Label() == "" {
+			if b.Label() == "" {
 				continue
 			}
 
-			attributes, _ := block.hclBlock.Body.JustAttributes()
+			attributes, _ := b.HCL().Body.JustAttributes()
 			if attributes == nil {
 				continue
 			}
 
-			if override, exists := e.inputVars[block.Label()]; exists {
-				values[block.Label()] = override
+			if override, exists := e.inputVars[b.Label()]; exists {
+				values[b.Label()] = override
 			} else if def, exists := attributes["default"]; exists {
-				values[block.Label()], _ = def.Expr.Value(e.ctx)
+				values[b.Label()], _ = def.Expr.Value(e.ctx)
 			}
 		case "output":
 
-			if block.Label() == "" {
+			if b.Label() == "" {
 				continue
 			}
 
-			attributes, _ := block.hclBlock.Body.JustAttributes()
+			attributes, _ := b.HCL().Body.JustAttributes()
 			if attributes == nil {
 				continue
 			}
@@ -219,29 +231,29 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 					defer func() {
 						_ = recover()
 					}()
-					values[block.Label()], _ = def.Expr.Value(e.ctx)
+					values[b.Label()], _ = def.Expr.Value(e.ctx)
 				}()
 			}
 
 		case "locals":
-			for key, val := range e.readValues(block.hclBlock).AsValueMap() {
+			for key, val := range e.readValues(b.HCL()).AsValueMap() {
 				values[key] = val
 			}
 		case "provider", "module":
-			if block.Label() == "" {
+			if b.Label() == "" {
 				continue
 			}
-			values[block.Label()] = e.readValues(block.hclBlock)
+			values[b.Label()] = e.readValues(b.HCL())
 		case "resource", "data":
 
-			if len(block.hclBlock.Labels) < 2 {
+			if len(b.HCL().Labels) < 2 {
 				continue
 			}
 
-			blockMap, ok := values[block.hclBlock.Labels[0]]
+			blockMap, ok := values[b.HCL().Labels[0]]
 			if !ok {
-				values[block.hclBlock.Labels[0]] = cty.ObjectVal(make(map[string]cty.Value))
-				blockMap = values[block.hclBlock.Labels[0]]
+				values[b.HCL().Labels[0]] = cty.ObjectVal(make(map[string]cty.Value))
+				blockMap = values[b.HCL().Labels[0]]
 			}
 
 			valueMap := blockMap.AsValueMap()
@@ -249,8 +261,8 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 				valueMap = make(map[string]cty.Value)
 			}
 
-			valueMap[block.hclBlock.Labels[1]] = e.readValues(block.hclBlock)
-			values[block.hclBlock.Labels[0]] = cty.ObjectVal(valueMap)
+			valueMap[b.HCL().Labels[1]] = e.readValues(b.HCL())
+			values[b.HCL().Labels[0]] = cty.ObjectVal(valueMap)
 		}
 
 	}

@@ -2,11 +2,12 @@ package test
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/pkg/severity"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSCodeBuildProjectEncryptionNotDisabled(t *testing.T) {
@@ -14,11 +15,11 @@ func Test_AWSCodeBuildProjectEncryptionNotDisabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
-			name: "Check should not pass when artifact encryption is disabled in Code Build Project",
+			name: "Rule should not pass when artifact encryption is disabled in ID Build Project",
 			source: `
 resource "aws_codebuild_project" "codebuild" {
 	// other config
@@ -28,10 +29,10 @@ resource "aws_codebuild_project" "codebuild" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSCodeBuildProjectEncryptionNotDisabled,
+			mustIncludeResultCode: rules.AWSCodeBuildProjectEncryptionNotDisabled,
 		},
 		{
-			name: "Check should not pass when artifact encryption is disabled on any secondary artifacts in Code Build Project",
+			name: "Rule should not pass when artifact encryption is disabled on any secondary artifacts in ID Build Project",
 			source: `
 resource "aws_codebuild_project" "codebuild" {
 	// other config
@@ -45,10 +46,10 @@ resource "aws_codebuild_project" "codebuild" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSCodeBuildProjectEncryptionNotDisabled,
+			mustIncludeResultCode: rules.AWSCodeBuildProjectEncryptionNotDisabled,
 		},
 		{
-			name: "Check should pass when artifact encryption enabled in Code Build Project",
+			name: "Rule should pass when artifact encryption enabled in ID Build Project",
 			source: `
 resource "aws_codebuild_project" "codebuild" {
 	// other config
@@ -58,10 +59,10 @@ resource "aws_codebuild_project" "codebuild" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSCodeBuildProjectEncryptionNotDisabled,
+			mustExcludeResultCode: rules.AWSCodeBuildProjectEncryptionNotDisabled,
 		},
 		{
-			name: "Check should pass when artifact encryption attribute is not present in Code Build Project",
+			name: "Rule should pass when artifact encryption attribute is not present in ID Build Project",
 			source: `
 resource "aws_codebuild_project" "codebuild" {
 	// other config
@@ -70,10 +71,10 @@ resource "aws_codebuild_project" "codebuild" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSCodeBuildProjectEncryptionNotDisabled,
+			mustExcludeResultCode: rules.AWSCodeBuildProjectEncryptionNotDisabled,
 		},
 		{
-			name: "Check should pass when artifact encryption enabled in secondary artifacts in Code Build Project",
+			name: "Rule should pass when artifact encryption enabled in secondary artifacts in ID Build Project",
 			source: `
 resource "aws_codebuild_project" "codebuild" {
 	// other config
@@ -88,10 +89,10 @@ resource "aws_codebuild_project" "codebuild" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSCodeBuildProjectEncryptionNotDisabled,
+			mustExcludeResultCode: rules.AWSCodeBuildProjectEncryptionNotDisabled,
 		},
 		{
-			name: "Check should pass when artifact encryption attribute is not present in secondary artifacts in Code Build Project",
+			name: "Rule should pass when artifact encryption attribute is not present in secondary artifacts in ID Build Project",
 			source: `
 resource "aws_codebuild_project" "codebuild" {
 	// other config
@@ -103,7 +104,7 @@ resource "aws_codebuild_project" "codebuild" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSCodeBuildProjectEncryptionNotDisabled,
+			mustExcludeResultCode: rules.AWSCodeBuildProjectEncryptionNotDisabled,
 		},
 	}
 
@@ -114,7 +115,7 @@ resource "aws_codebuild_project" "codebuild" {
 		})
 	}
 
-	t.Run("Check should report a warning when artifact encryption is disabled but the type is set to NO_ARTIFACTS in Code Build Project", func(t *testing.T) {
+	t.Run("Rule should report a warning when artifact encryption is disabled but the type is set to NO_ARTIFACTS in ID Build Project", func(t *testing.T) {
 		results := scanSource(`
 resource "aws_codebuild_project" "codebuild" {
 	// other config
@@ -126,8 +127,8 @@ resource "aws_codebuild_project" "codebuild" {
 }
 `)
 		for _, result := range results {
-			if result.RuleID == checks.AWSCodeBuildProjectEncryptionNotDisabled {
-				assert.True(t, result.Severity == scanner.SeverityWarning, fmt.Sprintf("Result with code '%s' had wrong Severity reported '%s'", result.RuleID, result.Severity))
+			if result.RuleID == rules.AWSCodeBuildProjectEncryptionNotDisabled {
+				assert.True(t, result.Severity == severity.Warning, fmt.Sprintf("Result with code '%s' had wrong Severity reported '%s'", result.RuleID, result.Severity))
 			}
 		}
 	})

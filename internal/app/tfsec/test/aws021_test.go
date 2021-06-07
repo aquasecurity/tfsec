@@ -3,16 +3,15 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSCloudFrontOutdatedProtocol(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check no viewer_certificate block in aws_cloudfront_distribution",
@@ -20,7 +19,7 @@ func Test_AWSCloudFrontOutdatedProtocol(t *testing.T) {
 resource "aws_cloudfront_distribution" "s3_distribution" {
 
 }`,
-			mustIncludeResultCode: checks.AWSCloudFrontOutdatedProtocol,
+			mustIncludeResultCode: rules.AWSCloudFrontOutdatedProtocol,
 		},
 		{
 			name: "check no default minimum_protocol_version attribute in viewer_certificate block",
@@ -30,7 +29,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cloudfront_default_certificate = true
   }
 }`,
-			mustIncludeResultCode: checks.AWSCloudFrontOutdatedProtocol,
+			mustIncludeResultCode: rules.AWSCloudFrontOutdatedProtocol,
 		},
 		{
 			name: "check TLSv1.2_2019 not used",
@@ -41,7 +40,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 	minimum_protocol_version = "TLSv1.2_2018"
   }
 }`,
-			mustIncludeResultCode: checks.AWSCloudFrontOutdatedProtocol,
+			mustIncludeResultCode: rules.AWSCloudFrontOutdatedProtocol,
 		},
 	}
 

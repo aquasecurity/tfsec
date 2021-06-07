@@ -17,9 +17,9 @@ has_toc: false
 
 The included {{$.Provider | ToUpper}} checks are listed below. For more information about each check, see the link provided.
 
-| Code  | Summary |
+| ID  | Summary |
 |:-------|:-------------|
-{{range $check := .Checks}}|[{{$check.Code}}](/docs/{{$.Provider}}/{{$check.Code}})|{{$check.Documentation.Summary}}|
+{{range $check := .Checks}}|[{{$check.ID}}](/docs/{{$.Provider}}/{{$check.ID}})|{{$check.Documentation.Summary}}|
 {{end}}
 `
 

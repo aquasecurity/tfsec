@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSOutdatedTLSPolicyElasticsearchDomainEndpoint(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSOutdatedTLSPolicyElasticsearchDomainEndpoint(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check no domain_endpoint_options aws_elasticsearch_domain",
@@ -21,7 +20,7 @@ func Test_AWSOutdatedTLSPolicyElasticsearchDomainEndpoint(t *testing.T) {
 resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 	
 }`,
-			mustExcludeResultCode: checks.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
+			mustExcludeResultCode: rules.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
 		},
 		{
 			name: "check tls_security_policy for aws_elasticsearch_domain isn't the default",
@@ -33,7 +32,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     enforce_https = true
   }
 }`,
-			mustIncludeResultCode: checks.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
+			mustIncludeResultCode: rules.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
 		},
 		{
 			name: "check tls_security_policy isn't set to TLsv1.0 for aws_elasticsearch_domain",
@@ -46,7 +45,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     tls_security_policy = "Policy-Min-TLS-1-0-2019-07"
   }
 }`,
-			mustIncludeResultCode: checks.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
+			mustIncludeResultCode: rules.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
 		},
 		{
 			name: "check tls_security_policy is set to TLSv1.2 for aws_elasticsearch_domain",
@@ -59,7 +58,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
   }
 }`,
-			mustExcludeResultCode: checks.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
+			mustExcludeResultCode: rules.AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
 		},
 	}
 

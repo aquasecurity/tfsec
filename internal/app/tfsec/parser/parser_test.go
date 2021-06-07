@@ -50,7 +50,7 @@ data "cats_cat" "the-cats-mother" {
 `)
 
 	debug.Enabled = true
-	parser := New(filepath.Dir(path), "")
+	parser := New(filepath.Dir(path), OptionStopOnHCLError())
 	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
@@ -132,7 +132,7 @@ output "result" {
 		"module",
 	)
 
-	parser := New(path, "")
+	parser := New(path, OptionStopOnHCLError())
 	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
@@ -151,7 +151,7 @@ output "result" {
 	outputs := blocks.OfType("output")
 	require.Len(t, outputs, 2)
 	for _, output := range outputs {
-		if output.moduleBlock != nil {
+		if output.HasModuleBlock() {
 			assert.Equal(t, "module.my-mod:output.result", output.FullName())
 		} else {
 			assert.Equal(t, "output.result", output.FullName())
@@ -188,7 +188,7 @@ output "result" {
 		"",
 	)
 
-	parser := New(path, "")
+	parser := New(path, OptionStopOnHCLError())
 	blocks, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
@@ -207,7 +207,7 @@ output "result" {
 	outputs := blocks.OfType("output")
 	require.Len(t, outputs, 2)
 	for _, output := range outputs {
-		if output.moduleBlock != nil {
+		if output.HasModuleBlock() {
 			assert.Equal(t, "module.my-mod:output.result", output.FullName())
 		} else {
 			assert.Equal(t, "output.result", output.FullName())

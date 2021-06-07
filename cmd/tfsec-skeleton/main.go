@@ -19,10 +19,7 @@ var rootCmd = &cobra.Command{
 	Short: "tfsec-skeleton is a tfsec tool for generating code files for checks.",
 	Long: `tfsec-skeleton is a simple tool for generating check code files at a corresponding test file.
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		err := generateCheckBody()
-		if err != nil {
-			fmt.Println(err.Error())
-		}
+	RunE: func(_ *cobra.Command, _ []string) error {
+		return generateCheckBody()
 	},
 }

@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSPlainHTTP(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSPlainHTTP(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_alb_listener using plain HTTP",
@@ -21,7 +20,7 @@ func Test_AWSPlainHTTP(t *testing.T) {
 resource "aws_alb_listener" "my-listener" {
 	protocol = "HTTP"
 }`,
-			mustIncludeResultCode: checks.AWSPlainHTTP,
+			mustIncludeResultCode: rules.AWSPlainHTTP,
 		},
 		{
 			name: "check aws_lb_listener using plain HTTP",
@@ -29,14 +28,14 @@ resource "aws_alb_listener" "my-listener" {
 resource "aws_lb_listener" "my-listener" {
 	protocol = "HTTP"
 }`,
-			mustIncludeResultCode: checks.AWSPlainHTTP,
+			mustIncludeResultCode: rules.AWSPlainHTTP,
 		},
 		{
 			name: "check aws_alb_listener using plain HTTP (via non specification)",
 			source: `
 resource "aws_alb_listener" "my-listener" {
 }`,
-			mustIncludeResultCode: checks.AWSPlainHTTP,
+			mustIncludeResultCode: rules.AWSPlainHTTP,
 		},
 		{
 			name: "check aws_alb_listener using HTTPS",
@@ -44,7 +43,7 @@ resource "aws_alb_listener" "my-listener" {
 resource "aws_alb_listener" "my-listener" {
 	protocol = "HTTPS"
 }`,
-			mustExcludeResultCode: checks.AWSPlainHTTP,
+			mustExcludeResultCode: rules.AWSPlainHTTP,
 		},
 		{
 			name: "check aws_alb_listener using HTTP as redirect to HTTPS",
@@ -61,7 +60,7 @@ resource "aws_alb_listener" "my-listener" {
 		}
 	}
 }`,
-			mustExcludeResultCode: checks.AWSPlainHTTP,
+			mustExcludeResultCode: rules.AWSPlainHTTP,
 		},
 	}
 

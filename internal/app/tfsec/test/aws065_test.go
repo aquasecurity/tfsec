@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSCloudtrailEncryptedAtRest(t *testing.T) {
@@ -12,9 +11,9 @@ func Test_AWSCloudtrailEncryptedAtRest(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
-	}{		{
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{{
 		name: "Test check fails when missing kms id",
 		source: `
 resource "aws_cloudtrail" "bad_example" {
@@ -32,7 +31,7 @@ resource "aws_cloudtrail" "bad_example" {
   }
 }
 `,
-		mustIncludeResultCode: checks.AWSCloudtrailEncryptedAtRest,
+		mustIncludeResultCode: rules.AWSCloudtrailEncryptedAtRest,
 	},
 		{
 			name: "Test check fails when kms_key_id present but empty",
@@ -53,7 +52,7 @@ resource "aws_cloudtrail" "bad_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSCloudtrailEncryptedAtRest,
+			mustIncludeResultCode: rules.AWSCloudtrailEncryptedAtRest,
 		},
 		{
 			name: "Test check passes when kms_key_id present and populated",
@@ -74,7 +73,7 @@ resource "aws_cloudtrail" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSCloudtrailEncryptedAtRest,
+			mustExcludeResultCode: rules.AWSCloudtrailEncryptedAtRest,
 		},
 	}
 

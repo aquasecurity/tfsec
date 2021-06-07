@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSPlaintextNodeToNodeElasticsearchTraffic(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSPlaintextNodeToNodeElasticsearchTraffic(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check no node_to_node_encryption block aws_elasticsearch_domain",
@@ -21,7 +20,7 @@ func Test_AWSPlaintextNodeToNodeElasticsearchTraffic(t *testing.T) {
 resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 	
 }`,
-			mustIncludeResultCode: checks.AWSPlaintextNodeToNodeElasticsearchTraffic,
+			mustIncludeResultCode: rules.AWSPlaintextNodeToNodeElasticsearchTraffic,
 		},
 		{
 			name: "check false enabled attr aws_elasticsearch_domain",
@@ -33,7 +32,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     enabled = false
   }
 }`,
-			mustIncludeResultCode: checks.AWSPlaintextNodeToNodeElasticsearchTraffic,
+			mustIncludeResultCode: rules.AWSPlaintextNodeToNodeElasticsearchTraffic,
 		},
 		{
 			name: "check true enabled attr aws_elasticsearch_domain",
@@ -45,7 +44,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
     enabled = true
   }
 }`,
-			mustExcludeResultCode: checks.AWSPlaintextNodeToNodeElasticsearchTraffic,
+			mustExcludeResultCode: rules.AWSPlaintextNodeToNodeElasticsearchTraffic,
 		},
 	}
 

@@ -3,17 +3,26 @@ package custom
 import (
 	"fmt"
 
+	"github.com/tfsec/tfsec/pkg/provider"
+
+	"github.com/tfsec/tfsec/pkg/result"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+
+	"github.com/tfsec/tfsec/pkg/rule"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
-	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
-	IsPresent: func(block *parser.Block, spec *MatchSpec) bool {
+var matchFunctions = map[CheckAction]func(*block.Block, *MatchSpec) bool{
+	IsPresent: func(block *block.Block, spec *MatchSpec) bool {
 		return block.HasChild(spec.Name) || spec.IgnoreUndefined
 	},
-	NotPresent: func(block *parser.Block, spec *MatchSpec) bool { return !block.HasChild(spec.Name) },
-	IsEmpty: func(block *parser.Block, spec *MatchSpec) bool {
+	NotPresent: func(block *block.Block, spec *MatchSpec) bool { return !block.HasChild(spec.Name) },
+	IsEmpty: func(block *block.Block, spec *MatchSpec) bool {
 		if block.MissingChild(spec.Name) {
 			return true
 		}
@@ -25,81 +34,81 @@ var matchFunctions = map[CheckAction]func(*parser.Block, *MatchSpec) bool{
 		childBlock := block.GetBlock(spec.Name)
 		return childBlock.IsEmpty()
 	},
-	StartsWith: func(block *parser.Block, spec *MatchSpec) bool {
+	StartsWith: func(block *block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.StartsWith(spec.MatchValue)
 	},
-	EndsWith: func(block *parser.Block, spec *MatchSpec) bool {
+	EndsWith: func(block *block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.EndsWith(spec.MatchValue)
 	},
-	Contains: func(block *parser.Block, spec *MatchSpec) bool {
-		attribute := block.GetAttribute(spec.Name)
+	Contains: func(b *block.Block, spec *MatchSpec) bool {
+		attribute := b.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
-		return attribute.Contains(spec.MatchValue, parser.IgnoreCase)
+		return attribute.Contains(spec.MatchValue, block.IgnoreCase)
 	},
-	NotContains: func(block *parser.Block, spec *MatchSpec) bool {
+	NotContains: func(block *block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return !attribute.Contains(spec.MatchValue)
 	},
-	Equals: func(block *parser.Block, spec *MatchSpec) bool {
+	Equals: func(block *block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.Equals(spec.MatchValue)
 	},
-	LessThan: func(block *parser.Block, spec *MatchSpec) bool {
+	LessThan: func(block *block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThan(spec.MatchValue)
 	},
-	LessThanOrEqualTo: func(block *parser.Block, spec *MatchSpec) bool {
+	LessThanOrEqualTo: func(block *block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThanOrEqualTo(spec.MatchValue)
 	},
-	GreaterThan: func(block *parser.Block, spec *MatchSpec) bool {
+	GreaterThan: func(block *block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThan(spec.MatchValue)
 	},
-	GreaterThanOrEqualTo: func(block *parser.Block, spec *MatchSpec) bool {
+	GreaterThanOrEqualTo: func(block *block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThanOrEqualTo(spec.MatchValue)
 	},
-	RegexMatches: func(block *parser.Block, spec *MatchSpec) bool {
+	RegexMatches: func(block *block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.RegexMatches(spec.MatchValue)
 	},
-	IsAny: func(block *parser.Block, spec *MatchSpec) bool {
+	IsAny: func(block *block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		return attribute != nil && attribute.IsAny(unpackInterfaceToInterfaceSlice(spec.MatchValue)...)
 	},
-	IsNone: func(block *parser.Block, spec *MatchSpec) bool {
+	IsNone: func(block *block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
@@ -112,49 +121,47 @@ func processFoundChecks(checks ChecksFile) {
 	for _, customCheck := range checks.Checks {
 		func(customCheck Check) {
 			debug.Log("Loading check: %s\n", customCheck.Code)
-			scanner.RegisterCheck(scanner.Check{
-				Code: customCheck.Code,
-				Documentation: scanner.CheckDocumentation{
-					Summary:    scanner.RuleSummary(customCheck.Description),
+			scanner.RegisterCheckRule(rule.Rule{
+				ID: customCheck.Code,
+				Documentation: rule.RuleDocumentation{
+					Summary:    customCheck.Description,
 					Links:      customCheck.RelatedLinks,
 					Impact:     customCheck.Impact,
 					Resolution: customCheck.Resolution,
 				},
-				Provider:       "custom",
+				Provider:       provider.CustomProvider,
 				RequiredTypes:  customCheck.RequiredTypes,
 				RequiredLabels: customCheck.RequiredLabels,
-				CheckFunc: func(check *scanner.Check, rootBlock *parser.Block, ctx *scanner.Context) []scanner.Result {
+				CheckFunc: func(set result.Set, rootBlock *block.Block, ctx *hclcontext.Context) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, ctx) {
-						return []scanner.Result{
-							check.NewResult(
-								fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage),
-								rootBlock.Range(),
-								customCheck.Severity,
-							),
-						}
+						set.Add(
+							result.New().
+								WithDescription(fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage)).
+								WithRange(rootBlock.Range()).
+								WithSeverity(customCheck.Severity),
+						)
 					}
-					return nil
 				},
 			})
 		}(*customCheck)
 	}
 }
 
-func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) bool {
-	if block == nil {
+func evalMatchSpec(b *block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
+	if b == nil {
 		return false
 	}
 	evalResult := false
 	if spec.Action == InModule {
-		return block.InModule()
+		return b.InModule()
 	}
-	if spec.Action == RegexMatches && !matchFunctions[RegexMatches](block, spec) {
+	if spec.Action == RegexMatches && !matchFunctions[RegexMatches](b, spec) {
 		return spec.IgnoreUnmatched
 	}
 
 	if spec.Action == HasTag {
-		return checkTags(block, spec, ctx)
+		return checkTags(b, spec, ctx)
 	}
 
 	if spec.Action == RequiresPresence {
@@ -162,13 +169,13 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 	}
 
 	if spec.Action == Not {
-		return !evalMatchSpec(block, &spec.PredicateMatchSpec[0], ctx)
+		return !evalMatchSpec(b, &spec.PredicateMatchSpec[0], ctx)
 	}
 
 	// This And MatchSpec is only true if all childSpecs return true
 	if spec.Action == And {
 		for _, childSpec := range spec.PredicateMatchSpec {
-			if !evalMatchSpec(block, &childSpec, ctx) {
+			if !evalMatchSpec(b, &childSpec, ctx) {
 				return false
 			}
 		}
@@ -178,18 +185,18 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 	// If a single childSpec is true then this Or matchSpec is true
 	if spec.Action == Or {
 		for _, childSpec := range spec.PredicateMatchSpec {
-			if evalMatchSpec(block, &childSpec, ctx) {
+			if evalMatchSpec(b, &childSpec, ctx) {
 				return true
 			}
 		}
 		return false
 	}
 
-	evalResult = matchFunctions[spec.Action](block, spec)
+	evalResult = matchFunctions[spec.Action](b, spec)
 
 	if spec.SubMatch != nil {
-		for _, block := range block.GetBlocks(spec.Name) {
-			evalResult = evalMatchSpec(block, spec.SubMatch, nil)
+		for _, b := range b.GetBlocks(spec.Name) {
+			evalResult = evalMatchSpec(b, spec.SubMatch, nil)
 			if !evalResult {
 				break
 			}
@@ -199,7 +206,7 @@ func evalMatchSpec(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) b
 	return evalResult
 }
 
-func resourceFound(spec *MatchSpec, ctx *scanner.Context) bool {
+func resourceFound(spec *MatchSpec, ctx *hclcontext.Context) bool {
 	val := fmt.Sprintf("%v", spec.Name)
 	byType := ctx.GetResourcesByType(val)
 	return len(byType) > 0
@@ -208,13 +215,12 @@ func resourceFound(spec *MatchSpec, ctx *scanner.Context) bool {
 func unpackInterfaceToInterfaceSlice(t interface{}) []interface{} {
 	switch t := t.(type) {
 	case []interface{}:
-		var result []interface{}
-		return append(result, t...)
+		return t
 	}
 	return nil
 }
 
-func checkTags(block *parser.Block, spec *MatchSpec, ctx *scanner.Context) bool {
+func checkTags(block *block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
 	expectedTag := fmt.Sprintf("%v", spec.MatchValue)
 
 	if block.HasChild("tags") {

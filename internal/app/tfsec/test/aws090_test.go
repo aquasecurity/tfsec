@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSECSClusterContainerInsights(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSECSClusterContainerInsights(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "ECS cluster without container insights fails check",
@@ -22,7 +21,7 @@ resource "aws_ecs_cluster" "bad_example" {
   	name = "services-cluster"
 }
 `,
-			mustIncludeResultCode: checks.AWSECSClusterContainerInsights,
+			mustIncludeResultCode: rules.AWSECSClusterContainerInsights,
 		},
 		{
 			name: "ECS cluster with container insights configured but disabled fails check",
@@ -36,7 +35,7 @@ resource "aws_ecs_cluster" "bad_example" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSECSClusterContainerInsights,
+			mustIncludeResultCode: rules.AWSECSClusterContainerInsights,
 		},
 		{
 			name: "ECS cluster with settings but no container insights fails check",
@@ -50,7 +49,7 @@ resource "aws_ecs_cluster" "bad_example" {
 	  }
 }
 `,
-			mustIncludeResultCode: checks.AWSECSClusterContainerInsights,
+			mustIncludeResultCode: rules.AWSECSClusterContainerInsights,
 		},
 		{
 			name: "ECS cluster with container insights enabled passess check",
@@ -64,7 +63,7 @@ resource "aws_ecs_cluster" "good_example" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSECSClusterContainerInsights,
+			mustExcludeResultCode: rules.AWSECSClusterContainerInsights,
 		},
 	}
 

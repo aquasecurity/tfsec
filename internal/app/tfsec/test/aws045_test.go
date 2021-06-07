@@ -3,16 +3,15 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSCloudFrontWafWebAclId(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check there is no waf web_acl_id for aws_cloudfront_distribution",
@@ -52,7 +51,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     target_origin_id = "groupS3"
   }
 }`,
-			mustIncludeResultCode: checks.AWSCloudFrontDoesNotHaveAWaf,
+			mustIncludeResultCode: rules.AWSCloudFrontDoesNotHaveAWaf,
 		},
 		{
 			name: "check there is a waf web_acl_id for aws_cloudfront_distribution",
@@ -83,7 +82,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   web_acl_id = "waf_id"
 }`,
-			mustExcludeResultCode: checks.AWSCloudFrontDoesNotHaveAWaf,
+			mustExcludeResultCode: rules.AWSCloudFrontDoesNotHaveAWaf,
 		},
 	}
 

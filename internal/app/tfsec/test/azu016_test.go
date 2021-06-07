@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUQueueStorageAnalyticsTurnedOn(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUQueueStorageAnalyticsTurnedOn(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check queue services storage account without analytics logging causes failure",
@@ -29,7 +28,7 @@ resource "azurerm_storage_account" "good_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AZUQueueStorageAnalyticsTurnedOn,
+			mustIncludeResultCode: rules.AZUQueueStorageAnalyticsTurnedOn,
 		},
 		{
 			name: "check queue services storage account with analytics logging enabled passes",
@@ -51,7 +50,7 @@ resource "azurerm_storage_account" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AZUQueueStorageAnalyticsTurnedOn,
+			mustExcludeResultCode: rules.AZUQueueStorageAnalyticsTurnedOn,
 		},
 	}
 

@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSSecretsManagerSecretEncryption(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSSecretsManagerSecretEncryption(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "secret without specified CMK fails check",
@@ -22,7 +21,7 @@ func Test_AWSSecretsManagerSecretEncryption(t *testing.T) {
 				  name       = "lambda_password"
 				}
 				`,
-			mustIncludeResultCode: checks.AWSSecretsManagerSecretEncryption,
+			mustIncludeResultCode: rules.AWSSecretsManagerSecretEncryption,
 		},
 		{
 			name: "Secret using default CMK fails check",
@@ -36,7 +35,7 @@ func Test_AWSSecretsManagerSecretEncryption(t *testing.T) {
 		  kms_key_id = data.aws_kms_key.by_alias.arn
 		}
 		`,
-			mustIncludeResultCode: checks.AWSSecretsManagerSecretEncryption,
+			mustIncludeResultCode: rules.AWSSecretsManagerSecretEncryption,
 		},
 		{
 			name: "Secret with customer control CMK passes check",
@@ -50,7 +49,7 @@ func Test_AWSSecretsManagerSecretEncryption(t *testing.T) {
 		  kms_key_id = aws_kms_key.secrets.arn
 		}
 		`,
-			mustExcludeResultCode: checks.AWSSecretsManagerSecretEncryption,
+			mustExcludeResultCode: rules.AWSSecretsManagerSecretEncryption,
 		},
 		{
 			name: "Secret with customer control CMK passes check",
@@ -64,7 +63,7 @@ resource "aws_secretsmanager_secret" "good_example" {
   kms_key_id = data.aws_kms_key.ours_by_alias.arn
 }
 `,
-			mustExcludeResultCode: checks.AWSSecretsManagerSecretEncryption,
+			mustExcludeResultCode: rules.AWSSecretsManagerSecretEncryption,
 		},
 	}
 

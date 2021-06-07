@@ -7,21 +7,30 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/tfsec/tfsec/pkg/severity"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+
+	"github.com/tfsec/tfsec/pkg/rule"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-const exampleCheckCode scanner.RuleCode = "EXA001"
+const exampleCheckCode = "EXA001"
 
 var excludedChecksList []string
 
 func TestMain(t *testing.M) {
 
-	scanner.RegisterCheck(scanner.Check{
-		Code: exampleCheckCode,
-		Documentation: scanner.CheckDocumentation{
+	scanner.RegisterCheckRule(rule.Rule{
+		ID: exampleCheckCode,
+		Documentation: rule.RuleDocumentation{
 			Summary:     "A stupid example check for a test.",
 			Impact:      "You will look stupid",
 			Resolution:  "Don't do stupid stuff",
@@ -40,28 +49,26 @@ resource "problem" "x" {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"problem"},
-		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 			if block.GetAttribute("bad") != nil {
-				return []scanner.Result{
-					check.NewResult("example problem", block.Range(), scanner.SeverityError),
-				}
+				set.Add(
+					result.New().WithDescription("example problem").WithRange(block.Range()).WithSeverity(severity.Error),
+				)
 			}
-
-			return nil
 		},
 	})
 
 	os.Exit(t.Run())
 }
 
-func scanSource(source string) []scanner.Result {
+func scanSource(source string) []result.Result {
 	blocks := createBlocksFromSource(source)
-	return scanner.New().Scan(blocks, excludedChecksList)
+	return scanner.New(scanner.OptionExcludeRules(excludedChecksList)).Scan(blocks)
 }
 
-func createBlocksFromSource(source string) []*parser.Block {
+func createBlocksFromSource(source string) []*block.Block {
 	path := createTestFile("test.tf", source)
-	blocks, err := parser.New(filepath.Dir(path), "").ParseDirectory()
+	blocks, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {
 		panic(err)
 	}
@@ -80,23 +87,26 @@ func createTestFile(filename, contents string) string {
 	return path
 }
 
-func assertCheckCode(t *testing.T, includeCode scanner.RuleCode, excludeCode scanner.RuleCode, results []scanner.Result) {
+func assertCheckCode(t *testing.T, includeCode string, excludeCode string, results []result.Result) {
 
 	var foundInclude bool
 	var foundExclude bool
 
-	for _, result := range results {
-		if result.RuleID == excludeCode {
+	var excludeText string
+
+	for _, res := range results {
+		if res.RuleID == excludeCode {
 			foundExclude = true
+			excludeText = res.Description
 		}
-		if result.RuleID == includeCode {
+		if res.RuleID == includeCode {
 			foundInclude = true
 		}
 	}
 
-	assert.False(t, foundExclude, fmt.Sprintf("result with code '%s' was found but should not have been", excludeCode))
-	if includeCode != scanner.RuleCode("") {
-		assert.True(t, foundInclude, fmt.Sprintf("result with code '%s' was not found but should have been", includeCode))
+	assert.False(t, foundExclude, fmt.Sprintf("res with code '%s' was found but should not have been: %s", excludeCode, excludeText))
+	if includeCode != "" {
+		assert.True(t, foundInclude, fmt.Sprintf("res with code '%s' was not found but should have been", includeCode))
 	}
 }
 

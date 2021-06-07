@@ -5,32 +5,39 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/tfsec/tfsec/pkg/severity"
+
+	"github.com/tfsec/tfsec/pkg/result"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
+
+	"github.com/tfsec/tfsec/pkg/rule"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
 )
 
-// Scanner scans HCL blocks by running all registered checks against them
+// Scanner scans HCL blocks by running all registered rules against them
 type Scanner struct {
+	includePassed   bool
+	includeIgnored  bool
+	excludedRuleIDs []string
 }
 
-type ScannerOption int
-
-const (
-	IncludePassed ScannerOption = iota
-	IncludeIgnored
-)
-
 // New creates a new Scanner
-func New() *Scanner {
-	return &Scanner{}
+func New(options ...Option) *Scanner {
+	s := &Scanner{}
+	for _, option := range options {
+		option(s)
+	}
+	return s
 }
 
 // Find element in list
-func checkInList(code RuleCode, list []string) bool {
-	codeCurrent := string(code)
+func checkInList(id string, list []string) bool {
+	codeCurrent := string(id)
 	for _, codeIgnored := range list {
 		if codeIgnored == codeCurrent {
 			return true
@@ -39,20 +46,7 @@ func checkInList(code RuleCode, list []string) bool {
 	return false
 }
 
-func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string, options ...ScannerOption) []Result {
-
-	includePassed := false
-	includeIgnored := false
-
-	for _, option := range options {
-		if option == IncludePassed {
-			includePassed = true
-		}
-
-		if option == IncludeIgnored {
-			includeIgnored = true
-		}
-	}
+func (scanner *Scanner) Scan(blocks []*block.Block) []result.Result {
 
 	if len(blocks) == 0 {
 		return nil
@@ -60,42 +54,43 @@ func (scanner *Scanner) Scan(blocks []*parser.Block, excludedChecksList []string
 
 	checkTime := metrics.Start(metrics.Check)
 	defer checkTime.Stop()
-	var results []Result
-	context := &Context{blocks: blocks}
-	checks := GetRegisteredChecks()
-	for _, block := range blocks {
-		for _, check := range checks {
-			func(check Check) {
-				if check.IsRequiredForBlock(block) {
-					debug.Log("Running check for %s on %s.%s (%s)...", check.Code, block.Type(), block.FullName(), block.Range().Filename)
-					var res = check.Run(block, context)
-					if includePassed && res == nil {
-						results = append(results, check.NewPassingResult(block.Range()))
-					} else {
-						for _, result := range res {
-							if includeIgnored || (!scanner.checkRangeIgnored(result.RuleID, result.Range, block.Range()) && !checkInList(result.RuleID, excludedChecksList)) {
-								results = append(results, result)
+	var results []result.Result
+	context := hclcontext.New(blocks)
+	rules := GetRegisteredRules()
+	for _, checkBlock := range blocks {
+		for _, r := range rules {
+			func(r *rule.Rule) {
+				if rule.IsRuleRequiredForBlock(r, checkBlock) {
+					debug.Log("Running rule for %s on %s.%s (%s)...", r.ID, checkBlock.Type(), checkBlock.FullName(), checkBlock.Range().Filename)
+					ruleResults := rule.CheckRule(r, checkBlock, context)
+					if scanner.includePassed && ruleResults == nil {
+						res := result.New().WithRange(checkBlock.Range()).WithStatus(result.Passed).WithSeverity(severity.None)
+						results = append(results, *res)
+					} else if ruleResults != nil {
+						for _, ruleResult := range ruleResults.All() {
+							if scanner.includeIgnored || (!scanner.checkRangeIgnored(ruleResult.RuleID, ruleResult.Range, checkBlock.Range()) && !checkInList(ruleResult.RuleID, scanner.excludedRuleIDs)) {
+								results = append(results, ruleResult)
 							} else {
-								// check was ignored
+								// rule was ignored
 								metrics.Add(metrics.IgnoredChecks, 1)
-								debug.Log("Ignoring '%s' based on tfsec:ignore statement", result.RuleID)
+								debug.Log("Ignoring '%s' based on tfsec:ignore statement", ruleResult.RuleID)
 							}
 						}
 					}
 				}
-			}(check)
+			}(&r)
 		}
 	}
 	return results
 }
 
-func (scanner *Scanner) checkRangeIgnored(code RuleCode, r parser.Range, b parser.Range) bool {
+func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Range) bool {
 	raw, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return false
 	}
 	ignoreAll := "tfsec:ignore:*"
-	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", code)
+	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", id)
 	lines := append([]string{""}, strings.Split(string(raw), "\n")...)
 	startLine := r.StartLine
 

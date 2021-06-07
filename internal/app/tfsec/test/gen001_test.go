@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSSensitiveVariables(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSSensitiveVariables(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check sensitive variable with value",
@@ -21,7 +20,7 @@ func Test_AWSSensitiveVariables(t *testing.T) {
 variable "db_password" {
 	default = "something"
 }`,
-			mustIncludeResultCode: checks.GenericSensitiveVariables,
+			mustIncludeResultCode: rules.GenericSensitiveVariables,
 		},
 		{
 			name: "check sensitive variable without value",
@@ -29,7 +28,7 @@ variable "db_password" {
 variable "db_password" {
 	default = ""
 }`,
-			mustExcludeResultCode: checks.GenericSensitiveVariables,
+			mustExcludeResultCode: rules.GenericSensitiveVariables,
 		},
 	}
 

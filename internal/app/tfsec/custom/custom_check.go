@@ -1,7 +1,7 @@
 package custom
 
 import (
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/pkg/severity"
 )
 
 type MatchType string
@@ -55,7 +55,7 @@ const Contains CheckAction = "contains"
 // NotContains checks that the named child attribute does not have a value in the map, list or attribute
 const NotContains CheckAction = "notContains"
 
-// Contains checks that the named child attribute has a value equal to the check value
+// Equals checks that the named child attribute has a value equal to the check value
 const Equals CheckAction = "equals"
 
 // RegexMatches checks that the named attribute has a value that matches the regex
@@ -107,16 +107,16 @@ type MatchSpec struct {
 
 //Check specifies the check definition represented in json/yaml
 type Check struct {
-	Code           scanner.RuleCode    `json:"code" yaml:"code"`
-	Description    scanner.RuleSummary `json:"description" yaml:"description"`
-	RequiredTypes  []string            `json:"requiredTypes" yaml:"requiredTypes"`
-	RequiredLabels []string            `json:"requiredLabels" yaml:"requiredLabels"`
-	Severity       scanner.Severity    `json:"severity" yaml:"severity"`
-	ErrorMessage   string              `json:"errorMessage,omitempty" yaml:"errorMessage,omitempty"`
-	MatchSpec      *MatchSpec          `json:"matchSpec" yaml:"matchSpec"`
-	RelatedLinks   []string            `json:"relatedLinks,omitempty" yaml:"relatedLinks,omitempty"`
-	Impact         string              `json:"impact,omitempty" yaml:"impact,omitempty"`
-	Resolution     string              `json:"resolution,omitempty" yaml:"resolution,omitempty"`
+	Code           string            `json:"code" yaml:"code"`
+	Description    string            `json:"description" yaml:"description"`
+	RequiredTypes  []string          `json:"requiredTypes" yaml:"requiredTypes"`
+	RequiredLabels []string          `json:"requiredLabels" yaml:"requiredLabels"`
+	Severity       severity.Severity `json:"severity" yaml:"severity"`
+	ErrorMessage   string            `json:"errorMessage,omitempty" yaml:"errorMessage,omitempty"`
+	MatchSpec      *MatchSpec        `json:"matchSpec" yaml:"matchSpec"`
+	RelatedLinks   []string          `json:"relatedLinks,omitempty" yaml:"relatedLinks,omitempty"`
+	Impact         string            `json:"impact,omitempty" yaml:"impact,omitempty"`
+	Resolution     string            `json:"resolution,omitempty" yaml:"resolution,omitempty"`
 }
 
 func (action *CheckAction) isValid() bool {

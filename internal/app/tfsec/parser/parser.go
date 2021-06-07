@@ -3,6 +3,8 @@ package parser
 import (
 	"fmt"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
@@ -11,38 +13,30 @@ import (
 	"path/filepath"
 )
 
-type ParserOption int
-
-const (
-	DontSearchTfFiles ParserOption = iota
-)
-
 // Parser is a tool for parsing terraform templates at a given file system location
 type Parser struct {
-	initialPath   string
-	tfvarsPath    string
-	stopOnFirstTf bool
+	initialPath    string
+	tfvarsPath     string
+	stopOnFirstTf  bool
+	stopOnHCLError bool
 }
 
 // New creates a new Parser
-func New(initialPath string, tfvarsPath string, options ...ParserOption) *Parser {
+func New(initialPath string, options ...Option) *Parser {
 	p := &Parser{
 		initialPath:   initialPath,
-		tfvarsPath:    tfvarsPath,
 		stopOnFirstTf: true,
 	}
 
 	for _, option := range options {
-		switch option {
-		case DontSearchTfFiles:
-			p.stopOnFirstTf = false
-		}
+		option(p)
 	}
+
 	return p
 }
 
 // ParseDirectory parses all terraform files within a given directory
-func (parser *Parser) ParseDirectory() (Blocks, error) {
+func (parser *Parser) ParseDirectory() (block.Blocks, error) {
 
 	debug.Log("Finding Terraform subdirectories...")
 	t := metrics.Start(metrics.DiskIO)
@@ -52,11 +46,11 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	}
 	t.Stop()
 
-	var blocks Blocks
+	var blocks block.Blocks
 
 	for _, dir := range subdirectories {
 		debug.Log("Beginning parse for directory '%s'...", dir)
-		files, err := LoadDirectory(dir)
+		files, err := LoadDirectory(dir, parser.stopOnHCLError)
 		if err != nil {
 			return nil, err
 		}
@@ -64,6 +58,9 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 		for _, file := range files {
 			fileBlocks, err := LoadBlocksFromFile(file)
 			if err != nil {
+				if parser.stopOnHCLError {
+					return nil, err
+				}
 				_, _ = fmt.Fprintf(os.Stderr, "WARNING: HCL error: %s\n", err)
 				continue
 			}
@@ -71,7 +68,7 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 				debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 			}
 			for _, fileBlock := range fileBlocks {
-				blocks = append(blocks, NewBlock(fileBlock, nil, nil))
+				blocks = append(blocks, block.New(fileBlock, nil, nil))
 			}
 		}
 	}
@@ -102,11 +99,11 @@ func (parser *Parser) ParseDirectory() (Blocks, error) {
 	t.Stop()
 
 	debug.Log("Loading modules...")
-	modules := LoadModules(blocks, tfPath, modulesMetadata)
+	modules := LoadModules(blocks, tfPath, modulesMetadata, parser.stopOnHCLError)
 	var visited []*visitedModule
 
 	debug.Log("Evaluating expressions...")
-	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules, visited)
+	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules, visited, parser.stopOnHCLError)
 	evaluatedBlocks, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err

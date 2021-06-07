@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
 	"github.com/hashicorp/hcl/v2"
@@ -16,12 +18,12 @@ import (
 type ModuleInfo struct {
 	Name       string
 	Path       string
-	Definition *Block
-	Blocks     Blocks
+	Definition *block.Block
+	Blocks     block.Blocks
 }
 
-// reads all module blocks and loads the underlying modules, adding blocks to e.moduleBlocks
-func LoadModules(blocks Blocks, projectBasePath string, metadata *ModulesMetadata) []*ModuleInfo {
+// LoadModules reads all module blocks and loads the underlying modules, adding blocks to e.moduleBlocks
+func LoadModules(blocks block.Blocks, projectBasePath string, metadata *ModulesMetadata, stopOnHCLError bool) []*ModuleInfo {
 
 	var modules []*ModuleInfo
 
@@ -29,7 +31,7 @@ func LoadModules(blocks Blocks, projectBasePath string, metadata *ModulesMetadat
 		if moduleBlock.Label() == "" {
 			continue
 		}
-		module, err := loadModule(moduleBlock, projectBasePath, metadata)
+		module, err := loadModule(moduleBlock, projectBasePath, metadata, stopOnHCLError)
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: Failed to load module: %s\n", err)
 			continue
@@ -42,16 +44,16 @@ func LoadModules(blocks Blocks, projectBasePath string, metadata *ModulesMetadat
 }
 
 // takes in a module "x" {} block and loads resources etc. into e.moduleBlocks - additionally returns variables to add to ["module.x.*"] variables
-func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata) (*ModuleInfo, error) {
+func loadModule(b *block.Block, projectBasePath string, metadata *ModulesMetadata, stopOnHCLError bool) (*ModuleInfo, error) {
 
-	if block.Label() == "" {
-		return nil, fmt.Errorf("module without label at %s", block.Range())
+	if b.Label() == "" {
+		return nil, fmt.Errorf("module without label at %s", b.Range())
 	}
 
 	evalTime := metrics.Start(metrics.Evaluation)
 
 	var source string
-	attrs, _ := block.hclBlock.Body.JustAttributes()
+	attrs, _ := b.HCL().Body.JustAttributes()
 	for _, attr := range attrs {
 		if attr.Name == "source" {
 			sourceVal, _ := attr.Expr.Value(&hcl.EvalContext{})
@@ -64,7 +66,7 @@ func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata)
 	evalTime.Stop()
 
 	if source == "" {
-		return nil, fmt.Errorf("could not read module source attribute at %s", block.Range().String())
+		return nil, fmt.Errorf("could not read module source attribute at %s", b.Range().String())
 	}
 
 	var modulePath string
@@ -88,18 +90,18 @@ func loadModule(block *Block, projectBasePath string, metadata *ModulesMetadata)
 		modulePath = reconstructPath(projectBasePath, source)
 	}
 
-	blocks := Blocks{}
-	err := getModuleBlocks(block, modulePath, &blocks)
+	var blocks block.Blocks
+	err := getModuleBlocks(b, modulePath, &blocks, stopOnHCLError)
 	if err != nil {
 		return nil, err
 	}
-	debug.Log("Loaded module '%s' (requested at %s)", modulePath, block.Range())
+	debug.Log("Loaded module '%s' (requested at %s)", modulePath, b.Range())
 	metrics.Add(metrics.ModuleLoadCount, 1)
 
 	return &ModuleInfo{
-		Name:       block.Label(),
+		Name:       b.Label(),
 		Path:       modulePath,
-		Definition: block,
+		Definition: b,
 		Blocks:     blocks,
 	}, nil
 }
@@ -116,15 +118,18 @@ func reconstructPath(projectBasePath string, source string) string {
 	return filepath.Join(projectBasePath, source)
 }
 
-func getModuleBlocks(block *Block, modulePath string, blocks *Blocks) error {
-	moduleFiles, err := LoadDirectory(modulePath)
+func getModuleBlocks(b *block.Block, modulePath string, blocks *block.Blocks, stopOnHCLError bool) error {
+	moduleFiles, err := LoadDirectory(modulePath, stopOnHCLError)
 	if err != nil {
-		return fmt.Errorf("failed to load module %s: %w", block.Label(), err)
+		return fmt.Errorf("failed to load module %s: %w", b.Label(), err)
 	}
 
 	for _, file := range moduleFiles {
 		fileBlocks, err := LoadBlocksFromFile(file)
 		if err != nil {
+			if stopOnHCLError {
+				return err
+			}
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: HCL error: %s\n", err)
 			continue
 		}
@@ -132,7 +137,7 @@ func getModuleBlocks(block *Block, modulePath string, blocks *Blocks) error {
 			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 		}
 		for _, fileBlock := range fileBlocks {
-			*blocks = append(*blocks, NewBlock(fileBlock, nil, block))
+			*blocks = append(*blocks, block.New(fileBlock, nil, b))
 		}
 	}
 	return nil

@@ -3,16 +3,15 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSUnencryptedCloudFrontCommunications(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check no default_cache_behavior in aws_cloudfront_distribution",
@@ -20,7 +19,7 @@ func Test_AWSUnencryptedCloudFrontCommunications(t *testing.T) {
 resource "aws_cloudfront_distribution" "s3_distribution" {
 
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedCloudFrontCommunications,
+			mustIncludeResultCode: rules.AWSUnencryptedCloudFrontCommunications,
 		},
 		{
 			name: "check no default viewer_protocol_policy in default_cache_behavior",
@@ -30,7 +29,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
 	  }
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedCloudFrontCommunications,
+			mustIncludeResultCode: rules.AWSUnencryptedCloudFrontCommunications,
 		},
 		{
 			name: "check viewer_protocol_policy include allows-all",
@@ -40,7 +39,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 	    viewer_protocol_policy = "allow-all"
 	  }
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedCloudFrontCommunications,
+			mustIncludeResultCode: rules.AWSUnencryptedCloudFrontCommunications,
 		},
 		{
 			name: "check no viewer_protocol_policy in ordered_cache_behavior",
@@ -55,7 +54,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
 	}
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedCloudFrontCommunications,
+			mustIncludeResultCode: rules.AWSUnencryptedCloudFrontCommunications,
 		},
 		{
 			name: "check for allow-all in viewer_protocol_policy in orderd_cache_behavior ",
@@ -70,7 +69,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 		viewer_protocol_policy = "allow-all"
 	}
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedCloudFrontCommunications,
+			mustIncludeResultCode: rules.AWSUnencryptedCloudFrontCommunications,
 		},
 	}
 

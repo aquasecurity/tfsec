@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSALBDropsInvalidHeaders(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSALBDropsInvalidHeaders(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "Alb that doesn't drop invalid headers by default fails",
@@ -25,7 +24,7 @@ resource "aws_alb" "bad_example" {
 	
   }
 `,
-			mustIncludeResultCode: checks.AWSALBDropsInvalidHeaders,
+			mustIncludeResultCode: rules.AWSALBDropsInvalidHeaders,
 		},
 		{
 			name: "lb that doesn't drop invalid headers by default fails",
@@ -42,7 +41,7 @@ resource "aws_lb" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSALBDropsInvalidHeaders,
+			mustIncludeResultCode: rules.AWSALBDropsInvalidHeaders,
 		},
 		{
 			name: "Alb that doesn't drop invalid headers explicitly fails",
@@ -55,7 +54,7 @@ resource "aws_alb" "bad_example" {
 	drop_invalid_header_fields = false
   }
 `,
-			mustIncludeResultCode: checks.AWSALBDropsInvalidHeaders,
+			mustIncludeResultCode: rules.AWSALBDropsInvalidHeaders,
 		},
 		{
 			name: "lb that doesn't drop invalid headers fails",
@@ -68,7 +67,7 @@ resource "aws_lb" "bad_example" {
 	drop_invalid_header_fields = false
   }
 `,
-			mustIncludeResultCode: checks.AWSALBDropsInvalidHeaders,
+			mustIncludeResultCode: rules.AWSALBDropsInvalidHeaders,
 		},
 		{
 			name: "ALB that drops invalid headers passes check",
@@ -81,7 +80,7 @@ resource "aws_alb" "good_example" {
 	drop_invalid_header_fields = true
   }
 `,
-			mustExcludeResultCode: checks.AWSALBDropsInvalidHeaders,
+			mustExcludeResultCode: rules.AWSALBDropsInvalidHeaders,
 		},
 		{
 			name: "LB that drops invalid headers passes check",
@@ -94,7 +93,7 @@ resource "aws_lb" "good_example" {
 	drop_invalid_header_fields = true
   }
 `,
-			mustExcludeResultCode: checks.AWSALBDropsInvalidHeaders,
+			mustExcludeResultCode: rules.AWSALBDropsInvalidHeaders,
 		},
 		{
 			name: "Network LB passes check as not applicablt",
@@ -105,7 +104,7 @@ resource "aws_lb" "good_example" {
 	load_balancer_type = "network"
   }
 `,
-			mustExcludeResultCode: checks.AWSALBDropsInvalidHeaders,
+			mustExcludeResultCode: rules.AWSALBDropsInvalidHeaders,
 		},
 	}
 

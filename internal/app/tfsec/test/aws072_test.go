@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSCloudfrontDistributionViewerProtocolPolicyHTTPS(t *testing.T) {
@@ -12,11 +11,11 @@ func Test_AWSCloudfrontDistributionViewerProtocolPolicyHTTPS(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
-			name: "Check does not pass when Viewer Protocol Policy is not only HTTPS in default cache",
+			name: "Rule does not pass when Viewer Protocol Policy is not only HTTPS in default cache",
 			source: `
 resource "aws_cloudfront_distribution" "bad_example" {
 	// other cloudfront distribution config
@@ -28,10 +27,10 @@ resource "aws_cloudfront_distribution" "bad_example" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
+			mustIncludeResultCode: rules.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
 		},
 		{
-			name: "Check does not pass when Viewer Protocol Policy is not only HTTPS in ordered cache",
+			name: "Rule does not pass when Viewer Protocol Policy is not only HTTPS in ordered cache",
 			source: `
 resource "aws_cloudfront_distribution" "bad_example" {
 	// other cloudfront distribution config
@@ -49,10 +48,10 @@ resource "aws_cloudfront_distribution" "bad_example" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
+			mustIncludeResultCode: rules.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
 		},
 		{
-			name: "Check does not pass when Viewer Protocol Policy is not only HTTPS in one of ordered caches",
+			name: "Rule does not pass when Viewer Protocol Policy is not only HTTPS in one of ordered caches",
 			source: `
 resource "aws_cloudfront_distribution" "bad_example" {
 	// other cloudfront distribution config
@@ -76,10 +75,10 @@ resource "aws_cloudfront_distribution" "bad_example" {
 	}
 }
 `,
-			mustIncludeResultCode: checks.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
+			mustIncludeResultCode: rules.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
 		},
 		{
-			name: "Check does pass when Viewer Protocol Policy is HTTPS only in default cache",
+			name: "Rule does pass when Viewer Protocol Policy is HTTPS only in default cache",
 			source: `
 resource "aws_cloudfront_distribution" "good_example" {
 	// other cloudfront distribution config
@@ -91,10 +90,10 @@ resource "aws_cloudfront_distribution" "good_example" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
+			mustExcludeResultCode: rules.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
 		},
 		{
-			name: "Check does pass when Viewer Protocol Policy is set to redirect to HTTPS in default cache",
+			name: "Rule does pass when Viewer Protocol Policy is set to redirect to HTTPS in default cache",
 			source: `
 resource "aws_cloudfront_distribution" "good_example" {
 	// other cloudfront distribution config
@@ -106,10 +105,10 @@ resource "aws_cloudfront_distribution" "good_example" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
+			mustExcludeResultCode: rules.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
 		},
 		{
-			name: "Check does pass when Viewer Protocol Policy is set to either redirect to HTTPS or HTTPS only in all cache behaviours",
+			name: "Rule does pass when Viewer Protocol Policy is set to either redirect to HTTPS or HTTPS only in all cache behaviours",
 			source: `
 resource "aws_cloudfront_distribution" "good_example" {
 	// other cloudfront distribution config
@@ -133,7 +132,7 @@ resource "aws_cloudfront_distribution" "good_example" {
 	}
 }
 `,
-			mustExcludeResultCode: checks.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
+			mustExcludeResultCode: rules.AWSCloudfrontDistributionViewerProtocolPolicyHTTPS,
 		},
 	}
 

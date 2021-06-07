@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSElasticSearchHasDomainLogging(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSElasticSearchHasDomainLogging(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check fails when the logging block is missing",
@@ -23,7 +22,7 @@ resource "aws_elasticsearch_domain" "bad_example" {
   elasticsearch_version = "1.5"
 }
 `,
-			mustIncludeResultCode: checks.AWSElasticSearchHasDomainLogging,
+			mustIncludeResultCode: rules.AWSElasticSearchHasDomainLogging,
 		},
 		{
 			name: "check fails when the log options are present but disabled",
@@ -39,7 +38,7 @@ resource "aws_elasticsearch_domain" "bad_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSElasticSearchHasDomainLogging,
+			mustIncludeResultCode: rules.AWSElasticSearchHasDomainLogging,
 		},
 		{
 			name: "check passes when the log options are present and enabled not specified",
@@ -54,7 +53,7 @@ resource "aws_elasticsearch_domain" "bad_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSElasticSearchHasDomainLogging,
+			mustExcludeResultCode: rules.AWSElasticSearchHasDomainLogging,
 		},
 		{
 			name: "check passes when the log options are present and explicitly enabled",
@@ -70,7 +69,7 @@ resource "aws_elasticsearch_domain" "bad_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSElasticSearchHasDomainLogging,
+			mustExcludeResultCode: rules.AWSElasticSearchHasDomainLogging,
 		},
 		{
 			name: "check fails when one of the log options are present but disabled",
@@ -92,7 +91,7 @@ resource "aws_elasticsearch_domain" "bad_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSElasticSearchHasDomainLogging,
+			mustIncludeResultCode: rules.AWSElasticSearchHasDomainLogging,
 		},
 	}
 

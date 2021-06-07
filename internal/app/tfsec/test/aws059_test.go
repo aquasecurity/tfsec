@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSEnsureAthenaDbEncrypted(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSEnsureAthenaDbEncrypted(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "test athena database without encryption configuration",
@@ -23,7 +22,7 @@ resource "aws_athena_database" "bad_example" {
   bucket = aws_s3_bucket.hoge.bucket
 }
 `,
-			mustIncludeResultCode: checks.AWSEnsureAthenaDbEncrypted,
+			mustIncludeResultCode: rules.AWSEnsureAthenaDbEncrypted,
 		},
 		{
 			name: "test athena workgroup without encryption configuration",
@@ -41,7 +40,7 @@ resource "aws_athena_workgroup" "bad_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSEnsureAthenaDbEncrypted,
+			mustIncludeResultCode: rules.AWSEnsureAthenaDbEncrypted,
 		},
 		{
 			name: "test athena database with encryption configuration",
@@ -56,7 +55,7 @@ resource "aws_athena_database" "good_example" {
  }
 }
 `,
-			mustExcludeResultCode: checks.AWSEnsureAthenaDbEncrypted,
+			mustExcludeResultCode: rules.AWSEnsureAthenaDbEncrypted,
 		},
 		{
 			name: "test athena workgroup with encryption configuration in results configuration",
@@ -79,7 +78,7 @@ resource "aws_athena_workgroup" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSEnsureAthenaDbEncrypted,
+			mustExcludeResultCode: rules.AWSEnsureAthenaDbEncrypted,
 		},
 		{
 			name: "test athena workgroup with no results configuration",
@@ -93,7 +92,7 @@ resource "aws_athena_workgroup" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSEnsureAthenaDbEncrypted,
+			mustExcludeResultCode: rules.AWSEnsureAthenaDbEncrypted,
 		},
 	}
 

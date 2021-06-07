@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_GkeShieldedNodesDisabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_GkeShieldedNodesDisabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check google_container_cluster with enable_shielded_nodes set to false",
@@ -22,14 +21,14 @@ resource "google_container_cluster" "gke" {
 	enable_shielded_nodes = "false"
 
 }`,
-			mustIncludeResultCode: checks.GkeShieldedNodesDisabled,
+			mustIncludeResultCode: rules.GkeShieldedNodesDisabled,
 		},
 		{
 			name: "check google_container_cluster with enable_shielded_nodes not set",
 			source: `
 resource "google_container_cluster" "gke" {
 }`,
-			mustIncludeResultCode: checks.GkeShieldedNodesDisabled,
+			mustIncludeResultCode: rules.GkeShieldedNodesDisabled,
 		},
 		{
 			name: "check google_container_cluster with enable_shielded_nodes set to true",
@@ -38,7 +37,7 @@ resource "google_container_cluster" "gke" {
 	enable_shielded_nodes = "true"
 
 }`,
-			mustExcludeResultCode: checks.GkeShieldedNodesDisabled,
+			mustExcludeResultCode: rules.GkeShieldedNodesDisabled,
 		},
 	}
 

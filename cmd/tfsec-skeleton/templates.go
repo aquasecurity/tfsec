@@ -1,34 +1,35 @@
 package main
 
-const checkTemplate = `package checks
+const checkTemplate = `package rules
 
 import (
-	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/pkg/provider"
+	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/tfsec/tfsec/pkg/rule"
 )
 
-const {{.CheckName}} scanner.RuleCode = "{{.Provider | ToUpper }}{{ .Code}}"
-const {{.CheckName}}Description scanner.RuleSummary = "{{.Summary}}"
+
+const {{.CheckName}} = "{{.Provider | ToUpper }}{{ .ID}}"
+const {{.CheckName}}Description = "{{.Summary}}"
 const {{.CheckName}}Impact = "{{.Impact}}"
 const {{.CheckName}}Resolution = "{{.Resolution}}"
 const {{.CheckName}}Explanation = ` + "`" + `
 
 ` + "`" + `
 const {{.CheckName}}BadExample = ` + "`" + `
-resource "" "bad_example" {
-
-}
+// bad example code here
 ` + "`" + `
 const {{.CheckName}}GoodExample = ` + "`" + `
-resource "" "good_example" {
-
-}
+// good example code here
 ` + "`" + `
 
 func init() {
-	scanner.RegisterCheck(scanner.Check{
-		Code: {{.CheckName}},
-		Documentation: scanner.CheckDocumentation{
+	scanner.RegisterCheckRule(rule.Rule{
+		ID: {{.CheckName}},
+		Documentation: rule.RuleDocumentation{
 			Summary:     {{.CheckName}}Description,
 			Explanation: {{.CheckName}}Explanation,
 			Impact:      {{.CheckName}}Impact,
@@ -39,14 +40,14 @@ func init() {
 				
 			},
 		},
-		Provider:       scanner.{{.ProviderLongName}}Provider,
+		Provider:       provider.{{.ProviderLongName}}Provider,
 		RequiredTypes:  []string{{.RequiredTypes}},
 		RequiredLabels: []string{{.RequiredLabels}},
-		CheckFunc: func(check *scanner.Check, block *parser.Block, _ *scanner.Context) []scanner.Result {
+		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context){
 				
 			// function contents here
 
-			return nil
+			return
 		},
 	})
 }
@@ -57,8 +58,7 @@ const checkTestTemplate = `package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_{{.CheckName}}(t *testing.T) {
@@ -66,22 +66,22 @@ func Test_{{.CheckName}}(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "TODO: add test name",
 			source: ` + "`" + `
 	// bad test
 ` + "`" + `,
-			mustIncludeResultCode: checks.{{.CheckName}},
+			mustIncludeResultCode: rules.{{.CheckName}},
 		},
 		{
 			name: "TODO: add test name",
 			source: ` + "`" + `
 	// good test
 ` + "`" + `,
-			mustExcludeResultCode: checks.{{.CheckName}},
+			mustExcludeResultCode: rules.{{.CheckName}},
 		},
 	}
 

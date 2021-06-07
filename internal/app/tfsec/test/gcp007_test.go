@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_GkeLegacyMetadataEndpoints(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_GkeLegacyMetadataEndpoints(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check google_container_cluster with metadata.disable-legacy-endpoints set to false",
@@ -23,7 +22,7 @@ resource "google_container_cluster" "gke" {
     disable-legacy-endpoints = false
   }
 }`,
-			mustIncludeResultCode: checks.GkeLegacyMetadataEndpoints,
+			mustIncludeResultCode: rules.GkeLegacyMetadataEndpoints,
 		},
 		{
 			name: "check google_container_cluster with metadata.disable-legacy-endpoints set to true",
@@ -33,7 +32,7 @@ resource "google_container_cluster" "gke" {
     disable-legacy-endpoints = true
   }
 }`,
-			mustExcludeResultCode: checks.GkeLegacyMetadataEndpoints,
+			mustExcludeResultCode: rules.GkeLegacyMetadataEndpoints,
 		},
 	}
 

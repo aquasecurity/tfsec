@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSAWSESDomainShouldHaveAuditLogEnabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSAWSESDomainShouldHaveAuditLogEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check fails if any of the log options dont specify log_type of AUDIT_LOGS",
@@ -32,7 +31,7 @@ resource "aws_elasticsearch_domain" "example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSESDomainLoggingEnabled,
+			mustIncludeResultCode: rules.AWSESDomainLoggingEnabled,
 		},
 		{
 			name: "check passes if one of the log_type is AUDIT_LOGS and audit log is enabled",
@@ -51,7 +50,7 @@ resource "aws_elasticsearch_domain" "example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSESDomainLoggingEnabled,
+			mustExcludeResultCode: rules.AWSESDomainLoggingEnabled,
 		},
 	}
 

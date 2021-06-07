@@ -2,11 +2,13 @@ package config_test
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
-	"github.com/tfsec/tfsec/internal/app/tfsec/config"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/tfsec/tfsec/internal/app/tfsec/config"
 )
 
 func TestExcludesElementsFromYAML(t *testing.T) {
@@ -17,7 +19,7 @@ severity_overrides:
 exclude:
   - DP001
 `
-	c := load(t,"config.yaml", content)
+	c := load(t, "config.yaml", content)
 
 	assert.Contains(t, c.SeverityOverrides, "AWS018")
 	assert.Contains(t, c.ExcludedChecks, "DP001")
@@ -31,7 +33,7 @@ severity_overrides:
 exclude:
   - DP001
 `
-	c := load(t,"config.yml", content)
+	c := load(t, "config.yml", content)
 
 	assert.Contains(t, c.SeverityOverrides, "AWS018")
 	assert.Contains(t, c.ExcludedChecks, "DP001")
@@ -47,7 +49,7 @@ func TestExcludesElementsFromJSON(t *testing.T) {
   ]
 }
 `
-	c := load(t,"config.json", content)
+	c := load(t, "config.json", content)
 
 	assert.Contains(t, c.SeverityOverrides, "AWS018")
 	assert.Contains(t, c.ExcludedChecks, "DP001")
@@ -55,16 +57,15 @@ func TestExcludesElementsFromJSON(t *testing.T) {
 
 func load(t *testing.T, filename, content string) *config.Config {
 	dir, err := ioutil.TempDir("", "")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	configFileName := fmt.Sprintf("%s/%s", dir, filename)
 
 	err = ioutil.WriteFile(configFileName, []byte(content), os.ModePerm)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	c, err := config.LoadConfig(configFileName)
-	assert.NoError(t, err)
+	require.NoError(t, err)
+
 	return c
 }
-
-

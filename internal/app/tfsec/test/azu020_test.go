@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUKeyVaultNetworkAcl(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUKeyVaultNetworkAcl(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check fails when no network acl block is provided",
@@ -26,8 +25,8 @@ resource "azurerm_key_vault" "bad_example" {
     purge_protection_enabled    = false
 }
 `,
-			mustIncludeResultCode: checks.AZUKeyVaultNetworkAcl,
-		},{
+			mustIncludeResultCode: rules.AZUKeyVaultNetworkAcl,
+		}, {
 			name: "check fails when network acl block is provided with default action as allow",
 			source: `
 resource "azurerm_key_vault" "bad_example" {
@@ -43,7 +42,7 @@ resource "azurerm_key_vault" "bad_example" {
     }
 }
 `,
-			mustIncludeResultCode: checks.AZUKeyVaultNetworkAcl,
+			mustIncludeResultCode: rules.AZUKeyVaultNetworkAcl,
 		},
 		{
 			name: "check passes when network acl is provided and default action is deny",
@@ -61,7 +60,7 @@ resource "azurerm_key_vault" "good_example" {
     }
 }
 `,
-			mustExcludeResultCode: checks.AZUKeyVaultNetworkAcl,
+			mustExcludeResultCode: rules.AZUKeyVaultNetworkAcl,
 		},
 	}
 

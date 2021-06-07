@@ -13,8 +13,8 @@ func Test_ProblemInModule(t *testing.T) {
 		name                  string
 		source                string
 		moduleSource          string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check problem in module",
@@ -35,11 +35,11 @@ resource "problem" "uhoh" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			path := createTestFileWithModule(test.source, test.moduleSource)
-			blocks, err := parser.New(path, "").ParseDirectory()
+			blocks, err := parser.New(path, parser.OptionStopOnHCLError()).ParseDirectory()
 			if err != nil {
 				t.Fatal(err)
 			}
-			results := scanner.New().Scan(blocks, excludedChecksList)
+			results := scanner.New(scanner.OptionExcludeRules(excludedChecksList)).Scan(blocks)
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}

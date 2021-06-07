@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_GkeNodeMetadataExposed(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_GkeNodeMetadataExposed(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to EXPOSE",
@@ -25,7 +24,7 @@ resource "google_container_cluster" "gke" {
 		}
 	}
 }`,
-			mustIncludeResultCode: checks.GkeNodeMetadataExposed,
+			mustIncludeResultCode: rules.GkeNodeMetadataExposed,
 		},
 		{
 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to UNSPECIFIED",
@@ -37,7 +36,7 @@ resource "google_container_cluster" "gke" {
 		}
 	}
 }`,
-			mustIncludeResultCode: checks.GkeNodeMetadataExposed,
+			mustIncludeResultCode: rules.GkeNodeMetadataExposed,
 		},
 		{
 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to EXPOSE",
@@ -49,7 +48,7 @@ resource "google_container_node_pool" "gke" {
 		}
 	}
 }`,
-			mustIncludeResultCode: checks.GkeNodeMetadataExposed,
+			mustIncludeResultCode: rules.GkeNodeMetadataExposed,
 		},
 		{
 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to UNSPECIFIED",
@@ -61,7 +60,7 @@ resource "google_container_node_pool" "gke" {
 		}
 	}
 }`,
-			mustIncludeResultCode: checks.GkeNodeMetadataExposed,
+			mustIncludeResultCode: rules.GkeNodeMetadataExposed,
 		},
 		{
 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to SECURE",
@@ -73,7 +72,7 @@ resource "google_container_cluster" "gke" {
 		}
 	}
 }`,
-			mustExcludeResultCode: checks.GkeNodeMetadataExposed,
+			mustExcludeResultCode: rules.GkeNodeMetadataExposed,
 		},
 		{
 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to GKE_METADATA_SERVER",
@@ -85,7 +84,7 @@ resource "google_container_cluster" "gke" {
 		}
 	}
 }`,
-			mustExcludeResultCode: checks.GkeNodeMetadataExposed,
+			mustExcludeResultCode: rules.GkeNodeMetadataExposed,
 		},
 		{
 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to SECURE",
@@ -97,7 +96,7 @@ resource "google_container_node_pool" "gke" {
 		}
 	}
 }`,
-			mustExcludeResultCode: checks.GkeNodeMetadataExposed,
+			mustExcludeResultCode: rules.GkeNodeMetadataExposed,
 		},
 		{
 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to GKE_METADATA_SERVER",
@@ -109,7 +108,7 @@ resource "google_container_node_pool" "gke" {
 		}
 	}
 }`,
-			mustExcludeResultCode: checks.GkeNodeMetadataExposed,
+			mustExcludeResultCode: rules.GkeNodeMetadataExposed,
 		},
 	}
 

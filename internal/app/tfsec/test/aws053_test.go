@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSRDSPerformanceInsughtsEncryptionNotEnabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSRDSPerformanceInsughtsEncryptionNotEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "Performance insights enabled but no kms key provided",
@@ -24,7 +23,7 @@ resource "aws_rds_cluster_instance" "foo" {
   performance_insights_kms_key_id = ""
 }
 `,
-			mustIncludeResultCode: checks.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+			mustIncludeResultCode: rules.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
 		},
 		{
 			name: "Performance insights disable",
@@ -35,7 +34,7 @@ resource "aws_rds_cluster_instance" "foo" {
 
 }
 `,
-			mustExcludeResultCode: checks.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+			mustExcludeResultCode: rules.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
 		},
 		{
 			name: "Performance insights not mentioned",
@@ -44,7 +43,7 @@ resource "aws_rds_cluster_instance" "foo" {
   
 }
 `,
-			mustExcludeResultCode: checks.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+			mustExcludeResultCode: rules.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
 		},
 		{
 			name: "Performance insights enabled and kms key provided",
@@ -55,7 +54,7 @@ resource "aws_rds_cluster_instance" "foo" {
   performance_insights_kms_key_id = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
 }
 `,
-			mustExcludeResultCode: checks.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+			mustExcludeResultCode: rules.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
 		},
 		{
 			name: "Performance insights on aws_db_instance enabled but no kms key provided",
@@ -66,7 +65,7 @@ resource "aws_db_instance" "foo" {
   performance_insights_kms_key_id = ""
 }
 `,
-			mustIncludeResultCode: checks.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+			mustIncludeResultCode: rules.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
 		},
 		{
 			name: "Performance insights on aws_db_instance disable",
@@ -77,7 +76,7 @@ resource "aws_db_instance" "foo" {
 
 }
 `,
-			mustExcludeResultCode: checks.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+			mustExcludeResultCode: rules.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
 		},
 		{
 			name: "Performance insights on aws_db_instance not mentioned",
@@ -86,7 +85,7 @@ resource "aws_db_instance" "foo" {
   
 }
 `,
-			mustExcludeResultCode: checks.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+			mustExcludeResultCode: rules.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
 		},
 		{
 			name: "Performance insights enabled on aws_db_instance and kms key provided",
@@ -97,7 +96,7 @@ resource "aws_db_instance" "foo" {
   performance_insights_kms_key_id = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
 }
 `,
-			mustExcludeResultCode: checks.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+			mustExcludeResultCode: rules.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
 		},
 		{
 			name: "Testing issue 506: error when performance insights enabled and kms included",
@@ -118,7 +117,7 @@ resource "aws_rds_cluster_instance" "covidshield_server_instances" {
     (var.billing_tag_key) = var.billing_tag_value
   }
 }`,
-			mustExcludeResultCode: checks.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+			mustExcludeResultCode: rules.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
 		},
 		{
 			name: "Testing issue 505",
@@ -147,7 +146,7 @@ resource "aws_rds_cluster_instance" "this" {
    performance_insights_enabled    = local.performance_insights_supported
    performance_insights_kms_key_id = local.performance_insights_supported ? aws_kms_key.rds_storage.arn : null
  }`,
-			mustExcludeResultCode: checks.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+			mustExcludeResultCode: rules.AWSRDSPerformanceInsughtsEncryptionNotEnabled,
 		},
 	}
 

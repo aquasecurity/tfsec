@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSOpenIngressSecurityGroupRule(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSOpenIngressSecurityGroupRule(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_security_group_rule ingress on 0.0.0.0/0",
@@ -22,7 +21,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "ingress"
 	cidr_blocks = ["0.0.0.0/0"]
 }`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
+			mustIncludeResultCode: rules.AWSOpenIngressSecurityGroupRule,
 		},
 		{
 			name: "check variable containing 0.0.0.0/0",
@@ -43,7 +42,7 @@ variable "blocks" {
 }
 
 `,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
+			mustIncludeResultCode: rules.AWSOpenIngressSecurityGroupRule,
 		},
 		{
 			name: "check aws_security_group_rule ingress on ::/0",
@@ -52,7 +51,7 @@ resource "aws_security_group_rule" "my-rule" {
 	type = "ingress"
 	ipv6_cidr_blocks = ["::/0"]
 }`,
-			mustIncludeResultCode: checks.AWSOpenIngressSecurityGroupRule,
+			mustIncludeResultCode: rules.AWSOpenIngressSecurityGroupRule,
 		},
 	}
 

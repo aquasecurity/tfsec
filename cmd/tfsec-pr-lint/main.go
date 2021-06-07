@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	_ "github.com/tfsec/tfsec/internal/app/tfsec/checks"
+	_ "github.com/tfsec/tfsec/internal/app/tfsec/rules"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 func main() {
-	checks := scanner.GetRegisteredChecks()
+	checks := scanner.GetRegisteredRules()
 	fmt.Printf("%d checks require linting\n", len(checks))
 
 	linter := &linter{}

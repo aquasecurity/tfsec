@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check ssh access from * causes a failure",
@@ -29,7 +28,7 @@ resource "azurerm_network_security_rule" "bad_example" {
      destination_address_prefix  = "*"
 }
 `,
-			mustIncludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+			mustIncludeResultCode: rules.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
 			name: "check ssh access from * is ok when mode is deny",
@@ -45,7 +44,7 @@ resource "azurerm_network_security_rule" "example_deny" {
      destination_address_prefix  = "*"
 }
 `,
-			mustExcludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+			mustExcludeResultCode: rules.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
 			name: "check ssh access from 0.0.0.0 causes a failure",
@@ -61,7 +60,7 @@ resource "azurerm_network_security_rule" "bad_example" {
      destination_address_prefix  = "*"
 }
 `,
-			mustIncludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+			mustIncludeResultCode: rules.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
 			name: "check ssh access from /0 causes a failure",
@@ -77,7 +76,7 @@ resource "azurerm_network_security_rule" "bad_example" {
      destination_address_prefix  = "*"
 }
 `,
-			mustIncludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+			mustIncludeResultCode: rules.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
 			name: "check ssh access from internet causes a failure",
@@ -93,7 +92,7 @@ resource "azurerm_network_security_rule" "bad_example" {
      destination_address_prefix  = "*"
 }
 `,
-			mustIncludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+			mustIncludeResultCode: rules.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
 			name: "check ssh access from internet causes a failure",
@@ -109,7 +108,7 @@ resource "azurerm_network_security_rule" "bad_example" {
      destination_address_prefix  = "*"
 }
 `,
-			mustIncludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+			mustIncludeResultCode: rules.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
 			name: "check ssh access from * causes a failure on security group",
@@ -127,7 +126,7 @@ resource "azurerm_network_security_group" "example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+			mustIncludeResultCode: rules.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
 			name: "check ssh access from * is ok when access mode is deny",
@@ -146,7 +145,7 @@ resource "azurerm_network_security_group" "example_deny" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+			mustExcludeResultCode: rules.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
 			name: "check ssh access from multiple security rules causes a failure on security group",
@@ -171,7 +170,7 @@ resource "azurerm_network_security_group" "example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+			mustIncludeResultCode: rules.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
 			name: "check ssh is acceptable from a specific source",
@@ -187,7 +186,7 @@ resource "azurerm_network_security_rule" "good_example" {
      destination_address_prefix  = "*"
 }
 `,
-			mustExcludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+			mustExcludeResultCode: rules.AZUSSHAccessNotAllowedFromInternet,
 		},
 		{
 			name: "check ssh is acceptable from a specific source on security group",
@@ -205,7 +204,7 @@ resource "azurerm_network_security_group" "example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AZUSSHAccessNotAllowedFromInternet,
+			mustExcludeResultCode: rules.AZUSSHAccessNotAllowedFromInternet,
 		},
 	}
 

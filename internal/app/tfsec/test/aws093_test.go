@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSECRRepoCustomerManagedKeys(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSECRRepoCustomerManagedKeys(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "ECR repo without configured encryption fails checks",
@@ -27,7 +26,7 @@ resource "aws_ecr_repository" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSECRRepoCustomerManagedKeys,
+			mustIncludeResultCode: rules.AWSECRRepoCustomerManagedKeys,
 		},
 		{
 			name: "ECR repo with configured encryption but wrong type fails checks",
@@ -41,7 +40,7 @@ resource "aws_ecr_repository" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSECRRepoCustomerManagedKeys,
+			mustIncludeResultCode: rules.AWSECRRepoCustomerManagedKeys,
 		},
 		{
 			name: "ECR Repo with encryption configured to use KMS CMK passes check",
@@ -65,7 +64,7 @@ resource "aws_ecr_repository" "good_example" {
 	}
   }
 `,
-			mustExcludeResultCode: checks.AWSECRRepoCustomerManagedKeys,
+			mustExcludeResultCode: rules.AWSECRRepoCustomerManagedKeys,
 		},
 	}
 

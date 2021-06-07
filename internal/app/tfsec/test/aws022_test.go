@@ -3,21 +3,20 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSUnencryptedMSKBroker(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name:                  "check MSK broker with encryption_info not set",
 			source:                `resource "aws_msk_cluster" "msk-cluster" {}`,
-			mustIncludeResultCode: checks.AWSUnencryptedMSKBroker,
+			mustIncludeResultCode: rules.AWSUnencryptedMSKBroker,
 		},
 		{
 			name: "check MSK broker with encryption_in_transit not set",
@@ -30,7 +29,7 @@ resource "aws_msk_cluster" "msk-cluster" {
 		}
 	}
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedMSKBroker,
+			mustIncludeResultCode: rules.AWSUnencryptedMSKBroker,
 		},
 		{
 			name: "check MSK broker with client_broker not set",
@@ -41,7 +40,7 @@ resource "aws_msk_cluster" "msk-cluster" {
 		}
 	}
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedMSKBroker,
+			mustIncludeResultCode: rules.AWSUnencryptedMSKBroker,
 		},
 		{
 			name: "check MSK broker with client_broker set to PLAINTEXT",
@@ -53,7 +52,7 @@ resource "aws_msk_cluster" "msk-cluster" {
 		}
 	}
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedMSKBroker,
+			mustIncludeResultCode: rules.AWSUnencryptedMSKBroker,
 		},
 		{
 			name: "check MSK broker with client_broker set to TLS_PLAINTEXT",
@@ -65,7 +64,7 @@ resource "aws_msk_cluster" "msk-cluster" {
 		}
 	}
 }`,
-			mustIncludeResultCode: checks.AWSUnencryptedMSKBroker,
+			mustIncludeResultCode: rules.AWSUnencryptedMSKBroker,
 		},
 		{
 			name: "check MSK broker with client_broker set to TLS",
@@ -77,7 +76,7 @@ resource "aws_msk_cluster" "msk-cluster" {
 		}
 	}
 }`,
-			mustExcludeResultCode: checks.AWSUnencryptedMSKBroker,
+			mustExcludeResultCode: rules.AWSUnencryptedMSKBroker,
 		},
 	}
 

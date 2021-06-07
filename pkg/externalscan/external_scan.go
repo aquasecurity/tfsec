@@ -7,17 +7,25 @@ import (
 	"sort"
 	"strings"
 
-	_ "github.com/tfsec/tfsec/internal/app/tfsec/checks"
+	"github.com/tfsec/tfsec/pkg/result"
+
+	"github.com/tfsec/tfsec/internal/app/tfsec/block"
 	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	_ "github.com/tfsec/tfsec/internal/app/tfsec/rules"
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
 type ExternalScanner struct {
-	paths []string
+	paths           []string
+	internalOptions []scanner.Option
 }
 
-func NewExternalScanner() *ExternalScanner {
-	return &ExternalScanner{}
+func NewExternalScanner(options ...Option) *ExternalScanner {
+	external := &ExternalScanner{}
+	for _, option := range options {
+		option(external)
+	}
+	return external
 }
 
 func (t *ExternalScanner) AddPath(path string) error {
@@ -29,9 +37,9 @@ func (t *ExternalScanner) AddPath(path string) error {
 	return nil
 }
 
-func (t *ExternalScanner) Scan() ([]scanner.Result, error) {
+func (t *ExternalScanner) Scan() ([]result.Result, error) {
 
-	projectBlocks := make(map[string]parser.Blocks)
+	projectBlocks := make(map[string]block.Blocks)
 
 	dirs, err := findTFRootModules(t.paths)
 	if err != nil {
@@ -39,17 +47,17 @@ func (t *ExternalScanner) Scan() ([]scanner.Result, error) {
 	}
 
 	for _, dir := range dirs {
-		blocks, err := parser.New(dir, "").ParseDirectory()
+		blocks, err := parser.New(dir).ParseDirectory()
 		if err != nil {
 			return nil, err
 		}
 		projectBlocks[dir] = blocks
 	}
 
-	var results []scanner.Result
-
+	var results []result.Result
+	internal := scanner.New(t.internalOptions...)
 	for _, blockset := range projectBlocks {
-		projectResults := scanner.New().Scan(blockset, nil)
+		projectResults := internal.Scan(blockset)
 		results = append(results, projectResults...)
 	}
 

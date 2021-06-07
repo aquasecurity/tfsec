@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSCloudtrailLogValidationEnabled(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSCloudtrailLogValidationEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "Test log file validation is not specified",
@@ -32,7 +31,7 @@ resource "aws_cloudtrail" "bad_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSCloudtrailLogValidationEnabled,
+			mustIncludeResultCode: rules.AWSCloudtrailLogValidationEnabled,
 		},
 		{
 			name: "Test log file validation is specified but not true",
@@ -52,7 +51,7 @@ resource "aws_cloudtrail" "bad_example" {
   }
 }
 `,
-			mustIncludeResultCode: checks.AWSCloudtrailLogValidationEnabled,
+			mustIncludeResultCode: rules.AWSCloudtrailLogValidationEnabled,
 		},
 		{
 			name: "Test enable log validation is configured correctly",
@@ -72,7 +71,7 @@ resource "aws_cloudtrail" "good_example" {
   }
 }
 `,
-			mustExcludeResultCode: checks.AWSCloudtrailLogValidationEnabled,
+			mustExcludeResultCode: rules.AWSCloudtrailLogValidationEnabled,
 		},
 	}
 

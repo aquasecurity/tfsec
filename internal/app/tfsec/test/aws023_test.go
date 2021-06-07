@@ -3,21 +3,20 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSEcrImageScanNotEnabled(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name:                  "check ECR Image Scan disabled",
 			source:                `resource "aws_ecr_repository" "foo" {}`,
-			mustIncludeResultCode: checks.AWSEcrImageScanNotEnabled,
+			mustIncludeResultCode: rules.AWSEcrImageScanNotEnabled,
 		},
 		{
 			name: "check ECR Image Scan disabled",
@@ -30,7 +29,7 @@ resource "aws_ecr_repository" "foo" {
     scan_on_push = false
   }
 }`,
-			mustIncludeResultCode: checks.AWSEcrImageScanNotEnabled,
+			mustIncludeResultCode: rules.AWSEcrImageScanNotEnabled,
 		},
 		{
 			name: "check ECR Image Scan disabled",
@@ -43,7 +42,7 @@ resource "aws_ecr_repository" "foo" {
     scan_on_push = true
   }
 }`,
-			mustExcludeResultCode: checks.AWSEcrImageScanNotEnabled,
+			mustExcludeResultCode: rules.AWSEcrImageScanNotEnabled,
 		},
 	}
 

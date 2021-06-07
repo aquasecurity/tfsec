@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSDontUseDefaultVPC(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSDontUseDefaultVPC(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "Default aws vpc is present so check fails",
@@ -24,13 +23,13 @@ resource "aws_default_vpc" "default" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSDontUseDefaultAWSVPC,
+			mustIncludeResultCode: rules.AWSDontUseDefaultAWSVPC,
 		},
 		{
 			name: "Default aws vpc is not present so check passes",
 			source: `
 `,
-			mustExcludeResultCode: checks.AWSDontUseDefaultAWSVPC,
+			mustExcludeResultCode: rules.AWSDontUseDefaultAWSVPC,
 		},
 	}
 

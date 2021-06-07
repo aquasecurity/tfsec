@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSPublic(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSPublic(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "check aws_db_instance when publicly exposed",
@@ -21,7 +20,7 @@ func Test_AWSPublic(t *testing.T) {
 resource "aws_db_instance" "my-resource" {
 	publicly_accessible = true
 }`,
-			mustIncludeResultCode: checks.AWSPubliclyAccessibleResource,
+			mustIncludeResultCode: rules.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_dms_replication_instance when publicly exposed",
@@ -29,7 +28,7 @@ resource "aws_db_instance" "my-resource" {
 resource "aws_dms_replication_instance" "my-resource" {
 	publicly_accessible = true
 }`,
-			mustIncludeResultCode: checks.AWSPubliclyAccessibleResource,
+			mustIncludeResultCode: rules.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_rds_cluster_instance when publicly exposed",
@@ -37,7 +36,7 @@ resource "aws_dms_replication_instance" "my-resource" {
 resource "aws_rds_cluster_instance" "my-resource" {
 	publicly_accessible = true
 }`,
-			mustIncludeResultCode: checks.AWSPubliclyAccessibleResource,
+			mustIncludeResultCode: rules.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_redshift_cluster when publicly exposed",
@@ -45,7 +44,7 @@ resource "aws_rds_cluster_instance" "my-resource" {
 resource "aws_redshift_cluster" "my-resource" {
 	publicly_accessible = true
 }`,
-			mustIncludeResultCode: checks.AWSPubliclyAccessibleResource,
+			mustIncludeResultCode: rules.AWSPubliclyAccessibleResource,
 		},
 		{
 			name: "check aws_redshift_cluster when not publicly exposed",
@@ -53,7 +52,7 @@ resource "aws_redshift_cluster" "my-resource" {
 resource "aws_redshift_cluster" "my-resource" {
 	publicly_accessible = false
 }`,
-			mustExcludeResultCode: checks.AWSPubliclyAccessibleResource,
+			mustExcludeResultCode: rules.AWSPubliclyAccessibleResource,
 		},
 	}
 

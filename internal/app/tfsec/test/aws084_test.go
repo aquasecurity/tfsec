@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSAWSWorkspaceVolumesEncrypted(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSAWSWorkspaceVolumesEncrypted(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "Root and user encryption not set fails check",
@@ -32,7 +31,7 @@ resource "aws_workspaces_workspace" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSAWSWorkspaceVolumesEncrypted,
+			mustIncludeResultCode: rules.AWSAWSWorkspaceVolumesEncrypted,
 		},
 		{
 			name: "User encryption not set fails check",
@@ -53,7 +52,7 @@ resource "aws_workspaces_workspace" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSAWSWorkspaceVolumesEncrypted,
+			mustIncludeResultCode: rules.AWSAWSWorkspaceVolumesEncrypted,
 		},
 		{
 			name: "Root encryption not set fails check",
@@ -74,7 +73,7 @@ resource "aws_workspaces_workspace" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSAWSWorkspaceVolumesEncrypted,
+			mustIncludeResultCode: rules.AWSAWSWorkspaceVolumesEncrypted,
 		},
 		{
 			name: "Root encryption set to false fails check",
@@ -95,7 +94,7 @@ resource "aws_workspaces_workspace" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSAWSWorkspaceVolumesEncrypted,
+			mustIncludeResultCode: rules.AWSAWSWorkspaceVolumesEncrypted,
 		},
 		{
 			name: "Root and user encryption enable passes check",
@@ -114,10 +113,9 @@ resource "aws_workspaces_workspace" "good_example" {
 		  running_mode                              = "AUTO_STOP"
 		  running_mode_auto_stop_timeout_in_minutes = 60
 		}
-	  }
 }
 `,
-			mustExcludeResultCode: checks.AWSAWSWorkspaceVolumesEncrypted,
+			mustExcludeResultCode: rules.AWSAWSWorkspaceVolumesEncrypted,
 		},
 	}
 

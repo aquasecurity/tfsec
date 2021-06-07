@@ -3,8 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/checks"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSECSTaskDefinitionEncryptionInTransit(t *testing.T) {
@@ -12,8 +11,8 @@ func Test_AWSECSTaskDefinitionEncryptionInTransit(t *testing.T) {
 	var tests = []struct {
 		name                  string
 		source                string
-		mustIncludeResultCode scanner.RuleCode
-		mustExcludeResultCode scanner.RuleCode
+		mustIncludeResultCode string
+		mustExcludeResultCode string
 	}{
 		{
 			name: "ecs definition with efs and in transit encryption not set fails check",
@@ -36,7 +35,7 @@ resource "aws_ecs_task_definition" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSECSTaskDefinitionEncryptionInTransit,
+			mustIncludeResultCode: rules.AWSECSTaskDefinitionEncryptionInTransit,
 		},
 		{
 			name: "ecs definition with efs and in transit encryption set to disabled fails check",
@@ -61,7 +60,7 @@ resource "aws_ecs_task_definition" "bad_example" {
 	}
   }
 `,
-			mustIncludeResultCode: checks.AWSECSTaskDefinitionEncryptionInTransit,
+			mustIncludeResultCode: rules.AWSECSTaskDefinitionEncryptionInTransit,
 		},
 		{
 			name: "ecs definition with efs and in transit encryption enabled passes",
@@ -86,7 +85,7 @@ resource "aws_ecs_task_definition" "good_example" {
 	}
   }
 `,
-			mustExcludeResultCode: checks.AWSECSTaskDefinitionEncryptionInTransit,
+			mustExcludeResultCode: rules.AWSECSTaskDefinitionEncryptionInTransit,
 		},
 		{
 			name: "ecs definition without efs passes",
@@ -100,7 +99,7 @@ resource "aws_ecs_task_definition" "good_example" {
 	}
   }
 `,
-			mustExcludeResultCode: checks.AWSECSTaskDefinitionEncryptionInTransit,
+			mustExcludeResultCode: rules.AWSECSTaskDefinitionEncryptionInTransit,
 		},
 	}
 
