@@ -71,10 +71,8 @@ func init() {
 		RequiredTypes: []string{"variable"},
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
 
-			if len(block.Labels()) == 0 {
-			}
-
-			if !security.IsSensitiveAttribute(block.TypeLabel()) {
+			if len(block.Labels()) == 0 || !security.IsSensitiveAttribute(block.TypeLabel()) {
+				return
 			}
 
 			for _, attribute := range block.GetAttributes() {
