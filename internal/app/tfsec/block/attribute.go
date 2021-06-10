@@ -72,15 +72,34 @@ func (attr *Attribute) Contains(checkValue interface{}, equalityOptions ...Equal
 	if val.IsNull() {
 		return false
 	}
+
 	if val.Type().IsObjectType() || val.Type().IsMapType() {
-		valueMap := val.AsValueMap()
-		for key := range valueMap {
-			if key == checkValue {
-				return true
+
+		switch t := checkValue.(type) {
+		case map[interface{}]interface{}:
+
+			for k, v := range t {
+
+				valueMap := val.AsValueMap()
+				for key, value := range valueMap {
+					rawValue := getRawValue(value)
+					if key == k && rawValue == v {
+						return true
+					}
+				}
 			}
+			return false
+		default:
+			valueMap := val.AsValueMap()
+			for key := range valueMap {
+				if key == checkValue {
+					return true
+				}
+			}
+			return false
 		}
-		return false
 	}
+
 	stringToLookFor := fmt.Sprintf("%v", checkValue)
 	if val.Type().IsListType() || val.Type().IsTupleType() {
 		valueSlice := val.AsValueSlice()
@@ -365,4 +384,19 @@ func (attr *Attribute) ReferenceAsString() string {
 		return strings.Join(refParts, ".")
 	}
 	return ""
+}
+
+func getRawValue(value cty.Value) interface{} {
+	typeName := value.Type().FriendlyName()
+
+	switch typeName {
+	case "string":
+		return value.AsString()
+	case "number":
+		return value.AsBigFloat()
+	case "bool":
+		return value.True()
+	}
+
+	return value
 }
