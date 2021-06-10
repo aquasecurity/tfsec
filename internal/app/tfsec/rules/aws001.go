@@ -18,7 +18,7 @@ import (
 )
 
 const AWSBadBucketACL = "AWS001"
-const AwsBadBucketACLDescription = "S3 Bucket has an ACL defined which allows public access."
+const AWSBadBucketACLDescription = "S3 Bucket has an ACL defined which allows public access."
 const AWSBadBucketACLImpact = "The contents of the bucket can be accessed publicly"
 const AWSBadBucketACLResolution = "Apply a more restrictive bucket ACL"
 const AWSBadBucketACLExplanation = `
@@ -43,7 +43,7 @@ func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		ID: AWSBadBucketACL,
 		Documentation: rule.RuleDocumentation{
-			Summary:     AwsBadBucketACLDescription,
+			Summary:     AWSBadBucketACLDescription,
 			Explanation: AWSBadBucketACLExplanation,
 			Impact:      AWSBadBucketACLImpact,
 			Resolution:  AWSBadBucketACLResolution,
