@@ -102,3 +102,32 @@ dockers:
     - "tfsec/tfsec-ci:latest"
     - "tfsec/tfsec-ci:{{ .Tag }}"
     - "tfsec/tfsec-ci:v{{ .Major }}.{{ .Minor }}"
+
+  - 
+    goos: linux
+    goarch: amd64
+    ids:
+    - tfsec
+
+    dockerfile: Dockerfile
+    image_templates:
+    - "tfsec/tfsec:{{ .Tag }}"
+    - "tfsec/tfsec-alpine:{{ .Tag }}"
+  - 
+    goos: linux
+    goarch: amd64
+    ids:
+    - tfsec
+
+    dockerfile: Dockerfile.scratch
+    image_templates:
+    - "tfsec/tfsec-scratch:{{ .Tag }}"
+  - 
+    goos: linux
+    goarch: amd64
+    ids:
+    - tfsec
+
+    dockerfile: Dockerfile.ci
+    image_templates:
+    - "tfsec/tfsec-ci:{{ .Tag }}"
