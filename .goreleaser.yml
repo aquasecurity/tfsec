@@ -57,6 +57,7 @@ archives:
     name_template: "{{ .Binary}}-{{ .Os }}-{{ .Arch }}"
 
 release:
+  prerelease: auto
   github:
     owner: tfsec
     name: tfsec
@@ -69,6 +70,7 @@ dockers:
     - tfsec
 
     dockerfile: Dockerfile
+    skip_push: auto
     image_templates:
     - "tfsec/tfsec:latest"
     - "tfsec/tfsec:{{ .Tag }}"
@@ -83,6 +85,7 @@ dockers:
     - tfsec
 
     dockerfile: Dockerfile.scratch
+    skip_push: auto
     image_templates:
     - "tfsec/tfsec-scratch:latest"
     - "tfsec/tfsec-scratch:{{ .Tag }}"
@@ -94,7 +97,37 @@ dockers:
     - tfsec
 
     dockerfile: Dockerfile.ci
+    skip_push: auto
     image_templates:
     - "tfsec/tfsec-ci:latest"
     - "tfsec/tfsec-ci:{{ .Tag }}"
     - "tfsec/tfsec-ci:v{{ .Major }}.{{ .Minor }}"
+
+  - 
+    goos: linux
+    goarch: amd64
+    ids:
+    - tfsec
+
+    dockerfile: Dockerfile
+    image_templates:
+    - "tfsec/tfsec:{{ .Tag }}"
+    - "tfsec/tfsec-alpine:{{ .Tag }}"
+  - 
+    goos: linux
+    goarch: amd64
+    ids:
+    - tfsec
+
+    dockerfile: Dockerfile.scratch
+    image_templates:
+    - "tfsec/tfsec-scratch:{{ .Tag }}"
+  - 
+    goos: linux
+    goarch: amd64
+    ids:
+    - tfsec
+
+    dockerfile: Dockerfile.ci
+    image_templates:
+    - "tfsec/tfsec-ci:{{ .Tag }}"
