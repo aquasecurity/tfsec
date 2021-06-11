@@ -85,7 +85,7 @@ func (scanner *Scanner) Scan(blocks []*block.Block) []result.Result {
 }
 
 func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Range) bool {
-	raw, err := ioutil.ReadFile(r.Filename)
+	raw, err := ioutil.ReadFile(b.Filename)
 	if err != nil {
 		return false
 	}
@@ -110,7 +110,7 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Rang
 		}
 	}
 
-	// check the line above the block
+	// check the line above the actual resource block
 	if b.StartLine-1 > 0 {
 		line := lines[b.StartLine-1]
 		if ignored := checkLineForIgnore(line, ignoreAll, ignoreCode); ignored {
