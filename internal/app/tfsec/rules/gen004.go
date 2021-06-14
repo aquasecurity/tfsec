@@ -72,15 +72,15 @@ func init() {
 		Provider:       provider.GeneralProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"github_repository"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			privateAttribute := block.GetAttribute("private")
-			visibilityAttribute := block.GetAttribute("visibility")
+			privateAttribute := resourceBlock.GetAttribute("private")
+			visibilityAttribute := resourceBlock.GetAttribute("visibility")
 			if visibilityAttribute == nil && privateAttribute == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' is missing `private` or `visibility` attribute - one of these is required to make repository private", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' is missing `private` or `visibility` attribute - one of these is required to make repository private", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
@@ -90,8 +90,8 @@ func init() {
 			if visibilityAttribute != nil {
 				if visibilityAttribute.Equals("public") {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' has visibility set to public - visibility should be set to `private` or `internal` to make repository private", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' has visibility set to public - visibility should be set to `private` or `internal` to make repository private", resourceBlock.FullName())).
 							WithRange(visibilityAttribute.Range()).
 							WithAttributeAnnotation(visibilityAttribute).
 							WithSeverity(severity.Error),
@@ -106,8 +106,8 @@ func init() {
 			if privateAttribute != nil {
 				if privateAttribute.Equals(false) {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' has private set to false - it should be set to `true` to make repository private", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' has private set to false - it should be set to `true` to make repository private", resourceBlock.FullName())).
 							WithRange(privateAttribute.Range()).
 							WithSeverity(severity.Error),
 					)

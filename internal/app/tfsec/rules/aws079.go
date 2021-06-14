@@ -60,14 +60,14 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_instance"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			metaDataOptions := block.GetBlock("metadata_options")
+			metaDataOptions := resourceBlock.GetBlock("metadata_options")
 			if metaDataOptions == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
@@ -85,8 +85,8 @@ func init() {
 			if httpTokensAttr != nil {
 				if !httpTokensAttr.Equals("required") {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())).
 							WithRange(httpTokensAttr.Range()).
 							WithSeverity(severity.Error),
 					)

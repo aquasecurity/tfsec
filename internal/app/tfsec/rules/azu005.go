@@ -58,16 +58,16 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_virtual_machine"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if linuxConfigBlock := block.GetBlock("os_profile_linux_config"); linuxConfigBlock != nil {
+			if linuxConfigBlock := resourceBlock.GetBlock("os_profile_linux_config"); linuxConfigBlock != nil {
 				passwordAuthDisabledAttr := linuxConfigBlock.GetAttribute("disable_password_authentication")
 				if passwordAuthDisabledAttr != nil && passwordAuthDisabledAttr.Type() == cty.Bool && passwordAuthDisabledAttr.Value().False() {
 					set.Add(
-						result.New().
+						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf(
 								"Resource '%s' has password authentication enabled. Use SSH keys instead.",
-								block.FullName(),
+								resourceBlock.FullName(),
 							)).
 							WithRange(passwordAuthDisabledAttr.Range()).
 							WithAttributeAnnotation(passwordAuthDisabledAttr).

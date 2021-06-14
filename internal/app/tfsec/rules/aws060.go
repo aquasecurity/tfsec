@@ -86,24 +86,24 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_athena_workgroup"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("configuration") {
+			if resourceBlock.MissingChild("configuration") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' is missing the configuration block.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' is missing the configuration block.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
 
-			configBlock := block.GetBlock("configuration")
+			configBlock := resourceBlock.GetBlock("configuration")
 			if configBlock.HasChild("enforce_workgroup_configuration") &&
 				configBlock.GetAttribute("enforce_workgroup_configuration").IsFalse() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", block.FullName())).
-WithRange(configBlock.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName())).
+						WithRange(configBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}

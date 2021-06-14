@@ -64,8 +64,8 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			logPublishingOptions := block.GetBlocks("log_publishing_options")
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			logPublishingOptions := resourceBlock.GetBlocks("log_publishing_options")
 			if len(logPublishingOptions) > 0 {
 				auditLogFound := false
 				for _, logPublishingOption := range logPublishingOptions {
@@ -79,9 +79,9 @@ func init() {
 
 				if !auditLogFound {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in one of the `log_publishing_options`-`log_type` attributes so audit log is not enabled", block.FullName())).
-							WithRange(block.Range()).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in one of the `log_publishing_options`-`log_type` attributes so audit log is not enabled", resourceBlock.FullName())).
+							WithRange(resourceBlock.Range()).
 							WithSeverity(severity.Error),
 					)
 				}

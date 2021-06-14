@@ -67,14 +67,14 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
-		CheckFunc: func(set result.Set, block *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
-			endpointBlock := block.GetBlock("domain_endpoint_options")
+			endpointBlock := resourceBlock.GetBlock("domain_endpoint_options")
 			if endpointBlock == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing domain_endpoint_options block).", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing domain_endpoint_options block).", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
@@ -82,8 +82,8 @@ func init() {
 			enforceHTTPSAttr := endpointBlock.GetAttribute("enforce_https")
 			if enforceHTTPSAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enforce_https attribute).", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enforce_https attribute).", resourceBlock.FullName())).
 						WithRange(endpointBlock.Range()).
 						WithSeverity(severity.Error),
 				)
@@ -95,8 +95,8 @@ func init() {
 			enforcedHTTPS := isTrueBool || isTrueString
 			if !enforcedHTTPS {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName())).
 						WithRange(endpointBlock.Range()).
 						WithSeverity(severity.Error),
 				)

@@ -67,12 +67,12 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_redshift_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if block.MissingChild("cluster_subnet_group_name") {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if resourceBlock.MissingChild("cluster_subnet_group_name") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' is being deployed outside of a VPC", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' is being deployed outside of a VPC", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}

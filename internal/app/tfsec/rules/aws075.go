@@ -61,21 +61,21 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_s3_bucket_public_access_block"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if block.MissingChild("restrict_public_buckets") {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if resourceBlock.MissingChild("restrict_public_buckets") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not specify restrict_public_buckets, defaults to false", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not specify restrict_public_buckets, defaults to false", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
 
-			attr := block.GetAttribute("restrict_public_buckets")
+			attr := resourceBlock.GetAttribute("restrict_public_buckets")
 			if attr.IsFalse() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' sets restrict_public_buckets explicitly to false", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' sets restrict_public_buckets explicitly to false", resourceBlock.FullName())).
 						WithRange(attr.Range()).
 						WithAttributeAnnotation(attr).
 						WithSeverity(severity.Error),

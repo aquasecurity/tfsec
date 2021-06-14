@@ -66,7 +66,7 @@ func init() {
 					if valueAttr := setting.GetAttribute("value"); valueAttr != nil {
 						if !valueAttr.Equals("enabled", block.IgnoreCase) {
 							set.Add(
-								result.New().
+								result.New(resourceBlock).
 									WithDescription(fmt.Sprintf("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName())).
 									WithRange(setting.Range()).
 									WithAttributeAnnotation(valueAttr).
@@ -78,7 +78,7 @@ func init() {
 				}
 			}
 			set.Add(
-				result.New().
+				result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resoure '%s' does not have codeInsights enabled", resourceBlock.FullName())).
 					WithRange(resourceBlock.Range()).
 					WithSeverity(severity.Info),

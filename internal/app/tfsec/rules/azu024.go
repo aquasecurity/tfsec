@@ -114,7 +114,7 @@ func init() {
 					if securityRule.HasChild("source_address_prefix") {
 						if securityRule.GetAttribute("source_address_prefix").IsAny("*", "0.0.0.0", "/0", "internet", "any") {
 							set.Add(
-								result.New().
+								result.New(resourceBlock).
 									WithDescription(fmt.Sprintf("Resource '%s' has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", resourceBlock.FullName())).
 									WithRange(resourceBlock.Range()).
 									WithSeverity(severity.Error),

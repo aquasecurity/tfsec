@@ -67,22 +67,22 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_function_app"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("https_only") {
+			if resourceBlock.MissingChild("https_only") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
 			}
-			httpsOnlyAttr := block.GetAttribute("https_only")
+			httpsOnlyAttr := resourceBlock.GetAttribute("https_only")
 			if httpsOnlyAttr.IsFalse() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName())).
 						WithRange(httpsOnlyAttr.Range()).
 						WithAttributeAnnotation(httpsOnlyAttr).
 						WithSeverity(severity.Warning),

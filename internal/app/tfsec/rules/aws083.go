@@ -75,23 +75,23 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_alb", "aws_lb"},
-		CheckFunc: func(set result.Set, b *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if b.GetAttribute("load_balancer_type").Equals("application", block.IgnoreCase) {
-				if b.MissingChild("drop_invalid_header_fields") {
+			if resourceBlock.GetAttribute("load_balancer_type").Equals("application", block.IgnoreCase) {
+				if resourceBlock.MissingChild("drop_invalid_header_fields") {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' does not drop invalid header fields", b.FullName())).
-							WithRange(b.Range()).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' does not drop invalid header fields", resourceBlock.FullName())).
+							WithRange(resourceBlock.Range()).
 							WithSeverity(severity.Error),
 					)
 				}
 
-				attr := b.GetAttribute("drop_invalid_header_fields")
+				attr := resourceBlock.GetAttribute("drop_invalid_header_fields")
 				if attr.IsFalse() {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", b.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", resourceBlock.FullName())).
 							WithRange(attr.Range()).
 							WithAttributeAnnotation(attr).
 							WithSeverity(severity.Error),

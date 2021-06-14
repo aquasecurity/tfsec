@@ -77,26 +77,26 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_eks_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			controlPlaneLogging := []string{"api", "audit", "authenticator", "controllerManager", "scheduler"}
 
-			if block.MissingChild("enabled_cluster_log_types") {
+			if resourceBlock.MissingChild("enabled_cluster_log_types") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
 			}
 
-			configuredLoggingAttr := block.GetAttribute("enabled_cluster_log_types")
+			configuredLoggingAttr := resourceBlock.GetAttribute("enabled_cluster_log_types")
 			for _, logType := range controlPlaneLogging {
 				if !configuredLoggingAttr.Contains(logType) {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' is missing the control plane log type '%s'", block.FullName(), logType)).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' is missing the control plane log type '%s'", resourceBlock.FullName(), logType)).
 							WithRange(configuredLoggingAttr.Range()).
 							WithAttributeAnnotation(configuredLoggingAttr).
 							WithSeverity(severity.Error),

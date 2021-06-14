@@ -60,14 +60,14 @@ func init() {
 		Provider:       provider.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			enable_legacy_abac := block.GetAttribute("enable_legacy_abac")
+			enable_legacy_abac := resourceBlock.GetAttribute("enable_legacy_abac")
 			if enable_legacy_abac != nil && enable_legacy_abac.Value().Type() == cty.String && enable_legacy_abac.Value().AsString() == "true" {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}

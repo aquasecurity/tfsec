@@ -59,20 +59,20 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticache_replication_group"},
-		CheckFunc: func(set result.Set, block *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
-			encryptionAttr := block.GetAttribute("at_rest_encryption_enabled")
+			encryptionAttr := resourceBlock.GetAttribute("at_rest_encryption_enabled")
 			if encryptionAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (missing at_rest_encryption_enabled attribute).", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (missing at_rest_encryption_enabled attribute).", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			} else if !isBooleanOrStringTrue(encryptionAttr) {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (at_rest_encryption_enabled set to false).", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (at_rest_encryption_enabled set to false).", resourceBlock.FullName())).
 						WithRange(encryptionAttr.Range()).
 						WithAttributeAnnotation(encryptionAttr).
 						WithSeverity(severity.Error),

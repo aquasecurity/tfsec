@@ -63,20 +63,20 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_iam_account_password_policy"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if attr := block.GetAttribute("max_password_age"); attr == nil {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if attr := resourceBlock.GetAttribute("max_password_age"); attr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a max password age set.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a max password age set.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value > 90 {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' has high password age.", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' has high password age.", resourceBlock.FullName())).
 							WithRange(attr.Range()).
 							WithAttributeAnnotation(attr).
 							WithSeverity(severity.Warning),

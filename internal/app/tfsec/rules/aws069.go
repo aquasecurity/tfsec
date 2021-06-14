@@ -66,22 +66,22 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_eks_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("vpc_config") {
+			if resourceBlock.MissingChild("vpc_config") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
 
-			vpcConfig := block.GetBlock("vpc_config")
+			vpcConfig := resourceBlock.GetBlock("vpc_config")
 			if vpcConfig.MissingChild("endpoint_public_access") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName())).
 						WithRange(vpcConfig.Range()).
 						WithSeverity(severity.Error),
 				)
@@ -90,8 +90,8 @@ func init() {
 			publicAccessEnabledAttr := vpcConfig.GetAttribute("endpoint_public_access")
 			if publicAccessEnabledAttr.IsTrue() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", resourceBlock.FullName())).
 						WithRange(publicAccessEnabledAttr.Range()).
 						WithAttributeAnnotation(publicAccessEnabledAttr).
 						WithSeverity(severity.Error),

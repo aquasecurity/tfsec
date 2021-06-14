@@ -56,31 +56,31 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_rds_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			kmsKeyIdAttr := block.GetAttribute("kms_key_id")
-			storageEncryptedattr := block.GetAttribute("storage_encrypted")
+			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
+			storageEncryptedattr := resourceBlock.GetAttribute("storage_encrypted")
 
 			if (kmsKeyIdAttr == nil || kmsKeyIdAttr.IsEmpty()) &&
 				(storageEncryptedattr == nil || storageEncryptedattr.IsFalse()) {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			} else if kmsKeyIdAttr.Equals("") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName())).
 						WithRange(kmsKeyIdAttr.Range()).
 						WithAttributeAnnotation(kmsKeyIdAttr).
 						WithSeverity(severity.Error),
 				)
 			} else if storageEncryptedattr == nil || storageEncryptedattr.IsFalse() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a enabled RDS Cluster encryption but not the required encrypted_storage.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a enabled RDS Cluster encryption but not the required encrypted_storage.", resourceBlock.FullName())).
 						WithRange(kmsKeyIdAttr.Range()).
 						WithAttributeAnnotation(kmsKeyIdAttr).
 						WithSeverity(severity.Error),

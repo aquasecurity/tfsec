@@ -54,24 +54,24 @@ func init() {
 		Provider:       provider.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("enable_shielded_nodes") {
+			if resourceBlock.MissingChild("enable_shielded_nodes") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
 			}
 
-			enableShieldedNodesAttr := block.GetAttribute("enable_shielded_nodes")
+			enableShieldedNodesAttr := resourceBlock.GetAttribute("enable_shielded_nodes")
 
 			if enableShieldedNodesAttr.IsFalse() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", resourceBlock.FullName())).
 						WithRange(enableShieldedNodesAttr.Range()).
 						WithSeverity(severity.Error),
 				)

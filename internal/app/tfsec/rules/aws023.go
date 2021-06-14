@@ -66,22 +66,22 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecr_repository"},
-		CheckFunc: func(set result.Set, block *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
-			ecrScanStatusBlock := block.GetBlock("image_scanning_configuration")
+			ecrScanStatusBlock := resourceBlock.GetBlock("image_scanning_configuration")
 			ecrScanStatusAttr := ecrScanStatusBlock.GetAttribute("scan_on_push")
 
 			if ecrScanStatusAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			} else if ecrScanStatusAttr.Type() == cty.Bool && ecrScanStatusAttr.Value().False() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
 						WithRange(ecrScanStatusAttr.Range()).
 						WithAttributeAnnotation(ecrScanStatusAttr).
 						WithSeverity(severity.Error),

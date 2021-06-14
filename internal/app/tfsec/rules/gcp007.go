@@ -64,13 +64,13 @@ func init() {
 		Provider:       provider.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			legacyMetadataAPI := block.GetBlock("metadata").GetAttribute("disable-legacy-endpoints")
+			legacyMetadataAPI := resourceBlock.GetBlock("metadata").GetAttribute("disable-legacy-endpoints")
 			if legacyMetadataAPI.Type() == cty.String && legacyMetadataAPI.Value().AsString() != "true" || legacyMetadataAPI.Type() == cty.Bool && legacyMetadataAPI.Value().False() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", resourceBlock.FullName())).
 						WithRange(legacyMetadataAPI.Range()).
 						WithSeverity(severity.Error),
 				)

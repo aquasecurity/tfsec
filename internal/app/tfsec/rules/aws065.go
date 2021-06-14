@@ -75,23 +75,23 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudtrail"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("kms_key_id") {
+			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a kms_key_id set.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a kms_key_id set.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
 			}
 
-			kmsKeyIdAttr := block.GetAttribute("kms_key_id")
+			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
 			if kmsKeyIdAttr.IsEmpty() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has a kms_key_id but it is not set.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has a kms_key_id but it is not set.", resourceBlock.FullName())).
 						WithRange(kmsKeyIdAttr.Range()).
 						WithAttributeAnnotation(kmsKeyIdAttr).
 						WithSeverity(severity.Error),

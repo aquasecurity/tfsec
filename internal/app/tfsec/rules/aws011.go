@@ -54,13 +54,13 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_db_instance", "aws_dms_replication_instance", "aws_rds_cluster_instance", "aws_redshift_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if publicAttr := block.GetAttribute("publicly_accessible"); publicAttr != nil && publicAttr.Type() == cty.Bool {
+			if publicAttr := resourceBlock.GetAttribute("publicly_accessible"); publicAttr != nil && publicAttr.Type() == cty.Bool {
 				if publicAttr.Value().True() {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
 							WithRange(publicAttr.Range()).
 							WithAttributeAnnotation(publicAttr).
 							WithSeverity(severity.Warning),

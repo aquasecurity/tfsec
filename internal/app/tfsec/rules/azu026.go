@@ -80,13 +80,13 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_key_vault_key"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("expiration_date") {
+			if resourceBlock.MissingChild("expiration_date") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' should have an expiration date set.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' should have an expiration date set.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
 			}

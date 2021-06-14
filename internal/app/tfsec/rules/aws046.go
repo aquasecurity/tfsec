@@ -67,9 +67,9 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"data"},
 		RequiredLabels: []string{"aws_iam_policy_document"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if statementBlocks := block.GetBlocks("statement"); statementBlocks != nil {
+			if statementBlocks := resourceBlock.GetBlocks("statement"); statementBlocks != nil {
 				for _, statementBlock := range statementBlocks {
 					if effect := statementBlock.GetAttribute("effect"); effect != nil {
 						if effect.Type() == cty.String && strings.ToLower(effect.Value().AsString()) == "deny" {
@@ -81,9 +81,9 @@ func init() {
 						for _, actionValue := range actionValues {
 							if actionValue.AsString() == "*" {
 								set.Add(
-									result.New().
-										WithDescription(fmt.Sprintf("Resource '%s' has a wildcard action specified.", block.FullName())).
-WithRange(statementBlock.Range()).
+									result.New(resourceBlock).
+										WithDescription(fmt.Sprintf("Resource '%s' has a wildcard action specified.", resourceBlock.FullName())).
+										WithRange(statementBlock.Range()).
 										WithSeverity(severity.Error),
 								)
 							}

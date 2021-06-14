@@ -72,21 +72,21 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_sql_server", "azurerm_sql_server", "azurerm_mssql_database_extended_auditing_policy"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if !block.IsResourceType("azurerm_mssql_database_extended_auditing_policy") {
-				if block.MissingChild("extended_auditing_policy") {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if !resourceBlock.IsResourceType("azurerm_mssql_database_extended_auditing_policy") {
+				if resourceBlock.MissingChild("extended_auditing_policy") {
 				}
-				block = block.GetBlock("extended_auditing_policy")
+				resourceBlock = resourceBlock.GetBlock("extended_auditing_policy")
 			}
 
-			if block.MissingChild("retention_in_days") {
+			if resourceBlock.MissingChild("retention_in_days") {
 				// using default of unlimited
 			}
-			if block.GetAttribute("retention_in_days").LessThan(90) {
+			if resourceBlock.GetAttribute("retention_in_days").LessThan(90) {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' specifies a retention period of less than 90 days.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' specifies a retention period of less than 90 days.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}

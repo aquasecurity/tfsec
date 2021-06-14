@@ -53,11 +53,11 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_db_security_group", "aws_redshift_security_group", "aws_elasticache_security_group"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			set.Add(
-				result.New().
-					WithDescription(fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", block.FullName())).
-					WithRange(block.Range()).
+				result.New(resourceBlock).
+					WithDescription(fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", resourceBlock.FullName())).
+					WithRange(resourceBlock.Range()).
 					WithSeverity(severity.Error),
 			)
 		},

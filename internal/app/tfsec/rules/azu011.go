@@ -67,18 +67,18 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azure_storage_container"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			// function contents here
-			if block.HasChild("properties") {
-				properties := block.GetAttribute("properties")
+			if resourceBlock.HasChild("properties") {
+				properties := resourceBlock.GetAttribute("properties")
 				if properties.Contains("publicAccess") {
 					value := properties.MapValue("publicAccess")
 					if value == cty.StringVal("blob") || value == cty.StringVal("container") {
 						set.Add(
-							result.New().
-								WithDescription(fmt.Sprintf("Resource '%s' defines publicAccess as '%s', should be 'off .", block.FullName(), value)).
-								WithRange(block.Range()).
+							result.New(resourceBlock).
+								WithDescription(fmt.Sprintf("Resource '%s' defines publicAccess as '%s', should be 'off .", resourceBlock.FullName(), value)).
+								WithRange(resourceBlock.Range()).
 								WithSeverity(severity.Error),
 						)
 					}

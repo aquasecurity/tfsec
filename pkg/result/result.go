@@ -24,6 +24,7 @@ type Result struct {
 	RangeAnnotation string            `json:"-"`
 	Severity        severity.Severity `json:"severity"`
 	Status          Status            `json:"status"`
+	topLevelBlock   *block.Block
 }
 
 type Status string
@@ -34,9 +35,10 @@ const (
 	Ignored Status = "ignored"
 )
 
-func New() *Result {
+func New(resourceBlock *block.Block) *Result {
 	return &Result{
-		Status: Failed,
+		Status:        Failed,
+		topLevelBlock: resourceBlock,
 	}
 }
 

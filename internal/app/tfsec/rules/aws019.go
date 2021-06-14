@@ -56,20 +56,20 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_kms_key"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			keyUsageAttr := block.GetAttribute("key_usage")
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			keyUsageAttr := resourceBlock.GetAttribute("key_usage")
 
 			if keyUsageAttr != nil && keyUsageAttr.Equals("SIGN_VERIFY") {
 				return
 			}
 
-			keyRotationAttr := block.GetAttribute("enable_key_rotation")
+			keyRotationAttr := resourceBlock.GetAttribute("enable_key_rotation")
 
 			if keyRotationAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
 				return
@@ -77,8 +77,8 @@ func init() {
 
 			if keyRotationAttr.Type() == cty.Bool && keyRotationAttr.Value().False() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())).
 						WithRange(keyRotationAttr.Range()).
 						WithAttributeAnnotation(keyRotationAttr).
 						WithSeverity(severity.Warning),

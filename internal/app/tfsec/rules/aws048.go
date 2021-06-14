@@ -57,21 +57,21 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_efs_file_system"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			efsEnabledAttr := block.GetAttribute("encrypted")
+			efsEnabledAttr := resourceBlock.GetAttribute("encrypted")
 
 			if efsEnabledAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not specify if encryption should be used.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not specify if encryption should be used.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			} else if efsEnabledAttr.Type() == cty.Bool && efsEnabledAttr.Value().False() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' actively does not have encryption applied.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' actively does not have encryption applied.", resourceBlock.FullName())).
 						WithRange(efsEnabledAttr.Range()).
 						WithAttributeAnnotation(efsEnabledAttr).
 						WithSeverity(severity.Error),

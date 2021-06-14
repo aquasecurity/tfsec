@@ -55,15 +55,15 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_s3_bucket"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if loggingBlock := block.GetBlock("logging"); loggingBlock == nil {
-				if block.GetAttribute("acl") != nil && block.GetAttribute("acl").Equals("log-delivery-write") {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if loggingBlock := resourceBlock.GetBlock("logging"); loggingBlock == nil {
+				if resourceBlock.GetAttribute("acl") != nil && resourceBlock.GetAttribute("acl").Equals("log-delivery-write") {
 					return
 				}
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not have logging enabled.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not have logging enabled.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}

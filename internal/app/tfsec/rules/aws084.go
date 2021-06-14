@@ -75,20 +75,20 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_workspaces_workspace"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("root_volume_encryption_enabled") {
+			if resourceBlock.MissingChild("root_volume_encryption_enabled") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' should have root volume encryption enables", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' should have root volume encryption enables", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			} else {
-				attr := block.GetAttribute("root_volume_encryption_enabled")
+				attr := resourceBlock.GetAttribute("root_volume_encryption_enabled")
 				if attr.IsFalse() {
-					set.Add(result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has the root volume encyption set to false", block.FullName())).
+					set.Add(result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has the root volume encyption set to false", resourceBlock.FullName())).
 						WithRange(attr.Range()).
 						WithAttributeAnnotation(attr).
 						WithSeverity(severity.Error),
@@ -96,18 +96,18 @@ func init() {
 				}
 			}
 
-			if block.MissingChild("user_volume_encryption_enabled") {
-				set.Add(result.New().
-					WithDescription(fmt.Sprintf("Resource '%s' should have user volume encryption enables", block.FullName())).
-					WithRange(block.Range()).
+			if resourceBlock.MissingChild("user_volume_encryption_enabled") {
+				set.Add(result.New(resourceBlock).
+					WithDescription(fmt.Sprintf("Resource '%s' should have user volume encryption enables", resourceBlock.FullName())).
+					WithRange(resourceBlock.Range()).
 					WithSeverity(severity.Error),
 				)
 			} else {
-				attr := block.GetAttribute("user_volume_encryption_enabled")
+				attr := resourceBlock.GetAttribute("user_volume_encryption_enabled")
 				if attr.IsFalse() {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' has the user volume encyption set to false", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' has the user volume encyption set to false", resourceBlock.FullName())).
 							WithRange(attr.Range()).
 							WithAttributeAnnotation(attr).
 							WithSeverity(severity.Error),

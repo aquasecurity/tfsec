@@ -61,21 +61,21 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_s3_bucket_public_access_block"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if block.MissingChild("block_public_policy") {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if resourceBlock.MissingChild("block_public_policy") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not specify block_public_policy, defaults to false", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not specify block_public_policy, defaults to false", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
 
-			attr := block.GetAttribute("block_public_policy")
+			attr := resourceBlock.GetAttribute("block_public_policy")
 			if attr.IsFalse() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' sets block_public_policy explicitly to false", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' sets block_public_policy explicitly to false", resourceBlock.FullName())).
 						WithRange(attr.Range()).
 						WithAttributeAnnotation(attr).
 						WithSeverity(severity.Error),

@@ -62,20 +62,20 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_iam_account_password_policy"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if attr := block.GetAttribute("require_uppercase_characters"); attr == nil {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if attr := resourceBlock.GetAttribute("require_uppercase_characters"); attr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not require an uppercase character in the password.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not require an uppercase character in the password.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
 			} else if attr.Value().Type() == cty.Bool {
 				if attr.Value().False() {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least one uppercase character in the password.", block.FullName())).
-							WithRange(block.Range()).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least one uppercase character in the password.", resourceBlock.FullName())).
+							WithRange(resourceBlock.Range()).
 							WithSeverity(severity.Warning),
 					)
 				}

@@ -63,14 +63,14 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
-		CheckFunc: func(set result.Set, block *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
-			encryptionBlock := block.GetBlock("encrypt_at_rest")
+			encryptionBlock := resourceBlock.GetBlock("encrypt_at_rest")
 			if encryptionBlock == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
@@ -78,8 +78,8 @@ func init() {
 			enabledAttr := encryptionBlock.GetAttribute("enabled")
 			if enabledAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", resourceBlock.FullName())).
 						WithRange(encryptionBlock.Range()).
 						WithSeverity(severity.Error),
 				)
@@ -91,8 +91,8 @@ func init() {
 			encryptionEnabled := isTrueBool || isTrueString
 			if !encryptionEnabled {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", resourceBlock.FullName())).
 						WithRange(encryptionBlock.Range()).
 						WithSeverity(severity.Error),
 				)

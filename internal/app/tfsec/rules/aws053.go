@@ -60,23 +60,23 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_rds_cluster_instance", "aws_db_instance"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.HasChild("performance_insights_enabled") && block.GetAttribute("performance_insights_enabled").IsTrue() {
-				if block.MissingChild("performance_insights_kms_key_id") {
+			if resourceBlock.HasChild("performance_insights_enabled") && resourceBlock.GetAttribute("performance_insights_enabled").IsTrue() {
+				if resourceBlock.MissingChild("performance_insights_kms_key_id") {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", block.FullName())).
-							WithRange(block.Range()).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName())).
+							WithRange(resourceBlock.Range()).
 							WithSeverity(severity.Error),
 					)
 					return
 				}
 
-				if keyAttr := block.GetAttribute("performance_insights_kms_key_id"); keyAttr.IsEmpty() {
+				if keyAttr := resourceBlock.GetAttribute("performance_insights_kms_key_id"); keyAttr.IsEmpty() {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName())).
 							WithRange(keyAttr.Range()).
 							WithAttributeAnnotation(keyAttr).
 							WithSeverity(severity.Error),

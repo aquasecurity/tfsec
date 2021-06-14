@@ -70,31 +70,31 @@ func init() {
 		Provider:       provider.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			masterAuthBlock := block.GetBlock("master_auth")
+			masterAuthBlock := resourceBlock.GetBlock("master_auth")
 			staticAuthUser := masterAuthBlock.GetAttribute("username")
 			staticAuthPass := masterAuthBlock.GetAttribute("password")
 			if masterAuthBlock == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			} else if staticAuthUser.Type() == cty.String && staticAuthUser.Value().AsString() != "" && staticAuthPass.Type() == cty.String && staticAuthPass.Value().AsString() != "" {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", block.FullName())).
-WithRange(masterAuthBlock.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())).
+						WithRange(masterAuthBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
 			issueClientCert := masterAuthBlock.GetBlock("client_certificate_config").GetAttribute("issue_client_certificate")
 			if issueClientCert.Type() == cty.Bool && issueClientCert.Value().True() || issueClientCert.Type() == cty.String && issueClientCert.Value().AsString() == "true" {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())).
 						WithRange(issueClientCert.Range()).
 						WithSeverity(severity.Error),
 				)

@@ -57,13 +57,13 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_kubernetes_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if networkProfileBlock := block.GetBlock("network_profile"); networkProfileBlock != nil {
+			if networkProfileBlock := resourceBlock.GetBlock("network_profile"); networkProfileBlock != nil {
 				if networkProfileBlock.GetAttribute("network_policy") == nil {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' do not have network_policy define. network_policy should be defined to have opportunity allow or block traffic to pods", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' do not have network_policy define. network_policy should be defined to have opportunity allow or block traffic to pods", resourceBlock.FullName())).
 							WithRange(networkProfileBlock.Range()).
 							WithSeverity(severity.Error),
 					)
