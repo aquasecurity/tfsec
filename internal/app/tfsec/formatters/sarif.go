@@ -3,7 +3,6 @@ package formatters
 import (
 	"io"
 	"path/filepath"
-	"strings"
 
 	"github.com/tfsec/tfsec/pkg/severity"
 
@@ -42,9 +41,16 @@ func FormatSarif(w io.Writer, results []result.Result, baseDir string, _ ...Form
 
 		message := sarif.NewTextMessage(res.Description)
 		region := sarif.NewSimpleRegion(res.Range.StartLine, res.Range.EndLine)
-		level := strings.ToLower(string(res.Severity))
-		if res.Severity == severity.Info {
+		var level string
+		switch res.Severity {
+		case severity.None:
+			level = "none"
+		case severity.Info:
 			level = "note"
+		case severity.Warning:
+			level = "warning"
+		case severity.Error, severity.Critical:
+			level = "error"
 		}
 
 		location := sarif.NewPhysicalLocation().

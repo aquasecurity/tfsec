@@ -37,7 +37,7 @@ var format string
 var softFail = false
 var filterResults string
 var excludedRuleIDs string
-var tfvarsPath string
+var tfvarsPaths []string
 var outputFlag string
 var customCheckDir string
 var configFile string
@@ -63,7 +63,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&excludedRuleIDs, "exclude", "e", excludedRuleIDs, "Provide comma-separated list of rule IDs to exclude from run.")
 	rootCmd.Flags().StringVar(&filterResults, "filter-results", filterResults, "Filter results to return specific checks only (supports comma-delimited input).")
 	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
-	rootCmd.Flags().StringVar(&tfvarsPath, "tfvars-file", tfvarsPath, "Path to .tfvars file")
+	rootCmd.Flags().StringSliceVar(&tfvarsPaths, "tfvars-file", tfvarsPaths, "Path to .tfvars file, can be used multiple times and evaluated in order of specification")
 	rootCmd.Flags().StringVar(&outputFlag, "out", outputFlag, "Set output file")
 	rootCmd.Flags().StringVar(&customCheckDir, "custom-check-dir", customCheckDir, "Explicitly the custom checks dir location")
 	rootCmd.Flags().StringVar(&configFile, "config-file", configFile, "Config file to use during run")
@@ -186,7 +186,7 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if tfvarsPath == "" && unusedTfvarsPresent(dir) {
+		if len(tfvarsPaths) == 0 && unusedTfvarsPresent(dir) {
 			_ = tml.Printf("\n<yellow>Warning: A tfvars file was found but not automatically used. \nDid you mean to specify the --tfvars-file flag?</yellow>\n")
 		}
 
@@ -252,13 +252,18 @@ func getParserOptions() []parser.Option {
 	if allDirs {
 		opts = append(opts, parser.OptionDoNotSearchTfFiles())
 	}
-	if tfvarsPath != "" {
-		tfvarsPath, err := filepath.Abs(tfvarsPath)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+	var validTfVarFiles []string
+	if len(tfvarsPaths) > 0 {
+		for _, tfvarsPath := range tfvarsPaths {
+			tfvp, err := filepath.Abs(tfvarsPath)
+			if err != nil {
+				fmt.Println(err)
+			}
+			if _, err := os.Stat(tfvp); err == nil {
+				validTfVarFiles = append(validTfVarFiles, tfvp)
+			}
 		}
-		opts = append(opts, parser.OptionWithTFVarsPath(tfvarsPath))
+		opts = append(opts, parser.OptionWithTFVarsPaths(validTfVarFiles))
 	}
 	if !ignoreHCLErrors {
 		opts = append(opts, parser.OptionStopOnHCLError())

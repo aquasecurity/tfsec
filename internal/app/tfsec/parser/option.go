@@ -8,9 +8,9 @@ func OptionDoNotSearchTfFiles() Option {
 	}
 }
 
-func OptionWithTFVarsPath(path string) Option {
+func OptionWithTFVarsPaths(paths []string) Option {
 	return func(p *Parser) {
-		p.tfvarsPath = path
+		p.tfvarsPaths = paths
 	}
 }
 
