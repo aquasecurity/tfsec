@@ -3,10 +3,11 @@ package severity
 type Severity string
 
 const (
-	None    Severity = "NONE"
-	Error   Severity = "ERROR"
-	Warning Severity = "WARNING"
-	Info    Severity = "INFO"
+	None     Severity = "NONE"
+	Critical Severity = "CRITICAL"
+	Error    Severity = "ERROR"
+	Warning  Severity = "WARNING"
+	Info     Severity = "INFO"
 )
 
 var ValidSeverity = []Severity{
