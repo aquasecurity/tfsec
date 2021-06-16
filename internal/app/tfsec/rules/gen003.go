@@ -89,21 +89,21 @@ func init() {
 		},
 		Provider:      provider.GeneralProvider,
 		RequiredTypes: []string{"resource", "provider", "module"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			attributes := block.GetAttributes()
+			attributes := resourceBlock.GetAttributes()
 
 		SKIP:
 			for _, attribute := range attributes {
 				for _, whitelisted := range sensitiveWhitelist {
-					if whitelisted.Resource == block.TypeLabel() && whitelisted.Attribute == attribute.Name() {
+					if whitelisted.Resource == resourceBlock.TypeLabel() && whitelisted.Attribute == attribute.Name() {
 						continue SKIP
 					}
 				}
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String && attribute.Value().AsString() != "" {
-						set.Add(result.New().
-							WithDescription(fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", block.FullName())).
+						set.Add(result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", resourceBlock.FullName())).
 							WithRange(attribute.Range()).
 							WithAttributeAnnotation(attribute).
 							WithSeverity(severity.Warning),

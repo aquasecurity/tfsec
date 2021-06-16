@@ -69,31 +69,31 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_redshift_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("encrypted") {
+			if resourceBlock.MissingChild("encrypted") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not have encryption enabled", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not have encryption enabled", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
 			}
 
-			if block.MissingChild("kms_key_id") {
+			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a customer managed key specified", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a customer managed key specified", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
 			}
 
-			encryptedAttr := block.GetAttribute("encrypted")
+			encryptedAttr := resourceBlock.GetAttribute("encrypted")
 			if encryptedAttr.IsFalse() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has encryption explicitly dissabled", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has encryption explicitly dissabled", resourceBlock.FullName())).
 						WithRange(encryptedAttr.Range()).
 						WithAttributeAnnotation(encryptedAttr).
 						WithSeverity(severity.Warning),

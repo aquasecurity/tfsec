@@ -94,26 +94,26 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_rds_cluster", "aws_db_instance"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if block.HasChild("replicate_source_db") {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if resourceBlock.HasChild("replicate_source_db") {
 				return
 			}
 
-			if block.MissingChild("backup_retention_period") {
+			if resourceBlock.MissingChild("backup_retention_period") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not have backup retention explicitly set", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not have backup retention explicitly set", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Info),
 				)
 				return
 			}
 
-			retentionAttr := block.GetAttribute("backup_retention_period")
+			retentionAttr := resourceBlock.GetAttribute("backup_retention_period")
 			if retentionAttr.LessThanOrEqualTo(1) {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has backup retention period set to a low value", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has backup retention period set to a low value", resourceBlock.FullName())).
 						WithRange(retentionAttr.Range()).
 						WithAttributeAnnotation(retentionAttr).
 						WithSeverity(severity.Info),

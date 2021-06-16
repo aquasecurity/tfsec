@@ -57,12 +57,12 @@ func init() {
 		Provider:       provider.OracleProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"opc_compute_ip_address_reservation"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if attr := block.GetAttribute("ip_address_pool"); attr != nil {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if attr := resourceBlock.GetAttribute("ip_address_pool"); attr != nil {
 				if attr.IsAny("public-ippool") {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' is using an IP from a public IP pool", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' is using an IP from a public IP pool", resourceBlock.FullName())).
 							WithRange(attr.Range()).
 							WithAttributeAnnotation(attr).
 							WithSeverity(severity.Warning),

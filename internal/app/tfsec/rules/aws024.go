@@ -57,31 +57,31 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_kinesis_stream"},
-		CheckFunc: func(set result.Set, block *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
-			encryptionTypeAttr := block.GetAttribute("encryption_type")
+			encryptionTypeAttr := resourceBlock.GetAttribute("encryption_type")
 			if encryptionTypeAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			} else if encryptionTypeAttr.Type() == cty.String && strings.ToUpper(encryptionTypeAttr.Value().AsString()) != "KMS" {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName())).
 						WithRange(encryptionTypeAttr.Range()).
 						WithAttributeAnnotation(encryptionTypeAttr).
 						WithSeverity(severity.Error),
 				)
 			} else {
-				keyIDAttr := block.GetAttribute("kms_key_id")
+				keyIDAttr := resourceBlock.GetAttribute("kms_key_id")
 				if keyIDAttr == nil || keyIDAttr.IsEmpty() || keyIDAttr.Equals("alias/aws/kinesis") {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' defines a Kinesis Stream encrypted with the default Kinesis key.", block.FullName())).
-							WithRange(block.Range()).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' defines a Kinesis Stream encrypted with the default Kinesis key.", resourceBlock.FullName())).
+							WithRange(resourceBlock.Range()).
 							WithSeverity(severity.Warning),
 					)
 				}

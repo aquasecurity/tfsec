@@ -54,18 +54,18 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_alb", "aws_elb", "aws_lb"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if internalAttr := block.GetAttribute("internal"); internalAttr == nil {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if internalAttr := resourceBlock.GetAttribute("internal"); internalAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
 			} else if internalAttr.Type() == cty.Bool && internalAttr.Value().False() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
 						WithRange(internalAttr.Range()).
 						WithAttributeAnnotation(internalAttr).
 						WithSeverity(severity.Warning),

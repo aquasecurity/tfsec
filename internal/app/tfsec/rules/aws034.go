@@ -65,9 +65,9 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
-		CheckFunc: func(set result.Set, block *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
-			endpointBlock := block.GetBlock("domain_endpoint_options")
+			endpointBlock := resourceBlock.GetBlock("domain_endpoint_options")
 			if endpointBlock == nil {
 				// Rule AWS033 covers this case.
 				return
@@ -76,8 +76,8 @@ func init() {
 			tlsPolicyAttr := endpointBlock.GetAttribute("tls_security_policy")
 			if tlsPolicyAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (defaults to Policy-Min-TLS-1-0-2019-07).", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (defaults to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName())).
 						WithRange(endpointBlock.Range()).
 						WithSeverity(severity.Error),
 				)
@@ -86,8 +86,8 @@ func init() {
 
 			if tlsPolicyAttr.Value().Equals(cty.StringVal("Policy-Min-TLS-1-0-2019-07")).True() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (set to Policy-Min-TLS-1-0-2019-07).", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (set to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName())).
 						WithRange(tlsPolicyAttr.Range()).
 						WithAttributeAnnotation(tlsPolicyAttr).
 						WithSeverity(severity.Error),

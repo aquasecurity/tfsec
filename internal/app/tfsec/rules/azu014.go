@@ -67,13 +67,13 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_storage_account"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.HasChild("enable_https_traffic_only") && block.GetAttribute("enable_https_traffic_only").IsFalse() {
+			if resourceBlock.HasChild("enable_https_traffic_only") && resourceBlock.GetAttribute("enable_https_traffic_only").IsFalse() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' explicitly turns off secure transfer to storage account.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' explicitly turns off secure transfer to storage account.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}

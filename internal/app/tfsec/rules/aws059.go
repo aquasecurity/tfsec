@@ -94,24 +94,24 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_athena_database", "aws_athena_workgroup"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			blockName := block.FullName()
+			blockName := resourceBlock.FullName()
 
-			if strings.EqualFold(block.TypeLabel(), "aws_athena_workgroup") {
-				if block.HasChild("configuration") && block.GetBlock("configuration").
+			if strings.EqualFold(resourceBlock.TypeLabel(), "aws_athena_workgroup") {
+				if resourceBlock.HasChild("configuration") && resourceBlock.GetBlock("configuration").
 					HasChild("result_configuration") {
-					block = block.GetBlock("configuration").GetBlock("result_configuration")
+					resourceBlock = resourceBlock.GetBlock("configuration").GetBlock("result_configuration")
 				} else {
 					return
 				}
 			}
 
-			if block.MissingChild("encryption_configuration") {
+			if resourceBlock.MissingChild("encryption_configuration") {
 				set.Add(
-					result.New().
+					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' missing encryption configuration block.", blockName)).
-						WithRange(block.Range()).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}

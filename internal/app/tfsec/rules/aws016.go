@@ -56,21 +56,21 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_sns_topic"},
-		CheckFunc: func(set result.Set, block *block.Block, ctx *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, ctx *hclcontext.Context) {
 
-			kmsKeyIDAttr := block.GetAttribute("kms_master_key_id")
+			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())).
 						WithRange(kmsKeyIDAttr.Range()).
 						WithAttributeAnnotation(kmsKeyIDAttr).
 						WithSeverity(severity.Error),
@@ -91,8 +91,8 @@ func init() {
 						keyIdAttr := kmsData.GetAttribute("key_id")
 						if keyIdAttr != nil && keyIdAttr.Equals("alias/aws/sns") {
 							set.Add(
-								result.New().
-									WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", block.FullName())).
+								result.New(resourceBlock).
+									WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
 									WithRange(kmsKeyIDAttr.Range()).
 									WithAttributeAnnotation(kmsKeyIDAttr).
 									WithSeverity(severity.Warning),

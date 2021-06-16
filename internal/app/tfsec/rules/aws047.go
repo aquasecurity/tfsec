@@ -83,12 +83,12 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_sqs_queue_policy"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.GetAttribute("policy").Value().Type() != cty.String {
+			if resourceBlock.GetAttribute("policy").Value().Type() != cty.String {
 			}
 
-			rawJSON := []byte(block.GetAttribute("policy").Value().AsString())
+			rawJSON := []byte(resourceBlock.GetAttribute("policy").Value().AsString())
 			var policy struct {
 				Statement []struct {
 					Effect string `json:"Effect"`
@@ -100,9 +100,9 @@ func init() {
 				for _, statement := range policy.Statement {
 					if strings.ToLower(statement.Effect) == "allow" && (statement.Action == "*" || statement.Action == "sqs:*") {
 						set.Add(
-							result.New().
-								WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", block.FullName())).
-								WithRange(block.Range()).
+							result.New(resourceBlock).
+								WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName())).
+								WithRange(resourceBlock.Range()).
 								WithSeverity(severity.Error),
 						)
 					}

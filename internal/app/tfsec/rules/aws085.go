@@ -65,23 +65,23 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_config_configuration_aggregator"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			aggBlock := block.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")
+			aggBlock := resourceBlock.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")
 			if aggBlock == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources set", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources set", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
 
 			if aggBlock.MissingChild("all_regions") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources to all regions", block.FullName())).
-WithRange(aggBlock.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName())).
+						WithRange(aggBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
 			}
@@ -89,8 +89,8 @@ WithRange(aggBlock.Range()).
 			allRegionsAttr := aggBlock.GetAttribute("all_regions")
 			if allRegionsAttr.IsFalse() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has all_regions set to false", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has all_regions set to false", resourceBlock.FullName())).
 						WithRange(allRegionsAttr.Range()).
 						WithAttributeAnnotation(allRegionsAttr).
 						WithSeverity(severity.Warning),

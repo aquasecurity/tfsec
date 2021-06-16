@@ -55,22 +55,22 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_api_gateway_domain_name"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			securityPolicyAttr := block.GetAttribute("security_policy")
+			securityPolicyAttr := resourceBlock.GetAttribute("security_policy")
 			if securityPolicyAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defauls to outdated SSL/TLS policy).", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defauls to outdated SSL/TLS policy).", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
 
 			if securityPolicyAttr.Type() == cty.String && securityPolicyAttr.Value().AsString() != "TLS_1_2" {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", resourceBlock.FullName())).
 						WithRange(securityPolicyAttr.Range()).
 						WithAttributeAnnotation(securityPolicyAttr).
 						WithSeverity(severity.Error),

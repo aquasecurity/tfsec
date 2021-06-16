@@ -68,24 +68,24 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_key_vault"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("network_acls") {
+			if resourceBlock.MissingChild("network_acls") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
 			}
 
-			networkAcls := block.GetBlock("network_acls")
+			networkAcls := resourceBlock.GetBlock("network_acls")
 			if networkAcls == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
@@ -93,8 +93,8 @@ func init() {
 
 			if networkAcls.MissingChild("default_action") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a default action in the network acl.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a default action in the network acl.", resourceBlock.FullName())).
 						WithRange(networkAcls.Range()).
 						WithSeverity(severity.Error),
 				)
@@ -104,8 +104,8 @@ func init() {
 			defaultActionAttr := networkAcls.GetAttribute("default_action")
 			if !defaultActionAttr.Equals("Deny") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
 						WithRange(defaultActionAttr.Range()).
 						WithAttributeAnnotation(defaultActionAttr).
 						WithSeverity(severity.Error),

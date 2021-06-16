@@ -96,23 +96,23 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_dynamodb_table"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("server_side_encryption") {
+			if resourceBlock.MissingChild("server_side_encryption") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Info),
 				)
 			}
 
-			sseBlock := block.GetBlock("server_side_encryption")
+			sseBlock := resourceBlock.GetBlock("server_side_encryption")
 			enabledAttr := sseBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName())).
 						WithRange(enabledAttr.Range()).
 						WithAttributeAnnotation(enabledAttr).
 						WithSeverity(severity.Info),
@@ -123,8 +123,8 @@ func init() {
 				keyIdAttr := sseBlock.GetAttribute("kms_key_arn")
 				if keyIdAttr.Equals("alias/aws/dynamodb") {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' has KMS encryption configured but is using the default aws key", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName())).
 							WithRange(keyIdAttr.Range()).
 							WithAttributeAnnotation(keyIdAttr).
 							WithSeverity(severity.Info),

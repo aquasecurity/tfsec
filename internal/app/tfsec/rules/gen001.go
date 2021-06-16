@@ -69,21 +69,21 @@ func init() {
 		},
 		Provider:      provider.GeneralProvider,
 		RequiredTypes: []string{"variable"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if len(block.Labels()) == 0 || !security.IsSensitiveAttribute(block.TypeLabel()) {
+			if len(resourceBlock.Labels()) == 0 || !security.IsSensitiveAttribute(resourceBlock.TypeLabel()) {
 				return
 			}
 
-			for _, attribute := range block.GetAttributes() {
+			for _, attribute := range resourceBlock.GetAttributes() {
 				if attribute.Name() == "default" {
 					val := attribute.Value()
 					if val.Type() != cty.String {
 						continue
 					}
 					if val.AsString() != "" {
-						set.Add(result.New().
-							WithDescription(fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", block.FullName())).
+						set.Add(result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", resourceBlock.FullName())).
 							WithRange(attribute.Range()).
 							WithAttributeAnnotation(attribute).
 							WithSeverity(severity.Warning),

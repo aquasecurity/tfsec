@@ -60,21 +60,21 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_data_factory"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("public_network_enabled") {
+			if resourceBlock.MissingChild("public_network_enabled") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' should have public_network_enabled set to false, the default is true.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' should have public_network_enabled set to false, the default is true.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
-			if block.GetAttribute("public_network_enabled").IsTrue() || block.GetAttribute("public_network_enabled").Equals("true") || block.GetAttribute("public_network_enabled").Equals(true) {
+			if resourceBlock.GetAttribute("public_network_enabled").IsTrue() || resourceBlock.GetAttribute("public_network_enabled").Equals("true") || resourceBlock.GetAttribute("public_network_enabled").Equals(true) {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' should not have public network set to true.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' should not have public network set to true.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
 			}

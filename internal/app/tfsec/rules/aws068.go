@@ -66,22 +66,22 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_eks_cluster"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("vpc_config") {
+			if resourceBlock.MissingChild("vpc_config") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access cidrs is set", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access cidrs is set", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
 
-			vpcConfig := block.GetBlock("vpc_config")
+			vpcConfig := resourceBlock.GetBlock("vpc_config")
 			if vpcConfig.MissingChild("public_access_cidrs") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' is using default public access cidrs in the vpc config", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' is using default public access cidrs in the vpc config", resourceBlock.FullName())).
 						WithRange(vpcConfig.Range()).
 						WithSeverity(severity.Error),
 				)
@@ -90,8 +90,8 @@ func init() {
 			publicAccessCidrsAttr := vpcConfig.GetAttribute("public_access_cidrs")
 			if isOpenCidr(publicAccessCidrsAttr) {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has public access cidr explicitly set to wide open", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has public access cidr explicitly set to wide open", resourceBlock.FullName())).
 						WithRange(publicAccessCidrsAttr.Range()).
 						WithAttributeAnnotation(publicAccessCidrsAttr).
 						WithSeverity(severity.Error),

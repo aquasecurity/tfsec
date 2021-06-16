@@ -64,11 +64,11 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_network_acl_rule"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			egressAttr := block.GetAttribute("egress")
-			actionAttr := block.GetAttribute("rule_action")
-			protoAttr := block.GetAttribute("protocol")
+			egressAttr := resourceBlock.GetAttribute("egress")
+			actionAttr := resourceBlock.GetAttribute("rule_action")
+			protoAttr := resourceBlock.GetAttribute("protocol")
 
 			if egressAttr.Type() == cty.Bool && egressAttr.Value().True() {
 			}
@@ -79,14 +79,14 @@ func init() {
 			if actionAttr.Value().AsString() != "allow" {
 			}
 
-			if cidrBlockAttr := block.GetAttribute("cidr_block"); cidrBlockAttr != nil {
+			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr != nil {
 
 				if isOpenCidr(cidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 					} else {
 						set.Add(
-							result.New().
-								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", block.FullName())).
+							result.New(resourceBlock).
+								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
 								WithRange(cidrBlockAttr.Range()).
 								WithSeverity(severity.Warning),
 						)
@@ -95,14 +95,14 @@ func init() {
 
 			}
 
-			if ipv6CidrBlockAttr := block.GetAttribute("ipv6_cidr_block"); ipv6CidrBlockAttr != nil {
+			if ipv6CidrBlockAttr := resourceBlock.GetAttribute("ipv6_cidr_block"); ipv6CidrBlockAttr != nil {
 
 				if isOpenCidr(ipv6CidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 					} else {
 						set.Add(
-							result.New().
-								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", block.FullName())).
+							result.New(resourceBlock).
+								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
 								WithRange(ipv6CidrBlockAttr.Range()).
 								WithAttributeAnnotation(ipv6CidrBlockAttr).
 								WithSeverity(severity.Warning),

@@ -65,15 +65,15 @@ func init() {
 		Provider:       provider.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster", "google_container_node_pool"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			nodeMetadata := block.GetBlock("node_config").GetBlock("workload_metadata_config").GetAttribute("node_metadata")
+			nodeMetadata := resourceBlock.GetBlock("node_config").GetBlock("workload_metadata_config").GetAttribute("node_metadata")
 
 			if nodeMetadata != nil && nodeMetadata.Type() == cty.String &&
 				(nodeMetadata.Value().AsString() == "EXPOSE" || nodeMetadata.Value().AsString() == "UNSPECIFIED") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with node metadata exposed. node_metadata set to EXPOSE or UNSPECIFIED disables metadata concealment. ", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with node metadata exposed. node_metadata set to EXPOSE or UNSPECIFIED disables metadata concealment. ", resourceBlock.FullName())).
 						WithRange(nodeMetadata.Range()).
 						WithSeverity(severity.Error),
 				)

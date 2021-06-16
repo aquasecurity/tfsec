@@ -57,29 +57,29 @@ func init() {
 		Provider:       provider.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster", "google_container_node_pool"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if strings.HasPrefix(block.Label(), "google_container_cluster") && block.GetAttribute("remove_default_node_pool").IsTrue() {
+			if strings.HasPrefix(resourceBlock.Label(), "google_container_cluster") && resourceBlock.GetAttribute("remove_default_node_pool").IsTrue() {
 				return
 			}
 
-			if !block.HasBlock("node_config") {
+			if !resourceBlock.HasBlock("node_config") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
 			}
 
-			displayBlock := block.GetBlock("node_config")
+			displayBlock := resourceBlock.GetBlock("node_config")
 			serviceAccount := displayBlock.GetAttribute("service_account")
 
 			if serviceAccount == nil || serviceAccount.IsEmpty() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())).
 						WithRange(displayBlock.Range()).
 						WithSeverity(severity.Error),
 				)

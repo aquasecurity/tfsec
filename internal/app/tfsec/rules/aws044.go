@@ -55,20 +55,20 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"provider"},
 		RequiredLabels: []string{"aws"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if accessKeyAttribute := block.GetAttribute("access_key"); accessKeyAttribute != nil && accessKeyAttribute.Type() == cty.String {
+			if accessKeyAttribute := resourceBlock.GetAttribute("access_key"); accessKeyAttribute != nil && accessKeyAttribute.Type() == cty.String {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Provider '%s' has an access key specified.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Provider '%s' has an access key specified.", resourceBlock.FullName())).
 						WithRange(accessKeyAttribute.Range()).
 						WithAttributeAnnotation(accessKeyAttribute).
 						WithSeverity(severity.Error),
 				)
-			} else if secretKeyAttribute := block.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
+			} else if secretKeyAttribute := resourceBlock.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Provider '%s' has a secret key specified.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Provider '%s' has a secret key specified.", resourceBlock.FullName())).
 						WithRange(secretKeyAttribute.Range()).
 						WithAttributeAnnotation(secretKeyAttribute).
 						WithSeverity(severity.Error),

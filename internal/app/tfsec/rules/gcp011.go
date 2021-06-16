@@ -99,23 +99,23 @@ func init() {
 			"google_storage_bucket_iam_member",
 			"google_iam_policy",
 		},
-		CheckFunc: func(set result.Set, b *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			var members []cty.Value
 			var attributes *block.Attribute
 
-			if attributes = b.GetAttribute("member"); attributes != nil {
+			if attributes = resourceBlock.GetAttribute("member"); attributes != nil {
 				members = append(members, attributes.Value())
-			} else if attributes = b.GetAttribute("members"); attributes != nil {
+			} else if attributes = resourceBlock.GetAttribute("members"); attributes != nil {
 				members = attributes.Value().AsValueSlice()
-			} else if attributes = b.GetBlock("binding").GetAttribute("members"); attributes != nil {
+			} else if attributes = resourceBlock.GetBlock("binding").GetAttribute("members"); attributes != nil {
 				members = attributes.Value().AsValueSlice()
 			}
 			for _, identities := range members {
 				if identities.IsKnown() && identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", b.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock.FullName())).
 							WithRange(attributes.Range()).
 							WithSeverity(severity.Warning),
 					)

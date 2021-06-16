@@ -61,20 +61,20 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_rule"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			directionAttr := block.GetAttribute("direction")
+			directionAttr := resourceBlock.GetAttribute("direction")
 			if directionAttr == nil || directionAttr.Type() != cty.String || directionAttr.Value().AsString() != "Inbound" {
 			}
 
-			if prefixAttr := block.GetAttribute("source_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
+			if prefixAttr := resourceBlock.GetAttribute("source_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
 				if isOpenCidr(prefixAttr) {
-					if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
+					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
 						set.Add(
-							result.New().
+							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf(
 									"Resource '%s' defines a fully open %s network security group rule.",
-									block.FullName(),
+									resourceBlock.FullName(),
 									strings.ToLower(directionAttr.Value().AsString()),
 								)).
 								WithRange(prefixAttr.Range()).
@@ -85,12 +85,12 @@ func init() {
 				}
 			}
 
-			if prefixesAttr := block.GetAttribute("source_address_prefixes"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
+			if prefixesAttr := resourceBlock.GetAttribute("source_address_prefixes"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
 				if isOpenCidr(prefixesAttr) {
-					if accessAttr := block.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
+					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
 						set.Add(
-							result.New().
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open security group rule.", block.FullName())).
+							result.New(resourceBlock).
+								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName())).
 								WithRange(prefixesAttr.Range()).
 								WithAttributeAnnotation(prefixesAttr).
 								WithSeverity(severity.Warning),

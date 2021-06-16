@@ -33,7 +33,13 @@ func (s *resultSet) Add(result *Result) {
 		WithRuleSummary(s.ruleSummary).
 		WithImpact(s.impact).
 		WithResolution(s.resolution).
-		WithRuleProvider(s.ruleProvider)
+		WithRuleProvider(s.ruleProvider).
+		WithLinks(s.links)
+
+	if result.Range.Filename == "" {
+		result.Range = result.topLevelBlock.Range()
+	}
+
 	s.results = append(s.results, *result)
 }
 

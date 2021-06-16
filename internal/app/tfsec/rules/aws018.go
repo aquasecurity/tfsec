@@ -74,22 +74,22 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group", "aws_security_group_rule"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if block.MissingChild("description") {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if resourceBlock.MissingChild("description") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
 			}
 
-			descriptionAttr := block.GetAttribute("description")
+			descriptionAttr := resourceBlock.GetAttribute("description")
 			if descriptionAttr.IsEmpty() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' should include a non-empty description for auditing purposes.", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' should include a non-empty description for auditing purposes.", resourceBlock.FullName())).
 						WithRange(descriptionAttr.Range()).
 						WithAttributeAnnotation(descriptionAttr).
 						WithSeverity(severity.Error),

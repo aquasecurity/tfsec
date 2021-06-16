@@ -56,13 +56,13 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_launch_configuration", "aws_instance"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if publicAttr := block.GetAttribute("associate_public_ip_address"); publicAttr != nil && publicAttr.Type() == cty.Bool {
+			if publicAttr := resourceBlock.GetAttribute("associate_public_ip_address"); publicAttr != nil && publicAttr.Type() == cty.Bool {
 				if publicAttr.Value().True() {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' has a public IP address associated.", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' has a public IP address associated.", resourceBlock.FullName())).
 							WithRange(publicAttr.Range()).
 							WithAttributeAnnotation(publicAttr).
 							WithSeverity(severity.Error),

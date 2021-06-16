@@ -56,15 +56,15 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group"},
-		CheckFunc: func(resultSet result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(resultSet result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			for _, directionBlock := range block.GetBlocks("ingress") {
+			for _, directionBlock := range resourceBlock.GetBlocks("ingress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 					if isOpenCidr(cidrBlocksAttr) {
 						resultSet.Add(
-							result.New().
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.FullName())).
+							result.New(resourceBlock).
+								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())).
 								WithRange(cidrBlocksAttr.Range()).
 								WithAttributeAnnotation(cidrBlocksAttr).
 								WithSeverity(severity.Warning),
@@ -76,8 +76,8 @@ func init() {
 
 					if isOpenCidr(cidrBlocksAttr) {
 						resultSet.Add(
-							result.New().
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", block.FullName())).
+							result.New(resourceBlock).
+								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())).
 								WithRange(cidrBlocksAttr.Range()).
 								WithSeverity(severity.Warning),
 						)

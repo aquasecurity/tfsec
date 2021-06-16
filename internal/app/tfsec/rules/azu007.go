@@ -58,14 +58,14 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_kubernetes_cluster", "role_based_access_control"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			rbacBlock := block.GetBlock("role_based_access_control")
+			rbacBlock := resourceBlock.GetBlock("role_based_access_control")
 			if rbacBlock == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
@@ -73,10 +73,10 @@ func init() {
 			enabledAttr := rbacBlock.GetAttribute("enabled")
 			if enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
 				set.Add(
-					result.New().
+					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf(
 							"Resource '%s' RBAC disabled.",
-							block.FullName(),
+							resourceBlock.FullName(),
 						)).
 						WithRange(enabledAttr.Range()).
 						WithAttributeAnnotation(enabledAttr).

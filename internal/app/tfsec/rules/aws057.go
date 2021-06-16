@@ -90,25 +90,25 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("log_publishing_options") {
+			if resourceBlock.MissingChild("log_publishing_options") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' does not configure logging at rest on the domain.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' does not configure logging at rest on the domain.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 				return
 			}
 
-			logOptions := block.GetBlocks("log_publishing_options")
+			logOptions := resourceBlock.GetBlocks("log_publishing_options")
 			for _, logOption := range logOptions {
 				enabledAttr := logOption.GetAttribute("enabled")
 				if enabledAttr != nil && enabledAttr.IsFalse() {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' explicitly disables logging on the domain.", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' explicitly disables logging on the domain.", resourceBlock.FullName())).
 							WithRange(enabledAttr.Range()).
 							WithAttributeAnnotation(enabledAttr).
 							WithSeverity(severity.Error),

@@ -49,10 +49,10 @@ resource "problem" "x" {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"problem"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			if block.GetAttribute("bad") != nil {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			if resourceBlock.GetAttribute("bad") != nil {
 				set.Add(
-					result.New().WithDescription("example problem").WithRange(block.Range()).WithSeverity(severity.Error),
+					result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.Error),
 				)
 			}
 		},

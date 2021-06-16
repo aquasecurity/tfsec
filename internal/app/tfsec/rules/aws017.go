@@ -62,21 +62,21 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_s3_bucket"},
-		CheckFunc: func(set result.Set, block *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
-			if block.MissingChild("server_side_encryption_configuration") {
+			if resourceBlock.MissingChild("server_side_encryption_configuration") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
-			encryptionBlock := block.GetBlock("server_side_encryption_configuration")
+			encryptionBlock := resourceBlock.GetBlock("server_side_encryption_configuration")
 			if encryptionBlock.MissingChild("rule") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", resourceBlock.FullName())).
 						WithRange(encryptionBlock.Range()).
 						WithSeverity(severity.Error),
 				)
@@ -86,8 +86,8 @@ func init() {
 
 			if ruleBlock.MissingChild("apply_server_side_encryption_by_default") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName())).
 						WithRange(ruleBlock.Range()).
 						WithSeverity(severity.Error),
 				)
@@ -96,8 +96,8 @@ func init() {
 			applyBlock := ruleBlock.GetBlock("apply_server_side_encryption_by_default")
 			if sseAttr := applyBlock.GetAttribute("sse_algorithm"); sseAttr == nil {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName())).
 						WithRange(applyBlock.Range()).
 						WithSeverity(severity.Error),
 				)

@@ -55,22 +55,22 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_db_instance"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if block.MissingChild("storage_encrypted") {
+			if resourceBlock.MissingChild("storage_encrypted") {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has no storage encryption defined.", block.FullName())).
-						WithRange(block.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has no storage encryption defined.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}
 
-			storageEncryptedAttr := block.GetAttribute("storage_encrypted")
+			storageEncryptedAttr := resourceBlock.GetAttribute("storage_encrypted")
 			if storageEncryptedAttr.IsFalse() {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' has storage encrypted set to false", block.FullName())).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' has storage encrypted set to false", resourceBlock.FullName())).
 						WithRange(storageEncryptedAttr.Range()).
 						WithAttributeAnnotation(storageEncryptedAttr).
 						WithSeverity(severity.Error),

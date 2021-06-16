@@ -56,8 +56,8 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_managed_disk"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
-			encryptionSettingsBlock := block.GetBlock("encryption_settings")
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+			encryptionSettingsBlock := resourceBlock.GetBlock("encryption_settings")
 			if encryptionSettingsBlock == nil {
 				return // encryption is by default now, so this is fine
 			}
@@ -65,10 +65,10 @@ func init() {
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
 			if enabledAttr != nil && enabledAttr.IsFalse() {
 				set.Add(
-					result.New().
+					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf(
 							"Resource '%s' defines an unencrypted managed disk.",
-							block.FullName(),
+							resourceBlock.FullName(),
 						)).
 						WithRange(enabledAttr.Range()).
 						WithAttributeAnnotation(enabledAttr).

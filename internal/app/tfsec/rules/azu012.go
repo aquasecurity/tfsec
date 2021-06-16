@@ -63,20 +63,20 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_storage_account", "azurerm_storage_account_network_rules"},
-		CheckFunc: func(set result.Set, b *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if b.IsResourceType("azurerm_storage_account") {
-				if b.MissingChild("network_rules") {
+			if resourceBlock.IsResourceType("azurerm_storage_account") {
+				if resourceBlock.MissingChild("network_rules") {
 				}
-				b = b.GetBlock("network_rules")
+				resourceBlock = resourceBlock.GetBlock("network_rules")
 			}
 
-			defaultAction := b.GetAttribute("default_action")
+			defaultAction := resourceBlock.GetAttribute("default_action")
 			if defaultAction != nil && defaultAction.Equals("Allow", block.IgnoreCase) {
 				set.Add(
-					result.New().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a default_action of Allow. It should be Deny.", b.FullName())).
-						WithRange(b.Range()).
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a default_action of Allow. It should be Deny.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}

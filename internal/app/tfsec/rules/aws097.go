@@ -66,9 +66,9 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"data"},
 		RequiredLabels: []string{"aws_iam_policy_document"},
-		CheckFunc: func(set result.Set, b *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if statementBlocks := b.GetBlocks("statement"); statementBlocks != nil {
+			if statementBlocks := resourceBlock.GetBlocks("statement"); statementBlocks != nil {
 				for _, statementBlock := range statementBlocks {
 
 					// Denying a broad set of KMS access is fine
@@ -80,9 +80,9 @@ func init() {
 						if resources := statementBlock.GetAttribute("resources"); resources != nil {
 							if resources.Contains("*") {
 								set.Add(
-									result.New().
-										WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", b.FullName())).
-										WithRange(b.Range()).
+									result.New(resourceBlock).
+										WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", resourceBlock.FullName())).
+										WithRange(resourceBlock.Range()).
 										WithAttributeAnnotation(resources).
 										WithSeverity(severity.Error),
 								)

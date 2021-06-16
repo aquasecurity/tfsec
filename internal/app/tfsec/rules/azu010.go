@@ -54,15 +54,15 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_storage_account", "enable_https_traffic_only"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			enabledAttr := block.GetAttribute("enable_https_traffic_only")
+			enabledAttr := resourceBlock.GetAttribute("enable_https_traffic_only")
 			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
 				set.Add(
-					result.New().
+					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf(
 							"Resource '%s' enable_https_traffic_only disabled.",
-							block.FullName(),
+							resourceBlock.FullName(),
 						)).
 						WithRange(enabledAttr.Range()).
 						WithAttributeAnnotation(enabledAttr).

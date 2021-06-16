@@ -56,9 +56,9 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group_rule"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			typeAttr := block.GetAttribute("type")
+			typeAttr := resourceBlock.GetAttribute("type")
 			if typeAttr == nil || typeAttr.Type() != cty.String {
 				return
 			}
@@ -67,12 +67,12 @@ func init() {
 				return
 			}
 
-			if cidrBlocksAttr := block.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
+			if cidrBlocksAttr := resourceBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 				if isOpenCidr(cidrBlocksAttr) {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName())).
 							WithRange(cidrBlocksAttr.Range()).
 							WithAttributeAnnotation(cidrBlocksAttr).
 							WithSeverity(severity.Warning),
@@ -80,12 +80,12 @@ func init() {
 				}
 			}
 
-			if ipv6CidrBlocksAttr := block.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr != nil {
+			if ipv6CidrBlocksAttr := resourceBlock.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr != nil {
 
 				if isOpenCidr(ipv6CidrBlocksAttr) {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName())).
 							WithRange(ipv6CidrBlocksAttr.Range()).
 							WithAttributeAnnotation(ipv6CidrBlocksAttr).
 							WithSeverity(severity.Warning),

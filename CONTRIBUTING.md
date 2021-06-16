@@ -112,7 +112,7 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
             if attr := block.GetAttribute("hackable"); attr != nil && attr.Value().Type() == cty.Bool {
                 if attr.Value().True() {
                     set.Add(
-                        result.New().
+                        result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("The Gibson '%s' is configured to be hackable.", block.Name())).
 						WithRange(attr.Range()).
 						WithAttributeAnnotation(attr).

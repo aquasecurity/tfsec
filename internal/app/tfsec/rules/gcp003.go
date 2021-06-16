@@ -54,13 +54,13 @@ func init() {
 		Provider:       provider.GCPProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_compute_firewall"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			if sourceRanges := block.GetAttribute("source_ranges"); sourceRanges != nil {
+			if sourceRanges := resourceBlock.GetAttribute("source_ranges"); sourceRanges != nil {
 				if isOpenCidr(sourceRanges) {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", block.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", resourceBlock.FullName())).
 							WithRange(sourceRanges.Range()).
 							WithSeverity(severity.Warning),
 					)

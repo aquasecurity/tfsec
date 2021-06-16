@@ -67,13 +67,13 @@ func init() {
 		},
 		Provider:      provider.GeneralProvider,
 		RequiredTypes: []string{"locals"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			for _, attribute := range block.GetAttributes() {
+			for _, attribute := range resourceBlock.GetAttributes() {
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String && attribute.Value().AsString() != "" {
-						set.Add(result.New().
-							WithDescription(fmt.Sprintf("Local '%s' includes a potentially sensitive value which is defined within the project.", block.FullName())).
+						set.Add(result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Local '%s' includes a potentially sensitive value which is defined within the project.", resourceBlock.FullName())).
 							WithRange(attribute.Range()).
 							WithAttributeAnnotation(attribute).
 							WithSeverity(severity.Warning),

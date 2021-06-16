@@ -67,24 +67,24 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticache_cluster"},
-		CheckFunc: func(set result.Set, b *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			engineAttr := b.GetAttribute("engine")
-			if engineAttr.Equals("redis", block.IgnoreCase) && !b.GetAttribute("node_type").Equals("cache.t1.micro") {
-				snapshotRetentionAttr := b.GetAttribute("snapshot_retention_limit")
+			engineAttr := resourceBlock.GetAttribute("engine")
+			if engineAttr.Equals("redis", block.IgnoreCase) && !resourceBlock.GetAttribute("node_type").Equals("cache.t1.micro") {
+				snapshotRetentionAttr := resourceBlock.GetAttribute("snapshot_retention_limit")
 				if snapshotRetentionAttr == nil {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", b.FullName())).
-							WithRange(b.Range()).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())).
+							WithRange(resourceBlock.Range()).
 							WithSeverity(severity.Warning),
 					)
 				}
 
 				if snapshotRetentionAttr.Equals(0) {
 					set.Add(
-						result.New().
-							WithDescription(fmt.Sprintf("Resource '%s' has snapshot retention set to 0", b.FullName())).
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName())).
 							WithRange(snapshotRetentionAttr.Range()).
 							WithAttributeAnnotation(snapshotRetentionAttr).
 							WithSeverity(severity.Warning),

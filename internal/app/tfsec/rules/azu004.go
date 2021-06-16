@@ -54,15 +54,15 @@ func init() {
 		Provider:       provider.AzureProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_data_lake_store"},
-		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
-			encryptionStateAttr := block.GetAttribute("encryption_state")
+			encryptionStateAttr := resourceBlock.GetAttribute("encryption_state")
 			if encryptionStateAttr != nil && encryptionStateAttr.Type() == cty.String && encryptionStateAttr.Value().AsString() == "Disabled" {
 				set.Add(
-					result.New().
+					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf(
 							"Resource '%s' defines an unencrypted data lake store.",
-							block.FullName(),
+							resourceBlock.FullName(),
 						)).
 						WithRange(encryptionStateAttr.Range()).
 						WithAttributeAnnotation(encryptionStateAttr).
