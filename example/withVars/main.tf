@@ -1,7 +1,7 @@
 
 resource "aws_security_group_rule" "my-rule" {
     type        = "ingress"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.cidr_blocks
 }
 
 resource "aws_alb_listener" "my-alb-listener"{

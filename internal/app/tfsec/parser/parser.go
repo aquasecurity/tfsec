@@ -16,7 +16,7 @@ import (
 // Parser is a tool for parsing terraform templates at a given file system location
 type Parser struct {
 	initialPath    string
-	tfvarsPath     string
+	tfvarsPaths    []string
 	stopOnFirstTf  bool
 	stopOnHCLError bool
 }
@@ -86,12 +86,11 @@ func (parser *Parser) ParseDirectory() (block.Blocks, error) {
 	}
 
 	debug.Log("Loading TFVars...")
-	t = metrics.Start(metrics.DiskIO)
-	inputVars, err := LoadTFVars(parser.tfvarsPath)
+
+	inputVars, err := LoadTFVars(parser.tfvarsPaths)
 	if err != nil {
 		return nil, err
 	}
-	t.Stop()
 
 	debug.Log("Loading module metadata...")
 	t = metrics.Start(metrics.DiskIO)
