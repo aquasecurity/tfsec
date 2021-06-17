@@ -35,4 +35,5 @@ lint-pr-checks:
 .PHONY: tagger
 tagger:
 	@git pull origin master
-	git tag -a ${TAG} -m ${TAG}
+	@git tag -a ${TAG} -m ${TAG}
+	@git push --tags
