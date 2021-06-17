@@ -31,3 +31,8 @@ new-check:
 .PHONY: lint-pr-checks
 lint-pr-checks:
 	@go run ./cmd/tfsec-pr-lint
+
+.PHONY: tagger
+tagger:
+	@git pull origin master
+	git tag -a ${TAG} -m ${TAG}
