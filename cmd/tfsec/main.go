@@ -169,6 +169,9 @@ var rootCmd = &cobra.Command{
 		}
 
 		if outputFlag != "" {
+			if format == "" {
+				format = "text"
+			}
 			f, err := os.OpenFile(filepath.Clean(outputFlag), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
 			if err != nil {
 				fmt.Println(err)

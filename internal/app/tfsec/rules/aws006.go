@@ -72,6 +72,7 @@ func init() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName())).
+							WithAttributeAnnotation(cidrBlocksAttr).
 							WithRange(cidrBlocksAttr.Range()).
 							WithSeverity(severity.Warning),
 					)
