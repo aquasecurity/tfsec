@@ -164,6 +164,10 @@ func evalMatchSpec(b *block.Block, spec *MatchSpec, ctx *hclcontext.Context) boo
 		return checkTags(b, spec, ctx)
 	}
 
+	if spec.Action == OfType {
+		return ofType(b, spec)
+	}
+
 	if spec.Action == RequiresPresence {
 		return resourceFound(spec, ctx)
 	}
@@ -218,34 +222,4 @@ func unpackInterfaceToInterfaceSlice(t interface{}) []interface{} {
 		return t
 	}
 	return nil
-}
-
-func checkTags(block *block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
-	expectedTag := fmt.Sprintf("%v", spec.MatchValue)
-
-	if block.HasChild("tags") {
-		tagsBlock := block.GetAttribute("tags")
-		if tagsBlock.Contains(expectedTag) {
-			return true
-		}
-	}
-
-	var alias string
-	if block.HasChild("provider") {
-		alias = block.GetAttribute("provider").ReferenceAsString()
-	}
-
-	awsProviders := ctx.GetProviderBlocksByProvider("aws", alias)
-	for _, providerBlock := range awsProviders {
-		if providerBlock.HasChild("default_tags") {
-			defaultTags := providerBlock.GetBlock("default_tags")
-			if defaultTags.HasChild("tags") {
-				tags := defaultTags.GetAttribute("tags")
-				if tags.Contains(expectedTag) {
-					return true
-				}
-			}
-		}
-	}
-	return false
 }

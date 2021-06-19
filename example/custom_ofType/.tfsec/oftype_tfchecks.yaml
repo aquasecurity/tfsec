@@ -1,0 +1,19 @@
+---
+checks:
+  - code: TypeLimit
+    description: Ensure that only specific types are used
+    requiredTypes: 
+      - resource
+    requiredLabels: 
+      - "*"
+    errorMessage: resource types not on the allowed list were identified
+    matchSpec:
+      action: ofType
+      name: ofType
+      value: 
+      - aws_cloudwatch_metric_alarm
+      - aws_cloudwatch_dashboard
+      - aws_sns_topic
+      - null_resource
+    severity: WARNING
+    
