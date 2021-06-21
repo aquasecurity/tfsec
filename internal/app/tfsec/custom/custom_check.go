@@ -29,6 +29,7 @@ var ValidCheckActions = []CheckAction{
 	Or,
 	Not,
 	HasTag,
+	OfType,
 }
 
 // InModule checks that the block is part of a module
@@ -93,6 +94,9 @@ const Not CheckAction = "not"
 
 // HasTag checks if there is an expected check for the resource, taking into account provider default checks
 const HasTag CheckAction = "hasTag"
+
+// OfType checks that each resource block is of a defined type
+const OfType CheckAction = "ofType"
 
 // MatchSpec specifies the checks that should be performed
 type MatchSpec struct {
