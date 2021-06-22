@@ -100,11 +100,11 @@ func Test_IgnoreWithExpDateIfDateBreachedThenDontIgnore(t *testing.T) {
 resource "aws_security_group_rule" "my-rule" {
     type        = "ingress"
 	
-    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:AWS006 exp:2000-01-02
+    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:AWS006:exp:2000-01-02
 	description = "test security group rule"
 }
 `)
-	assert.Len(t, results, 0)
+	assert.Len(t, results, 1)
 }
 
 func Test_IgnoreWithExpDateIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
@@ -112,9 +112,34 @@ func Test_IgnoreWithExpDateIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
 resource "aws_security_group_rule" "my-rule" {
     type        = "ingress"
 	
-    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:AWS006 exp:2221-12-02
+    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:AWS006:exp:2221-01-02
+	description = "test security group rule"
+}
+`)
+	assert.Len(t, results, 0)
+}
+
+func Test_IgnoreWithExpDateIfDateInvalidThenDontIgnoreTheIgnore(t *testing.T) {
+	results := scanSource(`
+resource "aws_security_group_rule" "my-rule" {
+   type        = "ingress"
+
+   cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:AWS006:exp:2221-13-02
 	description = "test security group rule"
 }
 `)
 	assert.Len(t, results, 1)
+}
+
+func Test_IgnoreAboveResourceBlockWithExpDateIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
+	results := scanSource(`
+# tfsec:ignore:AWS006:exp:2221-01-02
+resource "aws_security_group_rule" "my-rule" {
+    type        = "ingress"
+	
+    cidr_blocks = ["0.0.0.0/0"]
+	description = "test security group rule"
+}
+`)
+	assert.Len(t, results, 0)
 }

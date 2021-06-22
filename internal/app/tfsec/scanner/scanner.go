@@ -120,35 +120,34 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Rang
 	// check the line above the actual resource block
 	if b.StartLine-1 > 0 {
 		line := lines[b.StartLine-1]
-		if ignored := checkLineForIgnore(line, ignoreAll, ignoreCode); ignored {
+		if strings.Contains(line, ignoreAll) || strings.Contains(line, ignoreCode) {
 			foundValidIgnore = true
-			//lineValidIgnoreFound = number
+			lineValidIgnoreFound = b.StartLine-1
 		}
 	}
 
 	if foundValidIgnore {
 		lineWithPotentialExp := lines[lineValidIgnoreFound]
 		if indexExpFound := strings.Index(lineWithPotentialExp, "exp:"); indexExpFound > 0 {
-			//TODO: edge cases in extracting date value
-			expDate := lineWithPotentialExp[indexExpFound+4:indexExpFound+14]
-			//TODO: try to prase if unable - post warning that date format is incorrect and dont ignore the ignore
-			//TODO: which layout to use? should it be configurable?
-			parsedDate, _ := time.Parse("2006-01-02", expDate)
+			debug.Log("Expiration date found on ignore '%s'", lineWithPotentialExp)
+			expDate := lineWithPotentialExp[indexExpFound:]
+			parsedDate, err := time.Parse("exp:2006-01-02", expDate)
+
+			if err != nil {
+				// if we can't parse the date then we don't want to ignore the range
+				debug.Log("Unable to parse exp date in ignore: '%s'. The date format is invalid. Supported format 'exp:yyyy-mm-dd'.", lineWithPotentialExp)
+				return false
+			}
+
 			currentTime := time.Now()
-			foundValidIgnore = currentTime.After(parsedDate)
+			ignoreExpirationDateNotBreached := !currentTime.After(parsedDate)
+			if ignoreExpirationDateNotBreached {
+				debug.Log("Ignore ignored - expiration date not breached")
+			}
+
+			return ignoreExpirationDateNotBreached
 		}
 	}
 
 	return foundValidIgnore
-}
-
-func checkLineForIgnore(line, ignoreAll, ignoreCode string) bool {
-	line = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(line, "//", ""), "#", ""))
-	segments := strings.Split(line, " ")
-	for _, segment := range segments {
-		if segment == ignoreAll || segment == ignoreCode {
-			return true
-		}
-	}
-	return false
 }
