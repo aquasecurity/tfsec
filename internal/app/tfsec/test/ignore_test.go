@@ -143,3 +143,15 @@ resource "aws_security_group_rule" "my-rule" {
 `)
 	assert.Len(t, results, 0)
 }
+
+func Test_IgnoreAboveResourceBlockWithExpDateAndMultipleIgnoresIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
+	results := scanSource(`
+# tfsec:ignore:AWS006:exp:2221-01-02 #tfsec:ignore:AWS018
+resource "aws_security_group_rule" "my-rule" {
+    type        = "ingress"
+	
+    cidr_blocks = ["0.0.0.0/0"]
+}
+`)
+	assert.Len(t, results, 0)
+}

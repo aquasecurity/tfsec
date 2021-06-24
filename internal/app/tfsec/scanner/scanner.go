@@ -128,10 +128,12 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Rang
 
 	if foundValidIgnore {
 		lineWithPotentialExp := lines[lineValidIgnoreFound]
-		if indexExpFound := strings.Index(lineWithPotentialExp, "exp:"); indexExpFound > 0 {
+		expWithCode := fmt.Sprintf("%s:exp:", id)
+		if indexExpFound := strings.Index(lineWithPotentialExp, expWithCode); indexExpFound > 0 {
 			debug.Log("Expiration date found on ignore '%s'", lineWithPotentialExp)
-			expDate := lineWithPotentialExp[indexExpFound:]
-			parsedDate, err := time.Parse("exp:2006-01-02", expDate)
+			layout := fmt.Sprintf("%s2006-01-02", expWithCode)
+			expDate := lineWithPotentialExp[indexExpFound:indexExpFound+len(layout)]
+			parsedDate, err := time.Parse(layout, expDate)
 
 			if err != nil {
 				// if we can't parse the date then we don't want to ignore the range
@@ -140,12 +142,12 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Rang
 			}
 
 			currentTime := time.Now()
-			ignoreExpirationDateNotBreached := !currentTime.After(parsedDate)
-			if ignoreExpirationDateNotBreached {
-				debug.Log("Ignore ignored - expiration date not breached")
+			ignoreExpirationDateBreached := currentTime.After(parsedDate)
+			if ignoreExpirationDateBreached {
+				debug.Log("Ignore expired, check will be performed Filename: %s:%d", b.Filename, b.StartLine)
 			}
 
-			return ignoreExpirationDateNotBreached
+			return !ignoreExpirationDateBreached
 		}
 	}
 
