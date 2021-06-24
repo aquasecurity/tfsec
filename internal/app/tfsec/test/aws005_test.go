@@ -53,6 +53,16 @@ resource "aws_lb" "my-resource" {
 }`,
 			mustExcludeResultCode: rules.AWSExternallyExposedLoadBalancer,
 		},
+		{
+			name: "check aws_lb when explicitly is a gateway",
+			source: `
+resource "aws_lb" "gwlb" {
+	name               = var.gwlb_name
+	load_balancer_type = "gateway"
+	subnets            = local.appliance_subnets_id
+  }`,
+			mustExcludeResultCode: rules.AWSExternallyExposedLoadBalancer,
+		},
 	}
 
 	for _, test := range tests {
