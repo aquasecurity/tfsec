@@ -63,8 +63,9 @@ func (scanner *Scanner) Scan(blocks []*block.Block) []result.Result {
 				if rule.IsRuleRequiredForBlock(r, checkBlock) {
 					debug.Log("Running rule for %s on %s.%s (%s)...", r.ID, checkBlock.Type(), checkBlock.FullName(), checkBlock.Range().Filename)
 					ruleResults := rule.CheckRule(r, checkBlock, context)
-					if scanner.includePassed && ruleResults == nil {
-						res := result.New(checkBlock).WithRange(checkBlock.Range()).WithStatus(result.Passed).WithSeverity(severity.None)
+					if scanner.includePassed && ruleResults.All() == nil {
+						res := result.New(checkBlock).WithRuleID(r.ID).WithDescription(fmt.Sprintf("Resource '%s' passed check: %s", checkBlock.FullName(), r.Documentation.Summary)).
+							WithRange(checkBlock.Range()).WithStatus(result.Passed).WithSeverity(severity.None)
 						results = append(results, *res)
 					} else if ruleResults != nil {
 						for _, ruleResult := range ruleResults.All() {
