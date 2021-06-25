@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+	"time"
 
 	"github.com/tfsec/tfsec/pkg/severity"
 
@@ -95,6 +96,9 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Rang
 	lines := append([]string{""}, strings.Split(string(raw), "\n")...)
 	startLine := r.StartLine
 
+	foundValidIgnore := false
+	lineValidIgnoreFound := 0
+
 	// include the line above the line if available
 	if r.StartLine-1 > 0 {
 		startLine = r.StartLine - 1
@@ -107,28 +111,45 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Rang
 		}
 
 		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) {
-			return true
+			foundValidIgnore = true
+			lineValidIgnoreFound = number
+			break
 		}
 	}
 
 	// check the line above the actual resource block
 	if b.StartLine-1 > 0 {
 		line := lines[b.StartLine-1]
-		if ignored := checkLineForIgnore(line, ignoreAll, ignoreCode); ignored {
-			return true
+		if strings.Contains(line, ignoreAll) || strings.Contains(line, ignoreCode) {
+			foundValidIgnore = true
+			lineValidIgnoreFound = b.StartLine-1
 		}
 	}
 
-	return false
-}
+	if foundValidIgnore {
+		lineWithPotentialExp := lines[lineValidIgnoreFound]
+		expWithCode := fmt.Sprintf("%s:exp:", id)
+		if indexExpFound := strings.Index(lineWithPotentialExp, expWithCode); indexExpFound > 0 {
+			debug.Log("Expiration date found on ignore '%s'", lineWithPotentialExp)
+			layout := fmt.Sprintf("%s2006-01-02", expWithCode)
+			expDate := lineWithPotentialExp[indexExpFound:indexExpFound+len(layout)]
+			parsedDate, err := time.Parse(layout, expDate)
 
-func checkLineForIgnore(line, ignoreAll, ignoreCode string) bool {
-	line = strings.TrimSpace(strings.ReplaceAll(strings.ReplaceAll(line, "//", ""), "#", ""))
-	segments := strings.Split(line, " ")
-	for _, segment := range segments {
-		if segment == ignoreAll || segment == ignoreCode {
-			return true
+			if err != nil {
+				// if we can't parse the date then we don't want to ignore the range
+				debug.Log("Unable to parse exp date in ignore: '%s'. The date format is invalid. Supported format 'exp:yyyy-mm-dd'.", lineWithPotentialExp)
+				return false
+			}
+
+			currentTime := time.Now()
+			ignoreExpirationDateBreached := currentTime.After(parsedDate)
+			if ignoreExpirationDateBreached {
+				debug.Log("Ignore expired, check will be performed Filename: %s:%d", b.Filename, b.StartLine)
+			}
+
+			return !ignoreExpirationDateBreached
 		}
 	}
-	return false
+
+	return foundValidIgnore
 }
