@@ -127,6 +127,13 @@ resource "aws_s3_bucket" "my-bucket" {
 }
 ```
 
+### Expiration Date
+You can set expiration date for `ignore` with `yyyy-mm-dd` format. This is a useful feature when you want to ensure ignored issue won't be forgotten and should be revisited in the future.
+```
+#tfsec:ignore:AWS017:2022-01-02
+```
+Ignore like this will be active only till `2022-01-02`, after this date it will be deactivated.
+
 ## Disable checks
 
 You may wish to exclude some checks from running. If you'd like to do so, you can
