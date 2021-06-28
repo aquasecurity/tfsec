@@ -38,6 +38,26 @@ resource "aws_alb_listener" "my-listener" {
 			mustIncludeResultCode: rules.AWSPlainHTTP,
 		},
 		{
+			name: "check aws_alb_listeneer should continue checks if the referenced if a load balancer is not gateway",
+			source: `
+resource "aws_lb" "gwlb" {
+
+	load_balancer_type = "application"
+
+}
+
+resource "aws_lb_listener" "gwlb_listener" {
+	load_balancer_arn = aws_lb.gwlb.id
+	  
+	default_action {
+		target_group_arn = aws_lb_target_group.gwlb_target_group.id
+		  type             = "forward"
+		}
+}
+	`,
+			mustIncludeResultCode: rules.AWSPlainHTTP,
+		},
+		{
 			name: "check aws_alb_listener using HTTPS",
 			source: `
 resource "aws_alb_listener" "my-listener" {
@@ -60,6 +80,26 @@ resource "aws_alb_listener" "my-listener" {
 		}
 	}
 }`,
+			mustExcludeResultCode: rules.AWSPlainHTTP,
+		},
+		{
+			name: "check aws_alb_listeneer should pass if a type is gateway",
+			source: `
+resource "aws_lb" "gwlb" {
+
+	load_balancer_type = "gateway"
+
+}
+
+resource "aws_lb_listener" "gwlb_listener" {
+	load_balancer_arn = aws_lb.gwlb.id
+	  
+	default_action {
+		target_group_arn = aws_lb_target_group.gwlb_target_group.id
+		  type             = "forward"
+		}
+}
+	`,
 			mustExcludeResultCode: rules.AWSPlainHTTP,
 		},
 	}

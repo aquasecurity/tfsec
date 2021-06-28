@@ -72,7 +72,7 @@ func init() {
 			}
 
 			kmsKeyAttr := resourceBlock.GetAttribute("kms_key_id")
-			if kmsKeyAttr.ReferencesDataBlock() {
+			if kmsKeyAttr.IsDataBlockReference() {
 				ref := kmsKeyAttr.ReferenceAsString()
 				dataReferenceParts := strings.Split(ref, ".")
 				if len(dataReferenceParts) < 3 {

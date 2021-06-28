@@ -359,7 +359,7 @@ func (attr *Attribute) GreaterThanOrEqualTo(checkValue interface{}) bool {
 	return false
 }
 
-func (attr *Attribute) ReferencesDataBlock() bool {
+func (attr *Attribute) IsDataBlockReference() bool {
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.ScopeTraversalExpr:
 		split := t.Traversal.SimpleSplit()
@@ -382,6 +382,30 @@ func (attr *Attribute) ReferenceAsString() string {
 	}
 	if len(refParts) > 0 {
 		return strings.Join(refParts, ".")
+	}
+	return ""
+}
+
+func (attr *Attribute) IsResourceBlockReference(resourceType string) bool {
+	switch t := attr.hclAttribute.Expr.(type) {
+	case *hclsyntax.ScopeTraversalExpr:
+		split := t.Traversal.SimpleSplit()
+		return split.Abs.RootName() == resourceType
+	}
+	return false
+}
+
+func (attr *Attribute) GetReferencedResourceBlocksName() string {
+	switch t := attr.hclAttribute.Expr.(type) {
+	case *hclsyntax.ScopeTraversalExpr:
+		parts := t.Traversal.SimpleSplit()
+		for _, p := range parts.Rel {
+			switch part := p.(type) {
+			case hcl.TraverseAttr:
+				// the first name on the Rel is the label for the attribute, so return that
+				return part.Name
+			}
+		}
 	}
 	return ""
 }
