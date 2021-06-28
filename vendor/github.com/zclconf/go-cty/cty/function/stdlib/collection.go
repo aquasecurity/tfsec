@@ -530,10 +530,18 @@ func flattener(flattenList cty.Value) ([]cty.Value, []cty.ValueMarks, bool) {
 		// predict the length of our result yet either.
 		return nil, markses, false
 	}
+
 	out := make([]cty.Value, 0)
 	isKnown := true
 	for it := flattenList.ElementIterator(); it.Next(); {
 		_, val := it.Element()
+
+		// Any dynamic types could result in more collections that need to be
+		// flattened, so the type cannot be known.
+		if val.Type().Equals(cty.DynamicPseudoType) {
+			isKnown = false
+		}
+
 		if val.Type().IsListType() || val.Type().IsSetType() || val.Type().IsTupleType() {
 			if !val.IsKnown() {
 				isKnown = false
@@ -940,18 +948,26 @@ var SetProductFunc = function.New(&function.Spec{
 		var retMarks cty.ValueMarks
 
 		total := 1
+		var hasUnknownLength bool
 		for _, arg := range args {
 			arg, marks := arg.Unmark()
 			retMarks = cty.NewValueMarks(retMarks, marks)
 
+			// Continue processing after we find an argument with unknown
+			// length to ensure that we cover all the marks
 			if !arg.Length().IsKnown() {
-				return cty.UnknownVal(retType).Mark(marks), nil
+				hasUnknownLength = true
+				continue
 			}
 
 			// Because of our type checking function, we are guaranteed that
 			// all of the arguments are known, non-null values of types that
 			// support LengthInt.
 			total *= arg.LengthInt()
+		}
+
+		if hasUnknownLength {
+			return cty.UnknownVal(retType).WithMarks(retMarks), nil
 		}
 
 		if total == 0 {
