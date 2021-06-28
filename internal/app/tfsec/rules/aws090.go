@@ -79,7 +79,7 @@ func init() {
 			}
 			set.Add(
 				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resoure '%s' does not have codeInsights enabled", resourceBlock.FullName())).
+					WithDescription(fmt.Sprintf("Resoure '%s' does not have containerInsights enabled", resourceBlock.FullName())).
 					WithRange(resourceBlock.Range()).
 					WithSeverity(severity.Info),
 			)
