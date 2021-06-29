@@ -53,6 +53,23 @@ func (run *Run) AddArtifact() *Artifact {
 	return a
 }
 
+// AddDistinctArtifact will handle deduplication of simple artifact additions
+func (run *Run) AddDistinctArtifact(uri string) *Artifact {
+	for _, artifact := range run.Artifacts {
+		if *artifact.Location.URI == uri {
+			return artifact
+		}
+	}
+
+	a := &Artifact{
+		Length: -1,
+	}
+	a.WithLocation(NewSimpleArtifactLocation(uri))
+
+	run.Artifacts = append(run.Artifacts, a)
+	return a
+}
+
 // AddRule returns an existing Rule for the ruleID or creates a new Rule and returns a pointer to it
 func (run *Run) AddRule(ruleID string) *Rule {
 	for _, rule := range run.Tool.Driver.Rules {
@@ -112,6 +129,6 @@ func (run *Run) DedupeArtifacts() error {
 	return nil
 }
 
-func (run *Run) AddProperties(key string, value cty.Value) {
+func (run *Run) AddProperty(key string, value cty.Value) {
 	run.Properties[key] = value
 }
