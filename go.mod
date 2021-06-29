@@ -6,7 +6,7 @@ require (
 	github.com/agext/levenshtein v1.2.2 // indirect
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/bmatcuk/doublestar v1.1.5
-	github.com/google/go-cmp v0.5.5
+	github.com/google/go-cmp v0.5.6
 	github.com/google/uuid v1.2.0
 	github.com/hashicorp/go-uuid v1.0.1
 	github.com/hashicorp/go-version v1.3.0

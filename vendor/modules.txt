@@ -11,7 +11,7 @@ github.com/apparentlymart/go-textseg/v13/textseg
 github.com/bmatcuk/doublestar
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/google/go-cmp v0.5.5
+# github.com/google/go-cmp v0.5.6
 ## explicit
 github.com/google/go-cmp/cmp
 github.com/google/go-cmp/cmp/internal/diff
