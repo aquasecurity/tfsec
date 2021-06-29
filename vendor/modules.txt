@@ -6,7 +6,7 @@ github.com/agext/levenshtein
 github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
 github.com/apparentlymart/go-textseg/v13/textseg
-# github.com/bmatcuk/doublestar v1.1.5
+# github.com/bmatcuk/doublestar v1.3.4
 ## explicit
 github.com/bmatcuk/doublestar
 # github.com/davecgh/go-spew v1.1.1
