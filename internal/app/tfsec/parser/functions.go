@@ -2,12 +2,11 @@ package parser
 
 import (
 	"github.com/hashicorp/hcl/v2/ext/tryfunc"
+	"github.com/tfsec/tfsec/internal/app/tfsec/funcs"
 	ctyyaml "github.com/zclconf/go-cty-yaml"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/function"
 	"github.com/zclconf/go-cty/cty/function/stdlib"
-
-	"github.com/hashicorp/terraform/lang/funcs"
 )
 
 // Functions returns the set of functions that should be used to when evaluating
