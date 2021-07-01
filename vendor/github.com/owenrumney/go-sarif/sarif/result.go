@@ -30,8 +30,9 @@ type Result struct {
 	WorkItemUris    []string `json:"workItemUris,omitempty"` // can be null
 	HostedViewerUri *string  `json:"hostedViewerUri,omitempty"`
 	// Provenance			*resultProvenance				`json:"provenance,omitempty"`
-	Fixes           []*Fix `json:"fixes,omitempty"`
-	OccurrenceCount *uint  `json:"occurrenceCount,omitempty"`
+	Fixes           []*Fix     `json:"fixes,omitempty"`
+	OccurrenceCount *uint      `json:"occurrenceCount,omitempty"`
+	Properties      Properties `json:"properties,omitempty"`
 }
 
 func newRuleResult(ruleID string) *Result {
@@ -140,4 +141,15 @@ func (r *Result) WithOccurrenceCount(occurrenceCount int) *Result {
 	count := uint(occurrenceCount)
 	r.OccurrenceCount = &count
 	return r
+}
+
+// WithProperties specifies properties for a rule and returns the updated rule
+func (r *Result) WithProperties(properties Properties) *Result {
+	r.Properties = properties
+	return r
+}
+
+// AttachPropertyBag adds a property bag to a rule
+func (r *Result) AttachPropertyBag(pb *PropertyBag) {
+	r.Properties = pb.Properties
 }

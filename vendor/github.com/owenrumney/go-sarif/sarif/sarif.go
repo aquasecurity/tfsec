@@ -80,6 +80,16 @@ func getVersionSchema(version Version) (string, error) {
 	return "", fmt.Errorf("version [%s] is not supported", version)
 }
 
+// WriteFile will write the report to a file using a pretty formatter
+func (sarif *Report) WriteFile(filename string) error {
+	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, os.ModeAppend)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = file.Close() }()
+	return sarif.PrettyWrite(file)
+}
+
 // Write writes the JSON as a string with no formatting
 func (sarif *Report) Write(w io.Writer) error {
 	for _, run := range sarif.Runs {
