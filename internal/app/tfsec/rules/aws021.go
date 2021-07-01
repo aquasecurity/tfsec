@@ -74,20 +74,24 @@ func init() {
 			minVersion := viewerCertificateBlock.GetAttribute("minimum_protocol_version")
 
 			minBaseVersion, minCipherSupportVersion, minVersionErr := func() (string, int, error) {
-				if minVersion.Type() == cty.String {
-					semver := strings.Split(minVersion.Value().AsString(), "_")
-					if len(semver) > 1 {
-						semverCipherSupportVersion, err := strconv.Atoi(semver[1])
+        errorMessage := "Undecipherable minimum_protocol_version"
+        if minVersion.Type() != cty.String {
+          return "", 0, errors.New(errorMessage)
+        }
 
-						if err == nil {
-							return semver[0], semverCipherSupportVersion, nil
-						} else {
-							return "", 0, err
-						}
-					}
-				}
+        semver := strings.Split(minVersion.Value().AsString(), "_")
 
-				return "", 0, errors.New("Undecipherable minimum_protocol_version")
+        if len(semver) < 2 {
+          return "", 0, errors.New(errorMessage)
+        }
+
+        semverCipherSupportVersion, err := strconv.Atoi(semver[1])
+
+        if err != nil {
+          return "", 0, err
+        }
+
+        return semver[0], semverCipherSupportVersion, nil
 			}()
 
 			if viewerCertificateBlock == nil {
