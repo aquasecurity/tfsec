@@ -53,3 +53,22 @@ func (c *Context) GetProviderBlocksByProvider(providerName string, alias string)
 	}
 	return results
 }
+
+func (c *Context) GetReferencedBlock(referringAttr *block.Attribute) (*block.Block, error) {
+	resType, err := referringAttr.GetReferencedResourceBlockType()
+	if err != nil {
+		return nil, err
+	}
+	resName, err := referringAttr.GetReferencedResourceBlocksName()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, resource := range c.GetResourcesByType(resType) {
+		if resource.NameLabel() == resName {
+			return resource, nil
+		}
+	}
+
+	return nil, fmt.Errorf("did not find a suitable block to reference")
+}

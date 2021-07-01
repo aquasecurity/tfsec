@@ -395,7 +395,16 @@ func (attr *Attribute) IsResourceBlockReference(resourceType string) bool {
 	return false
 }
 
-func (attr *Attribute) GetReferencedResourceBlocksName() string {
+func (attr *Attribute) GetReferencedResourceBlockType() (string, error) {
+	switch t := attr.hclAttribute.Expr.(type) {
+	case *hclsyntax.ScopeTraversalExpr:
+		split := t.Traversal.SimpleSplit()
+		return split.Abs.RootName(), nil
+	}
+	return "", fmt.Errorf("not referenced block found on the attribute")
+}
+
+func (attr *Attribute) GetReferencedResourceBlocksName() (string, error) {
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.ScopeTraversalExpr:
 		parts := t.Traversal.SimpleSplit()
@@ -403,11 +412,11 @@ func (attr *Attribute) GetReferencedResourceBlocksName() string {
 			switch part := p.(type) {
 			case hcl.TraverseAttr:
 				// the first name on the Rel is the label for the attribute, so return that
-				return part.Name
+				return part.Name, nil
 			}
 		}
 	}
-	return ""
+	return "", fmt.Errorf("no referenced block found on the atteibute")
 }
 
 func getRawValue(value cty.Value) interface{} {

@@ -8,6 +8,7 @@ import (
 
 	"github.com/tfsec/tfsec/pkg/provider"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/block"
@@ -61,15 +62,14 @@ func init() {
 			if resourceBlock.HasChild("load_balancer_arn") {
 				lbaAttr := resourceBlock.GetAttribute("load_balancer_arn")
 				if lbaAttr.IsResourceBlockReference("aws_lb") {
-					resourceRef := lbaAttr.GetReferencedResourceBlocksName()
-					if resourceRef != "" {
-						for _, resource := range ctx.GetResourcesByType("aws_lb") {
-							if resource.NameLabel() == resourceRef {
-								if resource.HasChild("load_balancer_type") && resource.GetAttribute("load_balancer_type").Equals("gateway") {
-									return
-								}
-							}
+					referencedBlock, err := ctx.GetReferencedBlock(lbaAttr)
+					if err == nil {
+						if referencedBlock.HasChild("load_balancer_type") && referencedBlock.GetAttribute("load_balancer_type").Equals("gateway") {
+							return
 						}
+					} else {
+						// didn't find the referenced block, log and move on
+						debug.Log(err.Error())
 					}
 				}
 			}
