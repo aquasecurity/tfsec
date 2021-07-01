@@ -378,12 +378,6 @@ func TestFileSet(t *testing.T) {
 			true,
 		},
 		{
-			cty.StringVal("."),
-			cty.StringVal("\\"),
-			cty.SetValEmpty(cty.String),
-			true,
-		},
-		{
 			cty.StringVal("testdata"),
 			cty.StringVal("missing"),
 			cty.SetValEmpty(cty.String),
