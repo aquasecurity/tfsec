@@ -30,7 +30,7 @@ const AWSCloudFrontOutdatedProtocolBadExample = `
 resource "aws_cloudfront_distribution" "bad_example" {
   viewer_certificate {
     cloudfront_default_certificate = true
-	minimum_protocol_version = "TLSv1.0"
+    minimum_protocol_version = "TLSv1.0"
   }
 }
 `
@@ -38,7 +38,7 @@ const AWSCloudFrontOutdatedProtocolGoodExample = `
 resource "aws_cloudfront_distribution" "good_example" {
   viewer_certificate {
     cloudfront_default_certificate = true
-	minimum_protocol_version = "TLSv1.2_2019"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 }
 `
@@ -80,10 +80,10 @@ func init() {
 						WithRange(viewerCertificateBlock.Range()).
 						WithSeverity(severity.Error),
 				)
-			} else if minVersion.Type() == cty.String && minVersion.Value().AsString() != "TLSv1.2_2019" {
+			} else if minVersion.Type() == cty.String && minVersion.Value().AsString() != "TLSv1.2_2021" {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2019)", resourceBlock.FullName())).
+						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName())).
 						WithRange(minVersion.Range()).
 						WithSeverity(severity.Error),
 				)
