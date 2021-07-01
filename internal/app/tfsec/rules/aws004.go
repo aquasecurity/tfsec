@@ -8,6 +8,7 @@ import (
 
 	"github.com/tfsec/tfsec/pkg/provider"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/block"
@@ -57,7 +58,21 @@ func init() {
 		Provider:       provider.AWSProvider,
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_lb_listener", "aws_alb_listener"},
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, ctx *hclcontext.Context) {
+			if resourceBlock.HasChild("load_balancer_arn") {
+				lbaAttr := resourceBlock.GetAttribute("load_balancer_arn")
+				if lbaAttr.IsResourceBlockReference("aws_lb") {
+					referencedBlock, err := ctx.GetReferencedBlock(lbaAttr)
+					if err == nil {
+						if referencedBlock.HasChild("load_balancer_type") && referencedBlock.GetAttribute("load_balancer_type").Equals("gateway") {
+							return
+						}
+					} else {
+						// didn't find the referenced block, log and move on
+						debug.Log(err.Error())
+					}
+				}
+			}
 
 			if protocolAttr := resourceBlock.GetAttribute("protocol"); protocolAttr == nil || (protocolAttr.Type() == cty.String && protocolAttr.Value().AsString() == "HTTP") {
 

@@ -78,7 +78,7 @@ func init() {
 				return
 			}
 
-			if kmsKeyIDAttr.ReferencesDataBlock() {
+			if kmsKeyIDAttr.IsDataBlockReference() {
 				ref := kmsKeyIDAttr.ReferenceAsString()
 				dataReferenceParts := strings.Split(ref, ".")
 				if len(dataReferenceParts) < 3 {
