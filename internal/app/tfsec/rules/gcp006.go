@@ -62,9 +62,10 @@ func init() {
 				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#node_metadata",
 			},
 		},
-		Provider:       provider.GCPProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"google_container_cluster", "google_container_node_pool"},
+		Provider:        provider.GCPProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"google_container_cluster", "google_container_node_pool"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			nodeMetadata := resourceBlock.GetBlock("node_config").GetBlock("workload_metadata_config").GetAttribute("node_metadata")

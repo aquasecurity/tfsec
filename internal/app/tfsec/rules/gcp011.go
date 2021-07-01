@@ -99,6 +99,7 @@ func init() {
 			"google_storage_bucket_iam_member",
 			"google_iam_policy",
 		},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			var members []cty.Value

@@ -63,9 +63,10 @@ func init() {
 				"https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_ecr_repository"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_ecr_repository"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
 			ecrScanStatusBlock := resourceBlock.GetBlock("image_scanning_configuration")

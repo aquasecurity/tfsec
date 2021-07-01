@@ -68,8 +68,9 @@ resource "aws_security_group_rule" "my-rule" {
 func Test_IgnoreSpecific(t *testing.T) {
 
 	scanner.RegisterCheckRule(rule.Rule{
-		ID:             "ABC123",
-		RequiredLabels: []string{"bad"},
+		ID:              "ABC123",
+		RequiredLabels:  []string{"bad"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			set.Add(
 				result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.Error),
@@ -78,8 +79,9 @@ func Test_IgnoreSpecific(t *testing.T) {
 	})
 
 	scanner.RegisterCheckRule(rule.Rule{
-		ID:             "DEF456",
-		RequiredLabels: []string{"bad"},
+		ID:              "DEF456",
+		RequiredLabels:  []string{"bad"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			set.Add(
 				result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.Error),

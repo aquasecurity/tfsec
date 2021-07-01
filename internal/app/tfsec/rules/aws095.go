@@ -56,9 +56,10 @@ func init() {
 				"https://docs.aws.amazon.com/kms/latest/developerguide/services-secrets-manager.html#asm-encrypt",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_secretsmanager_secret"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_secretsmanager_secret"},
+		DefaultSeverity: severity.Info,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, ctx *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("kms_key_id") {

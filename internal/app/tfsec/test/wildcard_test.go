@@ -59,9 +59,10 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 			Documentation: rule.RuleDocumentation{
 				Summary: "blah",
 			},
-			Provider:       "custom",
-			RequiredTypes:  []string{"resource"},
-			RequiredLabels: []string{test.pattern},
+			Provider:        "custom",
+			RequiredTypes:   []string{"resource"},
+			RequiredLabels:  []string{test.pattern},
+			DefaultSeverity: severity.Error,
 			CheckFunc: func(set result.Set, rootBlock *block.Block, ctx *hclcontext.Context) {
 				set.Add(
 					result.New(rootBlock).WithDescription(fmt.Sprintf("Custom check failed for resource %s.", rootBlock.FullName())).

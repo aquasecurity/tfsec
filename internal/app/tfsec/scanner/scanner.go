@@ -6,8 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tfsec/tfsec/pkg/severity"
-
 	"github.com/tfsec/tfsec/pkg/result"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/block"
@@ -66,7 +64,7 @@ func (scanner *Scanner) Scan(blocks []*block.Block) []result.Result {
 					ruleResults := rule.CheckRule(r, checkBlock, context)
 					if scanner.includePassed && ruleResults.All() == nil {
 						res := result.New(checkBlock).WithRuleID(r.ID).WithDescription(fmt.Sprintf("Resource '%s' passed check: %s", checkBlock.FullName(), r.Documentation.Summary)).
-							WithRange(checkBlock.Range()).WithStatus(result.Passed).WithSeverity(severity.None)
+							WithRange(checkBlock.Range()).WithStatus(result.Passed).WithSeverity(r.DefaultSeverity)
 						results = append(results, *res)
 					} else if ruleResults != nil {
 						for _, ruleResult := range ruleResults.All() {
@@ -122,7 +120,7 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Rang
 		line := lines[b.StartLine-1]
 		if strings.Contains(line, ignoreAll) || strings.Contains(line, ignoreCode) {
 			foundValidIgnore = true
-			lineValidIgnoreFound = b.StartLine-1
+			lineValidIgnoreFound = b.StartLine - 1
 		}
 	}
 
@@ -132,7 +130,7 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Rang
 		if indexExpFound := strings.Index(lineWithPotentialExp, expWithCode); indexExpFound > 0 {
 			debug.Log("Expiration date found on ignore '%s'", lineWithPotentialExp)
 			layout := fmt.Sprintf("%s2006-01-02", expWithCode)
-			expDate := lineWithPotentialExp[indexExpFound:indexExpFound+len(layout)]
+			expDate := lineWithPotentialExp[indexExpFound : indexExpFound+len(layout)]
 			parsedDate, err := time.Parse(layout, expDate)
 
 			if err != nil {

@@ -59,9 +59,10 @@ func init() {
 				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_s3_bucket"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_s3_bucket"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("server_side_encryption_configuration") {

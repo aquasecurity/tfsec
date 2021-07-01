@@ -53,9 +53,10 @@ func init() {
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_security_group"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_security_group"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(resultSet result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			for _, directionBlock := range resourceBlock.GetBlocks("ingress") {

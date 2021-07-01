@@ -54,9 +54,10 @@ func init() {
 				"https://docs.aws.amazon.com/streams/latest/dev/server-side-encryption.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_kinesis_stream"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_kinesis_stream"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
 			encryptionTypeAttr := resourceBlock.GetAttribute("encryption_type")

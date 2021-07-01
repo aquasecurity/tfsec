@@ -60,13 +60,15 @@ func init() {
 				"https://docs.microsoft.com/en-us/azure/firewall/rule-processing",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_storage_account", "azurerm_storage_account_network_rules"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_storage_account", "azurerm_storage_account_network_rules"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.IsResourceType("azurerm_storage_account") {
 				if resourceBlock.MissingChild("network_rules") {
+					return
 				}
 				resourceBlock = resourceBlock.GetBlock("network_rules")
 			}

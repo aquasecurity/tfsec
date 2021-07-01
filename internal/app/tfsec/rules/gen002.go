@@ -65,8 +65,9 @@ func init() {
 				"https://www.terraform.io/docs/state/sensitive-data.html",
 			},
 		},
-		Provider:      provider.GeneralProvider,
-		RequiredTypes: []string{"locals"},
+		Provider:        provider.GeneralProvider,
+		RequiredTypes:   []string{"locals"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			for _, attribute := range resourceBlock.GetAttributes() {

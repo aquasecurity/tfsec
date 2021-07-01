@@ -69,9 +69,10 @@ func init() {
 				"https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository",
 			},
 		},
-		Provider:       provider.GeneralProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"github_repository"},
+		Provider:        provider.GeneralProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"github_repository"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			privateAttribute := resourceBlock.GetAttribute("private")

@@ -51,9 +51,10 @@ func init() {
 				"https://docs.microsoft.com/en-us/azure/storage/blobs/security-recommendations",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_storage_account", "enable_https_traffic_only"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_storage_account", "enable_https_traffic_only"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			enabledAttr := resourceBlock.GetAttribute("enable_https_traffic_only")

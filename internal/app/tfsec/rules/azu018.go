@@ -67,9 +67,10 @@ func init() {
 				"https://docs.microsoft.com/en-us/azure/azure-sql/database/auditing-overview",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_sql_server", "azurerm_mssql_server"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_sql_server", "azurerm_mssql_server"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("extended_auditing_policy") {
 				set.Add(

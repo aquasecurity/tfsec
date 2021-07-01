@@ -54,9 +54,10 @@ func init() {
 				"https://kubernetes.io/docs/concepts/services-networking/network-policies",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_kubernetes_cluster"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_kubernetes_cluster"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if networkProfileBlock := resourceBlock.GetBlock("network_profile"); networkProfileBlock != nil {

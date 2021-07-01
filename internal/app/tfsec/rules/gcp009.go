@@ -61,9 +61,10 @@ func init() {
 				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#pod_security_policy_config",
 			},
 		},
-		Provider:       provider.GCPProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"google_container_cluster"},
+		Provider:        provider.GCPProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"google_container_cluster"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			pspBlock := resourceBlock.GetBlock("pod_security_policy_config")

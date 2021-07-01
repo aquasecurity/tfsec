@@ -61,9 +61,10 @@ func init() {
 				"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_network_acl_rule"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_network_acl_rule"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			egressAttr := resourceBlock.GetAttribute("egress")

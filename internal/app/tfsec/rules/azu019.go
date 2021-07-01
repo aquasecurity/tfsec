@@ -69,18 +69,21 @@ func init() {
 				"https://docs.microsoft.com/en-us/azure/azure-sql/database/auditing-overview",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_sql_server", "azurerm_sql_server", "azurerm_mssql_database_extended_auditing_policy"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_sql_server", "azurerm_sql_server", "azurerm_mssql_database_extended_auditing_policy"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			if !resourceBlock.IsResourceType("azurerm_mssql_database_extended_auditing_policy") {
 				if resourceBlock.MissingChild("extended_auditing_policy") {
+					return
 				}
 				resourceBlock = resourceBlock.GetBlock("extended_auditing_policy")
 			}
 
 			if resourceBlock.MissingChild("retention_in_days") {
 				// using default of unlimited
+				return
 			}
 			if resourceBlock.GetAttribute("retention_in_days").LessThan(90) {
 				set.Add(

@@ -64,9 +64,10 @@ func init() {
 				"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-automatic.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_elasticache_cluster"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_elasticache_cluster"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			engineAttr := resourceBlock.GetAttribute("engine")

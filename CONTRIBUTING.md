@@ -95,6 +95,7 @@ func init() {
 		RequiredLabels: []string{"aws_gibson"},
         
         	// the actual logic for your check
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
 			// TODO: add check logic here
 		},
@@ -107,7 +108,8 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
 ```go
 ...
 
-        CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
+        DefaultSeverity: severity.Warning,
+CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
 
             if attr := block.GetAttribute("hackable"); attr != nil && attr.Value().Type() == cty.Bool {
                 if attr.Value().True() {

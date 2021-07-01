@@ -72,9 +72,10 @@ func init() {
 				"https://docs.aws.amazon.com/workspaces/latest/adminguide/encrypt-workspaces.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_workspaces_workspace"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_workspaces_workspace"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("root_volume_encryption_enabled") {
