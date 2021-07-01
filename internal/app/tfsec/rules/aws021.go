@@ -3,7 +3,14 @@ package rules
 import (
 	"fmt"
 
+	"strings"
+
+	"strconv"
+
+	"errors"
+
 	"github.com/tfsec/tfsec/pkg/result"
+
 	"github.com/tfsec/tfsec/pkg/severity"
 
 	"github.com/tfsec/tfsec/pkg/provider"
@@ -64,6 +71,25 @@ func init() {
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
 			viewerCertificateBlock := resourceBlock.GetBlock("viewer_certificate")
+			minVersion := viewerCertificateBlock.GetAttribute("minimum_protocol_version")
+
+			minBaseVersion, minCipherSupportVersion, minVersionErr := func() (string, int, error) {
+				if minVersion.Type() == cty.String {
+					semver := strings.Split(minVersion.Value().AsString(), "_")
+					if len(semver) > 1 {
+						semverCipherSupportVersion, err := strconv.Atoi(semver[1])
+
+						if err == nil {
+							return semver[0], semverCipherSupportVersion, nil
+						} else {
+							return "", 0, err
+						}
+					}
+				}
+
+				return "", 0, errors.New("Undecipherable minimum_protocol_version")
+			}()
+
 			if viewerCertificateBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
@@ -73,14 +99,14 @@ func init() {
 				)
 			}
 
-			if minVersion := viewerCertificateBlock.GetAttribute("minimum_protocol_version"); minVersion == nil {
+			if minVersion == nil {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName())).
 						WithRange(viewerCertificateBlock.Range()).
 						WithSeverity(severity.Error),
 				)
-			} else if minVersion.Type() == cty.String && minVersion.Value().AsString() != "TLSv1.2_2021" {
+			} else if (minVersionErr != nil) || !(minBaseVersion == "TLSv1.2" && minCipherSupportVersion >= 2021) {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName())).
