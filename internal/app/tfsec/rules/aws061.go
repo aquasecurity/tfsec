@@ -74,9 +74,10 @@ func init() {
 				"https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-logging.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_apigatewayv2_stage", "aws_api_gateway_stage"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_apigatewayv2_stage", "aws_api_gateway_stage"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("access_log_settings") {

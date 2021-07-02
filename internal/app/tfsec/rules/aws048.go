@@ -54,9 +54,10 @@ func init() {
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_efs_file_system"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_efs_file_system"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			efsEnabledAttr := resourceBlock.GetAttribute("encrypted")

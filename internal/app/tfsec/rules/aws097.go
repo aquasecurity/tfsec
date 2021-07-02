@@ -2,6 +2,7 @@ package rules
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/pkg/severity"
 
 	"github.com/tfsec/tfsec/pkg/result"
@@ -63,9 +64,10 @@ func init() {
 				"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards-fsbp-controls.html#fsbp-kms-1",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"data"},
-		RequiredLabels: []string{"aws_iam_policy_document"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"data"},
+		RequiredLabels:  []string{"aws_iam_policy_document"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if statementBlocks := resourceBlock.GetBlocks("statement"); statementBlocks != nil {

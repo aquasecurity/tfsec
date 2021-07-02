@@ -61,9 +61,10 @@ func init() {
 				"https://docs.aws.amazon.com/msk/latest/developerguide/msk-encryption.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_msk_cluster"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_msk_cluster"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
 			defaultBehaviorBlock := resourceBlock.GetBlock("encryption_info")

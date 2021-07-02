@@ -53,9 +53,10 @@ func init() {
 				"https://www.terraform.io/docs/providers/azurerm/r/managed_disk.html",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_managed_disk"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_managed_disk"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			encryptionSettingsBlock := resourceBlock.GetBlock("encryption_settings")
 			if encryptionSettingsBlock == nil {

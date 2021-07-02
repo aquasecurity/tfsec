@@ -72,9 +72,10 @@ func init() {
 				"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_alb", "aws_lb"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_alb", "aws_lb"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.GetAttribute("load_balancer_type").Equals("application", block.IgnoreCase) {

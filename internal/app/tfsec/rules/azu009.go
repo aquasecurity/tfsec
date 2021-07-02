@@ -55,9 +55,10 @@ func init() {
 				"https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-onboard",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_kubernetes_cluster"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_kubernetes_cluster"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			addonProfileBlock := resourceBlock.GetBlock("addon_profile")

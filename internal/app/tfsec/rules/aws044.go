@@ -52,9 +52,10 @@ func init() {
 				"https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"provider"},
-		RequiredLabels: []string{"aws"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"provider"},
+		RequiredLabels:  []string{"aws"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if accessKeyAttribute := resourceBlock.GetAttribute("access_key"); accessKeyAttribute != nil && accessKeyAttribute.Type() == cty.String {

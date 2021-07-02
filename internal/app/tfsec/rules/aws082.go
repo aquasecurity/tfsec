@@ -50,9 +50,10 @@ func init() {
 				"https://docs.aws.amazon.com/vpc/latest/userguide/default-vpc.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_default_vpc"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_default_vpc"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			set.Add(
 				result.New(resourceBlock).

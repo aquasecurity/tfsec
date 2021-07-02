@@ -53,9 +53,10 @@ func init() {
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_rds_cluster"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_rds_cluster"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")

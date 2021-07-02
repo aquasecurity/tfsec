@@ -80,12 +80,14 @@ func init() {
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue_policy",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_sqs_queue_policy"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_sqs_queue_policy"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.GetAttribute("policy").Value().Type() != cty.String {
+				return
 			}
 
 			rawJSON := []byte(resourceBlock.GetAttribute("policy").Value().AsString())

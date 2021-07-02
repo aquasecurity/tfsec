@@ -53,9 +53,10 @@ func init() {
 				"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_cloudwatch_log_group"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_cloudwatch_log_group"},
+		DefaultSeverity: severity.Info,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(

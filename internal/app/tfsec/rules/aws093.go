@@ -70,9 +70,10 @@ func init() {
 				"https://docs.aws.amazon.com/AmazonECR/latest/userguide/encryption-at-rest.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_ecr_repository"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_ecr_repository"},
+		DefaultSeverity: severity.Info,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("encryption_configuration") {

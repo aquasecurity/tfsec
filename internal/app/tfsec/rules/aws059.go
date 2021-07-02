@@ -91,9 +91,10 @@ func init() {
 				"https://docs.aws.amazon.com/athena/latest/ug/encryption.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_athena_database", "aws_athena_workgroup"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_athena_database", "aws_athena_workgroup"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			blockName := resourceBlock.FullName()
