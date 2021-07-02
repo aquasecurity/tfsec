@@ -59,9 +59,10 @@ func init() {
 				"https://docs.microsoft.com/en-us/azure/key-vault/general/soft-delete-overview#purge-protection",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_key_vault"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_key_vault"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("purge_protection_enabled") || resourceBlock.GetAttribute("purge_protection_enabled").IsFalse() {

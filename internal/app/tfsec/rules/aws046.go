@@ -64,9 +64,10 @@ func init() {
 			GoodExample: AWSIamPolicyWildcardActionsGoodExample,
 			Links:       []string{},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"data"},
-		RequiredLabels: []string{"aws_iam_policy_document"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"data"},
+		RequiredLabels:  []string{"aws_iam_policy_document"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if statementBlocks := resourceBlock.GetBlocks("statement"); statementBlocks != nil {

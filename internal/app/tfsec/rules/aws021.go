@@ -58,9 +58,10 @@ func init() {
 				"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_cloudfront_distribution"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_cloudfront_distribution"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
 			viewerCertificateBlock := resourceBlock.GetBlock("viewer_certificate")

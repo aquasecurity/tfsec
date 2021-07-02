@@ -51,9 +51,10 @@ func init() {
 				"https://www.terraform.io/docs/providers/google/r/compute_firewall.html",
 			},
 		},
-		Provider:       provider.GCPProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"google_compute_firewall"},
+		Provider:        provider.GCPProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"google_compute_firewall"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if destinationRanges := resourceBlock.GetAttribute("destination_ranges"); destinationRanges != nil {

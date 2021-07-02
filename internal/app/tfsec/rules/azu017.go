@@ -93,9 +93,10 @@ func init() {
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule#source_port_ranges",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_network_security_group", "azurerm_network_security_rule"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_network_security_group", "azurerm_network_security_rule"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			var securityRules block.Blocks

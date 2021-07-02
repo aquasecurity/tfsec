@@ -91,9 +91,10 @@ func init() {
 				"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html#USER_WorkingWithAutomatedBackups.BackupRetention",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_rds_cluster", "aws_db_instance"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_rds_cluster", "aws_db_instance"},
+		DefaultSeverity: severity.Info,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			if resourceBlock.HasChild("replicate_source_db") {
 				return

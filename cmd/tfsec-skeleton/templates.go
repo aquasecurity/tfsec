@@ -43,6 +43,7 @@ func init() {
 		Provider:       provider.{{.ProviderLongName}}Provider,
 		RequiredTypes:  []string{{.RequiredTypes}},
 		RequiredLabels: []string{{.RequiredLabels}},
+		DefaultSeverity: severity.Warning, //TODO set the default severity
 		CheckFunc: func(set result.Set, block *block.Block, _ *hclcontext.Context){
 				
 			// function contents here

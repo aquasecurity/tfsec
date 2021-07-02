@@ -73,9 +73,10 @@ func init() {
 				"https://docs.microsoft.com/en-us/azure/storage/common/storage-analytics-logging?tabs=dotnet",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_storage_account"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_storage_account"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.HasChild("queue_properties") {

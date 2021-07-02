@@ -63,9 +63,10 @@ func init() {
 				"https://www.terraform.io/docs/providers/google/r/compute_disk.html",
 			},
 		},
-		Provider:       provider.GCPProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"google_compute_disk"},
+		Provider:        provider.GCPProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"google_compute_disk"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			keyBlock := resourceBlock.GetBlock("disk_encryption_key")

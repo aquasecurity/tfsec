@@ -61,9 +61,10 @@ func init() {
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#log_publishing_options",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_elasticsearch_domain"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_elasticsearch_domain"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			logPublishingOptions := resourceBlock.GetBlocks("log_publishing_options")
 			if len(logPublishingOptions) > 0 {

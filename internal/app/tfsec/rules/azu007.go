@@ -55,9 +55,10 @@ func init() {
 				"https://docs.microsoft.com/en-us/azure/aks/concepts-identity",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_kubernetes_cluster", "role_based_access_control"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_kubernetes_cluster", "role_based_access_control"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			rbacBlock := resourceBlock.GetBlock("role_based_access_control")

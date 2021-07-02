@@ -64,9 +64,10 @@ func init() {
 				"https://docs.microsoft.com/en-us/azure/azure-functions/security-concepts",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_function_app"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_function_app"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("https_only") {

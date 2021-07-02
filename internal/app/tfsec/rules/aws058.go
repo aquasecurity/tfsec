@@ -59,9 +59,10 @@ func init() {
 				"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_lambda_permission"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_lambda_permission"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.HasChild("principal") {

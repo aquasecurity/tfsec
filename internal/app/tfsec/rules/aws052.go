@@ -52,9 +52,10 @@ func init() {
 				"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_db_instance"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_db_instance"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("storage_encrypted") {

@@ -94,9 +94,10 @@ func init() {
 				"https://docs.microsoft.com/en-us/azure/bastion/tutorial-create-host-portal",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_network_security_group", "azurerm_network_security_rule"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_network_security_group", "azurerm_network_security_rule"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			var securityRules block.Blocks

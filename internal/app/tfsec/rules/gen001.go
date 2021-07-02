@@ -67,8 +67,9 @@ func init() {
 				"https://www.terraform.io/docs/state/sensitive-data.html",
 			},
 		},
-		Provider:      provider.GeneralProvider,
-		RequiredTypes: []string{"variable"},
+		Provider:        provider.GeneralProvider,
+		RequiredTypes:   []string{"variable"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if len(resourceBlock.Labels()) == 0 || !security.IsSensitiveAttribute(resourceBlock.TypeLabel()) {

@@ -53,9 +53,10 @@ func init() {
 				"https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_sns_topic"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_sns_topic"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, ctx *hclcontext.Context) {
 
 			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
@@ -82,6 +83,7 @@ func init() {
 				ref := kmsKeyIDAttr.ReferenceAsString()
 				dataReferenceParts := strings.Split(ref, ".")
 				if len(dataReferenceParts) < 3 {
+					return
 				}
 				blockType := dataReferenceParts[0]
 				blockName := dataReferenceParts[1]

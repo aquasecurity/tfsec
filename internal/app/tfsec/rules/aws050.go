@@ -59,22 +59,26 @@ func init() {
 				"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_network_acl_rule"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_network_acl_rule"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			egressAttr := resourceBlock.GetAttribute("egress")
 			actionAttr := resourceBlock.GetAttribute("rule_action")
 			protoAttr := resourceBlock.GetAttribute("protocol")
 
-			if egressAttr.Type() == cty.Bool && egressAttr.Value().True() {
+			if egressAttr != nil && egressAttr.IsTrue() {
+				return
 			}
 
 			if actionAttr == nil || actionAttr.Type() != cty.String {
+				return
 			}
 
 			if actionAttr.Value().AsString() != "allow" {
+				return
 			}
 
 			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr != nil {
@@ -89,6 +93,7 @@ func init() {
 								WithSeverity(severity.Error),
 						)
 					} else {
+						return
 					}
 				}
 
@@ -106,6 +111,7 @@ func init() {
 								WithSeverity(severity.Error),
 						)
 					} else {
+						return
 					}
 				}
 

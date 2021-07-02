@@ -53,9 +53,10 @@ func init() {
 				"https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_kms_key"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_kms_key"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			keyUsageAttr := resourceBlock.GetAttribute("key_usage")
 

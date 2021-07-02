@@ -57,9 +57,10 @@ func init() {
 				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#enable_legacy_abac",
 			},
 		},
-		Provider:       provider.GCPProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"google_container_cluster"},
+		Provider:        provider.GCPProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"google_container_cluster"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			enable_legacy_abac := resourceBlock.GetAttribute("enable_legacy_abac")

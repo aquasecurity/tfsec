@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/tfsec/tfsec/pkg/provider"
+	"github.com/tfsec/tfsec/pkg/severity"
 
 	"github.com/tfsec/tfsec/pkg/result"
 
@@ -129,9 +130,10 @@ func processFoundChecks(checks ChecksFile) {
 					Impact:     customCheck.Impact,
 					Resolution: customCheck.Resolution,
 				},
-				Provider:       provider.CustomProvider,
-				RequiredTypes:  customCheck.RequiredTypes,
-				RequiredLabels: customCheck.RequiredLabels,
+				Provider:        provider.CustomProvider,
+				RequiredTypes:   customCheck.RequiredTypes,
+				RequiredLabels:  customCheck.RequiredLabels,
+				DefaultSeverity: severity.Warning,
 				CheckFunc: func(set result.Set, rootBlock *block.Block, ctx *hclcontext.Context) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, ctx) {

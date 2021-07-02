@@ -93,9 +93,10 @@ func init() {
 				"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_dynamodb_table"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_dynamodb_table"},
+		DefaultSeverity: severity.Info,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("server_side_encryption") {

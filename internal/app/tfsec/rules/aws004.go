@@ -55,9 +55,10 @@ func init() {
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_lb_listener", "aws_alb_listener"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_lb_listener", "aws_alb_listener"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, ctx *hclcontext.Context) {
 			if resourceBlock.HasChild("load_balancer_arn") {
 				lbaAttr := resourceBlock.GetAttribute("load_balancer_arn")

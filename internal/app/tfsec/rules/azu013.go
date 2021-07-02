@@ -105,13 +105,15 @@ func init() {
 				"https://docs.microsoft.com/en-us/azure/storage/common/storage-network-security#trusted-microsoft-services",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_storage_account_network_rules", "azurerm_storage_account"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_storage_account_network_rules", "azurerm_storage_account"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.IsResourceType("azurerm_storage_account") {
 				if resourceBlock.MissingChild("network_rules") {
+					return
 				}
 				resourceBlock = resourceBlock.GetBlock("network_rules")
 			}

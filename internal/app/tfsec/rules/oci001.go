@@ -54,9 +54,10 @@ func init() {
 				"https://registry.terraform.io/providers/hashicorp/opc/latest/docs/resources/opc_compute_instance",
 			},
 		},
-		Provider:       provider.OracleProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"opc_compute_ip_address_reservation"},
+		Provider:        provider.OracleProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"opc_compute_ip_address_reservation"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			if attr := resourceBlock.GetAttribute("ip_address_pool"); attr != nil {
 				if attr.IsAny("public-ippool") {

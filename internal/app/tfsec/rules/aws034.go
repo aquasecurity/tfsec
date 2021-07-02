@@ -62,9 +62,10 @@ func init() {
 				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-data-protection.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_elasticsearch_domain"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_elasticsearch_domain"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
 
 			endpointBlock := resourceBlock.GetBlock("domain_endpoint_options")

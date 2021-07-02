@@ -51,9 +51,10 @@ func init() {
 				"https://www.terraform.io/docs/providers/azurerm/r/data_lake_store.html",
 			},
 		},
-		Provider:       provider.AzureProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"azurerm_data_lake_store"},
+		Provider:        provider.AzureProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"azurerm_data_lake_store"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			encryptionStateAttr := resourceBlock.GetAttribute("encryption_state")

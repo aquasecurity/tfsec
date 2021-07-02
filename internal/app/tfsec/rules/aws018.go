@@ -71,9 +71,10 @@ func init() {
 				"https://www.cloudconformity.com/knowledge-base/aws/EC2/security-group-rules-description.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_security_group", "aws_security_group_rule"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_security_group", "aws_security_group_rule"},
+		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("description") {
 				set.Add(

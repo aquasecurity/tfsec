@@ -66,9 +66,10 @@ func init() {
 				"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-db-encryption.html",
 			},
 		},
-		Provider:       provider.AWSProvider,
-		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_redshift_cluster"},
+		Provider:        provider.AWSProvider,
+		RequiredTypes:   []string{"resource"},
+		RequiredLabels:  []string{"aws_redshift_cluster"},
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("encrypted") {
