@@ -8,10 +8,8 @@ jobs:
     - name: Set up secret file
       env:
         DEBUG_PASSWORD: ${{ secrets.GPG_PASSPHRASE }}
-        DEBUG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       run: |
         echo $DEBUG_PASSWORD >> /tmp/secrets.txt
-        echo $DEBUG_SECRET_KEY >> /tmp/secrets.txt
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
