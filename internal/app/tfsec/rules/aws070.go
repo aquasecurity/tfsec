@@ -65,7 +65,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_elasticsearch_domain"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			logPublishingOptions := resourceBlock.GetBlocks("log_publishing_options")
 			if len(logPublishingOptions) > 0 {
 				auditLogFound := false

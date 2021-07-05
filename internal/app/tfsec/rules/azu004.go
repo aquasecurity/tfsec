@@ -55,7 +55,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_data_lake_store"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			encryptionStateAttr := resourceBlock.GetAttribute("encryption_state")
 			if encryptionStateAttr != nil && encryptionStateAttr.Type() == cty.String && encryptionStateAttr.Value().AsString() == "Disabled" {

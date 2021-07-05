@@ -75,7 +75,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_security_group", "aws_security_group_rule"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("description") {
 				set.Add(
 					result.New(resourceBlock).

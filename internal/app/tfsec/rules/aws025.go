@@ -56,7 +56,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_api_gateway_domain_name"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			securityPolicyAttr := resourceBlock.GetAttribute("security_policy")
 			if securityPolicyAttr == nil {

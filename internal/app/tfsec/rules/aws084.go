@@ -76,7 +76,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_workspaces_workspace"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("root_volume_encryption_enabled") {
 				set.Add(

@@ -50,7 +50,7 @@ resource "problem" "x" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"problem"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.GetAttribute("bad") != nil {
 				set.Add(
 					result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.Error),
@@ -67,7 +67,7 @@ func scanSource(source string) []result.Result {
 	return scanner.New(scanner.OptionExcludeRules(excludedChecksList)).Scan(blocks)
 }
 
-func createBlocksFromSource(source string) []*block.Block {
+func createBlocksFromSource(source string) []block.Block {
 	path := createTestFile("test.tf", source)
 	blocks, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {

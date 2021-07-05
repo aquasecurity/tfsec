@@ -67,7 +67,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecr_repository"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			ecrScanStatusBlock := resourceBlock.GetBlock("image_scanning_configuration")
 			ecrScanStatusAttr := ecrScanStatusBlock.GetAttribute("scan_on_push")

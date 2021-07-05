@@ -64,7 +64,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_storage_account", "azurerm_storage_account_network_rules"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.IsResourceType("azurerm_storage_account") {
 				if resourceBlock.MissingChild("network_rules") {

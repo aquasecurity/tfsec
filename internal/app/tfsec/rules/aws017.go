@@ -63,7 +63,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_s3_bucket"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("server_side_encryption_configuration") {
 				set.Add(
@@ -72,6 +72,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 			encryptionBlock := resourceBlock.GetBlock("server_side_encryption_configuration")
 			if encryptionBlock.MissingChild("rule") {
@@ -81,10 +82,10 @@ func init() {
 						WithRange(encryptionBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			ruleBlock := encryptionBlock.GetBlock("rule")
-
 			if ruleBlock.MissingChild("apply_server_side_encryption_by_default") {
 				set.Add(
 					result.New(resourceBlock).
@@ -92,6 +93,7 @@ func init() {
 						WithRange(ruleBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			applyBlock := ruleBlock.GetBlock("apply_server_side_encryption_by_default")

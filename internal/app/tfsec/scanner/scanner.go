@@ -45,7 +45,7 @@ func checkInList(id string, list []string) bool {
 	return false
 }
 
-func (scanner *Scanner) Scan(blocks []*block.Block) []result.Result {
+func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 
 	if len(blocks) == 0 {
 		return nil
@@ -93,7 +93,7 @@ func readLines(filename string) ([]string, error) {
 	return append([]string{""}, strings.Split(string(raw), "\n")...), nil
 }
 
-func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b *block.Block) bool {
+func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Block) bool {
 	lines, err := readLines(b.Range().Filename)
 	if err != nil {
 		debug.Log("the file containing the block could not be opened. %s", err.Error())
@@ -162,7 +162,7 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b *block.Blo
 	return foundValidIgnore
 }
 
-func traverseModuleTree(b *block.Block, ignoreAll, ignoreCode string) (bool, string) {
+func traverseModuleTree(b block.Block, ignoreAll, ignoreCode string) (bool, string) {
 
 	// check on the module
 	if b.HasModuleBlock() {

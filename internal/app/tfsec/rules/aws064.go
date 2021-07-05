@@ -75,7 +75,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_cloudtrail"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("enable_log_file_validation") {
 				set.Add(
 					result.New(resourceBlock).

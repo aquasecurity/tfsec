@@ -63,7 +63,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_storage_account"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("min_tls_version") || resourceBlock.GetAttribute("min_tls_version").IsNone("TLS1_2") {
 				set.Add(

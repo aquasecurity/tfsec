@@ -71,7 +71,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_container_cluster"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			masterAuthBlock := resourceBlock.GetBlock("master_auth")
 			staticAuthUser := masterAuthBlock.GetAttribute("username")

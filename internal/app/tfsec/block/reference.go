@@ -60,7 +60,7 @@ func (r *Reference) String() string {
 	return r.fullString
 }
 
-func (r *Reference) RefersTo(b *Block) bool {
+func (r *Reference) RefersTo(b Block) bool {
 	if r.BlockType() != b.Reference().BlockType() {
 		return false
 	}

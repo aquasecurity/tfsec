@@ -56,7 +56,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_sqs_queue"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr == nil {

@@ -59,7 +59,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_kubernetes_cluster", "role_based_access_control"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			rbacBlock := resourceBlock.GetBlock("role_based_access_control")
 			if rbacBlock == nil {

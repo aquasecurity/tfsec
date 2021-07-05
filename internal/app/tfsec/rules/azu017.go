@@ -97,7 +97,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_network_security_group", "azurerm_network_security_rule"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			var securityRules block.Blocks
 			if resourceBlock.IsResourceType("azurerm_network_security_group") {

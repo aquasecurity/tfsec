@@ -68,7 +68,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_elasticsearch_domain"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			endpointBlock := resourceBlock.GetBlock("domain_endpoint_options")
 			if endpointBlock == nil {

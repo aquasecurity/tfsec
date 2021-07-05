@@ -57,7 +57,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_kms_key"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			keyUsageAttr := resourceBlock.GetAttribute("key_usage")
 
 			if keyUsageAttr != nil && keyUsageAttr.Equals("SIGN_VERIFY") {

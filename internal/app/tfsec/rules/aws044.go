@@ -56,7 +56,7 @@ func init() {
 		RequiredTypes:   []string{"provider"},
 		RequiredLabels:  []string{"aws"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if accessKeyAttribute := resourceBlock.GetAttribute("access_key"); accessKeyAttribute != nil && accessKeyAttribute.Type() == cty.String {
 				set.Add(

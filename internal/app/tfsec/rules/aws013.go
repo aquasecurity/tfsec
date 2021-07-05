@@ -85,7 +85,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecs_task_definition"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if definitionsAttr := resourceBlock.GetAttribute("container_definitions"); definitionsAttr != nil && definitionsAttr.Type() == cty.String {
 				rawJSON := []byte(definitionsAttr.Value().AsString())

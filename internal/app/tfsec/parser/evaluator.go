@@ -177,7 +177,7 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 }
 
 func mergeBlocks(allBlocks block.Blocks, newBlocks block.Blocks) block.Blocks {
-	var merger = make(map[*block.Block]bool)
+	var merger = make(map[block.Block]bool)
 	for _, b := range allBlocks {
 		merger[b] = true
 	}
@@ -205,7 +205,7 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 				continue
 			}
 
-			attributes, _ := b.HCL().Body.JustAttributes()
+			attributes := b.Attributes()
 			if attributes == nil {
 				continue
 			}
@@ -213,7 +213,7 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 			if override, exists := e.inputVars[b.Label()]; exists {
 				values[b.Label()] = override
 			} else if def, exists := attributes["default"]; exists {
-				values[b.Label()], _ = def.Expr.Value(e.ctx)
+				values[b.Label()] = def.Value()
 			}
 		case "output":
 
@@ -221,7 +221,7 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 				continue
 			}
 
-			attributes, _ := b.HCL().Body.JustAttributes()
+			attributes := b.Attributes()
 			if attributes == nil {
 				continue
 			}
@@ -231,29 +231,29 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 					defer func() {
 						_ = recover()
 					}()
-					values[b.Label()], _ = def.Expr.Value(e.ctx)
+					values[b.Label()] = def.Value()
 				}()
 			}
 
 		case "locals":
-			for key, val := range e.readValues(b.HCL()).AsValueMap() {
+			for key, val := range b.Values().AsValueMap() {
 				values[key] = val
 			}
 		case "provider", "module":
 			if b.Label() == "" {
 				continue
 			}
-			values[b.Label()] = e.readValues(b.HCL())
+			values[b.Label()] = b.Values()
 		case "resource", "data":
 
-			if len(b.HCL().Labels) < 2 {
+			if len(b.Labels()) < 2 {
 				continue
 			}
 
-			blockMap, ok := values[b.HCL().Labels[0]]
+			blockMap, ok := values[b.Label()]
 			if !ok {
-				values[b.HCL().Labels[0]] = cty.ObjectVal(make(map[string]cty.Value))
-				blockMap = values[b.HCL().Labels[0]]
+				values[b.Labels()[0]] = cty.ObjectVal(make(map[string]cty.Value))
+				blockMap = values[b.Labels()[0]]
 			}
 
 			valueMap := blockMap.AsValueMap()
@@ -261,37 +261,12 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 				valueMap = make(map[string]cty.Value)
 			}
 
-			valueMap[b.HCL().Labels[1]] = e.readValues(b.HCL())
-			values[b.HCL().Labels[0]] = cty.ObjectVal(valueMap)
+			valueMap[b.Labels()[1]] = b.Values()
+			values[b.Labels()[0]] = cty.ObjectVal(valueMap)
 		}
 
 	}
 
 	return cty.ObjectVal(values)
 
-}
-
-// returns true if all evaluations were successful
-func (e *Evaluator) readValues(block *hcl.Block) cty.Value {
-
-	values := make(map[string]cty.Value)
-
-	attributes, diagnostics := block.Body.JustAttributes()
-	if diagnostics != nil && diagnostics.HasErrors() {
-		return cty.NilVal
-	}
-
-	for _, attribute := range attributes {
-		func() {
-			defer func() {
-				if err := recover(); err != nil {
-					return
-				}
-			}()
-			val, _ := attribute.Expr.Value(e.ctx)
-			values[attribute.Name] = val
-		}()
-	}
-
-	return cty.ObjectVal(values)
 }

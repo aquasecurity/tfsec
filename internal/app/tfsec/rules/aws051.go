@@ -57,7 +57,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_rds_cluster"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
 			storageEncryptedattr := resourceBlock.GetAttribute("storage_encrypted")

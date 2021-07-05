@@ -65,7 +65,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_elasticsearch_domain"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			encryptionBlock := resourceBlock.GetBlock("node_to_node_encryption")
 			if encryptionBlock == nil {

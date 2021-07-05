@@ -57,7 +57,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_managed_disk"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			encryptionSettingsBlock := resourceBlock.GetBlock("encryption_settings")
 			if encryptionSettingsBlock == nil {
 				return // encryption is by default now, so this is fine

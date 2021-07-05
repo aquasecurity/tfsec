@@ -61,7 +61,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_container_cluster"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			enable_legacy_abac := resourceBlock.GetAttribute("enable_legacy_abac")
 			if enable_legacy_abac != nil && enable_legacy_abac.Value().Type() == cty.String && enable_legacy_abac.Value().AsString() == "true" {

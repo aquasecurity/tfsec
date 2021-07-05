@@ -68,7 +68,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_elasticache_cluster"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			engineAttr := resourceBlock.GetAttribute("engine")
 			if engineAttr.Equals("redis", block.IgnoreCase) && !resourceBlock.GetAttribute("node_type").Equals("cache.t1.micro") {

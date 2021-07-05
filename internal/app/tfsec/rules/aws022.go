@@ -65,7 +65,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_msk_cluster"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			defaultBehaviorBlock := resourceBlock.GetBlock("encryption_info")
 			if defaultBehaviorBlock == nil {

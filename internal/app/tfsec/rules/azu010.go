@@ -55,7 +55,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_storage_account", "enable_https_traffic_only"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			enabledAttr := resourceBlock.GetAttribute("enable_https_traffic_only")
 			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {

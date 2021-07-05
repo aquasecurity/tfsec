@@ -90,7 +90,7 @@ func init() {
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"resource", "provider", "module"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			attributes := resourceBlock.GetAttributes()
 

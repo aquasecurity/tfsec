@@ -58,7 +58,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_kubernetes_cluster"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if networkProfileBlock := resourceBlock.GetBlock("network_profile"); networkProfileBlock != nil {
 				if networkProfileBlock.GetAttribute("network_policy") == nil {

@@ -7,7 +7,7 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
 )
 
-func checkTags(block *block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
+func checkTags(block block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
 	expectedTag := fmt.Sprintf("%v", spec.MatchValue)
 
 	if block.HasChild("tags") {
@@ -40,7 +40,7 @@ func checkTags(block *block.Block, spec *MatchSpec, ctx *hclcontext.Context) boo
 	return false
 }
 
-func ofType(block *block.Block, spec *MatchSpec) bool {
+func ofType(block block.Block, spec *MatchSpec) bool {
 	switch value := spec.MatchValue.(type) {
 	case []interface{}:
 		for _, v := range value {

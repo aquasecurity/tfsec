@@ -73,7 +73,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"github_repository"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			privateAttribute := resourceBlock.GetAttribute("private")
 			visibilityAttribute := resourceBlock.GetAttribute("visibility")

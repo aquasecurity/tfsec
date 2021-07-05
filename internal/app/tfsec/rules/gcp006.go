@@ -66,7 +66,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_container_cluster", "google_container_node_pool"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			nodeMetadata := resourceBlock.GetBlock("node_config").GetBlock("workload_metadata_config").GetAttribute("node_metadata")
 

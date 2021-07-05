@@ -18,7 +18,7 @@ type Rule struct {
 	RequiredTypes   []string
 	RequiredLabels  []string
 	DefaultSeverity severity.Severity
-	CheckFunc       func(result.Set, *block.Block, *hclcontext.Context)
+	CheckFunc       func(result.Set, block.Block, *hclcontext.Context)
 }
 
 type RuleDocumentation struct {

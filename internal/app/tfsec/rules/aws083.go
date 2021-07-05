@@ -76,7 +76,11 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_alb", "aws_lb"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+
+			if resourceBlock.GetAttribute("load_balancer_type") == nil {
+				return
+			}
 
 			if resourceBlock.GetAttribute("load_balancer_type").Equals("application", block.IgnoreCase) {
 				if resourceBlock.MissingChild("drop_invalid_header_fields") {
@@ -86,6 +90,7 @@ func init() {
 							WithRange(resourceBlock.Range()).
 							WithSeverity(severity.Error),
 					)
+					return
 				}
 
 				attr := resourceBlock.GetAttribute("drop_invalid_header_fields")

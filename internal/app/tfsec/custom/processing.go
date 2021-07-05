@@ -18,12 +18,12 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
 )
 
-var matchFunctions = map[CheckAction]func(*block.Block, *MatchSpec) bool{
-	IsPresent: func(block *block.Block, spec *MatchSpec) bool {
+var matchFunctions = map[CheckAction]func(block.Block, *MatchSpec) bool{
+	IsPresent: func(block block.Block, spec *MatchSpec) bool {
 		return block.HasChild(spec.Name) || spec.IgnoreUndefined
 	},
-	NotPresent: func(block *block.Block, spec *MatchSpec) bool { return !block.HasChild(spec.Name) },
-	IsEmpty: func(block *block.Block, spec *MatchSpec) bool {
+	NotPresent: func(block block.Block, spec *MatchSpec) bool { return !block.HasChild(spec.Name) },
+	IsEmpty: func(block block.Block, spec *MatchSpec) bool {
 		if block.MissingChild(spec.Name) {
 			return true
 		}
@@ -35,81 +35,81 @@ var matchFunctions = map[CheckAction]func(*block.Block, *MatchSpec) bool{
 		childBlock := block.GetBlock(spec.Name)
 		return childBlock.IsEmpty()
 	},
-	StartsWith: func(block *block.Block, spec *MatchSpec) bool {
+	StartsWith: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.StartsWith(spec.MatchValue)
 	},
-	EndsWith: func(block *block.Block, spec *MatchSpec) bool {
+	EndsWith: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.EndsWith(spec.MatchValue)
 	},
-	Contains: func(b *block.Block, spec *MatchSpec) bool {
+	Contains: func(b block.Block, spec *MatchSpec) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.Contains(spec.MatchValue, block.IgnoreCase)
 	},
-	NotContains: func(block *block.Block, spec *MatchSpec) bool {
+	NotContains: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return !attribute.Contains(spec.MatchValue)
 	},
-	Equals: func(block *block.Block, spec *MatchSpec) bool {
+	Equals: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.Equals(spec.MatchValue)
 	},
-	LessThan: func(block *block.Block, spec *MatchSpec) bool {
+	LessThan: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThan(spec.MatchValue)
 	},
-	LessThanOrEqualTo: func(block *block.Block, spec *MatchSpec) bool {
+	LessThanOrEqualTo: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThanOrEqualTo(spec.MatchValue)
 	},
-	GreaterThan: func(block *block.Block, spec *MatchSpec) bool {
+	GreaterThan: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThan(spec.MatchValue)
 	},
-	GreaterThanOrEqualTo: func(block *block.Block, spec *MatchSpec) bool {
+	GreaterThanOrEqualTo: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThanOrEqualTo(spec.MatchValue)
 	},
-	RegexMatches: func(block *block.Block, spec *MatchSpec) bool {
+	RegexMatches: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
 		}
 		return attribute.RegexMatches(spec.MatchValue)
 	},
-	IsAny: func(block *block.Block, spec *MatchSpec) bool {
+	IsAny: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		return attribute != nil && attribute.IsAny(unpackInterfaceToInterfaceSlice(spec.MatchValue)...)
 	},
-	IsNone: func(block *block.Block, spec *MatchSpec) bool {
+	IsNone: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute == nil {
 			return spec.IgnoreUndefined
@@ -134,7 +134,7 @@ func processFoundChecks(checks ChecksFile) {
 				RequiredTypes:   customCheck.RequiredTypes,
 				RequiredLabels:  customCheck.RequiredLabels,
 				DefaultSeverity: severity.Warning,
-				CheckFunc: func(set result.Set, rootBlock *block.Block, ctx *hclcontext.Context) {
+				CheckFunc: func(set result.Set, rootBlock block.Block, ctx *hclcontext.Context) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, ctx) {
 						set.Add(
@@ -150,7 +150,7 @@ func processFoundChecks(checks ChecksFile) {
 	}
 }
 
-func evalMatchSpec(b *block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
+func evalMatchSpec(b block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
 	if b == nil {
 		return false
 	}

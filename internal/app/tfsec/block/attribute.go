@@ -13,27 +13,54 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 )
 
-type Attribute struct {
+type Attribute interface {
+	IsLiteral() bool
+	Type() cty.Type
+	Value() cty.Value
+	Range() Range
+	Name() string
+	Contains(checkValue interface{}, equalityOptions ...EqualityOption) bool
+	StartsWith(prefix interface{}) bool
+	EndsWith(suffix interface{}) bool
+	Equals(checkValue interface{}, equalityOptions ...EqualityOption) bool
+	RegexMatches(pattern interface{}) bool
+	IsAny(options ...interface{}) bool
+	IsNone(options ...interface{}) bool
+	IsTrue() bool
+	IsFalse() bool
+	IsEmpty() bool
+	MapValue(mapKey string) cty.Value
+	LessThan(checkValue interface{}) bool
+	LessThanOrEqualTo(checkValue interface{}) bool
+	GreaterThan(checkValue interface{}) bool
+	GreaterThanOrEqualTo(checkValue interface{}) bool
+	IsDataBlockReference() bool
+	Reference() (*Reference, error)
+	IsResourceBlockReference(resourceType string) bool
+	ReferencesBlock(b Block) bool
+}
+
+type HCLAttribute struct {
 	hclAttribute *hclsyntax.Attribute
 	ctx          *hcl.EvalContext
 }
 
-func NewAttribute(attr *hclsyntax.Attribute, ctx *hcl.EvalContext) *Attribute {
-	return &Attribute{
+func NewHCLAttribute(attr *hclsyntax.Attribute, ctx *hcl.EvalContext) *HCLAttribute {
+	return &HCLAttribute{
 		hclAttribute: attr,
 		ctx:          ctx,
 	}
 }
 
-func (attr *Attribute) IsLiteral() bool {
+func (attr *HCLAttribute) IsLiteral() bool {
 	return len(attr.hclAttribute.Expr.Variables()) == 0
 }
 
-func (attr *Attribute) Type() cty.Type {
+func (attr *HCLAttribute) Type() cty.Type {
 	return attr.Value().Type()
 }
 
-func (attr *Attribute) Value() (ctyVal cty.Value) {
+func (attr *HCLAttribute) Value() (ctyVal cty.Value) {
 	if attr == nil {
 		return cty.NilVal
 	}
@@ -49,7 +76,7 @@ func (attr *Attribute) Value() (ctyVal cty.Value) {
 	return ctyVal
 }
 
-func (attr *Attribute) Range() Range {
+func (attr *HCLAttribute) Range() Range {
 	return Range{
 		Filename:  attr.hclAttribute.SrcRange.Filename,
 		StartLine: attr.hclAttribute.SrcRange.Start.Line,
@@ -57,11 +84,11 @@ func (attr *Attribute) Range() Range {
 	}
 }
 
-func (attr *Attribute) Name() string {
+func (attr *HCLAttribute) Name() string {
 	return attr.hclAttribute.Name
 }
 
-func (attr *Attribute) Contains(checkValue interface{}, equalityOptions ...EqualityOption) bool {
+func (attr *HCLAttribute) Contains(checkValue interface{}, equalityOptions ...EqualityOption) bool {
 	ignoreCase := false
 	for _, option := range equalityOptions {
 		if option == IgnoreCase {
@@ -130,14 +157,14 @@ func containsIgnoreCase(left, substring string) bool {
 	return strings.Contains(strings.ToLower(left), strings.ToLower(substring))
 }
 
-func (attr *Attribute) StartsWith(prefix interface{}) bool {
+func (attr *HCLAttribute) StartsWith(prefix interface{}) bool {
 	if attr.Value().Type() == cty.String {
 		return strings.HasPrefix(attr.Value().AsString(), fmt.Sprintf("%v", prefix))
 	}
 	return false
 }
 
-func (attr *Attribute) EndsWith(suffix interface{}) bool {
+func (attr *HCLAttribute) EndsWith(suffix interface{}) bool {
 	if attr.Value().Type() == cty.String {
 		return strings.HasSuffix(attr.Value().AsString(), fmt.Sprintf("%v", suffix))
 	}
@@ -150,7 +177,7 @@ const (
 	IgnoreCase EqualityOption = iota
 )
 
-func (attr *Attribute) Equals(checkValue interface{}, equalityOptions ...EqualityOption) bool {
+func (attr *HCLAttribute) Equals(checkValue interface{}, equalityOptions ...EqualityOption) bool {
 	if attr.Value().Type() == cty.String {
 		for _, option := range equalityOptions {
 			if option == IgnoreCase {
@@ -173,7 +200,7 @@ func (attr *Attribute) Equals(checkValue interface{}, equalityOptions ...Equalit
 	return false
 }
 
-func (attr *Attribute) RegexMatches(pattern interface{}) bool {
+func (attr *HCLAttribute) RegexMatches(pattern interface{}) bool {
 	patternVal := fmt.Sprintf("%v", pattern)
 	re, err := regexp.Compile(patternVal)
 	if err != nil {
@@ -187,7 +214,7 @@ func (attr *Attribute) RegexMatches(pattern interface{}) bool {
 	return false
 }
 
-func (attr *Attribute) IsAny(options ...interface{}) bool {
+func (attr *HCLAttribute) IsAny(options ...interface{}) bool {
 	if attr.Value().Type() == cty.String {
 		value := attr.Value().AsString()
 		for _, option := range options {
@@ -211,7 +238,7 @@ func (attr *Attribute) IsAny(options ...interface{}) bool {
 	return false
 }
 
-func (attr *Attribute) IsNone(options ...interface{}) bool {
+func (attr *HCLAttribute) IsNone(options ...interface{}) bool {
 	if attr.Value().Type() == cty.String {
 		for _, option := range options {
 			if option == attr.Value().AsString() {
@@ -236,7 +263,7 @@ func (attr *Attribute) IsNone(options ...interface{}) bool {
 	return true
 }
 
-func (attr *Attribute) IsTrue() bool {
+func (attr *HCLAttribute) IsTrue() bool {
 	switch attr.Value().Type() {
 	case cty.Bool:
 		return attr.Value().True()
@@ -248,7 +275,7 @@ func (attr *Attribute) IsTrue() bool {
 	return false
 }
 
-func (attr *Attribute) IsFalse() bool {
+func (attr *HCLAttribute) IsFalse() bool {
 	switch attr.Value().Type() {
 	case cty.Bool:
 		return attr.Value().False()
@@ -260,7 +287,7 @@ func (attr *Attribute) IsFalse() bool {
 	return false
 }
 
-func (attr *Attribute) IsEmpty() bool {
+func (attr *HCLAttribute) IsEmpty() bool {
 	if attr.Value().Type() == cty.String {
 		return len(attr.Value().AsString()) == 0
 	}
@@ -295,7 +322,7 @@ func (attr *Attribute) IsEmpty() bool {
 	return true
 }
 
-func (attr *Attribute) MapValue(mapKey string) cty.Value {
+func (attr *HCLAttribute) MapValue(mapKey string) cty.Value {
 	if attr.Type().IsObjectType() || attr.Type().IsMapType() {
 		attrMap := attr.Value().AsValueMap()
 		for key, value := range attrMap {
@@ -307,7 +334,7 @@ func (attr *Attribute) MapValue(mapKey string) cty.Value {
 	return cty.StringVal("")
 }
 
-func (attr *Attribute) LessThan(checkValue interface{}) bool {
+func (attr *HCLAttribute) LessThan(checkValue interface{}) bool {
 	if attr.Value().Type() == cty.Number {
 		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
 		if err != nil {
@@ -320,7 +347,7 @@ func (attr *Attribute) LessThan(checkValue interface{}) bool {
 	return false
 }
 
-func (attr *Attribute) LessThanOrEqualTo(checkValue interface{}) bool {
+func (attr *HCLAttribute) LessThanOrEqualTo(checkValue interface{}) bool {
 	if attr.Value().Type() == cty.Number {
 		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
 		if err != nil {
@@ -333,7 +360,7 @@ func (attr *Attribute) LessThanOrEqualTo(checkValue interface{}) bool {
 	return false
 }
 
-func (attr *Attribute) GreaterThan(checkValue interface{}) bool {
+func (attr *HCLAttribute) GreaterThan(checkValue interface{}) bool {
 	if attr.Value().Type() == cty.Number {
 		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
 		if err != nil {
@@ -346,7 +373,7 @@ func (attr *Attribute) GreaterThan(checkValue interface{}) bool {
 	return false
 }
 
-func (attr *Attribute) GreaterThanOrEqualTo(checkValue interface{}) bool {
+func (attr *HCLAttribute) GreaterThanOrEqualTo(checkValue interface{}) bool {
 	if attr.Value().Type() == cty.Number {
 		checkNumber, err := gocty.ToCtyValue(checkValue, cty.Number)
 		if err != nil {
@@ -359,7 +386,7 @@ func (attr *Attribute) GreaterThanOrEqualTo(checkValue interface{}) bool {
 	return false
 }
 
-func (attr *Attribute) IsDataBlockReference() bool {
+func (attr *HCLAttribute) IsDataBlockReference() bool {
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.ScopeTraversalExpr:
 		split := t.Traversal.SimpleSplit()
@@ -368,7 +395,7 @@ func (attr *Attribute) IsDataBlockReference() bool {
 	return false
 }
 
-func (attr *Attribute) Reference() (*Reference, error) {
+func (attr *HCLAttribute) Reference() (*Reference, error) {
 	var refParts []string
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.ScopeTraversalExpr:
@@ -390,7 +417,7 @@ func (attr *Attribute) Reference() (*Reference, error) {
 
 }
 
-func (attr *Attribute) IsResourceBlockReference(resourceType string) bool {
+func (attr *HCLAttribute) IsResourceBlockReference(resourceType string) bool {
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.ScopeTraversalExpr:
 		split := t.Traversal.SimpleSplit()
@@ -399,31 +426,7 @@ func (attr *Attribute) IsResourceBlockReference(resourceType string) bool {
 	return false
 }
 
-func (attr *Attribute) GetReferencedResourceBlockType() (string, error) {
-	switch t := attr.hclAttribute.Expr.(type) {
-	case *hclsyntax.ScopeTraversalExpr:
-		split := t.Traversal.SimpleSplit()
-		return split.Abs.RootName(), nil
-	}
-	return "", fmt.Errorf("not referenced block found on the attribute")
-}
-
-func (attr *Attribute) GetReferencedResourceBlocksName() (string, error) {
-	switch t := attr.hclAttribute.Expr.(type) {
-	case *hclsyntax.ScopeTraversalExpr:
-		parts := t.Traversal.SimpleSplit()
-		for _, p := range parts.Rel {
-			switch part := p.(type) {
-			case hcl.TraverseAttr:
-				// the first name on the Rel is the label for the attribute, so return that
-				return part.Name, nil
-			}
-		}
-	}
-	return "", fmt.Errorf("no referenced block found on the atteibute")
-}
-
-func (attr *Attribute) ReferencesBlock(b *Block) bool {
+func (attr *HCLAttribute) ReferencesBlock(b Block) bool {
 	ref, err := attr.Reference()
 	if err != nil {
 		return false

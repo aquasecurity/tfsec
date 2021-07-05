@@ -58,7 +58,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_container_cluster", "google_container_node_pool"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if strings.HasPrefix(resourceBlock.Label(), "google_container_cluster") && resourceBlock.GetAttribute("remove_default_node_pool").IsTrue() {
 				return

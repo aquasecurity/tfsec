@@ -179,8 +179,8 @@ resource "aws_ami" "example" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)[0]
-			result := evalMatchSpec(blocks, &test.predicateMatchSpec, nil)
+			block := createBlocksFromSource(test.source)[0]
+			result := evalMatchSpec(block, &test.predicateMatchSpec, nil)
 			assert.Equal(t, result, test.expected, "`Or` match function evaluating incorrectly.")
 		})
 	}
@@ -333,7 +333,7 @@ func scanTerraform(t *testing.T, mainTf string) []result.Result {
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.
 // TODO: Extract into a testing utility package once the amount of duplication justifies introducing an extra package.
-func createBlocksFromSource(source string) []*block.Block {
+func createBlocksFromSource(source string) []block.Block {
 	path := createTestFile("test.tf", source)
 	blocks, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {

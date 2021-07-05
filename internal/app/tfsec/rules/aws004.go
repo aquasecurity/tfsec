@@ -59,7 +59,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_lb_listener", "aws_alb_listener"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, ctx *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 			if resourceBlock.HasChild("load_balancer_arn") {
 				lbaAttr := resourceBlock.GetAttribute("load_balancer_arn")
 				if lbaAttr.IsResourceBlockReference("aws_lb") {
