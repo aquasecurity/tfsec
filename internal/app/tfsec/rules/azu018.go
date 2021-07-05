@@ -8,6 +8,7 @@ import (
 
 	"github.com/tfsec/tfsec/pkg/provider"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/block"
@@ -71,15 +72,28 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_sql_server", "azurerm_mssql_server"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
-			if resourceBlock.MissingChild("extended_auditing_policy") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have extended audit configured.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
-				)
+		CheckFunc: func(set result.Set, resourceBlock *block.Block, ctx *hclcontext.Context) {
+
+			if !resourceBlock.MissingChild("extended_auditing_policy") {
+				return
 			}
+
+			blocks, err := ctx.GetReferencingResources(resourceBlock, "azurerm_mssql_server_extended_auditing_policy", "server_id")
+			if err != nil {
+				debug.Log("Failed to locate referencing blocks for %s", resourceBlock.FullName())
+				return
+			}
+
+			if len(blocks) > 0 {
+				return
+			}
+
+			set.Add(
+				result.New(resourceBlock).
+					WithDescription(fmt.Sprintf("Resource '%s' does not have an extended audit policy configured.", resourceBlock.FullName())).
+					WithRange(resourceBlock.Range()).
+					WithSeverity(severity.Error),
+			)
 
 		},
 	})

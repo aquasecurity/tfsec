@@ -368,22 +368,26 @@ func (attr *Attribute) IsDataBlockReference() bool {
 	return false
 }
 
-func (attr *Attribute) ReferenceAsString() string {
+func (attr *Attribute) Reference() (*Reference, error) {
 	var refParts []string
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.ScopeTraversalExpr:
-		parts := t.Traversal.SimpleSplit()
-		for _, p := range parts.Rel {
+		for _, p := range t.Traversal {
 			switch part := p.(type) {
+			case hcl.TraverseRoot:
+				refParts = append(refParts, part.Name)
 			case hcl.TraverseAttr:
 				refParts = append(refParts, part.Name)
 			}
 		}
+	default:
+		return nil, fmt.Errorf("not a reference: no scope traversal")
 	}
-	if len(refParts) > 0 {
-		return strings.Join(refParts, ".")
+	if len(refParts) == 0 {
+		return nil, fmt.Errorf("reference has zero parts")
 	}
-	return ""
+	return newReference(refParts), nil
+
 }
 
 func (attr *Attribute) IsResourceBlockReference(resourceType string) bool {
@@ -417,6 +421,14 @@ func (attr *Attribute) GetReferencedResourceBlocksName() (string, error) {
 		}
 	}
 	return "", fmt.Errorf("no referenced block found on the atteibute")
+}
+
+func (attr *Attribute) ReferencesBlock(b *Block) bool {
+	ref, err := attr.Reference()
+	if err != nil {
+		return false
+	}
+	return ref.RefersTo(b)
 }
 
 func getRawValue(value cty.Value) interface{} {
