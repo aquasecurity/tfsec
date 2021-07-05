@@ -34,6 +34,13 @@ func (block *Block) HasModuleBlock() bool {
 	return block.moduleBlock != nil
 }
 
+func (block *Block) GetModuleBlock() (*Block, error) {
+	if block.HasModuleBlock() {
+		return block.moduleBlock, nil
+	}
+	return nil, fmt.Errorf("the block does not have an associated module block")
+}
+
 func (block *Block) body() *hclsyntax.Body {
 	return block.hclBlock.Body.(*hclsyntax.Body)
 }
@@ -164,13 +171,20 @@ func (block *Block) GetAttribute(name string) *Attribute {
 	return nil
 }
 
+func (block *Block) Reference() *Reference {
+
+	var parts []string
+	if block.Type() != "resource" {
+		parts = append(parts, block.Type())
+	}
+	parts = append(parts, block.Labels()...)
+
+	return newReference(parts)
+}
+
 // LocalName is the name relative to the current module
 func (block *Block) LocalName() string {
-	var prefix string
-	if block.Type() != "resource" {
-		prefix = block.Type() + "."
-	}
-	return prefix + strings.Join(block.Labels(), ".")
+	return block.Reference().String()
 }
 
 func (block *Block) FullName() string {

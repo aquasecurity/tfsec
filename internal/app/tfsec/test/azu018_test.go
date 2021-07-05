@@ -84,6 +84,44 @@ resource "azurerm_mssql_server" "good_example" {
 `,
 			mustExcludeResultCode: rules.AZUSQLDatabaseAuditingEnabled,
 		},
+		{
+			name: "check passes when separate azurerm_mssql_server_extended_auditing_policy is configured",
+			source: `
+			provider "azurerm" {
+				features {}
+			  }
+			  
+			  resource "azurerm_resource_group" "example" {
+				name     = "example-resources"
+				location = "West Europe"
+			  }
+			  
+			  resource "azurerm_mssql_server" "example" {
+				name                         = "example-sqlserver"
+				resource_group_name          = azurerm_resource_group.example.name
+				location                     = azurerm_resource_group.example.location
+				version                      = "12.0"
+				administrator_login          = "missadministrator"
+				administrator_login_password = "AdminPassword123!"
+			  }
+			  
+			  resource "azurerm_storage_account" "example" {
+				name                     = "examplesa"
+				resource_group_name      = azurerm_resource_group.example.name
+				location                 = azurerm_resource_group.example.location
+				account_tier             = "Standard"
+				account_replication_type = "LRS"
+			  }
+			  
+			  resource "azurerm_mssql_server_extended_auditing_policy" "example" {
+				server_id                               = azurerm_mssql_server.example.id
+				storage_endpoint                        = azurerm_storage_account.example.primary_blob_endpoint
+				storage_account_access_key              = azurerm_storage_account.example.primary_access_key
+				storage_account_access_key_is_secondary = false
+				retention_in_days                       = 6
+			  }`,
+			mustExcludeResultCode: rules.AZUSQLDatabaseAuditingEnabled,
+		},
 	}
 
 	for _, test := range tests {
