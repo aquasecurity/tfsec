@@ -34,6 +34,13 @@ func (block *Block) HasModuleBlock() bool {
 	return block.moduleBlock != nil
 }
 
+func (block *Block) GetModuleBlock() (*Block, error) {
+	if block.HasModuleBlock() {
+		return block.moduleBlock, nil
+	}
+	return nil, fmt.Errorf("the block does not have an associated module block")
+}
+
 func (block *Block) body() *hclsyntax.Body {
 	return block.hclBlock.Body.(*hclsyntax.Body)
 }
