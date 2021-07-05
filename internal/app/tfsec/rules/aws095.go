@@ -2,7 +2,6 @@ package rules
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/tfsec/tfsec/pkg/result"
 	"github.com/tfsec/tfsec/pkg/severity"
@@ -74,28 +73,19 @@ func init() {
 
 			kmsKeyAttr := resourceBlock.GetAttribute("kms_key_id")
 			if kmsKeyAttr.IsDataBlockReference() {
-				ref := kmsKeyAttr.ReferenceAsString()
-				dataReferenceParts := strings.Split(ref, ".")
-				if len(dataReferenceParts) < 3 {
+				kmsData, err := ctx.GetReferencedBlock(kmsKeyAttr)
+				if err != nil {
 					return
 				}
-				blockType := dataReferenceParts[0]
-				blockName := dataReferenceParts[1]
-				kmsKeyDatas := ctx.GetDatasByType(blockType)
-				for _, kmsData := range kmsKeyDatas {
-					if kmsData.NameLabel() == blockName {
-						keyIdAttr := kmsData.GetAttribute("key_id")
-						if keyIdAttr != nil && keyIdAttr.Equals("alias/aws/secretsmanager") {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
-									WithRange(kmsKeyAttr.Range()).
-									WithAttributeAnnotation(kmsKeyAttr).
-									WithSeverity(severity.Info),
-							)
-						}
-					}
-
+				keyIdAttr := kmsData.GetAttribute("key_id")
+				if keyIdAttr != nil && keyIdAttr.Equals("alias/aws/secretsmanager") {
+					set.Add(
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
+							WithRange(kmsKeyAttr.Range()).
+							WithAttributeAnnotation(kmsKeyAttr).
+							WithSeverity(severity.Info),
+					)
 				}
 			}
 

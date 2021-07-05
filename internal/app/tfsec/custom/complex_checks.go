@@ -19,7 +19,10 @@ func checkTags(block *block.Block, spec *MatchSpec, ctx *hclcontext.Context) boo
 
 	var alias string
 	if block.HasChild("provider") {
-		alias = block.GetAttribute("provider").ReferenceAsString()
+		aliasRef, err := block.GetAttribute("provider").Reference()
+		if err == nil {
+			alias = aliasRef.String()
+		}
 	}
 
 	awsProviders := ctx.GetProviderBlocksByProvider("aws", alias)

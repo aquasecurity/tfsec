@@ -3,6 +3,6 @@ variable "enableEncryption" {
 }
 
 variable "cidr_blocks" {
-    type = list[string]
+    type = list(string)
     default = ["10.0.0.0/2"]
 }

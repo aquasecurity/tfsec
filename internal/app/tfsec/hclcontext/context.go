@@ -17,24 +17,22 @@ func New(blocks block.Blocks) *Context {
 	}
 }
 
-func (c *Context) GetResourcesByType(t string) block.Blocks {
+func (c *Context) getBlocksByType(blockType string, label string) block.Blocks {
 	var results block.Blocks
 	for _, block := range c.blocks {
-		if block.Type() == "resource" && len(block.Labels()) > 0 && block.TypeLabel() == t {
+		if block.Type() == blockType && len(block.Labels()) > 0 && block.TypeLabel() == label {
 			results = append(results, block)
 		}
 	}
 	return results
 }
 
-func (c *Context) GetDatasByType(t string) block.Blocks {
-	var results block.Blocks
-	for _, block := range c.blocks {
-		if block.Type() == "data" && len(block.Labels()) > 0 && block.TypeLabel() == t {
-			results = append(results, block)
-		}
-	}
-	return results
+func (c *Context) GetResourcesByType(label string) block.Blocks {
+	return c.getBlocksByType("resource", label)
+}
+
+func (c *Context) GetDatasByType(label string) block.Blocks {
+	return c.getBlocksByType("data", label)
 }
 
 func (c *Context) GetProviderBlocksByProvider(providerName string, alias string) block.Blocks {
@@ -55,20 +53,33 @@ func (c *Context) GetProviderBlocksByProvider(providerName string, alias string)
 }
 
 func (c *Context) GetReferencedBlock(referringAttr *block.Attribute) (*block.Block, error) {
-	resType, err := referringAttr.GetReferencedResourceBlockType()
+	ref, err := referringAttr.Reference()
 	if err != nil {
 		return nil, err
 	}
-	resName, err := referringAttr.GetReferencedResourceBlocksName()
-	if err != nil {
-		return nil, err
-	}
-
-	for _, resource := range c.GetResourcesByType(resType) {
-		if resource.NameLabel() == resName {
-			return resource, nil
+	for _, block := range c.blocks {
+		if ref.RefersTo(block) {
+			return block, nil
 		}
 	}
+	return nil, fmt.Errorf("no block found for reference %s", ref)
+}
 
-	return nil, fmt.Errorf("did not find a suitable block to reference")
+func (c *Context) GetReferencingResources(originalBlock *block.Block, referencingLabel string, referencingAttributeName string) (block.Blocks, error) {
+	return c.getReferencingBlocks(originalBlock, "resource", referencingLabel, referencingAttributeName)
+}
+
+func (c *Context) getReferencingBlocks(originalBlock *block.Block, referencingType string, referencingLabel string, referencingAttributeName string) (block.Blocks, error) {
+	blocks := c.getBlocksByType(referencingType, referencingLabel)
+	var results block.Blocks
+	for _, block := range blocks {
+		attr := block.GetAttribute(referencingAttributeName)
+		if attr == nil {
+			continue
+		}
+		if attr.ReferencesBlock(originalBlock) {
+			results = append(results, block)
+		}
+	}
+	return results, nil
 }
