@@ -77,7 +77,7 @@ A Visual Studio Code extension is being developed to integrate with tfsec result
 
 ## Use as GitHub Action
 
-If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/triat/terraform-security-scan](https://github.com/triat/terraform-security-scan).
+If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/tfsec/tfsec-pr-commenter-action](https://github.com/tfsec/tfsec-pr-commenter-action).
 
 ## Features
 
