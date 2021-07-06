@@ -14,7 +14,7 @@
 [![VScode Extension](https://img.shields.io/visual-studio-marketplace/v/tfsec.tfsec?label=vscode)](https://marketplace.visualstudio.com/items?itemName=tfsec.tfsec)
 
 tfsec uses static analysis of your terraform templates to spot potential
-security issues. Now with terraform v0.12+ support.
+security issues. Now with terraform CDK support.
 
 ## Example Output
 
