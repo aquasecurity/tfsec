@@ -97,7 +97,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_dynamodb_table"},
 		DefaultSeverity: severity.Info,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("server_side_encryption") {
 				set.Add(
@@ -106,11 +106,12 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Info),
 				)
+				return
 			}
 
 			sseBlock := resourceBlock.GetBlock("server_side_encryption")
 			enabledAttr := sseBlock.GetAttribute("enabled")
-			if enabledAttr.IsFalse() {
+			if enabledAttr != nil && enabledAttr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName())).

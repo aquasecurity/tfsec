@@ -67,7 +67,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_compute_disk"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			keyBlock := resourceBlock.GetBlock("disk_encryption_key")
 			if keyBlock != nil {
@@ -78,7 +78,6 @@ func init() {
 							WithRange(keyBlock.Range()).
 							WithSeverity(severity.Error),
 					)
-
 				}
 			}
 		},

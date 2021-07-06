@@ -10,18 +10,17 @@ import (
 
 	"github.com/tfsec/tfsec/pkg/result"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/block"
-
-	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 )
 
 // CheckRule the provided HCL block against the rule
-func CheckRule(r *Rule, block *block.Block, ctx *hclcontext.Context) result.Set {
+func CheckRule(r *Rule, block block.Block, ctx *hclcontext.Context) result.Set {
 	defer func() {
 		if err := recover(); err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s r due to error(s): %s\n", r.ID, err)
+			_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", r.ID, err)
 			debug.Log("Stack trace for failed %s r:\n%s\n\n", r.ID, string(runtimeDebug.Stack()))
 		}
 	}()
@@ -47,7 +46,7 @@ func CheckRule(r *Rule, block *block.Block, ctx *hclcontext.Context) result.Set 
 }
 
 // IsRuleRequiredForBlock returns true if the Rule should be applied to the given HCL block
-func IsRuleRequiredForBlock(rule *Rule, block *block.Block) bool {
+func IsRuleRequiredForBlock(rule *Rule, block block.Block) bool {
 
 	if rule.CheckFunc == nil {
 		return false

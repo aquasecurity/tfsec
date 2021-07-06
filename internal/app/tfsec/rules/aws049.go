@@ -15,7 +15,6 @@ import (
 	"github.com/tfsec/tfsec/pkg/rule"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-	"github.com/zclconf/go-cty/cty"
 )
 
 const AWSOpenIngressNetworkACLRule = "AWS049"
@@ -65,25 +64,25 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_network_acl_rule"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			egressAttr := resourceBlock.GetAttribute("egress")
 			actionAttr := resourceBlock.GetAttribute("rule_action")
 			protoAttr := resourceBlock.GetAttribute("protocol")
 
-			if egressAttr.Type() == cty.Bool && egressAttr.Value().True() {
+			if egressAttr != nil && egressAttr.IsTrue() {
+				return
 			}
 
-			if actionAttr == nil || actionAttr.Type() != cty.String {
-			}
-
-			if actionAttr.Value().AsString() != "allow" {
+			if actionAttr != nil && !actionAttr.Equals("allow") {
+				return
 			}
 
 			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr != nil {
 
 				if isOpenCidr(cidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
+						return
 					} else {
 						set.Add(
 							result.New(resourceBlock).
@@ -100,6 +99,7 @@ func init() {
 
 				if isOpenCidr(ipv6CidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
+						return
 					} else {
 						set.Add(
 							result.New(resourceBlock).

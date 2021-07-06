@@ -66,7 +66,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_config_configuration_aggregator"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			aggBlock := resourceBlock.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")
 			if aggBlock == nil {
@@ -76,6 +76,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			if aggBlock.MissingChild("all_regions") {
@@ -85,6 +86,7 @@ func init() {
 						WithRange(aggBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
+				return
 			}
 
 			allRegionsAttr := aggBlock.GetAttribute("all_regions")

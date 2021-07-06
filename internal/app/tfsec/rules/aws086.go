@@ -78,7 +78,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_dynamodb_table"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("point_in_time_recovery") {
 				set.Add(
@@ -87,6 +87,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
+				return
 			}
 
 			poitBlock := resourceBlock.GetBlock("point_in_time_recovery")
@@ -97,6 +98,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
+				return
 			}
 			enabledAttr := poitBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {

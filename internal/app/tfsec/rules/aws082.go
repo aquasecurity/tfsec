@@ -54,7 +54,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_default_vpc"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			set.Add(
 				result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' should not exist", resourceBlock.FullName())).

@@ -52,7 +52,7 @@ func (c *Context) GetProviderBlocksByProvider(providerName string, alias string)
 	return results
 }
 
-func (c *Context) GetReferencedBlock(referringAttr *block.Attribute) (*block.Block, error) {
+func (c *Context) GetReferencedBlock(referringAttr block.Attribute) (block.Block, error) {
 	ref, err := referringAttr.Reference()
 	if err != nil {
 		return nil, err
@@ -65,11 +65,11 @@ func (c *Context) GetReferencedBlock(referringAttr *block.Attribute) (*block.Blo
 	return nil, fmt.Errorf("no block found for reference %s", ref)
 }
 
-func (c *Context) GetReferencingResources(originalBlock *block.Block, referencingLabel string, referencingAttributeName string) (block.Blocks, error) {
+func (c *Context) GetReferencingResources(originalBlock block.Block, referencingLabel string, referencingAttributeName string) (block.Blocks, error) {
 	return c.getReferencingBlocks(originalBlock, "resource", referencingLabel, referencingAttributeName)
 }
 
-func (c *Context) getReferencingBlocks(originalBlock *block.Block, referencingType string, referencingLabel string, referencingAttributeName string) (block.Blocks, error) {
+func (c *Context) getReferencingBlocks(originalBlock block.Block, referencingType string, referencingLabel string, referencingAttributeName string) (block.Blocks, error) {
 	blocks := c.getBlocksByType(referencingType, referencingLabel)
 	var results block.Blocks
 	for _, block := range blocks {

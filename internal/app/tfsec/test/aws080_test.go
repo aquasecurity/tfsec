@@ -110,13 +110,13 @@ resource "aws_codebuild_project" "codebuild" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			results := scanSource(test.source)
+			results := scanHCL(test.source, t)
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 
 	t.Run("Rule should report a warning when artifact encryption is disabled but the type is set to NO_ARTIFACTS in ID Build Project", func(t *testing.T) {
-		results := scanSource(`
+		results := scanHCL(`
 resource "aws_codebuild_project" "codebuild" {
 	// other config
 
@@ -125,7 +125,7 @@ resource "aws_codebuild_project" "codebuild" {
 		type = "NO_ARTIFACTS"
 	}
 }
-`)
+`, t)
 		for _, result := range results {
 			if result.RuleID == rules.AWSCodeBuildProjectEncryptionNotDisabled {
 				assert.True(t, result.Severity == severity.Warning, fmt.Sprintf("Result with code '%s' had wrong Severity reported '%s'", result.RuleID, result.Severity))

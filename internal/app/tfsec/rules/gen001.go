@@ -17,8 +17,6 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/security"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 // GenericSensitiveVariables See https://github.com/tfsec/tfsec#included-checks for check info
@@ -70,7 +68,7 @@ func init() {
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"variable"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if len(resourceBlock.Labels()) == 0 || !security.IsSensitiveAttribute(resourceBlock.TypeLabel()) {
 				return
@@ -78,11 +76,7 @@ func init() {
 
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if attribute.Name() == "default" {
-					val := attribute.Value()
-					if val.Type() != cty.String {
-						continue
-					}
-					if val.AsString() != "" {
+					if !attribute.IsEmpty() {
 						set.Add(result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", resourceBlock.FullName())).
 							WithRange(attribute.Range()).

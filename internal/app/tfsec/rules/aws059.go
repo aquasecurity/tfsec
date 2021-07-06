@@ -95,17 +95,19 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_athena_database", "aws_athena_workgroup"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			blockName := resourceBlock.FullName()
 
 			if strings.EqualFold(resourceBlock.TypeLabel(), "aws_athena_workgroup") {
-				if resourceBlock.HasChild("configuration") && resourceBlock.GetBlock("configuration").
-					HasChild("result_configuration") {
-					resourceBlock = resourceBlock.GetBlock("configuration").GetBlock("result_configuration")
-				} else {
+				if !resourceBlock.HasChild("configuration") {
 					return
 				}
+				configBlock := resourceBlock.GetBlock("configuration")
+				if !configBlock.HasChild("result_configuration") {
+					return
+				}
+				resourceBlock = configBlock.GetBlock("result_configuration")
 			}
 
 			if resourceBlock.MissingChild("encryption_configuration") {

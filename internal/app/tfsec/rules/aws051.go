@@ -57,7 +57,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_rds_cluster"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
 			storageEncryptedattr := resourceBlock.GetAttribute("storage_encrypted")
@@ -70,7 +70,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
-			} else if kmsKeyIdAttr.Equals("") {
+			} else if kmsKeyIdAttr != nil && kmsKeyIdAttr.Equals("") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName())).

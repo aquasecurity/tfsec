@@ -65,7 +65,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_elasticsearch_domain"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			encryptionBlock := resourceBlock.GetBlock("node_to_node_encryption")
 			if encryptionBlock == nil {
@@ -75,6 +75,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			enabledAttr := encryptionBlock.GetAttribute("enabled")
@@ -85,6 +86,7 @@ func init() {
 						WithRange(encryptionBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			isTrueBool := enabledAttr.Type() == cty.Bool && enabledAttr.Value().True()

@@ -68,12 +68,12 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azure_storage_container"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			// function contents here
 			if resourceBlock.HasChild("properties") {
 				properties := resourceBlock.GetAttribute("properties")
-				if properties.Contains("publicAccess") {
+				if properties != nil && properties.Contains("publicAccess") {
 					value := properties.MapValue("publicAccess")
 					if value == cty.StringVal("blob") || value == cty.StringVal("container") {
 						set.Add(

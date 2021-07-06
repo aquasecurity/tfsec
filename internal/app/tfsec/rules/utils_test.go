@@ -45,8 +45,8 @@ func Test_isBooleanOrStringTrue(t *testing.T) {
 
 	for _, test := range tests {
 		expr, _ := hclsyntax.ParseExpression([]byte(test.rawExpr), "", hcl.Pos{Line: 0, Column: 0, Byte: 0})
-		attr := block.NewAttribute(
-			&hclsyntax.Attribute{
+		attr := block.NewHCLAttribute(
+			&hcl.Attribute{
 				Expr: expr,
 			},
 			nil,
@@ -157,8 +157,8 @@ func Test_isOpenCidr(t *testing.T) {
 
 	for _, test := range tests {
 		expr, _ := hclsyntax.ParseExpression([]byte(test.rawExpr), "", hcl.Pos{Line: 0, Column: 0, Byte: 0})
-		attr := block.NewAttribute(
-			&hclsyntax.Attribute{
+		attr := block.NewHCLAttribute(
+			&hcl.Attribute{
 				Expr: expr,
 			},
 			nil,

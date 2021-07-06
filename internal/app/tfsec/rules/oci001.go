@@ -58,7 +58,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"opc_compute_ip_address_reservation"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if attr := resourceBlock.GetAttribute("ip_address_pool"); attr != nil {
 				if attr.IsAny("public-ippool") {
 					set.Add(

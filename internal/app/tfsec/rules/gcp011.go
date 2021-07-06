@@ -100,29 +100,30 @@ func init() {
 			"google_iam_policy",
 		},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			var members []cty.Value
-			var attributes *block.Attribute
+			var attribute block.Attribute
 
-			if attributes = resourceBlock.GetAttribute("member"); attributes != nil {
-				members = append(members, attributes.Value())
-			} else if attributes = resourceBlock.GetAttribute("members"); attributes != nil {
-				members = attributes.Value().AsValueSlice()
-			} else if attributes = resourceBlock.GetBlock("binding").GetAttribute("members"); attributes != nil {
-				members = attributes.Value().AsValueSlice()
+			if attribute = resourceBlock.GetAttribute("member"); attribute != nil {
+				members = append(members, attribute.Value())
+			} else if attribute = resourceBlock.GetAttribute("members"); attribute != nil {
+				members = attribute.Value().AsValueSlice()
+			} else if resourceBlock.HasChild("binding") {
+				if attribute = resourceBlock.GetBlock("binding").GetAttribute("members"); attribute != nil {
+					members = attribute.Value().AsValueSlice()
+				}
 			}
 			for _, identities := range members {
 				if identities.IsKnown() && identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock.FullName())).
-							WithRange(attributes.Range()).
+							WithRange(attribute.Range()).
 							WithSeverity(severity.Warning),
 					)
 				}
 			}
-
 		},
 	})
 }

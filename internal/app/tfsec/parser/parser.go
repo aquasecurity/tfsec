@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/block"
 
@@ -68,7 +69,7 @@ func (parser *Parser) ParseDirectory() (block.Blocks, error) {
 				debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 			}
 			for _, fileBlock := range fileBlocks {
-				blocks = append(blocks, block.New(fileBlock, nil, nil))
+				blocks = append(blocks, block.NewHCLBlock(fileBlock, nil, nil))
 			}
 		}
 	}
@@ -120,7 +121,7 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 
 	var results []string
 	for _, entry := range entries {
-		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".tf" {
+		if !entry.IsDir() && (filepath.Ext(entry.Name()) == ".tf" || strings.HasSuffix(entry.Name(), ".tf.json")) {
 			debug.Log("Found qualifying subdirectory containing .tf files: %s", path)
 			results = append(results, path)
 			if parser.stopOnFirstTf {

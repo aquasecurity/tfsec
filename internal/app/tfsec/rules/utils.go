@@ -10,7 +10,7 @@ import (
 
 // isBooleanOrStringTrue returns true if the attribute is a boolean and is
 // `true` or if the attribute is a string and is `"true"`.
-func isBooleanOrStringTrue(val *block.Attribute) bool {
+func isBooleanOrStringTrue(val block.Attribute) bool {
 	switch val.Type() {
 	case cty.Bool:
 		return val.Value().True()
@@ -22,7 +22,7 @@ func isBooleanOrStringTrue(val *block.Attribute) bool {
 }
 
 // isOpenCidr returns true if given attribute is an open CIDR block
-func isOpenCidr(attr *block.Attribute) bool {
+func isOpenCidr(attr block.Attribute) bool {
 	if attr.Value().IsNull() {
 		return false
 	}

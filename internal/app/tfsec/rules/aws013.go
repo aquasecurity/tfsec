@@ -85,7 +85,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecs_task_definition"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if definitionsAttr := resourceBlock.GetAttribute("container_definitions"); definitionsAttr != nil && definitionsAttr.Type() == cty.String {
 				rawJSON := []byte(definitionsAttr.Value().AsString())
@@ -98,7 +98,8 @@ func init() {
 				}
 
 				if err := json.Unmarshal(rawJSON, &definitions); err != nil {
-					debug.Log("an error occured processing th json: %s", err.Error())
+					debug.Log("an error occured processing container definition json: %s: %s", resourceBlock.Range(), err.Error())
+					return
 				}
 
 				for _, definition := range definitions {

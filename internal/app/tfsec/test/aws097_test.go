@@ -30,9 +30,9 @@ data "aws_iam_policy_document" "kms_policy" {
 `,
 			mustIncludeResultCode: rules.AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeys,
 		},
-        {
-            name: "partial key and alias arn with asterisk in them",
-            source: `
+		{
+			name: "partial key and alias arn with asterisk in them",
+			source: `
 data "aws_iam_policy_document" "kms_policy" {
   statement {
     principals {
@@ -47,11 +47,11 @@ data "aws_iam_policy_document" "kms_policy" {
   }
 }
 `,
-            mustIncludeResultCode: rules.AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeys,
-        },
-        {
-            name: "partial key and alias arn with asterisk in them",
-            source: `
+			mustIncludeResultCode: rules.AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeys,
+		},
+		{
+			name: "partial key and alias arn with asterisk in them",
+			source: `
 data "aws_iam_policy_document" "kms_policy" {
   statement {
     principals {
@@ -63,11 +63,11 @@ data "aws_iam_policy_document" "kms_policy" {
   }
 }
 `,
-            mustExcludeResultCode: rules.AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeys,
-        },
-        {
-            name: "denies access to any KMS resource",
-            source: `
+			mustExcludeResultCode: rules.AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeys,
+		},
+		{
+			name: "denies access to any KMS resource",
+			source: `
 data "aws_iam_policy_document" "kms_policy" {
   statement {
     principals {
@@ -80,13 +80,13 @@ data "aws_iam_policy_document" "kms_policy" {
   }
 }
 `,
-            mustExcludeResultCode: rules.AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeys,
-        },
+			mustExcludeResultCode: rules.AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeys,
+		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			results := scanSource(test.source)
+			results := scanHCL(test.source, t)
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}

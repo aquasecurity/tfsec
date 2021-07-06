@@ -17,8 +17,6 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/security"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 // GenericSensitiveLocals See https://github.com/tfsec/tfsec#included-checks for check info
@@ -68,11 +66,11 @@ func init() {
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"locals"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if security.IsSensitiveAttribute(attribute.Name()) {
-					if attribute.Type() == cty.String && attribute.Value().AsString() != "" {
+					if !attribute.IsEmpty() {
 						set.Add(result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Local '%s' includes a potentially sensitive value which is defined within the project.", resourceBlock.FullName())).
 							WithRange(attribute.Range()).

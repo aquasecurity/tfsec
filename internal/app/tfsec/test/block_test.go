@@ -46,7 +46,7 @@ resource "aws_s3_bucket" "my-bucket" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				assert.Equal(t, block.HasChild(test.expectedAttribute), true)
 				assert.Equal(t, !block.HasChild(test.expectedAttribute), false)
@@ -84,7 +84,7 @@ resource "aws_s3_bucket" "my-bucket" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				assert.Equal(t, block.HasChild(test.expectedAttribute), false)
 				assert.Equal(t, !block.HasChild(test.expectedAttribute), true)
@@ -122,7 +122,7 @@ resource "aws_s3_bucket" "my-bucket" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				assert.Equal(t, block.MissingChild(test.expectedAttribute), true)
 				assert.Equal(t, !block.HasChild(test.expectedAttribute), true)

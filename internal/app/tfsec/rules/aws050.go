@@ -63,7 +63,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_network_acl_rule"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			egressAttr := resourceBlock.GetAttribute("egress")
 			actionAttr := resourceBlock.GetAttribute("rule_action")
@@ -82,7 +82,6 @@ func init() {
 			}
 
 			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr != nil {
-
 				if isOpenCidr(cidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						set.Add(
@@ -92,15 +91,11 @@ func init() {
 								WithAttributeAnnotation(cidrBlockAttr).
 								WithSeverity(severity.Error),
 						)
-					} else {
-						return
 					}
 				}
-
 			}
 
 			if ipv6CidrBlockAttr := resourceBlock.GetAttribute("ipv6_cidr_block"); ipv6CidrBlockAttr != nil {
-
 				if isOpenCidr(ipv6CidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						set.Add(
@@ -110,11 +105,8 @@ func init() {
 								WithAttributeAnnotation(ipv6CidrBlockAttr).
 								WithSeverity(severity.Error),
 						)
-					} else {
-						return
 					}
 				}
-
 			}
 
 		},

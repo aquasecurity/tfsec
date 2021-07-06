@@ -1,0 +1,17 @@
+{
+    "provider": {
+        "aws": {
+            "profile": null,
+            "region": "eu-west-1"
+        }
+    },
+    "resource": {
+        "aws_security_group_rule": {
+            "bad-rule": {
+                "type": "ingress",
+                "cidr_blocks": ["0.0.0.0/0"]
+            }
+        }
+    }
+}
+

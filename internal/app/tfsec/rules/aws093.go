@@ -74,7 +74,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecr_repository"},
 		DefaultSeverity: severity.Info,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("encryption_configuration") {
 				set.Add(
@@ -83,6 +83,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Info),
 				)
+				return
 			}
 
 			encBlock := resourceBlock.GetBlock("encryption_configuration")
@@ -93,6 +94,7 @@ func init() {
 						WithRange(encBlock.Range()).
 						WithSeverity(severity.Info),
 				)
+				return
 			}
 
 			if encBlock.MissingChild("encryption_type") || encBlock.GetAttribute("encryption_type").Equals("AES256") {

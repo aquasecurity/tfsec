@@ -105,7 +105,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_codebuild_project"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			blocks := resourceBlock.GetBlocks("secondary_artifacts")
 			if artifact := resourceBlock.GetBlock("artifacts"); artifact != nil {
@@ -116,7 +116,7 @@ func init() {
 				if encryptionDisabledAttr := artifactBlock.GetAttribute("encryption_disabled"); encryptionDisabledAttr != nil && encryptionDisabledAttr.IsTrue() {
 					artifactTypeAttr := artifactBlock.GetAttribute("type")
 
-					if artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
+					if artifactTypeAttr != nil && artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName())).

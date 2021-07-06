@@ -59,7 +59,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_secretsmanager_secret"},
 		DefaultSeverity: severity.Info,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, ctx *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(

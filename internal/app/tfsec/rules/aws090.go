@@ -59,11 +59,11 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecs_cluster"},
 		DefaultSeverity: severity.Info,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			settingsBlock := resourceBlock.GetBlocks("setting")
 			for _, setting := range settingsBlock {
-				if name := setting.GetAttribute("name"); name.Equals("containerinsights", block.IgnoreCase) {
+				if name := setting.GetAttribute("name"); name != nil && name.Equals("containerinsights", block.IgnoreCase) {
 					if valueAttr := setting.GetAttribute("value"); valueAttr != nil {
 						if !valueAttr.Equals("enabled", block.IgnoreCase) {
 							set.Add(

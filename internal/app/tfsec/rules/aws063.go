@@ -72,7 +72,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_cloudtrail"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("is_multi_region_trail") {
 				set.Add(
 					result.New(resourceBlock).
@@ -80,6 +80,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
+				return
 			}
 
 			multiRegionAttr := resourceBlock.GetAttribute("is_multi_region_trail")
@@ -91,7 +92,7 @@ func init() {
 						WithAttributeAnnotation(multiRegionAttr).
 						WithSeverity(severity.Warning),
 				)
-			} /**/
+			}
 		},
 	})
 }

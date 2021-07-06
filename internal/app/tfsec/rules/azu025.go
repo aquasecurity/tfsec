@@ -61,7 +61,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_data_factory"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("public_network_enabled") {
 				set.Add(
@@ -70,8 +70,9 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
-			if resourceBlock.GetAttribute("public_network_enabled").IsTrue() || resourceBlock.GetAttribute("public_network_enabled").Equals("true") || resourceBlock.GetAttribute("public_network_enabled").Equals(true) {
+			if resourceBlock.GetAttribute("public_network_enabled").IsTrue() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should not have public network set to true.", resourceBlock.FullName())).

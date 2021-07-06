@@ -58,13 +58,16 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_container_cluster", "google_container_node_pool"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if strings.HasPrefix(resourceBlock.Label(), "google_container_cluster") && resourceBlock.GetAttribute("remove_default_node_pool").IsTrue() {
-				return
+			if strings.HasPrefix(resourceBlock.Label(), "google_container_cluster") {
+				attr := resourceBlock.GetAttribute("remove_default_node_pool")
+				if attr != nil && attr.IsTrue() {
+					return
+				}
 			}
 
-			if !resourceBlock.HasBlock("node_config") {
+			if resourceBlock.MissingChild("node_config") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())).
@@ -74,14 +77,14 @@ func init() {
 				return
 			}
 
-			displayBlock := resourceBlock.GetBlock("node_config")
-			serviceAccount := displayBlock.GetAttribute("service_account")
+			nodeConfigBlock := resourceBlock.GetBlock("node_config")
+			serviceAccount := nodeConfigBlock.GetAttribute("service_account")
 
 			if serviceAccount == nil || serviceAccount.IsEmpty() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())).
-						WithRange(displayBlock.Range()).
+						WithRange(nodeConfigBlock.Range()).
 						WithSeverity(severity.Error),
 				)
 			}

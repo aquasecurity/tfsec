@@ -50,7 +50,7 @@ resource "problem" "x" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"problem"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.GetAttribute("bad") != nil {
 				set.Add(
 					result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.Error),
@@ -62,16 +62,21 @@ resource "problem" "x" {
 	os.Exit(t.Run())
 }
 
-func scanSource(source string) []result.Result {
-	blocks := createBlocksFromSource(source)
+func scanHCL(source string, t *testing.T) []result.Result {
+	blocks := createBlocksFromSource(source, ".tf", t)
 	return scanner.New(scanner.OptionExcludeRules(excludedChecksList)).Scan(blocks)
 }
 
-func createBlocksFromSource(source string) []*block.Block {
-	path := createTestFile("test.tf", source)
+func scanJSON(source string, t *testing.T) []result.Result {
+	blocks := createBlocksFromSource(source, ".tf.json", t)
+	return scanner.New(scanner.OptionExcludeRules(excludedChecksList)).Scan(blocks)
+}
+
+func createBlocksFromSource(source string, ext string, t *testing.T) []block.Block {
+	path := createTestFile("test"+ext, source)
 	blocks, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {
-		panic(err)
+		t.Fatalf("parse error: %s", err)
 	}
 	return blocks
 }

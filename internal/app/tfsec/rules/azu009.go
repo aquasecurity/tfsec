@@ -59,7 +59,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_kubernetes_cluster"},
 		DefaultSeverity: severity.Error,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			addonProfileBlock := resourceBlock.GetBlock("addon_profile")
 			if addonProfileBlock == nil {
@@ -85,16 +85,20 @@ func init() {
 
 			enabledAttr := omsAgentBlock.GetAttribute("enabled")
 			if enabledAttr == nil || (enabledAttr.Type() == cty.Bool && enabledAttr.Value().False()) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf(
-							"Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).",
-							resourceBlock.FullName(),
-						)).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr).
-						WithSeverity(severity.Error),
-				)
+
+				res := result.New(resourceBlock).
+					WithDescription(fmt.Sprintf(
+						"Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).",
+						resourceBlock.FullName(),
+					)).
+					WithSeverity(severity.Error)
+
+				if enabledAttr != nil {
+					res.WithRange(enabledAttr.Range()).
+						WithAttributeAnnotation(enabledAttr)
+				}
+
+				set.Add(res)
 			}
 
 		},

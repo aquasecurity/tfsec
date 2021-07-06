@@ -75,7 +75,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_cloudtrail"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("enable_log_file_validation") {
 				set.Add(
 					result.New(resourceBlock).
@@ -83,6 +83,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
+				return
 			}
 
 			logFileValidationAttr := resourceBlock.GetAttribute("enable_log_file_validation")
@@ -94,7 +95,7 @@ func init() {
 						WithAttributeAnnotation(logFileValidationAttr).
 						WithSeverity(severity.Warning),
 				)
-			} /**/
+			}
 		},
 	})
 }

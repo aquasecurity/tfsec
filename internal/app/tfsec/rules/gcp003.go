@@ -55,7 +55,7 @@ func init() {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_compute_firewall"},
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, resourceBlock *block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if sourceRanges := resourceBlock.GetAttribute("source_ranges"); sourceRanges != nil {
 				if isOpenCidr(sourceRanges) {

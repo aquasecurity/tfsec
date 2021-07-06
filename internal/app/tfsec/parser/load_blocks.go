@@ -2,7 +2,9 @@ package parser
 
 import (
 	"fmt"
+
 	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
+	"github.com/tfsec/tfsec/internal/app/tfsec/schema"
 
 	"github.com/hashicorp/hcl/v2"
 )
@@ -12,7 +14,7 @@ func LoadBlocksFromFile(file *hcl.File) (hcl.Blocks, error) {
 	t := metrics.Start(metrics.HCLParse)
 	defer t.Stop()
 
-	contents, diagnostics := file.Body.Content(terraformSchema)
+	contents, diagnostics := file.Body.Content(schema.TerraformSchema_0_12)
 	if diagnostics != nil && diagnostics.HasErrors() {
 		return nil, diagnostics
 	}

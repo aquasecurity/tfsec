@@ -10,7 +10,6 @@ import (
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
-	"github.com/hashicorp/hcl/v2"
 	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -18,7 +17,7 @@ import (
 type ModuleInfo struct {
 	Name       string
 	Path       string
-	Definition *block.Block
+	Definition block.Block
 	Blocks     block.Blocks
 }
 
@@ -44,7 +43,7 @@ func LoadModules(blocks block.Blocks, projectBasePath string, metadata *ModulesM
 }
 
 // takes in a module "x" {} block and loads resources etc. into e.moduleBlocks - additionally returns variables to add to ["module.x.*"] variables
-func loadModule(b *block.Block, projectBasePath string, metadata *ModulesMetadata, stopOnHCLError bool) (*ModuleInfo, error) {
+func loadModule(b block.Block, projectBasePath string, metadata *ModulesMetadata, stopOnHCLError bool) (*ModuleInfo, error) {
 
 	if b.Label() == "" {
 		return nil, fmt.Errorf("module without label at %s", b.Range())
@@ -53,10 +52,10 @@ func loadModule(b *block.Block, projectBasePath string, metadata *ModulesMetadat
 	evalTime := metrics.Start(metrics.Evaluation)
 
 	var source string
-	attrs, _ := b.HCL().Body.JustAttributes()
+	attrs := b.Attributes()
 	for _, attr := range attrs {
-		if attr.Name == "source" {
-			sourceVal, _ := attr.Expr.Value(&hcl.EvalContext{})
+		if attr.Name() == "source" {
+			sourceVal := attr.Value()
 			if sourceVal.Type() == cty.String {
 				source = sourceVal.AsString()
 			}
@@ -118,7 +117,7 @@ func reconstructPath(projectBasePath string, source string) string {
 	return filepath.Join(projectBasePath, source)
 }
 
-func getModuleBlocks(b *block.Block, modulePath string, blocks *block.Blocks, stopOnHCLError bool) error {
+func getModuleBlocks(b block.Block, modulePath string, blocks *block.Blocks, stopOnHCLError bool) error {
 	moduleFiles, err := LoadDirectory(modulePath, stopOnHCLError)
 	if err != nil {
 		return fmt.Errorf("failed to load module %s: %w", b.Label(), err)
@@ -137,7 +136,7 @@ func getModuleBlocks(b *block.Block, modulePath string, blocks *block.Blocks, st
 			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 		}
 		for _, fileBlock := range fileBlocks {
-			*blocks = append(*blocks, block.New(fileBlock, nil, b))
+			*blocks = append(*blocks, block.NewHCLBlock(fileBlock, nil, b))
 		}
 	}
 	return nil
