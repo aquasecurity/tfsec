@@ -109,7 +109,7 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Bloc
 	ignoreAll := "tfsec:ignore:*"
 	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", id)
 
-	foundValidIgnore := false
+	var foundValidIgnore bool
 	var ignoreLine string
 
 	// include the line above the line if available
@@ -145,27 +145,33 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Bloc
 	}
 
 	if foundValidIgnore {
-		expWithCode := fmt.Sprintf("%s:exp:", id)
-		if indexExpFound := strings.Index(ignoreLine, expWithCode); indexExpFound > 0 {
-			debug.Log("Expiration date found on ignore '%s'", ignoreLine)
-			layout := fmt.Sprintf("%s2006-01-02", expWithCode)
-			expDate := ignoreLine[indexExpFound : indexExpFound+len(layout)]
-			parsedDate, err := time.Parse(layout, expDate)
-			if err != nil {
-				// if we can't parse the date then we don't want to ignore the range
-				debug.Log("Unable to parse exp date in ignore: '%s'. The date format is invalid. Supported format 'exp:yyyy-mm-dd'.", ignoreLine)
-				return false
-			}
-			currentTime := time.Now()
-			ignoreExpirationDateBreached := currentTime.After(parsedDate)
-			if ignoreExpirationDateBreached {
-				debug.Log("Ignore expired, check will be performed Filename: %s:%d", b.Range().Filename, b.Range().StartLine)
-			}
-			return !ignoreExpirationDateBreached
-		}
+		return isIgnoreWithinExpiry(ignoreLine, id, b.Range())
 	}
 
 	return foundValidIgnore
+}
+
+func isIgnoreWithinExpiry(ignoreLine string, id string, r block.Range) bool {
+	expWithCode := fmt.Sprintf("%s:exp:", id)
+	if indexExpFound := strings.Index(ignoreLine, expWithCode); indexExpFound > 0 {
+		debug.Log("Expiration date found on ignore '%s'", ignoreLine)
+		layout := fmt.Sprintf("%s2006-01-02", expWithCode)
+		expDate := ignoreLine[indexExpFound : indexExpFound+len(layout)]
+		parsedDate, err := time.Parse(layout, expDate)
+		if err != nil {
+			// if we can't parse the date then we don't want to ignore the range
+			debug.Log("Unable to parse exp date in ignore: '%s'. The date format is invalid. Supported format 'exp:yyyy-mm-dd'.", ignoreLine)
+			return false
+		}
+		currentTime := time.Now()
+		ignoreExpirationDateBreached := currentTime.After(parsedDate)
+		if ignoreExpirationDateBreached {
+			debug.Log("Ignore expired, check will be performed Filename: %s:%d", r.Filename, r.StartLine)
+		}
+		return !ignoreExpirationDateBreached
+	}
+
+	return true
 }
 
 func traverseModuleTree(b block.Block, ignoreAll, ignoreCode string) (bool, string) {

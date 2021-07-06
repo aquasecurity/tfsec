@@ -64,6 +64,50 @@ func (attr *HCLAttribute) Name() string {
 	return attr.hclAttribute.Name
 }
 
+func (attr *HCLAttribute) listContains(val cty.Value, stringToLookFor string, ignoreCase bool) bool {
+	valueSlice := val.AsValueSlice()
+	for _, value := range valueSlice {
+		stringToTest := value
+		if value.Type().IsObjectType() || value.Type().IsMapType() {
+			valueMap := value.AsValueMap()
+			stringToTest = valueMap["key"]
+		}
+		if ignoreCase && containsIgnoreCase(stringToTest.AsString(), stringToLookFor) {
+			return true
+		}
+		if strings.Contains(stringToTest.AsString(), stringToLookFor) {
+			return true
+		}
+	}
+	return false
+}
+
+func (attr *HCLAttribute) mapContains(checkValue interface{}, val cty.Value) bool {
+	switch t := checkValue.(type) {
+	case map[interface{}]interface{}:
+
+		for k, v := range t {
+
+			valueMap := val.AsValueMap()
+			for key, value := range valueMap {
+				rawValue := getRawValue(value)
+				if key == k && rawValue == v {
+					return true
+				}
+			}
+		}
+		return false
+	default:
+		valueMap := val.AsValueMap()
+		for key := range valueMap {
+			if key == checkValue {
+				return true
+			}
+		}
+		return false
+	}
+}
+
 func (attr *HCLAttribute) Contains(checkValue interface{}, equalityOptions ...EqualityOption) bool {
 	ignoreCase := false
 	for _, option := range equalityOptions {
@@ -77,49 +121,13 @@ func (attr *HCLAttribute) Contains(checkValue interface{}, equalityOptions ...Eq
 	}
 
 	if val.Type().IsObjectType() || val.Type().IsMapType() {
-
-		switch t := checkValue.(type) {
-		case map[interface{}]interface{}:
-
-			for k, v := range t {
-
-				valueMap := val.AsValueMap()
-				for key, value := range valueMap {
-					rawValue := getRawValue(value)
-					if key == k && rawValue == v {
-						return true
-					}
-				}
-			}
-			return false
-		default:
-			valueMap := val.AsValueMap()
-			for key := range valueMap {
-				if key == checkValue {
-					return true
-				}
-			}
-			return false
-		}
+		return attr.mapContains(checkValue, val)
 	}
 
 	stringToLookFor := fmt.Sprintf("%v", checkValue)
+
 	if val.Type().IsListType() || val.Type().IsTupleType() {
-		valueSlice := val.AsValueSlice()
-		for _, value := range valueSlice {
-			stringToTest := value
-			if value.Type().IsObjectType() || value.Type().IsMapType() {
-				valueMap := value.AsValueMap()
-				stringToTest = valueMap["key"]
-			}
-			if ignoreCase && containsIgnoreCase(stringToTest.AsString(), stringToLookFor) {
-				return true
-			}
-			if strings.Contains(stringToTest.AsString(), stringToLookFor) {
-				return true
-			}
-		}
-		return false
+		return attr.listContains(val, stringToLookFor, ignoreCase)
 	}
 
 	if ignoreCase && containsIgnoreCase(val.AsString(), stringToLookFor) {

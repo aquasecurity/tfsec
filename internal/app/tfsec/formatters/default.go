@@ -8,7 +8,7 @@ import (
 
 	"github.com/tfsec/tfsec/pkg/result"
 
-	severity2 "github.com/tfsec/tfsec/pkg/severity"
+	"github.com/tfsec/tfsec/pkg/severity"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
@@ -17,6 +17,13 @@ import (
 	"github.com/liamg/clinch/terminal"
 	"github.com/liamg/tml"
 )
+
+var severityFormat = map[severity.Severity]string{
+	severity.Info:    tml.Sprintf("<white>%s</white>", severity.Info),
+	severity.Warning: tml.Sprintf("<yellow>%s</yellow>", severity.Warning),
+	severity.Error:   tml.Sprintf("<red>%s</red>", severity.Error),
+	"":               tml.Sprintf("<white>%s</white>", severity.Info),
+}
 
 func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...FormatterOption) error {
 
@@ -47,47 +54,9 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 		return nil
 	}
 
-	var severity string
-
-	severityFormat := map[severity2.Severity]string{
-		severity2.Info:    tml.Sprintf("<white>%s</white>", severity2.Info),
-		severity2.Warning: tml.Sprintf("<yellow>%s</yellow>", severity2.Warning),
-		severity2.Error:   tml.Sprintf("<red>%s</red>", severity2.Error),
-		"":                tml.Sprintf("<white>%s</white>", severity2.Info),
-	}
-
 	fmt.Println("")
 	for i, res := range results {
-		resultHeader := fmt.Sprintf("  <underline>Check %d</underline>\n", i+1)
-
-		if includePassedChecks && res.Status == result.Passed {
-			terminal.PrintSuccessf(resultHeader)
-			severity = tml.Sprintf("<green>PASSED</green>")
-		} else {
-			terminal.PrintErrorf(resultHeader)
-			severity = severityFormat[res.Severity]
-		}
-
-		_ = tml.Printf(`
-  <blue>[</blue>%s<blue>]</blue><blue>[</blue>%s<blue>]</blue> %s
-  <blue>%s</blue>
-
-
-`, res.RuleID, severity, res.Description, res.Range.String())
-		highlightCode(res)
-		if res.Impact != "" {
-			_ = tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", res.Impact)
-		}
-		if res.Resolution != "" {
-			_ = tml.Printf("  <white>Resolution: </white><blue>%s</blue>\n", res.Resolution)
-		}
-		if len(res.Links) > 0 {
-			_ = tml.Printf("\n  <white>More Info:</white>")
-		}
-		for _, link := range res.Links {
-			_ = tml.Printf("\n  <blue>- %s </blue>", link)
-		}
-		fmt.Printf("\n\n")
+		printResult(res, i, includePassedChecks)
 	}
 
 	if showStatistics {
@@ -98,6 +67,39 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 
 	return nil
 
+}
+
+func printResult(res result.Result, i int, includePassedChecks bool) {
+	resultHeader := fmt.Sprintf("  <underline>Result %d</underline>\n", i+1)
+	var severity string
+	if includePassedChecks && res.Status == result.Passed {
+		terminal.PrintSuccessf(resultHeader)
+		severity = tml.Sprintf("<green>PASSED</green>")
+	} else {
+		terminal.PrintErrorf(resultHeader)
+		severity = severityFormat[res.Severity]
+	}
+
+	_ = tml.Printf(`
+  <blue>[</blue>%s<blue>]</blue><blue>[</blue>%s<blue>]</blue> %s
+  <blue>%s</blue>
+
+
+`, res.RuleID, severity, res.Description, res.Range.String())
+	highlightCode(res)
+	if res.Impact != "" {
+		_ = tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", res.Impact)
+	}
+	if res.Resolution != "" {
+		_ = tml.Printf("  <white>Resolution: </white><blue>%s</blue>\n", res.Resolution)
+	}
+	if len(res.Links) > 0 {
+		_ = tml.Printf("\n  <white>More Info:</white>")
+	}
+	for _, link := range res.Links {
+		_ = tml.Printf("\n  <blue>- %s </blue>", link)
+	}
+	fmt.Printf("\n\n")
 }
 
 func printStatistics() {
