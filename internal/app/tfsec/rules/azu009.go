@@ -85,16 +85,20 @@ func init() {
 
 			enabledAttr := omsAgentBlock.GetAttribute("enabled")
 			if enabledAttr == nil || (enabledAttr.Type() == cty.Bool && enabledAttr.Value().False()) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf(
-							"Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).",
-							resourceBlock.FullName(),
-						)).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr).
-						WithSeverity(severity.Error),
-				)
+
+				res := result.New(resourceBlock).
+					WithDescription(fmt.Sprintf(
+						"Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).",
+						resourceBlock.FullName(),
+					)).
+					WithSeverity(severity.Error)
+
+				if enabledAttr != nil {
+					res.WithRange(enabledAttr.Range()).
+						WithAttributeAnnotation(enabledAttr)
+				}
+
+				set.Add(res)
 			}
 
 		},

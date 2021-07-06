@@ -68,8 +68,21 @@ func init() {
 		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			nodeMetadata := resourceBlock.GetBlock("node_config").GetBlock("workload_metadata_config").GetAttribute("node_metadata")
+			if resourceBlock.MissingChild("node_config") {
+				return
+			}
+			nodeConfigBlock := resourceBlock.GetBlock("node_config")
 
+			if nodeConfigBlock.MissingChild("workload_metadata_config") {
+				return
+			}
+			workloadMetadataConfigBlock := nodeConfigBlock.GetBlock("workload_metadata_config")
+
+			if workloadMetadataConfigBlock.MissingChild("node_metadata") {
+				return
+			}
+
+			nodeMetadata := workloadMetadataConfigBlock.GetAttribute("node_metadata")
 			if nodeMetadata != nil && nodeMetadata.Type() == cty.String &&
 				(nodeMetadata.Value().AsString() == "EXPOSE" || nodeMetadata.Value().AsString() == "UNSPECIFIED") {
 				set.Add(

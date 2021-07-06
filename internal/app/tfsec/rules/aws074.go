@@ -70,10 +70,11 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			attr := resourceBlock.GetAttribute("block_public_acls")
-			if attr.IsFalse() {
+			if attr != nil && attr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' sets block_public_acls explicitly to false", resourceBlock.FullName())).

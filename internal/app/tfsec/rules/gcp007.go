@@ -15,8 +15,6 @@ import (
 	"github.com/tfsec/tfsec/pkg/rule"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 // GkeLegacyMetadataEndpoints See https://github.com/tfsec/tfsec#included-checks for check info
@@ -67,8 +65,12 @@ func init() {
 		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
+			if resourceBlock.MissingChild("metadata") {
+				return
+			}
+
 			legacyMetadataAPI := resourceBlock.GetBlock("metadata").GetAttribute("disable-legacy-endpoints")
-			if legacyMetadataAPI.Type() == cty.String && legacyMetadataAPI.Value().AsString() != "true" || legacyMetadataAPI.Type() == cty.Bool && legacyMetadataAPI.Value().False() {
+			if legacyMetadataAPI != nil && legacyMetadataAPI.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", resourceBlock.FullName())).

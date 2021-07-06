@@ -58,7 +58,7 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 
 	fmt.Println("")
 	for i, res := range results {
-		resultHeader := fmt.Sprintf("<underline>Check %d</underline>\n", i+1)
+		resultHeader := fmt.Sprintf("  <underline>Check %d</underline>\n", i+1)
 
 		if includePassedChecks && res.Status == result.Passed {
 			terminal.PrintSuccessf(resultHeader)
@@ -75,10 +75,17 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 
 `, res.RuleID, severity, res.Description, res.Range.String())
 		highlightCode(res)
-		_ = tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", res.Impact)
-		_ = tml.Printf("  <white>Resolution: </white><blue>%s</blue>\n", res.Resolution)
+		if res.Impact != "" {
+			_ = tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", res.Impact)
+		}
+		if res.Resolution != "" {
+			_ = tml.Printf("  <white>Resolution: </white><blue>%s</blue>\n", res.Resolution)
+		}
+		if len(res.Links) > 0 {
+			_ = tml.Printf("\n  <white>More Info:</white>")
+		}
 		for _, link := range res.Links {
-			_ = tml.Printf("\n  <blue>%s </blue>", link)
+			_ = tml.Printf("\n  <blue>- %s </blue>", link)
 		}
 		fmt.Printf("\n\n")
 	}
@@ -87,7 +94,7 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 		printStatistics()
 	}
 
-	terminal.PrintErrorf("\n%d potential problems detected.\n\n", len(results)-countPassedResults(results))
+	terminal.PrintErrorf("\n  %d potential problems detected.\n\n", len(results)-countPassedResults(results))
 
 	return nil
 

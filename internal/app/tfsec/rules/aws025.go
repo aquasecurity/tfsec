@@ -66,6 +66,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			if securityPolicyAttr.Type() == cty.String && securityPolicyAttr.Value().AsString() != "TLS_1_2" {

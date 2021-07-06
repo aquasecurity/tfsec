@@ -64,12 +64,13 @@ func init() {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			directionAttr := resourceBlock.GetAttribute("direction")
-			if directionAttr == nil || directionAttr.Type() != cty.String || directionAttr.Value().AsString() != "Outbound" {
+			if directionAttr == nil || directionAttr.Type() != cty.String || strings.ToUpper(directionAttr.Value().AsString()) != "OUTBOUND" {
+				return
 			}
 
 			if prefixAttr := resourceBlock.GetAttribute("destination_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
 				if isOpenCidr(prefixAttr) {
-					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
+					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr != nil && strings.ToUpper(accessAttr.Value().AsString()) == "ALLOW" {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf(
@@ -87,7 +88,7 @@ func init() {
 
 			if prefixesAttr := resourceBlock.GetAttribute("destination_address_prefixes"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
 				if isOpenCidr(prefixesAttr) {
-					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr != nil && accessAttr.Value().AsString() == "Allow" {
+					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr != nil && strings.ToUpper(accessAttr.Value().AsString()) == "ALLOW" {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName())).

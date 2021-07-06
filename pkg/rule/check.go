@@ -2,12 +2,15 @@ package rule
 
 import (
 	"fmt"
+	"os"
+	runtimeDebug "runtime/debug"
 	"strings"
 
 	"github.com/tfsec/tfsec/pkg/provider"
 
 	"github.com/tfsec/tfsec/pkg/result"
 
+	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/block"
@@ -15,12 +18,12 @@ import (
 
 // CheckRule the provided HCL block against the rule
 func CheckRule(r *Rule, block block.Block, ctx *hclcontext.Context) result.Set {
-	// defer func() {
-	// 	if err := recover(); err != nil {
-	// 		_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", r.ID, err)
-	// 		debug.Log("Stack trace for failed %s r:\n%s\n\n", r.ID, string(runtimeDebug.Stack()))
-	// 	}
-	// }()
+	defer func() {
+		if err := recover(); err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", r.ID, err)
+			debug.Log("Stack trace for failed %s r:\n%s\n\n", r.ID, string(runtimeDebug.Stack()))
+		}
+	}()
 
 	var links []string
 

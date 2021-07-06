@@ -70,6 +70,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			attr := resourceBlock.GetAttribute("block_public_policy")

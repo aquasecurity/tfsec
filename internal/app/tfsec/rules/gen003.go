@@ -17,8 +17,6 @@ import (
 	"github.com/tfsec/tfsec/internal/app/tfsec/security"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 // GenericSensitiveAttributes See https://github.com/tfsec/tfsec#included-checks for check info
@@ -43,7 +41,7 @@ variable "password" {
 }
 
 resource "evil_corp" "good_example" {
-	root_password = var.password
+	root_password = var.passwordx
 }
 `
 
@@ -102,7 +100,7 @@ func init() {
 					}
 				}
 				if security.IsSensitiveAttribute(attribute.Name()) {
-					if attribute.Type() == cty.String && attribute.Value().AsString() != "" {
+					if attribute.IsResolvable() && !attribute.Equals("") {
 						set.Add(result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", resourceBlock.FullName())).
 							WithRange(attribute.Range()).

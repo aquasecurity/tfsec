@@ -98,7 +98,8 @@ func init() {
 				}
 
 				if err := json.Unmarshal(rawJSON, &definitions); err != nil {
-					debug.Log("an error occured processing th json: %s", err.Error())
+					debug.Log("an error occured processing container definition json: %s: %s", resourceBlock.Range(), err.Error())
+					return
 				}
 
 				for _, definition := range definitions {

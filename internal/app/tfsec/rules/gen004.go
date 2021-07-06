@@ -80,7 +80,7 @@ func init() {
 			if visibilityAttribute == nil && privateAttribute == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing `private` or `visibility` attribute - one of these is required to make repository private", resourceBlock.FullName())).
+						WithDescription(fmt.Sprintf("Resource '%s' is missing both of `private` or `visibility` attributes - one of these is required to make repository private", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
@@ -105,7 +105,7 @@ func init() {
 
 			// this should be evaluated first as visibility overrides private
 			if privateAttribute != nil {
-				if privateAttribute.Equals(false) {
+				if privateAttribute.IsFalse() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has private set to false - it should be set to `true` to make repository private", resourceBlock.FullName())).

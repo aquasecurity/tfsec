@@ -70,7 +70,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
-			} else if kmsKeyIdAttr.Equals("") {
+			} else if kmsKeyIdAttr != nil && kmsKeyIdAttr.Equals("") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName())).

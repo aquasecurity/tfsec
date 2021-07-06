@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
 
@@ -36,12 +37,19 @@ func LoadDirectory(fullPath string, stopOnHCLError bool) ([]*hcl.File, error) {
 			continue
 		}
 
-		if filepath.Ext(info.Name()) != ".tf" {
+		var parseFunc func(filename string) (*hcl.File, hcl.Diagnostics)
+
+		switch true {
+		case strings.HasSuffix(info.Name(), ".tf"):
+			parseFunc = hclParser.ParseHCLFile
+		case strings.HasSuffix(info.Name(), ".tf.json"):
+			parseFunc = hclParser.ParseJSONFile
+		default:
 			continue
 		}
 
 		path := filepath.Join(fullPath, info.Name())
-		_, diag := hclParser.ParseHCLFile(path)
+		_, diag := parseFunc(path)
 		if diag != nil && diag.HasErrors() {
 			if stopOnHCLError {
 				return nil, diag

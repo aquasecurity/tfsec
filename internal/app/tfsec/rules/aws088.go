@@ -71,25 +71,29 @@ func init() {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			engineAttr := resourceBlock.GetAttribute("engine")
-			if engineAttr.Equals("redis", block.IgnoreCase) && !resourceBlock.GetAttribute("node_type").Equals("cache.t1.micro") {
-				snapshotRetentionAttr := resourceBlock.GetAttribute("snapshot_retention_limit")
-				if snapshotRetentionAttr == nil {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()).
-							WithSeverity(severity.Warning),
-					)
-				}
+			if engineAttr != nil && engineAttr.Equals("redis", block.IgnoreCase) {
+				nodeTypeAttr := resourceBlock.GetAttribute("node_type")
+				if nodeTypeAttr != nil && !nodeTypeAttr.Equals("cache.t1.micro") {
+					snapshotRetentionAttr := resourceBlock.GetAttribute("snapshot_retention_limit")
+					if snapshotRetentionAttr == nil {
+						set.Add(
+							result.New(resourceBlock).
+								WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())).
+								WithRange(resourceBlock.Range()).
+								WithSeverity(severity.Warning),
+						)
+						return
+					}
 
-				if snapshotRetentionAttr.Equals(0) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName())).
-							WithRange(snapshotRetentionAttr.Range()).
-							WithAttributeAnnotation(snapshotRetentionAttr).
-							WithSeverity(severity.Warning),
-					)
+					if snapshotRetentionAttr.Equals(0) {
+						set.Add(
+							result.New(resourceBlock).
+								WithDescription(fmt.Sprintf("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName())).
+								WithRange(snapshotRetentionAttr.Range()).
+								WithAttributeAnnotation(snapshotRetentionAttr).
+								WithSeverity(severity.Warning),
+						)
+					}
 				}
 			}
 

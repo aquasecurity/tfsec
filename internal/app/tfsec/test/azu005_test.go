@@ -38,7 +38,7 @@ resource "azurerm_virtual_machine" "my-disk" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			results := scanSource(test.source)
+			results := scanHCL(test.source, t)
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}

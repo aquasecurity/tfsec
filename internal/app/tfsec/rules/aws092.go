@@ -106,11 +106,12 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Info),
 				)
+				return
 			}
 
 			sseBlock := resourceBlock.GetBlock("server_side_encryption")
 			enabledAttr := sseBlock.GetAttribute("enabled")
-			if enabledAttr.IsFalse() {
+			if enabledAttr != nil && enabledAttr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName())).

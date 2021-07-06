@@ -70,8 +70,9 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
-			if resourceBlock.GetAttribute("public_network_enabled").IsTrue() || resourceBlock.GetAttribute("public_network_enabled").Equals("true") || resourceBlock.GetAttribute("public_network_enabled").Equals(true) {
+			if resourceBlock.GetAttribute("public_network_enabled").IsTrue() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should not have public network set to true.", resourceBlock.FullName())).

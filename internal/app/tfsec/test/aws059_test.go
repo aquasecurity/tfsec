@@ -98,7 +98,7 @@ resource "aws_athena_workgroup" "good_example" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			results := scanSource(test.source)
+			results := scanHCL(test.source, t)
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}

@@ -76,6 +76,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			if aggBlock.MissingChild("all_regions") {
@@ -85,6 +86,7 @@ func init() {
 						WithRange(aggBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
+				return
 			}
 
 			allRegionsAttr := aggBlock.GetAttribute("all_regions")

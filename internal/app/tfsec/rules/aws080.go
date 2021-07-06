@@ -116,7 +116,7 @@ func init() {
 				if encryptionDisabledAttr := artifactBlock.GetAttribute("encryption_disabled"); encryptionDisabledAttr != nil && encryptionDisabledAttr.IsTrue() {
 					artifactTypeAttr := artifactBlock.GetAttribute("type")
 
-					if artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
+					if artifactTypeAttr != nil && artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName())).

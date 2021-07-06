@@ -56,10 +56,10 @@ resource "aws_s3_bucket" "my-bucket" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
-					t.Fail()
+					t.FailNow()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
 				assert.Equal(t, test.expectedResult, attr.StartsWith(test.checkValue))
@@ -116,10 +116,10 @@ resource "aws_s3_bucket" "my-bucket" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
-					t.Fail()
+					t.FailNow()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
 				assert.Equal(t, test.expectedResult, attr.EndsWith(test.checkValue))
@@ -270,10 +270,10 @@ resource "aws_security_group" "my-security_group" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, b := range blocks {
 				if !b.HasChild(test.checkAttribute) {
-					t.Fail()
+					t.FailNow()
 				}
 				attr := b.GetAttribute(test.checkAttribute)
 				if test.ignoreCase {
@@ -336,10 +336,10 @@ resource "aws_security_group" "my-security_group" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
-					t.Fail()
+					t.FailNow()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
 				assert.Equal(t, test.expectedResult, attr.IsAny(test.checkValue...))
@@ -392,10 +392,10 @@ resource "aws_security_group" "my-security_group" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
-					t.Fail()
+					t.FailNow()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
 				assert.Equal(t, test.expectedResult, attr.IsNone(test.checkValue...))
@@ -502,10 +502,10 @@ resource "aws_security_group_rule" "example" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
-					t.Fail()
+					t.FailNow()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
 				assert.Equal(t, test.expectedResult, attr.IsEmpty())
@@ -545,10 +545,10 @@ resource "numerical_something" "my-bucket" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
-					t.Fail()
+					t.FailNow()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
 				assert.Equal(t, test.expectedResult, attr.LessThan(test.checkValue))
@@ -588,10 +588,10 @@ resource "numerical_something" "my-bucket" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
-					t.Fail()
+					t.FailNow()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
 				assert.Equal(t, test.expectedResult, attr.LessThanOrEqualTo(test.checkValue))
@@ -637,10 +637,10 @@ resource "boolean_something" "my-something" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
-					t.Fail()
+					t.FailNow()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
 				assert.Equal(t, test.expectedResult, attr.IsTrue())
@@ -686,10 +686,10 @@ resource "boolean_something" "my-something" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source)
+			blocks := createBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
-					t.Fail()
+					t.FailNow()
 				}
 				attr := block.GetAttribute(test.checkAttribute)
 				assert.Equal(t, test.expectedResult, attr.IsFalse())

@@ -80,6 +80,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
+				return
 			}
 
 			multiRegionAttr := resourceBlock.GetAttribute("is_multi_region_trail")
@@ -91,7 +92,7 @@ func init() {
 						WithAttributeAnnotation(multiRegionAttr).
 						WithSeverity(severity.Warning),
 				)
-			} /**/
+			}
 		},
 	})
 }

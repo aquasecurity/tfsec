@@ -70,6 +70,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			attr := resourceBlock.GetAttribute("restrict_public_buckets")

@@ -83,6 +83,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
+				return
 			}
 
 			logFileValidationAttr := resourceBlock.GetAttribute("enable_log_file_validation")
@@ -94,7 +95,7 @@ func init() {
 						WithAttributeAnnotation(logFileValidationAttr).
 						WithSeverity(severity.Warning),
 				)
-			} /**/
+			}
 		},
 	})
 }

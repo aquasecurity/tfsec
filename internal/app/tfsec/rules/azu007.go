@@ -69,10 +69,11 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			enabledAttr := rbacBlock.GetAttribute("enabled")
-			if enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
+			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf(

@@ -78,7 +78,6 @@ func init() {
 							WithRange(keyBlock.Range()).
 							WithSeverity(severity.Error),
 					)
-
 				}
 			}
 		},

@@ -68,8 +68,7 @@ func init() {
 			}
 
 			enableShieldedNodesAttr := resourceBlock.GetAttribute("enable_shielded_nodes")
-
-			if enableShieldedNodesAttr.IsFalse() {
+			if enableShieldedNodesAttr != nil && enableShieldedNodesAttr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", resourceBlock.FullName())).

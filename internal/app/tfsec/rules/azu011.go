@@ -73,7 +73,7 @@ func init() {
 			// function contents here
 			if resourceBlock.HasChild("properties") {
 				properties := resourceBlock.GetAttribute("properties")
-				if properties.Contains("publicAccess") {
+				if properties != nil && properties.Contains("publicAccess") {
 					value := properties.MapValue("publicAccess")
 					if value == cty.StringVal("blob") || value == cty.StringVal("container") {
 						set.Add(

@@ -120,7 +120,7 @@ func init() {
 
 			if resourceBlock.HasChild("bypass") {
 				bypass := resourceBlock.GetAttribute("bypass")
-				if !bypass.Contains("AzureServices") {
+				if bypass != nil && !bypass.Contains("AzureServices") {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a network rule that doesn't allow bypass of Microsoft Services.", resourceBlock.FullName())).

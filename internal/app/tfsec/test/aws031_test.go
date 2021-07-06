@@ -48,7 +48,7 @@ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			results := scanSource(test.source)
+			results := scanHCL(test.source, t)
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}

@@ -86,6 +86,10 @@ func init() {
 		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
+			if resourceBlock.MissingChild("policy") {
+				return
+			}
+
 			if resourceBlock.GetAttribute("policy").Value().Type() != cty.String {
 				return
 			}

@@ -69,6 +69,16 @@ func init() {
 		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
+			if resourceBlock.MissingChild("image_scanning_configuration") {
+				set.Add(
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
+						WithSeverity(severity.Error),
+				)
+				return
+			}
+
 			ecrScanStatusBlock := resourceBlock.GetBlock("image_scanning_configuration")
 			ecrScanStatusAttr := ecrScanStatusBlock.GetAttribute("scan_on_push")
 

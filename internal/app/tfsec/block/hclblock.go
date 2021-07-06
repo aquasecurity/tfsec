@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/tfsec/tfsec/internal/app/tfsec/schema"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -23,10 +24,6 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) B
 	}
 }
 
-func (block *HCLBlock) HCL() *hcl.Block {
-	return block.hclBlock
-}
-
 func (block *HCLBlock) AttachEvalContext(ctx *hcl.EvalContext) {
 	block.evalContext = ctx
 }
@@ -42,10 +39,6 @@ func (block *HCLBlock) GetModuleBlock() (Block, error) {
 	return nil, fmt.Errorf("the block does not have an associated module block")
 }
 
-func (block *HCLBlock) body() *hclsyntax.Body {
-	return block.hclBlock.Body.(*hclsyntax.Body)
-}
-
 func (block *HCLBlock) Type() string {
 	return block.hclBlock.Type
 }
@@ -58,7 +51,14 @@ func (block *HCLBlock) Range() Range {
 	if block == nil || block.hclBlock == nil {
 		return Range{}
 	}
-	r := block.body().SrcRange
+	var r hcl.Range
+	switch body := block.hclBlock.Body.(type) {
+	case *hclsyntax.Body:
+		r = body.SrcRange
+	default:
+		r = block.hclBlock.DefRange
+		r.End = block.hclBlock.Body.MissingItemRange().End
+	}
 	return Range{
 		Filename:  r.Filename,
 		StartLine: r.Start.Line,
@@ -76,13 +76,50 @@ func (block *HCLBlock) GetFirstMatchingBlock(names ...string) Block {
 	return nil
 }
 
+func (block *HCLBlock) getHCLBlocks() hcl.Blocks {
+	var blocks hcl.Blocks
+	switch body := block.hclBlock.Body.(type) {
+	case *hclsyntax.Body:
+		for _, b := range body.Blocks {
+			blocks = append(blocks, b.AsHCLBlock())
+		}
+	default:
+		content, _, diag := block.hclBlock.Body.PartialContent(schema.TerraformSchema_0_12)
+		if diag == nil {
+			blocks = content.Blocks
+		}
+	}
+	return blocks
+}
+
+func (block *HCLBlock) getHCLAttributes() hcl.Attributes {
+	switch body := block.hclBlock.Body.(type) {
+	case *hclsyntax.Body:
+		attributes := make(hcl.Attributes)
+		for _, a := range body.Attributes {
+			attributes[a.Name] = a.AsHCLAttribute()
+		}
+		return attributes
+	default:
+		_, body, diag := block.hclBlock.Body.PartialContent(schema.TerraformSchema_0_12)
+		if diag != nil {
+			return nil
+		}
+		attrs, diag := body.JustAttributes()
+		if diag != nil {
+			return nil
+		}
+		return attrs
+	}
+}
+
 func (block *HCLBlock) GetBlock(name string) Block {
 	if block == nil || block.hclBlock == nil {
 		return nil
 	}
-	for _, child := range block.body().Blocks {
+	for _, child := range block.getHCLBlocks() {
 		if child.Type == name {
-			return NewHCLBlock(child.AsHCLBlock(), block.evalContext, block.moduleBlock)
+			return NewHCLBlock(child, block.evalContext, block.moduleBlock)
 		}
 		if child.Type == "dynamic" && len(child.Labels) == 1 && child.Labels[0] == name {
 			blocks := block.parseDynamicBlockResult(child)
@@ -100,8 +137,8 @@ func (block *HCLBlock) AllBlocks() Blocks {
 		return nil
 	}
 	var results []Block
-	for _, child := range block.body().Blocks {
-		results = append(results, NewHCLBlock(child.AsHCLBlock(), block.evalContext, block.moduleBlock))
+	for _, child := range block.getHCLBlocks() {
+		results = append(results, NewHCLBlock(child, block.evalContext, block.moduleBlock))
 	}
 	return results
 }
@@ -111,9 +148,9 @@ func (block *HCLBlock) GetBlocks(name string) Blocks {
 		return nil
 	}
 	var results []Block
-	for _, child := range block.body().Blocks {
+	for _, child := range block.getHCLBlocks() {
 		if child.Type == name {
-			results = append(results, NewHCLBlock(child.AsHCLBlock(), block.evalContext, block.moduleBlock))
+			results = append(results, NewHCLBlock(child, block.evalContext, block.moduleBlock))
 		}
 		if child.Type == "dynamic" && len(child.Labels) == 1 && child.Labels[0] == name {
 			dynamics := block.parseDynamicBlockResult(child)
@@ -124,11 +161,11 @@ func (block *HCLBlock) GetBlocks(name string) Blocks {
 	return results
 }
 
-func (block *HCLBlock) parseDynamicBlockResult(dynamic *hclsyntax.Block) Blocks {
+func (block *HCLBlock) parseDynamicBlockResult(dynamic *hcl.Block) Blocks {
 
 	var results Blocks
 
-	wrapped := NewHCLBlock(dynamic.AsHCLBlock(), block.evalContext, block.moduleBlock)
+	wrapped := NewHCLBlock(dynamic, block.evalContext, block.moduleBlock)
 
 	forEach := wrapped.GetAttribute("for_each")
 	if forEach == nil {
@@ -153,7 +190,7 @@ func (block *HCLBlock) GetAttributes() []Attribute {
 	if block == nil || block.hclBlock == nil {
 		return nil
 	}
-	for _, attr := range block.body().Attributes {
+	for _, attr := range block.getHCLAttributes() {
 		results = append(results, NewHCLAttribute(attr, block.evalContext))
 	}
 	return results
@@ -163,7 +200,7 @@ func (block *HCLBlock) GetAttribute(name string) Attribute {
 	if block == nil || block.hclBlock == nil {
 		return nil
 	}
-	for _, attr := range block.body().Attributes {
+	for _, attr := range block.getHCLAttributes() {
 		if attr.Name == name {
 			return NewHCLAttribute(attr, block.evalContext)
 		}
@@ -215,9 +252,6 @@ func (block *HCLBlock) NameLabel() string {
 }
 
 func (block *HCLBlock) HasChild(childElement string) bool {
-	fmt.Println(childElement)
-	fmt.Printf("Attr: %t\n", block.GetAttribute(childElement) != nil)
-	fmt.Printf("Block: %t\n", block.GetBlock(childElement) != nil)
 	return block.GetAttribute(childElement) != nil || block.GetBlock(childElement) != nil
 }
 
@@ -247,7 +281,7 @@ func (block *HCLBlock) IsEmpty() bool {
 
 func (block *HCLBlock) Attributes() map[string]Attribute {
 	attributes := make(map[string]Attribute)
-	for name, attr := range block.body().Attributes {
+	for name, attr := range block.getHCLAttributes() {
 		attributes[name] = NewHCLAttribute(attr, block.evalContext)
 	}
 	return attributes
@@ -256,13 +290,7 @@ func (block *HCLBlock) Attributes() map[string]Attribute {
 func (block *HCLBlock) Values() cty.Value {
 
 	values := make(map[string]cty.Value)
-
-	attributes, diagnostics := block.hclBlock.Body.JustAttributes()
-	if diagnostics != nil && diagnostics.HasErrors() {
-		return cty.NilVal
-	}
-
-	for _, attribute := range attributes {
+	for _, attribute := range block.getHCLAttributes() {
 		func() {
 			defer func() {
 				if err := recover(); err != nil {
@@ -273,6 +301,5 @@ func (block *HCLBlock) Values() cty.Value {
 			values[attribute.Name] = val
 		}()
 	}
-
 	return cty.ObjectVal(values)
 }

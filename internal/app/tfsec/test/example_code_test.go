@@ -35,10 +35,10 @@ func TestExampleCode(t *testing.T) {
 			}
 			defer func() {
 				if err := recover(); err != nil {
-					t.Fatalf("Scan failed: %s", err)
+					t.Fatalf("Scan (good) failed: %s", err)
 				}
 			}()
-			results := scanSource(check.Documentation.GoodExample)
+			results := scanHCL(check.Documentation.GoodExample, t)
 			assertCheckCode(t, "", check.ID, results)
 		})
 
@@ -48,10 +48,10 @@ func TestExampleCode(t *testing.T) {
 			}
 			defer func() {
 				if err := recover(); err != nil {
-					t.Fatalf("Scan failed: %s", err)
+					t.Fatalf("Scan (bad) failed: %s", err)
 				}
 			}()
-			results := scanSource(check.Documentation.BadExample)
+			results := scanHCL(check.Documentation.BadExample, t)
 			assertCheckCode(t, check.ID, "", results)
 		})
 

@@ -65,6 +65,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			storageEncryptedAttr := resourceBlock.GetAttribute("storage_encrypted")

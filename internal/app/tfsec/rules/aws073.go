@@ -71,6 +71,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			attr := resourceBlock.GetAttribute("ignore_public_acls")

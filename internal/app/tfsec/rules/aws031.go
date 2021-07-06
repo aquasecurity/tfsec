@@ -74,6 +74,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			enabledAttr := encryptionBlock.GetAttribute("enabled")
@@ -84,6 +85,7 @@ func init() {
 						WithRange(encryptionBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			isTrueBool := enabledAttr.Type() == cty.Bool && enabledAttr.Value().True()

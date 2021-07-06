@@ -72,7 +72,7 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 			},
 		})
 
-		results := scanSource(test.input)
+		results := scanHCL(test.input, t)
 
 		if test.expectedFailure {
 			assertCheckCode(t, code, "", results)

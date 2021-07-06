@@ -42,7 +42,7 @@ resource "azurerm_data_lake_store" "my-lake-store" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			results := scanSource(test.source)
+			results := scanHCL(test.source, t)
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}

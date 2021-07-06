@@ -72,8 +72,9 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
+				return
 			}
-			if resourceBlock.GetAttribute("purge_protection_enabled").IsTrue() && (resourceBlock.MissingChild("soft_delete_retention_days") || resourceBlock.GetAttribute("soft_delete_retention_days").LessThan(1)) {
+			if resourceBlock.MissingChild("soft_delete_retention_days") || resourceBlock.GetAttribute("soft_delete_retention_days").LessThan(1) {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have soft_delete_retention_days set in order to enabled purge protection.", resourceBlock.FullName())).

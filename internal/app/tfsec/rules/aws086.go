@@ -87,6 +87,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
+				return
 			}
 
 			poitBlock := resourceBlock.GetBlock("point_in_time_recovery")
@@ -97,6 +98,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Warning),
 				)
+				return
 			}
 			enabledAttr := poitBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {

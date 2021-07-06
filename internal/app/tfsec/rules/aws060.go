@@ -96,6 +96,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			configBlock := resourceBlock.GetBlock("configuration")

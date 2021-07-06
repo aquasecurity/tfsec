@@ -76,6 +76,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			vpcConfig := resourceBlock.GetBlock("vpc_config")
@@ -86,6 +87,7 @@ func init() {
 						WithRange(vpcConfig.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			publicAccessEnabledAttr := vpcConfig.GetAttribute("endpoint_public_access")

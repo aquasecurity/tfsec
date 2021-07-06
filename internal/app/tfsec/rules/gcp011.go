@@ -109,8 +109,10 @@ func init() {
 				members = append(members, attribute.Value())
 			} else if attribute = resourceBlock.GetAttribute("members"); attribute != nil {
 				members = attribute.Value().AsValueSlice()
-			} else if attribute = resourceBlock.GetBlock("binding").GetAttribute("members"); attribute != nil {
-				members = attribute.Value().AsValueSlice()
+			} else if resourceBlock.HasChild("binding") {
+				if attribute = resourceBlock.GetBlock("binding").GetAttribute("members"); attribute != nil {
+					members = attribute.Value().AsValueSlice()
+				}
 			}
 			for _, identities := range members {
 				if identities.IsKnown() && identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
@@ -122,7 +124,6 @@ func init() {
 					)
 				}
 			}
-
 		},
 	})
 }

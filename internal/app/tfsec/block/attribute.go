@@ -38,14 +38,15 @@ type Attribute interface {
 	Reference() (*Reference, error)
 	IsResourceBlockReference(resourceType string) bool
 	ReferencesBlock(b Block) bool
+	IsResolvable() bool
 }
 
 type HCLAttribute struct {
-	hclAttribute *hclsyntax.Attribute
+	hclAttribute *hcl.Attribute
 	ctx          *hcl.EvalContext
 }
 
-func NewHCLAttribute(attr *hclsyntax.Attribute, ctx *hcl.EvalContext) *HCLAttribute {
+func NewHCLAttribute(attr *hcl.Attribute, ctx *hcl.EvalContext) *HCLAttribute {
 	return &HCLAttribute{
 		hclAttribute: attr,
 		ctx:          ctx,
@@ -54,6 +55,10 @@ func NewHCLAttribute(attr *hclsyntax.Attribute, ctx *hcl.EvalContext) *HCLAttrib
 
 func (attr *HCLAttribute) IsLiteral() bool {
 	return len(attr.hclAttribute.Expr.Variables()) == 0
+}
+
+func (attr *HCLAttribute) IsResolvable() bool {
+	return attr.Value() != cty.NilVal
 }
 
 func (attr *HCLAttribute) Type() cty.Type {
@@ -78,9 +83,9 @@ func (attr *HCLAttribute) Value() (ctyVal cty.Value) {
 
 func (attr *HCLAttribute) Range() Range {
 	return Range{
-		Filename:  attr.hclAttribute.SrcRange.Filename,
-		StartLine: attr.hclAttribute.SrcRange.Start.Line,
-		EndLine:   attr.hclAttribute.SrcRange.End.Line,
+		Filename:  attr.hclAttribute.Range.Filename,
+		StartLine: attr.hclAttribute.Range.Start.Line,
+		EndLine:   attr.hclAttribute.Range.End.Line,
 	}
 }
 

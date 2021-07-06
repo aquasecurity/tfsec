@@ -88,6 +88,7 @@ func init() {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("volume") {
+				return
 			}
 
 			volumeBlocks := resourceBlock.GetBlocks("volume")
@@ -103,10 +104,10 @@ func init() {
 							WithRange(resourceBlock.Range()).
 							WithSeverity(severity.Error),
 					)
+					continue
 				}
 				transitAttr := efsConfigBlock.GetAttribute("transit_encryption")
-
-				if transitAttr.Equals("disabled", block.IgnoreCase) {
+				if transitAttr != nil && transitAttr.Equals("disabled", block.IgnoreCase) {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has efs configuration with transit encryption explicitly disabled", resourceBlock.FullName())).

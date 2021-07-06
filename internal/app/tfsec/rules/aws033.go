@@ -78,6 +78,7 @@ func init() {
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			enforceHTTPSAttr := endpointBlock.GetAttribute("enforce_https")
@@ -88,6 +89,7 @@ func init() {
 						WithRange(endpointBlock.Range()).
 						WithSeverity(severity.Error),
 				)
+				return
 			}
 
 			isTrueBool := enforceHTTPSAttr.Type() == cty.Bool && enforceHTTPSAttr.Value().True()
