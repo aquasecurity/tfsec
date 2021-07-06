@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/block"
@@ -190,6 +191,47 @@ func mergeBlocks(allBlocks block.Blocks, newBlocks block.Blocks) block.Blocks {
 	return allBlocks
 }
 
+func (e *Evaluator) evaluateVariable(b block.Block) (cty.Value, error) {
+	if b.Label() == "" {
+		return cty.NilVal, fmt.Errorf("empty label - cannot resolve")
+	}
+
+	attributes := b.Attributes()
+	if attributes == nil {
+		return cty.NilVal, fmt.Errorf("cannot resolve variable with no attributes")
+	}
+
+	if override, exists := e.inputVars[b.Label()]; exists {
+		return override, nil
+	} else if def, exists := attributes["default"]; exists {
+		return def.Value(), nil
+	}
+
+	return cty.NilVal, fmt.Errorf("no value found")
+}
+
+func (e *Evaluator) evaluateOutput(b block.Block) (cty.Value, error) {
+
+	defer func() {
+		_ = recover()
+	}()
+
+	if b.Label() == "" {
+		return cty.NilVal, fmt.Errorf("empty label - cannot resolve")
+	}
+
+	attributes := b.Attributes()
+	if attributes == nil {
+		return cty.NilVal, fmt.Errorf("cannot resolve variable with no attributes")
+	}
+
+	if def, exists := attributes["value"]; exists {
+		return def.Value(), nil
+	}
+
+	return cty.NilVal, fmt.Errorf("no value found")
+}
+
 // returns true if all evaluations were successful
 func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 
@@ -200,41 +242,17 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 
 		switch b.Type() {
 		case "variable": // variables are special in that their value comes from the "default" attribute
-
-			if b.Label() == "" {
+			val, err := e.evaluateVariable(b)
+			if err != nil {
 				continue
 			}
-
-			attributes := b.Attributes()
-			if attributes == nil {
-				continue
-			}
-
-			if override, exists := e.inputVars[b.Label()]; exists {
-				values[b.Label()] = override
-			} else if def, exists := attributes["default"]; exists {
-				values[b.Label()] = def.Value()
-			}
+			values[b.Label()] = val
 		case "output":
-
-			if b.Label() == "" {
+			val, err := e.evaluateOutput(b)
+			if err != nil {
 				continue
 			}
-
-			attributes := b.Attributes()
-			if attributes == nil {
-				continue
-			}
-
-			if def, exists := attributes["value"]; exists {
-				func() {
-					defer func() {
-						_ = recover()
-					}()
-					values[b.Label()] = def.Value()
-				}()
-			}
-
+			values[b.Label()] = val
 		case "locals":
 			for key, val := range b.Values().AsValueMap() {
 				values[key] = val
