@@ -197,6 +197,9 @@ func (block *HCLBlock) GetAttributes() []Attribute {
 }
 
 func (block *HCLBlock) GetAttribute(name string) Attribute {
+	if strings.Contains(name, "/") {
+		return block.GetNestedAttribute(name)
+	}
 	if block == nil || block.hclBlock == nil {
 		return nil
 	}
@@ -205,6 +208,27 @@ func (block *HCLBlock) GetAttribute(name string) Attribute {
 			return NewHCLAttribute(attr, block.evalContext)
 		}
 	}
+	return nil
+}
+
+func (block *HCLBlock) GetNestedAttribute(name string) Attribute {
+	parts := strings.Split(name, "/")
+	blocks := parts[:len(parts)-1]
+	attrName := parts[len(parts)-1]
+
+	working := block
+	for _, b := range blocks {
+		if checkBlock := working.GetBlock(b); checkBlock == nil {
+			return nil
+		} else {
+			working = checkBlock.(*HCLBlock)
+		}
+	}
+
+	if working != nil {
+		return working.GetAttribute(attrName)
+	}
+
 	return nil
 }
 
