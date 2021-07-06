@@ -154,58 +154,65 @@ func evalMatchSpec(b block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool
 	if b == nil {
 		return false
 	}
-	evalResult := false
-	if spec.Action == InModule {
+	var evalResult bool
+
+	switch spec.Action {
+	case InModule:
 		return b.InModule()
-	}
-	if spec.Action == RegexMatches && !matchFunctions[RegexMatches](b, spec) {
-		return spec.IgnoreUnmatched
-	}
-
-	if spec.Action == HasTag {
+	case RegexMatches:
+		if !matchFunctions[RegexMatches](b, spec) {
+			return spec.IgnoreUnmatched
+		}
+	case HasTag:
 		return checkTags(b, spec, ctx)
-	}
-
-	if spec.Action == OfType {
+	case OfType:
 		return ofType(b, spec)
-	}
-
-	if spec.Action == RequiresPresence {
+	case RequiresPresence:
 		return resourceFound(spec, ctx)
+	case Not:
+		return notifyPredicate(b, spec, ctx)
+	case And:
+		return processAndPredicate(spec, b, ctx)
+	case Or:
+		return processOrPredicate(spec, b, ctx)
+	default:
+		evalResult = matchFunctions[spec.Action](b, spec)
 	}
-
-	if spec.Action == Not {
-		return !evalMatchSpec(b, &spec.PredicateMatchSpec[0], ctx)
-	}
-
-	// This And MatchSpec is only true if all childSpecs return true
-	if spec.Action == And {
-		for _, childSpec := range spec.PredicateMatchSpec {
-			if !evalMatchSpec(b, &childSpec, ctx) {
-				return false
-			}
-		}
-		return true
-	}
-
-	// If a single childSpec is true then this Or matchSpec is true
-	if spec.Action == Or {
-		for _, childSpec := range spec.PredicateMatchSpec {
-			if evalMatchSpec(b, &childSpec, ctx) {
-				return true
-			}
-		}
-		return false
-	}
-
-	evalResult = matchFunctions[spec.Action](b, spec)
 
 	if spec.SubMatch != nil {
-		for _, b := range b.GetBlocks(spec.Name) {
-			evalResult = evalMatchSpec(b, spec.SubMatch, nil)
-			if !evalResult {
-				break
-			}
+		evalResult = processSubMatches(spec, b, evalResult)
+	}
+
+	return evalResult
+}
+
+func notifyPredicate(b block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
+	return !evalMatchSpec(b, &spec.PredicateMatchSpec[0], ctx)
+}
+
+func processOrPredicate(spec *MatchSpec, b block.Block, ctx *hclcontext.Context) bool {
+	for _, childSpec := range spec.PredicateMatchSpec {
+		if evalMatchSpec(b, &childSpec, ctx) {
+			return true
+		}
+	}
+	return false
+}
+
+func processAndPredicate(spec *MatchSpec, b block.Block, ctx *hclcontext.Context) bool {
+	for _, childSpec := range spec.PredicateMatchSpec {
+		if !evalMatchSpec(b, &childSpec, ctx) {
+			return false
+		}
+	}
+	return true
+}
+
+func processSubMatches(spec *MatchSpec, b block.Block, evalResult bool) bool {
+	for _, b := range b.GetBlocks(spec.Name) {
+		evalResult = evalMatchSpec(b, spec.SubMatch, nil)
+		if !evalResult {
+			break
 		}
 	}
 
