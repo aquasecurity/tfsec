@@ -16,8 +16,6 @@ import (
 	"github.com/tfsec/tfsec/pkg/rule"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 const AWSPlainHTTP = "AWS004"
@@ -60,49 +58,57 @@ func init() {
 		RequiredLabels:  []string{"aws_lb_listener", "aws_alb_listener"},
 		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
-			if resourceBlock.HasChild("load_balancer_arn") {
-				lbaAttr := resourceBlock.GetAttribute("load_balancer_arn")
-				if lbaAttr.IsResourceBlockReference("aws_lb") {
-					referencedBlock, err := ctx.GetReferencedBlock(lbaAttr)
-					if err == nil {
-						if referencedBlock.HasChild("load_balancer_type") && referencedBlock.GetAttribute("load_balancer_type").Equals("gateway") {
+			// didn't find the referenced block, log and move on
+			if checkIfGateway(resourceBlock, ctx) {
+				return
+			}
+
+			protocolAttr := resourceBlock.GetAttribute("protocol")
+
+			if protocolAttr != nil {
+				if protocolAttr.IsResolvable() && protocolAttr.Equals("HTTPS") {
+					return
+				}
+				if protocolAttr.IsResolvable() && protocolAttr.Equals("HTTP") {
+					// check if this is a redirect to HTTPS - if it is, then no problem
+					if redirectProtocolAttr := resourceBlock.GetNestedAttribute("default_action/redirect/protocol"); redirectProtocolAttr != nil {
+						if redirectProtocolAttr.IsResolvable() && redirectProtocolAttr.Equals("HTTPS") {
 							return
 						}
-					} else {
-						// didn't find the referenced block, log and move on
-						debug.Log(err.Error())
 					}
 				}
 			}
 
-			if protocolAttr := resourceBlock.GetAttribute("protocol"); protocolAttr == nil || (protocolAttr.Type() == cty.String && protocolAttr.Value().AsString() == "HTTP") {
+			res := result.New(resourceBlock).
+				WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName())).
+				WithSeverity(severity.Error).
+				WithRange(resourceBlock.Range())
 
-				// check if this is a redirect to HTTPS - if it is, then no problem
-				if actionBlock := resourceBlock.GetBlock("default_action"); actionBlock != nil {
-					actionTypeAttr := actionBlock.GetAttribute("type")
-					if actionTypeAttr != nil && actionTypeAttr.Type() == cty.String && actionTypeAttr.Value().AsString() == "redirect" {
-						if redirectBlock := actionBlock.GetBlock("redirect"); redirectBlock != nil {
-							redirectProtocolAttr := redirectBlock.GetAttribute("protocol")
-							if redirectProtocolAttr != nil && redirectProtocolAttr.Type() == cty.String && redirectProtocolAttr.Value().AsString() == "HTTPS" {
-								return
-							}
-						}
-					}
-				}
-
-				res := result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName())).
-					WithSeverity(severity.Error)
-
-				if protocolAttr != nil {
-					res.WithRange(protocolAttr.Range()).
-						WithAttributeAnnotation(protocolAttr)
-				} else {
-					res.WithRange(resourceBlock.Range())
-				}
-
-				set.Add(res)
+			if protocolAttr != nil {
+				res.WithRange(protocolAttr.Range()).
+					WithAttributeAnnotation(protocolAttr)
 			}
+
+			set.Add(res)
+
 		},
 	})
+}
+
+func checkIfGateway(resourceBlock block.Block, ctx *hclcontext.Context) bool {
+	if resourceBlock.HasChild("load_balancer_arn") {
+		lbaAttr := resourceBlock.GetAttribute("load_balancer_arn")
+		if lbaAttr.IsResourceBlockReference("aws_lb") {
+			referencedBlock, err := ctx.GetReferencedBlock(lbaAttr)
+			if err == nil {
+				if referencedBlock.HasChild("load_balancer_type") && referencedBlock.GetAttribute("load_balancer_type").Equals("gateway") {
+					return true
+				}
+			} else {
+
+				debug.Log(err.Error())
+			}
+		}
+	}
+	return false
 }

@@ -208,6 +208,27 @@ func (block *HCLBlock) GetAttribute(name string) Attribute {
 	return nil
 }
 
+func (block *HCLBlock) GetNestedAttribute(name string) Attribute {
+	parts := strings.Split(name, "/")
+	blocks := parts[:len(parts)-1]
+	attrName := parts[len(parts)-1]
+
+	var working Block = block
+	for _, b := range blocks {
+		if checkBlock := working.GetBlock(b); checkBlock == nil {
+			return nil
+		} else {
+			working = checkBlock
+		}
+	}
+
+	if working != nil {
+		return working.GetAttribute(attrName)
+	}
+
+	return nil
+}
+
 func (block *HCLBlock) Reference() *Reference {
 
 	var parts []string
