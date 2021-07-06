@@ -71,7 +71,7 @@ func init() {
 				}
 				if protocolAttr.IsResolvable() && protocolAttr.Equals("HTTP") {
 					// check if this is a redirect to HTTPS - if it is, then no problem
-					if redirectProtocolAttr := resourceBlock.GetAttribute("default_action/redirect/protocol"); redirectProtocolAttr != nil {
+					if redirectProtocolAttr := resourceBlock.GetNestedAttribute("default_action/redirect/protocol"); redirectProtocolAttr != nil {
 						if redirectProtocolAttr.IsResolvable() && redirectProtocolAttr.Equals("HTTPS") {
 							return
 						}
