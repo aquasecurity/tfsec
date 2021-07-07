@@ -47,7 +47,7 @@ resource "google_secret_manager_secret" "secret" {
 			mustExcludeResultCode: rules.GenericSensitiveAttributes,
 		},
 		{
-			name: "avoid false positive for google_secret_manager_secret",
+			name: "avoid false positive for non-string attributes",
 			source: `
 resource "something" "secret" {
 	secret = true
