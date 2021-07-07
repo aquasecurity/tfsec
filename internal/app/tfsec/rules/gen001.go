@@ -3,6 +3,8 @@ package rules
 import (
 	"fmt"
 
+	"github.com/zclconf/go-cty/cty"
+		
 	"github.com/tfsec/tfsec/pkg/result"
 	"github.com/tfsec/tfsec/pkg/severity"
 
