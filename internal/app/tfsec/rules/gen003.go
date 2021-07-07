@@ -5,6 +5,7 @@ import (
 
 	"github.com/tfsec/tfsec/pkg/result"
 	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/zclconf/go-cty/cty"
 
 	"github.com/tfsec/tfsec/pkg/provider"
 
@@ -100,7 +101,7 @@ func init() {
 					}
 				}
 				if security.IsSensitiveAttribute(attribute.Name()) {
-					if attribute.IsResolvable() && !attribute.Equals("") {
+					if attribute.IsResolvable() && attribute.Type() == cty.String && !attribute.Equals("") {
 						set.Add(result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", resourceBlock.FullName())).
 							WithRange(attribute.Range()).

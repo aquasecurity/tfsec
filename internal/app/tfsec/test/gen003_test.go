@@ -46,6 +46,14 @@ resource "google_secret_manager_secret" "secret" {
 }`,
 			mustExcludeResultCode: rules.GenericSensitiveAttributes,
 		},
+		{
+			name: "avoid false positive for non-string attributes",
+			source: `
+resource "something" "secret" {
+	secret = true
+}`,
+			mustExcludeResultCode: rules.GenericSensitiveAttributes,
+		},
 	}
 
 	for _, test := range tests {
