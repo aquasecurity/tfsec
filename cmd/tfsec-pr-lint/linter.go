@@ -2,45 +2,25 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"os"
 
 	"github.com/tfsec/tfsec/pkg/rule"
 )
 
 type linter struct {
-	count    int
-	exitCode int
+	count int
 }
 
 func (l *linter) lint(check rule.Rule) {
-	docs := check.Documentation
-	var errorFound = false
-	if err := l.checkDocPart(string(docs.Summary), "Summary"); err != nil {
-		fmt.Printf("%s: %s\n", check.ID, err.Error())
-		errorFound = true
+	// crashout immediately if there is a check with no id
+	if check.ID == "" {
+		fmt.Printf("Found a check with no ID\n")
+		os.Exit(1)
 	}
-	if err := l.checkDocPart(docs.Impact, "Impact"); err != nil {
-		fmt.Printf("%s: %s\n", check.ID, err.Error())
-		errorFound = true
-	}
-	if err := l.checkDocPart(docs.Resolution, "Resolution"); err != nil {
-		fmt.Printf("%s: %s\n", check.ID, err.Error())
-		errorFound = true
-	}
-	if err := l.checkDocPart(docs.Explanation, "Explanation"); err != nil {
-		fmt.Printf("%s: %s\n", check.ID, err.Error())
-		errorFound = true
-	}
-	if err := l.checkDocPart(docs.GoodExample, "GoodExample"); err != nil {
-		fmt.Printf("%s: %s\n", check.ID, err.Error())
-		errorFound = true
-	}
-	if err := l.checkDocPart(docs.BadExample, "BadExample"); err != nil {
-		fmt.Printf("%s: %s\n", check.ID, err.Error())
-		errorFound = true
-	}
-
-	if len(docs.Links) == 0 {
-		fmt.Printf("%s: Has no links configure\n", check.ID)
+	errorFound := l.checkDocumentation(check)
+	if len(check.RequiredTypes) == 0 {
+		fmt.Printf("%s: missing required types\n", check.ID)
 		errorFound = true
 	}
 
@@ -49,12 +29,49 @@ func (l *linter) lint(check rule.Rule) {
 	}
 }
 
-func (l *linter) checkDocPart(checkPart, checkDescription string) error {
-	if checkPart == "" {
-		l.exitCode = 1
-		return fmt.Errorf("[%s] documentation is empty", checkDescription)
+func (l *linter) checkDocumentation(check rule.Rule) bool {
+	docs := check.Documentation
+	var errorFound bool
+	if err := l.verifyPart(string(docs.Summary), "Summary"); err != nil {
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
+		errorFound = true
+	}
+	if err := l.verifyPart(docs.Impact, "Impact"); err != nil {
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
+		errorFound = true
+	}
+	if err := l.verifyPart(docs.Resolution, "Resolution"); err != nil {
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
+		errorFound = true
+	}
+	if err := l.verifyPart(docs.Explanation, "Explanation"); err != nil {
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
+		errorFound = true
+	}
+	if err := l.verifyPart(docs.GoodExample, "GoodExample"); err != nil {
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
+		errorFound = true
+	}
+	if err := l.verifyPart(docs.BadExample, "BadExample"); err != nil {
+		fmt.Printf("%s: %s\n", check.ID, err.Error())
+		errorFound = true
+	}
 
+	if len(docs.Links) == 0 {
+		fmt.Printf("%s: Has no links configure\n", check.ID)
+		errorFound = true
+	}
+	return errorFound
+}
+
+func (l *linter) verifyPart(checkPart, checkDescription string) error {
+	if checkPart == "" {
+		return fmt.Errorf("[%s] documentation is empty", checkDescription)
 	}
 
 	return nil
+}
+
+func (l *linter) exitCode() int {
+	return int(math.Min(1, float64(l.count)))
 }

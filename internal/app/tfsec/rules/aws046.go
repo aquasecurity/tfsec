@@ -62,7 +62,10 @@ func init() {
 			Explanation: AWSIamPolicyWildcardActionsExplanation,
 			BadExample:  AWSIamPolicyWildcardActionsBadExample,
 			GoodExample: AWSIamPolicyWildcardActionsGoodExample,
-			Links:       []string{},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document",
+				"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html",
+			},
 		},
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"data"},
