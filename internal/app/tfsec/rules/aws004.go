@@ -59,14 +59,15 @@ func init() {
 		DefaultSeverity: severity.Error,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 			// didn't find the referenced block, log and move on
-			if checkIfGateway(resourceBlock, ctx) {
+			if checkIfExempt(resourceBlock, ctx) {
 				return
 			}
 
 			protocolAttr := resourceBlock.GetAttribute("protocol")
 
 			if protocolAttr != nil {
-				if protocolAttr.IsResolvable() && protocolAttr.Equals("HTTPS") {
+				if protocolAttr.IsResolvable() && (protocolAttr.Equals("HTTPS", block.IgnoreCase) ||
+					protocolAttr.Equals("TLS", block.IgnoreCase)) {
 					return
 				}
 				if protocolAttr.IsResolvable() && protocolAttr.Equals("HTTP") {
@@ -95,14 +96,17 @@ func init() {
 	})
 }
 
-func checkIfGateway(resourceBlock block.Block, ctx *hclcontext.Context) bool {
+func checkIfExempt(resourceBlock block.Block, ctx *hclcontext.Context) bool {
 	if resourceBlock.HasChild("load_balancer_arn") {
 		lbaAttr := resourceBlock.GetAttribute("load_balancer_arn")
 		if lbaAttr.IsResourceBlockReference("aws_lb") {
 			referencedBlock, err := ctx.GetReferencedBlock(lbaAttr)
 			if err == nil {
-				if referencedBlock.HasChild("load_balancer_type") && referencedBlock.GetAttribute("load_balancer_type").Equals("gateway") {
-					return true
+				if referencedBlock.HasChild("load_balancer_type") {
+					loadBalancerType := referencedBlock.GetAttribute("load_balancer_type")
+					if loadBalancerType.IsAny("gateway", "network") {
+						return true
+					}
 				}
 			} else {
 
