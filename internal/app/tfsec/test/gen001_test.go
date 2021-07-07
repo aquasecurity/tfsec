@@ -23,10 +23,10 @@ variable "db_password" {
 			mustIncludeResultCode: rules.GenericSensitiveVariables,
 		},
 		{
-			name: "check sensitive variable without value",
+			name: "check sensitive variable without default",
 			source: `
 variable "db_password" {
-	default = ""
+
 }`,
 			mustExcludeResultCode: rules.GenericSensitiveVariables,
 		},
