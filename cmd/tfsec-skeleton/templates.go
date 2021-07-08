@@ -9,6 +9,7 @@ import (
 	"github.com/tfsec/tfsec/pkg/provider"
 	"github.com/tfsec/tfsec/pkg/result"
 	"github.com/tfsec/tfsec/pkg/rule"
+	"github.com/tfsec/tfsec/pkg/severity"
 )
 
 
@@ -44,7 +45,7 @@ func init() {
 		RequiredTypes:  []string{{.RequiredTypes}},
 		RequiredLabels: []string{{.RequiredLabels}},
 		DefaultSeverity: severity.Warning, //TODO set the default severity
-		CheckFunc: func(set result.Set, block block.Block, _ *hclcontext.Context){
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context){
 				
 			// function contents here
 
@@ -88,7 +89,7 @@ func Test_{{.CheckName}}(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			results := scanSource(test.source)
+			results := scanHCL(test.source, t)
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
