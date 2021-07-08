@@ -21,10 +21,10 @@ permalink: /docs/{{$.Provider}}/{{$.ID}}/
 
 {{$.Documentation.Explanation}}
 
-### Impact
+### Possible Impact
 {{$.Documentation.Impact}}
 
-### Resolution
+### Suggested Resolution
 {{$.Documentation.Resolution}}
 
 
