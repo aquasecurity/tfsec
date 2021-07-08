@@ -6,12 +6,13 @@ import "strings"
 type Provider string
 
 const (
-	AWSProvider     Provider = "aws"
-	AzureProvider   Provider = "azure"
-	GCPProvider     Provider = "google"
-	GeneralProvider Provider = "general"
-	OracleProvider  Provider = "oracle"
-	CustomProvider  Provider = "custom"
+	AWSProvider          Provider = "aws"
+	AzureProvider        Provider = "azure"
+	GCPProvider          Provider = "google"
+	GeneralProvider      Provider = "general"
+	OracleProvider       Provider = "oracle"
+	DigitalOceanProvider Provider = "digitalocean"
+	CustomProvider       Provider = "custom"
 )
 
 func RuleProviderToString(provider Provider) string {

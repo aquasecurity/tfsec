@@ -28,6 +28,8 @@ cp -r checkdocs/docs/aws/* ./_site/_docs/aws/
 cp -r checkdocs/docs/azure/* ./_site/_docs/azure/
 cp -r checkdocs/docs/google/* ./_site/_docs/google/
 cp -r checkdocs/docs/general/* ./_site/_docs/general/
+cp -r checkdocs/docs/oracle/* ./_site/_docs/oracle/
+cp -r checkdocs/docs/digitalocean/* ./_site/_docs/digitalocean/
 deploy
 
 rm -rf checkdocs
