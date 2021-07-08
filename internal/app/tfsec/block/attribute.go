@@ -30,4 +30,7 @@ type Attribute interface {
 	IsResourceBlockReference(resourceType string) bool
 	ReferencesBlock(b Block) bool
 	IsResolvable() bool
+	IsString() bool
+	IsNumber() bool
+	IsBool() bool
 }

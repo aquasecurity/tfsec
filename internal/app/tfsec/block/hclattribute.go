@@ -36,6 +36,18 @@ func (attr *HCLAttribute) Type() cty.Type {
 	return attr.Value().Type()
 }
 
+func (attr *HCLAttribute) IsString() bool {
+	return attr.Value().Type() == cty.String
+}
+
+func (attr *HCLAttribute) IsNumber() bool {
+	return attr.Value().Type() == cty.Number
+}
+
+func (attr *HCLAttribute) IsBool() bool {
+	return attr.Value().Type() == cty.Bool
+}
+
 func (attr *HCLAttribute) Value() (ctyVal cty.Value) {
 	if attr == nil {
 		return cty.NilVal
