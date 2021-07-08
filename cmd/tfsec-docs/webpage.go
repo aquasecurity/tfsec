@@ -21,6 +21,13 @@ permalink: /docs/{{$.Provider}}/{{$.ID}}/
 
 {{$.Documentation.Explanation}}
 
+### Impact
+{{$.Documentation.Impact}}
+
+### Resolution
+{{$.Documentation.Resolution}}
+
+
 {{if $.Documentation.BadExample }}
 ### Insecure Example
 
