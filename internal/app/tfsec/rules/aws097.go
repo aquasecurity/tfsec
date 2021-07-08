@@ -31,9 +31,7 @@ const AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeysBadExample
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
-  
-	# Terraform's "jsonencode" function converts a
-	# Terraform expression result to valid JSON syntax.
+
 	policy = data.aws_iam_policy_document.kms_policy.json
 }
 
