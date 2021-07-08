@@ -72,13 +72,13 @@ func init() {
 				if inboundRuleBlock.MissingChild("destination_addresses") {
 					continue
 				}
-				sourceAddressesAttr := inboundRuleBlock.GetAttribute("destination_addresses")
-				if isOpenCidr(sourceAddressesAttr) {
+				destinationAddressesAttr := inboundRuleBlock.GetAttribute("destination_addresses")
+				if isOpenCidr(destinationAddressesAttr) {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open outbound_rule.", resourceBlock.FullName())).
-							WithRange(sourceAddressesAttr.Range()).
-							WithAttributeAnnotation(sourceAddressesAttr).
+							WithRange(destinationAddressesAttr.Range()).
+							WithAttributeAnnotation(destinationAddressesAttr).
 							WithSeverity(severity.Warning),
 					)
 				}
