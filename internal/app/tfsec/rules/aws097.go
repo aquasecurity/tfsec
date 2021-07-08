@@ -28,6 +28,32 @@ const AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeysExplanatio
 IAM policies define which actions an identity (user, group, or role) can perform on which resources. Following security best practices, AWS recommends that you allow least privilege. In other words, you should grant to identities only the kms:Decrypt or kms:ReEncryptFrom permissions and only for the keys that are required to perform a task.
 `
 const AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeysBadExample = `
+resource "aws_iam_role_policy" "test_policy" {
+	name = "test_policy"
+	role = aws_iam_role.test_role.id
+  
+	# Terraform's "jsonencode" function converts a
+	# Terraform expression result to valid JSON syntax.
+	policy = data.aws_iam_policy_document.kms_policy.json
+}
+
+resource "aws_iam_role" "test_role" {
+	name = "test_role"
+	assume_role_policy = jsonencode({
+		Version = "2012-10-17"
+		Statement = [
+		{
+			Action = "sts:AssumeRole"
+			Effect = "Allow"
+			Sid    = ""
+			Principal = {
+			Service = "ec2.amazonaws.com"
+			}
+		},
+		]
+	})
+}
+
 data "aws_iam_policy_document" "kms_policy" {
   statement {
     principals {
@@ -40,6 +66,32 @@ data "aws_iam_policy_document" "kms_policy" {
 }
 `
 const AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeysGoodExample = `
+resource "aws_iam_role_policy" "test_policy" {
+	name = "test_policy"
+	role = aws_iam_role.test_role.id
+  
+	# Terraform's "jsonencode" function converts a
+	# Terraform expression result to valid JSON syntax.
+	policy = data.aws_iam_policy_document.kms_policy.json
+}
+
+resource "aws_iam_role" "test_role" {
+	name = "test_role"
+	assume_role_policy = jsonencode({
+		Version = "2012-10-17"
+		Statement = [
+		{
+			Action = "sts:AssumeRole"
+			Effect = "Allow"
+			Sid    = ""
+			Principal = {
+			Service = "ec2.amazonaws.com"
+			}
+		},
+		]
+	})
+}
+
 data "aws_iam_policy_document" "kms_policy" {
   statement {
     principals {
