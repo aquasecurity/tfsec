@@ -27,13 +27,13 @@ Compute instance requests an IP reservation from a public pool
 The compute instance has the ability to be reached from outside, you might want to sonder the use of a non public IP.
 `
 const OCIComputeIpReservationBadExample = `
-resource "opc_compute_ip_address_reservation" "my-ip-address" {
+resource "opc_compute_ip_address_reservation" "bad_example" {
 	name            = "my-ip-address"
 	ip_address_pool = "public-ippool"
   }
 `
 const OCIComputeIpReservationGoodExample = `
-resource "opc_compute_ip_address_reservation" "my-ip-address" {
+resource "opc_compute_ip_address_reservation" "good_example" {
 	name            = "my-ip-address"
 	ip_address_pool = "cloud-ippool"
   }
@@ -60,7 +60,7 @@ func init() {
 		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if attr := resourceBlock.GetAttribute("ip_address_pool"); attr != nil {
-				if attr.IsAny("public-ippool") {
+				if attr.Equals("public-ippool") {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' is using an IP from a public IP pool", resourceBlock.FullName())).
