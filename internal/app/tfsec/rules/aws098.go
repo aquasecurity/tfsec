@@ -55,7 +55,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_s3_bucket"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.Info,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 			blocks, err := ctx.GetReferencingResources(resourceBlock, "aws_s3_bucket_public_access_block", "bucket")
 			if err != nil || len(blocks) == 0 {
