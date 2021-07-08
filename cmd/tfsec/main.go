@@ -99,7 +99,11 @@ var rootCmd = &cobra.Command{
 		}
 
 		if showVersion {
-			fmt.Println(version.Version)
+			if version.Version == "" {
+				fmt.Println("You are running a locally built version of tfsec.")
+			} else {
+				fmt.Println(version.Version)
+			}
 			os.Exit(0)
 		}
 
