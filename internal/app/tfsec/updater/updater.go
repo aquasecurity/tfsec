@@ -18,8 +18,8 @@ type githubRelease struct {
 }
 
 func Update() error {
-	if version.Version == "development" {
-		return fmt.Errorf("you are running a development branch")
+	if version.Version == "" {
+		return fmt.Errorf("you are running a locally built version")
 	}
 
 	latestAvailable, err := getLatestVersion()

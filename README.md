@@ -42,6 +42,8 @@ Alternatively, install with Go:
 go get -u github.com/tfsec/tfsec/cmd/tfsec
 ```
 
+Please note that using `go get` will install directly from the `master` branch and version numbers will not be reported via `tfsec --version`.
+
 ## Usage
 
 tfsec will scan the specified directory. If no directory is specified, the current working directory will be used.
