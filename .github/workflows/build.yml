@@ -14,8 +14,11 @@ jobs:
         go-version: '1.16.4' # The Go version to download (if necessary) and use.
     - run: go version
 
-    - name: Run documentaion Linter
+    - name: Run Documentation Linter
       run: make lint-pr-checks
  
     - name: Run test
       run: make test
+
+    - name: Code Quality
+      run: make quality

@@ -180,7 +180,7 @@ func traverseModuleTree(b block.Block, ignoreAll, ignoreCode string) (bool, stri
 	if b.HasModuleBlock() {
 		moduleBlock, err := b.GetModuleBlock()
 		if err != nil {
-			debug.Log("error occured trying to get the module block for [%s]. %s", b.FullName(), err.Error())
+			debug.Log("error occurred trying to get the module block for [%s]. %s", b.FullName(), err.Error())
 			return false, ""
 		}
 		moduleLines, err := readLines(moduleBlock.Range().Filename)

@@ -20,7 +20,7 @@ import (
 const AZURequireSecureTransferForStorageAccounts = "AZU014"
 const AZURequireSecureTransferForStorageAccountsDescription = "Storage accounts should be configured to only accept transfers that are over secure connections"
 const AZURequireSecureTransferForStorageAccountsImpact = "Insecure transfer of data into secure accounts could be read if intercepted"
-const AZURequireSecureTransferForStorageAccountsResolution = "Only allow secure connection for transfering data into storage accounts"
+const AZURequireSecureTransferForStorageAccountsResolution = "Only allow secure connection for transferring data into storage accounts"
 const AZURequireSecureTransferForStorageAccountsExplanation = `
 You can configure your storage account to accept requests from secure connections only by setting the Secure transfer required property for the storage account. 
 

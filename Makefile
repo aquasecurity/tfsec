@@ -37,3 +37,23 @@ tagger:
 	@git pull origin master
 	@git tag -a ${TAG} -m ${TAG}
 	@git push --tags
+
+.PHONY: cyclo
+cyclo:
+	which gocyclo || go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+	gocyclo -over 15 -ignore 'vendor/|funcs/' .
+
+.PHONY: vet
+vet:
+	go vet ./...
+
+.PHONY: typos
+typos:
+	./scripts/typos.sh
+
+.PHONY: quality
+quality: cyclo vet typos
+
+.PHONY: fix-typos
+fix-typos:
+	./scripts/typos.sh fix
