@@ -48,4 +48,5 @@ else
     echo
     echo -e "\x1b[31mFound $count typo(s). Fix them all with 'make fix-typos'.\x1b[0m"
     echo
+    exit 1
 fi
