@@ -33,4 +33,5 @@ type Attribute interface {
 	IsString() bool
 	IsNumber() bool
 	IsBool() bool
+	ValueAsStrings() []string
 }
