@@ -299,13 +299,8 @@ func (attr *HCLAttribute) IsEmpty() bool {
 	}
 	if attr.Value().IsNull() {
 		switch t := attr.hclAttribute.Expr.(type) {
-		case *hclsyntax.FunctionCallExpr:
-			return false
-		case *hclsyntax.ScopeTraversalExpr:
-			return false
-		case *hclsyntax.ConditionalExpr:
-			return false
-		case *hclsyntax.LiteralValueExpr:
+		case *hclsyntax.FunctionCallExpr, *hclsyntax.ScopeTraversalExpr,
+			*hclsyntax.ConditionalExpr, *hclsyntax.LiteralValueExpr:
 			return false
 		case *hclsyntax.TemplateExpr:
 			// walk the parts of the expression to ensure that it has a literal value
