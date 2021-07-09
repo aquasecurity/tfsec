@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -ex
-
 highlight="\x1b[31m"
 if [[ "$1" == "fix" ]]; then
     fix="-w"
