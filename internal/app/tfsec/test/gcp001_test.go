@@ -18,7 +18,6 @@ func Test_GoogleUnencryptedDisk(t *testing.T) {
 			name: "check google_compute_disk with empty disk_encryption_key block",
 			source: `
 resource "google_compute_disk" "my-disk" {
-	disk_encryption_key {}
 }`,
 			mustIncludeResultCode: rules.GoogleUnencryptedDisk,
 		},
