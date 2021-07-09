@@ -116,7 +116,7 @@ func (r *Result) WithAttributeAnnotation(attr block.Attribute) *Result {
 
 	switch typ {
 	case cty.String:
-		raw = fmt.Sprintf(`"%s"`, attr.Value().AsString())
+		raw = fmt.Sprintf("%q", attr.Value().AsString())
 		typeStr = "string"
 	case cty.Bool:
 		raw = fmt.Sprintf("%t", attr.Value().True())
@@ -133,7 +133,7 @@ func (r *Result) WithAttributeAnnotation(attr block.Attribute) *Result {
 			for _, value := range values {
 				switch value.Type() {
 				case cty.String:
-					strValues = append(strValues, fmt.Sprintf(`"%s"`, value.AsString()))
+					strValues = append(strValues, fmt.Sprintf("%q", value.AsString()))
 				case cty.Number:
 					strValues = append(strValues, fmt.Sprintf(`%f`, value.AsBigFloat()))
 				case cty.Bool:
