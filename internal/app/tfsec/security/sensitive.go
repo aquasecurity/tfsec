@@ -2,6 +2,8 @@ package security
 
 import (
 	"strings"
+
+	"github.com/owenrumney/squealer/pkg/squealer"
 )
 
 var sensitiveAttributeTokens = []string{
@@ -13,6 +15,10 @@ var sensitiveAttributeTokens = []string{
 	"token",
 	"api_key",
 }
+
+var sensitiveAttributes = map[string]string{}
+
+var StringScanner = squealer.NewStringScanner()
 
 var whitelistTokens = []string{
 	"version",
