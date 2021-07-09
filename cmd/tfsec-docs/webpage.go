@@ -6,7 +6,6 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/tfsec/tfsec/pkg/provider"
 	"github.com/tfsec/tfsec/pkg/rule"
 )
 
@@ -26,7 +25,6 @@ permalink: /docs/{{$.Provider}}/{{$.ID}}/
 
 ### Suggested Resolution
 {{$.Documentation.Resolution}}
-
 
 {{if $.Documentation.BadExample }}
 ### Insecure Example
@@ -70,11 +68,9 @@ func generateWebPages(fileContents []*FileContent) error {
 }
 
 var funcMap = template.FuncMap{
-	"ToUpper": strings.ToUpper,
-	"ToUpperProvider": func(provider provider.Provider) string {
-		return strings.ToUpper(string(provider))
-	},
-	"Join": join,
+	"ToUpper":            strings.ToUpper,
+	"FormatProviderName": formatProviderName,
+	"Join":               join,
 }
 
 func join(s []string) string {
@@ -83,6 +79,18 @@ func join(s []string) string {
 		return ""
 	}
 	return strings.Join(s[1:], s[0])
+}
+
+func formatProviderName(providerName string) string {
+	if providerName == "digitalocean" {
+		providerName = "digital ocean"
+	}
+	switch providerName {
+	case "aws":
+		return strings.ToUpper(providerName)
+	default:
+		return strings.Title(strings.ToLower(providerName))
+	}
 }
 
 func generateWebPage(r rule.Rule) error {

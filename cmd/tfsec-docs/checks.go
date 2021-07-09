@@ -9,13 +9,13 @@ import (
 )
 
 const checksTableTemplate = `---
-title: {{$.Provider | ToUpper }} Checks
+title: {{$.Provider | FormatProviderName }} Checks
 permalink: /docs/{{$.Provider}}/home/
 has_children: true
 has_toc: false
 ---
 
-The included {{$.Provider | ToUpper}} checks are listed below. For more information about each check, see the link provided.
+The included {{$.Provider | FormatProviderName }} checks are listed below. For more information about each check, see the link provided.
 
 | ID  | Summary |
 |:-------|:-------------|
