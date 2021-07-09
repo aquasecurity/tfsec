@@ -45,6 +45,7 @@ func init() {
 			BadExample:  GCPRawEncryptionKeySpecifiedForComputeDiskBadExample,
 			GoodExample: GCPRawEncryptionKeySpecifiedForComputeDiskGoodExample,
 			Links: []string{
+                              "https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk#kms_key_self_link",
 				"https://cloud.google.com/compute/docs/disks/customer-supplied-encryption",
 			},
 		},
