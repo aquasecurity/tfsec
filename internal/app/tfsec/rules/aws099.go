@@ -19,7 +19,7 @@ const AWSIAMPolicyShouldUsePrincipleOfLeastPrivilegeDescription = "IAM policy sh
 const AWSIAMPolicyShouldUsePrincipleOfLeastPrivilegeImpact = "Overly permissive policies may grant access to sensitive resources"
 const AWSIAMPolicyShouldUsePrincipleOfLeastPrivilegeResolution = "Specify the exact permissions required, and to which resources they should apply instead of using wildcards."
 const AWSIAMPolicyShouldUsePrincipleOfLeastPrivilegeExplanation = `
-
+You should use the principle of least privilege when defining your IAM policies. This means you should specify each exact permission required without using wildcards, as this could cause the granting of access to certain undesired actions, resources and principals.
 `
 const AWSIAMPolicyShouldUsePrincipleOfLeastPrivilegeBadExample = `
 resource "aws_iam_role_policy" "test_policy" {
@@ -130,61 +130,67 @@ func init() {
 				return
 			}
 
-			if statementBlocks := policyDocumentBlock.GetBlocks("statement"); statementBlocks != nil {
-				for _, statementBlock := range statementBlocks {
+			checkAWS099PolicyDocumentBlock(set, policyDocumentBlock)
 
-					if statementBlock.HasChild("effect") && statementBlock.GetAttribute("effect").Equals("deny", block.IgnoreCase) {
-						continue
-					}
+		},
+	})
+}
 
-					actionsAttr := statementBlock.GetAttribute("actions")
-					if actionsAttr != nil && actionsAttr.Contains("*") {
-						set.Add(
-							result.New(policyDocumentBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName())).
-								WithRange(actionsAttr.Range()).
-								WithAttributeAnnotation(actionsAttr).
-								WithSeverity(severity.Error),
-						)
-					}
+func checkAWS099PolicyDocumentBlock(set result.Set, policyDocumentBlock block.Block) {
 
-					resourcesAttr := statementBlock.GetAttribute("resources")
-					if resourcesAttr != nil && resourcesAttr.Contains("*") {
-						set.Add(
-							result.New(policyDocumentBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", policyDocumentBlock.FullName())).
-								WithRange(resourcesAttr.Range()).
-								WithAttributeAnnotation(resourcesAttr).
-								WithSeverity(severity.Error),
-						)
-					}
+	if statementBlocks := policyDocumentBlock.GetBlocks("statement"); statementBlocks != nil {
+		for _, statementBlock := range statementBlocks {
 
-					principalsBlock := statementBlock.GetBlock("principals")
-					if principalsBlock != nil {
-						principalTypeAttr := principalsBlock.GetAttribute("type")
-						if principalTypeAttr != nil && principalTypeAttr.Equals("AWS") {
-							identifiersAttr := principalsBlock.GetAttribute("identifiers")
-							if identifiersAttr != nil {
-								for _, ident := range identifiersAttr.ValueAsStrings() {
-									if strings.Contains(ident, "*") {
-										set.Add(
-											result.New(policyDocumentBlock).
-												WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", policyDocumentBlock.FullName())).
-												WithRange(resourcesAttr.Range()).
-												WithAttributeAnnotation(resourcesAttr).
-												WithSeverity(severity.Error),
-										)
-										break
-									}
-								}
+			if statementBlock.HasChild("effect") && statementBlock.GetAttribute("effect").Equals("deny", block.IgnoreCase) {
+				continue
+			}
+
+			actionsAttr := statementBlock.GetAttribute("actions")
+			if actionsAttr != nil && actionsAttr.Contains("*") {
+				set.Add(
+					result.New(policyDocumentBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName())).
+						WithRange(actionsAttr.Range()).
+						WithAttributeAnnotation(actionsAttr).
+						WithSeverity(severity.Error),
+				)
+			}
+
+			resourcesAttr := statementBlock.GetAttribute("resources")
+			if resourcesAttr != nil && resourcesAttr.Contains("*") {
+				set.Add(
+					result.New(policyDocumentBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", policyDocumentBlock.FullName())).
+						WithRange(resourcesAttr.Range()).
+						WithAttributeAnnotation(resourcesAttr).
+						WithSeverity(severity.Error),
+				)
+			}
+
+			principalsBlock := statementBlock.GetBlock("principals")
+			if principalsBlock != nil {
+				principalTypeAttr := principalsBlock.GetAttribute("type")
+				if principalTypeAttr != nil && principalTypeAttr.Equals("AWS") {
+					identifiersAttr := principalsBlock.GetAttribute("identifiers")
+					if identifiersAttr != nil {
+						for _, ident := range identifiersAttr.ValueAsStrings() {
+							if strings.Contains(ident, "*") {
+								set.Add(
+									result.New(policyDocumentBlock).
+										WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", policyDocumentBlock.FullName())).
+										WithRange(resourcesAttr.Range()).
+										WithAttributeAnnotation(resourcesAttr).
+										WithSeverity(severity.Error),
+								)
+								break
 							}
 						}
 					}
-
 				}
 			}
-		},
-	})
+
+		}
+	}
 }
 
 func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr block.Attribute) {
@@ -218,17 +224,15 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 				)
 			}
 		}
-		for _, principal := range statement.Principal {
-			for _, identifier := range principal.AWS {
-				if strings.Contains(identifier, "*") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", resourceBlock.FullName())).
-							WithRange(policyAttr.Range()).
-							WithAttributeAnnotation(policyAttr).
-							WithSeverity(severity.Error),
-					)
-				}
+		for _, identifier := range statement.Principal.AWS {
+			if strings.Contains(identifier, "*") {
+				set.Add(
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", resourceBlock.FullName())).
+						WithRange(policyAttr.Range()).
+						WithAttributeAnnotation(policyAttr).
+						WithSeverity(severity.Error),
+				)
 			}
 		}
 	}

@@ -108,7 +108,7 @@ type awsIAMPolicyDocumentStatement struct {
 	Effect    string                    `json:"Effect"`
 	Action    awsIAMPolicyDocumentValue `json:"Action"`
 	Resource  awsIAMPolicyDocumentValue `json:"Resource,omitempty"`
-	Principal []awsIAMPolicyPrincipal   `json:"Principal,omitempty"`
+	Principal awsIAMPolicyPrincipal     `json:"Principal,omitempty"`
 }
 
 type awsIAMPolicyPrincipal struct {
