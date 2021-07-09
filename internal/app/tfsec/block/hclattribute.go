@@ -298,21 +298,26 @@ func (attr *HCLAttribute) IsEmpty() bool {
 		return false
 	}
 	if attr.Value().IsNull() {
-		switch t := attr.hclAttribute.Expr.(type) {
-		case *hclsyntax.FunctionCallExpr, *hclsyntax.ScopeTraversalExpr,
-			*hclsyntax.ConditionalExpr, *hclsyntax.LiteralValueExpr:
-			return false
-		case *hclsyntax.TemplateExpr:
-			// walk the parts of the expression to ensure that it has a literal value
-			for _, p := range t.Parts {
-				switch pt := p.(type) {
-				case *hclsyntax.LiteralValueExpr:
-					if pt != nil && !pt.Val.IsNull() {
-						return false
-					}
-				case *hclsyntax.ScopeTraversalExpr:
+		return attr.isNullAttributeEmpty()
+	}
+	return true
+}
+
+func (attr *HCLAttribute) isNullAttributeEmpty() bool {
+	switch t := attr.hclAttribute.Expr.(type) {
+	case *hclsyntax.FunctionCallExpr, *hclsyntax.ScopeTraversalExpr,
+		*hclsyntax.ConditionalExpr, *hclsyntax.LiteralValueExpr:
+		return false
+	case *hclsyntax.TemplateExpr:
+		// walk the parts of the expression to ensure that it has a literal value
+		for _, p := range t.Parts {
+			switch pt := p.(type) {
+			case *hclsyntax.LiteralValueExpr:
+				if pt != nil && !pt.Val.IsNull() {
 					return false
 				}
+			case *hclsyntax.ScopeTraversalExpr:
+				return false
 			}
 		}
 	}

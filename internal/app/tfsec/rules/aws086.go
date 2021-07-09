@@ -22,7 +22,7 @@ const AWSDynamoDBRecoveryEnabledDescription = "Point in time recovery should be 
 const AWSDynamoDBRecoveryEnabledImpact = "Accidental or malicious writes and deletes can't be rolled back"
 const AWSDynamoDBRecoveryEnabledResolution = "Enable point in time recovery"
 const AWSDynamoDBRecoveryEnabledExplanation = `
-DynamoDB tables should be protected against accidently or malicious write/delete actions by ensuring that there is adaquate protection.
+DynamoDB tables should be protected against accidentally or malicious write/delete actions by ensuring that there is adaquate protection.
 
 By enabling point-in-time-recovery you can restore to a known point in the event of loss of data.
 `

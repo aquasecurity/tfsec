@@ -18,7 +18,7 @@ import (
 )
 
 const AWSRDSPerformanceInsughtsEncryptionNotEnabled = "AWS053"
-const AWSRDSPerformanceInsughtsEncryptionNotEnabledDescription = "Encryption for RDS Perfomance Insights should be enabled."
+const AWSRDSPerformanceInsughtsEncryptionNotEnabledDescription = "Encryption for RDS Performance Insights should be enabled."
 const AWSRDSPerformanceInsughtsEncryptionNotEnabledImpact = "Data can be read from the RDS Performance Insights if it is compromised"
 const AWSRDSPerformanceInsughtsEncryptionNotEnabledResolution = "Enable encryption for RDS clusters and instances"
 const AWSRDSPerformanceInsughtsEncryptionNotEnabledExplanation = `

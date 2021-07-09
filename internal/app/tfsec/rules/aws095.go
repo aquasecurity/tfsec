@@ -22,7 +22,7 @@ const AWSSecretsManagerSecretEncryptionDescription = "Secrets Manager should use
 const AWSSecretsManagerSecretEncryptionImpact = "Using AWS managed keys reduces the flexibility and control over the encryption key"
 const AWSSecretsManagerSecretEncryptionResolution = "Use customer managed keys"
 const AWSSecretsManagerSecretEncryptionExplanation = `
-Secrets Manager encrypts secrets by default using a default key created by AWS. To ensure control and granularity of secret encryption, CMK's should be used explictly.
+Secrets Manager encrypts secrets by default using a default key created by AWS. To ensure control and granularity of secret encryption, CMK's should be used explicitly.
 `
 const AWSSecretsManagerSecretEncryptionBadExample = `
 resource "aws_secretsmanager_secret" "bad_example" {

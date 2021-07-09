@@ -17,7 +17,7 @@ const DIGForceDestroyEnabledDescription = "Force destroy is enabled on Spaces bu
 const DIGForceDestroyEnabledImpact = "Accidental deletion of bucket objects"
 const DIGForceDestroyEnabledResolution = "Don't use force destroy on bucket configuration"
 const DIGForceDestroyEnabledExplanation = `
-Enabling force destroy on a Spaces bucket means that the bucket can be deleted without the additional check that it is empty. This risks important data being accidently deleted by a bucket removal process.
+Enabling force destroy on a Spaces bucket means that the bucket can be deleted without the additional check that it is empty. This risks important data being accidentally deleted by a bucket removal process.
 `
 const DIGForceDestroyEnabledBadExample = `
 resource "digitalocean_spaces_bucket" "bad_example" {

@@ -21,7 +21,7 @@ import (
 
 const AWSCloudFrontOutdatedProtocol = "AWS021"
 const AWSCloudFrontOutdatedProtocolDescription = "CloudFront distribution uses outdated SSL/TLS protocols."
-const AWSCloudFrontOutdatedProtocolImpact = "Outdated SSL policies increase exposure to known vulnerabilites"
+const AWSCloudFrontOutdatedProtocolImpact = "Outdated SSL policies increase exposure to known vulnerabilities"
 const AWSCloudFrontOutdatedProtocolResolution = "Use the most modern TLS/SSL policies available"
 const AWSCloudFrontOutdatedProtocolExplanation = `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
