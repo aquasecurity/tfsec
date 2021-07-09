@@ -47,7 +47,7 @@ cyclo:
 vet:
 	go vet ./...
 
-.PHONY: make typos
+.PHONY: typos
 typos:
 	./scripts/typos.sh
 
@@ -57,4 +57,4 @@ quality: cyclo vet typos
 .PHONY: fix-typos
 fix-typos:
 	./scripts/typos.sh fix
-	
+
