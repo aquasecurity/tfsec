@@ -166,32 +166,7 @@ func init() {
 			}
 
 			if policyAttr.IsString() {
-				var document awsIAMPolicyDocument
-				if err := json.Unmarshal([]byte(policyAttr.Value().AsString()), &document); err != nil {
-					return
-				}
-				for _, statement := range document.Statements {
-					if strings.ToLower(statement.Effect) == "deny" {
-						continue
-					}
-					for _, action := range statement.Action {
-						if !strings.HasPrefix(action, "kms:") {
-							continue
-						}
-						for _, resource := range statement.Resource {
-							if strings.Contains(resource, "*") {
-								set.Add(
-									result.New(resourceBlock).
-										WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", resourceBlock.FullName())).
-										WithRange(policyAttr.Range()).
-										WithAttributeAnnotation(policyAttr).
-										WithSeverity(severity.Error),
-								)
-								return
-							}
-						}
-					}
-				}
+				checkAWS097PolicyJSON(set, resourceBlock, policyAttr)
 				return
 			}
 
@@ -229,4 +204,33 @@ func init() {
 			}
 		},
 	})
+}
+
+func checkAWS097PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr block.Attribute) {
+	var document awsIAMPolicyDocument
+	if err := json.Unmarshal([]byte(policyAttr.Value().AsString()), &document); err != nil {
+		return
+	}
+	for _, statement := range document.Statements {
+		if strings.ToLower(statement.Effect) == "deny" {
+			continue
+		}
+		for _, action := range statement.Action {
+			if !strings.HasPrefix(action, "kms:") {
+				continue
+			}
+			for _, resource := range statement.Resource {
+				if strings.Contains(resource, "*") {
+					set.Add(
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", resourceBlock.FullName())).
+							WithRange(policyAttr.Range()).
+							WithAttributeAnnotation(policyAttr).
+							WithSeverity(severity.Error),
+					)
+					return
+				}
+			}
+		}
+	}
 }

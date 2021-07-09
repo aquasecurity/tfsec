@@ -21,7 +21,7 @@ import (
 
 const AWSApiGatewayDomainNameOutdatedSecurityPolicy = "AWS025"
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyDescription = "API Gateway domain name uses outdated SSL/TLS protocols."
-const AWSApiGatewayDomainNameOutdatedSecurityPolicyImpact = "Outdated SSL policies increase exposure to known vulnerabilites"
+const AWSApiGatewayDomainNameOutdatedSecurityPolicyImpact = "Outdated SSL policies increase exposure to known vulnerabilities"
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyResolution = "Use the most modern TLS/SSL policies available"
 const AWSApiGatewayDomainNameOutdatedSecurityPolicyExplanation = `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
@@ -62,7 +62,7 @@ func init() {
 			if securityPolicyAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defauls to outdated SSL/TLS policy).", resourceBlock.FullName())).
+						WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
 						WithSeverity(severity.Error),
 				)

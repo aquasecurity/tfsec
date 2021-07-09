@@ -23,7 +23,7 @@ resource "azurerm_managed_disk" "my-disk" {
 			mustExcludeResultCode: rules.AzureUnencryptedManagedDisk,
 		},
 		{
-			name: "check azurerm_managed_disk with encryption disabled",
+			name: "check azurerm_manaaged_disk with encryption disabled",
 			source: `
 resource "azurerm_managed_disk" "my-disk" {
 	encryption_settings {

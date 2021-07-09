@@ -21,7 +21,7 @@ import (
 
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpoint = "AWS034"
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointDescription = "Elasticsearch domain endpoint is using outdated TLS policy."
-const AWSOutdatedTLSPolicyElasticsearchDomainEndpointImpact = "Outdated SSL policies increase exposure to known vulnerabilites"
+const AWSOutdatedTLSPolicyElasticsearchDomainEndpointImpact = "Outdated SSL policies increase exposure to known vulnerabilities"
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointResolution = "Use the most modern TLS/SSL policies available"
 const AWSOutdatedTLSPolicyElasticsearchDomainEndpointExplanation = `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
