@@ -49,6 +49,7 @@ vet:
 
 .PHONY: typos
 typos:
+	which misspell || go install github.com/client9/misspell/cmd/misspell@latest
 	./scripts/typos.sh
 
 .PHONY: quality

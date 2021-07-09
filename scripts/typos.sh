@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 highlight="\x1b[31m"
 if [[ "$1" == "fix" ]]; then
     fix="-w"
@@ -13,7 +15,7 @@ trim() {
     printf '%s' "$var"
 }
 
-which misspell || go install github.com/client9/misspell/cmd/misspell
+which misspell || go install github.com/client9/misspell/cmd/misspell@latest
 fixes=$(find . -type f | grep -v vendor/ | grep -v funcs/ | xargs misspell -error $fix)
 
 [[ "$?" == "0" ]] && echo -e "\x1b[32mNo typos!\x1b[0m" && exit 0
