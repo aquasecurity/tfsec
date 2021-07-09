@@ -19,20 +19,16 @@ import (
 
 // GoogleUnencryptedDisk See https://github.com/tfsec/tfsec#included-checks for check info
 const GoogleUnencryptedDisk = "GCP001"
-const GoogleUnencryptedDiskDescription = "Unencrypted compute disk."
-const GoogleUnencryptedDiskImpact = "Data could be readable if compromised"
-const GoogleUnencryptedDiskResolution = "Enable encrytion for compute disks"
+const GoogleUnencryptedDiskDescription = "Encrypted compute disk with unmanaged keys."
+const GoogleUnencryptedDiskImpact = "Encryption of disk using unmanaged keys."
+const GoogleUnencryptedDiskResolution = "Enable encrytion using a customer-managed key."
 const GoogleUnencryptedDiskExplanation = `
 By default, Compute Engine encrypts all data at rest. Compute Engine handles and manages this encryption for you without any additional actions on your part.
 
 If the <code>disk_encryption_key</code> block is included in the resource declaration then it *must* include a <code>raw_key</code> or <code>kms_key_self_link</code>.
-
-To use the default offering of Google managed keys, do not include a <code>disk_encryption_key</code> block at all.
 `
 const GoogleUnencryptedDiskBadExample = `
 resource "google_compute_disk" "bad_example" {
-	# ... 
-	disk_encryption_key {}
 	# ...
 }`
 const GoogleUnencryptedDiskGoodExample = `
@@ -42,11 +38,7 @@ resource "google_compute_disk" "good_example" {
 	}
 }
 
-resource "google_compute_disk" "good_example" {
-	disk_encryption_key {
-		raw_key = "something"
-	}
-}`
+`
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
@@ -70,15 +62,13 @@ func init() {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			keyBlock := resourceBlock.GetBlock("disk_encryption_key")
-			if keyBlock != nil {
-				if keyBlock.GetAttribute("raw_key") == nil && keyBlock.GetAttribute("kms_key_self_link") == nil {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted disk. You should specify raw_key or kms_key_self_link.", resourceBlock.FullName())).
-							WithRange(keyBlock.Range()).
-							WithSeverity(severity.Error),
-					)
-				}
+			if keyBlock == nil {
+				set.Add(
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a disk encrypted with an auto-generated key.", resourceBlock.FullName())).
+						WithRange(resourceBlock.Range()).
+						WithSeverity(severity.Error),
+				)
 			}
 		},
 	})
