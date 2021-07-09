@@ -1,0 +1,22 @@
+---
+checks:
+  - code: TAG_custom
+    description: Custom check to ensure the Environment tag is applied
+    errorMessage: The required Environment tag was missing or invalid
+    matchSpec:
+      action: contains
+      name: tags
+      value: 
+        Environment:
+          action: isAny
+          value: 
+            - production
+            - test
+            - dev
+            - staging
+          
+    requiredTypes:
+    - resource
+    severity: ERROR
+    requiredLabels:
+    - aws_lb
