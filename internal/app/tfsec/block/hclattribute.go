@@ -76,12 +76,6 @@ func (attr *HCLAttribute) Name() string {
 	return attr.hclAttribute.Name
 }
 
-/*
-- test_policy
-- banana
-- apple
-*/
-
 func (attr *HCLAttribute) ValueAsStrings() []string {
 	return getStrings(attr.hclAttribute.Expr, attr.ctx)
 }
