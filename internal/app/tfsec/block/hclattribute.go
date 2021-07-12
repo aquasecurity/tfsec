@@ -76,6 +76,36 @@ func (attr *HCLAttribute) Name() string {
 	return attr.hclAttribute.Name
 }
 
+func (attr *HCLAttribute) ValueAsStrings() []string {
+	return getStrings(attr.hclAttribute.Expr, attr.ctx)
+}
+
+func getStrings(expr hcl.Expression, ctx *hcl.EvalContext) []string {
+	var results []string
+	switch t := expr.(type) {
+	case *hclsyntax.TupleConsExpr:
+		for _, expr := range t.Exprs {
+			results = append(results, getStrings(expr, ctx)...)
+		}
+	case *hclsyntax.FunctionCallExpr, *hclsyntax.ScopeTraversalExpr,
+		*hclsyntax.ConditionalExpr:
+		subVal, err := t.Value(ctx)
+		if err == nil && subVal.Type() == cty.String {
+			results = append(results, subVal.AsString())
+		}
+	case *hclsyntax.LiteralValueExpr:
+		if t.Val.Type() == cty.String {
+			results = append(results, t.Val.AsString())
+		}
+	case *hclsyntax.TemplateExpr:
+		// walk the parts of the expression to ensure that it has a literal value
+		for _, p := range t.Parts {
+			results = append(results, getStrings(p, ctx)...)
+		}
+	}
+	return results
+}
+
 func (attr *HCLAttribute) listContains(val cty.Value, stringToLookFor string, ignoreCase bool) bool {
 	valueSlice := val.AsValueSlice()
 	for _, value := range valueSlice {
@@ -83,6 +113,9 @@ func (attr *HCLAttribute) listContains(val cty.Value, stringToLookFor string, ig
 		if value.Type().IsObjectType() || value.Type().IsMapType() {
 			valueMap := value.AsValueMap()
 			stringToTest = valueMap["key"]
+		}
+		if !value.IsKnown() {
+			continue
 		}
 		if ignoreCase && containsIgnoreCase(stringToTest.AsString(), stringToLookFor) {
 			return true

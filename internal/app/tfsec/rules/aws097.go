@@ -105,9 +105,14 @@ type awsIAMPolicyDocument struct {
 }
 
 type awsIAMPolicyDocumentStatement struct {
-	Effect   string                    `json:"Effect"`
-	Action   awsIAMPolicyDocumentValue `json:"Action"`
-	Resource awsIAMPolicyDocumentValue `json:"Resource,omitempty"`
+	Effect    string                    `json:"Effect"`
+	Action    awsIAMPolicyDocumentValue `json:"Action"`
+	Resource  awsIAMPolicyDocumentValue `json:"Resource,omitempty"`
+	Principal awsIAMPolicyPrincipal     `json:"Principal,omitempty"`
+}
+
+type awsIAMPolicyPrincipal struct {
+	AWS awsIAMPolicyDocumentValue `json:"AWS"`
 }
 
 // AWS allows string or []string as value, we convert everything to []string to avoid casting
@@ -191,8 +196,8 @@ func init() {
 						if resources := statementBlock.GetAttribute("resources"); resources != nil {
 							if resources.Contains("*") {
 								set.Add(
-									result.New(resourceBlock).
-										WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", resourceBlock.FullName())).
+									result.New(policyDocumentBlock).
+										WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", policyDocumentBlock.FullName())).
 										WithRange(resources.Range()).
 										WithAttributeAnnotation(resources).
 										WithSeverity(severity.Error),

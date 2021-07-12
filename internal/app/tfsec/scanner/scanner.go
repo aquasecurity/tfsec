@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/tfsec/tfsec/pkg/severity"
 
 	"github.com/tfsec/tfsec/internal/app/tfsec/block"
 	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
@@ -74,6 +75,9 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 						results = append(results, *res)
 					} else if ruleResults != nil {
 						for _, ruleResult := range ruleResults.All() {
+							if ruleResult.Severity == severity.None {
+								ruleResult.Severity = r.DefaultSeverity
+							}
 							if scanner.includeIgnored || (!scanner.checkRangeIgnored(ruleResult.RuleID, ruleResult.Range, checkBlock) && !checkInList(ruleResult.RuleID, scanner.excludedRuleIDs)) {
 								results = append(results, ruleResult)
 							} else {
