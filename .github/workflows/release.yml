@@ -54,4 +54,4 @@ jobs:
         password: ${{ secrets.TFSEC_DOCKERHUB_TOKEN }}
 
     - name: Tfsec image building
-      run: docker image list --format {{.Repository}}:{{.Tag}} | grep aquasec/tfsec | awk -F/ '{print $2}' | xargs -I{} docker tag aquasec/{} tfsec/{}
+      run: make clone-images
