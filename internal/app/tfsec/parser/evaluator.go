@@ -70,7 +70,7 @@ func (e *Evaluator) SetModuleBasePath(path string) {
 func (e *Evaluator) evaluateStep(i int) {
 
 	evalTime := metrics.Start(metrics.Evaluation)
-	debug.Log("Starting iteration %d of hclcontext evaluation...", i+1)
+	debug.Log("Starting iteration %d of context evaluation...", i+1)
 
 	e.ctx.Variables["var"] = e.getValuesByBlockType("variable")
 	e.ctx.Variables["local"] = e.getValuesByBlockType("locals")
