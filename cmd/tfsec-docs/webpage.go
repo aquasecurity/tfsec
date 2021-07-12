@@ -6,7 +6,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/tfsec/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 const (

@@ -1,12 +1,12 @@
 package rule
 
 import (
-	"github.com/tfsec/tfsec/pkg/provider"
-	"github.com/tfsec/tfsec/pkg/result"
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
-	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 )
 
 // Rule is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.

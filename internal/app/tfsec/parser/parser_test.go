@@ -7,7 +7,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 
 	"github.com/zclconf/go-cty/cty"
 

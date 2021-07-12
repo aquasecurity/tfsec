@@ -1,6 +1,6 @@
 package result
 
-import "github.com/tfsec/tfsec/pkg/provider"
+import "github.com/aquasecurity/tfsec/pkg/provider"
 
 type Set interface {
 	Add(result *Result)

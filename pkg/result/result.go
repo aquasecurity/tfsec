@@ -6,9 +6,9 @@ import (
 
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
-	"github.com/tfsec/tfsec/pkg/provider"
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 // Result is a positive result for a security check. It encapsulates a code unique to the specific check it was raised

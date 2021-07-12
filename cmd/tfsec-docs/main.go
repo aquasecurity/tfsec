@@ -5,12 +5,12 @@ import (
 	"os"
 	"sort"
 
-	"github.com/tfsec/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/spf13/cobra"
 
-	_ "github.com/tfsec/tfsec/internal/app/tfsec/rules"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
 var (

@@ -3,23 +3,22 @@ package rules
 import (
 	"fmt"
 
-	"github.com/tfsec/tfsec/pkg/result"
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 
-	"github.com/tfsec/tfsec/pkg/provider"
+	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
-	"github.com/tfsec/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 )
 
-// AzureUnencryptedDataLakeStore See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureUnencryptedDataLakeStore = "AZU004"
 const AzureUnencryptedDataLakeStoreDescription = "Unencrypted data lake storage."
 const AzureUnencryptedDataLakeStoreImpact = "Data could be read if compromised"

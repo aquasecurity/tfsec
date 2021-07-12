@@ -1,7 +1,7 @@
 package custom
 
 import (
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 type MatchType string

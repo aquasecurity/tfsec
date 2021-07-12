@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"io"
 
-	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/result"
 )
 
 type checkstyleResult struct {

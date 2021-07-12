@@ -7,19 +7,19 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/tfsec/tfsec/pkg/result"
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
-	"github.com/tfsec/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
 const exampleCheckCode = "EXA001"

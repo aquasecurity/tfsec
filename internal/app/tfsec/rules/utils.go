@@ -3,7 +3,7 @@ package rules
 import (
 	"strings"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/zclconf/go-cty/cty"
 )

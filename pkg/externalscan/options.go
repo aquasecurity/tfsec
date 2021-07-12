@@ -1,6 +1,6 @@
 package externalscan
 
-import "github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+import "github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 
 type Option func(e *ExternalScanner)
 

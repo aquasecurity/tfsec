@@ -3,9 +3,9 @@ package rules
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/pkg/provider"
+	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"

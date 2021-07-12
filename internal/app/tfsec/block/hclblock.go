@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/schema"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/tfsec/tfsec/internal/app/tfsec/schema"
 	"github.com/zclconf/go-cty/cty"
 )
 

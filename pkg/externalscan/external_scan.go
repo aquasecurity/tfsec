@@ -7,12 +7,12 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/result"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
-	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
-	_ "github.com/tfsec/tfsec/internal/app/tfsec/rules"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
+	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
 type ExternalScanner struct {

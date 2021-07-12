@@ -5,7 +5,7 @@ import (
 	"math"
 	"os"
 
-	"github.com/tfsec/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 type linter struct {

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
-	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 
 	"io/ioutil"
 	"os"

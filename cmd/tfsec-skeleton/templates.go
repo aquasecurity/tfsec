@@ -3,13 +3,13 @@ package main
 const checkTemplate = `package rules
 
 import (
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
-	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-	"github.com/tfsec/tfsec/pkg/provider"
-	"github.com/tfsec/tfsec/pkg/result"
-	"github.com/tfsec/tfsec/pkg/rule"
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 
@@ -59,7 +59,7 @@ const checkTestTemplate = `package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_{{.CheckName}}(t *testing.T) {
