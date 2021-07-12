@@ -19,8 +19,8 @@ import (
 
 const AWSNoDescriptionInSecurityGroup = "AWS018"
 const AWSNoDescriptionInSecurityGroupDescription = "Missing description for security group/security group rule."
-const AWSNoDescriptionInSecurityGroupImpact = "Descriptions provide hclcontext for the firewall rule reasons"
-const AWSNoDescriptionInSecurityGroupResolution = "Add descriptions for all security groups anf rules"
+const AWSNoDescriptionInSecurityGroupImpact = "Descriptions provide context for the firewall rule reasons"
+const AWSNoDescriptionInSecurityGroupResolution = "Add descriptions for all security groups and rules"
 const AWSNoDescriptionInSecurityGroupExplanation = `
 Security groups and security group rules should include a description for auditing purposes.
 
