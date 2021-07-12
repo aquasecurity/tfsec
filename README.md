@@ -39,10 +39,16 @@ You can also grab the binary for your system from the [releases page](https://gi
 Alternatively, install with Go:
 
 ```bash
-go get -u github.com/tfsec/tfsec/cmd/tfsec
+go install github.com/tfsec/tfsec/cmd/tfsec@latest
 ```
 
-Please note that using `go get` will install directly from the `master` branch and version numbers will not be reported via `tfsec --version`.
+Please note that using `go install` will install directly from the `master` branch and version numbers will not be reported via `tfsec --version`.
+
+### Signing
+
+The binaries on the [releases page](https://github.com/tfsec/tfsec/releases) are signed with the tfsec signing key `D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE` 
+
+Form more information check the [signing page](SIGNING.md) for instructions on verification.
 
 ## Usage
 
