@@ -16,7 +16,7 @@ security issues. Now with terraform CDK support.
 
 ## Aqua and tfsec
 
-Great news - tfsec has [now joined Aqua Security](https://www.aquasec.com). Not only will the project remain open source, it now has a lot more resource and expertise behind it. Expect great new features and many more checks very soon...
+Great news - tfsec has [now joined Aqua Security](https://www.aquasec.com/news/aqua-security-acquires-tfsec/). Not only will the project remain open source, it now has a lot more resource and expertise behind it. Expect great new features and many more checks very soon...
 
 ## Example Output
 
