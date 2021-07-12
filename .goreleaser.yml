@@ -59,7 +59,7 @@ archives:
 release:
   prerelease: auto
   github:
-    owner: tfsec
+    owner: aquasecurity
     name: tfsec
 
 dockers:
