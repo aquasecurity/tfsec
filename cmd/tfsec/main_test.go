@@ -3,9 +3,9 @@ package main
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/result"
 
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 
 	"github.com/stretchr/testify/assert"
 )

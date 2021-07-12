@@ -3,8 +3,8 @@ package parser
 import (
 	"fmt"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
-	"github.com/tfsec/tfsec/internal/app/tfsec/schema"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/schema"
 
 	"github.com/hashicorp/hcl/v2"
 )

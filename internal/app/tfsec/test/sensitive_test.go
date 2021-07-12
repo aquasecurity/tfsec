@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/security"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
 )
 
 func TestIsSensitiveAttribute(t *testing.T) {

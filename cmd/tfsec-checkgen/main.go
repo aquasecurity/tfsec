@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
-	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
 	"os"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
+	"github.com/spf13/cobra"
 )
 
 func init() {

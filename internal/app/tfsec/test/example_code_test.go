@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
 func TestExampleCode(t *testing.T) {

@@ -7,27 +7,27 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/result"
 
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/config"
-	"github.com/tfsec/tfsec/internal/app/tfsec/updater"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/config"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/updater"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/custom"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/formatters"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/formatters"
 
 	"github.com/liamg/tml"
 
 	"github.com/spf13/cobra"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
-	_ "github.com/tfsec/tfsec/internal/app/tfsec/rules"
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
-	"github.com/tfsec/tfsec/version"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
+	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/version"
 )
 
 var showVersion = false

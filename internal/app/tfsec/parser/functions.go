@@ -1,8 +1,8 @@
 package parser
 
 import (
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/funcs"
 	"github.com/hashicorp/hcl/v2/ext/tryfunc"
-	"github.com/tfsec/tfsec/internal/app/tfsec/funcs"
 	ctyyaml "github.com/zclconf/go-cty-yaml"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/function"
