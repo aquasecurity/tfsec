@@ -72,12 +72,12 @@ dockers:
     dockerfile: Dockerfile
     skip_push: auto
     image_templates:
-    - "tfsec/tfsec:latest"
-    - "tfsec/tfsec:{{ .Tag }}"
-    - "tfsec/tfsec:v{{ .Major }}.{{ .Minor }}"
-    - "tfsec/tfsec-alpine:latest"
-    - "tfsec/tfsec-alpine:{{ .Tag }}"
-    - "tfsec/tfsec-alpine:v{{ .Major }}.{{ .Minor }}"
+    - "aquasec/tfsec:latest"
+    - "aquasec/tfsec:{{ .Tag }}"
+    - "aquasec/tfsec:v{{ .Major }}.{{ .Minor }}"
+    - "aquasec/tfsec-alpine:latest"
+    - "aquasec/tfsec-alpine:{{ .Tag }}"
+    - "aquasec/tfsec-alpine:v{{ .Major }}.{{ .Minor }}"
   - 
     goos: linux
     goarch: amd64
@@ -87,9 +87,9 @@ dockers:
     dockerfile: Dockerfile.scratch
     skip_push: auto
     image_templates:
-    - "tfsec/tfsec-scratch:latest"
-    - "tfsec/tfsec-scratch:{{ .Tag }}"
-    - "tfsec/tfsec-scratch:v{{ .Major }}.{{ .Minor }}"
+    - "aquasec/tfsec-scratch:latest"
+    - "aquasec/tfsec-scratch:{{ .Tag }}"
+    - "aquasec/tfsec-scratch:v{{ .Major }}.{{ .Minor }}"
   - 
     goos: linux
     goarch: amd64
@@ -99,9 +99,9 @@ dockers:
     dockerfile: Dockerfile.ci
     skip_push: auto
     image_templates:
-    - "tfsec/tfsec-ci:latest"
-    - "tfsec/tfsec-ci:{{ .Tag }}"
-    - "tfsec/tfsec-ci:v{{ .Major }}.{{ .Minor }}"
+    - "aquasec/tfsec-ci:latest"
+    - "aquasec/tfsec-ci:{{ .Tag }}"
+    - "aquasec/tfsec-ci:v{{ .Major }}.{{ .Minor }}"
 
   - 
     goos: linux
@@ -111,8 +111,8 @@ dockers:
 
     dockerfile: Dockerfile
     image_templates:
-    - "tfsec/tfsec:{{ .Tag }}"
-    - "tfsec/tfsec-alpine:{{ .Tag }}"
+    - "aquasec/tfsec:{{ .Tag }}"
+    - "aquasec/tfsec-alpine:{{ .Tag }}"
   - 
     goos: linux
     goarch: amd64
@@ -121,7 +121,7 @@ dockers:
 
     dockerfile: Dockerfile.scratch
     image_templates:
-    - "tfsec/tfsec-scratch:{{ .Tag }}"
+    - "aquasec/tfsec-scratch:{{ .Tag }}"
   - 
     goos: linux
     goarch: amd64
@@ -130,4 +130,4 @@ dockers:
 
     dockerfile: Dockerfile.ci
     image_templates:
-    - "tfsec/tfsec-ci:{{ .Tag }}"
+    - "aquasec/tfsec-ci:{{ .Tag }}"
