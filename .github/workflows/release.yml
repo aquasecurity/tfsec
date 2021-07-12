@@ -54,4 +54,4 @@ jobs:
         password: ${{ secrets.TFSEC_DOCKERHUB_TOKEN }}
 
     - name: Tfsec image building
-      run: make clone-images
+      run: make clone-image
