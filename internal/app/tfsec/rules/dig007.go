@@ -45,7 +45,6 @@ func init() {
 			GoodExample: DIGForceDestroyEnabledGoodExample,
 			Links: []string{
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#force_destroy",
-				"",
 			},
 		},
 		Provider:        provider.DigitalOceanProvider,
