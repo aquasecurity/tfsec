@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/tfsec/tfsec/pkg/externalscan"
+	"github.com/aquasecurity/tfsec/pkg/externalscan"
 )
 
 func main() {

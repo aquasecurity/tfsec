@@ -4,23 +4,22 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/tfsec/tfsec/pkg/result"
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 
-	"github.com/tfsec/tfsec/pkg/provider"
+	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
-	"github.com/tfsec/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/zclconf/go-cty/cty"
 )
 
-// AzureOpenInboundNetworkSecurityGroupRule See https://github.com/tfsec/tfsec#included-checks for check info
 const AzureOpenInboundNetworkSecurityGroupRule = "AZU001"
 const AzureOpenInboundNetworkSecurityGroupRuleDescription = "An inbound network security rule allows traffic from /0."
 const AzureOpenInboundNetworkSecurityGroupRuleImpact = "The port is exposed for ingress from the internet"

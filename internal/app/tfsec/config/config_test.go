@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tfsec/tfsec/internal/app/tfsec/config"
 )
 
 func TestExcludesElementsFromYAML(t *testing.T) {

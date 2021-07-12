@@ -5,9 +5,9 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 )

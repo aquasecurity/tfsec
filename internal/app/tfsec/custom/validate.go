@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func Validate(checkFilePath string) error {

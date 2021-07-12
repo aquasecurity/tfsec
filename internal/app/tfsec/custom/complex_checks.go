@@ -3,8 +3,8 @@ package custom
 import (
 	"fmt"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
-	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 )
 
 func checkTags(block block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {

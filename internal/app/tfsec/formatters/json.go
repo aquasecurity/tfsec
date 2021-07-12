@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/result"
 )
 
 type JSONOutput struct {

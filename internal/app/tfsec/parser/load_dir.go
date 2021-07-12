@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 
 	"github.com/hashicorp/hcl/v2/hclparse"
 

@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/result"
 )
 
 // see https://github.com/windyroad/JUnit-Schema/blob/master/JUnit.xsd

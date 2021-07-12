@@ -5,7 +5,7 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/tfsec/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 var rulesLock sync.Mutex

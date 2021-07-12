@@ -2,9 +2,8 @@
   <img width="463" src="./tfsec.png">
 </p>
 
-[![Travis Build Status](https://travis-ci.com/tfsec/tfsec.svg?branch=master)](https://travis-ci.com/tfsec/tfsec)
-[![GoReportCard](https://goreportcard.com/badge/github.com/tfsec/tfsec)](https://goreportcard.com/report/github.com/tfsec/tfsec)
-[![GitHub All Releases](https://img.shields.io/github/downloads/tfsec/tfsec/total)](https://github.com/tfsec/tfsec/releases)
+[![GoReportCard](https://goreportcard.com/badge/github.com/aquasecurity/tfsec)](https://goreportcard.com/report/github.com/aquasecurity/tfsec)
+[![GitHub All Releases](https://img.shields.io/github/downloads/aquasecurity/tfsec/total)](https://github.com/aquasecurity/tfsec/releases)
 [![Join Our Slack](https://img.shields.io/badge/Slack-Join-green)](https://join.slack.com/t/tfsec/shared_invite/zt-o6c7mgoj-eJ1sLDv595sKiP5OPoHJww)
 
 [![Docker Build](https://img.shields.io/docker/v/tfsec/tfsec?label=docker)](https://hub.docker.com/r/tfsec/tfsec)
@@ -34,19 +33,19 @@ Install with Chocolatey:
 choco install tfsec
 ```
 
-You can also grab the binary for your system from the [releases page](https://github.com/tfsec/tfsec/releases).
+You can also grab the binary for your system from the [releases page](https://github.com/aquasecurity/tfsec/releases).
 
 Alternatively, install with Go:
 
 ```bash
-go install github.com/tfsec/tfsec/cmd/tfsec@latest
+go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
 ```
 
 Please note that using `go install` will install directly from the `master` branch and version numbers will not be reported via `tfsec --version`.
 
 ### Signing
 
-The binaries on the [releases page](https://github.com/tfsec/tfsec/releases) are signed with the tfsec signing key `D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE` 
+The binaries on the [releases page](https://github.com/aquasecurity/tfsec/releases) are signed with the tfsec signing key `D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE` 
 
 Form more information check the [signing page](SIGNING.md) for instructions on verification.
 
@@ -85,7 +84,7 @@ A Visual Studio Code extension is being developed to integrate with tfsec result
 
 ## Use as GitHub Action
 
-If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/tfsec/tfsec-pr-commenter-action](https://github.com/tfsec/tfsec-pr-commenter-action).
+If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/aquasecurity/tfsec-pr-commenter-action](https://github.com/aquasecurity/tfsec-pr-commenter-action).
 
 ## Features
 

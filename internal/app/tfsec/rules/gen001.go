@@ -4,24 +4,23 @@ import (
 	"fmt"
 
 	"github.com/zclconf/go-cty/cty"
-		
-	"github.com/tfsec/tfsec/pkg/result"
-	"github.com/tfsec/tfsec/pkg/severity"
 
-	"github.com/tfsec/tfsec/pkg/provider"
+	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/hclcontext"
+	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 
-	"github.com/tfsec/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/security"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-// GenericSensitiveVariables See https://github.com/tfsec/tfsec#included-checks for check info
 const GenericSensitiveVariables = "GEN001"
 const GenericSensitiveVariablesDescription = "Potentially sensitive data stored in \"default\" value of variable."
 const GenericSensitiveVariablesImpact = "Default values could be exposing sensitive data"

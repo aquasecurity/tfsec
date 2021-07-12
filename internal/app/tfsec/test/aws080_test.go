@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 	"github.com/stretchr/testify/assert"
-	"github.com/tfsec/tfsec/internal/app/tfsec/rules"
 )
 
 func Test_AWSCodeBuildProjectEncryptionNotDisabled(t *testing.T) {

@@ -6,13 +6,13 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/tfsec/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/result"
 
-	"github.com/tfsec/tfsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/pkg/severity"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/parser"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 
 	"github.com/liamg/clinch/terminal"
 	"github.com/liamg/tml"

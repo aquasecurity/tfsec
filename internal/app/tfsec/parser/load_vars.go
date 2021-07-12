@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/tfsec/tfsec/internal/app/tfsec/metrics"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/tfsec/tfsec/internal/app/tfsec/debug"
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/hashicorp/hcl/v2"
