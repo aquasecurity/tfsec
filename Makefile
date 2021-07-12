@@ -57,3 +57,7 @@ quality: cyclo vet typos
 .PHONY: fix-typos
 fix-typos:
 	./scripts/typos.sh fix
+
+.PHONY: clone-image
+clone-image:
+	./scripts/clone-images.sh

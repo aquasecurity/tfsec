@@ -45,4 +45,13 @@ jobs:
       run: make publish-docs
       env:
           DOCS_GITHUB_TOKEN: ${{ secrets.DOCS_GITHUB_TOKEN }}
-    
+
+# temporary hack to copy over the aquasec images to legacy docker hub repo
+    - name: Login to docker.io registry
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.TFSEC_DOCKERHUB_USER }}
+        password: ${{ secrets.TFSEC_DOCKERHUB_TOKEN }}
+
+    - name: Tfsec image building
+      run: make clone-images
