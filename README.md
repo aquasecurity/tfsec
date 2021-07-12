@@ -1,11 +1,10 @@
 <p align="center">
-  <img width="463" src="./tfsec.png">
+  <img width="500" src="./tfsec.png">
 </p>
 
 [![GoReportCard](https://goreportcard.com/badge/github.com/aquasecurity/tfsec)](https://goreportcard.com/report/github.com/aquasecurity/tfsec)
 [![GitHub All Releases](https://img.shields.io/github/downloads/aquasecurity/tfsec/total)](https://github.com/aquasecurity/tfsec/releases)
 [![Join Our Slack](https://img.shields.io/badge/Slack-Join-green)](https://join.slack.com/t/tfsec/shared_invite/zt-o6c7mgoj-eJ1sLDv595sKiP5OPoHJww)
-
 [![Docker Build](https://img.shields.io/docker/v/tfsec/tfsec?label=docker)](https://hub.docker.com/r/tfsec/tfsec)
 [![Homebrew](https://img.shields.io/badge/dynamic/json.svg?url=https://formulae.brew.sh/api/formula/tfsec.json&query=$.versions.stable&label=homebrew)](https://formulae.brew.sh/formula/tfsec)
 [![Chocolatey](https://img.shields.io/chocolatey/v/tfsec)](https://chocolatey.org/packages/tfsec)
@@ -14,6 +13,10 @@
 
 tfsec uses static analysis of your terraform templates to spot potential
 security issues. Now with terraform CDK support.
+
+## Aqua and tfsec
+
+Great news - tfsec has [now joined Aqua Security](). Not only will the project remain open source, it now has a lot more resource and expertise behind it. Expect great new features and many more checks very soon...
 
 ## Example Output
 
