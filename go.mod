@@ -18,14 +18,13 @@ require (
 	github.com/mattn/go-runewidth v0.0.12 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
-	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/owenrumney/go-sarif v1.0.11
 	github.com/owenrumney/squealer v0.2.26
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
-	github.com/zclconf/go-cty v1.8.4
+	github.com/zclconf/go-cty v1.9.0
 	github.com/zclconf/go-cty-yaml v1.0.2
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
 	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
