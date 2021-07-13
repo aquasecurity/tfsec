@@ -29,9 +29,9 @@ We currently use the following list of severities:
 | Level    | When to use                                                                     | Example                                               |
 | -------- | ------------------------------------------------------------------------------- | ----------------------------------------------------- |
 | Critical | A direct risk of compromise to infrastructure, data or other assets.            | A database resource is marked as publicly accessible. |
-| High     | A misconfiguration which could indirectly cause compromise of sensitive assets. | A storage medium is unencrypted.                      |
-| Medium   | Best practice has not been followed which impacts on infrastructure.            | "Force destroy" is enabled on a bucket.               |
-| Low      | Best practice has not been followed, with no direct impact on infrastructure.   | Security group rule is missing description.           |
+| High     | A misconfiguration which compromises security of the infrastructure.            | A storage medium is unencrypted.                      |
+| Medium   | Best practice has not been followed which impacts security of the organisation. | "Force destroy" is enabled on a bucket.               |
+| Low      | Best practice has not been followed, which decreases operational efficiency.    | Description missing on security group rule.           |
 
 ### Writing Your Check Code
 
