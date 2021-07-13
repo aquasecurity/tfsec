@@ -64,22 +64,6 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 		printStatistics()
 	}
 
-	_ = tml.Printf("\n  <blue>results</blue>\n  ------------------------------------------\n")
-	for _, sev := range []severity.Severity{
-		severity.Critical,
-		severity.High,
-		severity.Medium,
-		severity.Low,
-	} {
-		var count int
-		for _, res := range results {
-			if res.Severity == sev {
-				count++
-			}
-		}
-		tml.Printf("  <blue>%-20s</blue> %d\n", strings.ToLower(string(sev)), count)
-	}
-
 	terminal.PrintErrorf("\n  %d potential problems detected.\n\n", len(results)-countPassedResults(results))
 
 	return nil
@@ -120,6 +104,7 @@ func printResult(res result.Result, i int, includePassedChecks bool) {
 }
 
 func printStatistics() {
+
 	metrics.Add(metrics.FilesLoaded, parser.CountFiles())
 
 	_ = tml.Printf("  <blue>times</blue>\n  ------------------------------------------\n")
@@ -132,8 +117,9 @@ func printStatistics() {
 	} {
 		_ = tml.Printf("  <blue>%-20s</blue> %s\n", operation, times[operation].String())
 	}
-	counts := metrics.CountSummary()
+
 	_ = tml.Printf("\n  <blue>counts</blue>\n  ------------------------------------------\n")
+	counts := metrics.CountSummary()
 	for _, name := range []metrics.Count{
 		metrics.FilesLoaded,
 		metrics.BlocksLoaded,
@@ -143,6 +129,17 @@ func printStatistics() {
 		metrics.IgnoredChecks,
 	} {
 		_ = tml.Printf("  <blue>%-20s</blue> %d\n", name, counts[name])
+	}
+
+	_ = tml.Printf("\n  <blue>results</blue>\n  ------------------------------------------\n")
+	for _, sev := range []severity.Severity{
+		severity.Critical,
+		severity.High,
+		severity.Medium,
+		severity.Low,
+	} {
+		count := metrics.CountSeverity(sev)
+		_ = tml.Printf("  <blue>%-20s</blue> %d\n", strings.ToLower(string(sev)), count)
 	}
 }
 
