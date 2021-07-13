@@ -121,16 +121,14 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName())).
 								WithRange(artifactBlock.Range()).
-								WithAttributeAnnotation(artifactTypeAttr).
-								WithSeverity(severity.Medium),
+								WithAttributeAnnotation(artifactTypeAttr),
 						)
 					} else {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName())).
 								WithRange(artifactBlock.Range()).
-								WithAttributeAnnotation(encryptionDisabledAttr).
-								WithSeverity(severity.High),
+								WithAttributeAnnotation(encryptionDisabledAttr),
 						)
 					}
 				}

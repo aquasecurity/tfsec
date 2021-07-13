@@ -68,15 +68,14 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_key_vault"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("network_acls") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -86,8 +85,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -96,8 +94,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a default action in the network acl.", resourceBlock.FullName())).
-						WithRange(networkAcls.Range()).
-						WithSeverity(severity.High),
+						WithRange(networkAcls.Range()),
 				)
 				return
 			}
@@ -108,8 +105,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
 						WithRange(defaultActionAttr.Range()).
-						WithAttributeAnnotation(defaultActionAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(defaultActionAttr),
 				)
 			}
 

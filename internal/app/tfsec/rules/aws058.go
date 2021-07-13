@@ -62,7 +62,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_lambda_permission"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.HasChild("principal") {
@@ -71,8 +71,7 @@ func init() {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' missing source ARN but has *.amazonaws.com Principal.", resourceBlock.FullName())).
-								WithRange(resourceBlock.Range()).
-								WithSeverity(severity.High),
+								WithRange(resourceBlock.Range()),
 						)
 					}
 				}

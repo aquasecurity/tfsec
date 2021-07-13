@@ -82,17 +82,15 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have root volume encryption enables", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 			} else {
 				attr := resourceBlock.GetAttribute("root_volume_encryption_enabled")
 				if attr != nil && attr.IsFalse() {
 					set.Add(result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has the root volume encyption set to false", resourceBlock.FullName())).
+						WithDescription(fmt.Sprintf("Resource '%s' has the root volume encryption set to false", resourceBlock.FullName())).
 						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(attr),
 					)
 				}
 			}
@@ -100,8 +98,7 @@ func init() {
 			if resourceBlock.MissingChild("user_volume_encryption_enabled") {
 				set.Add(result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' should have user volume encryption enables", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()).
-					WithSeverity(severity.High),
+					WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -110,10 +107,9 @@ func init() {
 			if attr != nil && attr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has the user volume encyption set to false", resourceBlock.FullName())).
+						WithDescription(fmt.Sprintf("Resource '%s' has the user volume encryption set to false", resourceBlock.FullName())).
 						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(attr),
 				)
 			}
 

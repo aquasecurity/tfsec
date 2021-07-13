@@ -20,7 +20,7 @@ import (
 const GENEnsureGithubRepositoryIsPrivate = "GEN004"
 const GENEnsureGithubRepositoryIsPrivateDescription = "Github repository shouldn't be public."
 const GENEnsureGithubRepositoryIsPrivateImpact = "Anyone can read the contents of the GitHub repository and leak IP"
-const GENEnsureGithubRepositoryIsPrivateResolution = "Make sensitive or commercially importnt repositories private"
+const GENEnsureGithubRepositoryIsPrivateResolution = "Make sensitive or commercially important repositories private"
 const GENEnsureGithubRepositoryIsPrivateExplanation = `
 Github repository should be set to be private.
 
@@ -72,7 +72,7 @@ func init() {
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"github_repository"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			privateAttribute := resourceBlock.GetAttribute("private")
@@ -81,8 +81,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is missing both of `private` or `visibility` attributes - one of these is required to make repository private", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -94,8 +93,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has visibility set to public - visibility should be set to `private` or `internal` to make repository private", resourceBlock.FullName())).
 							WithRange(visibilityAttribute.Range()).
-							WithAttributeAnnotation(visibilityAttribute).
-							WithSeverity(severity.High),
+							WithAttributeAnnotation(visibilityAttribute),
 					)
 				}
 				// stop here as visibility parameter trumps the private one
@@ -109,8 +107,7 @@ func init() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has private set to false - it should be set to `true` to make repository private", resourceBlock.FullName())).
-							WithRange(privateAttribute.Range()).
-							WithSeverity(severity.High),
+							WithRange(privateAttribute.Range()),
 					)
 				}
 			}

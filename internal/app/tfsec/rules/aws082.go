@@ -18,7 +18,7 @@ import (
 )
 
 const AWSDontUseDefaultAWSVPC = "AWS082"
-const AWSDontUseDefaultAWSVPCDescription = "It is AWS best practice to not use the default VPC for workflows"
+const AWSDontUseDefaultAWSVPCDescription = "AWS best practice to not use the default VPC for workflows"
 const AWSDontUseDefaultAWSVPCImpact = "The default VPC does not have critical security features applied"
 const AWSDontUseDefaultAWSVPCResolution = "Create a non-default vpc for resources to be created in"
 const AWSDontUseDefaultAWSVPCExplanation = `
@@ -58,8 +58,7 @@ func init() {
 			set.Add(
 				result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' should not exist", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()).
-					WithSeverity(severity.High),
+					WithRange(resourceBlock.Range()),
 			)
 		},
 	})

@@ -65,8 +65,7 @@ func init() {
 							resourceBlock.FullName(),
 						)).
 						WithRange(encryptionStateAttr.Range()).
-						WithAttributeAnnotation(encryptionStateAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(encryptionStateAttr),
 				)
 			}
 

@@ -88,7 +88,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_cloudfront_distribution"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if defaultCacheBlock := resourceBlock.GetBlock("default_cache_behavior"); defaultCacheBlock != nil {
@@ -96,8 +96,7 @@ func init() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' does not use HTTPS in Viewer Protocol Policy", resourceBlock.FullName())).
-							WithRange(defaultCacheBlock.Range()).
-							WithSeverity(severity.High),
+							WithRange(defaultCacheBlock.Range()),
 					)
 				}
 			}
@@ -108,8 +107,7 @@ func init() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' does not use HTTPS in Viewer Protocol Policy", resourceBlock.FullName())).
-							WithRange(orderedCacheBlock.Range()).
-							WithSeverity(severity.High),
+							WithRange(orderedCacheBlock.Range()),
 					)
 				}
 			}

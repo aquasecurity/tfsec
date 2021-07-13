@@ -73,8 +73,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -84,8 +83,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has `image_tag_mutability` attribute  not set to `IMMUTABLE`", resourceBlock.FullName())).
 						WithRange(imageTagMutabilityAttr.Range()).
-						WithAttributeAnnotation(imageTagMutabilityAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(imageTagMutabilityAttr),
 				)
 			}
 

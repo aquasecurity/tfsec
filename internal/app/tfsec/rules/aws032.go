@@ -71,8 +71,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing node_to_node_encryption block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -82,8 +81,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enabled attribute).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(encryptionBlock.Range()),
 				)
 				return
 			}
@@ -96,8 +94,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(encryptionBlock.Range()),
 				)
 			}
 

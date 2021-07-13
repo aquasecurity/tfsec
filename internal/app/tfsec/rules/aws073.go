@@ -68,8 +68,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not specify ignore_public_acls, defaults to false", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -80,8 +79,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' sets ignore_public_acls explicitly to false", resourceBlock.FullName())).
 						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(attr),
 				)
 			}
 		},

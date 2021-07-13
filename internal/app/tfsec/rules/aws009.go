@@ -56,7 +56,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_security_group"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			for _, directionBlock := range resourceBlock.GetBlocks("egress") {
@@ -67,8 +67,7 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName())).
 								WithRange(cidrBlocksAttr.Range()).
-								WithAttributeAnnotation(cidrBlocksAttr).
-								WithSeverity(severity.Medium),
+								WithAttributeAnnotation(cidrBlocksAttr),
 						)
 					}
 				}
@@ -80,8 +79,7 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName())).
 								WithRange(cidrBlocksAttr.Range()).
-								WithAttributeAnnotation(cidrBlocksAttr).
-								WithSeverity(severity.Medium),
+								WithAttributeAnnotation(cidrBlocksAttr),
 						)
 					}
 				}

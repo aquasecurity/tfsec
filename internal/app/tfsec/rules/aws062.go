@@ -72,7 +72,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_instance"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("user_data") {
@@ -86,8 +86,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has userdata with access key id defined.", resourceBlock.FullName())).
 						WithRange(userDataAttr.Range()).
-						WithAttributeAnnotation(userDataAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(userDataAttr),
 				)
 			}
 
@@ -97,8 +96,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has userdata with access secret key defined.", resourceBlock.FullName())).
 						WithRange(userDataAttr.Range()).
-						WithAttributeAnnotation(userDataAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(userDataAttr),
 				)
 			}
 		},

@@ -87,8 +87,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with node metadata exposed. node_metadata set to EXPOSE or UNSPECIFIED disables metadata concealment. ", resourceBlock.FullName())).
-						WithRange(nodeMetadata.Range()).
-						WithSeverity(severity.High),
+						WithRange(nodeMetadata.Range()),
 				)
 			}
 

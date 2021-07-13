@@ -70,8 +70,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have a password reuse prevention count set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Medium),
+						WithRange(resourceBlock.Range()),
 				)
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
@@ -79,8 +78,7 @@ func init() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has a password reuse count less than 5.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()).
-							WithSeverity(severity.Medium),
+							WithRange(resourceBlock.Range()),
 					)
 				}
 			}

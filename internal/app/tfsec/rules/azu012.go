@@ -19,7 +19,7 @@ import (
 
 const AZUDefaultActionOnNetworkRuleSetToDeny = "AZU012"
 const AZUDefaultActionOnNetworkRuleSetToDenyDescription = "The default action on Storage account network rules should be set to deny"
-const AZUDefaultActionOnNetworkRuleSetToDenyImpact = "Network rules that allow could cause data to be exposed publically"
+const AZUDefaultActionOnNetworkRuleSetToDenyImpact = "Network rules that allow could cause data to be exposed publicly"
 const AZUDefaultActionOnNetworkRuleSetToDenyResolution = "Set network rules to deny"
 const AZUDefaultActionOnNetworkRuleSetToDenyExplanation = `
 The default_action for network rules should come into effect when no other rules are matched.
@@ -63,7 +63,7 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_storage_account", "azurerm_storage_account_network_rules"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.IsResourceType("azurerm_storage_account") {
@@ -78,8 +78,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a default_action of Allow. It should be Deny.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 			}
 

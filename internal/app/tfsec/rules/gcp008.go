@@ -22,7 +22,7 @@ const GkeLegacyAuthEnabledDescription = "Legacy client authentication methods ut
 const GkeLegacyAuthEnabledImpact = "Username and password authentication methods are less secure"
 const GkeLegacyAuthEnabledResolution = "Use service account or OAuth for authentication"
 const GkeLegacyAuthEnabledExplanation = `
-It is recommended to use Serivce Accounts and OAuth as authentication methods for accessing the master in the container cluster. 
+It is recommended to use Service Accounts and OAuth as authentication methods for accessing the master in the container cluster. 
 
 Basic authentication should be disabled by explicitly unsetting the <code>username</code> and <code>password</code> on the <code>master_auth</code> block.
 `
@@ -75,8 +75,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -86,8 +85,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())).
-						WithRange(masterAuthBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(masterAuthBlock.Range()),
 				)
 			}
 
@@ -100,8 +98,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())).
-						WithRange(issueClientCert.Range()).
-						WithSeverity(severity.High),
+						WithRange(issueClientCert.Range()),
 				)
 			}
 

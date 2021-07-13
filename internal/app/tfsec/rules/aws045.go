@@ -108,7 +108,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_cloudfront_distribution"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			wafAclIdBlock := resourceBlock.GetAttribute("web_acl_id")
@@ -116,8 +116,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Medium),
+						WithRange(resourceBlock.Range()),
 				)
 			}
 		},

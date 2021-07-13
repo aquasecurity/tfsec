@@ -15,7 +15,7 @@ func Test_AWSAthenaWorkgroupEnforceConfiguration(t *testing.T) {
 		mustExcludeResultCode string
 	}{
 		{
-			name: "test athena workgroup with configration but enforce set to false",
+			name: "test athena workgroup with configuration but enforce set to false",
 			source: `
 resource "aws_athena_workgroup" "good_example" {
   name = "example"

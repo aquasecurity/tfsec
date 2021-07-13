@@ -57,7 +57,7 @@ func init() {
 		Provider:        provider.OracleProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"opc_compute_ip_address_reservation"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if attr := resourceBlock.GetAttribute("ip_address_pool"); attr != nil {
 				if attr.Equals("public-ippool") {
@@ -65,8 +65,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' is using an IP from a public IP pool", resourceBlock.FullName())).
 							WithRange(attr.Range()).
-							WithAttributeAnnotation(attr).
-							WithSeverity(severity.Medium),
+							WithAttributeAnnotation(attr),
 					)
 				}
 			}

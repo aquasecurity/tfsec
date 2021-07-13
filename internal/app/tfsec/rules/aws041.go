@@ -67,16 +67,14 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not require a number in the password.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Medium),
+						WithRange(resourceBlock.Range()),
 				)
 			} else if attr.Value().Type() == cty.Bool {
 				if attr.Value().False() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least one number in the password.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()).
-							WithSeverity(severity.Medium),
+							WithRange(resourceBlock.Range()),
 					)
 				}
 			}

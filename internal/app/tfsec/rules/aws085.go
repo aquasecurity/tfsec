@@ -73,8 +73,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources set", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -83,8 +82,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName())).
-						WithRange(aggBlock.Range()).
-						WithSeverity(severity.Medium),
+						WithRange(aggBlock.Range()),
 				)
 				return
 			}
@@ -95,8 +93,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has all_regions set to false", resourceBlock.FullName())).
 						WithRange(allRegionsAttr.Range()).
-						WithAttributeAnnotation(allRegionsAttr).
-						WithSeverity(severity.Medium),
+						WithAttributeAnnotation(allRegionsAttr),
 				)
 			}
 

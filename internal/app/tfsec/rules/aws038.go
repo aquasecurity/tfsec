@@ -69,8 +69,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have a max password age set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Medium),
+						WithRange(resourceBlock.Range()),
 				)
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
@@ -79,8 +78,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has high password age.", resourceBlock.FullName())).
 							WithRange(attr.Range()).
-							WithAttributeAnnotation(attr).
-							WithSeverity(severity.Medium),
+							WithAttributeAnnotation(attr),
 					)
 				}
 			}

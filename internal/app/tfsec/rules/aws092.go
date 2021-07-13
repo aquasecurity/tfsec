@@ -18,9 +18,9 @@ import (
 )
 
 const AWSDynamoDBTableEncryption = "AWS092"
-const AWSDynamoDBTableEncryptionDescription = "DynamoDB tables should use at rest encyption with a Customer Managed Key"
+const AWSDynamoDBTableEncryptionDescription = "DynamoDB tables should use at rest encryption with a Customer Managed Key"
 const AWSDynamoDBTableEncryptionImpact = "Using AWS managed keys does not allow for fine grained control"
-const AWSDynamoDBTableEncryptionResolution = "Enable server side encrytion with a customer managed key"
+const AWSDynamoDBTableEncryptionResolution = "Enable server side encryption with a customer managed key"
 const AWSDynamoDBTableEncryptionExplanation = `
 DynamoDB tables are encrypted by default using AWS managed encryption keys. To increase control of the encryption and control the management of factors like key rotation, use a Customer Managed Key.
 `
@@ -103,8 +103,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Low),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -116,8 +115,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName())).
 						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr).
-						WithSeverity(severity.Low),
+						WithAttributeAnnotation(enabledAttr),
 				)
 			}
 
@@ -128,8 +126,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName())).
 							WithRange(keyIdAttr.Range()).
-							WithAttributeAnnotation(keyIdAttr).
-							WithSeverity(severity.Low),
+							WithAttributeAnnotation(keyIdAttr),
 					)
 				}
 			}

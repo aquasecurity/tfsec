@@ -20,7 +20,7 @@ import (
 const GoogleUnencryptedDisk = "GCP001"
 const GoogleUnencryptedDiskDescription = "Encrypted compute disk with unmanaged keys."
 const GoogleUnencryptedDiskImpact = "Encryption of disk using unmanaged keys."
-const GoogleUnencryptedDiskResolution = "Enable encrytion using a customer-managed key."
+const GoogleUnencryptedDiskResolution = "Enable encryption using a customer-managed key."
 const GoogleUnencryptedDiskExplanation = `
 By default, Compute Engine encrypts all data at rest. Compute Engine handles and manages this encryption for you without any additional actions on your part.
 
@@ -65,8 +65,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a disk encrypted with an auto-generated key.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 			}
 		},

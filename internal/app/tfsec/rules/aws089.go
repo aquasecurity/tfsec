@@ -62,8 +62,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is only using default encryption", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Low),
+						WithRange(resourceBlock.Range()),
 				)
 			}
 

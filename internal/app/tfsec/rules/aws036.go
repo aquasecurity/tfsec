@@ -67,16 +67,14 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (missing transit_encryption_enabled attribute).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 			} else if !isBooleanOrStringTrue(encryptionAttr) {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (transit_encryption_enabled set to false).", resourceBlock.FullName())).
 						WithRange(encryptionAttr.Range()).
-						WithAttributeAnnotation(encryptionAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(encryptionAttr),
 				)
 
 			}

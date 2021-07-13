@@ -118,8 +118,7 @@ func init() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock.FullName())).
-							WithRange(attribute.Range()).
-							WithSeverity(severity.Medium),
+							WithRange(attribute.Range()),
 					)
 				}
 			}

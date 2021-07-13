@@ -77,8 +77,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not set multi region trail config.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Medium),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -89,8 +88,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not enable multi region trail.", resourceBlock.FullName())).
 						WithRange(multiRegionAttr.Range()).
-						WithAttributeAnnotation(multiRegionAttr).
-						WithSeverity(severity.Medium),
+						WithAttributeAnnotation(multiRegionAttr),
 				)
 			}
 		},

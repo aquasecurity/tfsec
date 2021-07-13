@@ -84,7 +84,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecs_task_definition"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if definitionsAttr := resourceBlock.GetAttribute("container_definitions"); definitionsAttr != nil && definitionsAttr.Type() == cty.String {
@@ -108,8 +108,7 @@ func init() {
 							set.Add(result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", resourceBlock.FullName(), env.Name)).
 								WithRange(definitionsAttr.Range()).
-								WithAttributeAnnotation(definitionsAttr).
-								WithSeverity(severity.Medium),
+								WithAttributeAnnotation(definitionsAttr),
 							)
 						}
 					}

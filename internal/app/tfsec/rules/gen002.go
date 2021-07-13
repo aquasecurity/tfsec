@@ -60,7 +60,7 @@ func init() {
 		},
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"locals"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			for _, attribute := range resourceBlock.GetAttributes() {
@@ -69,8 +69,7 @@ func init() {
 						set.Add(result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Local '%s' includes a potentially sensitive value which is defined within the project.", resourceBlock.FullName())).
 							WithRange(attribute.Range()).
-							WithAttributeAnnotation(attribute).
-							WithSeverity(severity.Medium),
+							WithAttributeAnnotation(attribute),
 						)
 					}
 				}

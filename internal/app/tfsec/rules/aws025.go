@@ -63,8 +63,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -74,8 +73,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", resourceBlock.FullName())).
 						WithRange(securityPolicyAttr.Range()).
-						WithAttributeAnnotation(securityPolicyAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(securityPolicyAttr),
 				)
 			}
 

@@ -87,15 +87,14 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_synapse_workspace"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("managed_virtual_network_enabled") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -105,8 +104,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock.FullName())).
 						WithRange(managedNetworkAttr.Range()).
-						WithAttributeAnnotation(managedNetworkAttr).
-						WithSeverity(severity.Medium),
+						WithAttributeAnnotation(managedNetworkAttr),
 				)
 			}
 		},

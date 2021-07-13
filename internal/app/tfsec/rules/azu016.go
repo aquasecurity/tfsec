@@ -85,8 +85,7 @@ func init() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()).
-							WithSeverity(severity.Medium),
+							WithRange(resourceBlock.Range()),
 					)
 				}
 			}

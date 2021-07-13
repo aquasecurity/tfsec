@@ -62,8 +62,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has no storage encryption defined.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -74,8 +73,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has storage encrypted set to false", resourceBlock.FullName())).
 						WithRange(storageEncryptedAttr.Range()).
-						WithAttributeAnnotation(storageEncryptedAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(storageEncryptedAttr),
 				)
 			}
 		},

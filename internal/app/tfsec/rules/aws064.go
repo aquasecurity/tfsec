@@ -74,14 +74,13 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_cloudtrail"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("enable_log_file_validation") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not enable log file validation.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Medium),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -92,8 +91,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not enable log file validation.", resourceBlock.FullName())).
 						WithRange(logFileValidationAttr.Range()).
-						WithAttributeAnnotation(logFileValidationAttr).
-						WithSeverity(severity.Medium),
+						WithAttributeAnnotation(logFileValidationAttr),
 				)
 			}
 		},

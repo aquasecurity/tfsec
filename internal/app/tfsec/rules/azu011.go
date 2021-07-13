@@ -21,7 +21,7 @@ import (
 
 const AZUBlobStorageContainerNoPublicAccess = "AZU011"
 const AZUBlobStorageContainerNoPublicAccessDescription = "Storage containers in blob storage mode should not have public access"
-const AZUBlobStorageContainerNoPublicAccessImpact = "Data in the storage container could be exposed publically"
+const AZUBlobStorageContainerNoPublicAccessImpact = "Data in the storage container could be exposed publicly"
 const AZUBlobStorageContainerNoPublicAccessResolution = "Disable public access to storage containers"
 const AZUBlobStorageContainerNoPublicAccessExplanation = `
 Storage container public access should be off. It can be configured for blobs only, containers and blobs or off entirely. The default is off, with no public access.
@@ -79,8 +79,7 @@ func init() {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines publicAccess as '%s', should be 'off .", resourceBlock.FullName(), value)).
-								WithRange(resourceBlock.Range()).
-								WithSeverity(severity.High),
+								WithRange(resourceBlock.Range()),
 						)
 					}
 				}

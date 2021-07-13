@@ -65,16 +65,14 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 			} else if encryptionTypeAttr.Type() == cty.String && strings.ToUpper(encryptionTypeAttr.Value().AsString()) != "KMS" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName())).
 						WithRange(encryptionTypeAttr.Range()).
-						WithAttributeAnnotation(encryptionTypeAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(encryptionTypeAttr),
 				)
 			} else {
 				keyIDAttr := resourceBlock.GetAttribute("kms_key_id")
@@ -82,8 +80,7 @@ func init() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a Kinesis Stream encrypted with the default Kinesis key.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()).
-							WithSeverity(severity.Medium),
+							WithRange(resourceBlock.Range()),
 					)
 				}
 			}

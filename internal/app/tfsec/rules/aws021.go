@@ -69,8 +69,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing viewer_certificate block)", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -79,15 +78,13 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName())).
-						WithRange(viewerCertificateBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(viewerCertificateBlock.Range()),
 				)
 			} else if minVersion.Type() == cty.String && minVersion.Value().AsString() != "TLSv1.2_2021" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName())).
-						WithRange(minVersion.Range()).
-						WithSeverity(severity.High),
+						WithRange(minVersion.Range()),
 				)
 			}
 		},

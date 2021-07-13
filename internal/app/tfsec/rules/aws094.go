@@ -69,15 +69,14 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_redshift_cluster"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("encrypted") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have encryption enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Medium),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -88,8 +87,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has encryption explicitly disabled", resourceBlock.FullName())).
 						WithRange(encryptedAttr.Range()).
-						WithAttributeAnnotation(encryptedAttr).
-						WithSeverity(severity.Medium),
+						WithAttributeAnnotation(encryptedAttr),
 				)
 				return
 			}
@@ -98,8 +96,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have a customer managed key specified", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Medium),
+						WithRange(resourceBlock.Range()),
 				)
 			}
 

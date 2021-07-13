@@ -140,8 +140,7 @@ func processFoundChecks(checks ChecksFile) {
 						set.Add(
 							result.New(rootBlock).
 								WithDescription(fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage)).
-								WithRange(rootBlock.Range()).
-								WithSeverity(customCheck.Severity),
+								WithRange(rootBlock.Range()),
 						)
 					}
 				},

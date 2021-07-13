@@ -63,13 +63,12 @@ func init() {
 		Provider:        provider.DigitalOceanProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"digitalocean_spaces_bucket"},
-		DefaultSeverity: severity.Medium, //TODO set the default severity
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("versioning") {
 				set.Add(result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled.", resourceBlock.FullName())).
-					WithSeverity(severity.Medium).
 					WithRange(resourceBlock.Range()))
 
 				return
@@ -81,7 +80,6 @@ func init() {
 			if enabledAttr == nil || enabledAttr.IsFalse() {
 				set.Add(result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName())).
-					WithSeverity(severity.Medium).
 					WithAttributeAnnotation(enabledAttr).
 					WithRange(enabledAttr.Range()))
 

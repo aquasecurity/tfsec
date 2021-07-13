@@ -101,8 +101,7 @@ func init() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has efs configuration with in transit encryption implicitly disabled", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()).
-							WithSeverity(severity.High),
+							WithRange(resourceBlock.Range()),
 					)
 					continue
 				}
@@ -112,8 +111,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has efs configuration with transit encryption explicitly disabled", resourceBlock.FullName())).
 							WithRange(transitAttr.Range()).
-							WithAttributeAnnotation(transitAttr).
-							WithSeverity(severity.High),
+							WithAttributeAnnotation(transitAttr),
 					)
 				}
 			}

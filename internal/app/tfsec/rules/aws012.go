@@ -21,8 +21,8 @@ import (
 
 const AWSResourceHasPublicIP = "AWS012"
 const AWSResourceHasPublicIPDescription = "A resource has a public IP address."
-const AWSResourceHasPublicIPImpact = "The instance or configuration is publically accessible"
-const AWSResourceHasPublicIPResolution = "Set the instance to not be publically accessible"
+const AWSResourceHasPublicIPImpact = "The instance or configuration is publicly accessible"
+const AWSResourceHasPublicIPResolution = "Set the instance to not be publicly accessible"
 const AWSResourceHasPublicIPExplanation = `
 You should limit the provision of public IP addresses for resources. Resources should not be exposed on the public internet, but should have access limited to consumers required for the function of your application. 
 `
@@ -65,8 +65,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has a public IP address associated.", resourceBlock.FullName())).
 							WithRange(publicAttr.Range()).
-							WithAttributeAnnotation(publicAttr).
-							WithSeverity(severity.High),
+							WithAttributeAnnotation(publicAttr),
 					)
 				}
 			}

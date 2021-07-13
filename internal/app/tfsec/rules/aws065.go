@@ -82,8 +82,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have a kms_key_id set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -94,8 +93,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has a kms_key_id but it is not set.", resourceBlock.FullName())).
 						WithRange(kmsKeyIdAttr.Range()).
-						WithAttributeAnnotation(kmsKeyIdAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(kmsKeyIdAttr),
 				)
 			}
 

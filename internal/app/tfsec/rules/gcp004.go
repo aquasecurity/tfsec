@@ -53,7 +53,7 @@ func init() {
 		Provider:        provider.GCPProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_compute_firewall"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if destinationRanges := resourceBlock.GetAttribute("destination_ranges"); destinationRanges != nil {
@@ -62,8 +62,7 @@ func init() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open outbound firewall rule.", resourceBlock.FullName())).
-							WithRange(destinationRanges.Range()).
-							WithSeverity(severity.Medium),
+							WithRange(destinationRanges.Range()),
 					)
 				}
 			}

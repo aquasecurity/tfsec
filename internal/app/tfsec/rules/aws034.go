@@ -79,8 +79,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (defaults to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName())).
-						WithRange(endpointBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(endpointBlock.Range()),
 				)
 				return
 			}
@@ -90,8 +89,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (set to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName())).
 						WithRange(tlsPolicyAttr.Range()).
-						WithAttributeAnnotation(tlsPolicyAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(tlsPolicyAttr),
 				)
 			}
 

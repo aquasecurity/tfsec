@@ -54,7 +54,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"provider"},
 		RequiredLabels:  []string{"aws"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if accessKeyAttribute := resourceBlock.GetAttribute("access_key"); accessKeyAttribute != nil && accessKeyAttribute.Type() == cty.String {
@@ -62,16 +62,14 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Provider '%s' has an access key specified.", resourceBlock.FullName())).
 						WithRange(accessKeyAttribute.Range()).
-						WithAttributeAnnotation(accessKeyAttribute).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(accessKeyAttribute),
 				)
 			} else if secretKeyAttribute := resourceBlock.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Provider '%s' has a secret key specified.", resourceBlock.FullName())).
 						WithRange(secretKeyAttribute.Range()).
-						WithAttributeAnnotation(secretKeyAttribute).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(secretKeyAttribute),
 				)
 			}
 
