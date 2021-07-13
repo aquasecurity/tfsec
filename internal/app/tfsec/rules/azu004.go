@@ -53,7 +53,7 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_data_lake_store"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			encryptionStateAttr := resourceBlock.GetAttribute("encryption_state")
@@ -66,7 +66,7 @@ func init() {
 						)).
 						WithRange(encryptionStateAttr.Range()).
 						WithAttributeAnnotation(encryptionStateAttr).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 

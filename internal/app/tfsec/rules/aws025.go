@@ -55,7 +55,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_api_gateway_domain_name"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			securityPolicyAttr := resourceBlock.GetAttribute("security_policy")
@@ -64,7 +64,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 				return
 			}
@@ -75,7 +75,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", resourceBlock.FullName())).
 						WithRange(securityPolicyAttr.Range()).
 						WithAttributeAnnotation(securityPolicyAttr).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 

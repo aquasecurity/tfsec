@@ -65,7 +65,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecr_repository"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			imageTagMutabilityAttr := resourceBlock.GetAttribute("image_tag_mutability")
@@ -74,7 +74,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 				return
 			}
@@ -85,7 +85,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' has `image_tag_mutability` attribute  not set to `IMMUTABLE`", resourceBlock.FullName())).
 						WithRange(imageTagMutabilityAttr.Range()).
 						WithAttributeAnnotation(imageTagMutabilityAttr).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 

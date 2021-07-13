@@ -75,7 +75,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_alb", "aws_lb"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.GetAttribute("load_balancer_type") == nil {
@@ -88,7 +88,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' does not drop invalid header fields", resourceBlock.FullName())).
 							WithRange(resourceBlock.Range()).
-							WithSeverity(severity.Error),
+							WithSeverity(severity.High),
 					)
 					return
 				}
@@ -100,7 +100,7 @@ func init() {
 							WithDescription(fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", resourceBlock.FullName())).
 							WithRange(attr.Range()).
 							WithAttributeAnnotation(attr).
-							WithSeverity(severity.Error),
+							WithSeverity(severity.High),
 					)
 				}
 

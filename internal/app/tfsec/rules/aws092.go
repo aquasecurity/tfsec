@@ -96,7 +96,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_dynamodb_table"},
-		DefaultSeverity: severity.Info,
+		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("server_side_encryption") {
@@ -104,7 +104,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Info),
+						WithSeverity(severity.Low),
 				)
 				return
 			}
@@ -117,7 +117,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName())).
 						WithRange(enabledAttr.Range()).
 						WithAttributeAnnotation(enabledAttr).
-						WithSeverity(severity.Info),
+						WithSeverity(severity.Low),
 				)
 			}
 
@@ -129,7 +129,7 @@ func init() {
 							WithDescription(fmt.Sprintf("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName())).
 							WithRange(keyIdAttr.Range()).
 							WithAttributeAnnotation(keyIdAttr).
-							WithSeverity(severity.Info),
+							WithSeverity(severity.Low),
 					)
 				}
 			}

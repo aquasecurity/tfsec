@@ -58,7 +58,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecs_cluster"},
-		DefaultSeverity: severity.Info,
+		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			settingsBlock := resourceBlock.GetBlocks("setting")
@@ -71,7 +71,7 @@ func init() {
 									WithDescription(fmt.Sprintf("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName())).
 									WithRange(setting.Range()).
 									WithAttributeAnnotation(valueAttr).
-									WithSeverity(severity.Info),
+									WithSeverity(severity.Low),
 							)
 						}
 						return
@@ -82,7 +82,7 @@ func init() {
 				result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resoure '%s' does not have containerInsights enabled", resourceBlock.FullName())).
 					WithRange(resourceBlock.Range()).
-					WithSeverity(severity.Info),
+					WithSeverity(severity.Low),
 			)
 		},
 	})

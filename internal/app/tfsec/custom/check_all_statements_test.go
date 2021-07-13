@@ -17,7 +17,7 @@ func init() {
       "requiredLabels": [
         "aws_iam_policy_document"
       ],
-      "severity": "ERROR",
+      "severity": "HIGH",
       "matchSpec": {
         "name": "statement",
         "action": "isPresent",
@@ -38,7 +38,7 @@ func init() {
       "requiredLabels": [
         "imaginary_resource"
       ],
-      "severity": "ERROR",
+      "severity": "HIGH",
       "matchSpec": {
         "name": "statement",
         "action": "isPresent",

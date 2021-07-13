@@ -19,10 +19,10 @@ import (
 )
 
 var severityFormat = map[severity.Severity]string{
-	severity.Info:    tml.Sprintf("<white>%s</white>", severity.Info),
-	severity.Warning: tml.Sprintf("<yellow>%s</yellow>", severity.Warning),
-	severity.Error:   tml.Sprintf("<red>%s</red>", severity.Error),
-	"":               tml.Sprintf("<white>%s</white>", severity.Info),
+	severity.Low:    tml.Sprintf("<white>%s</white>", severity.Low),
+	severity.Medium: tml.Sprintf("<yellow>%s</yellow>", severity.Medium),
+	severity.High:   tml.Sprintf("<red>%s</red>", severity.High),
+	"":              tml.Sprintf("<white>%s</white>", severity.Low),
 }
 
 func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...FormatterOption) error {

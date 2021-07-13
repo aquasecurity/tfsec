@@ -63,7 +63,7 @@ func init() {
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"resource", "provider", "module", "locals", "variable"},
 		RequiredLabels:  []string{"*"},
-		DefaultSeverity: severity.Warning,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			attributes := resourceBlock.GetAttributes()
@@ -76,7 +76,7 @@ func init() {
 								WithDescription(fmt.Sprintf("Block '%s' includes potentially sensitive data. %s", resourceBlock.FullName(), scanResult.Description)).
 								WithRange(attribute.Range()).
 								WithAttributeAnnotation(attribute).
-								WithSeverity(severity.Warning),
+								WithSeverity(severity.Medium),
 						)
 					}
 				}

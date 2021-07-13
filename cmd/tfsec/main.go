@@ -163,7 +163,7 @@ var rootCmd = &cobra.Command{
 		debug.Log("custom check directory set to %s", customCheckDir)
 		err = custom.Load(customCheckDir)
 		if err != nil {
-			_, _ = fmt.Fprint(os.Stderr, fmt.Sprintf("There were errors while processing custom check files. %s", err))
+			_, _ = fmt.Fprintf(os.Stderr, "There were errors while processing custom check files. %s", err)
 			os.Exit(1)
 		}
 		debug.Log("Custom checks loaded")
@@ -243,7 +243,7 @@ var rootCmd = &cobra.Command{
 			os.Exit(getDetailedExitCode(results))
 		}
 
-		// If all failed rules are of INFO severity, then produce a success
+		// If all failed rules are of LOW severity, then produce a success
 		// exit code (0).
 		if allInfo(results) {
 			return nil
@@ -284,13 +284,13 @@ func getDetailedExitCode(results []result.Result) int {
 		return 0
 	}
 
-	// If there are some failed rules but they are all of INFO severity, then
+	// If there are some failed rules but they are all of LOW severity, then
 	// produce a special failure exit code (2).
 	if allInfo(results) {
 		return 2
 	}
 
-	// If there is any failed check of ERROR or WARNING severity, then
+	// If there is any failed check of HIGH or WARNING severity, then
 	// produce the regular failure exit code (1).
 	return 1
 }
@@ -308,11 +308,11 @@ func RemoveDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, e
 			continue
 		}
 
-		if ignoreWarnings && res.Severity == severity.Warning {
+		if ignoreWarnings && res.Severity == severity.Medium {
 			continue
 		}
 
-		if ignoreInfo && res.Severity == severity.Info {
+		if ignoreInfo && res.Severity == severity.Low {
 			continue
 		}
 
@@ -367,7 +367,7 @@ func mergeWithoutDuplicates(left, right []string) []string {
 
 func allInfo(results []result.Result) bool {
 	for _, res := range results {
-		if res.Severity != severity.Info && res.Status != result.Passed && res.Status != result.Ignored {
+		if res.Severity != severity.Low && res.Status != result.Passed && res.Status != result.Ignored {
 			return false
 		}
 	}

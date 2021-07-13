@@ -56,7 +56,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_launch_configuration", "aws_instance"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if publicAttr := resourceBlock.GetAttribute("associate_public_ip_address"); publicAttr != nil && publicAttr.Type() == cty.Bool {
@@ -66,7 +66,7 @@ func init() {
 							WithDescription(fmt.Sprintf("Resource '%s' has a public IP address associated.", resourceBlock.FullName())).
 							WithRange(publicAttr.Range()).
 							WithAttributeAnnotation(publicAttr).
-							WithSeverity(severity.Error),
+							WithSeverity(severity.High),
 					)
 				}
 			}

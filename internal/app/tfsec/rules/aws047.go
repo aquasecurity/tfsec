@@ -83,7 +83,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_sqs_queue_policy"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("policy") {
@@ -109,7 +109,7 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName())).
 								WithRange(resourceBlock.Range()).
-								WithSeverity(severity.Error),
+								WithSeverity(severity.High),
 						)
 					}
 				}

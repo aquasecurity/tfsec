@@ -61,7 +61,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_s3_bucket_public_access_block"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("ignore_public_acls") {
@@ -69,7 +69,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not specify ignore_public_acls, defaults to false", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 				return
 			}
@@ -81,7 +81,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' sets ignore_public_acls explicitly to false", resourceBlock.FullName())).
 						WithRange(attr.Range()).
 						WithAttributeAnnotation(attr).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 		},

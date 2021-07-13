@@ -44,5 +44,27 @@ func LoadConfig(configFilePath string) (*Config, error) {
 		return nil, fmt.Errorf("couldn't process the file %s", configFilePath)
 	}
 
+	rewriteSeverityOverrides(config)
+
 	return config, nil
+}
+
+func rewriteSeverityOverrides(config *Config) error {
+
+	for k, s := range config.SeverityOverrides {
+		switch strings.ToUpper(s) {
+		case "CRITICAL", "HIGH", "MEDIUM", "LOW":
+			continue
+		case "ERROR":
+			config.SeverityOverrides[k] = "HIGH"
+		case "WARNING":
+			config.SeverityOverrides[k] = "MEDIUM"
+		case "INFO":
+			config.SeverityOverrides[k] = "LOW"
+		default:
+			return fmt.Errorf("could not rewrite the severity code [%s]", s)
+		}
+	}
+
+	return nil
 }

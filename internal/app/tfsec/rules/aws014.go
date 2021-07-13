@@ -59,7 +59,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_launch_configuration"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			var encryptionByDefault bool
@@ -77,7 +77,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device. Consider adding <blue>root_block_device{ encrypted = true }</blue>", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			} else if rootDeviceBlock != nil {
 				checkDeviceEncryption(rootDeviceBlock, encryptionByDefault, set, resourceBlock)
@@ -99,7 +99,7 @@ func checkDeviceEncryption(deviceBlock block.Block, encryptionByDefault bool, se
 			result.New(resourceBlock).
 				WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device. Consider adding <blue>encrypted = true</blue>", resourceBlock.FullName())).
 				WithRange(deviceBlock.Range()).
-				WithSeverity(severity.Error),
+				WithSeverity(severity.High),
 		)
 	} else if encryptedAttr != nil && encryptedAttr.Type() == cty.Bool && encryptedAttr.Value().False() {
 		set.Add(
@@ -107,7 +107,7 @@ func checkDeviceEncryption(deviceBlock block.Block, encryptionByDefault bool, se
 				WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device.", resourceBlock.FullName())).
 				WithRange(encryptedAttr.Range()).
 				WithAttributeAnnotation(encryptedAttr).
-				WithSeverity(severity.Error),
+				WithSeverity(severity.High),
 		)
 	}
 }

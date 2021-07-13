@@ -72,7 +72,7 @@ func init() {
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"github_repository"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			privateAttribute := resourceBlock.GetAttribute("private")
@@ -82,7 +82,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is missing both of `private` or `visibility` attributes - one of these is required to make repository private", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 				return
 			}
@@ -95,7 +95,7 @@ func init() {
 							WithDescription(fmt.Sprintf("Resource '%s' has visibility set to public - visibility should be set to `private` or `internal` to make repository private", resourceBlock.FullName())).
 							WithRange(visibilityAttribute.Range()).
 							WithAttributeAnnotation(visibilityAttribute).
-							WithSeverity(severity.Error),
+							WithSeverity(severity.High),
 					)
 				}
 				// stop here as visibility parameter trumps the private one
@@ -110,7 +110,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has private set to false - it should be set to `true` to make repository private", resourceBlock.FullName())).
 							WithRange(privateAttribute.Range()).
-							WithSeverity(severity.Error),
+							WithSeverity(severity.High),
 					)
 				}
 			}

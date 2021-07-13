@@ -54,7 +54,7 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_storage_account", "enable_https_traffic_only"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			enabledAttr := resourceBlock.GetAttribute("enable_https_traffic_only")
@@ -67,7 +67,7 @@ func init() {
 						)).
 						WithRange(enabledAttr.Range()).
 						WithAttributeAnnotation(enabledAttr).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 

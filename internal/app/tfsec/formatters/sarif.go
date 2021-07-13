@@ -45,11 +45,11 @@ func FormatSarif(w io.Writer, results []result.Result, baseDir string, _ ...Form
 		switch res.Severity {
 		case severity.None:
 			level = "none"
-		case severity.Info:
+		case severity.Low:
 			level = "note"
-		case severity.Warning:
+		case severity.Medium:
 			level = "warning"
-		case severity.Error, severity.Critical:
+		case severity.High, severity.Critical:
 			level = "error"
 		}
 

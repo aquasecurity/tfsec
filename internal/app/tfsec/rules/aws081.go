@@ -74,14 +74,14 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_dax_cluster"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("server_side_encryption") {
 				res := result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", resourceBlock.FullName())).
 					WithRange(resourceBlock.Range()).
-					WithSeverity(severity.Error)
+					WithSeverity(severity.High)
 				set.Add(res)
 				return
 			}
@@ -91,7 +91,7 @@ func init() {
 				res := result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", resourceBlock.FullName())).
 					WithRange(sseBlock.Range()).
-					WithSeverity(severity.Error)
+					WithSeverity(severity.High)
 				set.Add(res)
 				return
 			}
@@ -101,7 +101,7 @@ func init() {
 					WithDescription(fmt.Sprintf("DAX cluster '%s' has disabled server side encryption", resourceBlock.FullName())).
 					WithRange(sseEnabledAttr.Range()).
 					WithAttributeAnnotation(sseEnabledAttr).
-					WithSeverity(severity.Error)
+					WithSeverity(severity.High)
 				set.Add(res)
 			}
 

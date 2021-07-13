@@ -73,7 +73,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecr_repository"},
-		DefaultSeverity: severity.Info,
+		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("encryption_configuration") {
@@ -81,7 +81,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Info),
+						WithSeverity(severity.Low),
 				)
 				return
 			}
@@ -92,7 +92,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' configures encryption without using CMK", resourceBlock.FullName())).
 						WithRange(encBlock.Range()).
-						WithSeverity(severity.Info),
+						WithSeverity(severity.Low),
 				)
 				return
 			}
@@ -102,7 +102,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName())).
 						WithRange(encBlock.Range()).
-						WithSeverity(severity.Info),
+						WithSeverity(severity.Low),
 				)
 			}
 

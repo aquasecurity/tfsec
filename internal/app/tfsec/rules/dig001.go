@@ -64,7 +64,7 @@ func init() {
 		Provider:        provider.DigitalOceanProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"digitalocean_firewall"},
-		DefaultSeverity: severity.Warning,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			inboundBlocks := resourceBlock.GetBlocks("inbound_rule")
@@ -80,7 +80,7 @@ func init() {
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open inbound_rule.", resourceBlock.FullName())).
 							WithRange(sourceAddressesAttr.Range()).
 							WithAttributeAnnotation(sourceAddressesAttr).
-							WithSeverity(severity.Warning),
+							WithSeverity(severity.Medium),
 					)
 				}
 			}

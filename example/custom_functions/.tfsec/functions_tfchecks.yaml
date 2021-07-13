@@ -17,6 +17,6 @@ checks:
           
     requiredTypes:
     - resource
-    severity: ERROR
+    severity: HIGH
     requiredLabels:
     - aws_lb

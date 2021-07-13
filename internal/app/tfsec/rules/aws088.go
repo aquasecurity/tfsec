@@ -67,7 +67,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_elasticache_cluster"},
-		DefaultSeverity: severity.Warning,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			engineAttr := resourceBlock.GetAttribute("engine")
@@ -80,7 +80,7 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())).
 								WithRange(resourceBlock.Range()).
-								WithSeverity(severity.Warning),
+								WithSeverity(severity.Medium),
 						)
 						return
 					}
@@ -91,7 +91,7 @@ func init() {
 								WithDescription(fmt.Sprintf("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName())).
 								WithRange(snapshotRetentionAttr.Range()).
 								WithAttributeAnnotation(snapshotRetentionAttr).
-								WithSeverity(severity.Warning),
+								WithSeverity(severity.Medium),
 						)
 					}
 				}

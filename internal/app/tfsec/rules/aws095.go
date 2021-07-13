@@ -58,7 +58,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_secretsmanager_secret"},
-		DefaultSeverity: severity.Info,
+		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("kms_key_id") {
@@ -66,7 +66,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not use CMK", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Info),
+						WithSeverity(severity.Low),
 				)
 				return
 			}
@@ -84,7 +84,7 @@ func init() {
 							WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
 							WithRange(kmsKeyAttr.Range()).
 							WithAttributeAnnotation(kmsKeyAttr).
-							WithSeverity(severity.Info),
+							WithSeverity(severity.Low),
 					)
 				}
 			}

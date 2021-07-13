@@ -9,7 +9,7 @@
       "requiredLabels": [
         "aws_instance"
       ],
-      "severity": "ERROR",
+      "severity": "HIGH",
       "matchSpec": {
         "name": "tags",
         "action": "contains",
@@ -34,9 +34,9 @@
         "name": "versioning",
         "action": "isPresent",
         "subMatch": {
-          "name" : "enabled",
+          "name": "enabled",
           "action": "equals",
-          "value" : "true"
+          "value": "true"
         }
       },
       "errorMessage": "The versioning block requires enabled attribute",
@@ -53,10 +53,13 @@
       "requiredLabels": [
         "aws_s3_bucket"
       ],
-      "severity": "ERROR",
+      "severity": "HIGH",
       "matchSpec": {
         "name": "acl",
-        "value": ["public-read", "authenticated-users"],
+        "value": [
+          "public-read",
+          "authenticated-users"
+        ],
         "action": "isNone"
       },
       "errorMessage": "The ACL must not be one of ['public-read', 'authenticated-users']",
@@ -73,7 +76,7 @@
       "requiredLabels": [
         "aws_s3_bucket"
       ],
-      "severity": "ERROR",
+      "severity": "HIGH",
       "matchSpec": {
         "action": "inModule"
       },
@@ -91,7 +94,7 @@
       "requiredLabels": [
         "*"
       ],
-      "severity": "ERROR",
+      "severity": "HIGH",
       "matchSpec": {
         "name": "source",
         "action": "regexMatches",
@@ -116,10 +119,13 @@
       "requiredLabels": [
         "aws_instance"
       ],
-      "severity": "ERROR",
+      "severity": "HIGH",
       "matchSpec": {
         "name": "ami",
-        "value": ["ami-1234", "ami-5678"],
+        "value": [
+          "ami-1234",
+          "ami-5678"
+        ],
         "action": "isAny"
       },
       "errorMessage": "The ec2 instance has an ami that isn't in the permitted range ['ami-1234', 'ami-5678']",
@@ -136,7 +142,7 @@
       "requiredLabels": [
         "aws_instance"
       ],
-      "severity": "ERROR",
+      "severity": "HIGH",
       "matchSpec": {
         "name": "cpu_core_count",
         "value": 2,

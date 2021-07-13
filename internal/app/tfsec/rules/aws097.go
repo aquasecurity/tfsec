@@ -162,7 +162,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_iam_policy", "aws_iam_group_policy", "aws_iam_user_policy", "aws_iam_role_policy"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
 			policyAttr := resourceBlock.GetAttribute("policy")
@@ -200,7 +200,7 @@ func init() {
 										WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", policyDocumentBlock.FullName())).
 										WithRange(resources.Range()).
 										WithAttributeAnnotation(resources).
-										WithSeverity(severity.Error),
+										WithSeverity(severity.High),
 								)
 							}
 						}
@@ -231,7 +231,7 @@ func checkAWS097PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 							WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", resourceBlock.FullName())).
 							WithRange(policyAttr.Range()).
 							WithAttributeAnnotation(policyAttr).
-							WithSeverity(severity.Error),
+							WithSeverity(severity.High),
 					)
 					return
 				}

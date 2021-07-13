@@ -15,11 +15,11 @@ func Test_IfIgnoreWarningsSetShouldRemoveWarningScanResults(t *testing.T) {
 	twoScanResultsWithOneWarning := []result.Result{
 		{
 			RuleID:   "1",
-			Severity: severity.Error,
+			Severity: severity.High,
 		},
 		{
 			RuleID:   "2",
-			Severity: severity.Warning,
+			Severity: severity.Medium,
 		},
 	}
 
@@ -32,11 +32,11 @@ func Test_IfIgnoreWarningsIsNotSetThenWarningShouldBeInScanResults(t *testing.T)
 	twoScanResultsWithOneWarning := []result.Result{
 		{
 			RuleID:   "1",
-			Severity: severity.Error,
+			Severity: severity.High,
 		},
 		{
 			RuleID:   "2",
-			Severity: severity.Warning,
+			Severity: severity.Medium,
 		},
 	}
 
