@@ -80,8 +80,7 @@ func init() {
 			if resourceBlock.MissingChild("server_side_encryption") {
 				res := result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()).
-					WithSeverity(severity.High)
+					WithRange(resourceBlock.Range())
 				set.Add(res)
 				return
 			}
@@ -90,8 +89,7 @@ func init() {
 			if sseBlock.MissingChild("enabled") {
 				res := result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", resourceBlock.FullName())).
-					WithRange(sseBlock.Range()).
-					WithSeverity(severity.High)
+					WithRange(sseBlock.Range())
 				set.Add(res)
 				return
 			}
@@ -100,8 +98,7 @@ func init() {
 				res := result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("DAX cluster '%s' has disabled server side encryption", resourceBlock.FullName())).
 					WithRange(sseEnabledAttr.Range()).
-					WithAttributeAnnotation(sseEnabledAttr).
-					WithSeverity(severity.High)
+					WithAttributeAnnotation(sseEnabledAttr)
 				set.Add(res)
 			}
 

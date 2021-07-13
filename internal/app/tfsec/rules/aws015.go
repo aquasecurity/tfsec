@@ -63,8 +63,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
@@ -72,8 +71,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())).
 						WithRange(kmsKeyIDAttr.Range()).
-						WithAttributeAnnotation(kmsKeyIDAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(kmsKeyIDAttr),
 				)
 			}
 

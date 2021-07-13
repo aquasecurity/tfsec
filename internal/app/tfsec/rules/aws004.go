@@ -82,7 +82,6 @@ func init() {
 
 			res := result.New(resourceBlock).
 				WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName())).
-				WithSeverity(severity.Critical).
 				WithRange(resourceBlock.Range())
 
 			if protocolAttr != nil {

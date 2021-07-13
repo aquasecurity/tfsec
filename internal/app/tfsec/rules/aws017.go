@@ -69,8 +69,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -79,8 +78,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(encryptionBlock.Range()),
 				)
 				return
 			}
@@ -90,8 +88,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName())).
-						WithRange(ruleBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(ruleBlock.Range()),
 				)
 				return
 			}
@@ -101,8 +98,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName())).
-						WithRange(applyBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(applyBlock.Range()),
 				)
 			}
 

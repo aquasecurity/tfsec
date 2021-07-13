@@ -76,8 +76,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has no encryptionConfigBlock block", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -87,8 +86,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with no resourcesAttr attribute specified", resourceBlock.FullName())).
-						WithRange(encryptionConfigBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(encryptionConfigBlock.Range()),
 				)
 				return
 			}
@@ -99,8 +97,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not include secrets in encrypted resources", resourceBlock.FullName())).
 						WithRange(resourcesAttr.Range()).
-						WithAttributeAnnotation(resourcesAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(resourcesAttr),
 				)
 			}
 
@@ -108,8 +105,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with no provider block specified", resourceBlock.FullName())).
-						WithRange(encryptionConfigBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(encryptionConfigBlock.Range()),
 				)
 				return
 			}
@@ -119,8 +115,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with provider block specified missing key arn", resourceBlock.FullName())).
-						WithRange(encryptionConfigBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(encryptionConfigBlock.Range()),
 				)
 				return
 			}
@@ -131,8 +126,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with provider block specified but key_arn is empty", resourceBlock.FullName())).
 						WithRange(keyArnAttr.Range()).
-						WithAttributeAnnotation(keyArnAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(keyArnAttr),
 				)
 			}
 

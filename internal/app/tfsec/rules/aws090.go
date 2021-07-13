@@ -70,8 +70,7 @@ func init() {
 								result.New(resourceBlock).
 									WithDescription(fmt.Sprintf("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName())).
 									WithRange(setting.Range()).
-									WithAttributeAnnotation(valueAttr).
-									WithSeverity(severity.Low),
+									WithAttributeAnnotation(valueAttr),
 							)
 						}
 						return
@@ -80,9 +79,8 @@ func init() {
 			}
 			set.Add(
 				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resoure '%s' does not have containerInsights enabled", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()).
-					WithSeverity(severity.Low),
+					WithDescription(fmt.Sprintf("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName())).
+					WithRange(resourceBlock.Range()),
 			)
 		},
 	})

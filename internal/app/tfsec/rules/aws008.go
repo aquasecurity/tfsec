@@ -56,7 +56,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_security_group"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(resultSet result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			for _, directionBlock := range resourceBlock.GetBlocks("ingress") {
@@ -67,8 +67,7 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())).
 								WithRange(cidrBlocksAttr.Range()).
-								WithAttributeAnnotation(cidrBlocksAttr).
-								WithSeverity(severity.Medium),
+								WithAttributeAnnotation(cidrBlocksAttr),
 						)
 					}
 				}
@@ -79,8 +78,7 @@ func init() {
 						resultSet.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())).
-								WithRange(cidrBlocksAttr.Range()).
-								WithSeverity(severity.Medium),
+								WithRange(cidrBlocksAttr.Range()),
 						)
 					}
 				}

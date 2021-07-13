@@ -87,7 +87,7 @@ func init() {
 		},
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"resource", "provider", "module"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			attributes := resourceBlock.GetAttributes()
@@ -104,8 +104,7 @@ func init() {
 						set.Add(result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", resourceBlock.FullName())).
 							WithRange(attribute.Range()).
-							WithAttributeAnnotation(attribute).
-							WithSeverity(severity.Medium),
+							WithAttributeAnnotation(attribute),
 						)
 					}
 

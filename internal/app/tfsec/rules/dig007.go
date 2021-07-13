@@ -57,7 +57,6 @@ func init() {
 				if forceDestroyAttr.IsTrue() {
 					set.Add(result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName())).
-						WithSeverity(severity.Medium).
 						WithAttributeAnnotation(forceDestroyAttr).
 						WithRange(forceDestroyAttr.Range()))
 				}

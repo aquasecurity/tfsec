@@ -117,8 +117,7 @@ func init() {
 							set.Add(
 								result.New(resourceBlock).
 									WithDescription(fmt.Sprintf("Resource '%s' has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", resourceBlock.FullName())).
-									WithRange(resourceBlock.Range()).
-									WithSeverity(severity.Critical),
+									WithRange(resourceBlock.Range()),
 							)
 						}
 					}

@@ -71,7 +71,7 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_sql_server", "azurerm_mssql_server"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
 			if !resourceBlock.MissingChild("extended_auditing_policy") {
@@ -91,8 +91,7 @@ func init() {
 			set.Add(
 				result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' does not have an extended audit policy configured.", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()).
-					WithSeverity(severity.High),
+					WithRange(resourceBlock.Range()),
 			)
 
 		},

@@ -73,8 +73,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", resourceBlock.FullName())).
-						WithRange(legacyMetadataAPI.Range()).
-						WithSeverity(severity.High),
+						WithRange(legacyMetadataAPI.Range()),
 				)
 			}
 

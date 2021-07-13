@@ -68,7 +68,7 @@ func init() {
 		},
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"variable"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if len(resourceBlock.Labels()) == 0 || !security.IsSensitiveAttribute(resourceBlock.TypeLabel()) {
@@ -81,8 +81,7 @@ func init() {
 						set.Add(result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", resourceBlock.FullName())).
 							WithRange(attribute.Range()).
-							WithAttributeAnnotation(attribute).
-							WithSeverity(severity.Medium),
+							WithAttributeAnnotation(attribute),
 						)
 					}
 				}

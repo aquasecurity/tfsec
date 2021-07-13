@@ -69,9 +69,9 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 							WithDescription(fmt.Sprintf("Resource '%s' passed check: %s", checkBlock.FullName(), r.Documentation.Summary)).
 							WithRange(checkBlock.Range()).
 							WithStatus(result.Passed).
-							WithSeverity(r.DefaultSeverity).
 							WithImpact(r.Documentation.Impact).
-							WithResolution(r.Documentation.Resolution)
+							WithResolution(r.Documentation.Resolution).
+							WithSeverity(r.DefaultSeverity)
 						results = append(results, *res)
 					} else if ruleResults != nil {
 						for _, ruleResult := range ruleResults.All() {

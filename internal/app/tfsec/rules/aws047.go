@@ -108,8 +108,7 @@ func init() {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName())).
-								WithRange(resourceBlock.Range()).
-								WithSeverity(severity.High),
+								WithRange(resourceBlock.Range()),
 						)
 					}
 				}

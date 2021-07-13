@@ -116,8 +116,7 @@ func init() {
 							set.Add(
 								result.New(resourceBlock).
 									WithDescription(fmt.Sprintf("Resource '%s' has a .", resourceBlock.FullName())).
-									WithRange(resourceBlock.Range()).
-									WithSeverity(severity.Critical),
+									WithRange(resourceBlock.Range()),
 							)
 						}
 					}

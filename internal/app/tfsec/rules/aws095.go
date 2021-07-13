@@ -65,8 +65,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not use CMK", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Low),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -83,8 +82,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
 							WithRange(kmsKeyAttr.Range()).
-							WithAttributeAnnotation(kmsKeyAttr).
-							WithSeverity(severity.Low),
+							WithAttributeAnnotation(kmsKeyAttr),
 					)
 				}
 			}

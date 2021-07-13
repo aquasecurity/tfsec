@@ -6,7 +6,7 @@ image:
 
 .PHONY: test
 test:
-	go test -mod=vendor -v ./...
+	go test -mod=vendor ./...
 
 .PHONY: build
 build:

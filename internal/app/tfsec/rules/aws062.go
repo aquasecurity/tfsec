@@ -86,8 +86,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has userdata with access key id defined.", resourceBlock.FullName())).
 						WithRange(userDataAttr.Range()).
-						WithAttributeAnnotation(userDataAttr).
-						WithSeverity(severity.Critical),
+						WithAttributeAnnotation(userDataAttr),
 				)
 			}
 
@@ -97,8 +96,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has userdata with access secret key defined.", resourceBlock.FullName())).
 						WithRange(userDataAttr.Range()).
-						WithAttributeAnnotation(userDataAttr).
-						WithSeverity(severity.Critical),
+						WithAttributeAnnotation(userDataAttr),
 				)
 			}
 		},

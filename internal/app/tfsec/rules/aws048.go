@@ -66,16 +66,14 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not specify if encryption should be used.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 			} else if efsEnabledAttr.Type() == cty.Bool && efsEnabledAttr.Value().False() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' actively does not have encryption applied.", resourceBlock.FullName())).
 						WithRange(efsEnabledAttr.Range()).
-						WithAttributeAnnotation(efsEnabledAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(efsEnabledAttr),
 				)
 			}
 		},

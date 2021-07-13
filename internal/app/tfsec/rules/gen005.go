@@ -75,8 +75,7 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Block '%s' includes potentially sensitive data. %s", resourceBlock.FullName(), scanResult.Description)).
 								WithRange(attribute.Range()).
-								WithAttributeAnnotation(attribute).
-								WithSeverity(severity.Critical),
+								WithAttributeAnnotation(attribute),
 						)
 					}
 				}

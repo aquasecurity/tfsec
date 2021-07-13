@@ -59,15 +59,14 @@ func init() {
 		Provider:        provider.DigitalOceanProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"digitalocean_droplet"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("ssh_keys") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not define ssh_keys", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Medium),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -77,8 +76,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has ssh_key specified but is empty.", resourceBlock.FullName())).
 						WithRange(sshKeysAttr.Range()).
-						WithAttributeAnnotation(sshKeysAttr).
-						WithSeverity(severity.Medium),
+						WithAttributeAnnotation(sshKeysAttr),
 				)
 			}
 		},

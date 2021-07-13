@@ -18,7 +18,7 @@ import (
 )
 
 const AWSRedisClusterBackupRetention = "AWS088"
-const AWSRedisClusterBackupRetentionDescription = "Redis cluster should be backup retention turned on"
+const AWSRedisClusterBackupRetentionDescription = "Redis cluster should have backup retention turned on"
 const AWSRedisClusterBackupRetentionImpact = "Without backups of the redis cluster recovery is made difficult"
 const AWSRedisClusterBackupRetentionResolution = "Configure snapshot retention for redis cluster"
 const AWSRedisClusterBackupRetentionExplanation = `
@@ -79,8 +79,7 @@ func init() {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())).
-								WithRange(resourceBlock.Range()).
-								WithSeverity(severity.Medium),
+								WithRange(resourceBlock.Range()),
 						)
 						return
 					}
@@ -90,8 +89,7 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName())).
 								WithRange(snapshotRetentionAttr.Range()).
-								WithAttributeAnnotation(snapshotRetentionAttr).
-								WithSeverity(severity.Medium),
+								WithAttributeAnnotation(snapshotRetentionAttr),
 						)
 					}
 				}

@@ -66,8 +66,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -81,8 +80,7 @@ func init() {
 							resourceBlock.FullName(),
 						)).
 						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(enabledAttr),
 				)
 			}
 

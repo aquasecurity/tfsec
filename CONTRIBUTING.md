@@ -118,7 +118,7 @@ CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
 						WithDescription(fmt.Sprintf("The Gibson '%s' is configured to be hackable.", block.Name())).
 						WithRange(attr.Range()).
 						WithAttributeAnnotation(attr).
-						WithSeverity(SeverityWarning),
+						,
 					)
                 }
             }

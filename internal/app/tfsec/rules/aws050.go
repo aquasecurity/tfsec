@@ -62,7 +62,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_network_acl_rule"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			egressAttr := resourceBlock.GetAttribute("egress")
@@ -88,8 +88,7 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
 								WithRange(cidrBlockAttr.Range()).
-								WithAttributeAnnotation(cidrBlockAttr).
-								WithSeverity(severity.High),
+								WithAttributeAnnotation(cidrBlockAttr),
 						)
 					}
 				}
@@ -102,8 +101,7 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
 								WithRange(ipv6CidrBlockAttr.Range()).
-								WithAttributeAnnotation(ipv6CidrBlockAttr).
-								WithSeverity(severity.High),
+								WithAttributeAnnotation(ipv6CidrBlockAttr),
 						)
 					}
 				}

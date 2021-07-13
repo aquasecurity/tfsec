@@ -15,7 +15,7 @@ import (
 const DIGPublicReadAclOnSpacesBucket = "DIG005"
 const DIGPublicReadAclOnSpacesBucketDescription = "Spaces bucket or bucket object has public read acl set"
 const DIGPublicReadAclOnSpacesBucketImpact = "The contents of the space can be accessed publicly"
-const DIGPublicReadAclOnSpacesBucketResolution = "Applt more restrictive ACL"
+const DIGPublicReadAclOnSpacesBucketResolution = "Apply a more restrictive ACL"
 const DIGPublicReadAclOnSpacesBucketExplanation = `
 Space bucket and bucket object permissions should be set to deny public access unless explicitly required.
 `
@@ -70,7 +70,7 @@ func init() {
 		Provider:        provider.DigitalOceanProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"digitalocean_spaces_bucket", "digitalocean_spaces_bucket_object"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.HasChild("acl") {
@@ -78,7 +78,6 @@ func init() {
 				if aclAttr.Equals("public-read", block.IgnoreCase) {
 					set.Add(result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has a publicly readable acl.", resourceBlock.FullName())).
-						WithSeverity(severity.Medium).
 						WithAttributeAnnotation(aclAttr).
 						WithRange(aclAttr.Range()))
 				}

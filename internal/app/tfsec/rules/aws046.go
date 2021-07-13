@@ -86,8 +86,7 @@ func init() {
 								set.Add(
 									result.New(resourceBlock).
 										WithDescription(fmt.Sprintf("Resource '%s' has a wildcard action specified.", resourceBlock.FullName())).
-										WithRange(statementBlock.Range()).
-										WithSeverity(severity.Critical),
+										WithRange(statementBlock.Range()),
 								)
 							}
 						}

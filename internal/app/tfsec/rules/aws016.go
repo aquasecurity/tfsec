@@ -63,8 +63,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
@@ -72,8 +71,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())).
 						WithRange(kmsKeyIDAttr.Range()).
-						WithAttributeAnnotation(kmsKeyIDAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(kmsKeyIDAttr),
 				)
 				return
 			}
@@ -91,8 +89,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
 							WithRange(kmsKeyIDAttr.Range()).
-							WithAttributeAnnotation(kmsKeyIDAttr).
-							WithSeverity(severity.Medium),
+							WithAttributeAnnotation(kmsKeyIDAttr),
 					)
 				}
 

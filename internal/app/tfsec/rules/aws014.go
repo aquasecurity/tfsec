@@ -24,7 +24,7 @@ const AWSLaunchConfigurationWithUnencryptedBlockDeviceDescription = "Launch conf
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceImpact = "The block device is could be compromised and read from"
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceResolution = "Turn on encryption for all block devices"
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceExplanation = `
-Blocks devices should be encrypted to ensure sensitive data is hel securely at rest.
+Blocks devices should be encrypted to ensure sensitive data is held securely at rest.
 `
 const AWSLaunchConfigurationWithUnencryptedBlockDeviceBadExample = `
 resource "aws_launch_configuration" "bad_example" {
@@ -76,8 +76,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device. Consider adding <blue>root_block_device{ encrypted = true }</blue>", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 			} else if rootDeviceBlock != nil {
 				checkDeviceEncryption(rootDeviceBlock, encryptionByDefault, set, resourceBlock)
@@ -98,16 +97,14 @@ func checkDeviceEncryption(deviceBlock block.Block, encryptionByDefault bool, se
 		set.Add(
 			result.New(resourceBlock).
 				WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device. Consider adding <blue>encrypted = true</blue>", resourceBlock.FullName())).
-				WithRange(deviceBlock.Range()).
-				WithSeverity(severity.High),
+				WithRange(deviceBlock.Range()),
 		)
 	} else if encryptedAttr != nil && encryptedAttr.Type() == cty.Bool && encryptedAttr.Value().False() {
 		set.Add(
 			result.New(resourceBlock).
 				WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device.", resourceBlock.FullName())).
 				WithRange(encryptedAttr.Range()).
-				WithAttributeAnnotation(encryptedAttr).
-				WithSeverity(severity.High),
+				WithAttributeAnnotation(encryptedAttr),
 		)
 	}
 }

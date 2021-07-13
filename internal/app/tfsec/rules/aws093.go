@@ -80,8 +80,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Low),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -91,8 +90,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' configures encryption without using CMK", resourceBlock.FullName())).
-						WithRange(encBlock.Range()).
-						WithSeverity(severity.Low),
+						WithRange(encBlock.Range()),
 				)
 				return
 			}
@@ -101,8 +99,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName())).
-						WithRange(encBlock.Range()).
-						WithSeverity(severity.Low),
+						WithRange(encBlock.Range()),
 				)
 			}
 

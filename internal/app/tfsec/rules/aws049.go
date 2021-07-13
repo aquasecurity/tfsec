@@ -87,8 +87,7 @@ func init() {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
-								WithRange(cidrBlockAttr.Range()).
-								WithSeverity(severity.Critical),
+								WithRange(cidrBlockAttr.Range()),
 						)
 					}
 				}
@@ -105,8 +104,7 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
 								WithRange(ipv6CidrBlockAttr.Range()).
-								WithAttributeAnnotation(ipv6CidrBlockAttr).
-								WithSeverity(severity.Critical),
+								WithAttributeAnnotation(ipv6CidrBlockAttr),
 						)
 					}
 				}

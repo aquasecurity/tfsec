@@ -69,8 +69,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Medium),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -80,8 +79,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())).
 						WithRange(keyRotationAttr.Range()).
-						WithAttributeAnnotation(keyRotationAttr).
-						WithSeverity(severity.Medium),
+						WithAttributeAnnotation(keyRotationAttr),
 				)
 			}
 

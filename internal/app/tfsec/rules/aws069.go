@@ -73,8 +73,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Critical),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -84,8 +83,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName())).
-						WithRange(vpcConfig.Range()).
-						WithSeverity(severity.Critical),
+						WithRange(vpcConfig.Range()),
 				)
 				return
 			}
@@ -96,8 +94,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", resourceBlock.FullName())).
 						WithRange(publicAccessEnabledAttr.Range()).
-						WithAttributeAnnotation(publicAccessEnabledAttr).
-						WithSeverity(severity.Critical),
+						WithAttributeAnnotation(publicAccessEnabledAttr),
 				)
 			}
 		},

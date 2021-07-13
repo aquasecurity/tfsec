@@ -67,24 +67,21 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 			} else if kmsKeyIdAttr != nil && kmsKeyIdAttr.Equals("") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName())).
 						WithRange(kmsKeyIdAttr.Range()).
-						WithAttributeAnnotation(kmsKeyIdAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(kmsKeyIdAttr),
 				)
 			} else if storageEncryptedattr == nil || storageEncryptedattr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a enabled RDS Cluster encryption but not the required encrypted_storage.", resourceBlock.FullName())).
 						WithRange(kmsKeyIdAttr.Range()).
-						WithAttributeAnnotation(kmsKeyIdAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(kmsKeyIdAttr),
 				)
 			}
 		},

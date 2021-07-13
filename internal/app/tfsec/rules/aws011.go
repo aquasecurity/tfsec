@@ -22,7 +22,7 @@ import (
 const AWSPubliclyAccessibleResource = "AWS011"
 const AWSPubliclyAccessibleResourceDescription = "A database resource is marked as publicly accessible."
 const AWSPubliclyAccessibleResourceImpact = "The database instance is publicly accessible"
-const AWSPubliclyAccessibleResourceResolution = "Set the database to not be publically accessible"
+const AWSPubliclyAccessibleResourceResolution = "Set the database to not be publicly accessible"
 const AWSPubliclyAccessibleResourceExplanation = `
 Database resources should not publicly available. You should limit all access to the minimum that is required for your application to function. 
 `
@@ -63,8 +63,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
 							WithRange(publicAttr.Range()).
-							WithAttributeAnnotation(publicAttr).
-							WithSeverity(severity.Critical),
+							WithAttributeAnnotation(publicAttr),
 					)
 				}
 			}

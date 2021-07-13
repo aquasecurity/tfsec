@@ -62,16 +62,14 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Provider '%s' has an access key specified.", resourceBlock.FullName())).
 						WithRange(accessKeyAttribute.Range()).
-						WithAttributeAnnotation(accessKeyAttribute).
-						WithSeverity(severity.Critical),
+						WithAttributeAnnotation(accessKeyAttribute),
 				)
 			} else if secretKeyAttribute := resourceBlock.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Provider '%s' has a secret key specified.", resourceBlock.FullName())).
 						WithRange(secretKeyAttribute.Range()).
-						WithAttributeAnnotation(secretKeyAttribute).
-						WithSeverity(severity.Critical),
+						WithAttributeAnnotation(secretKeyAttribute),
 				)
 			}
 

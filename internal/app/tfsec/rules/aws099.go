@@ -109,7 +109,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_iam_policy", "aws_iam_user_policy", "aws_iam_group_policy", "aws_iam_role_policy"},
-		DefaultSeverity: severity.Low,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 			policyAttr := resourceBlock.GetAttribute("policy")
 			if policyAttr == nil {

@@ -22,7 +22,7 @@ const AWSBlockPublicPolicyS3Description = "S3 Access block should block public p
 const AWSBlockPublicPolicyS3Impact = "Users could put a policy that allows public access"
 const AWSBlockPublicPolicyS3Resolution = "Prevent policies that allow public access being PUT"
 const AWSBlockPublicPolicyS3Explanation = `
-S3 bucket policy should have block public policy to prevent users from PUTing a policy that enable public access.
+S3 bucket policy should have block public policy to prevent users from putting a policy that enable public access.
 `
 const AWSBlockPublicPolicyS3BadExample = `
 resource "aws_s3_bucket_public_access_block" "bad_example" {
@@ -67,8 +67,7 @@ func init() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not specify block_public_policy, defaults to false", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithRange(resourceBlock.Range()),
 				)
 				return
 			}
@@ -79,8 +78,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' sets block_public_policy explicitly to false", resourceBlock.FullName())).
 						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(attr),
 				)
 			}
 		},

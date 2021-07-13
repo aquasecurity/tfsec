@@ -17,7 +17,7 @@ const GCPRawEncryptionKeySpecifiedForComputeDiskDescription = "The encryption ke
 const GCPRawEncryptionKeySpecifiedForComputeDiskImpact = "The encryption key should be considered compromised as it is not stored securely."
 const GCPRawEncryptionKeySpecifiedForComputeDiskResolution = "Reference a managed key rather than include the key in raw format."
 const GCPRawEncryptionKeySpecifiedForComputeDiskExplanation = `
-Sensitve values such as raw encryption keys should not be included in your Terraform code, and should be stored securely by a secrets manager.
+Sensitive values such as raw encryption keys should not be included in your Terraform code, and should be stored securely by a secrets manager.
 `
 const GCPRawEncryptionKeySpecifiedForComputeDiskBadExample = `
 resource "google_compute_disk" "good_example" {
@@ -52,7 +52,7 @@ func init() {
 		Provider:        provider.GCPProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_compute_disk"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			keyBlock := resourceBlock.GetBlock("disk_encryption_key")
@@ -70,8 +70,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' specifies an encryption key in raw format.", resourceBlock.FullName())).
 						WithRange(rawKeyAttr.Range()).
-						WithAttributeAnnotation(rawKeyAttr).
-						WithSeverity(severity.High),
+						WithAttributeAnnotation(rawKeyAttr),
 				)
 			}
 

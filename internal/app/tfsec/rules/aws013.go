@@ -108,8 +108,7 @@ func init() {
 							set.Add(result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", resourceBlock.FullName(), env.Name)).
 								WithRange(definitionsAttr.Range()).
-								WithAttributeAnnotation(definitionsAttr).
-								WithSeverity(severity.Critical),
+								WithAttributeAnnotation(definitionsAttr),
 							)
 						}
 					}

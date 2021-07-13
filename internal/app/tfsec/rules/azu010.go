@@ -66,8 +66,7 @@ func init() {
 							resourceBlock.FullName(),
 						)).
 						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr).
-						WithSeverity(severity.Critical),
+						WithAttributeAnnotation(enabledAttr),
 				)
 			}
 

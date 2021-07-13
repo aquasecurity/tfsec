@@ -70,8 +70,7 @@ func init() {
 								resourceBlock.FullName(),
 							)).
 							WithRange(passwordAuthDisabledAttr.Range()).
-							WithAttributeAnnotation(passwordAuthDisabledAttr).
-							WithSeverity(severity.High),
+							WithAttributeAnnotation(passwordAuthDisabledAttr),
 					)
 				}
 			}

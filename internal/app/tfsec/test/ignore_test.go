@@ -74,7 +74,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			set.Add(
-				result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.High),
+				result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()),
 			)
 		},
 	})
@@ -85,7 +85,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			set.Add(
-				result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.High),
+				result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()),
 			)
 		},
 	})
