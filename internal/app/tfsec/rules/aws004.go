@@ -56,7 +56,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_lb_listener", "aws_alb_listener"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 			// didn't find the referenced block, log and move on
 			if checkIfExempt(resourceBlock, ctx) {
@@ -82,7 +82,7 @@ func init() {
 
 			res := result.New(resourceBlock).
 				WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName())).
-				WithSeverity(severity.High).
+				WithSeverity(severity.Critical).
 				WithRange(resourceBlock.Range())
 
 			if protocolAttr != nil {

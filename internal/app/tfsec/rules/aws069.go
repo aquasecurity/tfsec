@@ -66,7 +66,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_eks_cluster"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("vpc_config") {
@@ -74,7 +74,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.High),
+						WithSeverity(severity.Critical),
 				)
 				return
 			}
@@ -85,7 +85,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName())).
 						WithRange(vpcConfig.Range()).
-						WithSeverity(severity.High),
+						WithSeverity(severity.Critical),
 				)
 				return
 			}
@@ -97,7 +97,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", resourceBlock.FullName())).
 						WithRange(publicAccessEnabledAttr.Range()).
 						WithAttributeAnnotation(publicAccessEnabledAttr).
-						WithSeverity(severity.High),
+						WithSeverity(severity.Critical),
 				)
 			}
 		},

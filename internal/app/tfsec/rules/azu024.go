@@ -97,7 +97,7 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_network_security_group", "azurerm_network_security_rule"},
-		DefaultSeverity: severity.High,
+		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			var securityRules block.Blocks
@@ -118,7 +118,7 @@ func init() {
 								result.New(resourceBlock).
 									WithDescription(fmt.Sprintf("Resource '%s' has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", resourceBlock.FullName())).
 									WithRange(resourceBlock.Range()).
-									WithSeverity(severity.High),
+									WithSeverity(severity.Critical),
 							)
 						}
 					}
