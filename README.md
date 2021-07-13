@@ -24,19 +24,19 @@ Great news - tfsec has [now joined Aqua Security](https://www.aquasec.com/news/a
 
 ## Installation
 
-Install with brew/linuxbrew:
+Install with [brew/linuxbrew](https://brew.sh)
 
 ```bash
 brew install tfsec
 ```
 
-Install with Chocolatey:
+Install with [Chocolatey](https://chocolatey.org/)
 
 ```cmd
 choco install tfsec
 ```
 
-Install with Scoop 
+Install with [Scoop](https://scoop.sh/)
 
 ```cmd
 scoop install tfsec
