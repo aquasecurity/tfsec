@@ -1,6 +1,10 @@
 package metrics
 
-import "time"
+import (
+	"time"
+
+	"github.com/aquasecurity/tfsec/pkg/severity"
+)
 
 var recordedTimes []*Timer
 
@@ -27,7 +31,7 @@ func Start(op Operation) *Timer {
 }
 
 func (t *Timer) Stop() {
-	t.duration = time.Now().Sub(t.started)
+	t.duration = time.Since(t.started)
 	recordedTimes = append(recordedTimes, t)
 }
 
@@ -62,4 +66,18 @@ func TimerSummary() map[Operation]time.Duration {
 
 func CountSummary() map[Count]int {
 	return counts
+}
+
+var severities = map[severity.Severity]int{}
+
+func AddResult(s severity.Severity) {
+	severities[s]++
+}
+
+func CountSeverity(sev severity.Severity) int {
+	val, ok := severities[sev]
+	if !ok {
+		return 0
+	}
+	return val
 }
