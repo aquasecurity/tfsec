@@ -21,14 +21,17 @@ import (
 
 // Scanner scans HCL blocks by running all registered rules against them
 type Scanner struct {
-	includePassed   bool
-	includeIgnored  bool
-	excludedRuleIDs []string
+	includePassed     bool
+	includeIgnored    bool
+	excludedRuleIDs   []string
+	ignoreCheckErrors bool
 }
 
 // New creates a new Scanner
 func New(options ...Option) *Scanner {
-	s := &Scanner{}
+	s := &Scanner{
+		ignoreCheckErrors: true,
+	}
 	for _, option := range options {
 		option(s)
 	}
@@ -62,7 +65,7 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 			func(r *rule.Rule) {
 				if rule.IsRuleRequiredForBlock(r, checkBlock) {
 					debug.Log("Running rule for %s on %s.%s (%s)...", r.ID, checkBlock.Type(), checkBlock.FullName(), checkBlock.Range().Filename)
-					ruleResults := rule.CheckRule(r, checkBlock, context)
+					ruleResults := rule.CheckRule(r, checkBlock, context, scanner.ignoreCheckErrors)
 					if scanner.includePassed && ruleResults.All() == nil {
 						res := result.New(checkBlock).
 							WithRuleID(r.ID).

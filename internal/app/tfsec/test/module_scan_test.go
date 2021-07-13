@@ -39,7 +39,7 @@ resource "problem" "uhoh" {
 			if err != nil {
 				t.Fatal(err)
 			}
-			results := scanner.New(scanner.OptionExcludeRules(excludedChecksList)).Scan(blocks)
+			results := scanner.New(scanner.OptionExcludeRules(excludedChecksList), scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
 			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
