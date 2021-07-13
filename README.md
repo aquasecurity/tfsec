@@ -36,6 +36,12 @@ Install with Chocolatey:
 choco install tfsec
 ```
 
+Install with Scoop 
+
+```cmd
+scoop install tfsec
+```
+
 You can also grab the binary for your system from the [releases page](https://github.com/aquasecurity/tfsec/releases).
 
 Alternatively, install with Go:
