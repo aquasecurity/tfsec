@@ -33,6 +33,7 @@ We currently use the following list of severities:
 | Medium   | Best practice has not been followed which impacts security of the organisation. | "Force destroy" is enabled on a bucket.               |
 | Low      | Best practice has not been followed, which decreases operational efficiency.    | Description missing on security group rule.           |
 
+
 ### Writing Your Check Code
 
 Run `make new-check` to create the stub
