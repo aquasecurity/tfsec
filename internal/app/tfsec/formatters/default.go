@@ -64,8 +64,7 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 		printStatistics()
 	}
 
-	tml.Printf("\n  <bold>%d potential problems detected:</bold>\n\n", len(results)-countPassedResults(results))
-
+	_ = tml.Printf("\n  <blue>results</blue>\n  ------------------------------------------\n")
 	for _, sev := range []severity.Severity{
 		severity.Critical,
 		severity.High,
@@ -78,19 +77,10 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 				count++
 			}
 		}
-		switch sev {
-		case severity.Critical:
-			tml.Printf("  <bold><red>%-20s</red></bold> %d\n", strings.Title(strings.ToLower(string(sev))), count)
-		case severity.High:
-			tml.Printf("  <red>%-20s</red> %d\n", strings.Title(strings.ToLower(string(sev))), count)
-		case severity.Medium:
-			tml.Printf("  <yellow>%-20s</yellow> %d\n", strings.Title(strings.ToLower(string(sev))), count)
-		case severity.Low:
-			tml.Printf("  <white>%-20s</white> %d\n", strings.Title(strings.ToLower(string(sev))), count)
-		}
+		tml.Printf("  <blue>%-20s</blue> %d\n", strings.ToLower(string(sev)), count)
 	}
 
-	fmt.Printf("\n\x1b[0m")
+	terminal.PrintErrorf("\n  %d potential problems detected.\n\n", len(results)-countPassedResults(results))
 
 	return nil
 
