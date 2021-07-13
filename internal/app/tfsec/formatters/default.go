@@ -64,7 +64,7 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 		printStatistics()
 	}
 
-	terminal.PrintErrorf("\n  %d potential problems detected:\n\n", len(results)-countPassedResults(results))
+	tml.Printf("\n  <bold>%d potential problems detected:</bold>\n\n", len(results)-countPassedResults(results))
 
 	for _, sev := range []severity.Severity{
 		severity.Critical,
