@@ -22,6 +22,17 @@ Key attributes requested;
 
 The generator will determine the next available code and create the check and the check test.
 
+### Determining Severity
+
+We currently use the following list of severities:
+
+| Level    | When to use                                                                     | Example                                               |
+| -------- | ------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Critical | A direct risk of compromise to infrastructure, data or other assets.            | A database resource is marked as publicly accessible. |
+| High     | A misconfiguration which could indirectly cause compromise of sensitive assets. | A storage medium is unencrypted.                      |
+| Medium   | Best practice has not been followed which impacts on infrastructure.            | "Force destroy" is enabled on a bucket.               |
+| Low      | Best practice has not been followed, with no direct impact on infrastructure.   | Security group rule is missing description.           |
+
 ### Writing Your Check Code
 
 Run `make new-check` to create the stub
