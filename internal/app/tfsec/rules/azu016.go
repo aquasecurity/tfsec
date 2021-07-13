@@ -76,7 +76,7 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_storage_account"},
-		DefaultSeverity: severity.Warning,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.HasChild("queue_properties") {
@@ -86,7 +86,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", resourceBlock.FullName())).
 							WithRange(resourceBlock.Range()).
-							WithSeverity(severity.Warning),
+							WithSeverity(severity.Medium),
 					)
 				}
 			}

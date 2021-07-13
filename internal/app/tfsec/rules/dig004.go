@@ -72,7 +72,7 @@ func init() {
 		Provider:        provider.DigitalOceanProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"digitalocean_loadbalancer"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("forwarding_rule") {
@@ -88,7 +88,7 @@ func init() {
 				if entryPointAttr.Equals("http", block.IgnoreCase) {
 					set.Add(result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName())).
-						WithSeverity(severity.Error).
+						WithSeverity(severity.High).
 						WithAttributeAnnotation(entryPointAttr).
 						WithRange(entryPointAttr.Range()))
 				}

@@ -94,7 +94,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_rds_cluster", "aws_db_instance"},
-		DefaultSeverity: severity.Info,
+		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.HasChild("replicate_source_db") {
 				return
@@ -105,7 +105,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have backup retention explicitly set", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Info),
+						WithSeverity(severity.Low),
 				)
 				return
 			}
@@ -117,7 +117,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' has backup retention period set to a low value", resourceBlock.FullName())).
 						WithRange(retentionAttr.Range()).
 						WithAttributeAnnotation(retentionAttr).
-						WithSeverity(severity.Info),
+						WithSeverity(severity.Low),
 				)
 			}
 

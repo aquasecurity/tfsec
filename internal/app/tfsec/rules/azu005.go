@@ -57,7 +57,7 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_virtual_machine"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if linuxConfigBlock := resourceBlock.GetBlock("os_profile_linux_config"); linuxConfigBlock != nil {
@@ -71,7 +71,7 @@ func init() {
 							)).
 							WithRange(passwordAuthDisabledAttr.Range()).
 							WithAttributeAnnotation(passwordAuthDisabledAttr).
-							WithSeverity(severity.Error),
+							WithSeverity(severity.High),
 					)
 				}
 			}

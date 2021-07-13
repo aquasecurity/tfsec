@@ -59,7 +59,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_cloudfront_distribution"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("logging_config") {
@@ -67,7 +67,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have Access Logging configured", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 

@@ -49,11 +49,11 @@ resource "problem" "x" {
 		},
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"problem"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.GetAttribute("bad") != nil {
 				set.Add(
-					result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.Error),
+					result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.High),
 				)
 			}
 		},

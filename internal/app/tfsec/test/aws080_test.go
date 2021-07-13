@@ -128,7 +128,7 @@ resource "aws_codebuild_project" "codebuild" {
 `, t)
 		for _, result := range results {
 			if result.RuleID == rules.AWSCodeBuildProjectEncryptionNotDisabled {
-				assert.True(t, result.Severity == severity.Warning, fmt.Sprintf("Result with code '%s' had wrong Severity reported '%s'", result.RuleID, result.Severity))
+				assert.True(t, result.Severity == severity.Medium, fmt.Sprintf("Result with code '%s' had wrong Severity reported '%s'", result.RuleID, result.Severity))
 			}
 		}
 	})

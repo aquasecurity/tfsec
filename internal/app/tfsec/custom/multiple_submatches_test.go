@@ -17,7 +17,7 @@ func init() {
       "requiredLabels": [
         "aws_instance"
       ],
-      "severity": "ERROR",
+      "severity": "HIGH",
       "matchSpec": {
         "name": "metadata_options",
         "action": "isPresent",

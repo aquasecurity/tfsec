@@ -62,7 +62,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_s3_bucket"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("server_side_encryption_configuration") {
@@ -70,7 +70,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 				return
 			}
@@ -80,7 +80,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", resourceBlock.FullName())).
 						WithRange(encryptionBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 				return
 			}
@@ -91,7 +91,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName())).
 						WithRange(ruleBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 				return
 			}
@@ -102,7 +102,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName())).
 						WithRange(applyBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 

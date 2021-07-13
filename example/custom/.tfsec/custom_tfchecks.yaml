@@ -6,7 +6,7 @@ checks:
       - resource
     requiredLabels:
       - aws_instance
-    severity: ERROR
+    severity: HIGH
     matchSpec:
       name: tags
       action: contains
@@ -37,7 +37,7 @@ checks:
       - resource
     requiredLabels:
       - aws_s3_bucket
-    severity: ERROR
+    severity: HIGH
     matchSpec:
       name: acl
       value:
@@ -54,7 +54,7 @@ checks:
       - resource
     requiredLabels:
       - aws_s3_bucket
-    severity: ERROR
+    severity: HIGH
     matchSpec:
       action: inModule
     errorMessage: S3 buckets must only be created using the custom bucket module
@@ -67,7 +67,7 @@ checks:
       - module
     requiredLabels:
       - "*"
-    severity: ERROR
+    severity: HIGH
     matchSpec:
       name: source
       action: regexMatches
@@ -86,7 +86,7 @@ checks:
       - resource
     requiredLabels:
       - aws_instance
-    severity: ERROR
+    severity: HIGH
     matchSpec:
       name: ami
       value:
@@ -103,7 +103,7 @@ checks:
       - resource
     requiredLabels:
       - aws_instance
-    severity: ERROR
+    severity: HIGH
     matchSpec:
       name: cpu_core_count
       value: 2

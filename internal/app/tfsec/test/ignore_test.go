@@ -71,10 +71,10 @@ func Test_IgnoreSpecific(t *testing.T) {
 	scanner.RegisterCheckRule(rule.Rule{
 		ID:              "ABC123",
 		RequiredLabels:  []string{"bad"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			set.Add(
-				result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.Error),
+				result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.High),
 			)
 		},
 	})
@@ -82,10 +82,10 @@ func Test_IgnoreSpecific(t *testing.T) {
 	scanner.RegisterCheckRule(rule.Rule{
 		ID:              "DEF456",
 		RequiredLabels:  []string{"bad"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			set.Add(
-				result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.Error),
+				result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()).WithSeverity(severity.High),
 			)
 		},
 	})

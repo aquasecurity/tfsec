@@ -58,7 +58,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_s3_bucket"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("versioning") {
@@ -66,7 +66,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 				return
 			}
@@ -77,7 +77,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has versioning block but is disabled", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 

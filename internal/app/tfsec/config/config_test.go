@@ -14,7 +14,7 @@ import (
 func TestExcludesElementsFromYAML(t *testing.T) {
 	content := `
 severity_overrides:
-  AWS018: INFO
+  AWS018: LOW
 
 exclude:
   - DP001
@@ -28,7 +28,7 @@ exclude:
 func TestExcludesElementsFromYML(t *testing.T) {
 	content := `
 severity_overrides:
-  AWS018: INFO
+  AWS018: LOW
 
 exclude:
   - DP001
@@ -42,7 +42,7 @@ exclude:
 func TestExcludesElementsFromJSON(t *testing.T) {
 	content := `{
   "severity_overrides": {
-    "AWS018": "INFO"
+    "AWS018": "LOW"
   },
   "exclude": [
     "DP001"
@@ -53,6 +53,23 @@ func TestExcludesElementsFromJSON(t *testing.T) {
 
 	assert.Contains(t, c.SeverityOverrides, "AWS018")
 	assert.Contains(t, c.ExcludedChecks, "DP001")
+}
+
+func TestWarningIsRewrittenAsMedium(t *testing.T) {
+	content := `{
+  "severity_overrides": {
+    "AWS018": "WARNING"
+  },
+  "exclude": [
+    "DP001"
+  ]
+}
+`
+	c := load(t, "config.json", content)
+
+	assert.Contains(t, c.SeverityOverrides, "AWS018")
+	sev := c.SeverityOverrides["AWS018"]
+	assert.Equal(t, "MEDIUM", sev)
 }
 
 func load(t *testing.T, filename, content string) *config.Config {

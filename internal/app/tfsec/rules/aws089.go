@@ -56,14 +56,14 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_cloudwatch_log_group"},
-		DefaultSeverity: severity.Info,
+		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is only using default encryption", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Info),
+						WithSeverity(severity.Low),
 				)
 			}
 

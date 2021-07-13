@@ -59,7 +59,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_elasticache_replication_group"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			encryptionAttr := resourceBlock.GetAttribute("at_rest_encryption_enabled")
@@ -68,7 +68,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (missing at_rest_encryption_enabled attribute).", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			} else if !isBooleanOrStringTrue(encryptionAttr) {
 				set.Add(
@@ -76,7 +76,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (at_rest_encryption_enabled set to false).", resourceBlock.FullName())).
 						WithRange(encryptionAttr.Range()).
 						WithAttributeAnnotation(encryptionAttr).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 

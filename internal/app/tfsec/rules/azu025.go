@@ -60,7 +60,7 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_data_factory"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("public_network_enabled") {
@@ -68,7 +68,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have public_network_enabled set to false, the default is true.", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 				return
 			}
@@ -77,7 +77,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should not have public network set to true.", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Warning),
+						WithSeverity(severity.Medium),
 				)
 			}
 		},

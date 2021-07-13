@@ -65,7 +65,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_config_configuration_aggregator"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			aggBlock := resourceBlock.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")
@@ -74,7 +74,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources set", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 				return
 			}
@@ -84,7 +84,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName())).
 						WithRange(aggBlock.Range()).
-						WithSeverity(severity.Warning),
+						WithSeverity(severity.Medium),
 				)
 				return
 			}
@@ -96,7 +96,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' has all_regions set to false", resourceBlock.FullName())).
 						WithRange(allRegionsAttr.Range()).
 						WithAttributeAnnotation(allRegionsAttr).
-						WithSeverity(severity.Warning),
+						WithSeverity(severity.Medium),
 				)
 			}
 

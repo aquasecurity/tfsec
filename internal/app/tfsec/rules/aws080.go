@@ -104,7 +104,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_codebuild_project"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			blocks := resourceBlock.GetBlocks("secondary_artifacts")
@@ -122,7 +122,7 @@ func init() {
 								WithDescription(fmt.Sprintf("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName())).
 								WithRange(artifactBlock.Range()).
 								WithAttributeAnnotation(artifactTypeAttr).
-								WithSeverity(severity.Warning),
+								WithSeverity(severity.Medium),
 						)
 					} else {
 						set.Add(
@@ -130,7 +130,7 @@ func init() {
 								WithDescription(fmt.Sprintf("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName())).
 								WithRange(artifactBlock.Range()).
 								WithAttributeAnnotation(encryptionDisabledAttr).
-								WithSeverity(severity.Error),
+								WithSeverity(severity.High),
 						)
 					}
 				}

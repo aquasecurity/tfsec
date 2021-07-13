@@ -63,7 +63,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_network_acl_rule"},
-		DefaultSeverity: severity.Warning,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			egressAttr := resourceBlock.GetAttribute("egress")
@@ -88,7 +88,7 @@ func init() {
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
 								WithRange(cidrBlockAttr.Range()).
-								WithSeverity(severity.Warning),
+								WithSeverity(severity.Medium),
 						)
 					}
 				}
@@ -106,7 +106,7 @@ func init() {
 								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
 								WithRange(ipv6CidrBlockAttr.Range()).
 								WithAttributeAnnotation(ipv6CidrBlockAttr).
-								WithSeverity(severity.Warning),
+								WithSeverity(severity.Medium),
 						)
 					}
 				}

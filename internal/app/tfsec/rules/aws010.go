@@ -63,7 +63,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_lb_listener", "aws_alb_listener"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if sslPolicyAttr := resourceBlock.GetAttribute("ssl_policy"); sslPolicyAttr != nil && sslPolicyAttr.Type() == cty.String {
@@ -74,7 +74,7 @@ func init() {
 								WithDescription(fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", resourceBlock.FullName())).
 								WithRange(sslPolicyAttr.Range()).
 								WithAttributeAnnotation(sslPolicyAttr).
-								WithSeverity(severity.Error),
+								WithSeverity(severity.High),
 						)
 					}
 				}

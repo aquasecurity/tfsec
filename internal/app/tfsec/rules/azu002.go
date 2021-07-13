@@ -60,7 +60,7 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_network_security_rule"},
-		DefaultSeverity: severity.Warning,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			directionAttr := resourceBlock.GetAttribute("direction")
@@ -80,7 +80,7 @@ func init() {
 								)).
 								WithRange(prefixAttr.Range()).
 								WithAttributeAnnotation(prefixAttr).
-								WithSeverity(severity.Warning),
+								WithSeverity(severity.Medium),
 						)
 					}
 				}
@@ -94,7 +94,7 @@ func init() {
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName())).
 								WithRange(prefixesAttr.Range()).
 								WithAttributeAnnotation(prefixesAttr).
-								WithSeverity(severity.Warning),
+								WithSeverity(severity.Medium),
 						)
 					}
 				}

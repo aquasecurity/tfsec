@@ -70,7 +70,7 @@ func init() {
 		Provider:        provider.DigitalOceanProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"digitalocean_spaces_bucket", "digitalocean_spaces_bucket_object"},
-		DefaultSeverity: severity.Warning,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.HasChild("acl") {
@@ -78,7 +78,7 @@ func init() {
 				if aclAttr.Equals("public-read", block.IgnoreCase) {
 					set.Add(result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has a publicly readable acl.", resourceBlock.FullName())).
-						WithSeverity(severity.Warning).
+						WithSeverity(severity.Medium).
 						WithAttributeAnnotation(aclAttr).
 						WithRange(aclAttr.Range()))
 				}

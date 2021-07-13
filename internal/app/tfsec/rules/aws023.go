@@ -65,7 +65,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecr_repository"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("image_scanning_configuration") {
@@ -73,7 +73,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 				return
 			}
@@ -86,7 +86,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			} else if ecrScanStatusAttr.Type() == cty.Bool && ecrScanStatusAttr.Value().False() {
 				set.Add(
@@ -94,7 +94,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
 						WithRange(ecrScanStatusAttr.Range()).
 						WithAttributeAnnotation(ecrScanStatusAttr).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 		},

@@ -56,7 +56,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_security_group_rule"},
-		DefaultSeverity: severity.Warning,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			typeAttr := resourceBlock.GetAttribute("type")
@@ -75,7 +75,7 @@ func init() {
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName())).
 							WithAttributeAnnotation(cidrBlocksAttr).
 							WithRange(cidrBlocksAttr.Range()).
-							WithSeverity(severity.Warning),
+							WithSeverity(severity.Medium),
 					)
 				}
 			}
@@ -87,7 +87,7 @@ func init() {
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName())).
 							WithRange(ipv6CidrBlocksAttr.Range()).
 							WithAttributeAnnotation(ipv6CidrBlocksAttr).
-							WithSeverity(severity.Warning),
+							WithSeverity(severity.Medium),
 					)
 				}
 

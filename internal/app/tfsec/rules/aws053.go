@@ -60,7 +60,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_rds_cluster_instance", "aws_db_instance"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.HasChild("performance_insights_enabled") && resourceBlock.GetAttribute("performance_insights_enabled").IsTrue() {
@@ -69,7 +69,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName())).
 							WithRange(resourceBlock.Range()).
-							WithSeverity(severity.Error),
+							WithSeverity(severity.High),
 					)
 					return
 				}
@@ -80,7 +80,7 @@ func init() {
 							WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName())).
 							WithRange(keyAttr.Range()).
 							WithAttributeAnnotation(keyAttr).
-							WithSeverity(severity.Error),
+							WithSeverity(severity.High),
 					)
 				}
 			}

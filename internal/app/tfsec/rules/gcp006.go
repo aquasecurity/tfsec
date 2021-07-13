@@ -64,7 +64,7 @@ func init() {
 		Provider:        provider.GCPProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_container_cluster", "google_container_node_pool"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("node_config") {
@@ -88,7 +88,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with node metadata exposed. node_metadata set to EXPOSE or UNSPECIFIED disables metadata concealment. ", resourceBlock.FullName())).
 						WithRange(nodeMetadata.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 

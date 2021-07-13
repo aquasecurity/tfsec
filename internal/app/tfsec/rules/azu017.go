@@ -96,7 +96,7 @@ func init() {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_network_security_group", "azurerm_network_security_rule"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			var securityRules block.Blocks
@@ -117,7 +117,7 @@ func init() {
 								result.New(resourceBlock).
 									WithDescription(fmt.Sprintf("Resource '%s' has a .", resourceBlock.FullName())).
 									WithRange(resourceBlock.Range()).
-									WithSeverity(severity.Error),
+									WithSeverity(severity.High),
 							)
 						}
 					}

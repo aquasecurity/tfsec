@@ -53,13 +53,13 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_default_vpc"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			set.Add(
 				result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' should not exist", resourceBlock.FullName())).
 					WithRange(resourceBlock.Range()).
-					WithSeverity(severity.Error),
+					WithSeverity(severity.High),
 			)
 		},
 	})

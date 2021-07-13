@@ -1,4 +1,4 @@
 ---
 severity_overrides:
-  CUS002: ERROR
-  AWS025: INFO
+  CUS002: HIGH
+  AWS025: LOW

@@ -98,7 +98,7 @@ func init() {
 			"google_storage_bucket_iam_member",
 			"google_iam_policy",
 		},
-		DefaultSeverity: severity.Warning,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			var members []cty.Value
@@ -119,7 +119,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock.FullName())).
 							WithRange(attribute.Range()).
-							WithSeverity(severity.Warning),
+							WithSeverity(severity.Medium),
 					)
 				}
 			}

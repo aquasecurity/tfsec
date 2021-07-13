@@ -75,7 +75,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_workspaces_workspace"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("root_volume_encryption_enabled") {
@@ -83,7 +83,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have root volume encryption enables", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			} else {
 				attr := resourceBlock.GetAttribute("root_volume_encryption_enabled")
@@ -92,7 +92,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' has the root volume encyption set to false", resourceBlock.FullName())).
 						WithRange(attr.Range()).
 						WithAttributeAnnotation(attr).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 					)
 				}
 			}
@@ -101,7 +101,7 @@ func init() {
 				set.Add(result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' should have user volume encryption enables", resourceBlock.FullName())).
 					WithRange(resourceBlock.Range()).
-					WithSeverity(severity.Error),
+					WithSeverity(severity.High),
 				)
 				return
 			}
@@ -113,7 +113,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' has the user volume encyption set to false", resourceBlock.FullName())).
 						WithRange(attr.Range()).
 						WithAttributeAnnotation(attr).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			}
 

@@ -29,7 +29,7 @@ func init() {
       "requiredLabels": [
         "aws_vpc"
       ],
-      "severity": "ERROR",
+      "severity": "HIGH",
       "matchSpec": {
         "action": "requiresPresence",
 		"name": "aws_flow_log"

@@ -57,7 +57,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_kinesis_stream"},
-		DefaultSeverity: severity.Error,
+		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			encryptionTypeAttr := resourceBlock.GetAttribute("encryption_type")
@@ -66,7 +66,7 @@ func init() {
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName())).
 						WithRange(resourceBlock.Range()).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			} else if encryptionTypeAttr.Type() == cty.String && strings.ToUpper(encryptionTypeAttr.Value().AsString()) != "KMS" {
 				set.Add(
@@ -74,7 +74,7 @@ func init() {
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName())).
 						WithRange(encryptionTypeAttr.Range()).
 						WithAttributeAnnotation(encryptionTypeAttr).
-						WithSeverity(severity.Error),
+						WithSeverity(severity.High),
 				)
 			} else {
 				keyIDAttr := resourceBlock.GetAttribute("kms_key_id")
@@ -83,7 +83,7 @@ func init() {
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a Kinesis Stream encrypted with the default Kinesis key.", resourceBlock.FullName())).
 							WithRange(resourceBlock.Range()).
-							WithSeverity(severity.Warning),
+							WithSeverity(severity.Medium),
 					)
 				}
 			}

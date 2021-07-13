@@ -57,7 +57,7 @@ func init() {
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_s3_bucket"},
-		DefaultSeverity: severity.Warning,
+		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if attr := resourceBlock.GetAttribute("acl"); attr != nil {
 				if attr.IsAny("public-read", "public-read-write", "website") {
@@ -66,14 +66,14 @@ func init() {
 							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows public access.", resourceBlock.FullName())).
 							WithAttributeAnnotation(attr).
 							WithRange(attr.Range()).
-							WithSeverity(severity.Warning),
+							WithSeverity(severity.Medium),
 					)
 				} else if attr.Equals("authenticated-read") {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName())).
 							WithRange(attr.Range()).
-							WithSeverity(severity.Warning),
+							WithSeverity(severity.Medium),
 					)
 				}
 			}
