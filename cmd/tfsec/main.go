@@ -52,6 +52,7 @@ var ignoreInfo = false
 var allDirs = false
 var runStatistics bool
 var ignoreHCLErrors bool
+var stopOnCheckError bool
 
 func init() {
 	rootCmd.Flags().BoolVar(&ignoreHCLErrors, "ignore-hcl-errors", ignoreHCLErrors, "Stop and report an error if an HCL parse error is encountered")
@@ -77,6 +78,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&runStatistics, "run-statistics", runStatistics, "View statistics table of current findings.")
 	rootCmd.Flags().BoolVar(&ignoreWarnings, "ignore-warnings", ignoreWarnings, "Don't show warnings in the output.")
 	rootCmd.Flags().BoolVar(&ignoreInfo, "ignore-info", ignoreWarnings, "Don't show info results in the output.")
+	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
 }
 
 func main() {
@@ -340,6 +342,8 @@ func getScannerOptions() []scanner.Option {
 	if includeIgnored {
 		options = append(options, scanner.OptionIncludeIgnored())
 	}
+
+	options = append(options, scanner.OptionIgnoreCheckErrors(!stopOnCheckError))
 
 	var allExcludedRuleIDs []string
 	for _, exclude := range strings.Split(excludedRuleIDs, ",") {

@@ -19,3 +19,9 @@ func OptionExcludeRules(ruleIDs []string) func(s *Scanner) {
 		s.excludedRuleIDs = ruleIDs
 	}
 }
+
+func OptionIgnoreCheckErrors(ignore bool) func(s *Scanner) {
+	return func(s *Scanner) {
+		s.ignoreCheckErrors = ignore
+	}
+}

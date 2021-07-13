@@ -64,12 +64,12 @@ resource "problem" "x" {
 
 func scanHCL(source string, t *testing.T) []result.Result {
 	blocks := createBlocksFromSource(source, ".tf", t)
-	return scanner.New(scanner.OptionExcludeRules(excludedChecksList)).Scan(blocks)
+	return scanner.New(scanner.OptionExcludeRules(excludedChecksList), scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
 }
 
 func scanJSON(source string, t *testing.T) []result.Result {
 	blocks := createBlocksFromSource(source, ".tf.json", t)
-	return scanner.New(scanner.OptionExcludeRules(excludedChecksList)).Scan(blocks)
+	return scanner.New(scanner.OptionExcludeRules(excludedChecksList), scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
 }
 
 func createBlocksFromSource(source string, ext string, t *testing.T) []block.Block {

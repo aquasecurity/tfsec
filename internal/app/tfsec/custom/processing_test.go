@@ -328,7 +328,7 @@ func scanTerraform(t *testing.T, mainTf string) []result.Result {
 	blocks, err := parser.New(dirName, parser.OptionStopOnHCLError()).ParseDirectory()
 	assert.NoError(t, err)
 
-	return scanner.New().Scan(blocks)
+	return scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
 }
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.
