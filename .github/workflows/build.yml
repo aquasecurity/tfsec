@@ -27,7 +27,7 @@ jobs:
       run: make quality
 
     - name: Spelling
-      uses: codespell-project/actions-codespell
+      uses: codespell-project/actions-codespell@master
       with:
         check_filenames: true 
         skip: vendor,funcs
