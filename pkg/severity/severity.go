@@ -1,5 +1,9 @@
 package severity
 
+import (
+	"strings"
+)
+
 type Severity string
 
 const (
@@ -25,4 +29,20 @@ func (s *Severity) IsValid() bool {
 
 func (s *Severity) Valid() []Severity {
 	return ValidSeverity
+}
+
+func StringToSeverity(sev string) Severity {
+	s := strings.ToUpper(sev)
+	switch s {
+	case "CRITICAL", "HIGH", "MEDIUM", "LOW":
+		return Severity(s)
+	case "ERROR":
+		return High
+	case "WARNING":
+		return Medium
+	case "INFO":
+		return Low
+	default:
+		return None
+	}
 }
