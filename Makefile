@@ -64,4 +64,4 @@ clone-image:
 
 .PHONY: end-to-end
 end-to-end:
-	go run ./cmd/tfsec -p --force-all-dirs ./example
+	go run ./cmd/tfsec -s -p --force-all-dirs ./example
