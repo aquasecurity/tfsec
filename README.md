@@ -206,7 +206,7 @@ We always welcome contributions; big or small, it can be documentation updates, 
 
 ### Some People who have contributed
 
-<a href = "https://github.com/Tanu-N-Prabhu/Python/graphs/contributors">
+<a href = "https://github.com/aquasecurity/tfsec/graphs/contributors">
   <img src = "https://contrib.rocks/image?repo=aquasecurity/tfsec"/>
 </a>
 
