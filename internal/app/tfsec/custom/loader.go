@@ -4,13 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/aquasecurity/tfsec/pkg/severity"
+	"gopkg.in/yaml.v2"
 )
 
 type ChecksFile struct {
@@ -78,6 +80,9 @@ func loadCheckFile(checkFilePath string) (ChecksFile, error) {
 		return checks, fmt.Errorf("couldn't process the file %s", checkFilePath)
 	}
 
+	for _, check := range checks.Checks {
+		check.Severity = severity.StringToSeverity(string(check.Severity))
+	}
 	return checks, nil
 }
 

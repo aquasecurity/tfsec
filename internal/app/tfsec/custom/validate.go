@@ -12,7 +12,7 @@ import (
 
 func Validate(checkFilePath string) error {
 	if _, err := os.Stat(checkFilePath); os.IsNotExist(err) {
-		return errors.New(fmt.Sprintf("check file could not be found at path %s", checkFilePath))
+		return fmt.Errorf("check file could not be found at path %s", checkFilePath)
 	}
 
 	checkFile, err := loadCheckFile(checkFilePath)
@@ -30,7 +30,7 @@ func Validate(checkFilePath string) error {
 					return errors.New("check json is not valid")
 				}
 				errorStrings := getErrorStrings(errs)
-				return errors.New(fmt.Sprintf("check failed with the following errors;\n\n - %s\n\n%s\n", errorStrings, jsonContent))
+				return fmt.Errorf("check failed with the following errors;\n\n - %s\n\n%s\n", errorStrings, jsonContent)
 			}
 			return nil
 		}(check); err != nil {
@@ -60,7 +60,7 @@ func validate(check *Check) []error {
 		checkErrors = append(checkErrors, errors.New("check.Description requires a value"))
 	}
 	if !check.Severity.IsValid() {
-		checkErrors = append(checkErrors, errors.New(fmt.Sprintf("check.Severity[%s] is not a recognised option. Should be %s", check.Severity, severity.ValidSeverity)))
+		checkErrors = append(checkErrors, fmt.Errorf("check.Severity[%s] is not a recognised option. Should be %s", check.Severity, severity.ValidSeverity))
 	}
 	if len(check.RequiredTypes) == 0 {
 		checkErrors = append(checkErrors, errors.New("check.RequiredTypes requires a value"))
@@ -73,7 +73,7 @@ func validate(check *Check) []error {
 
 func validateMatchSpec(spec *MatchSpec, check *Check, checkErrors []error) []error {
 	if !spec.Action.isValid() {
-		checkErrors = append(checkErrors, errors.New(fmt.Sprintf("matchSpec.Action[%s] is not a recognised option. Should be %s", spec.Action, ValidCheckActions)))
+		checkErrors = append(checkErrors, fmt.Errorf("matchSpec.Action[%s] is not a recognised option. Should be %s", spec.Action, ValidCheckActions))
 	}
 	// if the check is one of `inModule`,`or`,`and`, `not`, no name is required
 	if len(spec.Name) == 0 && spec.Action != "inModule" && spec.Action != "or" && spec.Action != "and" && spec.Action != "not" {
@@ -83,14 +83,14 @@ func validateMatchSpec(spec *MatchSpec, check *Check, checkErrors []error) []err
 	// if the check is one of `or`, `and`, then all PredicateMatchSpec's must also be valid
 	if spec.Action == "or" || spec.Action == "and" {
 		for _, predicateMatchSpec := range spec.PredicateMatchSpec {
-			checkErrors = append(validateMatchSpec(&predicateMatchSpec, check, checkErrors))
+			checkErrors = append(checkErrors, validateMatchSpec(&predicateMatchSpec, check, checkErrors)...)
 		}
 	}
 
 	// `not` specification can only have a single predicateMatchSpec associated, which must be valid
 	if spec.Action == "not" {
 		if len(spec.PredicateMatchSpec) == 1 {
-			checkErrors = append(validateMatchSpec(&spec.PredicateMatchSpec[0], check, checkErrors))
+			checkErrors = append(checkErrors, validateMatchSpec(&spec.PredicateMatchSpec[0], check, checkErrors)...)
 		} else {
 			checkErrors = append(checkErrors, errors.New("`not` action must have a single predicate attached"))
 		}

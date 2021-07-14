@@ -20,3 +20,21 @@ checks:
     severity: HIGH
     requiredLabels:
     - aws_lb
+  - code: TAG_Environment
+    description: Custom check to ensure the Environment tag is applied
+    errorMessage: The required Environment tag was missing
+    matchSpec:
+      action: contains
+      name: tags
+      value:
+        Environment:
+          action: isAny
+          value:
+            - production
+            - test
+            - development
+    requiredTypes:
+    - resource
+    severity: ERROR
+    requiredLabels:
+    - aws_instance

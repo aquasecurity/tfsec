@@ -128,10 +128,20 @@ func (attr *HCLAttribute) listContains(val cty.Value, stringToLookFor string, ig
 }
 
 func (attr *HCLAttribute) mapContains(checkValue interface{}, val cty.Value) bool {
+	valueMap := val.AsValueMap()
 	switch t := checkValue.(type) {
 	case map[interface{}]interface{}:
 		for k, v := range t {
-			valueMap := val.AsValueMap()
+			for key, value := range valueMap {
+				rawValue := getRawValue(value)
+				if key == k && evaluate(v, rawValue) {
+					return true
+				}
+			}
+		}
+		return false
+	case map[string]interface{}:
+		for k, v := range t {
 			for key, value := range valueMap {
 				rawValue := getRawValue(value)
 				if key == k && evaluate(v, rawValue) {
@@ -141,7 +151,6 @@ func (attr *HCLAttribute) mapContains(checkValue interface{}, val cty.Value) boo
 		}
 		return false
 	default:
-		valueMap := val.AsValueMap()
 		for key := range valueMap {
 			if key == checkValue {
 				return true

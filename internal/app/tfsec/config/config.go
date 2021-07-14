@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/pkg/severity"
 	"gopkg.in/yaml.v2"
 )
 
@@ -52,18 +53,7 @@ func LoadConfig(configFilePath string) (*Config, error) {
 func rewriteSeverityOverrides(config *Config) error {
 
 	for k, s := range config.SeverityOverrides {
-		switch strings.ToUpper(s) {
-		case "CRITICAL", "HIGH", "MEDIUM", "LOW":
-			continue
-		case "ERROR":
-			config.SeverityOverrides[k] = "HIGH"
-		case "WARNING":
-			config.SeverityOverrides[k] = "MEDIUM"
-		case "INFO":
-			config.SeverityOverrides[k] = "LOW"
-		default:
-			return fmt.Errorf("could not rewrite the severity code [%s]", s)
-		}
+		config.SeverityOverrides[k] = string(severity.StringToSeverity(s))
 	}
 
 	return nil
