@@ -209,7 +209,7 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 	var filtered block.Blocks
 	for _, block := range blocks {
 		countAttr := block.GetAttribute("count")
-		if countAttr == nil {
+		if countAttr == nil || (block.Type() != "resource" && block.Type() != "module") {
 			filtered = append(filtered, block)
 			continue
 		}
