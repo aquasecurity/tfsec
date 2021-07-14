@@ -61,3 +61,7 @@ fix-typos:
 .PHONY: clone-image
 clone-image:
 	./scripts/clone-images.sh
+
+.PHONY: end-to-end
+end-to-end:
+	go run ./cmd/tfsec -s -p --force-all-dirs ./example
