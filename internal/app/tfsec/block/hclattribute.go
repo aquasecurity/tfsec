@@ -307,6 +307,10 @@ func (attr *HCLAttribute) IsTrue() bool {
 		val := attr.Value().AsString()
 		val = strings.Trim(val, "\"")
 		return strings.ToLower(val) == "true"
+	case cty.Number:
+		val := attr.Value().AsBigFloat()
+		f, _ := val.Float64()
+		return f > 0
 	}
 	return false
 }
