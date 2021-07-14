@@ -199,3 +199,15 @@ For more information about adding security alerts, check
 If you need to support versions of terraform which use HCL v1
 (terraform <0.12), you can use `v0.1.3` of tfsec, though support is
 very limited and has fewer checks.
+
+## Contributing
+
+We always welcome contributions; big or small, it can be documentation updates, adding new checks or something bigger. Please check the [Contributing Guide](CONTRIBUTING.md) for details on how to help out.
+
+### Some People who have contributed
+
+<a href = "https://github.com/Tanu-N-Prabhu/Python/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=aquasecurity/tfsec"/>
+</a>
+
+Made with [contributors-img](https://contrib.rocks).
