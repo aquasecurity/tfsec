@@ -70,6 +70,17 @@ func Test_ResourcesWithCount(t *testing.T) {
 			mustIncludeResultCode: "AWS082",
 		},
 		{
+			name: "count is 1 from variable without default",
+			source: `
+			variable "count" {
+			}
+			resource "aws_default_vpc" "this" {
+				count =  var.count
+			}
+`,
+			mustIncludeResultCode: "AWS082",
+		},
+		{
 			name: "count is 0 from conditional",
 			source: `
 			variable "enabled" {
