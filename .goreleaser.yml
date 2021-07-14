@@ -18,21 +18,6 @@ builds:
       - darwin
     goarch:
       - amd64
-  -
-    id: tfsec-checkgen
-    main: ./cmd/tfsec-checkgen
-    binary: tfsec-checkgen
-    ldflags:
-    - "-X github.com/aquasecurity/tfsec/version.Version={{.Version}} -s -w -extldflags '-fno-PIC -static'"
-    env:
-      - CGO_ENABLED=0
-      - GOFLAGS=-mod=vendor
-    goos:
-      - linux
-      - windows
-      - darwin
-    goarch:
-      - amd64
 
 checksum:
   name_template: '{{ .ProjectName }}_checksums.txt'
@@ -48,7 +33,7 @@ changelog:
       - '^test:'
 
 signs:
-  - artifacts: all
+  - artifacts: binary
     signature: "${artifact}.D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE.sig"
 
 archives:
