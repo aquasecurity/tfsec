@@ -48,7 +48,7 @@ func NewEvaluator(
 	}
 
 	for _, b := range blocks {
-		b.AttachEvalContext(ctx)
+		b.AttachEvalContext(ctx.NewChild())
 	}
 
 	return &Evaluator{
@@ -174,7 +174,61 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 		allBlocks = mergeBlocks(allBlocks, module.Blocks)
 	}
 
+	// expand out resources and modules via count
+	allBlocks = e.expandBlockCounts(allBlocks)
+
+	for i := 0; i < maxContextIterations; i++ {
+
+		e.evaluateStep(i)
+
+		// if ctx matches the last evaluation, we can bail, nothing left to resolve
+		if reflect.DeepEqual(lastContext.Variables, e.ctx.Variables) {
+			break
+		}
+
+		if len(e.ctx.Variables) != len(lastContext.Variables) {
+			lastContext.Variables = make(map[string]cty.Value, len(e.ctx.Variables))
+		}
+		for k, v := range e.ctx.Variables {
+			lastContext.Variables[k] = v
+		}
+	}
+
 	return allBlocks, nil
+}
+
+/*
+Input:
+resource.aws_s3_bucket.blah -> count=3
+Output:
+resource.aws_s3_bucket.blah[0] -> count.index=0
+resource.aws_s3_bucket.blah[1] -> count.index=1
+resource.aws_s3_bucket.blah[2] -> count.index=2
+*/
+func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
+	var filtered block.Blocks
+	for _, block := range blocks {
+		countAttr := block.GetAttribute("count")
+		if countAttr == nil {
+			filtered = append(filtered, block)
+			continue
+		}
+
+		count := 1
+		if !countAttr.Value().IsNull() && countAttr.Value().IsKnown() {
+			if countAttr.Value().Type() == cty.Number {
+				f, _ := countAttr.Value().AsBigFloat().Float64()
+				count = int(f)
+			}
+		}
+
+		for i := 0; i < count; i++ {
+			clone := block.Clone(i)
+			filtered = append(filtered, clone)
+		}
+	}
+	return filtered
+
 }
 
 func mergeBlocks(allBlocks block.Blocks, newBlocks block.Blocks) block.Blocks {
