@@ -48,6 +48,23 @@ func CheckRule(r *Rule, block block.Block, ctx *hclcontext.Context, ignoreErrors
 	return resultSet
 }
 
+func isResourceCountZero(block block.Block) bool {
+	if block.Type() == "resource" {
+		countAttr := block.GetAttribute("count")
+		if countAttr != nil {
+			if !countAttr.Value().IsNull() && countAttr.Value().IsKnown() {
+				if countAttr.Value().Type() == cty.Number {
+					if f, _ := countAttr.Value().AsBigFloat().Float64(); f == 0 {
+						return true
+					}
+				}
+			}
+		}
+	}
+	return false
+
+}
+
 // IsRuleRequiredForBlock returns true if the Rule should be applied to the given HCL block
 func IsRuleRequiredForBlock(rule *Rule, block block.Block) bool {
 
@@ -55,17 +72,8 @@ func IsRuleRequiredForBlock(rule *Rule, block block.Block) bool {
 		return false
 	}
 
-	if block.Type() == "resource" {
-		countAttr := block.GetAttribute("count")
-		if countAttr != nil {
-			if !countAttr.Value().IsNull() && countAttr.Value().IsKnown() {
-				if countAttr.Value().Type() == cty.Number {
-					if f, _ := countAttr.Value().AsBigFloat().Float64(); f == 0 {
-						return false
-					}
-				}
-			}
-		}
+	if isResourceCountZero(block) {
+		return false
 	}
 
 	if len(rule.RequiredTypes) > 0 {

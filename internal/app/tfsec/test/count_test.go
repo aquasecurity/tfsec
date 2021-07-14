@@ -19,10 +19,19 @@ func Test_ResourcesWithCount(t *testing.T) {
 			mustIncludeResultCode: "AWS082",
 		},
 		{
-			name: "count is 1",
+			name: "count is literal 1",
 			source: `
 			resource "aws_default_vpc" "this" {
 				count = 1
+			}
+`,
+			mustIncludeResultCode: "AWS082",
+		},
+		{
+			name: "count is literal 99",
+			source: `
+			resource "aws_default_vpc" "this" {
+				count = 99
 			}
 `,
 			mustIncludeResultCode: "AWS082",
@@ -35,6 +44,54 @@ func Test_ResourcesWithCount(t *testing.T) {
 			}
 `,
 			mustExcludeResultCode: "AWS082",
+		},
+		{
+			name: "count is 0 from variable",
+			source: `
+			variable "count" {
+				default = 0
+			}
+			resource "aws_default_vpc" "this" {
+				count = var.count
+			}
+`,
+			mustExcludeResultCode: "AWS082",
+		},
+		{
+			name: "count is 1 from variable",
+			source: `
+			variable "count" {
+				default = 1
+			}
+			resource "aws_default_vpc" "this" {
+				count =  var.count
+			}
+`,
+			mustIncludeResultCode: "AWS082",
+		},
+		{
+			name: "count is 0 from conditional",
+			source: `
+			variable "enabled" {
+				default = false
+			}
+			resource "aws_default_vpc" "this" {
+				count = var.enabled ? 1 : 0
+			}
+`,
+			mustExcludeResultCode: "AWS082",
+		},
+		{
+			name: "count is 1 from conditional",
+			source: `
+			variable "enabled" {
+				default = true
+			}
+			resource "aws_default_vpc" "this" {
+				count =  var.enabled ? 1 : 0
+			}
+`,
+			mustIncludeResultCode: "AWS082",
 		},
 	}
 
