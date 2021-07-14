@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/gocty"
 )
 
 type HCLBlock struct {
@@ -22,6 +23,29 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) B
 		hclBlock:    hclBlock,
 		moduleBlock: moduleBlock,
 	}
+}
+
+func (block *HCLBlock) Clone(index int) Block {
+	childCtx := block.evalContext.Parent().NewChild()
+	if childCtx.Variables == nil {
+		childCtx.Variables = make(map[string]cty.Value)
+	}
+	cloneHCL := *block.hclBlock
+	clone := NewHCLBlock(&cloneHCL, childCtx, block.moduleBlock).(*HCLBlock)
+	if len(clone.hclBlock.Labels) > 0 {
+		position := len(clone.hclBlock.Labels) - 1
+		labels := make([]string, len(clone.hclBlock.Labels))
+		for i := 0; i < len(labels); i++ {
+			labels[i] = clone.hclBlock.Labels[i]
+		}
+		labels[position] = fmt.Sprintf("%s[%d]", clone.hclBlock.Labels[position], index)
+		clone.hclBlock.Labels = labels
+	}
+	indexVal, _ := gocty.ToCtyValue(index, cty.Number)
+	clone.evalContext.Variables["count"] = cty.ObjectVal(map[string]cty.Value{
+		"index": indexVal,
+	})
+	return clone
 }
 
 func (block *HCLBlock) AttachEvalContext(ctx *hcl.EvalContext) {

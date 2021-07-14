@@ -48,7 +48,11 @@ func (r *Result) Passed() bool {
 }
 
 func (r *Result) HashCode() string {
-	return fmt.Sprintf("%s:%s", r.Range, r.RuleID)
+	var blockName string
+	if r.topLevelBlock != nil {
+		blockName = r.topLevelBlock.FullName()
+	}
+	return fmt.Sprintf("%s:%s:%s", blockName, r.Range, r.RuleID)
 }
 
 func (r *Result) WithRuleID(id string) *Result {
@@ -143,6 +147,9 @@ func (r *Result) WithAttributeAnnotation(attr block.Attribute) *Result {
 			}
 			typeStr = "list"
 			raw = fmt.Sprintf("[%s]", strings.Join(strValues, ", "))
+		default:
+			typeStr = "unknown"
+			raw = "???"
 		}
 	}
 

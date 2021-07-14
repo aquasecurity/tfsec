@@ -25,6 +25,7 @@ type Block interface {
 	FullName() string
 	TypeLabel() string
 	NameLabel() string
+	Clone(index int) Block
 	HasChild(childElement string) bool
 	MissingChild(childElement string) bool
 	InModule() bool

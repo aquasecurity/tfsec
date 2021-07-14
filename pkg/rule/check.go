@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 
@@ -48,31 +47,10 @@ func CheckRule(r *Rule, block block.Block, ctx *hclcontext.Context, ignoreErrors
 	return resultSet
 }
 
-func isResourceCountZero(block block.Block) bool {
-	if block.Type() == "resource" {
-		countAttr := block.GetAttribute("count")
-		if countAttr != nil {
-			if !countAttr.Value().IsNull() && countAttr.Value().IsKnown() {
-				if countAttr.Value().Type() == cty.Number {
-					if f, _ := countAttr.Value().AsBigFloat().Float64(); f == 0 {
-						return true
-					}
-				}
-			}
-		}
-	}
-	return false
-
-}
-
 // IsRuleRequiredForBlock returns true if the Rule should be applied to the given HCL block
 func IsRuleRequiredForBlock(rule *Rule, block block.Block) bool {
 
 	if rule.CheckFunc == nil {
-		return false
-	}
-
-	if isResourceCountZero(block) {
 		return false
 	}
 

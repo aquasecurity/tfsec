@@ -76,8 +76,8 @@ func init() {
 	rootCmd.Flags().BoolVar(&includeIgnored, "include-ignored", includeIgnored, "Include ignored checks in the result output")
 	rootCmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
 	rootCmd.Flags().BoolVar(&runStatistics, "run-statistics", runStatistics, "View statistics table of current findings.")
-	rootCmd.Flags().BoolVar(&ignoreWarnings, "ignore-warnings", ignoreWarnings, "Don't show warnings in the output.")
-	rootCmd.Flags().BoolVar(&ignoreInfo, "ignore-info", ignoreWarnings, "Don't show info results in the output.")
+	rootCmd.Flags().BoolVar(&ignoreWarnings, "ignore-warnings", ignoreWarnings, "[DEPRECATED] Don't show warnings in the output.")
+	rootCmd.Flags().BoolVar(&ignoreInfo, "ignore-info", ignoreWarnings, "[DEPRECATED] Don't show info results in the output.")
 	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
 }
 
@@ -122,6 +122,10 @@ var rootCmd = &cobra.Command{
 		var err error
 		var filterResultsList []string
 		var outputFile *os.File
+
+		if ignoreWarnings || ignoreInfo {
+			fmt.Fprint(os.Stderr, "WARNING: The --ignore-info and --ignore-warnings flags are deprecated and will soon be removed.\n")
+		}
 
 		if len(args) == 1 {
 			dir, err = filepath.Abs(args[0])
