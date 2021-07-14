@@ -37,15 +37,15 @@ func (attr *HCLAttribute) Type() cty.Type {
 }
 
 func (attr *HCLAttribute) IsString() bool {
-	return attr.Value().Type() == cty.String
+	return !attr.Value().IsNull() && attr.Value().IsKnown() && attr.Value().Type() == cty.String
 }
 
 func (attr *HCLAttribute) IsNumber() bool {
-	return attr.Value().Type() == cty.Number
+	return !attr.Value().IsNull() && attr.Value().IsKnown() && attr.Value().Type() == cty.Number
 }
 
 func (attr *HCLAttribute) IsBool() bool {
-	return attr.Value().Type() == cty.Bool
+	return !attr.Value().IsNull() && attr.Value().IsKnown() && attr.Value().Type() == cty.Bool
 }
 
 func (attr *HCLAttribute) Value() (ctyVal cty.Value) {
