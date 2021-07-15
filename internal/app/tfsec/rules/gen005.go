@@ -62,7 +62,6 @@ func init() {
 		},
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"resource", "provider", "module", "locals", "variable"},
-		RequiredLabels:  []string{"*"},
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
