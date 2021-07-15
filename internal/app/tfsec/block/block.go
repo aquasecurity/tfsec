@@ -23,9 +23,12 @@ type Block interface {
 	Reference() *Reference
 	LocalName() string
 	FullName() string
+	UniqueName() string
 	TypeLabel() string
 	NameLabel() string
 	Clone(index int) Block
+	MarkCountExpanded()
+	IsCountExpanded() bool
 	HasChild(childElement string) bool
 	MissingChild(childElement string) bool
 	InModule() bool

@@ -206,14 +206,14 @@ resource.aws_s3_bucket.blah[1] -> count.index=1
 resource.aws_s3_bucket.blah[2] -> count.index=2
 */
 func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
+
 	var filtered block.Blocks
 	for _, block := range blocks {
 		countAttr := block.GetAttribute("count")
-		if countAttr == nil || (block.Type() != "resource" && block.Type() != "module") {
+		if countAttr == nil || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
 			filtered = append(filtered, block)
 			continue
 		}
-
 		count := 1
 		if !countAttr.Value().IsNull() && countAttr.Value().IsKnown() {
 			if countAttr.Value().Type() == cty.Number {
@@ -224,6 +224,7 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 
 		for i := 0; i < count; i++ {
 			clone := block.Clone(i)
+			clone.MarkCountExpanded()
 			filtered = append(filtered, clone)
 		}
 	}
