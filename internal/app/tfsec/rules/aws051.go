@@ -20,7 +20,7 @@ import (
 const AWSRDSAuroraClusterEncryptionDisabled = "AWS051"
 const AWSRDSAuroraClusterEncryptionDisabledDescription = "There is no encryption specified or encryption is disabled on the RDS Cluster."
 const AWSRDSAuroraClusterEncryptionDisabledImpact = "Data can be read from the RDS cluster if it is compromised"
-const AWSRDSAuroraClusterEncryptionDisabledResolution = "Enable encryption for RDS clusters and instances"
+const AWSRDSAuroraClusterEncryptionDisabledResolution = "Enable encryption for RDS clusters"
 const AWSRDSAuroraClusterEncryptionDisabledExplanation = `
 Encryption should be enabled for an RDS Aurora cluster. 
 
@@ -40,7 +40,9 @@ resource "aws_rds_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSRDSAuroraClusterEncryptionDisabled,
+		LegacyID:  AWSRDSAuroraClusterEncryptionDisabled,
+		Service:   "rds",
+		ShortCode: "encrypt-cluster-storage-data",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSRDSAuroraClusterEncryptionDisabledDescription,
 			Impact:      AWSRDSAuroraClusterEncryptionDisabledImpact,

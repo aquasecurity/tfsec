@@ -51,7 +51,9 @@ resource "aws_elasticache_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSRedisClusterBackupRetention,
+		LegacyID:  AWSRedisClusterBackupRetention,
+		Service:   "elasticache",
+		ShortCode: "enable-backup-retention",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSRedisClusterBackupRetentionDescription,
 			Explanation: AWSRedisClusterBackupRetentionExplanation,

@@ -47,7 +47,9 @@ resource "aws_msk_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSUnencryptedMSKBroker,
+		LegacyID:  AWSUnencryptedMSKBroker,
+		Service:   "msk",
+		ShortCode: "enable-in-transit-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSUnencryptedMSKBrokerDescription,
 			Impact:      AWSUnencryptedMSKBrokerImpact,

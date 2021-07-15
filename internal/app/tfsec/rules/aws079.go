@@ -44,7 +44,9 @@ resource "aws_instance" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSInstanceMetadataChec,
+		LegacyID:  AWSInstanceMetadataChec,
+		Service:   "ec2",
+		ShortCode: "enforce-http-token-imds",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSInstanceMetadataChecDescription,
 			Impact:      AWSInstanceMetadataChecImpact,

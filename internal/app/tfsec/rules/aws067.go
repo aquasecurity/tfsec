@@ -61,7 +61,9 @@ resource "aws_eks_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSEKSHasControlPlaneLoggingEnabled,
+		LegacyID:  AWSEKSHasControlPlaneLoggingEnabled,
+		Service:   "eks",
+		ShortCode: "enable-control-plane-logging",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSEKSHasControlPlaneLoggingEnabledDescription,
 			Impact:      AWSEKSHasControlPlaneLoggingEnabledImpact,

@@ -42,7 +42,9 @@ resource "aws_secretsmanager_secret" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSSecretsManagerSecretEncryption,
+		LegacyID:  AWSSecretsManagerSecretEncryption,
+		Service:   "ssm",
+		ShortCode: "secret-use-customer-key",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSSecretsManagerSecretEncryptionDescription,
 			Explanation: AWSSecretsManagerSecretEncryptionExplanation,

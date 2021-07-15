@@ -36,7 +36,9 @@ resource "google_compute_disk" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GCPRawEncryptionKeySpecifiedForComputeDisk,
+		LegacyID:  GCPRawEncryptionKeySpecifiedForComputeDisk,
+		Service:   "compute",
+		ShortCode: "disk-encryption-required",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GCPRawEncryptionKeySpecifiedForComputeDiskDescription,
 			Explanation: GCPRawEncryptionKeySpecifiedForComputeDiskExplanation,

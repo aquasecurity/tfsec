@@ -43,7 +43,9 @@ resource "aws_cloudfront_distribution" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSCloudfrontDistributionAccessLoggingEnabled,
+		LegacyID:  AWSCloudfrontDistributionAccessLoggingEnabled,
+		Service:   "cloudfront",
+		ShortCode: "enable-logging",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSCloudfrontDistributionAccessLoggingEnabledDescription,
 			Impact:      AWSCloudfrontDistributionAccessLoggingEnabledImpact,

@@ -55,7 +55,9 @@ resource "google_storage_bucket_iam_member" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GoogleUserIAMGrant,
+		LegacyID:  GoogleUserIAMGrant,
+		Service:   "iam",
+		ShortCode: "no-user-granted-permissions",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GoogleUserIAMGrantDescription,
 			Impact:      GoogleUserIAMGrantImpact,

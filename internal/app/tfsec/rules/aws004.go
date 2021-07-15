@@ -40,7 +40,9 @@ resource "aws_alb_listener" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSPlainHTTP,
+		LegacyID:  AWSPlainHTTP,
+		Service:   "elbv2",
+		ShortCode: "http-not-used",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSPlainHTTPDescription,
 			Explanation: AWSPlainHTTPExplanation,

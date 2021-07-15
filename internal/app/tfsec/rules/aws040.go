@@ -45,7 +45,9 @@ resource "aws_iam_account_password_policy" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSIAMPasswordRequiresSymbol,
+		LegacyID:  AWSIAMPasswordRequiresSymbol,
+		Service:   "iam",
+		ShortCode: "require-symbols-in-passwords",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSIAMPasswordRequiresSymbolDescription,
 			Impact:      AWSIAMPasswordRequiresSymbolImpact,

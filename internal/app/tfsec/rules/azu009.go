@@ -42,7 +42,9 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUAKSAzureMonitor,
+		LegacyID:  AZUAKSAzureMonitor,
+		Service:   "container",
+		ShortCode: "logging",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUAKSAzureMonitorDescription,
 			Impact:      AZUAKSAzureMonitorImpact,

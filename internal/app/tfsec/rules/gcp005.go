@@ -43,7 +43,9 @@ resource "google_container_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GkeAbacEnabled,
+		LegacyID:  GkeAbacEnabled,
+		Service:   "gke",
+		ShortCode: "use-rbac-permissions",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GkeAbacEnabledDescription,
 			Impact:      GkeAbacEnabledImpact,

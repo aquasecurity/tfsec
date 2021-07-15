@@ -45,7 +45,9 @@ resource "google_container_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GkeEnforcePSP,
+		LegacyID:  GkeEnforcePSP,
+		Service:   "gke",
+		ShortCode: "enforce-pod-security-policy",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GkeEnforcePSPDescription,
 			Impact:      GkeEnforcePSPImpact,

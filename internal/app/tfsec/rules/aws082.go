@@ -37,7 +37,9 @@ const AWSDontUseDefaultAWSVPCGoodExample = `
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSDontUseDefaultAWSVPC,
+		LegacyID:  AWSDontUseDefaultAWSVPC,
+		Service:   "vpc",
+		ShortCode: "no-default-vpc",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSDontUseDefaultAWSVPCDescription,
 			Explanation: AWSDontUseDefaultAWSVPCExplanation,

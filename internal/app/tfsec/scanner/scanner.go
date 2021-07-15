@@ -68,7 +68,7 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 					ruleResults := rule.CheckRule(r, checkBlock, context, scanner.ignoreCheckErrors)
 					if scanner.includePassed && ruleResults.All() == nil {
 						res := result.New(checkBlock).
-							WithRuleID(r.ID).
+							WithRuleID(r.LegacyID).
 							WithDescription(fmt.Sprintf("Resource '%s' passed check: %s", checkBlock.FullName(), r.Documentation.Summary)).
 							WithRange(checkBlock.Range()).
 							WithStatus(result.Passed).

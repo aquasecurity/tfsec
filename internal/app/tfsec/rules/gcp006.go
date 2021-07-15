@@ -48,7 +48,9 @@ resource "google_container_node_pool" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GkeNodeMetadataExposed,
+		LegacyID:  GkeNodeMetadataExposed,
+		Service:   "gke",
+		ShortCode: "node-metadata-security",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GkeNodeMetadataExposedDescription,
 			Impact:      GkeNodeMetadataExposedImpact,

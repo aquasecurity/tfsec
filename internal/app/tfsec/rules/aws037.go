@@ -48,7 +48,9 @@ resource "aws_iam_account_password_policy" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSIAMPasswordReusePrevention,
+		LegacyID:  AWSIAMPasswordReusePrevention,
+		Service:   "iam",
+		ShortCode: "no-password-reuse",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSIAMPasswordReusePreventionDescription,
 			Impact:      AWSIAMPasswordReusePreventionImpact,

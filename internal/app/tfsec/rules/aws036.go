@@ -20,7 +20,7 @@ import (
 const AWSUnencryptedInTransitElasticacheReplicationGroup = "AWS036"
 const AWSUnencryptedInTransitElasticacheReplicationGroupDescription = "Elasticache Replication Group uses unencrypted traffic."
 const AWSUnencryptedInTransitElasticacheReplicationGroupImpact = "In transit data in the Replication Group could be read if intercepted"
-const AWSUnencryptedInTransitElasticacheReplicationGroupResolution = "Enable in transit encryptuon for replication group"
+const AWSUnencryptedInTransitElasticacheReplicationGroupResolution = "Enable in transit encryption for replication group"
 const AWSUnencryptedInTransitElasticacheReplicationGroupExplanation = `
 Traffic flowing between Elasticache replication nodes should be encrypted to ensure sensitive data is kept private.
 `
@@ -43,7 +43,9 @@ resource "aws_elasticache_replication_group" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSUnencryptedInTransitElasticacheReplicationGroup,
+		LegacyID:  AWSUnencryptedInTransitElasticacheReplicationGroup,
+		Service:   "elasticache",
+		ShortCode: "enable-in-transit-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSUnencryptedInTransitElasticacheReplicationGroupDescription,
 			Impact:      AWSUnencryptedInTransitElasticacheReplicationGroupImpact,

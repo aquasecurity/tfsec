@@ -45,7 +45,9 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSBlockPublicPolicyS3,
+		LegacyID:  AWSBlockPublicPolicyS3,
+		Service:   "s3",
+		ShortCode: "block-public-policy",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSBlockPublicPolicyS3Description,
 			Impact:      AWSBlockPublicPolicyS3Impact,

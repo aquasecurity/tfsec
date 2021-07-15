@@ -40,7 +40,9 @@ resource "aws_cloudwatch_log_group" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSCloudWatchLogGroupsCMKEncrypted,
+		LegacyID:  AWSCloudWatchLogGroupsCMKEncrypted,
+		Service:   "cloudwatch",
+		ShortCode: "log-group-customer-key",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSCloudWatchLogGroupsCMKEncryptedDescription,
 			Explanation: AWSCloudWatchLogGroupsCMKEncryptedExplanation,

@@ -47,7 +47,9 @@ resource "digitalocean_spaces_bucket" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: DIGSpacesBucketVersioningEnabled,
+		LegacyID:  DIGSpacesBucketVersioningEnabled,
+		Service:   "spaces",
+		ShortCode: "versioning-enabled",
 		Documentation: rule.RuleDocumentation{
 			Summary:     DIGSpacesBucketVersioningEnabledDescription,
 			Explanation: DIGSpacesBucketVersioningEnabledExplanation,

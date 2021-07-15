@@ -39,7 +39,9 @@ resource "aws_launch_configuration" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSResourceHasPublicIP,
+		LegacyID:  AWSResourceHasPublicIP,
+		Service:   "autoscaling",
+		ShortCode: "no-public-ip",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSResourceHasPublicIPDescription,
 			Impact:      AWSResourceHasPublicIPImpact,

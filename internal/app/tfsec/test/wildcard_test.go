@@ -55,7 +55,9 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 		code := fmt.Sprintf("WILD%d", i)
 
 		scanner.RegisterCheckRule(rule.Rule{
-			ID: code,
+			LegacyID:  code,
+			Service:   "",
+			ShortCode: "",
 			Documentation: rule.RuleDocumentation{
 				Summary: "blah",
 			},

@@ -56,7 +56,9 @@ resource "digitalocean_loadbalancer" "bad_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: DIGLoadBalancerWithPlainHTTP,
+		LegacyID:  DIGLoadBalancerWithPlainHTTP,
+		Service:   "loadbalancing",
+		ShortCode: "enforce-https",
 		Documentation: rule.RuleDocumentation{
 			Summary:     DIGLoadBalancerWithPlainHTTPDescription,
 			Explanation: DIGLoadBalancerWithPlainHTTPExplanation,

@@ -49,7 +49,9 @@ resource "aws_ecr_repository" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSEcrImagesHaveImmutableTags,
+		LegacyID:  AWSEcrImagesHaveImmutableTags,
+		Service:   "ecr",
+		ShortCode: "enforce-immutable-repository",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSEcrImagesHaveImmutableTagsDescription,
 			Impact:      AWSEcrImagesHaveImmutableTagsImpact,

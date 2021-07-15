@@ -48,7 +48,9 @@ EOF
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GENAttributeHasSensitiveData,
+		LegacyID:  GENAttributeHasSensitiveData,
+		Service:   "secrets",
+		ShortCode: "sensitive-in-attribute-value",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GENAttributeHasSensitiveDataDescription,
 			Explanation: GENAttributeHasSensitiveDataExplanation,
@@ -60,6 +62,7 @@ func init() {
 				"https://www.terraform.io/docs/state/sensitive-data.html",
 			},
 		},
+
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"resource", "provider", "module", "locals", "variable"},
 		DefaultSeverity: severity.Critical,

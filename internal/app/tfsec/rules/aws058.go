@@ -46,7 +46,9 @@ resource "aws_lambda_permission" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSCheckLambdaFunctionForSourceARN,
+		LegacyID:  AWSCheckLambdaFunctionForSourceARN,
+		Service:   "lambda",
+		ShortCode: "restrict-source-arn",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSCheckLambdaFunctionForSourceARNDescription,
 			Impact:      AWSCheckLambdaFunctionForSourceARNImpact,

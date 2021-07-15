@@ -41,7 +41,9 @@ resource "azurerm_virtual_machine" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AzureVMWithPasswordAuthentication,
+		LegacyID:  AzureVMWithPasswordAuthentication,
+		Service:   "compute",
+		ShortCode: "ssh-authentication",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AzureVMWithPasswordAuthenticationDescription,
 			Impact:      AzureVMWithPasswordAuthenticationImpact,

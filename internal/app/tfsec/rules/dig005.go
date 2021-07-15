@@ -53,7 +53,9 @@ resource "digitalocean_spaces_bucket_object" "index" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: DIGPublicReadAclOnSpacesBucket,
+		LegacyID:  DIGPublicReadAclOnSpacesBucket,
+		Service:   "spaces",
+		ShortCode: "acl-no-public-read",
 		Documentation: rule.RuleDocumentation{
 			Summary:     DIGPublicReadAclOnSpacesBucketDescription,
 			Explanation: DIGPublicReadAclOnSpacesBucketExplanation,

@@ -38,7 +38,9 @@ resource "aws_security_group" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSClassicUsage,
+		LegacyID:  AWSClassicUsage,
+		Service:   "rds",
+		ShortCode: "no-classic-resources",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSClassicUsageDescription,
 			Explanation: AWSClassicUsageExplanation,

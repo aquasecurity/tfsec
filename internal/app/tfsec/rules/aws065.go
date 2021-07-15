@@ -59,7 +59,9 @@ resource "aws_cloudtrail" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSCloudtrailEncryptedAtRest,
+		LegacyID:  AWSCloudtrailEncryptedAtRest,
+		Service:   "cloudtrail",
+		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSCloudtrailEncryptedAtRestDescription,
 			Impact:      AWSCloudtrailEncryptedAtRestImpact,

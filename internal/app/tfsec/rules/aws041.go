@@ -45,7 +45,9 @@ resource "aws_iam_account_password_policy" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSIAMPasswordRequiresNumber,
+		LegacyID:  AWSIAMPasswordRequiresNumber,
+		Service:   "iam",
+		ShortCode: "require-numbers-in-passwords",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSIAMPasswordRequiresNumberDescription,
 			Impact:      AWSIAMPasswordRequiresNumberImpact,

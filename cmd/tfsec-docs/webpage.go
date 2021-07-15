@@ -99,9 +99,9 @@ func generateWebPage(r rule.Rule) error {
 		return err
 	}
 
-	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.ID)
+	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.ID())
 
-	fmt.Printf("Generating page for %s at %s\n", r.ID, filePath)
+	fmt.Printf("Generating page for %s at %s\n", r.ID(), filePath)
 	webTmpl := template.Must(template.New("web").Funcs(funcMap).Parse(baseWebPageTemplate))
 	return writeTemplate(r, filePath, webTmpl)
 }

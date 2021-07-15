@@ -37,7 +37,9 @@ resource "azurerm_data_lake_store" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AzureUnencryptedDataLakeStore,
+		LegacyID:  AzureUnencryptedDataLakeStore,
+		Service:   "datalake",
+		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AzureUnencryptedDataLakeStoreDescription,
 			Impact:      AzureUnencryptedDataLakeStoreImpact,

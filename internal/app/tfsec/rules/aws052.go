@@ -19,8 +19,8 @@ import (
 
 const AWSRDSEncryptionNotEnabled = "AWS052"
 const AWSRDSEncryptionNotEnabledDescription = "RDS encryption has not been enabled at a DB Instance level."
-const AWSRDSEncryptionNotEnabledImpact = "Data can be read from the RDS instances if it is compromised"
-const AWSRDSEncryptionNotEnabledResolution = "Enable encryption for RDS clusters and instances"
+const AWSRDSEncryptionNotEnabledImpact = "Data can be read from RDS instances if compromised"
+const AWSRDSEncryptionNotEnabledResolution = "Enable encryption for RDS instances"
 const AWSRDSEncryptionNotEnabledExplanation = `
 Encryption should be enabled for an RDS Database instances. 
 
@@ -39,7 +39,9 @@ resource "aws_db_instance" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSRDSEncryptionNotEnabled,
+		LegacyID:  AWSRDSEncryptionNotEnabled,
+		Service:   "rds",
+		ShortCode: "encrypt-instance-storage-data",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSRDSEncryptionNotEnabledDescription,
 			Impact:      AWSRDSEncryptionNotEnabledImpact,

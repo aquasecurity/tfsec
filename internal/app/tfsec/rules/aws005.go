@@ -39,7 +39,9 @@ resource "aws_alb" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSExternallyExposedLoadBalancer,
+		LegacyID:  AWSExternallyExposedLoadBalancer,
+		Service:   "elbv2",
+		ShortCode: "alb-not-public",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSExternallyExposedLoadBalancerDescription,
 			Explanation: AWSExternallyExposedLoadBalancerExplanation,

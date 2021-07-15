@@ -39,7 +39,9 @@ resource "aws_sqs_queue" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSUnencryptedSQSQueue,
+		LegacyID:  AWSUnencryptedSQSQueue,
+		Service:   "sqs",
+		ShortCode: "enable-queue-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSUnencryptedSQSQueueDescription,
 			Impact:      AWSUnencryptedSQSQueueImpact,

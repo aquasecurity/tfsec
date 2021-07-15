@@ -50,7 +50,9 @@ resource "azurerm_function_app" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUFunctionAppHTTPS,
+		LegacyID:  AZUFunctionAppHTTPS,
+		Service:   "appservice",
+		ShortCode: "enforce-https",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUFunctionAppHTTPSDescription,
 			Explanation: AZUFunctionAppHTTPSExplanation,

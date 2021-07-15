@@ -96,7 +96,9 @@ data "aws_iam_policy_document" "s3_policy" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege,
+		LegacyID:  AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege,
+		Service:   "iam",
+		ShortCode: "no-policy-wildcards",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSIAMPolicyShouldUsePrincipleOfLeastPrivilegeDescription,
 			Explanation: AWSIAMPolicyShouldUsePrincipleOfLeastPrivilegeExplanation,

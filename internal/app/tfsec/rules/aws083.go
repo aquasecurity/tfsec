@@ -59,7 +59,9 @@ resource "aws_alb" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSALBDropsInvalidHeaders,
+		LegacyID:  AWSALBDropsInvalidHeaders,
+		Service:   "elb",
+		ShortCode: "drop-invalid-headers",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSALBDropsInvalidHeadersDescription,
 			Explanation: AWSALBDropsInvalidHeadersExplanation,

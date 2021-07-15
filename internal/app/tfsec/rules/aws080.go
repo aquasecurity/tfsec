@@ -87,7 +87,9 @@ resource "aws_codebuild_project" "codebuild" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSCodeBuildProjectEncryptionNotDisabled,
+		LegacyID:  AWSCodeBuildProjectEncryptionNotDisabled,
+		Service:   "codebuild",
+		ShortCode: "enable-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSCodeBuildProjectEncryptionNotDisabledDescription,
 			Impact:      AWSCodeBuildProjectEncryptionNotDisabledImpact,

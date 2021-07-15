@@ -51,7 +51,9 @@ resource "azurerm_storage_account" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZURequireSecureTransferForStorageAccounts,
+		LegacyID:  AZURequireSecureTransferForStorageAccounts,
+		Service:   "storage",
+		ShortCode: "enforce-https",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZURequireSecureTransferForStorageAccountsDescription,
 			Impact:      AZURequireSecureTransferForStorageAccountsImpact,

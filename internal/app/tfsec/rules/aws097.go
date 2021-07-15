@@ -147,7 +147,9 @@ func (value *awsIAMPolicyDocumentValue) UnmarshalJSON(b []byte) error {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeys,
+		LegacyID:  AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeys,
+		Service:   "iam",
+		ShortCode: "block-kms-policy-wildcard",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeysDescription,
 			Explanation: AWSKMSManagedPoliciesShouldNotAllowDecryptionActionsOnAllKMSKeysExplanation,

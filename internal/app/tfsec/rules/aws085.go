@@ -49,7 +49,9 @@ resource "aws_config_configuration_aggregator" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSConfigAggregatorCoveringAllRegions,
+		LegacyID:  AWSConfigAggregatorCoveringAllRegions,
+		Service:   "config",
+		ShortCode: "aggregate-all-regions",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSConfigAggregatorCoveringAllRegionsDescription,
 			Explanation: AWSConfigAggregatorCoveringAllRegionsExplanation,

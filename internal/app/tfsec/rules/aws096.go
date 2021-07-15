@@ -67,7 +67,9 @@ resource "aws_ecs_task_definition" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSECSTaskDefinitionEncryptionInTransit,
+		LegacyID:  AWSECSTaskDefinitionEncryptionInTransit,
+		Service:   "ecs",
+		ShortCode: "enable-in-transit-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSECSTaskDefinitionEncryptionInTransitDescription,
 			Explanation: AWSECSTaskDefinitionEncryptionInTransitExplanation,

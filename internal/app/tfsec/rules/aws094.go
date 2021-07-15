@@ -53,7 +53,9 @@ resource "aws_redshift_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSRedshiftAtRestEncryption,
+		LegacyID:  AWSRedshiftAtRestEncryption,
+		Service:   "redshift",
+		ShortCode: "encryption-customer-key",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSRedshiftAtRestEncryptionDescription,
 			Explanation: AWSRedshiftAtRestEncryptionExplanation,

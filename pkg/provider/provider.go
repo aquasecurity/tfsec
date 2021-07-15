@@ -13,6 +13,7 @@ const (
 	OracleProvider       Provider = "oracle"
 	DigitalOceanProvider Provider = "digitalocean"
 	CustomProvider       Provider = "custom"
+	GitHubProvider       Provider = "github"
 )
 
 func RuleProviderToString(provider Provider) string {

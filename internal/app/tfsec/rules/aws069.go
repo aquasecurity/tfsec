@@ -50,7 +50,9 @@ resource "aws_eks_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSEKSClusterPublicAccessDisabled,
+		LegacyID:  AWSEKSClusterPublicAccessDisabled,
+		Service:   "eks",
+		ShortCode: "no-public-cluster-access",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSEKSClusterPublicAccessDisabledDescription,
 			Impact:      AWSEKSClusterPublicAccessDisabledImpact,

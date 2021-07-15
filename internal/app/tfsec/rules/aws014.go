@@ -43,7 +43,9 @@ resource "aws_launch_configuration" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSLaunchConfigurationWithUnencryptedBlockDevice,
+		LegacyID:  AWSLaunchConfigurationWithUnencryptedBlockDevice,
+		Service:   "autoscaling",
+		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSLaunchConfigurationWithUnencryptedBlockDeviceDescription,
 			Impact:      AWSLaunchConfigurationWithUnencryptedBlockDeviceImpact,

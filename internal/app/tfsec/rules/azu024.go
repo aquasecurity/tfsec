@@ -80,7 +80,9 @@ resource "azurerm_network_security_group" "example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZURDPAccessNotAllowedFromInternet,
+		LegacyID:  AZURDPAccessNotAllowedFromInternet,
+		Service:   "network",
+		ShortCode: "disable-rdp-from-internet",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZURDPAccessNotAllowedFromInternetDescription,
 			Impact:      AZURDPAccessNotAllowedFromInternetImpact,

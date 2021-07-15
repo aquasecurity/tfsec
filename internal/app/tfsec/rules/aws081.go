@@ -57,7 +57,9 @@ resource "aws_dax_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSDAXEncryptedAtRest,
+		LegacyID:  AWSDAXEncryptedAtRest,
+		Service:   "dynamodb",
+		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSDAXEncryptedAtRestDescription,
 			Impact:      AWSDAXEncryptedAtRestImpact,

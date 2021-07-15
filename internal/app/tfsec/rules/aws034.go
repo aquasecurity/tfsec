@@ -49,7 +49,9 @@ resource "aws_elasticsearch_domain" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
+		LegacyID:  AWSOutdatedTLSPolicyElasticsearchDomainEndpoint,
+		Service:   "elastic-search",
+		ShortCode: "use-secure-tls-policy",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSOutdatedTLSPolicyElasticsearchDomainEndpointDescription,
 			Impact:      AWSOutdatedTLSPolicyElasticsearchDomainEndpointImpact,

@@ -80,7 +80,9 @@ resource "azurerm_network_security_group" "example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUSSHAccessNotAllowedFromInternet,
+		LegacyID:  AZUSSHAccessNotAllowedFromInternet,
+		Service:   "network",
+		ShortCode: "ssh-blocked-from-internet",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUSSHAccessNotAllowedFromInternetDescription,
 			Impact:      AZUSSHAccessNotAllowedFromInternetImpact,

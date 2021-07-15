@@ -41,7 +41,9 @@ resource "aws_security_group" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSOpenEgressSecurityGroupInlineRule,
+		LegacyID:  AWSOpenEgressSecurityGroupInlineRule,
+		Service:   "vpc",
+		ShortCode: "no-public-egress-sg",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSOpenEgressSecurityGroupInlineRuleDescription,
 			Impact:      AWSOpenEgressSecurityGroupInlineRuleImpact,

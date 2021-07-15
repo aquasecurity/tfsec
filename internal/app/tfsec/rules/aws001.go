@@ -41,7 +41,9 @@ resource "aws_s3_bucket" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSBadBucketACL,
+		LegacyID:  AWSBadBucketACL,
+		Service:   "s3",
+		ShortCode: "no-public-access-with-acl",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSBadBucketACLDescription,
 			Explanation: AWSBadBucketACLExplanation,

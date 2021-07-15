@@ -45,7 +45,9 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSIngorePublicAclS3,
+		LegacyID:  AWSIngorePublicAclS3,
+		Service:   "s3",
+		ShortCode: "ignore-public-acls",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSIngorePublicAclS3Description,
 			Impact:      AWSIngorePublicAclS3Impact,

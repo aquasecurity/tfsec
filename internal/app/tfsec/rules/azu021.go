@@ -46,7 +46,9 @@ resource "azurerm_key_vault" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUKeyVaultPurgeProtection,
+		LegacyID:  AZUKeyVaultPurgeProtection,
+		Service:   "keyvault",
+		ShortCode: "no-purge",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUKeyVaultPurgeProtectionDescription,
 			Impact:      AZUKeyVaultPurgeProtectionImpact,

@@ -49,7 +49,9 @@ resource "aws_ecr_repository" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSEcrImageScanNotEnabled,
+		LegacyID:  AWSEcrImageScanNotEnabled,
+		Service:   "ecr",
+		ShortCode: "enable-image-scans",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSEcrImageScanNotEnabledDescription,
 			Impact:      AWSEcrImageScanNotEnabledImpact,

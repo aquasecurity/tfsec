@@ -45,7 +45,9 @@ resource "aws_iam_account_password_policy" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSIAMPasswordRequiresUppercaseCharacter,
+		LegacyID:  AWSIAMPasswordRequiresUppercaseCharacter,
+		Service:   "iam",
+		ShortCode: "require-uppercase-in-passwords",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSIAMPasswordRequiresUppercaseCharacterDescription,
 			Impact:      AWSIAMPasswordRequiresUppercaseCharacterImpact,

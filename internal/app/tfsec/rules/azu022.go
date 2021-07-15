@@ -44,7 +44,9 @@ resource "azurerm_key_vault_secret" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUKeyVaultSecretContentType,
+		LegacyID:  AZUKeyVaultSecretContentType,
+		Service:   "keyvault",
+		ShortCode: "content-type-for-secret",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUKeyVaultSecretContentTypeDescription,
 			Impact:      AZUKeyVaultSecretContentTypeImpact,

@@ -80,7 +80,9 @@ resource "aws_dynamodb_table" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSDynamoDBTableEncryption,
+		LegacyID:  AWSDynamoDBTableEncryption,
+		Service:   "dynamodb",
+		ShortCode: "table-customer-key",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSDynamoDBTableEncryptionDescription,
 			Explanation: AWSDynamoDBTableEncryptionExplanation,

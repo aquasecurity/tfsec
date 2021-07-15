@@ -42,7 +42,9 @@ resource "aws_s3_bucket" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSS3DataShouldBeVersioned,
+		LegacyID:  AWSS3DataShouldBeVersioned,
+		Service:   "s3",
+		ShortCode: "enable-versioning",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSS3DataShouldBeVersionedDescription,
 			Impact:      AWSS3DataShouldBeVersionedImpact,

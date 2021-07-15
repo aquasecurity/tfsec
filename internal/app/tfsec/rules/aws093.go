@@ -57,7 +57,9 @@ resource "aws_ecr_repository" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSECRRepoCustomerManagedKeys,
+		LegacyID:  AWSECRRepoCustomerManagedKeys,
+		Service:   "ecr",
+		ShortCode: "repository-customer-key",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSECRRepoCustomerManagedKeysDescription,
 			Explanation: AWSECRRepoCustomerManagedKeysExplanation,

@@ -42,7 +42,9 @@ resource "aws_ecs_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSECSClusterContainerInsights,
+		LegacyID:  AWSECSClusterContainerInsights,
+		Service:   "ecs",
+		ShortCode: "enable-container-insight",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSECSClusterContainerInsightsDescription,
 			Explanation: AWSECSClusterContainerInsightsExplanation,

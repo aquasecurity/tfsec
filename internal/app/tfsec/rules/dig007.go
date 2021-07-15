@@ -35,7 +35,9 @@ resource "digitalocean_spaces_bucket" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: DIGForceDestroyEnabled,
+		LegacyID:  DIGForceDestroyEnabled,
+		Service:   "spaces",
+		ShortCode: "disable-force-destroy",
 		Documentation: rule.RuleDocumentation{
 			Summary:     DIGForceDestroyEnabledDescription,
 			Explanation: DIGForceDestroyEnabledExplanation,

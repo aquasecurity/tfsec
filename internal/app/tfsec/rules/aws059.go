@@ -77,7 +77,9 @@ resource "aws_athena_workgroup" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSEnsureAthenaDbEncrypted,
+		LegacyID:  AWSEnsureAthenaDbEncrypted,
+		Service:   "athena",
+		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSEnsureAthenaDbEncryptedDescription,
 			Impact:      AWSEnsureAthenaDbEncryptedImpact,

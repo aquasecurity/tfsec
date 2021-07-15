@@ -55,7 +55,9 @@ resource "azurerm_sql_server" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUSQLDatabaseAuditingEnabled,
+		LegacyID:  AZUSQLDatabaseAuditingEnabled,
+		Service:   "database",
+		ShortCode: "enable-audit",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUSQLDatabaseAuditingEnabledDescription,
 			Impact:      AZUSQLDatabaseAuditingEnabledImpact,

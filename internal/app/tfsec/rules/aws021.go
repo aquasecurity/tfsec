@@ -45,7 +45,9 @@ resource "aws_cloudfront_distribution" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSCloudFrontOutdatedProtocol,
+		LegacyID:  AWSCloudFrontOutdatedProtocol,
+		Service:   "cloudfront",
+		ShortCode: "use-secure-tls-policy",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSCloudFrontOutdatedProtocolDescription,
 			Impact:      AWSCloudFrontOutdatedProtocolImpact,

@@ -39,7 +39,9 @@ resource "aws_api_gateway_domain_name" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSApiGatewayDomainNameOutdatedSecurityPolicy,
+		LegacyID:  AWSApiGatewayDomainNameOutdatedSecurityPolicy,
+		Service:   "api-gateway",
+		ShortCode: "use-secure-tls-policy",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSApiGatewayDomainNameOutdatedSecurityPolicyDescription,
 			Impact:      AWSApiGatewayDomainNameOutdatedSecurityPolicyImpact,

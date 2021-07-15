@@ -53,7 +53,9 @@ resource "aws_eks_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSEKSSecretsEncryptionEnabled,
+		LegacyID:  AWSEKSSecretsEncryptionEnabled,
+		Service:   "eks",
+		ShortCode: "encrypt-secrets",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSEKSSecretsEncryptionEnabledDescription,
 			Impact:      AWSEKSSecretsEncryptionEnabledImpact,

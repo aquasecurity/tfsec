@@ -39,7 +39,9 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUAKSAPIServerAuthorizedIPRanges,
+		LegacyID:  AZUAKSAPIServerAuthorizedIPRanges,
+		Service:   "container",
+		ShortCode: "limit-authorized-ips",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUAKSAPIServerAuthorizedIPRangesDescription,
 			Impact:      AZUAKSAPIServerAuthorizedIPRangesImpact,

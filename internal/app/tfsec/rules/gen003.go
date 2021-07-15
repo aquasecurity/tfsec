@@ -73,7 +73,9 @@ var sensitiveWhitelist = []struct {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GenericSensitiveAttributes,
+		LegacyID:  GenericSensitiveAttributes,
+		Service:   "secrets",
+		ShortCode: "sensitive-in-attribute",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GenericSensitiveAttributesDescription,
 			Impact:      GenericSensitiveAttributesImpact,

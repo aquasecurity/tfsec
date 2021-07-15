@@ -47,7 +47,9 @@ resource "aws_iam_account_password_policy" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSIAMPasswordMinimumLength,
+		LegacyID:  AWSIAMPasswordMinimumLength,
+		Service:   "iam",
+		ShortCode: "set-minimum-password-length",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSIAMPasswordMinimumLengthDescription,
 			Impact:      AWSIAMPasswordMinimumLengthImpact,

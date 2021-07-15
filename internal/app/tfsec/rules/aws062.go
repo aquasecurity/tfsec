@@ -56,7 +56,9 @@ EOF
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSEC2InstanceSensitiveUserdata,
+		LegacyID:  AWSEC2InstanceSensitiveUserdata,
+		Service:   "ec2",
+		ShortCode: "no-secrets-in-user-data",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSEC2InstanceSensitiveUserdataDescription,
 			Impact:      AWSEC2InstanceSensitiveUserdataImpact,

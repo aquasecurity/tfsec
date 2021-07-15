@@ -55,7 +55,9 @@ resource "azurerm_mssql_database_extended_auditing_policy" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUDatabaseAuditingRetention90Days,
+		LegacyID:  AZUDatabaseAuditingRetention90Days,
+		Service:   "database",
+		ShortCode: "retention-period-set",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUDatabaseAuditingRetention90DaysDescription,
 			Impact:      AZUDatabaseAuditingRetention90DaysImpact,

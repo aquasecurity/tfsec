@@ -29,7 +29,9 @@ var excludedChecksList []string
 func TestMain(t *testing.M) {
 
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: exampleCheckCode,
+		LegacyID:  exampleCheckCode,
+		Service:   "",
+		ShortCode: "",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "A stupid example check for a test.",
 			Impact:      "You will look stupid",

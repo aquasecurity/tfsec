@@ -41,7 +41,9 @@ resource "google_compute_disk" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GoogleUnencryptedDisk,
+		LegacyID:  GoogleUnencryptedDisk,
+		Service:   "compute",
+		ShortCode: "disk-encryption-customer-keys",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GoogleUnencryptedDiskDescription,
 			Impact:      GoogleUnencryptedDiskImpact,

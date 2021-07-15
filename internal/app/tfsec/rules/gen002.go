@@ -46,7 +46,9 @@ resource "evil_corp" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GenericSensitiveLocals,
+		LegacyID:  GenericSensitiveLocals,
+		Service:   "secrets",
+		ShortCode: "sensitive-in-local",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GenericSensitiveLocalsDescription,
 			Impact:      GenericSensitiveLocalsImpact,

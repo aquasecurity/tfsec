@@ -64,7 +64,9 @@ resource "azurerm_key_vault_key" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUKeyVaultKeyExpirationDate,
+		LegacyID:  AZUKeyVaultKeyExpirationDate,
+		Service:   "keyvault",
+		ShortCode: "ensure-key-expiry",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUKeyVaultKeyExpirationDateDescription,
 			Impact:      AZUKeyVaultKeyExpirationDateImpact,
