@@ -41,7 +41,9 @@ resource "opc_compute_ip_address_reservation" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: OCIComputeIpReservation,
+		LegacyID:  OCIComputeIpReservation,
+		Service:   "compute",
+		ShortCode: "no-public-ip",
 		Documentation: rule.RuleDocumentation{
 			Summary:     OCIComputeIpReservationDescription,
 			Explanation: OCIComputeIpReservationExplanation,

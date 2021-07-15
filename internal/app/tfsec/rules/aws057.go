@@ -74,7 +74,9 @@ resource "aws_elasticsearch_domain" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSElasticSearchHasDomainLogging,
+		LegacyID:  AWSElasticSearchHasDomainLogging,
+		Service:   "elastic-search",
+		ShortCode: "enable-domain-logging",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSElasticSearchHasDomainLoggingDescription,
 			Impact:      AWSElasticSearchHasDomainLoggingImpact,

@@ -48,7 +48,9 @@ resource "digitalocean_firewall" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: DIGFirewallHasOpenOutboundAccess,
+		LegacyID:  DIGFirewallHasOpenOutboundAccess,
+		Service:   "compute",
+		ShortCode: "no-public-egress",
 		Documentation: rule.RuleDocumentation{
 			Summary:     DIGFirewallHasOpenOutboundAccessDescription,
 			Explanation: DIGFirewallHasOpenOutboundAccessExplanation,

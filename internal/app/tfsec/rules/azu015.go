@@ -46,7 +46,9 @@ resource "azurerm_storage_account" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUMinTLSForStorageAccountsSet,
+		LegacyID:  AZUMinTLSForStorageAccountsSet,
+		Service:   "storage",
+		ShortCode: "use-secure-tls-policy",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUMinTLSForStorageAccountsSetDescription,
 			Impact:      AZUMinTLSForStorageAccountsSetImpact,

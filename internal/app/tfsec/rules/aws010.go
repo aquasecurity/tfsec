@@ -48,7 +48,9 @@ var outdatedSSLPolicies = []string{
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSOutdatedSSLPolicy,
+		LegacyID:  AWSOutdatedSSLPolicy,
+		Service:   "vpc",
+		ShortCode: "use-secure-tls-policy",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSOutdatedSSLPolicyDescription,
 			Impact:      AWSOutdatedSSLPolicyImpact,

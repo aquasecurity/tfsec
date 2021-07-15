@@ -45,7 +45,9 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSRestrictPublicBucketS3,
+		LegacyID:  AWSRestrictPublicBucketS3,
+		Service:   "s3",
+		ShortCode: "no-public-buckets",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSRestrictPublicBucketS3Description,
 			Impact:      AWSRestrictPublicBucketS3Impact,

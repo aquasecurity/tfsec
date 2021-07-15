@@ -40,7 +40,9 @@ resource "aws_s3_bucket_public_access_block" "example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSS3BucketShouldHavePublicAccessBlock,
+		LegacyID:  AWSS3BucketShouldHavePublicAccessBlock,
+		Service:   "s3",
+		ShortCode: "specify-public-access-block",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSS3BucketShouldHavePublicAccessBlockDescription,
 			Explanation: AWSS3BucketShouldHavePublicAccessBlockExplanation,

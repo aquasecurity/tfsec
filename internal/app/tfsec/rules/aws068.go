@@ -50,7 +50,9 @@ resource "aws_eks_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSEKSClusterNotOpenPublicly,
+		LegacyID:  AWSEKSClusterNotOpenPublicly,
+		Service:   "eks",
+		ShortCode: "no-public-cluster-access-to-cidr",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSEKSClusterNotOpenPubliclyDescription,
 			Impact:      AWSEKSClusterNotOpenPubliclyImpact,

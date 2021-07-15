@@ -41,7 +41,9 @@ resource "aws_kinesis_stream" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSUnencryptedKinesisStream,
+		LegacyID:  AWSUnencryptedKinesisStream,
+		Service:   "kinesis",
+		ShortCode: "enable-in-transit-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSUnencryptedKinesisStreamDescription,
 			Impact:      AWSUnencryptedKinesisStreamImpact,

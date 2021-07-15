@@ -19,12 +19,11 @@ import (
 )
 
 const AWSOpenAllIngressNetworkACLRule = "AWS050"
-const AWSOpenAllIngressNetworkACLRuleDescription = "An ingress Network ACL rule allows ALL ports from /0."
-const AWSOpenAllIngressNetworkACLRuleImpact = "All ports exposed for egressing data to the internet"
-const AWSOpenAllIngressNetworkACLRuleResolution = "Set a more restrictive cidr range"
+const AWSOpenAllIngressNetworkACLRuleDescription = "An ingress Network ACL rule allows ALL ports."
+const AWSOpenAllIngressNetworkACLRuleImpact = "All ports exposed for egressing data"
+const AWSOpenAllIngressNetworkACLRuleResolution = "Set specific allowed ports"
 const AWSOpenAllIngressNetworkACLRuleExplanation = `
-Opening up ACLs to the public internet is potentially dangerous. You should restrict access to IP addresses or ranges that explicitly require it where possible, and ensure that you specify required ports.
-
+Ensure access to specific required ports is allowed, and nothing else.
 `
 const AWSOpenAllIngressNetworkACLRuleBadExample = `
 resource "aws_network_acl_rule" "bad_example" {
@@ -47,7 +46,9 @@ resource "aws_network_acl_rule" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSOpenAllIngressNetworkACLRule,
+		LegacyID:  AWSOpenAllIngressNetworkACLRule,
+		Service:   "vpc",
+		ShortCode: "no-excessive-port-access",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSOpenAllIngressNetworkACLRuleDescription,
 			Impact:      AWSOpenAllIngressNetworkACLRuleImpact,
@@ -82,28 +83,24 @@ func init() {
 			}
 
 			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr != nil {
-				if isOpenCidr(cidrBlockAttr) {
-					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
-								WithRange(cidrBlockAttr.Range()).
-								WithAttributeAnnotation(cidrBlockAttr),
-						)
-					}
+				if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
+					set.Add(
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
+							WithRange(cidrBlockAttr.Range()).
+							WithAttributeAnnotation(cidrBlockAttr),
+					)
 				}
 			}
 
 			if ipv6CidrBlockAttr := resourceBlock.GetAttribute("ipv6_cidr_block"); ipv6CidrBlockAttr != nil {
-				if isOpenCidr(ipv6CidrBlockAttr) {
-					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
-								WithRange(ipv6CidrBlockAttr.Range()).
-								WithAttributeAnnotation(ipv6CidrBlockAttr),
-						)
-					}
+				if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
+					set.Add(
+						result.New(resourceBlock).
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
+							WithRange(ipv6CidrBlockAttr.Range()).
+							WithAttributeAnnotation(ipv6CidrBlockAttr),
+					)
 				}
 			}
 

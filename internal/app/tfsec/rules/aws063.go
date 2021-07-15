@@ -55,7 +55,9 @@ resource "aws_cloudtrail" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSCloudtrailEnabledInAllRegions,
+		LegacyID:  AWSCloudtrailEnabledInAllRegions,
+		Service:   "cloudtrail",
+		ShortCode: "enable-all-regions",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSCloudtrailEnabledInAllRegionsDescription,
 			Impact:      AWSCloudtrailEnabledInAllRegionsImpact,

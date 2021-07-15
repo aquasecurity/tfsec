@@ -47,7 +47,9 @@ resource "azurerm_storage_account_network_rules" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUDefaultActionOnNetworkRuleSetToDeny,
+		LegacyID:  AZUDefaultActionOnNetworkRuleSetToDeny,
+		Service:   "storage",
+		ShortCode: "default-action-deny",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUDefaultActionOnNetworkRuleSetToDenyDescription,
 			Impact:      AZUDefaultActionOnNetworkRuleSetToDenyImpact,

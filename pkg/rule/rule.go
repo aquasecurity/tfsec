@@ -1,6 +1,8 @@
 package rule
 
 import (
+	"fmt"
+
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
@@ -12,13 +14,25 @@ import (
 // Rule is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.
 // "resource", and the labels to run on e.g. "aws_s3_bucket".
 type Rule struct {
-	ID              string
+	LegacyID string
+
+	Service   string // EC2
+	ShortCode string // ebs-volume-encrypted
+
 	Documentation   RuleDocumentation
 	Provider        provider.Provider
 	RequiredTypes   []string
 	RequiredLabels  []string
 	DefaultSeverity severity.Severity
 	CheckFunc       func(result.Set, block.Block, *hclcontext.Context)
+}
+
+func (r Rule) ID() string {
+	return fmt.Sprintf("%s-%s-%s", r.Provider, r.Service, r.ShortCode)
+}
+
+func (r Rule) MatchesID(id string) bool {
+	return false
 }
 
 type RuleDocumentation struct {

@@ -51,7 +51,9 @@ resource "azure_storage_container" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUBlobStorageContainerNoPublicAccess,
+		LegacyID:  AZUBlobStorageContainerNoPublicAccess,
+		Service:   "storage",
+		ShortCode: "no-public-access",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUBlobStorageContainerNoPublicAccessDescription,
 			Impact:      AZUBlobStorageContainerNoPublicAccessImpact,

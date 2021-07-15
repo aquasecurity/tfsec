@@ -45,7 +45,9 @@ resource "aws_cloudfront_distribution" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSUnencryptedCloudFrontCommunications,
+		LegacyID:  AWSUnencryptedCloudFrontCommunications,
+		Service:   "cloudfront",
+		ShortCode: "enforce-https",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSUnencryptedCloudFrontCommunicationsDescription,
 			Impact:      AWSUnencryptedCloudFrontCommunicationsImpact,

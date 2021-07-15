@@ -42,7 +42,9 @@ resource "google_container_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GCPGKENodeServiceAccount,
+		LegacyID:  GCPGKENodeServiceAccount,
+		Service:   "gke",
+		ShortCode: "use-service-account",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GCPGKENodeServiceAccountDescription,
 			Impact:      GCPGKENodeServiceAccountImpact,

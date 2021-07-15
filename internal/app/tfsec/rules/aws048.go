@@ -41,7 +41,9 @@ resource "aws_efs_file_system" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSEfsEncryptionNotEnabled,
+		LegacyID:  AWSEfsEncryptionNotEnabled,
+		Service:   "efs",
+		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSEfsEncryptionNotEnabledDescription,
 			Impact:      AWSEfsEncryptionNotEnabledImpact,

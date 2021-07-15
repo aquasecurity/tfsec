@@ -43,7 +43,9 @@ resource "digitalocean_droplet" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: DIGDropletHasNoSSHKeysAssigned,
+		LegacyID:  DIGDropletHasNoSSHKeysAssigned,
+		Service:   "droplet",
+		ShortCode: "use-ssh-keys",
 		Documentation: rule.RuleDocumentation{
 			Summary:     DIGDropletHasNoSSHKeysAssignedDescription,
 			Explanation: DIGDropletHasNoSSHKeysAssignedExplanation,

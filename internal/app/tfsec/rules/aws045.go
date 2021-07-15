@@ -92,7 +92,9 @@ resource "aws_cloudfront_distribution" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSCloudFrontDoesNotHaveAWaf,
+		LegacyID:  AWSCloudFrontDoesNotHaveAWaf,
+		Service:   "cloudfront",
+		ShortCode: "enable-waf",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSCloudFrontDoesNotHaveAWafDescription,
 			Impact:      AWSCloudFrontDoesNotHaveAWafImpact,

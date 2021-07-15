@@ -42,7 +42,9 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUAKSClusterRBACenabled,
+		LegacyID:  AZUAKSClusterRBACenabled,
+		Service:   "container",
+		ShortCode: "use-rbac-permissions",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUAKSClusterRBACenabledDescription,
 			Impact:      AZUAKSClusterRBACenabledImpact,

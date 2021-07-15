@@ -52,7 +52,9 @@ resource "azurerm_key_vault" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUKeyVaultNetworkAcl,
+		LegacyID:  AZUKeyVaultNetworkAcl,
+		Service:   "keyvault",
+		ShortCode: "specify-network-acl",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUKeyVaultNetworkAclDescription,
 			Impact:      AZUKeyVaultNetworkAclImpact,

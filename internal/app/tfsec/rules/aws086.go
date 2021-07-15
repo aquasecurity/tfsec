@@ -61,7 +61,9 @@ resource "aws_dynamodb_table" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSDynamoDBRecoveryEnabled,
+		LegacyID:  AWSDynamoDBRecoveryEnabled,
+		Service:   "dynamodb",
+		ShortCode: "enable-recovery",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSDynamoDBRecoveryEnabledDescription,
 			Explanation: AWSDynamoDBRecoveryEnabledExplanation,

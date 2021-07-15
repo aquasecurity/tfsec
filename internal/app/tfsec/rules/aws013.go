@@ -68,7 +68,9 @@ EOF
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+		LegacyID:  AWSTaskDefinitionWithSensitiveEnvironmentVariables,
+		Service:   "ecs",
+		ShortCode: "no-plaintext-secrets",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSTaskDefinitionWithSensitiveEnvironmentVariablesDescription,
 			Impact:      AWSTaskDefinitionWithSensitiveEnvironmentVariablesImpact,

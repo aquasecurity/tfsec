@@ -45,7 +45,9 @@ resource "google_container_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GkeLegacyMetadataEndpoints,
+		LegacyID:  GkeLegacyMetadataEndpoints,
+		Service:   "gke",
+		ShortCode: "metadata-endpoints-disabled",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GkeLegacyMetadataEndpointsDescription,
 			Impact:      GkeLegacyMetadataEndpointsImpact,

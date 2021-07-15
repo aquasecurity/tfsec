@@ -51,7 +51,9 @@ resource "google_container_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GkeLegacyAuthEnabled,
+		LegacyID:  GkeLegacyAuthEnabled,
+		Service:   "gke",
+		ShortCode: "no-legacy-authentication",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GkeLegacyAuthEnabledDescription,
 			Impact:      GkeLegacyAuthEnabledImpact,

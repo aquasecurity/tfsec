@@ -51,7 +51,9 @@ resource "aws_redshift_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSRedshiftNotDeployedInEC2Classic,
+		LegacyID:  AWSRedshiftNotDeployedInEC2Classic,
+		Service:   "redshift",
+		ShortCode: "non-default-vpc-deployment",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSRedshiftNotDeployedInEC2ClassicDescription,
 			Explanation: AWSRedshiftNotDeployedInEC2ClassicExplanation,

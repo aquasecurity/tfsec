@@ -48,7 +48,9 @@ resource "aws_network_acl_rule" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSOpenIngressNetworkACLRule,
+		LegacyID:  AWSOpenIngressNetworkACLRule,
+		Service:   "vpc",
+		ShortCode: "no-public-ingress",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSOpenIngressNetworkACLRuleDescription,
 			Impact:      AWSOpenIngressNetworkACLRuleImpact,

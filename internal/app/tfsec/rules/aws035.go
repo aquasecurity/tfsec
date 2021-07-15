@@ -43,7 +43,9 @@ resource "aws_elasticache_replication_group" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSUnencryptedAtRestElasticacheReplicationGroup,
+		LegacyID:  AWSUnencryptedAtRestElasticacheReplicationGroup,
+		Service:   "elastic-search",
+		ShortCode: "encrypt-replication-group",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSUnencryptedAtRestElasticacheReplicationGroupDescription,
 			Impact:      AWSUnencryptedAtRestElasticacheReplicationGroupImpact,

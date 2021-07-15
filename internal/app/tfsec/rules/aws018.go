@@ -56,7 +56,9 @@ resource "aws_security_group" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSNoDescriptionInSecurityGroup,
+		LegacyID:  AWSNoDescriptionInSecurityGroup,
+		Service:   "vpc",
+		ShortCode: "add-decription-to-security-group",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSNoDescriptionInSecurityGroupDescription,
 			Impact:      AWSNoDescriptionInSecurityGroupImpact,

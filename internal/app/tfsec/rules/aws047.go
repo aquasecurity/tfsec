@@ -67,7 +67,9 @@ POLICY
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSSqsPolicyWildcardActions,
+		LegacyID:  AWSSqsPolicyWildcardActions,
+		Service:   "sqs",
+		ShortCode: "no-wildcards-in-policy-documents",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSSqsPolicyWildcardActionsDescription,
 			Impact:      AWSSqsPolicyWildcardActionsImpact,

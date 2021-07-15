@@ -43,7 +43,9 @@ resource "aws_rds_cluster_instance" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+		LegacyID:  AWSRDSPerformanceInsughtsEncryptionNotEnabled,
+		Service:   "rds",
+		ShortCode: "enable-performance-insights",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSRDSPerformanceInsughtsEncryptionNotEnabledDescription,
 			Impact:      AWSRDSPerformanceInsughtsEncryptionNotEnabledImpact,

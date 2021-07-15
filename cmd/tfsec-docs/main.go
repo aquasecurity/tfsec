@@ -74,7 +74,7 @@ func getSortedFileContents() []*FileContent {
 
 func sortChecks(checks []rule.Rule) {
 	sort.Slice(checks, func(i, j int) bool {
-		return checks[i].ID < checks[j].ID
+		return checks[i].ID() < checks[j].ID()
 	})
 }
 

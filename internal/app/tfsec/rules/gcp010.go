@@ -37,7 +37,9 @@ resource "google_container_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GkeShieldedNodesDisabled,
+		LegacyID:  GkeShieldedNodesDisabled,
+		Service:   "gke",
+		ShortCode: "node-shielding-enabled",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GkeShieldedNodesDisabledDescription,
 			Impact:      GkeShieldedNodesDisabledImpact,

@@ -39,7 +39,9 @@ resource "azurerm_managed_disk" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AzureUnencryptedManagedDisk,
+		LegacyID:  AzureUnencryptedManagedDisk,
+		Service:   "compute",
+		ShortCode: "enable-disk-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AzureUnencryptedManagedDiskDescription,
 			Impact:      AzureUnencryptedManagedDiskImpact,

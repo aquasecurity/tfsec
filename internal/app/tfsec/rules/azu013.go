@@ -91,7 +91,9 @@ resource "azurerm_storage_account_network_rules" "test" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
+		LegacyID:  AZUTrustedMicrosoftServicesHaveStroageAccountAccess,
+		Service:   "storage",
+		ShortCode: "allow-microsoft-service-bypass",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUTrustedMicrosoftServicesHaveStroageAccountAccessDescription,
 			Impact:      AZUTrustedMicrosoftServicesHaveStroageAccountAccessImpact,

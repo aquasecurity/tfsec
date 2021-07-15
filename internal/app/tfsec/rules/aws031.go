@@ -47,7 +47,9 @@ resource "aws_elasticsearch_domain" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSUnencryptedElasticsearchDomain,
+		LegacyID:  AWSUnencryptedElasticsearchDomain,
+		Service:   "elastic-service",
+		ShortCode: "enable-domain-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSUnencryptedElasticsearchDomainDescription,
 			Impact:      AWSUnencryptedElasticsearchDomainImpact,

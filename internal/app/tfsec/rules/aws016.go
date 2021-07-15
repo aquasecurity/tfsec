@@ -39,7 +39,9 @@ resource "aws_sns_topic" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSUnencryptedSNSTopic,
+		LegacyID:  AWSUnencryptedSNSTopic,
+		Service:   "sns",
+		ShortCode: "enable-topic-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSUnencryptedSNSTopicDescription,
 			Impact:      AWSUnencryptedSNSTopicImpact,

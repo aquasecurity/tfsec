@@ -77,7 +77,9 @@ resource "aws_rds_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSRDSRetentionPeriod,
+		LegacyID:  AWSRDSRetentionPeriod,
+		Service:   "rds",
+		ShortCode: "backup-retention-specified",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSRDSRetentionPeriodDescription,
 			Explanation: AWSRDSRetentionPeriodExplanation,

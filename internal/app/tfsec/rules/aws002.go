@@ -39,7 +39,9 @@ resource "aws_s3_bucket" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSNoBucketLogging,
+		LegacyID:  AWSNoBucketLogging,
+		Service:   "s3",
+		ShortCode: "enable-bucket-logging",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSNoBucketLoggingDescription,
 			Explanation: AWSNoBucketLoggingExplanation,

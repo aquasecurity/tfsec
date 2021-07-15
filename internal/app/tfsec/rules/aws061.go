@@ -61,7 +61,9 @@ resource "aws_api_gateway_stage" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSAPIGatewayHasAccessLoggingEnabled,
+		LegacyID:  AWSAPIGatewayHasAccessLoggingEnabled,
+		Service:   "api-gateway",
+		ShortCode: "enable-access-logging",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSAPIGatewayHasAccessLoggingEnabledDescription,
 			Impact:      AWSAPIGatewayHasAccessLoggingEnabledImpact,

@@ -39,7 +39,9 @@ resource "aws_db_instance" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSPubliclyAccessibleResource,
+		LegacyID:  AWSPubliclyAccessibleResource,
+		Service:   "rds",
+		ShortCode: "no-public-db-access",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSPubliclyAccessibleResourceDescription,
 			Impact:      AWSPubliclyAccessibleResourceImpact,

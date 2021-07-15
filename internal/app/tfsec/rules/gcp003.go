@@ -37,7 +37,9 @@ resource "google_compute_firewall" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GoogleOpenInboundFirewallRule,
+		LegacyID:  GoogleOpenInboundFirewallRule,
+		Service:   "compute",
+		ShortCode: "no-public-ingres",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GoogleOpenInboundFirewallRuleDescription,
 			Impact:      GoogleOpenInboundFirewallRuleImpact,

@@ -19,7 +19,7 @@ import (
 
 const AWSAthenaWorkgroupEnforceConfiguration = "AWS060"
 const AWSAthenaWorkgroupEnforceConfigurationDescription = "Athena workgroups should enforce configuration to prevent client disabling encryption"
-const AWSAthenaWorkgroupEnforceConfigurationImpact = "Clients can ginore encryption requirements"
+const AWSAthenaWorkgroupEnforceConfigurationImpact = "Clients can ignore encryption requirements"
 const AWSAthenaWorkgroupEnforceConfigurationResolution = "Enforce the configuration to prevent client overrides"
 const AWSAthenaWorkgroupEnforceConfigurationExplanation = `
 Athena workgroup configuration should be enforced to prevent client side changes to disable encryption settings.
@@ -70,7 +70,9 @@ resource "aws_athena_workgroup" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSAthenaWorkgroupEnforceConfiguration,
+		LegacyID:  AWSAthenaWorkgroupEnforceConfiguration,
+		Service:   "athena",
+		ShortCode: "no-encryption-override",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSAthenaWorkgroupEnforceConfigurationDescription,
 			Impact:      AWSAthenaWorkgroupEnforceConfigurationImpact,

@@ -44,7 +44,9 @@ resource "azurerm_network_security_rule" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AzureOpenOutboundNetworkSecurityGroupRule,
+		LegacyID:  AzureOpenOutboundNetworkSecurityGroupRule,
+		Service:   "network",
+		ShortCode: "no-public-egress",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AzureOpenOutboundNetworkSecurityGroupRuleDescription,
 			Impact:      AzureOpenOutboundNetworkSecurityGroupRuleImpact,

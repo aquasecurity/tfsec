@@ -54,7 +54,9 @@ resource "evil_corp" "virtual_machine" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GenericSensitiveVariables,
+		LegacyID:  GenericSensitiveVariables,
+		Service:   "secrets",
+		ShortCode: "sensitive-in-variable",
 		Documentation: rule.RuleDocumentation{
 			Summary:     GenericSensitiveVariablesDescription,
 			Impact:      GenericSensitiveVariablesImpact,

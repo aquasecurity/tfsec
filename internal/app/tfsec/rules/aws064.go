@@ -58,7 +58,9 @@ resource "aws_cloudtrail" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSCloudtrailLogValidationEnabled,
+		LegacyID:  AWSCloudtrailLogValidationEnabled,
+		Service:   "cloudtrail",
+		ShortCode: "enable-log-validation",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSCloudtrailLogValidationEnabledDescription,
 			Impact:      AWSCloudtrailLogValidationEnabledImpact,

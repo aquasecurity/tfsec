@@ -46,7 +46,9 @@ resource "aws_s3_bucket" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSUnencryptedS3Bucket,
+		LegacyID:  AWSUnencryptedS3Bucket,
+		Service:   "s3",
+		ShortCode: "enable-bucket-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSUnencryptedS3BucketDescription,
 			Impact:      AWSUnencryptedS3BucketImpact,

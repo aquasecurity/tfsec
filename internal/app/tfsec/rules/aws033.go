@@ -49,7 +49,9 @@ resource "aws_elasticsearch_domain" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSUnenforcedHTTPSElasticsearchDomainEndpoint,
+		LegacyID:  AWSUnenforcedHTTPSElasticsearchDomainEndpoint,
+		Service:   "elastic-search",
+		ShortCode: "enforce-https",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSUnenforcedHTTPSElasticsearchDomainEndpointDescription,
 			Impact:      AWSUnenforcedHTTPSElasticsearchDomainEndpointImpact,

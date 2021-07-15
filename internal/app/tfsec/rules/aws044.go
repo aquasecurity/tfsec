@@ -39,7 +39,9 @@ provider "aws" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSProviderHasAccessCredentials,
+		LegacyID:  AWSProviderHasAccessCredentials,
+		Service:   "misc",
+		ShortCode: "no-exposing-plaintext-credentials",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSProviderHasAccessCredentialsDescription,
 			Impact:      AWSProviderHasAccessCredentialsImpact,

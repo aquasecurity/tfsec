@@ -44,7 +44,9 @@ resource "azurerm_data_factory" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUDataFactoryPublicNetwork,
+		LegacyID:  AZUDataFactoryPublicNetwork,
+		Service:   "datafactory",
+		ShortCode: "no-public-access",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUDataFactoryPublicNetworkDescription,
 			Impact:      AZUDataFactoryPublicNetworkImpact,

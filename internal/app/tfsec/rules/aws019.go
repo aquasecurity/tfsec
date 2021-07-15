@@ -39,7 +39,9 @@ resource "aws_kms_key" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSNoKMSAutoRotate,
+		LegacyID:  AWSNoKMSAutoRotate,
+		Service:   "kms",
+		ShortCode: "auto-rotate-keys",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSNoKMSAutoRotateDescription,
 			Impact:      AWSNoKMSAutoRotateImpact,

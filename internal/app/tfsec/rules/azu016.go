@@ -60,7 +60,9 @@ resource "azurerm_storage_account" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUQueueStorageAnalyticsTurnedOn,
+		LegacyID:  AZUQueueStorageAnalyticsTurnedOn,
+		Service:   "storage",
+		ShortCode: "queue-services-logging-enabled",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUQueueStorageAnalyticsTurnedOnDescription,
 			Impact:      AZUQueueStorageAnalyticsTurnedOnImpact,

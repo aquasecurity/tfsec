@@ -47,7 +47,9 @@ resource "aws_iam_account_password_policy" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSIAMPasswordExpiry,
+		LegacyID:  AWSIAMPasswordExpiry,
+		Service:   "iam",
+		ShortCode: "set-max-password-age",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSIAMPasswordExpiryDescription,
 			Impact:      AWSIAMPasswordExpiryImpact,

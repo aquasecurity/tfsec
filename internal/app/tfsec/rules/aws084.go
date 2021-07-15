@@ -59,7 +59,9 @@ resource "aws_workspaces_workspace" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSAWSWorkspaceVolumesEncrypted,
+		LegacyID:  AWSAWSWorkspaceVolumesEncrypted,
+		Service:   "workspace",
+		ShortCode: "enable-disk-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSAWSWorkspaceVolumesEncryptedDescription,
 			Explanation: AWSAWSWorkspaceVolumesEncryptedExplanation,

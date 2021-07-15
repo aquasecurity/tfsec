@@ -70,7 +70,9 @@ resource "azurerm_synapse_workspace" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUSynapseWorkspaceManagedNetwork,
+		LegacyID:  AZUSynapseWorkspaceManagedNetwork,
+		Service:   "synapse",
+		ShortCode: "virtual-network-enabled",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUSynapseWorkspaceManagedNetworkDescription,
 			Impact:      AZUSynapseWorkspaceManagedNetworkImpact,

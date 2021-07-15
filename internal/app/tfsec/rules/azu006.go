@@ -40,7 +40,9 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUAKSClusterNetworkPolicy,
+		LegacyID:  AZUAKSClusterNetworkPolicy,
+		Service:   "container",
+		ShortCode: "configured-network-policy",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUAKSClusterNetworkPolicyDescription,
 			Impact:      AZUAKSClusterNetworkPolicyImpact,

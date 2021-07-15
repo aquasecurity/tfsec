@@ -38,7 +38,9 @@ resource "azurerm_storage_account" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AZUStorageAccountHTTPSenabled,
+		LegacyID:  AZUStorageAccountHTTPSenabled,
+		Service:   "storage",
+		ShortCode: "ensure-https",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AZUStorageAccountHTTPSenabledDescription,
 			Impact:      AZUStorageAccountHTTPSenabledImpact,

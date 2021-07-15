@@ -17,16 +17,16 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-const GENEnsureGithubRepositoryIsPrivate = "GEN004"
-const GENEnsureGithubRepositoryIsPrivateDescription = "Github repository shouldn't be public."
-const GENEnsureGithubRepositoryIsPrivateImpact = "Anyone can read the contents of the GitHub repository and leak IP"
-const GENEnsureGithubRepositoryIsPrivateResolution = "Make sensitive or commercially important repositories private"
-const GENEnsureGithubRepositoryIsPrivateExplanation = `
+const GITEnsureGithubRepositoryIsPrivate = "GIT004"
+const GITEnsureGithubRepositoryIsPrivateDescription = "Github repository shouldn't be public."
+const GITEnsureGithubRepositoryIsPrivateImpact = "Anyone can read the contents of the GitHub repository and leak IP"
+const GITEnsureGithubRepositoryIsPrivateResolution = "Make sensitive or commercially important repositories private"
+const GITEnsureGithubRepositoryIsPrivateExplanation = `
 Github repository should be set to be private.
 
 You can do this by either setting <code>private</code> attribute to 'true' or <code>visibility</code> attribute to 'internal' or 'private'.
 `
-const GENEnsureGithubRepositoryIsPrivateBadExample = `
+const GITEnsureGithubRepositoryIsPrivateBadExample = `
 resource "github_repository" "bad_example" {
   name        = "example"
   description = "My awesome codebase"
@@ -39,7 +39,7 @@ resource "github_repository" "bad_example" {
   }
 }
 `
-const GENEnsureGithubRepositoryIsPrivateGoodExample = `
+const GITEnsureGithubRepositoryIsPrivateGoodExample = `
 resource "github_repository" "good_example" {
   name        = "example"
   description = "My awesome codebase"
@@ -55,21 +55,23 @@ resource "github_repository" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: GENEnsureGithubRepositoryIsPrivate,
+		LegacyID:  GITEnsureGithubRepositoryIsPrivate,
+		ShortCode: "private",
 		Documentation: rule.RuleDocumentation{
-			Summary:     GENEnsureGithubRepositoryIsPrivateDescription,
-			Impact:      GENEnsureGithubRepositoryIsPrivateImpact,
-			Resolution:  GENEnsureGithubRepositoryIsPrivateResolution,
-			Explanation: GENEnsureGithubRepositoryIsPrivateExplanation,
-			BadExample:  GENEnsureGithubRepositoryIsPrivateBadExample,
-			GoodExample: GENEnsureGithubRepositoryIsPrivateGoodExample,
+			Summary:     GITEnsureGithubRepositoryIsPrivateDescription,
+			Impact:      GITEnsureGithubRepositoryIsPrivateImpact,
+			Resolution:  GITEnsureGithubRepositoryIsPrivateResolution,
+			Explanation: GITEnsureGithubRepositoryIsPrivateExplanation,
+			BadExample:  GITEnsureGithubRepositoryIsPrivateBadExample,
+			GoodExample: GITEnsureGithubRepositoryIsPrivateGoodExample,
 			Links: []string{
 				"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-repository-visibility",
 				"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-repository-visibility#about-internal-repositories",
 				"https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository",
 			},
 		},
-		Provider:        provider.GeneralProvider,
+		Service:         "repositories",
+		Provider:        provider.GitHubProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"github_repository"},
 		DefaultSeverity: severity.Critical,

@@ -47,7 +47,9 @@ resource "aws_elasticsearch_domain" "good_example" {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: AWSPlaintextNodeToNodeElasticsearchTraffic,
+		LegacyID:  AWSPlaintextNodeToNodeElasticsearchTraffic,
+		Service:   "elastic-search",
+		ShortCode: "enable-in-transit-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:     AWSPlaintextNodeToNodeElasticsearchTrafficDescription,
 			Impact:      AWSPlaintextNodeToNodeElasticsearchTrafficImpact,
