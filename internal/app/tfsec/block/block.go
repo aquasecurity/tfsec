@@ -26,6 +26,8 @@ type Block interface {
 	TypeLabel() string
 	NameLabel() string
 	Clone(index int) Block
+	MarkCountExpanded()
+	IsCountExpanded() bool
 	HasChild(childElement string) bool
 	MissingChild(childElement string) bool
 	InModule() bool
