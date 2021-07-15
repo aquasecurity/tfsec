@@ -26,7 +26,13 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) B
 }
 
 func (block *HCLBlock) Clone(index int) Block {
-	childCtx := block.evalContext.Parent().NewChild()
+	var childCtx *hcl.EvalContext
+	if block.evalContext != nil {
+		childCtx = block.evalContext.NewChild()
+	} else {
+		childCtx = &hcl.EvalContext{}
+	}
+
 	if childCtx.Variables == nil {
 		childCtx.Variables = make(map[string]cty.Value)
 	}
