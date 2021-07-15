@@ -9,3 +9,17 @@ resource "aws_instance" "bastion" {
     Environment = "test"
   }
 }
+
+
+resource "aws_s3_bucket" "disabled_versioned_bucket" {
+  bucket = "my-tf-test-bucket"
+  acl    = "private"
+
+  versioning {
+    enabled = true
+  }
+
+  tags = {
+    "CostCentre" : "CD0012"
+  }
+}

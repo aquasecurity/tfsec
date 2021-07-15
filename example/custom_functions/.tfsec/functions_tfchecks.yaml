@@ -38,3 +38,18 @@ checks:
     severity: ERROR
     requiredLabels:
     - aws_instance
+  - code: S3TAG
+    description: Custom check to ensure the CostCentre tag is applied to aws_s3_bucket
+    errorMessage: The required Environment tag was missing
+    matchSpec:
+      action: contains
+      name: tags
+      value:
+        CostCentre:
+          action: regexMatches
+          value: "COST\\d{3}"
+    requiredTypes:
+    - resource
+    severity: ERROR
+    requiredLabels:
+    - aws_s3_bucket
