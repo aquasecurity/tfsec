@@ -51,7 +51,7 @@ func (r *Result) Passed() bool {
 func (r *Result) HashCode() string {
 	var blockName string
 	if r.topLevelBlock != nil {
-		blockName = r.topLevelBlock.FullName()
+		blockName = r.topLevelBlock.UniqueName()
 	}
 	return fmt.Sprintf("%s:%s:%s", blockName, r.Range, r.RuleID)
 }

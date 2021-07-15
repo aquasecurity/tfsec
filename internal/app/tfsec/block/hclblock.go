@@ -7,6 +7,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/schema"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 )
@@ -15,6 +16,7 @@ type HCLBlock struct {
 	hclBlock    *hcl.Block
 	evalContext *hcl.EvalContext
 	moduleBlock Block
+	expanded    bool
 }
 
 func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) Block {
@@ -23,6 +25,14 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) B
 		hclBlock:    hclBlock,
 		moduleBlock: moduleBlock,
 	}
+}
+
+func (block *HCLBlock) MarkCountExpanded() {
+	block.expanded = true
+}
+
+func (block *HCLBlock) IsCountExpanded() bool {
+	return block.expanded
 }
 
 func (block *HCLBlock) Clone(index int) Block {
@@ -37,6 +47,7 @@ func (block *HCLBlock) Clone(index int) Block {
 		childCtx.Variables = make(map[string]cty.Value)
 	}
 	cloneHCL := *block.hclBlock
+
 	clone := NewHCLBlock(&cloneHCL, childCtx, block.moduleBlock).(*HCLBlock)
 	if len(clone.hclBlock.Labels) > 0 {
 		position := len(clone.hclBlock.Labels) - 1
@@ -286,6 +297,13 @@ func (block *HCLBlock) FullName() string {
 	}
 
 	return block.LocalName()
+}
+
+func (block *HCLBlock) UniqueName() string {
+	if block.moduleBlock != nil {
+		return fmt.Sprintf("%s:%s", block.FullName(), block.moduleBlock.Range().Filename)
+	}
+	return block.FullName()
 }
 
 func (block *HCLBlock) TypeLabel() string {
