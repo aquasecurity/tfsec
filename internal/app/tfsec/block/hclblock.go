@@ -299,6 +299,13 @@ func (block *HCLBlock) FullName() string {
 	return block.LocalName()
 }
 
+func (block *HCLBlock) UniqueName() string {
+	if block.moduleBlock != nil {
+		return fmt.Sprintf("%s:%s", block.FullName(), block.moduleBlock.Range().Filename)
+	}
+	return block.FullName()
+}
+
 func (block *HCLBlock) TypeLabel() string {
 	if len(block.Labels()) > 0 {
 		return block.Labels()[0]
