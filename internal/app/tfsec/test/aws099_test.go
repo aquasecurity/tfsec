@@ -437,6 +437,92 @@ data "aws_iam_policy_document" "s3_policy" {
 `,
 			mustExcludeResultCode: rules.AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege,
 		},
+		{
+			name: "Passes when resource is star and action is inspector (hcl)",
+			source: `
+resource "aws_iam_role_policy" "test_policy" {
+	name = "test_policy"
+	role = aws_iam_role.test_role.id
+
+	policy = data.aws_iam_policy_document.s3_policy.json
+}
+
+resource "aws_iam_role" "test_role" {
+	name = "test_role"
+	assume_role_policy = jsonencode({
+		Version = "2012-10-17"
+		Statement = [
+		{
+			Action = "sts:AssumeRole"
+			Effect = "Allow"
+			Sid    = ""
+			Principal = {
+				Service = "s3.amazonaws.com"
+			}
+		},
+		]
+	})
+}
+
+data "aws_iam_policy_document" "s3_policy" {
+	statement {
+	principals {
+		type        = "AWS"
+		identifiers = ["aws:arn:21345/blah"]
+	}
+	actions   = ["inspector:StartAssessmentRun"]
+	resources = ["*"]
+	}
+}
+`,
+			mustExcludeResultCode: rules.AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege,
+		},
+		{
+			name: "Passes when resource is star and action is inspector (json)",
+			source: `
+resource "aws_iam_role_policy" "test_policy" {
+	name = "test_policy"
+	role = aws_iam_role.test_role.id
+
+	policy = <<EOF
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "ListYourObjects",
+			"Effect": "Allow",
+			"Action": "s3:ListBucket",
+			"Resource": ["arn:aws:s3:::bucket-name"],
+			"Principal": {
+				"AWS": "arn:aws:iam::1234567890:*"
+			}
+		}
+	]
+}
+EOF
+}
+
+resource "aws_iam_role" "test_role" {
+	name = "test_role"
+	assume_role_policy = jsonencode({
+		Version = "2012-10-17"
+		Statement = [
+		{
+			Action    = "inspector:StartAssessmentRun"
+			Effect    = "Allow"
+			Sid       = ""
+			Resource  = ["*"]
+			Principal = {
+				Service = "s3.amazonaws.com"
+			}
+		},
+		]
+	})
+}
+
+`,
+			mustIncludeResultCode: rules.AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege,
+		},
 	}
 
 	for _, test := range tests {

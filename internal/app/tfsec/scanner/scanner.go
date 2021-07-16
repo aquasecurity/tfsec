@@ -82,7 +82,6 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 								ruleResult.Severity = r.DefaultSeverity
 							}
 							if scanner.includeIgnored || (!scanner.checkRangeIgnored(ruleResult.RuleID, ruleResult.Range, checkBlock) && !checkInList(ruleResult.RuleID, scanner.excludedRuleIDs)) {
-								metrics.AddResult(ruleResult.Severity)
 								results = append(results, ruleResult)
 							} else {
 								// rule was ignored

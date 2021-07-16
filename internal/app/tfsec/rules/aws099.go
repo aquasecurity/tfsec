@@ -136,56 +136,58 @@ func init() {
 	})
 }
 
+func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, policyDocumentBlock block.Block) {
+	if statementBlock.HasChild("effect") && statementBlock.GetAttribute("effect").Equals("deny", block.IgnoreCase) {
+		return
+	}
+
+	actionsAttr := statementBlock.GetAttribute("actions")
+	if actionsAttr != nil && actionsAttr.Contains("*") {
+		set.Add(
+			result.New(policyDocumentBlock).
+				WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName())).
+				WithRange(actionsAttr.Range()).
+				WithAttributeAnnotation(actionsAttr),
+		)
+	}
+
+	resourcesAttr := statementBlock.GetAttribute("resources")
+	if resourcesAttr != nil && resourcesAttr.Contains("*") && (actionsAttr == nil || !actionOnlyInspector(actionsAttr.ValueAsStrings())) {
+		set.Add(
+			result.New(policyDocumentBlock).
+				WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", policyDocumentBlock.FullName())).
+				WithRange(resourcesAttr.Range()).
+				WithAttributeAnnotation(resourcesAttr),
+		)
+	}
+
+	principalsBlock := statementBlock.GetBlock("principals")
+	if principalsBlock != nil {
+		principalTypeAttr := principalsBlock.GetAttribute("type")
+		if principalTypeAttr != nil && principalTypeAttr.Equals("AWS") {
+			identifiersAttr := principalsBlock.GetAttribute("identifiers")
+			if identifiersAttr != nil {
+				for _, ident := range identifiersAttr.ValueAsStrings() {
+					if strings.Contains(ident, "*") {
+						set.Add(
+							result.New(policyDocumentBlock).
+								WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", policyDocumentBlock.FullName())).
+								WithRange(resourcesAttr.Range()).
+								WithAttributeAnnotation(resourcesAttr),
+						)
+						break
+					}
+				}
+			}
+		}
+	}
+}
+
 func checkAWS099PolicyDocumentBlock(set result.Set, policyDocumentBlock block.Block) {
 
 	if statementBlocks := policyDocumentBlock.GetBlocks("statement"); statementBlocks != nil {
 		for _, statementBlock := range statementBlocks {
-
-			if statementBlock.HasChild("effect") && statementBlock.GetAttribute("effect").Equals("deny", block.IgnoreCase) {
-				continue
-			}
-
-			actionsAttr := statementBlock.GetAttribute("actions")
-			if actionsAttr != nil && actionsAttr.Contains("*") {
-				set.Add(
-					result.New(policyDocumentBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName())).
-						WithRange(actionsAttr.Range()).
-						WithAttributeAnnotation(actionsAttr),
-				)
-			}
-
-			resourcesAttr := statementBlock.GetAttribute("resources")
-			if resourcesAttr != nil && resourcesAttr.Contains("*") {
-				set.Add(
-					result.New(policyDocumentBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", policyDocumentBlock.FullName())).
-						WithRange(resourcesAttr.Range()).
-						WithAttributeAnnotation(resourcesAttr),
-				)
-			}
-
-			principalsBlock := statementBlock.GetBlock("principals")
-			if principalsBlock != nil {
-				principalTypeAttr := principalsBlock.GetAttribute("type")
-				if principalTypeAttr != nil && principalTypeAttr.Equals("AWS") {
-					identifiersAttr := principalsBlock.GetAttribute("identifiers")
-					if identifiersAttr != nil {
-						for _, ident := range identifiersAttr.ValueAsStrings() {
-							if strings.Contains(ident, "*") {
-								set.Add(
-									result.New(policyDocumentBlock).
-										WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", policyDocumentBlock.FullName())).
-										WithRange(resourcesAttr.Range()).
-										WithAttributeAnnotation(resourcesAttr),
-								)
-								break
-							}
-						}
-					}
-				}
-			}
-
+			checkAWS099StatementBlock(set, statementBlock, policyDocumentBlock)
 		}
 	}
 }
@@ -210,7 +212,7 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 			}
 		}
 		for _, resource := range statement.Resource {
-			if strings.Contains(resource, "*") {
+			if strings.Contains(resource, "*") && !actionOnlyInspector(statement.Action) {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", resourceBlock.FullName())).
@@ -230,4 +232,13 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 			}
 		}
 	}
+}
+
+func actionOnlyInspector(actions []string) bool {
+	for _, action := range actions {
+		if action != "inspector:StartAssessmentRun" {
+			return false
+		}
+	}
+	return true
 }
