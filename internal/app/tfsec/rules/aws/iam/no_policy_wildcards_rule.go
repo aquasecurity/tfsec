@@ -14,20 +14,19 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS099",
+		LegacyID:  "AWS099",
 		Service:   "iam",
 		ShortCode: "no-policy-wildcards",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "IAM policy should avoid use of wildcards and instead apply the principle of least privilege",
-			Explanation:  `
+			Summary: "IAM policy should avoid use of wildcards and instead apply the principle of least privilege",
+			Explanation: `
 You should use the principle of least privilege when defining your IAM policies. This means you should specify each exact permission required without using wildcards, as this could cause the granting of access to certain undesired actions, resources and principals.
 `,
-			Impact:       "Overly permissive policies may grant access to sensitive resources",
-			Resolution:   "Specify the exact permissions required, and to which resources they should apply instead of using wildcards.",
-			BadExample:   `
+			Impact:     "Overly permissive policies may grant access to sensitive resources",
+			Resolution: "Specify the exact permissions required, and to which resources they should apply instead of using wildcards.",
+			BadExample: `
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -63,7 +62,7 @@ data "aws_iam_policy_document" "s3_policy" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -99,7 +98,7 @@ data "aws_iam_policy_document" "s3_policy" {
   }
 }
 `,
-			Links:       []string{"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html"},
+			Links: []string{"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html"},
 		},
 		Provider:        provider.AWSProvider,
 		RequiredTypes:   []string{"resource"},
