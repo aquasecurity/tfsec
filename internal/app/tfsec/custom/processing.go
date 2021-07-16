@@ -124,8 +124,8 @@ func processFoundChecks(checks ChecksFile) {
 			debug.Log("Loading check: %s\n", customCheck.Code)
 			scanner.RegisterCheckRule(rule.Rule{
 				LegacyID:  customCheck.Code,
-				Service:   "",
-				ShortCode: "",
+				Service:   "custom",
+				ShortCode: customCheck.Code,
 				Documentation: rule.RuleDocumentation{
 					Summary:    customCheck.Description,
 					Links:      customCheck.RelatedLinks,

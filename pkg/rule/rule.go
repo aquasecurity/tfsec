@@ -32,7 +32,7 @@ func (r Rule) ID() string {
 }
 
 func (r Rule) MatchesID(id string) bool {
-	return false
+	return r.LegacyID == id || r.ID() == id
 }
 
 type RuleDocumentation struct {

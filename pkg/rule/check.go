@@ -21,8 +21,8 @@ func CheckRule(r *Rule, block block.Block, ctx *hclcontext.Context, ignoreErrors
 	if ignoreErrors {
 		defer func() {
 			if err := recover(); err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", r.LegacyID, err)
-				debug.Log("Stack trace for failed %s r:\n%s\n\n", r.LegacyID, string(runtimeDebug.Stack()))
+				_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", r.ID(), err)
+				debug.Log("Stack trace for failed %s r:\n%s\n\n", r.ID(), string(runtimeDebug.Stack()))
 			}
 		}()
 	}
@@ -30,13 +30,14 @@ func CheckRule(r *Rule, block block.Block, ctx *hclcontext.Context, ignoreErrors
 	var links []string
 
 	if r.Provider != provider.CustomProvider {
-		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/", r.Provider, r.LegacyID))
+		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s", r.Provider, r.Service, r.ShortCode))
 	}
 
 	links = append(links, r.Documentation.Links...)
 
 	resultSet := result.NewSet().
-		WithRuleID(r.LegacyID).
+		WithRuleID(r.ID()).
+		WithLegacyRuleID(r.LegacyID).
 		WithRuleSummary(r.Documentation.Summary).
 		WithImpact(r.Documentation.Impact).
 		WithResolution(r.Documentation.Resolution).

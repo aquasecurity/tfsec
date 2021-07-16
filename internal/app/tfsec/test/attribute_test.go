@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -56,7 +57,7 @@ resource "aws_s3_bucket" "my-bucket" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source, ".tf", t)
+			blocks := testutil.CreateBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
 					t.FailNow()
@@ -116,7 +117,7 @@ resource "aws_s3_bucket" "my-bucket" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source, ".tf", t)
+			blocks := testutil.CreateBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
 					t.FailNow()
@@ -270,7 +271,7 @@ resource "aws_security_group" "my-security_group" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source, ".tf", t)
+			blocks := testutil.CreateBlocksFromSource(test.source, ".tf", t)
 			for _, b := range blocks {
 				if !b.HasChild(test.checkAttribute) {
 					t.FailNow()
@@ -336,7 +337,7 @@ resource "aws_security_group" "my-security_group" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source, ".tf", t)
+			blocks := testutil.CreateBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
 					t.FailNow()
@@ -392,7 +393,7 @@ resource "aws_security_group" "my-security_group" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source, ".tf", t)
+			blocks := testutil.CreateBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
 					t.FailNow()
@@ -502,7 +503,7 @@ resource "aws_security_group_rule" "example" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source, ".tf", t)
+			blocks := testutil.CreateBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
 					t.FailNow()
@@ -545,7 +546,7 @@ resource "numerical_something" "my-bucket" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source, ".tf", t)
+			blocks := testutil.CreateBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
 					t.FailNow()
@@ -588,7 +589,7 @@ resource "numerical_something" "my-bucket" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source, ".tf", t)
+			blocks := testutil.CreateBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
 					t.FailNow()
@@ -637,7 +638,7 @@ resource "boolean_something" "my-something" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source, ".tf", t)
+			blocks := testutil.CreateBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
 					t.FailNow()
@@ -686,7 +687,7 @@ resource "boolean_something" "my-something" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := createBlocksFromSource(test.source, ".tf", t)
+			blocks := testutil.CreateBlocksFromSource(test.source, ".tf", t)
 			for _, block := range blocks {
 				if !block.HasChild(test.checkAttribute) {
 					t.FailNow()

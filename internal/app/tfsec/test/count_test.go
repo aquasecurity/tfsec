@@ -2,6 +2,8 @@ package test
 
 import (
 	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
 func Test_ResourcesWithCount(t *testing.T) {
@@ -16,7 +18,7 @@ func Test_ResourcesWithCount(t *testing.T) {
 			source: `
 			resource "aws_default_vpc" "this" {}
 `,
-			mustIncludeResultCode: "AWS082",
+			mustIncludeResultCode: "aws-vpc-no-default-vpc",
 		},
 		{
 			name: "count is literal 1",
@@ -25,7 +27,7 @@ func Test_ResourcesWithCount(t *testing.T) {
 				count = 1
 			}
 `,
-			mustIncludeResultCode: "AWS082",
+			mustIncludeResultCode: "aws-vpc-no-default-vpc",
 		},
 		{
 			name: "count is literal 99",
@@ -34,7 +36,7 @@ func Test_ResourcesWithCount(t *testing.T) {
 				count = 99
 			}
 `,
-			mustIncludeResultCode: "AWS082",
+			mustIncludeResultCode: "aws-vpc-no-default-vpc",
 		},
 		{
 			name: "count is literal 0",
@@ -43,7 +45,7 @@ func Test_ResourcesWithCount(t *testing.T) {
 				count = 0
 			}
 `,
-			mustExcludeResultCode: "AWS082",
+			mustExcludeResultCode: "aws-vpc-no-default-vpc",
 		},
 		{
 			name: "count is 0 from variable",
@@ -55,7 +57,7 @@ func Test_ResourcesWithCount(t *testing.T) {
 				count = var.count
 			}
 `,
-			mustExcludeResultCode: "AWS082",
+			mustExcludeResultCode: "aws-vpc-no-default-vpc",
 		},
 		{
 			name: "count is 1 from variable",
@@ -67,7 +69,7 @@ func Test_ResourcesWithCount(t *testing.T) {
 				count =  var.count
 			}
 `,
-			mustIncludeResultCode: "AWS082",
+			mustIncludeResultCode: "aws-vpc-no-default-vpc",
 		},
 		{
 			name: "count is 1 from variable without default",
@@ -78,7 +80,7 @@ func Test_ResourcesWithCount(t *testing.T) {
 				count =  var.count
 			}
 `,
-			mustIncludeResultCode: "AWS082",
+			mustIncludeResultCode: "aws-vpc-no-default-vpc",
 		},
 		{
 			name: "count is 0 from conditional",
@@ -90,7 +92,7 @@ func Test_ResourcesWithCount(t *testing.T) {
 				count = var.enabled ? 1 : 0
 			}
 `,
-			mustExcludeResultCode: "AWS082",
+			mustExcludeResultCode: "aws-vpc-no-default-vpc",
 		},
 		{
 			name: "count is 1 from conditional",
@@ -102,7 +104,7 @@ func Test_ResourcesWithCount(t *testing.T) {
 				count =  var.enabled ? 1 : 0
 			}
 `,
-			mustIncludeResultCode: "AWS082",
+			mustIncludeResultCode: "aws-vpc-no-default-vpc",
 		},
 		{
 			name: "Test use of count.index",
@@ -142,8 +144,8 @@ variable "trust-sg-rules" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			results := scanHCL(test.source, t)
-			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 }

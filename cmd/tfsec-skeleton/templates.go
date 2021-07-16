@@ -88,8 +88,8 @@ func Test_{{.CheckName}}(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			results := scanHCL(test.source, t)
-			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 

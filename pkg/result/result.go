@@ -15,6 +15,7 @@ import (
 // by, a human-readable description and a range
 type Result struct {
 	RuleID          string            `json:"rule_id"`
+	LegacyRuleID    string            `json:"legacy_rule_id"`
 	RuleSummary     string            `json:"rule_description"`
 	RuleProvider    provider.Provider `json:"rule_provider"`
 	Impact          string            `json:"impact"`
@@ -57,6 +58,11 @@ func (r *Result) HashCode() string {
 
 func (r *Result) WithRuleID(id string) *Result {
 	r.RuleID = id
+	return r
+}
+
+func (r *Result) WithLegacyRuleID(id string) *Result {
+	r.LegacyRuleID = id
 	return r
 }
 
