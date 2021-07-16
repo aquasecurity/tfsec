@@ -156,7 +156,7 @@ func checkAWS099PolicyDocumentBlock(set result.Set, policyDocumentBlock block.Bl
 			}
 
 			resourcesAttr := statementBlock.GetAttribute("resources")
-			if resourcesAttr != nil && resourcesAttr.Contains("*") {
+			if resourcesAttr != nil && resourcesAttr.Contains("*") && (actionsAttr == nil || !actionOnlyInspector(actionsAttr.ValueAsStrings())) {
 				set.Add(
 					result.New(policyDocumentBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", policyDocumentBlock.FullName())).
@@ -210,7 +210,7 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 			}
 		}
 		for _, resource := range statement.Resource {
-			if strings.Contains(resource, "*") {
+			if strings.Contains(resource, "*") && !actionOnlyInspector(statement.Action) {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", resourceBlock.FullName())).
@@ -230,4 +230,13 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 			}
 		}
 	}
+}
+
+func actionOnlyInspector(actions []string) bool {
+	for _, action := range actions {
+		if action != "inspector:StartAssessmentRun" {
+			return false
+		}
+	}
+	return true
 }

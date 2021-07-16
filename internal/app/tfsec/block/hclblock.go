@@ -301,9 +301,9 @@ func (block *HCLBlock) FullName() string {
 
 func (block *HCLBlock) UniqueName() string {
 	if block.moduleBlock != nil {
-		return fmt.Sprintf("%s:%s", block.FullName(), block.moduleBlock.Range().Filename)
+		return fmt.Sprintf("%s:%s:%s", block.FullName(), block.Range().Filename, block.moduleBlock.UniqueName())
 	}
-	return block.FullName()
+	return fmt.Sprintf("%s:%s", block.FullName(), block.Range().Filename)
 }
 
 func (block *HCLBlock) TypeLabel() string {
