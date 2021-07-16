@@ -6,6 +6,7 @@ import "strings"
 type Provider string
 
 const (
+	UnknownProvider      Provider = ""
 	AWSProvider          Provider = "aws"
 	AzureProvider        Provider = "azure"
 	GCPProvider          Provider = "google"
