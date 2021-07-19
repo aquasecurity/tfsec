@@ -36,6 +36,18 @@ func (attr *HCLAttribute) Type() cty.Type {
 	return attr.Value().Type()
 }
 
+func (attr *HCLAttribute) IsIterable() bool {
+	return attr.Value().Type().IsCollectionType() || attr.Value().Type().IsObjectType() || attr.Value().Type().IsMapType() || attr.Value().Type().IsListType() || attr.Value().Type().IsSetType() || attr.Value().Type().IsTupleType()
+}
+
+func (attr *HCLAttribute) Each(f func(key cty.Value, val cty.Value)) {
+	val := attr.Value()
+	val.ForEachElement(func(key cty.Value, val cty.Value) (stop bool) {
+		f(key, val)
+		return false
+	})
+}
+
 func (attr *HCLAttribute) IsString() bool {
 	return !attr.Value().IsNull() && attr.Value().IsKnown() && attr.Value().Type() == cty.String
 }
@@ -441,11 +453,11 @@ func (attr *HCLAttribute) IsDataBlockReference() bool {
 	return false
 }
 
-func (attr *HCLAttribute) Reference() (*Reference, error) {
+func createDotReferenceFromTraversal(traversals ...hcl.Traversal) *Reference {
 	var refParts []string
-	switch t := attr.hclAttribute.Expr.(type) {
-	case *hclsyntax.ScopeTraversalExpr:
-		for _, p := range t.Traversal {
+
+	for _, x := range traversals {
+		for _, p := range x {
 			switch part := p.(type) {
 			case hcl.TraverseRoot:
 				refParts = append(refParts, part.Name)
@@ -453,14 +465,29 @@ func (attr *HCLAttribute) Reference() (*Reference, error) {
 				refParts = append(refParts, part.Name)
 			}
 		}
+	}
+	return newReference(refParts)
+}
+
+// aws_s3_bucket my_bucket["a"] id
+//  //[]string{"each", "key"}
+func (attr *HCLAttribute) Reference() (*Reference, error) {
+	switch t := attr.hclAttribute.Expr.(type) {
+	case *hclsyntax.RelativeTraversalExpr:
+		switch s := t.Source.(type) {
+		case *hclsyntax.IndexExpr:
+			collectionRef := createDotReferenceFromTraversal(s.Collection.Variables()...)
+			key, _ := s.Key.Value(attr.ctx)
+			collectionRef.SetKey(key)
+			return collectionRef, nil
+		default:
+			return createDotReferenceFromTraversal(t.Source.Variables()...), nil
+		}
+	case *hclsyntax.ScopeTraversalExpr:
+		return createDotReferenceFromTraversal(t.Traversal), nil
 	default:
 		return nil, fmt.Errorf("not a reference: no scope traversal")
 	}
-	if len(refParts) == 0 {
-		return nil, fmt.Errorf("reference has zero parts")
-	}
-	return newReference(refParts), nil
-
 }
 
 func (attr *HCLAttribute) IsResourceBlockReference(resourceType string) bool {

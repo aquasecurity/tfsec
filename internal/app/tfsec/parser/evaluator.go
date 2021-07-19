@@ -11,6 +11,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/gocty"
 )
 
 const maxContextIterations = 32
@@ -207,11 +208,35 @@ resource.aws_s3_bucket.blah[2] -> count.index=2
 */
 func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 
-	var filtered block.Blocks
+	var forEachFiltered block.Blocks
 	for _, block := range blocks {
+		forEachAttr := block.GetAttribute("for_each")
+		if forEachAttr == nil || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
+			forEachFiltered = append(forEachFiltered, block)
+			continue
+		}
+		if !forEachAttr.Value().IsNull() && forEachAttr.Value().IsKnown() && forEachAttr.IsIterable() {
+			forEachAttr.Each(func(key cty.Value, val cty.Value) {
+				clone := block.Clone(key)
+
+				ctx := clone.Context()
+
+				e.copyVariables(block, clone)
+
+				ctx.Variables["each"] = cty.ObjectVal(map[string]cty.Value{
+					"key":   key,
+					"value": val,
+				})
+				forEachFiltered = append(forEachFiltered, clone)
+			})
+		}
+	}
+
+	var countFiltered block.Blocks
+	for _, block := range forEachFiltered {
 		countAttr := block.GetAttribute("count")
 		if countAttr == nil || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
-			filtered = append(filtered, block)
+			countFiltered = append(countFiltered, block)
 			continue
 		}
 		count := 1
@@ -223,13 +248,60 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 		}
 
 		for i := 0; i < count; i++ {
-			clone := block.Clone(i)
-			clone.MarkCountExpanded()
-			filtered = append(filtered, clone)
+			c, _ := gocty.ToCtyValue(i, cty.Number)
+			clone := block.Clone(c)
+			block.TypeLabel()
+			countFiltered = append(countFiltered, clone)
 		}
 	}
-	return filtered
 
+	for _, b := range countFiltered {
+		fmt.Println(b.FullName())
+	}
+
+	return countFiltered
+
+}
+
+func (e *Evaluator) copyVariables(from, to block.Block) {
+
+	var fromBase string
+	var fromRel string
+	var toRel string
+
+	switch from.Type() {
+	case "resource":
+		fromBase = from.TypeLabel()
+		fromRel = from.NameLabel()
+		toRel = to.NameLabel()
+	case "module":
+		fromBase = from.Type()
+		fromRel = from.TypeLabel()
+		toRel = to.TypeLabel()
+	default:
+		return
+	}
+
+	topLevelMap := e.ctx.Variables[fromBase] // s3_buckets
+	if topLevelMap.Type() == cty.NilType {
+		topLevelMap = cty.EmptyObjectVal
+	}
+	topLevelVars := topLevelMap.AsValueMap()
+	if topLevelVars == nil {
+		topLevelVars = map[string]cty.Value{}
+	}
+
+	relativeMap := topLevelVars[fromRel]
+	if relativeMap.Type() == cty.NilType {
+		relativeMap = cty.EmptyObjectVal
+	}
+	relativeVars := relativeMap.AsValueMap()
+	if relativeVars == nil {
+		relativeVars = map[string]cty.Value{}
+	}
+	// put back
+	topLevelVars[toRel] = cty.ObjectVal(relativeVars)
+	e.ctx.Variables[fromBase] = cty.ObjectVal(topLevelVars)
 }
 
 func mergeBlocks(allBlocks block.Blocks, newBlocks block.Blocks) block.Blocks {

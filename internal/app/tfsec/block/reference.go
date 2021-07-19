@@ -1,14 +1,18 @@
 package block
 
 import (
+	"fmt"
 	"strings"
+
+	"github.com/zclconf/go-cty/cty"
 )
 
 type Reference struct {
-	blockType  Type
-	typeLabel  string
-	nameLabel  string
-	fullString string
+	blockType Type
+	typeLabel string
+	nameLabel string
+	remainder []string
+	key       string
 }
 
 func newReference(parts []string) *Reference {
@@ -39,7 +43,15 @@ func newReference(parts []string) *Reference {
 		}
 	}
 
-	ref.fullString = strings.Join(parts, ".")
+	if strings.Contains(ref.nameLabel, "[") {
+		bits := strings.Split(ref.nameLabel, "[")
+		ref.nameLabel = bits[0]
+		ref.key = "[" + bits[1]
+	}
+
+	if len(parts) > 3 {
+		ref.remainder = parts[3:]
+	}
 
 	return &ref
 }
@@ -57,7 +69,22 @@ func (r *Reference) NameLabel() string {
 }
 
 func (r *Reference) String() string {
-	return r.fullString
+
+	base := fmt.Sprintf("%s.%s", r.typeLabel, r.nameLabel)
+
+	if !r.blockType.removeTypeInReference {
+		base = fmt.Sprintf("%s.%s.%s", r.blockType.Name(), r.typeLabel, r.nameLabel)
+	}
+
+	if r.key != "" {
+		base += r.key
+	}
+
+	for _, rem := range r.remainder {
+		base += "." + rem
+	}
+
+	return base
 }
 
 func (r *Reference) RefersTo(b Block) bool {
@@ -70,5 +97,23 @@ func (r *Reference) RefersTo(b Block) bool {
 	if r.NameLabel() != b.Reference().NameLabel() {
 		return false
 	}
+	if r.Key() != b.Reference().Key() {
+		return false
+	}
 	return true
+}
+
+func (r *Reference) SetKey(key cty.Value) {
+	switch key.Type() {
+	case cty.Number:
+		f := key.AsBigFloat()
+		f64, _ := f.Float64()
+		r.key = fmt.Sprintf("[%d]", int(f64))
+	case cty.String:
+		r.key = fmt.Sprintf("[%q]", key.AsString())
+	}
+}
+
+func (r *Reference) Key() string {
+	return r.key
 }
