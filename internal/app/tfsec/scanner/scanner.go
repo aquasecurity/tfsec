@@ -39,10 +39,9 @@ func New(options ...Option) *Scanner {
 }
 
 // Find element in list
-func checkInList(id string, list []string) bool {
-	codeCurrent := string(id)
+func checkInList(id string, legacyID string, list []string) bool {
 	for _, codeIgnored := range list {
-		if codeIgnored == codeCurrent {
+		if codeIgnored == id || codeIgnored == legacyID {
 			return true
 		}
 	}
@@ -64,11 +63,12 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 		for _, r := range rules {
 			func(r *rule.Rule) {
 				if rule.IsRuleRequiredForBlock(r, checkBlock) {
-					debug.Log("Running rule for %s on %s (%s)...", r.ID, checkBlock.FullName(), checkBlock.Range().Filename)
+					debug.Log("Running rule for %s on %s (%s)...", r.ID(), checkBlock.Reference(), checkBlock.Range().Filename)
 					ruleResults := rule.CheckRule(r, checkBlock, context, scanner.ignoreCheckErrors)
 					if scanner.includePassed && ruleResults.All() == nil {
 						res := result.New(checkBlock).
-							WithRuleID(r.ID).
+							WithLegacyRuleID(r.LegacyID).
+							WithRuleID(r.ID()).
 							WithDescription(fmt.Sprintf("Resource '%s' passed check: %s", checkBlock.FullName(), r.Documentation.Summary)).
 							WithRange(checkBlock.Range()).
 							WithStatus(result.Passed).
@@ -81,12 +81,14 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 							if ruleResult.Severity == severity.None {
 								ruleResult.Severity = r.DefaultSeverity
 							}
-							if scanner.includeIgnored || (!scanner.checkRangeIgnored(ruleResult.RuleID, ruleResult.Range, checkBlock) && !checkInList(ruleResult.RuleID, scanner.excludedRuleIDs)) {
-								results = append(results, ruleResult)
-							} else {
+							if !scanner.includeIgnored && (scanner.checkRangeIgnored(ruleResult.RuleID, ruleResult.Range, checkBlock) || scanner.checkRangeIgnored(ruleResult.LegacyRuleID, ruleResult.Range, checkBlock) || checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.excludedRuleIDs)) {
 								// rule was ignored
 								metrics.Add(metrics.IgnoredChecks, 1)
-								debug.Log("Ignoring '%s' based on tfsec:ignore statement", ruleResult.RuleID)
+								debug.Log("Ignoring '%s'", ruleResult.RuleID)
+							} else {
+								metrics.AddResult(ruleResult.Severity)
+								results = append(results, ruleResult)
+
 							}
 						}
 					}
