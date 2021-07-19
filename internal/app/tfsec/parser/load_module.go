@@ -22,15 +22,19 @@ type ModuleInfo struct {
 }
 
 // LoadModules reads all module blocks and loads the underlying modules, adding blocks to e.moduleBlocks
-func LoadModules(blocks block.Blocks, projectBasePath string, metadata *ModulesMetadata, stopOnHCLError bool) []*ModuleInfo {
+func (e *Evaluator) loadModules(stopOnHCLError bool) []*ModuleInfo {
+
+	blocks := e.blocks
 
 	var modules []*ModuleInfo
 
-	for _, moduleBlock := range blocks.OfType("module") {
+	expanded := e.expandBlockCounts(blocks.OfType("module"))
+
+	for _, moduleBlock := range expanded {
 		if moduleBlock.Label() == "" {
 			continue
 		}
-		module, err := loadModule(moduleBlock, projectBasePath, metadata, stopOnHCLError)
+		module, err := e.loadModule(moduleBlock, stopOnHCLError)
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: Failed to load module: %s\n", err)
 			continue
@@ -43,7 +47,7 @@ func LoadModules(blocks block.Blocks, projectBasePath string, metadata *ModulesM
 }
 
 // takes in a module "x" {} block and loads resources etc. into e.moduleBlocks - additionally returns variables to add to ["module.x.*"] variables
-func loadModule(b block.Block, projectBasePath string, metadata *ModulesMetadata, stopOnHCLError bool) (*ModuleInfo, error) {
+func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleInfo, error) {
 
 	if b.Label() == "" {
 		return nil, fmt.Errorf("module without label at %s", b.Range())
@@ -70,11 +74,11 @@ func loadModule(b block.Block, projectBasePath string, metadata *ModulesMetadata
 
 	var modulePath string
 
-	if metadata != nil {
+	if e.moduleMetadata != nil {
 		// if we have module metadata we can parse all the modules as they'll be cached locally!
-		for _, module := range metadata.Modules {
+		for _, module := range e.moduleMetadata.Modules {
 			if module.Source == source {
-				modulePath = filepath.Clean(filepath.Join(projectBasePath, module.Dir))
+				modulePath = filepath.Clean(filepath.Join(e.projectRootPath, module.Dir))
 				break
 			}
 		}
@@ -86,7 +90,7 @@ func loadModule(b block.Block, projectBasePath string, metadata *ModulesMetadata
 			return nil, fmt.Errorf("missing module with source '%s' -  try to 'terraform init' first", source)
 		}
 
-		modulePath = reconstructPath(projectBasePath, source)
+		modulePath = reconstructPath(e.projectRootPath, source)
 	}
 
 	var blocks block.Blocks

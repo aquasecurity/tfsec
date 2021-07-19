@@ -17,8 +17,9 @@ import (
 const maxContextIterations = 32
 
 type visitedModule struct {
-	name string
-	path string
+	name                string
+	path                string
+	definitionReference string
 }
 
 type Evaluator struct {
@@ -30,6 +31,7 @@ type Evaluator struct {
 	moduleMetadata  *ModulesMetadata
 	projectRootPath string // root of the current scan
 	stopOnHCLError  bool
+	modulePath      string
 }
 
 func NewEvaluator(
@@ -38,7 +40,6 @@ func NewEvaluator(
 	blocks block.Blocks,
 	inputVars map[string]cty.Value,
 	moduleMetadata *ModulesMetadata,
-	modules []*ModuleInfo,
 	visitedModules []*visitedModule,
 	stopOnHCLError bool,
 ) *Evaluator {
@@ -53,12 +54,12 @@ func NewEvaluator(
 	}
 
 	return &Evaluator{
+		modulePath:      modulePath,
 		projectRootPath: projectRootPath,
 		ctx:             ctx,
 		blocks:          blocks,
 		inputVars:       inputVars,
 		moduleMetadata:  moduleMetadata,
-		modules:         modules,
 		visitedModules:  visitedModules,
 		stopOnHCLError:  stopOnHCLError,
 	}
@@ -95,8 +96,8 @@ func (e *Evaluator) evaluateModules() {
 	for _, module := range e.modules {
 		if visited := func(module *ModuleInfo) bool {
 			for _, v := range e.visitedModules {
-				if v.name == module.Name && v.path == module.Path {
-					debug.Log("Module [%s:%s] has already been seen", v.name, v.path)
+				if v.name == module.Name && v.path == module.Path && module.Definition.Reference().String() == v.definitionReference {
+					debug.Log("Module [%s:%s:%s] has already been seen", v.name, v.path, v.definitionReference)
 					return true
 				}
 			}
@@ -105,7 +106,7 @@ func (e *Evaluator) evaluateModules() {
 			continue
 		}
 
-		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path})
+		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path, module.Definition.Reference().String()})
 
 		evalTime := metrics.Start(metrics.Evaluation)
 		inputVars := make(map[string]cty.Value)
@@ -121,11 +122,9 @@ func (e *Evaluator) evaluateModules() {
 		}
 		evalTime.Stop()
 
-		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata, e.stopOnHCLError)
-		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules, e.visitedModules, e.stopOnHCLError)
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError)
 		e.SetModuleBasePath(e.projectRootPath)
-		b, _ := moduleEvaluator.EvaluateAll()
-		e.blocks = mergeBlocks(e.blocks, b)
+		module.Blocks, _ = moduleEvaluator.EvaluateAll()
 
 		evalTime = metrics.Start(metrics.Evaluation)
 		// export module outputs
@@ -169,14 +168,11 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 		}
 	}
 
-	var allBlocks block.Blocks
-	allBlocks = e.blocks
-	for _, module := range e.modules {
-		allBlocks = mergeBlocks(allBlocks, module.Blocks)
-	}
+	debug.Log("Loading modules...")
+	e.modules = e.loadModules(true)
 
 	// expand out resources and modules via count
-	allBlocks = e.expandBlockCounts(allBlocks)
+	e.blocks = e.expandBlockCounts(e.blocks)
 
 	for i := 0; i < maxContextIterations; i++ {
 
@@ -193,6 +189,11 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 		for k, v := range e.ctx.Variables {
 			lastContext.Variables[k] = v
 		}
+	}
+
+	allBlocks := e.blocks
+	for _, module := range e.modules {
+		allBlocks = append(allBlocks, module.Blocks...)
 	}
 
 	return allBlocks, nil
@@ -227,6 +228,8 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 					"key":   key,
 					"value": val,
 				})
+
+				debug.Log("Added %s from for_each", clone.Reference())
 				forEachFiltered = append(forEachFiltered, clone)
 			})
 		}
@@ -251,12 +254,9 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 			c, _ := gocty.ToCtyValue(i, cty.Number)
 			clone := block.Clone(c)
 			block.TypeLabel()
+			debug.Log("Added %s from count var", clone.Reference())
 			countFiltered = append(countFiltered, clone)
 		}
-	}
-
-	for _, b := range countFiltered {
-		fmt.Println(b.FullName())
 	}
 
 	return countFiltered
