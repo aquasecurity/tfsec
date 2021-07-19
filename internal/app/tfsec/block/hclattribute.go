@@ -469,8 +469,6 @@ func createDotReferenceFromTraversal(traversals ...hcl.Traversal) *Reference {
 	return newReference(refParts)
 }
 
-// aws_s3_bucket my_bucket["a"] id
-//  //[]string{"each", "key"}
 func (attr *HCLAttribute) Reference() (*Reference, error) {
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.RelativeTraversalExpr:
