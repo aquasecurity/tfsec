@@ -26,8 +26,7 @@ type Block interface {
 	UniqueName() string
 	TypeLabel() string
 	NameLabel() string
-	Clone(index int) Block
-	MarkCountExpanded()
+	Clone(index cty.Value) Block
 	IsCountExpanded() bool
 	HasChild(childElement string) bool
 	MissingChild(childElement string) bool
@@ -37,4 +36,5 @@ type Block interface {
 	IsResourceType(resourceType string) bool
 	IsEmpty() bool
 	Values() cty.Value
+	Context() *hcl.EvalContext
 }

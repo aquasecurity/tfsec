@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/schema"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
@@ -17,6 +18,7 @@ type HCLBlock struct {
 	evalContext *hcl.EvalContext
 	moduleBlock Block
 	expanded    bool
+	key         string
 }
 
 func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) Block {
@@ -27,7 +29,7 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) B
 	}
 }
 
-func (block *HCLBlock) MarkCountExpanded() {
+func (block *HCLBlock) markCountExpanded() {
 	block.expanded = true
 }
 
@@ -35,7 +37,7 @@ func (block *HCLBlock) IsCountExpanded() bool {
 	return block.expanded
 }
 
-func (block *HCLBlock) Clone(index int) Block {
+func (block *HCLBlock) Clone(index cty.Value) Block {
 	var childCtx *hcl.EvalContext
 	if block.evalContext != nil {
 		childCtx = block.evalContext.NewChild()
@@ -55,14 +57,28 @@ func (block *HCLBlock) Clone(index int) Block {
 		for i := 0; i < len(labels); i++ {
 			labels[i] = clone.hclBlock.Labels[i]
 		}
-		labels[position] = fmt.Sprintf("%s[%d]", clone.hclBlock.Labels[position], index)
+		switch index.Type() {
+		case cty.Number:
+			f, _ := index.AsBigFloat().Float64()
+			labels[position] = fmt.Sprintf("%s[%d]", clone.hclBlock.Labels[position], int(f))
+		case cty.String:
+			labels[position] = fmt.Sprintf("%s[%q]", clone.hclBlock.Labels[position], index.AsString())
+		default:
+			debug.Log("Invalid key type in iterable: %#v", index.Type())
+			labels[position] = fmt.Sprintf("%s[%#v]", clone.hclBlock.Labels[position], index)
+		}
 		clone.hclBlock.Labels = labels
 	}
 	indexVal, _ := gocty.ToCtyValue(index, cty.Number)
 	clone.evalContext.Variables["count"] = cty.ObjectVal(map[string]cty.Value{
 		"index": indexVal,
 	})
+	clone.markCountExpanded()
 	return clone
+}
+
+func (block *HCLBlock) Context() *hcl.EvalContext {
+	return block.evalContext
 }
 
 func (block *HCLBlock) AttachEvalContext(ctx *hcl.EvalContext) {
@@ -277,7 +293,6 @@ func (block *HCLBlock) Reference() *Reference {
 		parts = append(parts, block.Type())
 	}
 	parts = append(parts, block.Labels()...)
-
 	return newReference(parts)
 }
 
@@ -301,9 +316,9 @@ func (block *HCLBlock) FullName() string {
 
 func (block *HCLBlock) UniqueName() string {
 	if block.moduleBlock != nil {
-		return fmt.Sprintf("%s:%s", block.FullName(), block.moduleBlock.Range().Filename)
+		return fmt.Sprintf("%s:%s:%s", block.FullName(), block.Range().Filename, block.moduleBlock.UniqueName())
 	}
-	return block.FullName()
+	return fmt.Sprintf("%s:%s", block.FullName(), block.Range().Filename)
 }
 
 func (block *HCLBlock) TypeLabel() string {

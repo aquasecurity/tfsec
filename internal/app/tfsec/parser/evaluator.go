@@ -11,13 +11,15 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/gocty"
 )
 
 const maxContextIterations = 32
 
 type visitedModule struct {
-	name string
-	path string
+	name                string
+	path                string
+	definitionReference string
 }
 
 type Evaluator struct {
@@ -29,6 +31,7 @@ type Evaluator struct {
 	moduleMetadata  *ModulesMetadata
 	projectRootPath string // root of the current scan
 	stopOnHCLError  bool
+	modulePath      string
 }
 
 func NewEvaluator(
@@ -37,7 +40,6 @@ func NewEvaluator(
 	blocks block.Blocks,
 	inputVars map[string]cty.Value,
 	moduleMetadata *ModulesMetadata,
-	modules []*ModuleInfo,
 	visitedModules []*visitedModule,
 	stopOnHCLError bool,
 ) *Evaluator {
@@ -52,12 +54,12 @@ func NewEvaluator(
 	}
 
 	return &Evaluator{
+		modulePath:      modulePath,
 		projectRootPath: projectRootPath,
 		ctx:             ctx,
 		blocks:          blocks,
 		inputVars:       inputVars,
 		moduleMetadata:  moduleMetadata,
-		modules:         modules,
 		visitedModules:  visitedModules,
 		stopOnHCLError:  stopOnHCLError,
 	}
@@ -94,8 +96,8 @@ func (e *Evaluator) evaluateModules() {
 	for _, module := range e.modules {
 		if visited := func(module *ModuleInfo) bool {
 			for _, v := range e.visitedModules {
-				if v.name == module.Name && v.path == module.Path {
-					debug.Log("Module [%s:%s] has already been seen", v.name, v.path)
+				if v.name == module.Name && v.path == module.Path && module.Definition.Reference().String() == v.definitionReference {
+					debug.Log("Module [%s:%s:%s] has already been seen", v.name, v.path, v.definitionReference)
 					return true
 				}
 			}
@@ -104,7 +106,7 @@ func (e *Evaluator) evaluateModules() {
 			continue
 		}
 
-		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path})
+		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path, module.Definition.Reference().String()})
 
 		evalTime := metrics.Start(metrics.Evaluation)
 		inputVars := make(map[string]cty.Value)
@@ -120,11 +122,9 @@ func (e *Evaluator) evaluateModules() {
 		}
 		evalTime.Stop()
 
-		childModules := LoadModules(module.Blocks, e.projectRootPath, e.moduleMetadata, e.stopOnHCLError)
-		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, childModules, e.visitedModules, e.stopOnHCLError)
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError)
 		e.SetModuleBasePath(e.projectRootPath)
-		b, _ := moduleEvaluator.EvaluateAll()
-		e.blocks = mergeBlocks(e.blocks, b)
+		module.Blocks, _ = moduleEvaluator.EvaluateAll()
 
 		evalTime = metrics.Start(metrics.Evaluation)
 		// export module outputs
@@ -168,14 +168,11 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 		}
 	}
 
-	var allBlocks block.Blocks
-	allBlocks = e.blocks
-	for _, module := range e.modules {
-		allBlocks = mergeBlocks(allBlocks, module.Blocks)
-	}
+	debug.Log("Loading modules...")
+	e.modules = e.loadModules(true)
 
 	// expand out resources and modules via count
-	allBlocks = e.expandBlockCounts(allBlocks)
+	e.blocks = e.expandBlocks(e.blocks)
 
 	for i := 0; i < maxContextIterations; i++ {
 
@@ -194,24 +191,54 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 		}
 	}
 
+	allBlocks := e.blocks
+	for _, module := range e.modules {
+		allBlocks = append(allBlocks, module.Blocks...)
+	}
+
 	return allBlocks, nil
 }
 
-/*
-Input:
-resource.aws_s3_bucket.blah -> count=3
-Output:
-resource.aws_s3_bucket.blah[0] -> count.index=0
-resource.aws_s3_bucket.blah[1] -> count.index=1
-resource.aws_s3_bucket.blah[2] -> count.index=2
-*/
-func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
+func (e *Evaluator) expandBlocks(blocks block.Blocks) block.Blocks {
+	return e.expandBlockCounts(e.expandBlockForEaches(blocks))
+}
 
-	var filtered block.Blocks
+func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
+	var forEachFiltered block.Blocks
+	for _, block := range blocks {
+		forEachAttr := block.GetAttribute("for_each")
+		if forEachAttr == nil || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
+			forEachFiltered = append(forEachFiltered, block)
+			continue
+		}
+		if !forEachAttr.Value().IsNull() && forEachAttr.Value().IsKnown() && forEachAttr.IsIterable() {
+			forEachAttr.Each(func(key cty.Value, val cty.Value) {
+				clone := block.Clone(key)
+
+				ctx := clone.Context()
+
+				e.copyVariables(block, clone)
+
+				ctx.Variables["each"] = cty.ObjectVal(map[string]cty.Value{
+					"key":   key,
+					"value": val,
+				})
+
+				debug.Log("Added %s from for_each", clone.Reference())
+				forEachFiltered = append(forEachFiltered, clone)
+			})
+		}
+	}
+
+	return forEachFiltered
+}
+
+func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
+	var countFiltered block.Blocks
 	for _, block := range blocks {
 		countAttr := block.GetAttribute("count")
 		if countAttr == nil || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
-			filtered = append(filtered, block)
+			countFiltered = append(countFiltered, block)
 			continue
 		}
 		count := 1
@@ -223,13 +250,56 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 		}
 
 		for i := 0; i < count; i++ {
-			clone := block.Clone(i)
-			clone.MarkCountExpanded()
-			filtered = append(filtered, clone)
+			c, _ := gocty.ToCtyValue(i, cty.Number)
+			clone := block.Clone(c)
+			block.TypeLabel()
+			debug.Log("Added %s from count var", clone.Reference())
+			countFiltered = append(countFiltered, clone)
 		}
 	}
-	return filtered
 
+	return countFiltered
+}
+
+func (e *Evaluator) copyVariables(from, to block.Block) {
+
+	var fromBase string
+	var fromRel string
+	var toRel string
+
+	switch from.Type() {
+	case "resource":
+		fromBase = from.TypeLabel()
+		fromRel = from.NameLabel()
+		toRel = to.NameLabel()
+	case "module":
+		fromBase = from.Type()
+		fromRel = from.TypeLabel()
+		toRel = to.TypeLabel()
+	default:
+		return
+	}
+
+	topLevelMap := e.ctx.Variables[fromBase] // s3_buckets
+	if topLevelMap.Type() == cty.NilType {
+		topLevelMap = cty.EmptyObjectVal
+	}
+	topLevelVars := topLevelMap.AsValueMap()
+	if topLevelVars == nil {
+		topLevelVars = map[string]cty.Value{}
+	}
+
+	relativeMap := topLevelVars[fromRel]
+	if relativeMap.Type() == cty.NilType {
+		relativeMap = cty.EmptyObjectVal
+	}
+	relativeVars := relativeMap.AsValueMap()
+	if relativeVars == nil {
+		relativeVars = map[string]cty.Value{}
+	}
+	// put back
+	topLevelVars[toRel] = cty.ObjectVal(relativeVars)
+	e.ctx.Variables[fromBase] = cty.ObjectVal(topLevelVars)
 }
 
 func mergeBlocks(allBlocks block.Blocks, newBlocks block.Blocks) block.Blocks {
