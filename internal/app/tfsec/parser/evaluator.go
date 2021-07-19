@@ -172,7 +172,7 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 	e.modules = e.loadModules(true)
 
 	// expand out resources and modules via count
-	e.blocks = e.expandBlockCounts(e.blocks)
+	e.blocks = e.expandBlocks(e.blocks)
 
 	for i := 0; i < maxContextIterations; i++ {
 
@@ -199,16 +199,11 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 	return allBlocks, nil
 }
 
-/*
-Input:
-resource.aws_s3_bucket.blah -> count=3
-Output:
-resource.aws_s3_bucket.blah[0] -> count.index=0
-resource.aws_s3_bucket.blah[1] -> count.index=1
-resource.aws_s3_bucket.blah[2] -> count.index=2
-*/
-func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
+func (e *Evaluator) expandBlocks(blocks block.Blocks) block.Blocks {
+	return e.expandBlockCounts(e.expandBlockForEaches(blocks))
+}
 
+func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 	var forEachFiltered block.Blocks
 	for _, block := range blocks {
 		forEachAttr := block.GetAttribute("for_each")
@@ -235,8 +230,12 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 		}
 	}
 
+	return forEachFiltered
+}
+
+func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 	var countFiltered block.Blocks
-	for _, block := range forEachFiltered {
+	for _, block := range blocks {
 		countAttr := block.GetAttribute("count")
 		if countAttr == nil || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
 			countFiltered = append(countFiltered, block)
@@ -260,7 +259,6 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 	}
 
 	return countFiltered
-
 }
 
 func (e *Evaluator) copyVariables(from, to block.Block) {
