@@ -234,6 +234,19 @@ func (block *HCLBlock) parseDynamicBlockResult(dynamic *hcl.Block) Blocks {
 		return nil
 	}
 
+	val := forEach.Value()
+
+	if val.IsNull() || !val.IsKnown() {
+		return nil
+	}
+
+	switch {
+	case val.Type().IsListType(), val.Type().IsSetType(), val.Type().IsMapType():
+		// all good
+	default:
+		return nil
+	}
+
 	values := forEach.Value().AsValueSlice()
 	for range values {
 		results = append(results, contentBlock)
