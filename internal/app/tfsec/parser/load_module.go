@@ -28,7 +28,7 @@ func (e *Evaluator) loadModules(stopOnHCLError bool) []*ModuleInfo {
 
 	var modules []*ModuleInfo
 
-	expanded := e.expandBlockCounts(blocks.OfType("module"))
+	expanded := e.expandBlocks(blocks.OfType("module"))
 
 	for _, moduleBlock := range expanded {
 		if moduleBlock.Label() == "" {
