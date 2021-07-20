@@ -11,11 +11,16 @@ import (
 
 const (
 	baseWebPageTemplate = `---
-title: {{$.ID}} - {{$.Documentation.Summary}}
+title: {{$.Documentation.Summary}}
+shortcode: {{$.ID}}
+legacy: {{$.LegacyID}}
 summary: {{$.Documentation.Summary}} 
 resources: {{$.RequiredLabels}} 
-permalink: /docs/{{$.Provider}}/{{$.ID}}/
+permalink: /docs/{{$.Provider}}/{{$.Service}}/{{$.ShortCode}}/
+redirect_from: 
+  - /docs/{{$.Provider}}/{{$.LegacyID}}/
 ---
+
 ### Explanation
 
 {{$.Documentation.Explanation}}
@@ -103,7 +108,7 @@ func generateWebPage(webProviderPath string, r rule.Rule, legacy bool) error {
 	if err := os.MkdirAll(webProviderPath, os.ModePerm); err != nil {
 		return err
 	}
-	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.ID())
+	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.ShortCode)
 	if legacy {
 		if r.LegacyID == "" {
 			return nil
