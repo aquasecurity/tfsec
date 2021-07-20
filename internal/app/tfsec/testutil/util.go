@@ -17,9 +17,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-func ScanHCL(source string, t *testing.T) []result.Result {
+func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) []result.Result {
 	blocks := CreateBlocksFromSource(source, ".tf", t)
-	return scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	scanner := scanner.New(scanner.OptionIgnoreCheckErrors(false))
+	for _, opt := range additionalOptions {
+		opt(scanner)
+	}
+	return scanner.Scan(blocks)
 }
 
 func ScanJSON(source string, t *testing.T) []result.Result {

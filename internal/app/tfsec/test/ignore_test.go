@@ -169,3 +169,27 @@ resource "aws_security_group_rule" "my-rule" {
 `, t)
 	assert.Len(t, results, 0)
 }
+
+func Test_IgnoreIgnoreWithExpiryAndWorkspaceAndWorkspaceSupplied(t *testing.T) {
+	results := testutil.ScanHCL(`
+# tfsec:ignore:AWS006:exp:2221-01-02 #tfsec:ignore:AWS018:ws:testworkspace
+resource "aws_security_group_rule" "my-rule" {
+    type        = "ingress"
+	
+    cidr_blocks = ["0.0.0.0/0"]
+}
+`, t, scanner.OptionWithWorkspaceName("testworkspace"))
+	assert.Len(t, results, 0)
+}
+
+func Test_IgnoreIgnoreWithExpiryAndWorkspaceButWrongWorkspaceSupplied(t *testing.T) {
+	results := testutil.ScanHCL(`
+# tfsec:ignore:AWS006:exp:2221-01-02 #tfsec:ignore:AWS018:ws:otherworkspace
+resource "aws_security_group_rule" "my-rule" {
+    type        = "ingress"
+	
+    cidr_blocks = ["0.0.0.0/0"]
+}
+`, t, scanner.OptionWithWorkspaceName("testworkspace"))
+	assert.Len(t, results, 1)
+}

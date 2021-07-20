@@ -55,6 +55,7 @@ var allDirs = false
 var runStatistics bool
 var ignoreHCLErrors bool
 var stopOnCheckError bool
+var workspace string
 
 func init() {
 	rootCmd.Flags().BoolVar(&ignoreHCLErrors, "ignore-hcl-errors", ignoreHCLErrors, "Stop and report an error if an HCL parse error is encountered")
@@ -81,6 +82,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&ignoreWarnings, "ignore-warnings", ignoreWarnings, "[DEPRECATED] Don't show warnings in the output.")
 	rootCmd.Flags().BoolVar(&ignoreInfo, "ignore-info", ignoreWarnings, "[DEPRECATED] Don't show info results in the output.")
 	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
+	rootCmd.Flags().StringVarP(&workspace, "workspace", "w", workspace, "Specify a workspace for ignore limits")
 }
 
 func main() {
@@ -351,6 +353,9 @@ func getScannerOptions() []scanner.Option {
 	}
 	if includeIgnored {
 		options = append(options, scanner.OptionIncludeIgnored())
+	}
+	if workspace != "" {
+		options = append(options, scanner.OptionWithWorkspaceName(workspace))
 	}
 
 	options = append(options, scanner.OptionIgnoreCheckErrors(!stopOnCheckError))
