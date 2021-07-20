@@ -19,7 +19,7 @@ The included {{$.Provider | FormatProviderName }} checks are listed below. For m
 
 | ID  | Summary |
 |:-------|:-------------|
-{{range $check := .Checks}}|[{{$check.ID}}](/docs/{{$.Provider}}/{{$check.ID}})|{{$check.Documentation.Summary}}|
+{{range $check := .Checks}}|[{{$check.ID}}](/docs/{{$.Provider}}/{{$check.Service}}/{{$check.ShortCode}})|{{$check.Documentation.Summary}}|
 {{end}}
 `
 
