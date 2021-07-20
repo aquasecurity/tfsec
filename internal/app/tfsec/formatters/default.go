@@ -88,6 +88,9 @@ func printResult(res result.Result, i int, includePassedChecks bool) {
 
 `, res.RuleID, severity, res.Description, res.Range.String())
 	highlightCode(res)
+	if res.LegacyRuleID != "" {
+		_ = tml.Printf("  <white>Legacy ID:  </white><blue>%s</blue>\n", res.LegacyRuleID)
+	}
 	if res.Impact != "" {
 		_ = tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", res.Impact)
 	}

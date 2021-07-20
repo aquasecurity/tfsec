@@ -59,7 +59,12 @@ The following example will pass the {{$.ID}} check.
 func generateWebPages(fileContents []*FileContent) error {
 	for _, contents := range fileContents {
 		for _, check := range contents.Checks {
-			if err := generateWebPage(check); err != nil {
+			webProviderPath := fmt.Sprintf("%s/docs/%s/%s", webPath, strings.ToLower(string(check.Provider)), strings.ToLower(check.Service))
+			if err := generateWebPage(webProviderPath, check, false); err != nil {
+				return err
+			}
+			webProviderPath = fmt.Sprintf("%s/docs/%s", webPath, strings.ToLower(string(check.Provider)))
+			if err := generateWebPage(webProviderPath, check, true); err != nil {
 				return err
 			}
 		}
@@ -93,13 +98,18 @@ func formatProviderName(providerName string) string {
 	}
 }
 
-func generateWebPage(r rule.Rule) error {
-	webProviderPath := fmt.Sprintf("%s/docs/%s", webPath, strings.ToLower(string(r.Provider)))
+func generateWebPage(webProviderPath string, r rule.Rule, legacy bool) error {
+
 	if err := os.MkdirAll(webProviderPath, os.ModePerm); err != nil {
 		return err
 	}
-
 	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.ID())
+	if legacy {
+		if r.LegacyID == "" {
+			return nil
+		}
+		filePath = fmt.Sprintf("%s/%s.md", webProviderPath, r.LegacyID)
+	}
 
 	fmt.Printf("Generating page for %s at %s\n", r.ID(), filePath)
 	webTmpl := template.Must(template.New("web").Funcs(funcMap).Parse(baseWebPageTemplate))
