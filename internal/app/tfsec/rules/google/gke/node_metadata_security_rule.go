@@ -19,23 +19,22 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GCP006",
+		LegacyID:  "GCP006",
 		Service:   "gke",
 		ShortCode: "node-metadata-security",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Node metadata value disables metadata concealment.",
-			Impact:       "Metadata that isn't concealed potentially risks leakage of sensitive data",
-			Resolution:   "Set node metadata to SECURE or GKE_METADATA_SERVER",
-			Explanation:  `
+			Summary:    "Node metadata value disables metadata concealment.",
+			Impact:     "Metadata that isn't concealed potentially risks leakage of sensitive data",
+			Resolution: "Set node metadata to SECURE or GKE_METADATA_SERVER",
+			Explanation: `
 If the <code>workload_metadata_config</code> block within <code>node_config</code> is included, the <code>node_metadata</code> attribute should be configured securely.
 
 The attribute should be set to <code>SECURE</code> to use metadata concealment, or <code>GKE_METADATA_SERVER</code> if workload identity is enabled. This ensures that the VM metadata is not unnecessarily exposed to pods.
 
 `,
-			BadExample:   `
+			BadExample: `
 resource "google_container_node_pool" "bad_example" {
 	node_config {
 		workload_metadata_config {
@@ -43,7 +42,7 @@ resource "google_container_node_pool" "bad_example" {
 		}
 	}
 }`,
-			GoodExample:  `
+			GoodExample: `
 resource "google_container_node_pool" "good_example" {
 	node_config {
 		workload_metadata_config {
@@ -56,7 +55,7 @@ resource "google_container_node_pool" "good_example" {
 				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#node_metadata",
 			},
 		},
-		Provider:        provider.GCPProvider,
+		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_container_cluster", "google_container_node_pool"},
 		DefaultSeverity: severity.High,

@@ -12,27 +12,26 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GCP013",
+		LegacyID:  "GCP013",
 		Service:   "compute",
 		ShortCode: "disk-encryption-required",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "The encryption key used to encrypt a compute disk has been specified in plaintext.",
-			Explanation:  `
+			Summary: "The encryption key used to encrypt a compute disk has been specified in plaintext.",
+			Explanation: `
 Sensitive values such as raw encryption keys should not be included in your Terraform code, and should be stored securely by a secrets manager.
 `,
-			Impact:       "The encryption key should be considered compromised as it is not stored securely.",
-			Resolution:   "Reference a managed key rather than include the key in raw format.",
-			BadExample:   `
+			Impact:     "The encryption key should be considered compromised as it is not stored securely.",
+			Resolution: "Reference a managed key rather than include the key in raw format.",
+			BadExample: `
 resource "google_compute_disk" "good_example" {
 	disk_encryption_key {
 		raw_key="b2ggbm8gdGhpcyBpcyBiYWQ="
 	}
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "google_compute_disk" "good_example" {
 	disk_encryption_key {
 		kms_key_self_link = google_kms_crypto_key.my_crypto_key.id
@@ -44,7 +43,7 @@ resource "google_compute_disk" "good_example" {
 				"https://cloud.google.com/compute/docs/disks/customer-supplied-encryption",
 			},
 		},
-		Provider:        provider.GCPProvider,
+		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_compute_disk"},
 		DefaultSeverity: severity.Critical,

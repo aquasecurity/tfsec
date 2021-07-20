@@ -17,22 +17,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GCP008",
+		LegacyID:  "GCP008",
 		Service:   "gke",
 		ShortCode: "no-legacy-authentication",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Legacy client authentication methods utilized.",
-			Impact:       "Username and password authentication methods are less secure",
-			Resolution:   "Use service account or OAuth for authentication",
-			Explanation:  `
+			Summary:    "Legacy client authentication methods utilized.",
+			Impact:     "Username and password authentication methods are less secure",
+			Resolution: "Use service account or OAuth for authentication",
+			Explanation: `
 It is recommended to use Service Accounts and OAuth as authentication methods for accessing the master in the container cluster. 
 
 Basic authentication should be disabled by explicitly unsetting the <code>username</code> and <code>password</code> on the <code>master_auth</code> block.
 `,
-			BadExample:   `
+			BadExample: `
 resource "google_container_cluster" "bad_example" {
 }
 
@@ -46,7 +45,7 @@ resource "google_container_cluster" "gke" {
 	}
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "google_container_cluster" "good_example" {
 	master_auth {
 	    username = ""
@@ -59,7 +58,7 @@ resource "google_container_cluster" "good_example" {
 				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#master_auth",
 			},
 		},
-		Provider:        provider.GCPProvider,
+		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_container_cluster"},
 		DefaultSeverity: severity.High,

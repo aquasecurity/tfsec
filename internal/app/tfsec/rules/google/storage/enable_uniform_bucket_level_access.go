@@ -1,4 +1,4 @@
-package iam
+package storage
 
 import (
 	"fmt"
@@ -68,9 +68,10 @@ resource "google_storage_bucket" "static-site" {
 `,
 			Links: []string{
 				"https://cloud.google.com/storage/docs/uniform-bucket-level-access",
+				"https://jbrojbrojbro.medium.com/you-make-the-rules-with-authentication-controls-for-cloud-storage-53c32543747b",
 			},
 		},
-		Provider:      provider.GCPProvider,
+		Provider:      provider.GoogleProvider,
 		RequiredTypes: []string{"resource"},
 		RequiredLabels: []string{
 			"google_storage_bucket",
