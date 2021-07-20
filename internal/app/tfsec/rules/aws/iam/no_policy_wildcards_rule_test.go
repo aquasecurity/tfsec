@@ -476,7 +476,7 @@ data "aws_iam_policy_document" "s3_policy" {
 	}
 }
 `,
-			mustExcludeResultCode: rules.AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege,
+			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "Passes when resource is star and action is inspector (json)",
@@ -522,7 +522,7 @@ resource "aws_iam_role" "test_role" {
 }
 
 `,
-			mustIncludeResultCode: rules.AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege,
+			mustIncludeResultCode: expectedCode,
 		},
 	}
 
