@@ -25,7 +25,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -226,10 +225,6 @@ var rootCmd = &cobra.Command{
 				}
 			}
 			results = filteredResult
-		}
-
-		for _, result := range results {
-			metrics.AddResult(result.Severity)
 		}
 
 		if runStatistics {
