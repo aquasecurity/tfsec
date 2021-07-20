@@ -8,17 +8,17 @@ import (
 	"text/template"
 
 	"github.com/liamg/clinch/prompt"
-	"github.com/liamg/tml"
 )
 
-var providers = map[string]string{"AWS": "aws", "Azure": "azu", "GCP": "gcp", "Oracle": "oci", "General": "gen", "DigitalOcean": "dig"}
+var providers = map[string]string{"AWS": "aws", "Azure": "azu", "GCP": "gcp", "Oracle": "oci", "General": "gen", "DigitalOcean": "dig", "GitHub": "git"}
 
 type checkSkeleton struct {
 	Provider         string
 	ProviderLongName string
 	CheckName        string
 	ShortCode        string
-	ID               string
+	FullCode         string
+	Service          string
 	Summary          string
 	Impact           string
 	Resolution       string
@@ -40,7 +40,7 @@ func generateCheckBody() error {
 	checkTmpl := template.Must(template.New("check").Funcs(funcMap).Parse(checkTemplate))
 	checkTestTmpl := template.Must(template.New("checkTest").Funcs(funcMap).Parse(checkTestTemplate))
 	checkPath := fmt.Sprintf("internal/app/tfsec/rules/%s", details.CheckFilename)
-	testPath := fmt.Sprintf("internal/app/tfsec/test/%s", details.TestFileName)
+	testPath := fmt.Sprintf("internal/app/tfsec/rules/%s", details.TestFileName)
 	if err = verifyCheckPath(checkPath); err != nil {
 		return err
 	}
@@ -53,7 +53,6 @@ func generateCheckBody() error {
 	if err = writeTemplate(testPath, checkTestTmpl, details); err != nil {
 		return err
 	}
-	_ = tml.Printf("The new check has the code: %s%s\n", strings.ToUpper(details.Provider), details.ID)
 	return nil
 }
 
@@ -85,14 +84,16 @@ func constructSkeleton() (*checkSkeleton, error) {
 	if err != nil {
 		return nil, err
 	}
-	shortCodeContent := prompt.EnterInput("Enter very terse description e.g. 's3 bucket encryption is not enabled': ")
+
+	service := prompt.EnterInput("Enter the service name, as see in terraform e.g. 'compute' for azurerm: ")
+	shortCode := prompt.EnterInput("Enter very terse description e.g. 'enable disk encryption': ")
 	summary := prompt.EnterInput("Enter a longer summary: ")
 	impact := prompt.EnterInput("Enter a brief impact of not complying with check: ")
 	resolution := prompt.EnterInput("Enter a brief resolution to pass check: ")
 	blockTypes := prompt.EnterInput("Enter the supported block types: ")
 	blockLabels := prompt.EnterInput("Enter the supported block labels: ")
 
-	checkBody, err := populateSkeleton(summary, selected, shortCodeContent, impact, resolution, blockTypes, blockLabels)
+	checkBody, err := populateSkeleton(summary, selected, service, shortCode, impact, resolution, blockTypes, blockLabels)
 	if err != nil {
 		return nil, err
 	}
@@ -100,25 +101,28 @@ func constructSkeleton() (*checkSkeleton, error) {
 	return checkBody, nil
 }
 
-func populateSkeleton(summary, selected, shortCodeContent, impact, resolution, blockTypes, blockLabels string) (*checkSkeleton, error) {
+func populateSkeleton(summary, selected, service, shortCode, impact, resolution, blockTypes, blockLabels string) (*checkSkeleton, error) {
 	checkBody := &checkSkeleton{}
 	var err error
 	checkBody.Summary = summary
+	checkBody.ShortCode = shortCode
+	checkBody.FullCode = strings.ToLower(fmt.Sprintf("%s-%s-%s", selected, service, shortCode))
+	checkBody.Service = service
 	checkBody.Impact = impact
 	checkBody.Resolution = resolution
 	checkBody.Provider = providers[selected]
 	checkBody.ProviderLongName = selected
-	checkBody.ID, err = calculateNextCode(checkBody.Provider)
+
 	if err != nil {
 		return nil, err
 	}
 
-	checkBody.CheckName = fmt.Sprintf("%s%s", strings.ToUpper(checkBody.Provider), strings.ReplaceAll(strings.Title(shortCodeContent), " ", ""))
+	checkBody.CheckName = fmt.Sprintf("%s%s", strings.Title(selected), strings.ReplaceAll(strings.Title(shortCode), "-", ""))
 	checkBody.RequiredTypes = fmt.Sprintf("{\"%s\"}", strings.Join(strings.Split(blockTypes, " "), "\", \""))
 	checkBody.RequiredLabels = fmt.Sprintf("{\"%s\"}", strings.Join(strings.Split(blockLabels, " "), "\", \""))
-	filename := fmt.Sprintf("%s%s", checkBody.Provider, checkBody.ID)
-	checkBody.CheckFilename = fmt.Sprintf("%s.go", strings.ToLower(filename))
-	checkBody.TestFileName = fmt.Sprintf("%s_test.go", strings.ToLower(filename))
+	filename := fmt.Sprintf("%s/%s/%s", selected, service, strings.ReplaceAll(shortCode, "-", "_"))
+	checkBody.CheckFilename = fmt.Sprintf("%s_rule.go", strings.ToLower(filename))
+	checkBody.TestFileName = fmt.Sprintf("%s_rule_test.go", strings.ToLower(filename))
 
 	return checkBody, nil
 }
