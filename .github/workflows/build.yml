@@ -20,5 +20,15 @@ jobs:
     - name: Run test
       run: make test
 
+    - name: End to end
+      run: make end-to-end
+
     - name: Code Quality
       run: make quality
+
+    - name: Spelling
+      uses: codespell-project/actions-codespell@master
+      with:
+        check_filenames: true 
+        skip: vendor,funcs
+        ignore_words_file: .codespellignore

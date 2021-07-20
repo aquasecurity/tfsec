@@ -34,4 +34,6 @@ type Attribute interface {
 	IsNumber() bool
 	IsBool() bool
 	ValueAsStrings() []string
+	IsIterable() bool
+	Each(f func(key cty.Value, val cty.Value))
 }

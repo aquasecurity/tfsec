@@ -1,13 +1,23 @@
 package block
 
+import (
+	"fmt"
+	"regexp"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/gocty"
+)
+
 const (
 	functionNameKey = "action"
 	valueNameKey    = "value"
 )
 
 var functions = map[string]func(interface{}, interface{}) bool{
-	"isAny":  isAny,
-	"isNone": isNone,
+	"isAny":        isAny,
+	"isNone":       isNone,
+	"regexMatches": regexMatches,
 }
 
 func evaluate(criteriaValue interface{}, testValue interface{}) bool {
@@ -53,4 +63,28 @@ func isAny(criteriaValues interface{}, testValue interface{}) bool {
 
 func isNone(criteriaValues interface{}, testValue interface{}) bool {
 	return !isAny(criteriaValues, testValue)
+}
+
+func regexMatches(criteriaValue interface{}, testValue interface{}) bool {
+	var patternVal string
+	switch t := criteriaValue.(type) {
+	case string:
+		patternVal = fmt.Sprintf("%v", criteriaValue)
+	case cty.Value:
+		if err := gocty.FromCtyValue(t, &patternVal); err != nil {
+			debug.Log("An error occurred determining the regex value: %s", err.Error())
+			return false
+		}
+	default:
+		return false
+	}
+
+	re, err := regexp.Compile(patternVal)
+	if err != nil {
+		debug.Log("An error occurred creating a regexp: %s", err.Error())
+		return false
+	}
+
+	match := re.MatchString(fmt.Sprintf("%v", testValue))
+	return match
 }

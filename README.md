@@ -3,7 +3,6 @@
 </p>
 
 [![GoReportCard](https://goreportcard.com/badge/github.com/aquasecurity/tfsec)](https://goreportcard.com/report/github.com/aquasecurity/tfsec)
-[![GitHub All Releases](https://img.shields.io/github/downloads/aquasecurity/tfsec/total)](https://github.com/aquasecurity/tfsec/releases)
 [![Join Our Slack](https://img.shields.io/badge/Slack-Join-green)](https://join.slack.com/t/tfsec/shared_invite/zt-o6c7mgoj-eJ1sLDv595sKiP5OPoHJww)
 [![Docker Build](https://img.shields.io/docker/v/tfsec/tfsec?label=docker)](https://hub.docker.com/r/tfsec/tfsec)
 [![Homebrew](https://img.shields.io/badge/dynamic/json.svg?url=https://formulae.brew.sh/api/formula/tfsec.json&query=$.versions.stable&label=homebrew)](https://formulae.brew.sh/formula/tfsec)
@@ -206,3 +205,15 @@ For more information about adding security alerts, check
 If you need to support versions of terraform which use HCL v1
 (terraform <0.12), you can use `v0.1.3` of tfsec, though support is
 very limited and has fewer checks.
+
+## Contributing
+
+We always welcome contributions; big or small, it can be documentation updates, adding new checks or something bigger. Please check the [Contributing Guide](CONTRIBUTING.md) for details on how to help out.
+
+### Some People who have contributed
+
+<a href = "https://github.com/aquasecurity/tfsec/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=aquasecurity/tfsec"/>
+</a>
+
+Made with [contributors-img](https://contrib.rocks).

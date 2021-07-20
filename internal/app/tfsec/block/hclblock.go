@@ -4,16 +4,21 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/schema"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+
 	"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty/gocty"
 )
 
 type HCLBlock struct {
 	hclBlock    *hcl.Block
 	evalContext *hcl.EvalContext
 	moduleBlock Block
+	expanded    bool
+	key         string
 }
 
 func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) Block {
@@ -22,6 +27,58 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) B
 		hclBlock:    hclBlock,
 		moduleBlock: moduleBlock,
 	}
+}
+
+func (block *HCLBlock) markCountExpanded() {
+	block.expanded = true
+}
+
+func (block *HCLBlock) IsCountExpanded() bool {
+	return block.expanded
+}
+
+func (block *HCLBlock) Clone(index cty.Value) Block {
+	var childCtx *hcl.EvalContext
+	if block.evalContext != nil {
+		childCtx = block.evalContext.NewChild()
+	} else {
+		childCtx = &hcl.EvalContext{}
+	}
+
+	if childCtx.Variables == nil {
+		childCtx.Variables = make(map[string]cty.Value)
+	}
+	cloneHCL := *block.hclBlock
+
+	clone := NewHCLBlock(&cloneHCL, childCtx, block.moduleBlock).(*HCLBlock)
+	if len(clone.hclBlock.Labels) > 0 {
+		position := len(clone.hclBlock.Labels) - 1
+		labels := make([]string, len(clone.hclBlock.Labels))
+		for i := 0; i < len(labels); i++ {
+			labels[i] = clone.hclBlock.Labels[i]
+		}
+		switch index.Type() {
+		case cty.Number:
+			f, _ := index.AsBigFloat().Float64()
+			labels[position] = fmt.Sprintf("%s[%d]", clone.hclBlock.Labels[position], int(f))
+		case cty.String:
+			labels[position] = fmt.Sprintf("%s[%q]", clone.hclBlock.Labels[position], index.AsString())
+		default:
+			debug.Log("Invalid key type in iterable: %#v", index.Type())
+			labels[position] = fmt.Sprintf("%s[%#v]", clone.hclBlock.Labels[position], index)
+		}
+		clone.hclBlock.Labels = labels
+	}
+	indexVal, _ := gocty.ToCtyValue(index, cty.Number)
+	clone.evalContext.Variables["count"] = cty.ObjectVal(map[string]cty.Value{
+		"index": indexVal,
+	})
+	clone.markCountExpanded()
+	return clone
+}
+
+func (block *HCLBlock) Context() *hcl.EvalContext {
+	return block.evalContext
 }
 
 func (block *HCLBlock) AttachEvalContext(ctx *hcl.EvalContext) {
@@ -177,6 +234,19 @@ func (block *HCLBlock) parseDynamicBlockResult(dynamic *hcl.Block) Blocks {
 		return nil
 	}
 
+	val := forEach.Value()
+
+	if val.IsNull() || !val.IsKnown() {
+		return nil
+	}
+
+	switch {
+	case val.Type().IsListType(), val.Type().IsSetType(), val.Type().IsMapType():
+		// all good
+	default:
+		return nil
+	}
+
 	values := forEach.Value().AsValueSlice()
 	for range values {
 		results = append(results, contentBlock)
@@ -236,7 +306,6 @@ func (block *HCLBlock) Reference() *Reference {
 		parts = append(parts, block.Type())
 	}
 	parts = append(parts, block.Labels()...)
-
 	return newReference(parts)
 }
 
@@ -256,6 +325,13 @@ func (block *HCLBlock) FullName() string {
 	}
 
 	return block.LocalName()
+}
+
+func (block *HCLBlock) UniqueName() string {
+	if block.moduleBlock != nil {
+		return fmt.Sprintf("%s:%s:%s", block.FullName(), block.Range().Filename, block.moduleBlock.UniqueName())
+	}
+	return fmt.Sprintf("%s:%s", block.FullName(), block.Range().Filename)
 }
 
 func (block *HCLBlock) TypeLabel() string {

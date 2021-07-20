@@ -98,12 +98,8 @@ func (parser *Parser) ParseDirectory() (block.Blocks, error) {
 	modulesMetadata, _ := LoadModuleMetadata(tfPath)
 	t.Stop()
 
-	debug.Log("Loading modules...")
-	modules := LoadModules(blocks, tfPath, modulesMetadata, parser.stopOnHCLError)
-	var visited []*visitedModule
-
 	debug.Log("Evaluating expressions...")
-	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, modules, visited, parser.stopOnHCLError)
+	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, nil, parser.stopOnHCLError)
 	evaluatedBlocks, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err

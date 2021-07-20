@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
 func TestScanningJSON(t *testing.T) {
@@ -34,7 +34,7 @@ func TestScanningJSON(t *testing.T) {
 					}
 				}
 			}`,
-			mustIncludeResultCode: rules.AWSOpenIngressSecurityGroupRule,
+			mustIncludeResultCode: "aws-vpc-no-public-ingress-sgr",
 		},
 		{
 			name: "check missing sgr descriptions are picked up in tf json configs",
@@ -55,7 +55,7 @@ func TestScanningJSON(t *testing.T) {
 					}
 				}
 			}`,
-			mustIncludeResultCode: rules.AWSNoDescriptionInSecurityGroup,
+			mustIncludeResultCode: "aws-vpc-add-decription-to-security-group",
 		},
 		{
 			name: "check valid resources are picked up in tf json configs",
@@ -77,14 +77,14 @@ func TestScanningJSON(t *testing.T) {
 					}
 				}
 			}`,
-			mustExcludeResultCode: rules.AWSNoDescriptionInSecurityGroup,
+			mustExcludeResultCode: "aws-vpc-no-public-ingress-sgr",
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			results := scanJSON(test.source, t)
-			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+			results := testutil.ScanJSON(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 }

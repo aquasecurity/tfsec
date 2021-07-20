@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -55,7 +57,8 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 		code := fmt.Sprintf("WILD%d", i)
 
 		scanner.RegisterCheckRule(rule.Rule{
-			ID: code,
+			Service:   "service",
+			ShortCode: code,
 			Documentation: rule.RuleDocumentation{
 				Summary: "blah",
 			},
@@ -71,12 +74,12 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 			},
 		})
 
-		results := scanHCL(test.input, t)
+		results := testutil.ScanHCL(test.input, t)
 
 		if test.expectedFailure {
-			assertCheckCode(t, code, "", results)
+			testutil.AssertCheckCode(t, fmt.Sprintf("custom-service-%s", code), "", results)
 		} else {
-			assertCheckCode(t, "", code, results)
+			testutil.AssertCheckCode(t, "", fmt.Sprintf("custom-service-%s", code), results)
 		}
 	}
 

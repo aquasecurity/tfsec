@@ -15,6 +15,7 @@ import (
 // by, a human-readable description and a range
 type Result struct {
 	RuleID          string            `json:"rule_id"`
+	LegacyRuleID    string            `json:"legacy_rule_id"`
 	RuleSummary     string            `json:"rule_description"`
 	RuleProvider    provider.Provider `json:"rule_provider"`
 	Impact          string            `json:"impact"`
@@ -40,6 +41,7 @@ func New(resourceBlock block.Block) *Result {
 	return &Result{
 		Status:        Failed,
 		topLevelBlock: resourceBlock,
+		Range:         resourceBlock.Range(),
 	}
 }
 
@@ -48,11 +50,20 @@ func (r *Result) Passed() bool {
 }
 
 func (r *Result) HashCode() string {
-	return fmt.Sprintf("%s:%s", r.Range, r.RuleID)
+	var blockName string
+	if r.topLevelBlock != nil {
+		blockName = r.topLevelBlock.UniqueName()
+	}
+	return fmt.Sprintf("%s:%s:%s", blockName, r.Range, r.RuleID)
 }
 
 func (r *Result) WithRuleID(id string) *Result {
 	r.RuleID = id
+	return r
+}
+
+func (r *Result) WithLegacyRuleID(id string) *Result {
+	r.LegacyRuleID = id
 	return r
 }
 
@@ -143,6 +154,9 @@ func (r *Result) WithAttributeAnnotation(attr block.Attribute) *Result {
 			}
 			typeStr = "list"
 			raw = fmt.Sprintf("[%s]", strings.Join(strValues, ", "))
+		default:
+			typeStr = "unknown"
+			raw = "???"
 		}
 	}
 

@@ -49,15 +49,21 @@ vet:
 
 .PHONY: typos
 typos:
-	./scripts/typos.sh
+	which codespell || pip install codespell
+	codespell -S vendor,funcs,.terraform --ignore-words .codespellignore -f
 
 .PHONY: quality
-quality: cyclo vet typos
+quality: cyclo vet
 
 .PHONY: fix-typos
 fix-typos:
-	./scripts/typos.sh fix
+	which codespell || pip install codespell
+	codespell -S vendor,funcs,.terraform --ignore-words .codespellignore -f -w -i1
 
 .PHONY: clone-image
 clone-image:
 	./scripts/clone-images.sh
+
+.PHONY: end-to-end
+end-to-end:
+	go run ./cmd/tfsec -s -p --force-all-dirs ./example

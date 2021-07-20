@@ -23,8 +23,11 @@ type Block interface {
 	Reference() *Reference
 	LocalName() string
 	FullName() string
+	UniqueName() string
 	TypeLabel() string
 	NameLabel() string
+	Clone(index cty.Value) Block
+	IsCountExpanded() bool
 	HasChild(childElement string) bool
 	MissingChild(childElement string) bool
 	InModule() bool
@@ -33,4 +36,5 @@ type Block interface {
 	IsResourceType(resourceType string) bool
 	IsEmpty() bool
 	Values() cty.Value
+	Context() *hcl.EvalContext
 }
