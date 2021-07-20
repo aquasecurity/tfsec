@@ -41,6 +41,7 @@ func New(resourceBlock block.Block) *Result {
 	return &Result{
 		Status:        Failed,
 		topLevelBlock: resourceBlock,
+		Range:         resourceBlock.Range(),
 	}
 }
 
