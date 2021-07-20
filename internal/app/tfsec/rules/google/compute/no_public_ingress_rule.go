@@ -45,7 +45,7 @@ resource "google_compute_firewall" "good_example" {
 				"https://www.terraform.io/docs/providers/google/r/compute_firewall.html",
 			},
 		},
-		Provider:        provider.GCPProvider,
+		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_compute_firewall"},
 		DefaultSeverity: severity.Critical,

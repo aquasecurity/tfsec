@@ -17,26 +17,25 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GCP001",
+		LegacyID:  "GCP001",
 		Service:   "compute",
 		ShortCode: "disk-encryption-customer-keys",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Encrypted compute disk with unmanaged keys.",
-			Impact:       "Encryption of disk using unmanaged keys.",
-			Resolution:   "Enable encryption using a customer-managed key.",
-			Explanation:  `
+			Summary:    "Encrypted compute disk with unmanaged keys.",
+			Impact:     "Encryption of disk using unmanaged keys.",
+			Resolution: "Enable encryption using a customer-managed key.",
+			Explanation: `
 By default, Compute Engine encrypts all data at rest. Compute Engine handles and manages this encryption for you without any additional actions on your part.
 
 If the <code>disk_encryption_key</code> block is included in the resource declaration then it *must* include a <code>raw_key</code> or <code>kms_key_self_link</code>.
 `,
-			BadExample:   `
+			BadExample: `
 resource "google_compute_disk" "bad_example" {
 	# ...
 }`,
-			GoodExample:  `
+			GoodExample: `
 resource "google_compute_disk" "good_example" {
 	disk_encryption_key {
 		kms_key_self_link = "something"
@@ -49,7 +48,7 @@ resource "google_compute_disk" "good_example" {
 				"https://www.terraform.io/docs/providers/google/r/compute_disk.html",
 			},
 		},
-		Provider:        provider.GCPProvider,
+		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_compute_disk"},
 		DefaultSeverity: severity.High,

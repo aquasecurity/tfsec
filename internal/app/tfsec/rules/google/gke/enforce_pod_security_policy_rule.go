@@ -17,17 +17,16 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GCP009",
+		LegacyID:  "GCP009",
 		Service:   "gke",
 		ShortCode: "enforce-pod-security-policy",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Pod security policy enforcement not defined.",
-			Impact:       "Pods could be operating with more permissions than required to be effective",
-			Resolution:   "Use security policies for pods to restrict permissions to those needed to be effective",
-			Explanation:  `
+			Summary:    "Pod security policy enforcement not defined.",
+			Impact:     "Pods could be operating with more permissions than required to be effective",
+			Resolution: "Use security policies for pods to restrict permissions to those needed to be effective",
+			Explanation: `
 By default, Pods in Kubernetes can operate with capabilities beyond what they require. You should constrain the Pod's capabilities to only those required for that workload.
 
 Kubernetes offers controls for restricting your Pods to execute with only explicitly granted capabilities. 
@@ -36,13 +35,13 @@ Pod Security Policy allows you to set smart defaults for your Pods, and enforce 
 
 The policies you define should be specific to the needs of your application
 `,
-			BadExample:   `
+			BadExample: `
 resource "google_container_cluster" "bad_example" {
 	pod_security_policy_config {
         enabled = "false"
 	}
 }`,
-			GoodExample:  `
+			GoodExample: `
 resource "google_container_cluster" "good_example" {
 	pod_security_policy_config {
         enabled = "true"
@@ -53,7 +52,7 @@ resource "google_container_cluster" "good_example" {
 				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#pod_security_policy_config",
 			},
 		},
-		Provider:        provider.GCPProvider,
+		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_container_cluster"},
 		DefaultSeverity: severity.High,

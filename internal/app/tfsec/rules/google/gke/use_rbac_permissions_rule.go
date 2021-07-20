@@ -19,27 +19,26 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GCP005",
+		LegacyID:  "GCP005",
 		Service:   "gke",
 		ShortCode: "use-rbac-permissions",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Legacy ABAC permissions are enabled.",
-			Impact:       "ABAC permissions are less secure than RBAC permissions",
-			Resolution:   "Switch to using RBAC permissions",
-			Explanation:  `
+			Summary:    "Legacy ABAC permissions are enabled.",
+			Impact:     "ABAC permissions are less secure than RBAC permissions",
+			Resolution: "Switch to using RBAC permissions",
+			Explanation: `
 You should disable Attribute-Based Access Control (ABAC), and instead use Role-Based Access Control (RBAC) in GKE.
 
 RBAC has significant security advantages and is now stable in Kubernetes, so it’s time to disable ABAC.
 `,
-			BadExample:   `
+			BadExample: `
 resource "google_container_cluster" "bad_example" {
 	enable_legacy_abac = "true"
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "google_container_cluster" "good_example" {
 	# ...
 	# enable_legacy_abac not set
@@ -51,7 +50,7 @@ resource "google_container_cluster" "good_example" {
 				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#enable_legacy_abac",
 			},
 		},
-		Provider:        provider.GCPProvider,
+		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_container_cluster"},
 		DefaultSeverity: severity.High,

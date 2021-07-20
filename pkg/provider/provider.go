@@ -9,7 +9,7 @@ const (
 	UnknownProvider      Provider = ""
 	AWSProvider          Provider = "aws"
 	AzureProvider        Provider = "azure"
-	GCPProvider          Provider = "google"
+	GoogleProvider       Provider = "google"
 	GeneralProvider      Provider = "general"
 	OracleProvider       Provider = "oracle"
 	DigitalOceanProvider Provider = "digitalocean"
