@@ -3,6 +3,9 @@ package test
 import (
 	"testing"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+
+	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -21,7 +24,7 @@ import (
 
 func Test_IgnoreAll(t *testing.T) {
 
-	results := scanHCL(`
+	results := testutil.ScanHCL(`
 resource "aws_security_group_rule" "my-rule" {
     type        = "ingress"
     cidr_blocks = ["0.0.0.0/0"] // tfsec:ignore:*
@@ -33,7 +36,7 @@ resource "aws_security_group_rule" "my-rule" {
 }
 
 func Test_IgnoreLineAboveTheBlock(t *testing.T) {
-	results := scanHCL(`
+	results := testutil.ScanHCL(`
 // tfsec:ignore:*
 resource "aws_security_group_rule" "my-rule" {
     type        = "ingress"
@@ -44,7 +47,7 @@ resource "aws_security_group_rule" "my-rule" {
 }
 
 func Test_IgnoreLineAboveTheLine(t *testing.T) {
-	results := scanHCL(`
+	results := testutil.ScanHCL(`
 
 resource "aws_security_group_rule" "my-rule" {
     type        = "ingress"
@@ -56,7 +59,7 @@ resource "aws_security_group_rule" "my-rule" {
 	assert.Len(t, results, 0)
 }
 func Test_IgnoreLineOnTheLine(t *testing.T) {
-	results := scanHCL(`
+	results := testutil.ScanHCL(`
 resource "aws_security_group_rule" "my-rule" {
     type        = "ingress"
 	
@@ -69,7 +72,10 @@ resource "aws_security_group_rule" "my-rule" {
 func Test_IgnoreSpecific(t *testing.T) {
 
 	scanner.RegisterCheckRule(rule.Rule{
-		ID:              "ABC123",
+		LegacyID:        "ABC123",
+		Provider:        provider.AWSProvider,
+		Service:         "service",
+		ShortCode:       "abc123",
 		RequiredLabels:  []string{"bad"},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
@@ -80,7 +86,10 @@ func Test_IgnoreSpecific(t *testing.T) {
 	})
 
 	scanner.RegisterCheckRule(rule.Rule{
-		ID:              "DEF456",
+		LegacyID:        "DEF456",
+		Provider:        provider.AWSProvider,
+		Service:         "service",
+		ShortCode:       "def456",
 		RequiredLabels:  []string{"bad"},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
@@ -90,16 +99,18 @@ func Test_IgnoreSpecific(t *testing.T) {
 		},
 	})
 
-	results := scanHCL(`
-resource "bad" "my-bad" {} //tfsec:ignore:ABC123
+	results := testutil.ScanHCL(`
+	resource "bad" "my-bad" {} //tfsec:ignore:ABC123
+	resource "bad" "my-bad" {} //tfsec:ignore:aws-service-abc123
 `, t)
-	require.Len(t, results, 1)
-	assert.Equal(t, results[0].RuleID, "DEF456")
+	require.Len(t, results, 2)
+	assert.Equal(t, results[0].RuleID, "aws-service-def456")
+	assert.Equal(t, results[1].LegacyRuleID, "DEF456")
 
 }
 
 func Test_IgnoreWithExpDateIfDateBreachedThenDontIgnore(t *testing.T) {
-	results := scanHCL(`
+	results := testutil.ScanHCL(`
 resource "aws_security_group_rule" "my-rule" {
     type        = "ingress"
 	
@@ -111,7 +122,7 @@ resource "aws_security_group_rule" "my-rule" {
 }
 
 func Test_IgnoreWithExpDateIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
-	results := scanHCL(`
+	results := testutil.ScanHCL(`
 resource "aws_security_group_rule" "my-rule" {
     type        = "ingress"
 	
@@ -123,7 +134,7 @@ resource "aws_security_group_rule" "my-rule" {
 }
 
 func Test_IgnoreWithExpDateIfDateInvalidThenDontIgnoreTheIgnore(t *testing.T) {
-	results := scanHCL(`
+	results := testutil.ScanHCL(`
 resource "aws_security_group_rule" "my-rule" {
    type        = "ingress"
 
@@ -135,7 +146,7 @@ resource "aws_security_group_rule" "my-rule" {
 }
 
 func Test_IgnoreAboveResourceBlockWithExpDateIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
-	results := scanHCL(`
+	results := testutil.ScanHCL(`
 # tfsec:ignore:AWS006:exp:2221-01-02
 resource "aws_security_group_rule" "my-rule" {
     type        = "ingress"
@@ -148,7 +159,7 @@ resource "aws_security_group_rule" "my-rule" {
 }
 
 func Test_IgnoreAboveResourceBlockWithExpDateAndMultipleIgnoresIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
-	results := scanHCL(`
+	results := testutil.ScanHCL(`
 # tfsec:ignore:AWS006:exp:2221-01-02 #tfsec:ignore:AWS018
 resource "aws_security_group_rule" "my-rule" {
     type        = "ingress"

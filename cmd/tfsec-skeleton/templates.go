@@ -1,42 +1,38 @@
 package main
 
-const checkTemplate = `package rules
+const checkTemplate = `package {{ .Service}}
 
 import (
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/pkg/severity"
+
+	"github.com/aquasecurity/tfsec/pkg/provider"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+
+	"github.com/aquasecurity/tfsec/pkg/rule"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
 
-const {{.CheckName}} = "{{.Provider | ToUpper }}{{ .ID}}"
-const {{.CheckName}}Description = "{{.Summary}}"
-const {{.CheckName}}Impact = "{{.Impact}}"
-const {{.CheckName}}Resolution = "{{.Resolution}}"
-const {{.CheckName}}Explanation = ` + "`" + `
-
-` + "`" + `
-const {{.CheckName}}BadExample = ` + "`" + `
-// bad example code here
-` + "`" + `
-const {{.CheckName}}GoodExample = ` + "`" + `
-// good example code here
-` + "`" + `
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		ID: {{.CheckName}},
+		Service: "{{ .Service}}",
+		ShortCode: "{{ .ShortCode}}",
 		Documentation: rule.RuleDocumentation{
-			Summary:     {{.CheckName}}Description,
-			Explanation: {{.CheckName}}Explanation,
-			Impact:      {{.CheckName}}Impact,
-			Resolution:  {{.CheckName}}Resolution,
-			BadExample:  {{.CheckName}}BadExample,
-			GoodExample: {{.CheckName}}GoodExample,
+			Summary:     "{{.Summary}}",
+			Explanation:` + "`" + `	` + "`" + `,
+			Impact:      "{{.Impact}}",
+			Resolution:  "{{.Resolution}}",
+			BadExample:  ` + "`" + `
+			// bad example code here
+			` + "`" + `,
+			GoodExample: ` + "`" + `
+			// good example code here
+			` + "`" + `,
 			Links: []string{
 				
 			},
@@ -44,7 +40,7 @@ func init() {
 		Provider:       provider.{{.ProviderLongName}}Provider,
 		RequiredTypes:  []string{{.RequiredTypes}},
 		RequiredLabels: []string{{.RequiredLabels}},
-		DefaultSeverity: severity.Warning, 
+		DefaultSeverity: severity.Medium, 
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context){
 				
 			// function contents here
@@ -54,15 +50,16 @@ func init() {
 }
 `
 
-const checkTestTemplate = `package test
+const checkTestTemplate = `package {{ .Service}}
 
 import (
 	"testing"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
 func Test_{{.CheckName}}(t *testing.T) {
+	expectedCode := "{{ .FullCode}}"
 
 	var tests = []struct {
 		name                  string
@@ -75,23 +72,23 @@ func Test_{{.CheckName}}(t *testing.T) {
 			source: ` + "`" + `
 	// bad test
 ` + "`" + `,
-			mustIncludeResultCode: rules.{{.CheckName}},
+			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "TODO: add test name",
 			source: ` + "`" + `
 	// good test
 ` + "`" + `,
-			mustExcludeResultCode: rules.{{.CheckName}},
+			mustExcludeResultCode: expectedCode,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			results := scanHCL(test.source, t)
-			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
-
 }
 `

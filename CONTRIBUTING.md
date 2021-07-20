@@ -187,7 +187,7 @@ resource "aws_gibson" "my-gibson" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			results := scanSource(test.source)
-			assertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
 		})
 	}
 

@@ -5,6 +5,7 @@ import "github.com/aquasecurity/tfsec/pkg/provider"
 type Set interface {
 	Add(result *Result)
 	WithRuleID(id string) Set
+	WithLegacyRuleID(id string) Set
 	WithRuleSummary(description string) Set
 	WithRuleProvider(provider provider.Provider) Set
 	WithImpact(impact string) Set
@@ -20,6 +21,7 @@ func NewSet() *resultSet {
 type resultSet struct {
 	results      []Result
 	ruleID       string
+	legacyID     string
 	ruleSummary  string
 	ruleProvider provider.Provider
 	impact       string
@@ -30,6 +32,7 @@ type resultSet struct {
 func (s *resultSet) Add(result *Result) {
 	result.
 		WithRuleID(s.ruleID).
+		WithLegacyRuleID(s.legacyID).
 		WithRuleSummary(s.ruleSummary).
 		WithImpact(s.impact).
 		WithResolution(s.resolution).
@@ -49,6 +52,11 @@ func (s *resultSet) All() []Result {
 
 func (r *resultSet) WithRuleID(id string) Set {
 	r.ruleID = id
+	return r
+}
+
+func (r *resultSet) WithLegacyRuleID(id string) Set {
+	r.legacyID = id
 	return r
 }
 
