@@ -69,5 +69,8 @@ clone-image:
 	./scripts/clone-images.sh
 
 .PHONY: end-to-end
-end-to-end:
+end-to-end: test
 	go run ./cmd/tfsec -s -p --force-all-dirs ./example
+
+.PHONY: pr-ready
+pr-ready: quality end-to-end

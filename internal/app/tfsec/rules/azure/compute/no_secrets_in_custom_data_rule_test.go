@@ -42,8 +42,8 @@ EOF
 		{
 			name: "virtual machine with no sensitive information in custom_data passes check",
 			source: `
-resource "azurerm_virtual_machine" "bad_example" {
-				name = "bad_example"
+resource "azurerm_virtual_machine" "god_example" {
+				name = "good_example"
 				custom_data =<<EOF
 GREETING_TEXT="Hello"
 EOF
