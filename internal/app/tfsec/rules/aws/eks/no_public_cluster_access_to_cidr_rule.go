@@ -65,26 +65,22 @@ resource "aws_eks_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("vpc_config") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access cidrs is set", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
 				return
 			}
-
 			vpcConfig := resourceBlock.GetBlock("vpc_config")
-			if vpcConfig.MissingChild("public_access_cidrs") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is using default public access cidrs in the vpc config", resourceBlock.FullName())).
-						WithRange(vpcConfig.Range()),
-				)
+
+			publicAccessEnabledAttr := vpcConfig.GetAttribute("endpoint_public_access")
+			if publicAccessEnabledAttr != nil && publicAccessEnabledAttr.IsFalse() {
 				return
 			}
 
 			publicAccessCidrsAttr := vpcConfig.GetAttribute("public_access_cidrs")
-			if cidr.IsOpen(publicAccessCidrsAttr) {
+			if publicAccessCidrsAttr == nil {
+				set.Add(
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' uses the default public access cidr of 0.0.0.0/0", resourceBlock.FullName())),
+				)
+			} else if cidr.IsOpen(publicAccessCidrsAttr) {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has public access cidr explicitly set to wide open", resourceBlock.FullName())).
