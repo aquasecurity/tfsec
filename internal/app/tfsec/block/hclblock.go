@@ -18,7 +18,7 @@ type HCLBlock struct {
 	evalContext *hcl.EvalContext
 	moduleBlock Block
 	expanded    bool
-	key         string
+	cloneIndex  int
 }
 
 func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) Block {
@@ -57,15 +57,19 @@ func (block *HCLBlock) Clone(index cty.Value) Block {
 		for i := 0; i < len(labels); i++ {
 			labels[i] = clone.hclBlock.Labels[i]
 		}
-		switch index.Type() {
-		case cty.Number:
-			f, _ := index.AsBigFloat().Float64()
-			labels[position] = fmt.Sprintf("%s[%d]", clone.hclBlock.Labels[position], int(f))
-		case cty.String:
-			labels[position] = fmt.Sprintf("%s[%q]", clone.hclBlock.Labels[position], index.AsString())
-		default:
-			debug.Log("Invalid key type in iterable: %#v", index.Type())
-			labels[position] = fmt.Sprintf("%s[%#v]", clone.hclBlock.Labels[position], index)
+		if index.IsKnown() && !index.IsNull() {
+			switch index.Type() {
+			case cty.Number:
+				f, _ := index.AsBigFloat().Float64()
+				labels[position] = fmt.Sprintf("%s[%d]", clone.hclBlock.Labels[position], int(f))
+			case cty.String:
+				labels[position] = fmt.Sprintf("%s[%q]", clone.hclBlock.Labels[position], index.AsString())
+			default:
+				debug.Log("Invalid key type in iterable: %#v", index.Type())
+				labels[position] = fmt.Sprintf("%s[%#v]", clone.hclBlock.Labels[position], index)
+			}
+		} else {
+			labels[position] = fmt.Sprintf("%s[%d]", clone.hclBlock.Labels[position], block.cloneIndex)
 		}
 		clone.hclBlock.Labels = labels
 	}
@@ -74,6 +78,7 @@ func (block *HCLBlock) Clone(index cty.Value) Block {
 		"index": indexVal,
 	})
 	clone.markCountExpanded()
+	block.cloneIndex++
 	return clone
 }
 
