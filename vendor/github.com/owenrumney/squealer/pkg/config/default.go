@@ -40,7 +40,7 @@ func DefaultConfig() *Config {
 				Description: "Slack OAuth Token",
 			},
 			{
-				Rule:        `(?i)password\s?[:=]\s?".+"`,
+				Rule:        `(?im)password\s?[:=]\s?"?.+"?`,
 				Description: "Password literal text",
 			},
 		},

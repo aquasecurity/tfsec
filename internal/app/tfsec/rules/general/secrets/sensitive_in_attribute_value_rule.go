@@ -13,21 +13,20 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GEN005",
+		LegacyID:  "GEN005",
 		Service:   "secrets",
 		ShortCode: "sensitive-in-attribute-value",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "The attribute has potentially sensitive data, passwords, tokens or keys in it",
-			Explanation:  `
+			Summary: "The attribute has potentially sensitive data, passwords, tokens or keys in it",
+			Explanation: `
 Sensitive data stored in attributes can result in compromised data. Sensitive data should be passed in through secret variables
 
 `,
-			Impact:       "Sensitive credentials may be compromised",
-			Resolution:   "Check the code for vulnerabilities and move to variables",
-			BadExample:   `
+			Impact:     "Sensitive credentials may be compromised",
+			Resolution: "Check the code for vulnerabilities and move to variables",
+			BadExample: `
 resource "aws_instance" "bad_example" {
 	instance_type = "t2.small"
 
@@ -37,7 +36,7 @@ EOF
 
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 variable "password" {
 	type = string
 }
@@ -46,7 +45,7 @@ resource "aws_instance" "good_instance" {
 	instance_type = "t2.small"
 
 	user_data = <<EOF
-		Password = var.password
+		export EDITOR=vimacs
 EOF
 
 }
