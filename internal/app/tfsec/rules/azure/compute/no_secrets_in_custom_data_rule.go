@@ -1,6 +1,7 @@
 package compute
 
 import (
+	"encoding/base64"
 	"fmt"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
@@ -49,7 +51,7 @@ EOF
 		},
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"azurerm_virtual_machine"},
+		RequiredLabels:  []string{"azurerm_virtual_machine", "azurerm_linux_virtual_machine", "azurerm_windows_virtual_machine"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
@@ -58,17 +60,38 @@ EOF
 			}
 
 			customDataAttr := resourceBlock.GetAttribute("custom_data")
-			for _, str := range customDataAttr.ValueAsStrings() {
-				if scanResult := squealer.NewStringScanner().Scan(str); scanResult.TransgressionFound {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName())).
+
+			if resourceBlock.TypeLabel() == "azurerm_virtual_machine" {
+				for _, str := range customDataAttr.ValueAsStrings() {
+					if checkResult := checkStringForSensitive(str, resourceBlock); checkResult != nil {
+						checkResult.
 							WithRange(customDataAttr.Range()).
-							WithAttributeAnnotation(customDataAttr),
-					)
-					return
+							WithAttributeAnnotation(customDataAttr)
+						set.Add(checkResult)
+					}
 				}
+			} else if customDataAttr.IsResolvable() && customDataAttr.IsString() {
+				encoded, err := base64.RawStdEncoding.DecodeString(customDataAttr.Value().AsString())
+				if err != nil {
+					debug.Log("could not decode the base64 string in the terraform, trying with the string verbatim")
+					encoded = []byte(customDataAttr.Value().AsString())
+				}
+				if checkResult := checkStringForSensitive(string(encoded), resourceBlock); checkResult != nil {
+					checkResult.
+						WithRange(customDataAttr.Range()).
+						WithAttributeAnnotation(customDataAttr)
+					set.Add(checkResult)
+				}
+
 			}
 		},
 	})
+}
+
+func checkStringForSensitive(stringToCheck string, resourceBlock block.Block) *result.Result {
+	if scanResult := squealer.NewStringScanner().Scan(stringToCheck); scanResult.TransgressionFound {
+		return result.New(resourceBlock).
+			WithDescription(fmt.Sprintf("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName()))
+	}
+	return nil
 }

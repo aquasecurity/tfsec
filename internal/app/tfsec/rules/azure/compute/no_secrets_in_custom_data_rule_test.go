@@ -40,6 +40,16 @@ EOF
 			mustIncludeResultCode: expectedCode,
 		},
 		{
+			name: "linux virtual machine with a password in a base64 encoded string in the custom_data fails check",
+			source: `
+	resource "azurerm_linux_virtual_machine" "bad_example" {
+		name = "bad_example"
+		custom_data = "ZXhwb3J0IERBVEFCQVNFX1BBU1NXT1JEPSJTb21lU29ydE9mUGFzc3dvcmQi"
+	}
+`,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
 			name: "virtual machine with no sensitive information in custom_data passes check",
 			source: `
 resource "azurerm_virtual_machine" "god_example" {
@@ -47,6 +57,16 @@ resource "azurerm_virtual_machine" "god_example" {
 				custom_data =<<EOF
 GREETING_TEXT="Hello"
 EOF
+			}
+`,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "linux virtual machine with no sensitive information in base64 custom_data passes check",
+			source: `
+resource "azurerm_linux_virtual_machine" "god_example" {
+				name = "good_example"
+				custom_data = "ZXhwb3J0IEVESVRPUj12aW1hY3M=" 
 			}
 `,
 			mustExcludeResultCode: expectedCode,
