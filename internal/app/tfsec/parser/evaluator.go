@@ -413,3 +413,9 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 	return cty.ObjectVal(values)
 
 }
+
+func (e *Evaluator) SetWorkspace(workspaceName string) {
+
+	ctyWorkspaceName := cty.StringVal(workspaceName)
+	e.ctx.Variables["terraform"] = cty.ObjectVal(map[string]cty.Value{"workspace": ctyWorkspaceName})
+}

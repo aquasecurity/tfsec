@@ -25,6 +25,7 @@ type Scanner struct {
 	includeIgnored    bool
 	excludedRuleIDs   []string
 	ignoreCheckErrors bool
+	workspaceName     string
 }
 
 // New creates a new Scanner
@@ -153,10 +154,42 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Bloc
 	}
 
 	if foundValidIgnore {
-		return isIgnoreWithinExpiry(ignoreLine, id, b.Range())
+		return scanner.verifyIgnoreConditions(ignoreLine, id, b)
 	}
 
 	return foundValidIgnore
+}
+
+func (scanner *Scanner) verifyIgnoreConditions(ignoreLine string, id string, b block.Block) bool {
+	for _, ignoreCode := range strings.Split(ignoreLine, " ") {
+		ignoreCode = fmt.Sprintf("%s:", ignoreCode)
+		if strings.Contains(ignoreCode, fmt.Sprintf("%s:", id)) || strings.Contains(ignoreCode, "ignore:*") {
+			if scanner.workspaceName != "" && strings.Contains(ignoreCode, ":ws:") {
+				if isIgnoreWithinExpiry(ignoreCode, id, b.Range()) {
+					if scanner.isWorkspaceIgnored(ignoreCode, id, b.Range()) {
+						return true
+					} else {
+						return false
+					}
+				}
+			} else {
+				return isIgnoreWithinExpiry(ignoreCode, id, b.Range())
+			}
+		}
+	}
+	return false
+}
+
+func (s *Scanner) isWorkspaceIgnored(ignoreLine string, id string, r block.Range) bool {
+	ignoreLine = fmt.Sprintf("%s:", ignoreLine)
+	if strings.Contains(ignoreLine, ":ws:") {
+		if s.workspaceName == "" {
+			return false
+		}
+		return strings.Contains(ignoreLine, fmt.Sprintf(":ws:%s:", s.workspaceName))
+	}
+
+	return false
 }
 
 func isIgnoreWithinExpiry(ignoreLine string, id string, r block.Range) bool {

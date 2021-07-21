@@ -19,3 +19,9 @@ func OptionStopOnHCLError() Option {
 		p.stopOnHCLError = true
 	}
 }
+
+func OptionWithWorkspaceName(workspaceName string) Option {
+	return func(p *Parser) {
+		p.workspaceName = workspaceName
+	}
+}
