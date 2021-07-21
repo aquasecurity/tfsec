@@ -35,12 +35,10 @@ lint-pr-checks:
 .PHONY: tagger
 tagger:
 	@git checkout master
-	git fetch --tags
-	echo "the most recent tag was `git describe --tags --abbrev=0`"
-	echo ""
-	read -p "Tag number: " TAG
-	git tag -a $$TAG -m $$TAG
-	git push --tags
+	@git fetch --tags
+	@echo "the most recent tag was `git describe --tags --abbrev=0`"
+	@echo ""
+	@read -p "Tag number: " TAG && git tag -a $TAG -m $TAG && git push origin $TAG
 
 .PHONY: cyclo
 cyclo:
