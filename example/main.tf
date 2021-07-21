@@ -23,6 +23,7 @@ variable "enableEncryption" {
   default = false
 }
 
+#tfsec:ignore:azure-compute-enable-disk-encryption
 resource "azurerm_managed_disk" "source" {
   encryption_settings {
     enabled = var.enableEncryption

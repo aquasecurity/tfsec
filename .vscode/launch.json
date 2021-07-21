@@ -10,6 +10,13 @@
       "args": ["${workspaceFolder}/example"]
     },
     {
+      "name": "Basic doc gen",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/tfsec-docs/"
+    },
+    {
       "name": "custom_functions test",
       "type": "go",
       "request": "launch",

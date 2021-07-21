@@ -30,7 +30,7 @@ func CheckRule(r *Rule, block block.Block, ctx *hclcontext.Context, ignoreErrors
 	var links []string
 
 	if r.Provider != provider.CustomProvider {
-		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s", r.Provider, r.Service, r.ShortCode))
+		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s#%s/%s", r.Provider, r.Service, r.ShortCode, r.Provider, r.Service))
 	}
 
 	links = append(links, r.Documentation.Links...)
