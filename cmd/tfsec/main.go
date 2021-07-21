@@ -289,6 +289,11 @@ func getParserOptions() []parser.Option {
 	if !ignoreHCLErrors {
 		opts = append(opts, parser.OptionStopOnHCLError())
 	}
+
+	if workspace != "" {
+		opts = append(opts, parser.OptionWithWorkspaceName(workspace))
+	}
+
 	return opts
 }
 

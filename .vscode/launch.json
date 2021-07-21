@@ -39,7 +39,11 @@
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/tfsec/main.go",
-      "args": ["${workspaceFolder}/example/workspace"]
+      "args": [
+        "${workspaceFolder}/example/workspace",
+        "--workspace",
+        "somethingelse"
+      ]
     }
   ]
 }
