@@ -17,7 +17,7 @@ has_toc: false
 
 The included {{$.Provider | FormatProviderName }} checks are listed below. For more information about each check, see the link provided.
 
-|  {{$.Provider | FormatProviderName}} Checks |
+| Checks |
 |:------------|{{range $check := .Checks}}
 |[{{$check.ID}}](/docs/{{$.Provider}}/{{$check.Service}}/{{$check.ShortCode}})<br>{{$check.Documentation.Summary}}|{{end}}
 `

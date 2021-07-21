@@ -52,6 +52,7 @@ var rootCmd = &cobra.Command{
 
 func getSortedFileContents() []*FileContent {
 	rules := scanner.GetRegisteredRules()
+
 	checkMap := make(map[string][]rule.Rule)
 
 	for _, r := range rules {
@@ -68,18 +69,12 @@ func getSortedFileContents() []*FileContent {
 			Checks:   checks,
 		})
 	}
-	sortFileContentsByProvider(fileContents)
+	generateNavIndexFile(fileContents)
 	return fileContents
 }
 
 func sortChecks(checks []rule.Rule) {
 	sort.Slice(checks, func(i, j int) bool {
 		return checks[i].ID() < checks[j].ID()
-	})
-}
-
-func sortFileContentsByProvider(fileContents []*FileContent) {
-	sort.Slice(fileContents, func(i, j int) bool {
-		return fileContents[i].Provider < fileContents[j].Provider
 	})
 }
