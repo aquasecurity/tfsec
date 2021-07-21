@@ -162,7 +162,8 @@ func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Bloc
 
 func (scanner *Scanner) verifyIgnoreConditions(ignoreLine string, id string, b block.Block) bool {
 	for _, ignoreCode := range strings.Split(ignoreLine, " ") {
-		if strings.Contains(ignoreCode, id) || strings.Contains(ignoreCode, "ignore:*") {
+		ignoreCode = fmt.Sprintf("%s:", ignoreCode)
+		if strings.Contains(ignoreCode, fmt.Sprintf("%s:", id)) || strings.Contains(ignoreCode, "ignore:*") {
 			if scanner.workspaceName != "" && strings.Contains(ignoreCode, ":ws:") {
 				if isIgnoreWithinExpiry(ignoreCode, id, b.Range()) {
 					if scanner.isWorkspaceIgnored(ignoreCode, id, b.Range()) {
