@@ -125,6 +125,8 @@ func (r *Result) WithAttributeAnnotation(attr block.Attribute) *Result {
 
 	typ := attr.Type()
 
+	r.WithRange(attr.Range())
+
 	switch typ {
 	case cty.String:
 		raw = fmt.Sprintf("%q", attr.Value().AsString())
