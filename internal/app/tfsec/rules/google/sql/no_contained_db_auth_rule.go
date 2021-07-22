@@ -21,12 +21,12 @@ import (
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		Service:   "sql",
-		ShortCode: "no-cross-db-ownership-chaining",
+		ShortCode: "no-contained-db-auth",
 		Documentation: rule.RuleDocumentation{
-			Summary:     "Cross-database ownership chaining should be disabled",
-			Explanation: `Cross-database ownership chaining, also known as cross-database chaining, is a security feature of SQL Server that allows users of databases access to other databases besides the one they are currently using.`,
-			Impact:      "Unintended access to sensitive data",
-			Resolution:  "Disable cross database ownership chaining",
+			Summary: "Contained database authentication should be disabled",
+			Explanation: `	`,
+			Impact:     "Access can be granted without knowledge of the database administrator",
+			Resolution: "Disable contained database authentication",
 			BadExample: `
 resource "google_sql_database_instance" "db" {
 	name             = "db"
@@ -41,13 +41,13 @@ resource "google_sql_database_instance" "db" {
 	region           = "us-central1"
 	settings {
 	    database_flags {
-		    name  = "cross db ownership chaining"
+		    name  = "contained database authentication"
 		    value = "off"
 		}
 	}
 }
 			`,
-			Links: []string{"https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/cross-db-ownership-chaining-server-configuration-option?view=sql-server-ver15"},
+			Links: []string{},
 		},
 		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
@@ -70,18 +70,18 @@ resource "google_sql_database_instance" "db" {
 			if settingsBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has cross-database ownership chaining enabled by default", resourceBlock.FullName())),
+						WithDescription(fmt.Sprintf("Resource '%s' has contained database authentication enabled by default", resourceBlock.FullName())),
 				)
 				return
 			}
 
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
-				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Value().AsString() == "cross db ownership chaining" {
+				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Value().AsString() == "contained database authentication" {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
 						if valueAttr.Value().AsString() == "on" {
 							set.Add(
 								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has cross-database ownership chaining explicitly enabled", resourceBlock.FullName())),
+									WithDescription(fmt.Sprintf("Resource '%s' has contained database authentication explicitly enabled", resourceBlock.FullName())),
 							)
 						}
 						// otherwise it's off, awesome
@@ -93,9 +93,8 @@ resource "google_sql_database_instance" "db" {
 			// we didn't find the flag so it must be on by default
 			set.Add(
 				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' has cross-database ownership chaining enabled by default", resourceBlock.FullName())),
+					WithDescription(fmt.Sprintf("Resource '%s' has contained database authentication enabled by default", resourceBlock.FullName())),
 			)
-
 		},
 	})
 }
