@@ -9,12 +9,13 @@ const (
 	UnknownProvider      Provider = ""
 	AWSProvider          Provider = "aws"
 	AzureProvider        Provider = "azure"
-	GoogleProvider       Provider = "google"
-	GeneralProvider      Provider = "general"
-	OracleProvider       Provider = "oracle"
-	DigitalOceanProvider Provider = "digitalocean"
 	CustomProvider       Provider = "custom"
+	DigitalOceanProvider Provider = "digitalocean"
+	GeneralProvider      Provider = "general"
 	GitHubProvider       Provider = "github"
+	GoogleProvider       Provider = "google"
+	OracleProvider       Provider = "oracle"
+	OpenStackProvider    Provider = "openstack"
 )
 
 func RuleProviderToString(provider Provider) string {

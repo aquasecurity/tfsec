@@ -11,7 +11,7 @@ import (
 	"github.com/liamg/clinch/prompt"
 )
 
-var providers = map[string]string{"AWS": "aws", "Azure": "azu", "Google": "gcp", "Oracle": "oci", "General": "gen", "DigitalOcean": "dig", "GitHub": "git"}
+var providers = map[string]string{"AWS": "aws", "Azure": "azu", "Google": "gcp", "Oracle": "oci", "General": "gen", "DigitalOcean": "dig", "GitHub": "git", "OpenStack": "ost"}
 
 type checkSkeleton struct {
 	Provider         string
