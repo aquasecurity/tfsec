@@ -44,6 +44,7 @@ resource "google_container_cluster" "good_example" {
 }
 `,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#service_account",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#use_least_privilege_sa",
 			},
 		},

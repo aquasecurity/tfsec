@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS074",
+		LegacyID:  "AWS074",
 		Service:   "s3",
 		ShortCode: "block-public-acls",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "S3 Access block should block public ACL",
-			Impact:       "PUT calls with public ACLs specified can make objects public",
-			Resolution:   "Enable blocking any PUT calls with a public ACL specified",
-			Explanation:  `
+			Summary:    "S3 Access block should block public ACL",
+			Impact:     "PUT calls with public ACLs specified can make objects public",
+			Resolution: "Enable blocking any PUT calls with a public ACL specified",
+			Explanation: `
 S3 buckets should block public ACLs on buckets and any objects they contain. By blocking, PUTs with fail if the object has any public ACL a.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_s3_bucket_public_access_block" "bad_example" {
 	bucket = aws_s3_bucket.example.id
 }
@@ -41,7 +40,7 @@ resource "aws_s3_bucket_public_access_block" "bad_example" {
 	block_public_acls = false
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_s3_bucket_public_access_block" "good_example" {
 	bucket = aws_s3_bucket.example.id
   
@@ -49,8 +48,8 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 }
 `,
 			Links: []string{
-				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block#block_public_acls",
+				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
 			},
 		},
 		Provider:        provider.AWSProvider,

@@ -17,28 +17,27 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS079",
+		LegacyID:  "AWS079",
 		Service:   "ec2",
 		ShortCode: "enforce-http-token-imds",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "aws_instance should activate session tokens for Instance Metadata Service.",
-			Impact:       "Instance metadata service can be interacted with freely",
-			Resolution:   "Enable HTTP token requirement for IMDS",
-			Explanation:  `
+			Summary:    "aws_instance should activate session tokens for Instance Metadata Service.",
+			Impact:     "Instance metadata service can be interacted with freely",
+			Resolution: "Enable HTTP token requirement for IMDS",
+			Explanation: `
 IMDS v2 (Instance Metadata Service) introduced session authentication tokens which improve security when talking to IMDS.
 By default <code>aws_instance</code> resource sets IMDS session auth tokens to be optional. 
 To fully protect IMDS you need to enable session tokens by using <code>metadata_options</code> block and its <code>http_tokens</code> variable set to <code>required</code>.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_instance" "bad_example" {
   ami           = "ami-005e54dee72cc1d00"
   instance_type = "t2.micro"
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_instance" "good_example" {
   ami           = "ami-005e54dee72cc1d00"
   instance_type = "t2.micro"
@@ -48,8 +47,8 @@ resource "aws_instance" "good_example" {
 }
 `,
 			Links: []string{
-				"https://aws.amazon.com/blogs/security/defense-in-depth-open-firewalls-reverse-proxies-ssrf-vulnerabilities-ec2-instance-metadata-service",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#metadata-options",
+				"https://aws.amazon.com/blogs/security/defense-in-depth-open-firewalls-reverse-proxies-ssrf-vulnerabilities-ec2-instance-metadata-service",
 			},
 		},
 		Provider:        provider.AWSProvider,

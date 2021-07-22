@@ -17,25 +17,24 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS002",
+		LegacyID:  "AWS002",
 		Service:   "s3",
 		ShortCode: "enable-bucket-logging",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "S3 Bucket does not have logging enabled.",
-			Explanation:  `
+			Summary: "S3 Bucket does not have logging enabled.",
+			Explanation: `
 Buckets should have logging enabled so that access can be audited. 
 `,
-			Impact:       "There is no way to determine the access to this bucket",
-			Resolution:   "Add a logging block to the resource to enable access logging",
-			BadExample:   `
+			Impact:     "There is no way to determine the access to this bucket",
+			Resolution: "Add a logging block to the resource to enable access logging",
+			BadExample: `
 resource "aws_s3_bucket" "bad_example" {
 
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_s3_bucket" "good_example" {
 	logging {
 		target_bucket = "target-bucket"
@@ -43,8 +42,8 @@ resource "aws_s3_bucket" "good_example" {
 }
 `,
 			Links: []string{
-				"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket",
+				"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html",
 			},
 		},
 		Provider:        provider.AWSProvider,

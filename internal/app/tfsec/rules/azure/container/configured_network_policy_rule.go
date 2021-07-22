@@ -17,26 +17,25 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU006",
+		LegacyID:  "AZU006",
 		Service:   "container",
 		ShortCode: "configured-network-policy",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Ensure AKS cluster has Network Policy configured",
-			Impact:       "No network policy is protecting the AKS cluster",
-			Resolution:   "Configure a network policy",
-			Explanation:  `
+			Summary:    "Ensure AKS cluster has Network Policy configured",
+			Impact:     "No network policy is protecting the AKS cluster",
+			Resolution: "Configure a network policy",
+			Explanation: `
 The Kubernetes object type NetworkPolicy should be defined to have opportunity allow or block traffic to pods, as in a Kubernetes cluster configured with default settings, all pods can discover and communicate with each other without any restrictions.
 `,
-			BadExample:   `
+			BadExample: `
 resource "azurerm_kubernetes_cluster" "bad_example" {
 	network_profile {
 	  }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "azurerm_kubernetes_cluster" "good_example" {
 	network_profile {
 	  network_policy = "calico"
@@ -44,8 +43,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 }
 `,
 			Links: []string{
-				"https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html#network_policy",
-				"https://docs.microsoft.com/en-us/azure/aks/use-network-policies",
+				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#network_policy",
 				"https://kubernetes.io/docs/concepts/services-networking/network-policies",
 			},
 		},

@@ -67,6 +67,7 @@ resource "google_storage_bucket" "static-site" {
 }
 `,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket#uniform_bucket_level_access",
 				"https://cloud.google.com/storage/docs/uniform-bucket-level-access",
 				"https://jbrojbrojbro.medium.com/you-make-the-rules-with-authentication-controls-for-cloud-storage-53c32543747b",
 			},

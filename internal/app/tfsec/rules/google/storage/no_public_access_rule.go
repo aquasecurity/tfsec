@@ -43,6 +43,7 @@ resource "google_storage_bucket_iam_binding" "binding" {
 }
 			`,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_iam#member/members",
 				"https://jbrojbrojbro.medium.com/you-make-the-rules-with-authentication-controls-for-cloud-storage-53c32543747b",
 			},
 		},

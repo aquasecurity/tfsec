@@ -16,19 +16,19 @@ type linter struct {
 func (l *linter) lint(check rule.Rule) {
 	// crashout immediately if there is a check with no id
 	if check.ShortCode == "" {
-		fmt.Printf("Found a check with no short code\n")
+		fmt.Printf("%s: Found a check with no short code\n", check.ID())
 		os.Exit(1)
 	}
 	if check.Service == "" {
-		fmt.Printf("Found a check with no service\n")
+		fmt.Printf("%s: Found a check with no service\n", check.ID())
 		os.Exit(1)
 	}
 	if check.Provider == "" {
-		fmt.Printf("Found a check with no provider\n")
+		fmt.Printf("%s: Found a check with no provider\n", check.ID())
 		os.Exit(1)
 	}
 	if len(check.Documentation.Links) == 0 {
-		fmt.Printf("Found check with no links\n")
+		fmt.Printf("%s: Found check with no links\n", check.ID())
 		os.Exit(1)
 	}
 
@@ -45,7 +45,13 @@ func (l *linter) lint(check rule.Rule) {
 
 func (l *linter) checkDocumentation(check rule.Rule) bool {
 	docs := check.Documentation
+
 	var errorFound bool
+	if !strings.Contains(check.Documentation.Links[0], ".terraform.io") {
+		fmt.Printf("%s: The first link should be Terraform for consistency\n", check.ID())
+		errorFound = true
+	}
+
 	if err := l.verifyPart(string(docs.Summary), "Summary"); err != nil {
 		fmt.Printf("%s: %s\n", check.ID(), err.Error())
 		errorFound = true

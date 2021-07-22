@@ -58,9 +58,9 @@ resource "google_storage_bucket_iam_member" "good_example" {
 	member = "serviceAccount:test@example.com"
 }`,
 			Links: []string{
+				"https://www.terraform.io/docs/providers/google/d/iam_policy.html#members",
 				"https://cloud.google.com/iam/docs/overview#permissions",
 				"https://cloud.google.com/resource-manager/reference/rest/v1/projects/setIamPolicy",
-				"https://www.terraform.io/docs/providers/google/d/iam_policy.html#members",
 			},
 		},
 		Provider:      provider.GoogleProvider,
