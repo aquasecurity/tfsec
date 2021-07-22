@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -26,6 +27,11 @@ func (l *linter) lint(check rule.Rule) {
 		fmt.Printf("Found a check with no provider\n")
 		os.Exit(1)
 	}
+	if len(check.Documentation.Links) == 0 {
+		fmt.Printf("Found check with no links\n")
+		os.Exit(1)
+	}
+
 	errorFound := l.checkDocumentation(check)
 	if len(check.RequiredTypes) == 0 {
 		fmt.Printf("%s: missing required types\n", check.ID())
@@ -72,7 +78,7 @@ func (l *linter) checkDocumentation(check rule.Rule) bool {
 }
 
 func (l *linter) verifyPart(checkPart, checkDescription string) error {
-	if checkPart == "" {
+	if strings.TrimSpace(checkPart) == "" {
 		return fmt.Errorf("[%s] documentation is empty", checkDescription)
 	}
 
