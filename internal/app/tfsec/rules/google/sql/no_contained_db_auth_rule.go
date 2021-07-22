@@ -47,7 +47,7 @@ resource "google_sql_database_instance" "db" {
 	}
 }
 			`,
-			Links: []string{},
+			Links: []string{"https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/contained-database-authentication-server-configuration-option?view=sql-server-ver15"},
 		},
 		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
