@@ -19,30 +19,29 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU004",
+		LegacyID:  "AZU004",
 		Service:   "datalake",
 		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Unencrypted data lake storage.",
-			Impact:       "Data could be read if compromised",
-			Resolution:   "Enable encryption of data lake storage",
-			Explanation:  `
+			Summary:    "Unencrypted data lake storage.",
+			Impact:     "Data could be read if compromised",
+			Resolution: "Enable encryption of data lake storage",
+			Explanation: `
 Datalake storage encryption defaults to Enabled, it shouldn't be overridden to Disabled.
 `,
-			BadExample:   `
+			BadExample: `
 resource "azurerm_data_lake_store" "bad_example" {
 	encryption_state = "Disabled"
 }`,
-			GoodExample:  `
+			GoodExample: `
 resource "azurerm_data_lake_store" "good_example" {
 	encryption_state = "Enabled"
 }`,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/data_lake_store",
 				"https://docs.microsoft.com/en-us/azure/data-lake-store/data-lake-store-security-overview",
-				"https://www.terraform.io/docs/providers/azurerm/r/data_lake_store.html",
 			},
 		},
 		Provider:        provider.AzureProvider,

@@ -70,5 +70,9 @@ clone-image:
 end-to-end: test
 	go run ./cmd/tfsec -s -p --force-all-dirs ./example
 
+.PHONY: pr-lint
+pr-lint: 
+	go run ./cmd/tfsec-pr-lint
+
 .PHONY: pr-ready
-pr-ready: quality end-to-end
+pr-ready: quality end-to-end pr-lint

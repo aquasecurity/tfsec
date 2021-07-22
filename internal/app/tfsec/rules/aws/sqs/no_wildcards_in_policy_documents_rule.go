@@ -21,22 +21,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS047",
+		LegacyID:  "AWS047",
 		Service:   "sqs",
 		ShortCode: "no-wildcards-in-policy-documents",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "AWS SQS policy document has wildcard action statement.",
-			Impact:       "SQS policies with wildcard actions allow more that is required",
-			Resolution:   "Keep policy scope to the minimum that is required to be effective",
-			Explanation:  `
+			Summary:    "AWS SQS policy document has wildcard action statement.",
+			Impact:     "SQS policies with wildcard actions allow more that is required",
+			Resolution: "Keep policy scope to the minimum that is required to be effective",
+			Explanation: `
 SQS Policy actions should always be restricted to a specific set.
 
 This ensures that the queue itself cannot be modified or deleted, and prevents possible future additions to queue actions to be implicitly allowed.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_sqs_queue_policy" "bad_example" {
   queue_url = aws_sqs_queue.q.id
 
@@ -53,7 +52,7 @@ resource "aws_sqs_queue_policy" "bad_example" {
 POLICY
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_sqs_queue_policy" "good_example" {
   queue_url = aws_sqs_queue.q.id
 
@@ -71,8 +70,8 @@ POLICY
 }
 `,
 			Links: []string{
-				"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-security-best-practices.html",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue_policy",
+				"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-security-best-practices.html",
 			},
 		},
 		Provider:        provider.AWSProvider,

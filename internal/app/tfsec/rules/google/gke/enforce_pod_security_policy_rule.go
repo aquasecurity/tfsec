@@ -48,8 +48,8 @@ resource "google_container_cluster" "good_example" {
 	}
 }`,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#pod_security_policy_config",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#admission_controllers",
-				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#pod_security_policy_config",
 			},
 		},
 		Provider:        provider.GoogleProvider,

@@ -51,8 +51,8 @@ resource "google_container_node_pool" "good_example" {
 	}
 }`,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#node_metadata",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/protecting-cluster-metadata#create-concealed",
-				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#node_metadata",
 			},
 		},
 		Provider:        provider.GoogleProvider,

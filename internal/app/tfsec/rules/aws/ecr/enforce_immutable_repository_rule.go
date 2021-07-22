@@ -17,22 +17,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS078",
+		LegacyID:  "AWS078",
 		Service:   "ecr",
 		ShortCode: "enforce-immutable-repository",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "ECR images tags shouldn't be mutable.",
-			Impact:       "Image tags could be overwritten with compromised images",
-			Resolution:   "Only use immutable images in ECR",
-			Explanation:  `
+			Summary:    "ECR images tags shouldn't be mutable.",
+			Impact:     "Image tags could be overwritten with compromised images",
+			Resolution: "Only use immutable images in ECR",
+			Explanation: `
 ECR images should be set to IMMUTABLE to prevent code injection through image mutation.
 
 This can be done by setting <code>image_tab_mutability</code> to <code>IMMUTABLE</code>
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_ecr_repository" "bad_example" {
   name                 = "bar"
   image_tag_mutability = "MUTABLE"
@@ -42,7 +41,7 @@ resource "aws_ecr_repository" "bad_example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_ecr_repository" "good_example" {
   name                 = "bar"
   image_tag_mutability = "IMMUTABLE"
@@ -53,8 +52,8 @@ resource "aws_ecr_repository" "good_example" {
 }
 `,
 			Links: []string{
-				"https://sysdig.com/blog/toctou-tag-mutability/",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository",
+				"https://sysdig.com/blog/toctou-tag-mutability/",
 			},
 		},
 		Provider:        provider.AWSProvider,

@@ -41,8 +41,8 @@ resource "google_compute_firewall" "good_example" {
 	destination_ranges = ["1.2.3.4/32"]
 }`,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall",
 				"https://cloud.google.com/vpc/docs/using-firewalls",
-				"https://www.terraform.io/docs/providers/google/r/compute_firewall.html",
 			},
 		},
 		Provider:        provider.GoogleProvider,

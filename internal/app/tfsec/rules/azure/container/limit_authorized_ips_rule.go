@@ -17,25 +17,24 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU008",
+		LegacyID:  "AZU008",
 		Service:   "container",
 		ShortCode: "limit-authorized-ips",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Ensure AKS has an API Server Authorized IP Ranges enabled",
-			Impact:       "Any IP can interact with the API server",
-			Resolution:   "Limit the access to the API server to a limited IP range",
-			Explanation:  `
+			Summary:    "Ensure AKS has an API Server Authorized IP Ranges enabled",
+			Impact:     "Any IP can interact with the API server",
+			Resolution: "Limit the access to the API server to a limited IP range",
+			Explanation: `
 The API server is the central way to interact with and manage a cluster. To improve cluster security and minimize attacks, the API server should only be accessible from a limited set of IP address ranges.
 `,
-			BadExample:   `
+			BadExample: `
 resource "azurerm_kubernetes_cluster" "bad_example" {
 
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "azurerm_kubernetes_cluster" "good_example" {
     api_server_authorized_ip_ranges = [
 		"1.2.3.4/32"
@@ -43,8 +42,8 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 }
 `,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#api_server_authorized_ip_ranges",
 				"https://docs.microsoft.com/en-us/azure/aks/api-server-authorized-ip-ranges",
-				"https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html#api_server_authorized_ip_ranges",
 			},
 		},
 		Provider:        provider.AzureProvider,

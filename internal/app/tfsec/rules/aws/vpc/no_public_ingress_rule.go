@@ -52,6 +52,7 @@ resource "aws_network_acl_rule" "good_example" {
 }
 `,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl_rule#cidr_block",
 				"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
 			},
 		},

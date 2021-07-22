@@ -18,25 +18,24 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU009",
+		LegacyID:  "AZU009",
 		Service:   "container",
 		ShortCode: "logging",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Ensure AKS logging to Azure Monitoring is Configured",
-			Impact:       "Logging provides valuable information about access and usage",
-			Resolution:   "Enable logging for AKS",
-			Explanation:  `
+			Summary:    "Ensure AKS logging to Azure Monitoring is Configured",
+			Impact:     "Logging provides valuable information about access and usage",
+			Resolution: "Enable logging for AKS",
+			Explanation: `
 Ensure AKS logging to Azure Monitoring is configured for containers to monitor the performance of workloads.
 `,
-			BadExample:   `
+			BadExample: `
 resource "azurerm_kubernetes_cluster" "bad_example" {
     addon_profile {}
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "azurerm_kubernetes_cluster" "good_example" {
     addon_profile {
 		oms_agent {
@@ -46,7 +45,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 }
 `,
 			Links: []string{
-				"https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html#oms_agent",
+				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#oms_agent",
 				"https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-onboard",
 			},
 		},

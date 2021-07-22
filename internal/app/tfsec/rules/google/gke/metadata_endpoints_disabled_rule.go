@@ -48,8 +48,8 @@ resource "google_container_cluster" "good_example" {
   }
 }`,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#metadata",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#protect_node_metadata_default_for_112",
-				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#metadata",
 			},
 		},
 		Provider:        provider.GoogleProvider,

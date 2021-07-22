@@ -42,8 +42,8 @@ resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 }`,
 			Links: []string{
-				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
+				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
 			},
 		},
 		Provider:        provider.AWSProvider,
