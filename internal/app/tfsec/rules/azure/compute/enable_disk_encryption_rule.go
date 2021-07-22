@@ -17,26 +17,25 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU003",
+		LegacyID:  "AZU003",
 		Service:   "compute",
 		ShortCode: "enable-disk-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Unencrypted managed disk.",
-			Impact:       "Data could be read if compromised",
-			Resolution:   "Enable encryption on managed disks",
-			Explanation:  `
+			Summary:    "Enable disk encryption on managed disk",
+			Impact:     "Data could be read if compromised",
+			Resolution: "Enable encryption on managed disks",
+			Explanation: `
 Manage disks should be encrypted at rest. When specifying the <code>encryption_settings</code> block, the enabled attribute should be set to <code>true</code>.
 `,
-			BadExample:   `
+			BadExample: `
 resource "azurerm_managed_disk" "bad_example" {
 	encryption_settings {
 		enabled = false
 	}
 }`,
-			GoodExample:  `
+			GoodExample: `
 resource "azurerm_managed_disk" "good_example" {
 	encryption_settings {
 		enabled = true
