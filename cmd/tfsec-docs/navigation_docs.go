@@ -57,6 +57,7 @@ func generateNavIndexFile(registeredChecks []*FileContent) error {
 			Title:    formatProviderName(check.Provider),
 			Services: getServices(check.Checks, check.Provider),
 			Provider: fmt.Sprintf("%s/", check.Provider),
+
 		}
 
 		navBlocks = append(navBlocks, block)
