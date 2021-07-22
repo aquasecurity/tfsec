@@ -55,5 +55,6 @@ import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/gke"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/iam"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/storage"
+	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/openstack/compute"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/oracle/compute"
 )
