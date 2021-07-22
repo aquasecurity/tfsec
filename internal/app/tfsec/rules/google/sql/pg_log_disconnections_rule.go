@@ -2,7 +2,6 @@ package sql
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
@@ -64,7 +63,7 @@ resource "google_sql_database_instance" "db" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			dbVersionAttr := resourceBlock.GetAttribute("database_version")
-			if dbVersionAttr != nil && dbVersionAttr.IsString() && !strings.HasPrefix(dbVersionAttr.Value().AsString(), "POSTGRES") {
+			if dbVersionAttr != nil && dbVersionAttr.IsString() && !dbVersionAttr.StartsWith("POSTGRES") {
 				return
 			}
 
@@ -78,7 +77,7 @@ resource "google_sql_database_instance" "db" {
 			}
 
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
-				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Value().AsString() == "log_disconnections" {
+				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Equals("log_disconnections") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
 						if valueAttr.Value().AsString() == "off" {
 							set.Add(

@@ -2,7 +2,6 @@ package sql
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
@@ -78,7 +77,7 @@ resource "google_sql_database_instance" "db" {
 			}
 
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
-				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Value().AsString() == "log_checkpoints" {
+				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Equals("log_checkpoints") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
 						if valueAttr.Value().AsString() == "off" {
 							set.Add(
