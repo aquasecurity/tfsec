@@ -2,10 +2,7 @@ package sql
 
 import (
 	"fmt"
-<<<<<<< HEAD
 	"strings"
-=======
->>>>>>> Added google sql cross database ownership chaining rule
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
