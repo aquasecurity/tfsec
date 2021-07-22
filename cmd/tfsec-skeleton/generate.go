@@ -27,6 +27,7 @@ type checkSkeleton struct {
 	RequiredLabels   string
 	CheckFilename    string
 	TestFileName     string
+	Package          string
 }
 
 var funcMap = template.FuncMap{
@@ -43,9 +44,7 @@ func generateCheckBody() error {
 	checkPath := fmt.Sprintf("internal/app/tfsec/rules/%s", details.CheckFilename)
 	testPath := fmt.Sprintf("internal/app/tfsec/rules/%s", details.TestFileName)
 
-	if err := os.Mkdir(filepath.Dir(checkPath), 0700); err != nil {
-		panic(err)
-	}
+	_ = os.Mkdir(filepath.Dir(checkPath), 0700)
 
 	if err = verifyCheckPath(checkPath); err != nil {
 		return err
@@ -113,11 +112,12 @@ func populateSkeleton(summary, selected, service, shortCode, impact, resolution,
 	checkBody.Summary = summary
 	checkBody.ShortCode = shortCode
 	checkBody.FullCode = strings.ToLower(fmt.Sprintf("%s-%s-%s", selected, service, shortCode))
-	checkBody.Service = strings.ReplaceAll(service, "-", "_")
+	checkBody.Service = service
 	checkBody.Impact = impact
 	checkBody.Resolution = resolution
 	checkBody.Provider = providers[selected]
 	checkBody.ProviderLongName = selected
+	checkBody.Package = strings.ReplaceAll(service, "-", "")
 
 	if err != nil {
 		return nil, err
@@ -126,7 +126,7 @@ func populateSkeleton(summary, selected, service, shortCode, impact, resolution,
 	checkBody.CheckName = fmt.Sprintf("%s%s", strings.Title(selected), strings.ReplaceAll(strings.Title(shortCode), "-", ""))
 	checkBody.RequiredTypes = fmt.Sprintf("{\"%s\"}", strings.Join(strings.Split(blockTypes, " "), "\", \""))
 	checkBody.RequiredLabels = fmt.Sprintf("{\"%s\"}", strings.Join(strings.Split(blockLabels, " "), "\", \""))
-	filename := fmt.Sprintf("%s/%s/%s", selected, strings.ReplaceAll(service, "-", "_"), strings.ReplaceAll(shortCode, "-", "_"))
+	filename := fmt.Sprintf("%s/%s/%s", selected, checkBody.Package, strings.ReplaceAll(shortCode, "-", "_"))
 	checkBody.CheckFilename = fmt.Sprintf("%s_rule.go", strings.ToLower(filename))
 	checkBody.TestFileName = fmt.Sprintf("%s_rule_test.go", strings.ToLower(filename))
 

@@ -49,7 +49,7 @@ resource "azurerm_security_center_subscription_pricing" "good_example" {
 		Provider:        provider.AzureProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_security_center_subscription_pricing"},
-		DefaultSeverity: severity.Medium,
+		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			tierAttr := resourceBlock.GetAttribute("tier")
 			if tierAttr != nil && tierAttr.Equals("Free", block.IgnoreCase) {
