@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_GooglePgLogDisconnections(t *testing.T) {
+func Test_GooglePgLogConnections(t *testing.T) {
 	expectedCode := "google-sql-pg-log-disconnections"
 
 	var tests = []struct {
