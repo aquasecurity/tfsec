@@ -54,8 +54,8 @@ resource "google_container_cluster" "good_example" {
 }
 `,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#master_auth",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#restrict_authn_methods",
-				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#master_auth",
 			},
 		},
 		Provider:        provider.GoogleProvider,

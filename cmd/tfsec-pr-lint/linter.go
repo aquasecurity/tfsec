@@ -47,7 +47,7 @@ func (l *linter) checkDocumentation(check rule.Rule) bool {
 	docs := check.Documentation
 
 	var errorFound bool
-	if !strings.Contains(check.Documentation.Links[0], "registry.terraform.io") {
+	if !strings.Contains(check.Documentation.Links[0], ".terraform.io") {
 		fmt.Printf("%s: The first link should be Terraform for consistency\n", check.ID())
 		errorFound = true
 	}

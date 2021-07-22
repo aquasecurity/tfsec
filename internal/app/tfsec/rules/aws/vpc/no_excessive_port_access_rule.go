@@ -18,20 +18,19 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS050",
+		LegacyID:  "AWS050",
 		Service:   "vpc",
 		ShortCode: "no-excessive-port-access",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "An ingress Network ACL rule allows ALL ports.",
-			Impact:       "All ports exposed for egressing data",
-			Resolution:   "Set specific allowed ports",
-			Explanation:  `
+			Summary:    "An ingress Network ACL rule allows ALL ports.",
+			Impact:     "All ports exposed for egressing data",
+			Resolution: "Set specific allowed ports",
+			Explanation: `
 Ensure access to specific required ports is allowed, and nothing else.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_network_acl_rule" "bad_example" {
   egress         = false
   protocol       = "all"
@@ -39,7 +38,7 @@ resource "aws_network_acl_rule" "bad_example" {
   cidr_block     = "0.0.0.0/0"
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_network_acl_rule" "good_example" {
   egress         = false
   protocol       = "tcp"
@@ -50,6 +49,7 @@ resource "aws_network_acl_rule" "good_example" {
 }
 `,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl_rule#to_port",
 				"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
 			},
 		},

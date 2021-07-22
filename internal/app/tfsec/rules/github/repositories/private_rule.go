@@ -17,21 +17,20 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GIT001",
+		LegacyID:  "GIT001",
 		ShortCode: "private",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Github repository shouldn't be public.",
-			Impact:       "Anyone can read the contents of the GitHub repository and leak IP",
-			Resolution:   "Make sensitive or commercially important repositories private",
-			Explanation:  `
+			Summary:    "Github repository shouldn't be public.",
+			Impact:     "Anyone can read the contents of the GitHub repository and leak IP",
+			Resolution: "Make sensitive or commercially important repositories private",
+			Explanation: `
 Github repository should be set to be private.
 
 You can do this by either setting <code>private</code> attribute to 'true' or <code>visibility</code> attribute to 'internal' or 'private'.
 `,
-			BadExample:   `
+			BadExample: `
 resource "github_repository" "bad_example" {
   name        = "example"
   description = "My awesome codebase"
@@ -44,7 +43,7 @@ resource "github_repository" "bad_example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "github_repository" "good_example" {
   name        = "example"
   description = "My awesome codebase"
@@ -58,9 +57,9 @@ resource "github_repository" "good_example" {
 }
 `,
 			Links: []string{
+				"https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository",
 				"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-repository-visibility",
 				"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-repository-visibility#about-internal-repositories",
-				"https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository",
 			},
 		},
 		Service:         "repositories",

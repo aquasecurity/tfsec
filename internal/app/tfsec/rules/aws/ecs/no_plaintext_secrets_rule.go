@@ -23,20 +23,19 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS013",
+		LegacyID:  "AWS013",
 		Service:   "ecs",
 		ShortCode: "no-plaintext-secrets",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Task definition defines sensitive environment variable(s).",
-			Impact:       "Sensitive data could be exposed in the AWS Management Console",
-			Resolution:   "Use secrets for the task definition",
-			Explanation:  `
+			Summary:    "Task definition defines sensitive environment variable(s).",
+			Impact:     "Sensitive data could be exposed in the AWS Management Console",
+			Resolution: "Use secrets for the task definition",
+			Explanation: `
 You should not make secrets available to a user in plaintext in any scenario. Secrets can instead be pulled from a secure secret storage system by the service requiring them.  
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_ecs_task_definition" "bad_example" {
   container_definitions = <<EOF
 [
@@ -54,7 +53,7 @@ EOF
 
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_ecs_task_definition" "good_example" {
   container_definitions = <<EOF
 [
@@ -72,6 +71,7 @@ EOF
 }
 `,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition",
 				"https://docs.aws.amazon.com/systems-manager/latest/userguide/integration-ps-secretsmanager.html",
 				"https://www.vaultproject.io/",
 			},

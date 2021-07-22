@@ -48,8 +48,8 @@ resource "azurerm_network_security_rule" "good_example" {
 	access = "Allow"
 }`,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule",
 				"https://docs.microsoft.com/en-us/azure/security/fundamentals/network-best-practices",
-				"https://www.terraform.io/docs/providers/azurerm/r/network_security_rule.html",
 			},
 		},
 		Provider:        provider.AzureProvider,

@@ -44,8 +44,8 @@ resource "google_compute_disk" "good_example" {
 
 `,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk",
 				"https://cloud.google.com/compute/docs/disks/customer-supplied-encryption",
-				"https://www.terraform.io/docs/providers/google/r/compute_disk.html",
 			},
 		},
 		Provider:        provider.GoogleProvider,

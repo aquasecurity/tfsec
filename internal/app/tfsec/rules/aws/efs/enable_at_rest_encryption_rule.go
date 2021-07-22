@@ -18,35 +18,34 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS048",
+		LegacyID:  "AWS048",
 		Service:   "efs",
 		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "EFS Encryption has not been enabled",
-			Impact:       "Data can be read from the EFS if compromised",
-			Resolution:   "Enable encryption for EFS",
-			Explanation:  `
+			Summary:    "EFS Encryption has not been enabled",
+			Impact:     "Data can be read from the EFS if compromised",
+			Resolution: "Enable encryption for EFS",
+			Explanation: `
 If your organization is subject to corporate or regulatory policies that require encryption of data and metadata at rest, we recommend creating a file system that is encrypted at rest, and mounting your file system using encryption of data in transit.
 
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_efs_file_system" "bad_example" {
   name       = "bar"
   encrypted  = false
   kms_key_id = ""
 }`,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_efs_file_system" "good_example" {
   name       = "bar"
   encrypted  = true
   kms_key_id = "my_kms_key"
 }`,
 			Links: []string{
-				"https://docs.aws.amazon.com/efs/latest/ug/encryption.html",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system",
+				"https://docs.aws.amazon.com/efs/latest/ug/encryption.html",
 			},
 		},
 		Provider:        provider.AWSProvider,

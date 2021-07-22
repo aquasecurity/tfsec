@@ -18,34 +18,33 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS004",
+		LegacyID:  "AWS004",
 		Service:   "elbv2",
 		ShortCode: "http-not-used",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Use of plain HTTP.",
-			Explanation:  `
+			Summary: "Use of plain HTTP.",
+			Explanation: `
 Plain HTTP is unencrypted and human-readable. This means that if a malicious actor was to eavesdrop on your connection, they would be able to see all of your data flowing back and forth.
 
 You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning eavesdroppers cannot read your traffic.
 `,
-			Impact:       "Your traffic is not protected",
-			Resolution:   "Switch to HTTPS to benefit from TLS security features",
-			BadExample:   `
+			Impact:     "Your traffic is not protected",
+			Resolution: "Switch to HTTPS to benefit from TLS security features",
+			BadExample: `
 resource "aws_alb_listener" "bad_example" {
 	protocol = "HTTP"
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_alb_listener" "good_example" {
 	protocol = "HTTPS"
 }
 `,
 			Links: []string{
-				"https://www.cloudflare.com/en-gb/learning/ssl/why-is-http-not-secure/",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener",
+				"https://www.cloudflare.com/en-gb/learning/ssl/why-is-http-not-secure/",
 			},
 		},
 		Provider:        provider.AWSProvider,

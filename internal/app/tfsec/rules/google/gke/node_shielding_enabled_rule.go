@@ -40,8 +40,8 @@ resource "google_container_cluster" "good_example" {
 	enable_shielded_nodes = "true"
 }`,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#enable_shielded_nodes",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#shielded_nodes",
-				"https://www.terraform.io/docs/providers/google/r/container_cluster.html#enable_shielded_nodes",
 			},
 		},
 		Provider:        provider.GoogleProvider,

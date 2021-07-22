@@ -20,7 +20,6 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 type awsIAMPolicyDocument struct {
 	Statements []awsIAMPolicyDocumentStatement `json:"Statement"`
 }
@@ -68,17 +67,17 @@ func (value *awsIAMPolicyDocumentValue) UnmarshalJSON(b []byte) error {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS097",
+		LegacyID:  "AWS097",
 		Service:   "iam",
 		ShortCode: "block-kms-policy-wildcard",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "IAM customer managed policies should not allow decryption actions on all KMS keys",
-			Explanation:  `
+			Summary: "IAM customer managed policies should not allow decryption actions on all KMS keys",
+			Explanation: `
 IAM policies define which actions an identity (user, group, or role) can perform on which resources. Following security best practices, AWS recommends that you allow least privilege. In other words, you should grant to identities only the kms:Decrypt or kms:ReEncryptFrom permissions and only for the keys that are required to perform a task.
 `,
-			Impact:       "Identities may be able to decrypt data which they should not have access to",
-			Resolution:   "Scope down the resources of the IAM policy to specific keys",
-			BadExample:   `
+			Impact:     "Identities may be able to decrypt data which they should not have access to",
+			Resolution: "Scope down the resources of the IAM policy to specific keys",
+			BadExample: `
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -114,7 +113,7 @@ data "aws_iam_policy_document" "kms_policy" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -151,6 +150,7 @@ data "aws_iam_policy_document" "kms_policy" {
 }
 `,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document",
 				"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards-fsbp-controls.html#fsbp-kms-1",
 			},
 		},

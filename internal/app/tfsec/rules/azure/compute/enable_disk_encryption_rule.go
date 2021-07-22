@@ -42,8 +42,8 @@ resource "azurerm_managed_disk" "good_example" {
 	}
 }`,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_disk",
 				"https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption",
-				"https://www.terraform.io/docs/providers/azurerm/r/managed_disk.html",
 			},
 		},
 		Provider:        provider.AzureProvider,

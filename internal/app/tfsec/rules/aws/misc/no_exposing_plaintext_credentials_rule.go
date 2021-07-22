@@ -19,30 +19,30 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS044",
+		LegacyID:  "AWS044",
 		Service:   "misc",
 		ShortCode: "no-exposing-plaintext-credentials",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "AWS provider has access credentials specified.",
-			Impact:       "Exposing the credentials in the Terraform provider increases the risk of secret leakage",
-			Resolution:   "Don't include access credentials in plain text",
-			Explanation:  `
+			Summary:    "AWS provider has access credentials specified.",
+			Impact:     "Exposing the credentials in the Terraform provider increases the risk of secret leakage",
+			Resolution: "Don't include access credentials in plain text",
+			Explanation: `
 The AWS provider block should not contain hardcoded credentials. These can be passed in securely as runtime using environment variables.
 `,
-			BadExample:   `
+			BadExample: `
 provider "aws" {
   access_key = "AKIAABCD12ABCDEF1ABC"
   secret_key = "s8d7ghas9dghd9ophgs9"
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 provider "aws" {
 }
 `,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs#argument-reference",
 				"https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html",
 			},
 		},

@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS080",
+		LegacyID:  "AWS080",
 		Service:   "codebuild",
 		ShortCode: "enable-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "CodeBuild Project artifacts encryption should not be disabled",
-			Impact:       "CodeBuild project artifacts are unencrypted",
-			Resolution:   "Enable encryption for CodeBuild project artifacts",
-			Explanation:  `
+			Summary:    "CodeBuild Project artifacts encryption should not be disabled",
+			Impact:     "CodeBuild project artifacts are unencrypted",
+			Resolution: "Enable encryption for CodeBuild project artifacts",
+			Explanation: `
 All artifacts produced by your CodeBuild project pipeline should always be encrypted
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_codebuild_project" "bad_example" {
 	// other config
 
@@ -57,7 +56,7 @@ resource "aws_codebuild_project" "bad_example" {
 	}
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_codebuild_project" "good_example" {
 	// other config
 
@@ -91,9 +90,9 @@ resource "aws_codebuild_project" "codebuild" {
 }
 `,
 			Links: []string{
-				"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html",
-				"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-codebuild-project-artifacts.html",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project#encryption_disabled",
+				"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-codebuild-project-artifacts.html",
+				"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html",
 			},
 		},
 		Provider:        provider.AWSProvider,

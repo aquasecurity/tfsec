@@ -19,34 +19,33 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU005",
+		LegacyID:  "AZU005",
 		Service:   "compute",
 		ShortCode: "ssh-authentication",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Password authentication in use instead of SSH keys.",
-			Impact:       "Passwords are potentially easier to compromise than SSH Keys",
-			Resolution:   "Use SSH keys for authentication",
-			Explanation:  `
+			Summary:    "Password authentication in use instead of SSH keys.",
+			Impact:     "Passwords are potentially easier to compromise than SSH Keys",
+			Resolution: "Use SSH keys for authentication",
+			Explanation: `
 Access to instances should be authenticated using SSH keys. Removing the option of password authentication enforces more secure methods while removing the risks inherent with passwords.
 `,
-			BadExample:   `
+			BadExample: `
 resource "azurerm_virtual_machine" "bad_example" {
 	os_profile_linux_config {
 		disable_password_authentication = false
 	}
 }`,
-			GoodExample:  `
+			GoodExample: `
 resource "azurerm_virtual_machine" "good_example" {
 	os_profile_linux_config {
 		disable_password_authentication = true
 	}
 }`,
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine",
 				"https://docs.microsoft.com/en-us/azure/virtual-machines/linux/create-ssh-keys-detailed",
-				"https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html",
 			},
 		},
 		Provider:        provider.AzureProvider,
