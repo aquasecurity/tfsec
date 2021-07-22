@@ -6,8 +6,8 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_GooglePgLogDurationStatement(t *testing.T) {
-	expectedCode := "google-sql-pg-no-min-statement-logging"
+func Test_GooglePgLogLockWaits(t *testing.T) {
+	expectedCode := "google-sql-pg-log-lock-waits"
 
 	var tests = []struct {
 		name                  string
@@ -16,7 +16,7 @@ func Test_GooglePgLogDurationStatement(t *testing.T) {
 		mustExcludeResultCode string
 	}{
 		{
-			name: "rule matches when flag is explicitly set to 99",
+			name: "rule matches when flag is explicitly set to off",
 			source: `
 resource "google_sql_database_instance" "db" {
 	name             = "db"
@@ -24,8 +24,8 @@ resource "google_sql_database_instance" "db" {
 	region           = "us-central1"
 	settings {
 		database_flags {
-			name  = "log_min_duration_statement"
-			value = "99"
+			name  = "log_lock_waits"
+			value = "off"
 		}
 	}
 }
@@ -33,7 +33,18 @@ resource "google_sql_database_instance" "db" {
 			mustIncludeResultCode: expectedCode,
 		},
 		{
-			name: "rule does not match when flag is explicitly set to -1",
+			name: "rule matches when flag is set to default (off)",
+			source: `
+resource "google_sql_database_instance" "db" {
+	name             = "db"
+	database_version = "POSTGRES_12"
+	region           = "us-central1"
+}
+`,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "rule does not match when flag is set to on",
 			source: `
 resource "google_sql_database_instance" "db" {
 	name             = "db"
@@ -41,8 +52,8 @@ resource "google_sql_database_instance" "db" {
 	region           = "us-central1"
 	settings {
 		database_flags {
-			name  = "log_min_duration_statement"
-			value = "-1"
+			name  = "log_lock_waits"
+			value = "on"
 		}
 	}
 }
@@ -50,11 +61,11 @@ resource "google_sql_database_instance" "db" {
 			mustExcludeResultCode: expectedCode,
 		},
 		{
-			name: "rule does not match when flag is set to default (-1)",
+			name: "rule does not match when not postgres",
 			source: `
 resource "google_sql_database_instance" "db" {
 	name             = "db"
-	database_version = "POSTGRES_12"
+	database_version = "MYSQL_5_6"
 	region           = "us-central1"
 }
 `,
