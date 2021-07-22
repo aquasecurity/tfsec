@@ -23,10 +23,10 @@ func init() {
 		Service:   "sql",
 		ShortCode: "pg-log-lock-waits",
 		Documentation: rule.RuleDocumentation{
-			Summary:     "Ensure that logging of long statements is disabled.",
-			Explanation: `Logging of statements which could contain sensitive data is not advised, therefore this setting should preclude all statements from being logged.`,
-			Impact:      "Sensitive data could be exposed in the database logs.",
-			Resolution:  "Disable minimum duration statement logging completely",
+			Summary:     "Ensure that logging of lock waits is enabled.",
+			Explanation: `Lock waits are often an indication of poor performance and often an indicator of a potential denial of service vulnerability, therefore occurrences should be logged for analysis.`,
+			Impact:      "Issues leading to denial of service may not be identified.",
+			Resolution:  "Enable lock wait logging.",
 			BadExample: `
 resource "google_sql_database_instance" "db" {
 	name             = "db"
