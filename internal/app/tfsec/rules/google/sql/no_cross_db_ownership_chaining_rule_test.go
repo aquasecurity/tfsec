@@ -60,6 +60,17 @@ resource "google_sql_database_instance" "db" {
 `,
 			mustExcludeResultCode: expectedCode,
 		},
+		{
+			name: "rule does not match when sql server is not used",
+			source: `
+resource "google_sql_database_instance" "db" {
+	name             = "db"
+	database_version = "MYSQL_8_0"
+	region           = "us-central1"
+}
+`,
+			mustExcludeResultCode: expectedCode,
+		},
 	}
 
 	for _, test := range tests {
