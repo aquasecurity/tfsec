@@ -7,7 +7,7 @@ import (
 )
 
 func Test_AzureDiablePasswordAuthentication(t *testing.T) {
-	expectedCode := "azure-compute-diable-password-authentication"
+	expectedCode := "azure-compute-disable-password-authentication"
 
 	var tests = []struct {
 		name                  string

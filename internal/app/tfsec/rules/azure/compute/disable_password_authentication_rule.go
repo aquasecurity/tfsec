@@ -20,7 +20,7 @@ import (
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		Service:   "compute",
-		ShortCode: "diable-password-authentication",
+		ShortCode: "disable-password-authentication",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "Password authentication should be disabled on Azure virtual machines",
 			Explanation: `Access to virtual machines should be authenticated using SSH keys. Removing the option of password authentication enforces more secure methods while removing the risks inherent with passwords.`,
