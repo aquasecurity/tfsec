@@ -1,6 +1,6 @@
 package main
 
-const checkTemplate = `package {{ .Service}}
+const checkTemplate = `package {{ .Package}}
 
 import (
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -50,7 +50,7 @@ func init() {
 }
 `
 
-const checkTestTemplate = `package {{ .Service}}
+const checkTestTemplate = `package {{ .Package}}
 
 import (
 	"testing"
