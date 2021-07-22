@@ -52,7 +52,7 @@ vet:
 .PHONY: typos
 typos:
 	which codespell || pip install codespell
-	codespell -S vendor,funcs,.terraform --ignore-words .codespellignore -f
+	codespell -S vendor,funcs,.terraform,.git --ignore-words .codespellignore -f
 
 .PHONY: quality
 quality: cyclo vet
@@ -75,4 +75,4 @@ pr-lint:
 	go run ./cmd/tfsec-pr-lint
 
 .PHONY: pr-ready
-pr-ready: quality end-to-end pr-lint
+pr-ready: quality end-to-end pr-lint typos
