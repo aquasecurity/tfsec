@@ -80,7 +80,7 @@ resource "google_sql_database_instance" "db" {
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
 				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Equals("local_infile") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
-						if valueAttr.Value().AsString() == "on" {
+						if valueAttr.Equals("on", block.IgnoreCase) {
 							set.Add(
 								result.New(resourceBlock).
 									WithDescription(fmt.Sprintf("Resource '%s' has local file read access enabled.", resourceBlock.FullName())),
