@@ -64,7 +64,7 @@ resource "google_sql_database_instance" "db" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			dbVersionAttr := resourceBlock.GetAttribute("database_version")
-			if dbVersionAttr != nil && dbVersionAttr.IsString() && !strings.HasPrefix(dbVersionAttr.Value().AsString(), "POSTGRES") {
+			if dbVersionAttr != nil && dbVersionAttr.IsString() && !dbVersionAttr.StartsWith("POSTGRES") {
 				return
 			}
 
