@@ -16,7 +16,7 @@ func Test_GoogleNoContainedDbAuth(t *testing.T) {
 		mustExcludeResultCode string
 	}{
 		{
-			name: "TODO: add test name",
+			name: "rule matches when contained db auth defaults to enabled",
 			source: `
 resource "google_sql_database_instance" "db" {
 	name             = "db"
@@ -27,7 +27,7 @@ resource "google_sql_database_instance" "db" {
 			mustIncludeResultCode: expectedCode,
 		},
 		{
-			name: "TODO: add test name",
+			name: "rule does not match when contained auth is disabled",
 			source: `
 resource "google_sql_database_instance" "db" {
 	name             = "db"
