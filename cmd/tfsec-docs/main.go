@@ -70,7 +70,6 @@ func getSortedFileContents() []*FileContent {
 		})
 	}
 	generateNavIndexFile(fileContents)
-	// sortFileContentsByProvider(fileContents)
 	return fileContents
 }
 
@@ -79,9 +78,3 @@ func sortChecks(checks []rule.Rule) {
 		return checks[i].ID() < checks[j].ID()
 	})
 }
-
-// func sortFileContentsByProvider(fileContents []*FileContent) {
-// 	sort.Slice(fileContents, func(i, j int) bool {
-// 		return fileContents[i].Provider < fileContents[j].Provider
-// 	})
-// }

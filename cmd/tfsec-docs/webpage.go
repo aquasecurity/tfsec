@@ -65,11 +65,7 @@ func generateWebPages(fileContents []*FileContent) error {
 	for _, contents := range fileContents {
 		for _, check := range contents.Checks {
 			webProviderPath := fmt.Sprintf("%s/docs/%s/%s", webPath, strings.ToLower(string(check.Provider)), strings.ToLower(check.Service))
-			if err := generateWebPage(webProviderPath, check, false); err != nil {
-				return err
-			}
-			webProviderPath = fmt.Sprintf("%s/docs/%s", webPath, strings.ToLower(string(check.Provider)))
-			if err := generateWebPage(webProviderPath, check, true); err != nil {
+			if err := generateWebPage(webProviderPath, check); err != nil {
 				return err
 			}
 		}
@@ -84,7 +80,6 @@ var funcMap = template.FuncMap{
 }
 
 func join(s []string) string {
-	// first arg is sep, remaining args are strings to join
 	if s == nil {
 		return ""
 	}
@@ -103,22 +98,17 @@ func formatProviderName(providerName string) string {
 	}
 }
 
-func generateWebPage(webProviderPath string, r rule.Rule, legacy bool) error {
+func generateWebPage(webProviderPath string, r rule.Rule) error {
 
 	if err := os.MkdirAll(webProviderPath, os.ModePerm); err != nil {
 		return err
 	}
 	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.ShortCode)
-	if legacy {
-		if r.LegacyID == "" {
-			return nil
-		}
-		filePath = fmt.Sprintf("%s/%s.md", webProviderPath, r.LegacyID)
-	}
-
 	fmt.Printf("Generating page for %s at %s\n", r.ID(), filePath)
 	webTmpl := template.Must(template.New("web").Funcs(funcMap).Parse(baseWebPageTemplate))
+
 	return writeTemplate(r, filePath, webTmpl)
+
 }
 
 func writeTemplate(contents interface{}, path string, tmpl *template.Template) error {
