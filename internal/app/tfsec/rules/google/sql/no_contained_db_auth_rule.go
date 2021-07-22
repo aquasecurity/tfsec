@@ -23,10 +23,10 @@ func init() {
 		Service:   "sql",
 		ShortCode: "no-contained-db-auth",
 		Documentation: rule.RuleDocumentation{
-			Summary: "Contained database authentication should be disabled",
-			Explanation: `	`,
-			Impact:     "Access can be granted without knowledge of the database administrator",
-			Resolution: "Disable contained database authentication",
+			Summary:     "Contained database authentication should be disabled",
+			Explanation: `Users with ALTER permissions on users can grant access to a contained database without the knowledge of an administrator`,
+			Impact:      "Access can be granted without knowledge of the database administrator",
+			Resolution:  "Disable contained database authentication",
 			BadExample: `
 resource "google_sql_database_instance" "db" {
 	name             = "db"
