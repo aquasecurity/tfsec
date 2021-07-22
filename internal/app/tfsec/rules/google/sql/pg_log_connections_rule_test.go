@@ -6,8 +6,8 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_GooglePgLogConnections(t *testing.T) {
-	expectedCode := "google-sql-pg-log-connections"
+func Test_GooglePgLogDisconnections(t *testing.T) {
+	expectedCode := "google-sql-pg-log-disconnections"
 
 	var tests = []struct {
 		name                  string
@@ -24,7 +24,7 @@ resource "google_sql_database_instance" "db" {
 	region           = "us-central1"
 	settings {
 		database_flags {
-			name  = "log_connections"
+			name  = "log_disconnections"
 			value = "off"
 		}
 	}
@@ -52,7 +52,7 @@ resource "google_sql_database_instance" "db" {
 	region           = "us-central1"
 	settings {
 		database_flags {
-			name  = "log_connections"
+			name  = "log_disconnections"
 			value = "on"
 		}
 	}
