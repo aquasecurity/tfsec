@@ -32,8 +32,14 @@ const navDocsTemplate = `---
     - pr-commenter
 	`
 
+type providerChecks struct {
+	Title     string      `yaml:"title"`
+	Providers []*navBlock `yaml:"providers"`
+}
+
 type navBlock struct {
 	Title    string    `yaml:"title"`
+	Provider string    `yaml:"provider"`
 	Services []service `yaml:"services"`
 }
 
@@ -50,6 +56,8 @@ func generateNavIndexFile(registeredChecks []*FileContent) error {
 		block := &navBlock{
 			Title:    formatProviderName(check.Provider),
 			Services: getServices(check.Checks, check.Provider),
+			Provider: fmt.Sprintf("%s/", check.Provider),
+
 		}
 
 		navBlocks = append(navBlocks, block)
@@ -59,7 +67,14 @@ func generateNavIndexFile(registeredChecks []*FileContent) error {
 		return navBlocks[i].Title < navBlocks[j].Title
 	})
 
-	content, err := yaml.Marshal(navBlocks)
+	topLevel := &[]providerChecks{
+		{
+			Title:     "Provider Checks",
+			Providers: navBlocks,
+		},
+	}
+
+	content, err := yaml.Marshal(topLevel)
 	if err != nil {
 		panic(err)
 	}
