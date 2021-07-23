@@ -105,7 +105,7 @@ func readLines(filename string) ([]string, error) {
 		return nil, err
 	}
 
-	return append([]string{""}, strings.Split(string(raw), "\n")...), nil
+	return append([]string{""}, strings.Split(strings.ReplaceAll(string(raw), "\r", ""), "\n")...), nil
 }
 
 func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Block) bool {
