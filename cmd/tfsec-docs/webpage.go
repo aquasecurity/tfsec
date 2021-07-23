@@ -93,6 +93,8 @@ func formatProviderName(providerName string) string {
 	switch providerName {
 	case "aws":
 		return strings.ToUpper(providerName)
+	case "openstack":
+		return "OpenStack"
 	default:
 		return strings.Title(strings.ToLower(providerName))
 	}
