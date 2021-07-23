@@ -36,7 +36,7 @@ resource "azurerm_postgresql_server" "bad_example" {
 }
 `,
 			GoodExample: `
-resource "azurerm_postgresql_server" "bad_example" {
+resource "azurerm_postgresql_server" "good_example" {
   name                = "bad_example"
 
   public_network_access_enabled    = false
