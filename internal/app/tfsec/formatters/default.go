@@ -15,6 +15,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 
 	"github.com/liamg/clinch/terminal"
+	"github.com/liamg/gifwrap/pkg/ascii"
 	"github.com/liamg/tml"
 )
 
@@ -32,19 +33,27 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 	showSuccessOutput := true
 	includePassedChecks := false
 
-	for _, option := range options {
-		if option == IncludePassed {
-			includePassedChecks = true
-		}
+	var showGif bool
 
-		if option == ConciseOutput {
+	for _, option := range options {
+		switch option {
+		case IncludePassed:
+			includePassedChecks = true
+		case ConciseOutput:
 			showStatistics = false
 			showSuccessOutput = false
-			break
+		case PassingGif:
+			showGif = true
 		}
 	}
 
 	if len(results) == 0 || len(results) == countPassedResults(results) {
+		if showGif {
+			if renderer, err := ascii.FromURL("https://media.giphy.com/media/kyLYXonQYYfwYDIeZl/source.gif"); err == nil {
+				renderer.SetFill(true)
+				renderer.PlayOnce()
+			}
+		}
 		if showStatistics {
 			_ = tml.Printf("\n")
 			printStatistics()

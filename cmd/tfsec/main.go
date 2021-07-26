@@ -56,6 +56,7 @@ var runStatistics bool
 var ignoreHCLErrors bool
 var stopOnCheckError bool
 var workspace string
+var passingGif bool
 
 func init() {
 	rootCmd.Flags().BoolVar(&ignoreHCLErrors, "ignore-hcl-errors", ignoreHCLErrors, "Stop and report an error if an HCL parse error is encountered")
@@ -83,6 +84,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&ignoreInfo, "ignore-info", ignoreWarnings, "[DEPRECATED] Don't show info results in the output.")
 	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
 	rootCmd.Flags().StringVarP(&workspace, "workspace", "w", workspace, "Specify a workspace for ignore limits")
+	rootCmd.Flags().BoolVar(&passingGif, "gif", passingGif, "Show a celebratory gif in the terminal if no problems are found (default formatter only)")
 }
 
 func main() {
@@ -347,6 +349,9 @@ func getFormatterOptions() []formatters.FormatterOption {
 	}
 	if includePassed {
 		options = append(options, formatters.IncludePassed)
+	}
+	if passingGif {
+		options = append(options, formatters.PassingGif)
 	}
 	return options
 }
