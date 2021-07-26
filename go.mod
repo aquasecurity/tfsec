@@ -14,6 +14,7 @@ require (
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/liamg/clinch v1.5.6
+	github.com/liamg/gifwrap v0.0.6
 	github.com/liamg/tml v0.4.0
 	github.com/mattn/go-runewidth v0.0.12 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
@@ -28,7 +29,6 @@ require (
 	github.com/zclconf/go-cty-yaml v1.0.2
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
 	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
-	golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf // indirect
 	golang.org/x/text v0.3.6
 	gopkg.in/yaml.v2 v2.4.0
 )
