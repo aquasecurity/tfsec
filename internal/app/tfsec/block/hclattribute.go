@@ -497,6 +497,18 @@ func (attr *HCLAttribute) Reference() (*Reference, error) {
 	}
 }
 
+func (attr *HCLAttribute) AllReferences() []*Reference {
+	refs := attr.ReferencesInTemplate()
+	if len(refs) > 0 {
+		return refs
+	}
+	ref, err := attr.Reference()
+	if err != nil {
+		return nil
+	}
+	return append(refs, ref)
+}
+
 func (attr *HCLAttribute) ReferencesInTemplate() []*Reference {
 	var refs []*Reference
 	switch t := attr.hclAttribute.Expr.(type) {
@@ -522,11 +534,12 @@ func (attr *HCLAttribute) IsResourceBlockReference(resourceType string) bool {
 }
 
 func (attr *HCLAttribute) ReferencesBlock(b Block) bool {
-	ref, err := attr.Reference()
-	if err != nil {
-		return false
+	for _, ref := range attr.AllReferences() {
+		if ref.RefersTo(b) {
+			return true
+		}
 	}
-	return ref.RefersTo(b)
+	return false
 }
 
 func getRawValue(value cty.Value) interface{} {

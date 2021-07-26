@@ -53,16 +53,14 @@ func (c *Context) GetProviderBlocksByProvider(providerName string, alias string)
 }
 
 func (c *Context) GetReferencedBlock(referringAttr block.Attribute) (block.Block, error) {
-	ref, err := referringAttr.Reference()
-	if err != nil {
-		return nil, err
-	}
-	for _, block := range c.blocks {
-		if ref.RefersTo(block) {
-			return block, nil
+	for _, ref := range referringAttr.AllReferences() {
+		for _, block := range c.blocks {
+			if ref.RefersTo(block) {
+				return block, nil
+			}
 		}
 	}
-	return nil, fmt.Errorf("no block found for reference %s", ref)
+	return nil, fmt.Errorf("no referenced block found in '%s'", referringAttr.Name())
 }
 
 func (c *Context) GetReferencingResources(originalBlock block.Block, referencingLabel string, referencingAttributeName string) (block.Blocks, error) {
