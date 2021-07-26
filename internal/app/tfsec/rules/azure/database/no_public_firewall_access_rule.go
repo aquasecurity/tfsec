@@ -34,6 +34,14 @@ resource "azurerm_sql_firewall_rule" "bad_example" {
   start_ip_address    = "0.0.0.0"
   end_ip_address      = "255.255.255.255"
 }
+
+resource "azurerm_postgresql_firewall_rule" "bad_example" {
+  name                = "bad_example"
+  resource_group_name = azurerm_resource_group.example.name
+  server_name         = azurerm_postgresql_server.example.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "255.255.255.255"
+}
 `,
 			GoodExample: `
 resource "azurerm_sql_firewall_rule" "good_example" {
@@ -49,9 +57,14 @@ resource "azurerm_sql_firewall_rule" "good_example" {
 				"https://docs.microsoft.com/en-us/rest/api/sql/2021-02-01-preview/firewall-rules/create-or-update",
 			},
 		},
-		Provider:        provider.AzureProvider,
-		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"azurerm_sql_firewall_rule"},
+		Provider:      provider.AzureProvider,
+		RequiredTypes: []string{"resource"},
+		RequiredLabels: []string{
+			"azurerm_sql_firewall_rule",
+			"azurerm_mysql_firewall_rule",
+			"azurerm_postgresql_firewall_rule",
+			"azurerm_mariadb_firewall_rule",
+		},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
