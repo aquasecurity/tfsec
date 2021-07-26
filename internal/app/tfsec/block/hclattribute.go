@@ -487,7 +487,7 @@ func (attr *HCLAttribute) Reference() (*Reference, error) {
 	case *hclsyntax.ScopeTraversalExpr:
 		return createDotReferenceFromTraversal(t.Traversal)
 	case *hclsyntax.TemplateExpr:
-		refs := attr.ReferencesInTemplate()
+		refs := attr.referencesInTemplate()
 		if len(refs) == 0 {
 			return nil, fmt.Errorf("no references in template")
 		}
@@ -498,7 +498,7 @@ func (attr *HCLAttribute) Reference() (*Reference, error) {
 }
 
 func (attr *HCLAttribute) AllReferences() []*Reference {
-	refs := attr.ReferencesInTemplate()
+	refs := attr.referencesInTemplate()
 	if len(refs) > 0 {
 		return refs
 	}
@@ -509,7 +509,7 @@ func (attr *HCLAttribute) AllReferences() []*Reference {
 	return append(refs, ref)
 }
 
-func (attr *HCLAttribute) ReferencesInTemplate() []*Reference {
+func (attr *HCLAttribute) referencesInTemplate() []*Reference {
 	var refs []*Reference
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.TemplateExpr:
