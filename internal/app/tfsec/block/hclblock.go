@@ -311,7 +311,8 @@ func (block *HCLBlock) Reference() *Reference {
 		parts = append(parts, block.Type())
 	}
 	parts = append(parts, block.Labels()...)
-	return newReference(parts)
+	ref, _ := newReference(parts)
+	return ref
 }
 
 // LocalName is the name relative to the current module
