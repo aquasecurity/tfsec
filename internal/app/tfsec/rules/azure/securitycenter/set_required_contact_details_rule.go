@@ -27,7 +27,7 @@ func init() {
 Microsoft will notify the security contact directly in the event of a security incident and will look to use a telephone number in cases where a prompt response is required.`,
 			Impact:     "Without a telephone number set, Azure support can't contact",
 			Resolution: "Set a telephone number for security center contact",
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_security_center_contact" "bad_example" {
   email = "bad_contact@example.com"
   phone = ""
@@ -35,8 +35,8 @@ resource "azurerm_security_center_contact" "bad_example" {
   alert_notifications = true
   alerts_to_admins    = true
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_security_center_contact" "good_example" {
   email = "good_contact@example.com"
   phone = "+1-555-555-5555"
@@ -44,7 +44,7 @@ resource "azurerm_security_center_contact" "good_example" {
   alert_notifications = true
   alerts_to_admins    = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/security_center_contact#phone",
 				"https://azure.microsoft.com/en-us/services/security-center/",
@@ -68,8 +68,7 @@ resource "azurerm_security_center_contact" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have a phone number set for the security contact", resourceBlock.FullName())).
-						WithAttributeAnnotation(phoneAttr).
-						WithRange(phoneAttr.Range()),
+						WithAttribute(phoneAttr),
 				)
 			}
 		},

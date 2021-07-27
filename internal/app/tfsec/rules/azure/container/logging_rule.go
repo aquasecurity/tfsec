@@ -30,12 +30,12 @@ func init() {
 			Explanation: `
 Ensure AKS logging to Azure Monitoring is configured for containers to monitor the performance of workloads.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_kubernetes_cluster" "bad_example" {
     addon_profile {}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_kubernetes_cluster" "good_example" {
     addon_profile {
 		oms_agent {
@@ -43,7 +43,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		}
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#oms_agent",
 				"https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-onboard",
@@ -59,8 +59,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 			if addonProfileBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -69,8 +68,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 			if omsAgentBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -85,8 +83,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 					))
 
 				if enabledAttr != nil {
-					res.WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr)
+					res.WithAttribute(enabledAttr)
 				}
 
 				set.Add(res)

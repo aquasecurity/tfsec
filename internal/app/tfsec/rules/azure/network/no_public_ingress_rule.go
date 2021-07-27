@@ -35,18 +35,18 @@ Network security rules should not use very broad subnets.
 
 Where possible, segments should be broken into smaller subnets.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_network_security_rule" "bad_example" {
 	direction = "Inbound"
 	source_address_prefix = "0.0.0.0/0"
 	access = "Allow"
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "azurerm_network_security_rule" "good_example" {
 	direction = "Inbound"
 	destination_address_prefix = "10.0.0.0/16"
 	access = "Allow"
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule",
 				"https://docs.microsoft.com/en-us/azure/security/fundamentals/network-best-practices",
@@ -73,8 +73,7 @@ resource "azurerm_network_security_rule" "good_example" {
 									resourceBlock.FullName(),
 									strings.ToLower(directionAttr.Value().AsString()),
 								)).
-								WithRange(prefixAttr.Range()).
-								WithAttributeAnnotation(prefixAttr),
+								WithAttribute(prefixAttr),
 						)
 					}
 				}
@@ -86,8 +85,7 @@ resource "azurerm_network_security_rule" "good_example" {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName())).
-								WithRange(prefixesAttr.Range()).
-								WithAttributeAnnotation(prefixesAttr),
+								WithAttribute(prefixesAttr),
 						)
 					}
 				}

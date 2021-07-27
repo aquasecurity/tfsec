@@ -29,18 +29,18 @@ func init() {
 			Explanation: `
 The API server is the central way to interact with and manage a cluster. To improve cluster security and minimize attacks, the API server should only be accessible from a limited set of IP address ranges.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_kubernetes_cluster" "bad_example" {
 
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_kubernetes_cluster" "good_example" {
     api_server_authorized_ip_ranges = [
 		"1.2.3.4/32"
 	]
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#api_server_authorized_ip_ranges",
 				"https://docs.microsoft.com/en-us/azure/aks/api-server-authorized-ip-ranges",
@@ -59,8 +59,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 				{
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", resourceBlock.FullName())),
 					)
 				}
 			}

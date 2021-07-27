@@ -29,7 +29,7 @@ func init() {
 			Explanation: `
 Amazon DynamoDB Accelerator (DAX) encryption at rest provides an additional layer of data protection by helping secure your data from unauthorized access to the underlying storage.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_dax_cluster" "bad_example" {
 	// no server side encryption at all
 }
@@ -49,8 +49,8 @@ resource "aws_dax_cluster" "bad_example" {
 		enabled = false // disabled server side encryption
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_dax_cluster" "good_example" {
 	// other DAX config
 
@@ -58,7 +58,7 @@ resource "aws_dax_cluster" "good_example" {
 		enabled = true // enabled server side encryption
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dax_cluster#server_side_encryption",
 				"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAXEncryptionAtRest.html",
@@ -73,8 +73,7 @@ resource "aws_dax_cluster" "good_example" {
 
 			if resourceBlock.MissingChild("server_side_encryption") {
 				res := result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range())
+					WithDescription(fmt.Sprintf("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", resourceBlock.FullName()))
 				set.Add(res)
 				return
 			}
@@ -82,8 +81,7 @@ resource "aws_dax_cluster" "good_example" {
 			sseBlock := resourceBlock.GetBlock("server_side_encryption")
 			if sseBlock.MissingChild("enabled") {
 				res := result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", resourceBlock.FullName())).
-					WithRange(sseBlock.Range())
+					WithDescription(fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", resourceBlock.FullName()))
 				set.Add(res)
 				return
 			}
@@ -91,8 +89,7 @@ resource "aws_dax_cluster" "good_example" {
 			if sseEnabledAttr := sseBlock.GetAttribute("enabled"); sseEnabledAttr.IsFalse() {
 				res := result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("DAX cluster '%s' has disabled server side encryption", resourceBlock.FullName())).
-					WithRange(sseEnabledAttr.Range()).
-					WithAttributeAnnotation(sseEnabledAttr)
+					WithAttribute(sseEnabledAttr)
 				set.Add(res)
 			}
 

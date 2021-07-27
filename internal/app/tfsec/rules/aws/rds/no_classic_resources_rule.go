@@ -30,16 +30,16 @@ resources in a VPC instead.
 `,
 			Impact:     "Classic resources are running in a shared environment with other customers",
 			Resolution: "Switch to VPC resources",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_db_security_group" "bad_example" {
   # ...
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_security_group" "good_example" {
   # ...
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_security_group",
 				"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-classic-platform.html",
@@ -52,8 +52,7 @@ resource "aws_security_group" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			set.Add(
 				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()),
+					WithDescription(fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", resourceBlock.FullName())),
 			)
 		},
 	})

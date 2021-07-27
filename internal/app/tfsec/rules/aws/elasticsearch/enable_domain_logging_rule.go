@@ -17,17 +17,16 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS057",
+		LegacyID:  "AWS057",
 		Service:   "elastic-search",
 		ShortCode: "enable-domain-logging",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Domain logging should be enabled for Elastic Search domains",
-			Impact:       "Logging provides vital information about access and usage",
-			Resolution:   "Enable logging for ElasticSearch domains",
-			Explanation:  `
+			Summary:    "Domain logging should be enabled for Elastic Search domains",
+			Impact:     "Logging provides vital information about access and usage",
+			Resolution: "Enable logging for ElasticSearch domains",
+			Explanation: `
 Amazon ES exposes four Elasticsearch logs through Amazon CloudWatch Logs: error logs, search slow logs, index slow logs, and audit logs. 
 
 Search slow logs, index slow logs, and error logs are useful for troubleshooting performance and stability issues. 
@@ -37,7 +36,7 @@ Audit logs track user activity for compliance purposes.
 All the logs are disabled by default. 
 
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_elasticsearch_domain" "bad_example" {
   domain_name           = "example"
   elasticsearch_version = "1.5"
@@ -53,8 +52,8 @@ resource "aws_elasticsearch_domain" "bad_example" {
     enabled                  = false  
   }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_elasticsearch_domain" "good_example" {
   domain_name           = "example"
   elasticsearch_version = "1.5"
@@ -76,7 +75,7 @@ resource "aws_elasticsearch_domain" "good_example" {
     enabled                  = true  
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#log_type",
 				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createdomain-configure-slow-logs.html",
@@ -91,8 +90,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if resourceBlock.MissingChild("log_publishing_options") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not configure logging at rest on the domain.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not configure logging at rest on the domain.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -104,8 +102,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' explicitly disables logging on the domain.", resourceBlock.FullName())).
-							WithRange(enabledAttr.Range()).
-							WithAttributeAnnotation(enabledAttr),
+							WithAttribute(enabledAttr),
 					)
 					return
 				}

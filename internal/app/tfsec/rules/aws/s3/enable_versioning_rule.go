@@ -31,19 +31,19 @@ Versioning in Amazon S3 is a means of keeping multiple variants of an object in 
 You can use the S3 Versioning feature to preserve, retrieve, and restore every version of every object stored in your buckets. 
 With versioning you can recover more easily from both unintended user actions and application failures.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_s3_bucket" "bad_example" {
 
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_s3_bucket" "good_example" {
 
 	versioning {
 		enabled = true
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#versioning",
 				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html",
@@ -58,8 +58,7 @@ resource "aws_s3_bucket" "good_example" {
 			if resourceBlock.MissingChild("versioning") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -68,8 +67,7 @@ resource "aws_s3_bucket" "good_example" {
 			if versioningBlock.HasChild("enabled") && versioningBlock.GetAttribute("enabled").IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has versioning block but is disabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' has versioning block but is disabled", resourceBlock.FullName())),
 				)
 			}
 

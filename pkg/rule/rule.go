@@ -50,10 +50,10 @@ type RuleDocumentation struct {
 	Resolution string
 
 	// BadExample (hcl) contains Terraform code which would cause the check to fail
-	BadExample string
+	BadExample []string
 
 	// GoodExample (hcl) modifies the BadExample content to cause the check to pass
-	GoodExample string
+	GoodExample []string
 
 	// Links are URLs which contain further reading related to the check
 	Links []string

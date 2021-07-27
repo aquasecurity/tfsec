@@ -19,22 +19,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS033",
+		LegacyID:  "AWS033",
 		Service:   "elastic-search",
 		ShortCode: "enforce-https",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Elasticsearch doesn't enforce HTTPS traffic.",
-			Impact:       "HTTP traffic can be intercepted and the contents read",
-			Resolution:   "Enforce the use of HTTPS for ElasticSearch",
-			Explanation:  `
+			Summary:    "Elasticsearch doesn't enforce HTTPS traffic.",
+			Impact:     "HTTP traffic can be intercepted and the contents read",
+			Resolution: "Enforce the use of HTTPS for ElasticSearch",
+			Explanation: `
 Plain HTTP is unencrypted and human-readable. This means that if a malicious actor was to eavesdrop on your connection, they would be able to see all of your data flowing back and forth.
 
 You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning eavesdroppers cannot read your traffic.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
@@ -42,8 +41,8 @@ resource "aws_elasticsearch_domain" "bad_example" {
     enforce_https = false
   }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
@@ -51,7 +50,7 @@ resource "aws_elasticsearch_domain" "good_example" {
     enforce_https = true
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#enforce_https",
 				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-data-protection.html",
@@ -67,8 +66,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if endpointBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing domain_endpoint_options block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing domain_endpoint_options block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -77,8 +75,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if enforceHTTPSAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enforce_https attribute).", resourceBlock.FullName())).
-						WithRange(endpointBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enforce_https attribute).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -90,8 +87,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if !enforcedHTTPS {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName())).
-						WithRange(endpointBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName())),
 				)
 			}
 

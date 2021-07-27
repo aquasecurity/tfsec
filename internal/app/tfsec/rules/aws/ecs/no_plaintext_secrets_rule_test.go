@@ -18,43 +18,43 @@ func Test_AWSTaskDefinitionIncludesSensitiveData(t *testing.T) {
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are included",
 			source: `
-resource "aws_ecs_task_definition" "my-task" {
-  container_definitions = <<EOF
-[
-  {
-    "name": "my_service",
-    "essential": true,
-    "memory": 256,
-    "environment": [
-      { "name": "ENVIRONMENT", "value": "development" },
-      { "name": "DATABASE_PASSWORD", "value": "oh no D:"}
-    ]
-  }
-]
-EOF
+		resource "aws_ecs_task_definition" "my-task" {
+		  container_definitions = <<EOF
+		[
+		  {
+		    "name": "my_service",
+		    "essential": true,
+		    "memory": 256,
+		    "environment": [
+		      { "name": "ENVIRONMENT", "value": "development" },
+		      { "name": "DATABASE_PASSWORD", "value": "oh no D:"}
+		    ]
+		  }
+		]
+		EOF
 
-}`,
+		}`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_ecs_task_definition when sensitive env vars are not included",
 			source: `
-resource "aws_ecs_task_definition" "my-task" {
-  container_definitions = <<EOF
-[
-  {
-    "name": "my_service",
-    "essential": true,
-    "memory": 256,
-    "environment": [
-      { "name": "ENVIRONMENT", "value": "development" },
-      { "name": "DATABASE_HOST", "value": "localhost"}
-    ]
-  }
-]
-EOF
+		resource "aws_ecs_task_definition" "my-task" {
+		  container_definitions = <<EOF
+		[
+		  {
+		    "name": "my_service",
+		    "essential": true,
+		    "memory": 256,
+		    "environment": [
+		      { "name": "ENVIRONMENT", "value": "development" },
+		      { "name": "DATABASE_HOST", "value": "localhost"}
+		    ]
+		  }
+		]
+		EOF
 
-}`,
+		}`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{

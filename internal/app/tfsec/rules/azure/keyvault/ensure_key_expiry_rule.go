@@ -17,22 +17,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU026",
+		LegacyID:  "AZU026",
 		Service:   "keyvault",
 		ShortCode: "ensure-key-expiry",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Ensure that the expiration date is set on all keys",
-			Impact:       "Long life keys increase the attack surface when compromised",
-			Resolution:   "Set an expiration date on the vault key",
-			Explanation:  `
+			Summary:    "Ensure that the expiration date is set on all keys",
+			Impact:     "Long life keys increase the attack surface when compromised",
+			Resolution: "Set an expiration date on the vault key",
+			Explanation: `
 Expiration Date is an optional Key Vault Key behavior and is not set by default.
 
 Set when the resource will be become inactive.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "azurerm_key_vault_key" "bad_example" {
   name         = "generated-certificate"
   key_vault_id = azurerm_key_vault.example.id
@@ -48,8 +47,8 @@ resource "azurerm_key_vault_key" "bad_example" {
     "wrapKey",
   ]
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azurerm_key_vault_key" "good_example" {
   name         = "generated-certificate"
   key_vault_id = azurerm_key_vault.example.id
@@ -66,7 +65,7 @@ resource "azurerm_key_vault_key" "good_example" {
     "wrapKey",
   ]
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_key#expiration_date",
 				"https://docs.microsoft.com/en-us/powershell/module/az.keyvault/update-azkeyvaultkey?view=azps-5.8.0#example-1--modify-a-key-to-enable-it--and-set-the-expiration-date-and-tags",
@@ -81,8 +80,7 @@ resource "azurerm_key_vault_key" "good_example" {
 			if resourceBlock.MissingChild("expiration_date") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have an expiration date set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have an expiration date set.", resourceBlock.FullName())),
 				)
 			}
 		},

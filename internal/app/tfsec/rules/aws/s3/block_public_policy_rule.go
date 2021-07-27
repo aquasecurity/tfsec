@@ -29,7 +29,7 @@ func init() {
 			Explanation: `
 S3 bucket policy should have block public policy to prevent users from putting a policy that enable public access.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_s3_bucket_public_access_block" "bad_example" {
 	bucket = aws_s3_bucket.example.id
 }
@@ -39,14 +39,14 @@ resource "aws_s3_bucket_public_access_block" "bad_example" {
   
 	block_public_policy = false
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_s3_bucket_public_access_block" "good_example" {
 	bucket = aws_s3_bucket.example.id
   
 	block_public_policy = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block#block_public_policy",
 				"https://docs.aws.amazon.com/AmazonS3/latest/dev-retired/access-control-block-public-access.html",
@@ -60,8 +60,7 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 			if resourceBlock.MissingChild("block_public_policy") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not specify block_public_policy, defaults to false", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not specify block_public_policy, defaults to false", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -71,8 +70,7 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' sets block_public_policy explicitly to false", resourceBlock.FullName())).
-						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr),
+						WithAttribute(attr),
 				)
 			}
 		},

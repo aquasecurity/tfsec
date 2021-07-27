@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS060",
+		LegacyID:  "AWS060",
 		Service:   "athena",
 		ShortCode: "no-encryption-override",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Athena workgroups should enforce configuration to prevent client disabling encryption",
-			Impact:       "Clients can ignore encryption requirements",
-			Resolution:   "Enforce the configuration to prevent client overrides",
-			Explanation:  `
+			Summary:    "Athena workgroups should enforce configuration to prevent client disabling encryption",
+			Impact:     "Clients can ignore encryption requirements",
+			Resolution: "Enforce the configuration to prevent client overrides",
+			Explanation: `
 Athena workgroup configuration should be enforced to prevent client side changes to disable encryption settings.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_athena_workgroup" "bad_example" {
   name = "example"
 
@@ -53,8 +52,8 @@ resource "aws_athena_workgroup" "bad_example" {
   name = "example"
 
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_athena_workgroup" "good_example" {
   name = "example"
 
@@ -72,7 +71,7 @@ resource "aws_athena_workgroup" "good_example" {
     }
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/athena_workgroup#configuration",
 				"https://docs.aws.amazon.com/athena/latest/ug/manage-queries-control-costs-with-workgroups.html",
@@ -87,8 +86,7 @@ resource "aws_athena_workgroup" "good_example" {
 			if resourceBlock.MissingChild("configuration") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing the configuration block.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is missing the configuration block.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -98,8 +96,7 @@ resource "aws_athena_workgroup" "good_example" {
 				configBlock.GetAttribute("enforce_workgroup_configuration").IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName())).
-						WithRange(configBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName())),
 				)
 			}
 

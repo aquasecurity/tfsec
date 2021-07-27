@@ -26,7 +26,7 @@ func init() {
 			Explanation: `Logging connections provides useful diagnostic data such as session length, which can identify performance issues in an application and potential DoS vectors.`,
 			Impact:      "Insufficient diagnostic data.",
 			Resolution:  "Enable connection logging.",
-			BadExample: `
+			BadExample: []string{`
 resource "google_sql_database_instance" "db" {
 	name             = "db"
 	database_version = "POSTGRES_12"
@@ -38,8 +38,8 @@ resource "google_sql_database_instance" "db" {
 		}
 	}
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "google_sql_database_instance" "db" {
 	name             = "db"
 	database_version = "POSTGRES_12"
@@ -51,7 +51,7 @@ resource "google_sql_database_instance" "db" {
 		}
 	}
 }
-			`,
+			`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance",
 				"https://www.postgresql.org/docs/13/runtime-config-logging.html#GUC-LOG-CONNECTIONS",

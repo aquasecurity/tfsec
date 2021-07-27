@@ -30,7 +30,7 @@ Github repository should be set to be private.
 
 You can do this by either setting <code>private</code> attribute to 'true' or <code>visibility</code> attribute to 'internal' or 'private'.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "github_repository" "bad_example" {
   name        = "example"
   description = "My awesome codebase"
@@ -42,8 +42,8 @@ resource "github_repository" "bad_example" {
     repository = "terraform-module-template"
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "github_repository" "good_example" {
   name        = "example"
   description = "My awesome codebase"
@@ -55,7 +55,7 @@ resource "github_repository" "good_example" {
     repository = "terraform-module-template"
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository",
 				"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-repository-visibility",
@@ -74,8 +74,7 @@ resource "github_repository" "good_example" {
 			if visibilityAttribute == nil && privateAttribute == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing both of `private` or `visibility` attributes - one of these is required to make repository private", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is missing both of `private` or `visibility` attributes - one of these is required to make repository private", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -86,8 +85,7 @@ resource "github_repository" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has visibility set to public - visibility should be set to `private` or `internal` to make repository private", resourceBlock.FullName())).
-							WithRange(visibilityAttribute.Range()).
-							WithAttributeAnnotation(visibilityAttribute),
+							WithAttribute(visibilityAttribute),
 					)
 				}
 				// stop here as visibility parameter trumps the private one
@@ -100,8 +98,7 @@ resource "github_repository" "good_example" {
 				if privateAttribute.IsFalse() {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has private set to false - it should be set to `true` to make repository private", resourceBlock.FullName())).
-							WithRange(privateAttribute.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' has private set to false - it should be set to `true` to make repository private", resourceBlock.FullName())),
 					)
 				}
 			}

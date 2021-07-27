@@ -18,20 +18,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU018",
+		LegacyID:  "AZU018",
 		Service:   "database",
 		ShortCode: "enable-audit",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Auditing should be enabled on Azure SQL Databases",
-			Impact:       "Auditing provides valuable information about access and usage",
-			Resolution:   "Enable auditing on Azure SQL databases",
-			Explanation:  `
+			Summary:    "Auditing should be enabled on Azure SQL Databases",
+			Impact:     "Auditing provides valuable information about access and usage",
+			Resolution: "Enable auditing on Azure SQL databases",
+			Explanation: `
 Auditing helps you maintain regulatory compliance, understand database activity, and gain insight into discrepancies and anomalies that could indicate business concerns or suspected security violations.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "azurerm_sql_server" "bad_example" {
   name                         = "mssqlserver"
   resource_group_name          = azurerm_resource_group.example.name
@@ -40,8 +39,8 @@ resource "azurerm_sql_server" "bad_example" {
   administrator_login          = "mradministrator"
   administrator_login_password = "tfsecRocks"
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azurerm_sql_server" "good_example" {
   name                         = "mssqlserver"
   resource_group_name          = azurerm_resource_group.example.name
@@ -57,7 +56,7 @@ resource "azurerm_sql_server" "good_example" {
     retention_in_days                       = 6
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_server#extended_auditing_policy",
 				"https://docs.microsoft.com/en-us/azure/azure-sql/database/auditing-overview",
@@ -85,8 +84,7 @@ resource "azurerm_sql_server" "good_example" {
 
 			set.Add(
 				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have an extended audit policy configured.", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()),
+					WithDescription(fmt.Sprintf("Resource '%s' does not have an extended audit policy configured.", resourceBlock.FullName())),
 			)
 
 		},

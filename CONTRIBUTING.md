@@ -42,58 +42,43 @@ Find your new check in `internal/apps/tfsec/rules` and the associated test in `i
 
 Here's an example:
 
-```go
-// The rule code for your check
-const AWSGibsonHackableCode = "AWS123"
-
-// A description for your check - this message will be output to a user when the check fails.
-const AWSGibsonHackableDescription = "The Gibson should not be hackable"
-
-// A note on the impact associated to the check
-const AWSGibsonHackableCodeImpact = "The Gibson might get hacked"
-
-// A note on the resolution to pass the check
-const AWSGibsonHackableCodeResolution = "Set hackable to false"
-
-// An explanation for your check. This should contain reasoning why this check enforces good practice. Full markdown is supported here.
-const AWSGibsonHackableExplanation = `
-You should always set <code>hackable</code> to *false* to prevent your Gibson from being hacked.
-`
-
-// An example of Terraform code that would fail our check. Our test suite will make sure this example fails the check.
-const AWSGibsonHackableBadExample = `
-resource "aws_gibson" "my-gibson" {
-    hackable = true
-}
-`
-
-// An example of Terraform code that would pass our check. Our test suite will make sure this example passes the check.
-const AWSGibsonHackableGoodExample = `
-resource "aws_gibson" "my-gibson" {
-    hackable = false
-}
-`
-```
-
-Next up, you need to tell the scanner about your check. You can do this by calling an init() function with the following code:
+You need to tell the scanner about your check; this is done by calling an init() function with the following code:
 
 ```go
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
     
-        	// our new check code
-		ID: AWSGibsonHackableCode,
+		// the service eg; iam, compute, datalake
+		Service: "iam"
+        // our new check code
+		ID: "gibson-not-hackable",
     
-        	// all of our documentation data that will be available in the output and/or at https://tfsec.dev/
-		Documentation: scanner.CheckDocumentation{
-			Summary:     AWSGibsonHackableDescription,
-			Impact:      AWSGibsonHackableCodeImpact,
-			Resolution:  AWSGibsonHackableCodeResolution,
-			Explanation: AWSGibsonHackableExplanation,
-			BadExample:  AWSGibsonHackableBadExample,
-			GoodExample: AWSGibsonHackableGoodExample,
+        // all of our documentation data that will be available in the output and/or at https://tfsec.dev/
+		Documentation: rule.RuleDocumentation{
+			// A description for your check - this message will be output to a user when the check fails.
+			Summary:     "The Gibson should not be hackable",
+			// A note on the impact associated to the check
+			Impact:      "The Gibson might get hacked",
+			// A note on the resolution to pass the check
+			Resolution:  "Set hackable to false",
+			// An explanation for your check. This should contain reasoning why this check enforces good practice. Full markdown is supported here.
+			Explanation: `You should always set <code>hackable</code> to *false* to prevent your Gibson from being hacked.`,
+			// An example of Terraform code that would fail our check. Our test suite will make sure this example fails the check.
+			BadExample:  []string{ `
+resource "aws_gibson" "my-gibson" {
+    hackable = true
+}
+`
+			},
+			// An example of Terraform code that would pass our check. Our test suite will make sure this example passes the check.
+			GoodExample: []string{ `
+resource "aws_gibson" "my-gibson" {
+    hackable = false
+}
+`
+			},
 			Links: []string{ // any useful links relating to your check go here
-                		"https://www.imdb.com/title/tt0113243/"
+                "https://www.imdb.com/title/tt0113243/"
 			},
 		},
         
@@ -128,8 +113,7 @@ CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
                     set.Add(
                         result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("The Gibson '%s' is configured to be hackable.", block.Name())).
-						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr).
+						WithAttribute(attr).
 						,
 					)
                 }
@@ -142,56 +126,9 @@ You can see a good example of a real check file [here](https://github.com/aquase
 
 ### Writing Tests
 
-It's also a requirement for new checks to include tests.
+There is no longer a need to create dedicated tests for new checks - the `BadExample` and `GoodExample` documentation items on the test will be evaluated during the test runs.
 
-You can add a test file in `./internal/app/tfsec/test`. The basic layout is as follows:
+The first example that you add for Good and Bad will be used in the documentation, additional blocks you want to be tested to to verify the check should be added afterwards.
 
-```go
-package test
-
-import (
-	"testing"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/checks"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-)
-
-func Test_AWSGibsonHackable(t *testing.T) {
-
-	var tests = []struct {
-		name                  string
-		source                string
-		mustIncludeResultCode string
-		mustExcludeResultCode string
-	}{
-		// this makes sure the check works in the most basic scenario
-		{
-			name: "check fails when hackable is set to true on an aws_gibson resource",
-			source: `
-resource "aws_gibson" "my-gibson" {
-	hackable = true
-}`,
-			mustIncludeResultCode: checks.AWSGibsonHackableCode,
-       		},
-		// this rules for a false positive
-		{ 
-			name: "check passes when hackable is set to false on an aws_gibson resource",
-			source: `
-resource "aws_gibson" "my-gibson" {
-	hackable = false
-}`,
-			mustExcludeResultCode: checks.AWSGibsonHackableCode,
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			results := scanSource(test.source)
-			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
-		})
-	}
-
-}
-```
 
 And that's it! If you have any difficulties, please feel free to raise a draft PR and note any questions/problems in the description and we'll do our best to help you out.

@@ -29,18 +29,18 @@ Buckets should have logging enabled so that access can be audited.
 `,
 			Impact:     "There is no way to determine the access to this bucket",
 			Resolution: "Add a logging block to the resource to enable access logging",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_s3_bucket" "bad_example" {
 
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_s3_bucket" "good_example" {
 	logging {
 		target_bucket = "target-bucket"
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket",
 				"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html",
@@ -57,8 +57,7 @@ resource "aws_s3_bucket" "good_example" {
 				}
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have logging enabled.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have logging enabled.", resourceBlock.FullName())),
 				)
 			}
 		},

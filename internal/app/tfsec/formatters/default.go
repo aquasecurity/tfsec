@@ -95,7 +95,7 @@ func printResult(res result.Result, i int, includePassedChecks bool) {
   <blue>%s</blue>
 
 
-`, res.RuleID, severity, res.Description, res.Range.String())
+`, res.RuleID, severity, res.Description, res.Range().String())
 	highlightCode(res)
 	if res.LegacyRuleID != "" {
 		_ = tml.Printf("  <white>Legacy ID:  </white><blue>%s</blue>\n", res.LegacyRuleID)
@@ -158,28 +158,28 @@ func printStatistics() {
 // highlight the lines of code which caused a problem, if available
 func highlightCode(result result.Result) {
 
-	data, err := ioutil.ReadFile(result.Range.Filename)
+	data, err := ioutil.ReadFile(result.Range().Filename)
 	if err != nil {
 		return
 	}
 
 	lines := append([]string{""}, strings.Split(string(data), "\n")...)
 
-	start := result.Range.StartLine - 3
+	start := result.Range().StartLine - 3
 	if start <= 0 {
 		start = 1
 	}
-	end := result.Range.EndLine + 3
+	end := result.Range().EndLine + 3
 	if end >= len(lines) {
 		end = len(lines) - 1
 	}
 
 	for lineNo := start; lineNo <= end; lineNo++ {
 		_ = tml.Printf("  <blue>% 6d</blue> | ", lineNo)
-		if lineNo >= result.Range.StartLine && lineNo <= result.Range.EndLine {
+		if lineNo >= result.Range().StartLine && lineNo <= result.Range().EndLine {
 			if result.Passed() {
 				_ = tml.Printf("<bold><green>%s</green></bold>", lines[lineNo])
-			} else if lineNo == result.Range.StartLine && result.RangeAnnotation != "" {
+			} else if lineNo == result.Range().StartLine && result.RangeAnnotation != "" {
 				_ = tml.Printf("<bold><red>%s</red>    <blue>%s</blue></bold>", lines[lineNo], result.RangeAnnotation)
 			} else {
 				_ = tml.Printf("<bold><red>%s</red></bold>", lines[lineNo])

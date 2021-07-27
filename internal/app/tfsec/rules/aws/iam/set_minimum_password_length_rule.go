@@ -31,20 +31,20 @@ func init() {
 			Explanation: `IAM account password policies should ensure that passwords have a minimum length. 
 
 The account password policy should be set to enforce minimum password length of at least 14 characters.`,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# minimum_password_length not set
 	# ...
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	minimum_password_length = 14
 	# ...
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
 				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
@@ -58,16 +58,14 @@ resource "aws_iam_account_password_policy" "good_example" {
 			if attr := resourceBlock.GetAttribute("minimum_password_length"); attr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a minimum password length set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a minimum password length set.", resourceBlock.FullName())),
 				)
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value < 14 {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has a minimum password length which is less than 14 characters.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' has a minimum password length which is less than 14 characters.", resourceBlock.FullName())),
 					)
 				}
 			}

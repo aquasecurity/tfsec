@@ -31,14 +31,14 @@ func init() {
 			Explanation: `
 Datalake storage encryption defaults to Enabled, it shouldn't be overridden to Disabled.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_data_lake_store" "bad_example" {
 	encryption_state = "Disabled"
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "azurerm_data_lake_store" "good_example" {
 	encryption_state = "Enabled"
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/data_lake_store",
 				"https://docs.microsoft.com/en-us/azure/data-lake-store/data-lake-store-security-overview",
@@ -58,8 +58,7 @@ resource "azurerm_data_lake_store" "good_example" {
 							"Resource '%s' defines an unencrypted data lake store.",
 							resourceBlock.FullName(),
 						)).
-						WithRange(encryptionStateAttr.Range()).
-						WithAttributeAnnotation(encryptionStateAttr),
+						WithAttribute(encryptionStateAttr),
 				)
 			}
 

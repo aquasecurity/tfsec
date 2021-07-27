@@ -33,16 +33,16 @@ Additionally, you should not use the <code>authenticated-read</code> canned ACL,
 `,
 			Impact:     "The contents of the bucket can be accessed publicly",
 			Resolution: "Apply a more restrictive bucket ACL",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_s3_bucket" "bad_example" {
 	acl = "public-read"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_s3_bucket" "good_example" {
 	acl = "private"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket",
 				"https://aws.amazon.com/premiumsupport/knowledge-center/secure-s3-resources/",
@@ -58,14 +58,12 @@ resource "aws_s3_bucket" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows public access.", resourceBlock.FullName())).
-							WithAttributeAnnotation(attr).
-							WithRange(attr.Range()),
+							WithAttribute(attr),
 					)
 				} else if attr.Equals("authenticated-read") {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName())).
-							WithRange(attr.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName())),
 					)
 				}
 			}

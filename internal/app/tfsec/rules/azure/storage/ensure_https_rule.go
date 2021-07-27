@@ -18,29 +18,28 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU010",
+		LegacyID:  "AZU010",
 		Service:   "storage",
 		ShortCode: "ensure-https",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Ensure HTTPS is enabled on Azure Storage Account",
-			Impact:       "HTTP access to storage account could be read if intercepted",
-			Resolution:   "Only use HTTPS for storage account",
-			Explanation:  `
+			Summary:    "Ensure HTTPS is enabled on Azure Storage Account",
+			Impact:     "HTTP access to storage account could be read if intercepted",
+			Resolution: "Only use HTTPS for storage account",
+			Explanation: `
 Requiring HTTPS in Storage Account helps to minimize the risk of eavesdropping.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "azurerm_storage_account" "bad_example" {
 	enable_https_traffic_only = false
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azurerm_storage_account" "good_example" {
 	enable_https_traffic_only = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account",
 				"https://docs.microsoft.com/en-us/azure/storage/blobs/security-recommendations",
@@ -60,8 +59,7 @@ resource "azurerm_storage_account" "good_example" {
 							"Resource '%s' enable_https_traffic_only disabled.",
 							resourceBlock.FullName(),
 						)).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr),
+						WithAttribute(enabledAttr),
 				)
 			}
 

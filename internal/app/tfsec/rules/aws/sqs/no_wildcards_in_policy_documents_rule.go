@@ -35,7 +35,7 @@ SQS Policy actions should always be restricted to a specific set.
 
 This ensures that the queue itself cannot be modified or deleted, and prevents possible future additions to queue actions to be implicitly allowed.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_sqs_queue_policy" "bad_example" {
   queue_url = aws_sqs_queue.q.id
 
@@ -51,8 +51,8 @@ resource "aws_sqs_queue_policy" "bad_example" {
 }
 POLICY
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_sqs_queue_policy" "good_example" {
   queue_url = aws_sqs_queue.q.id
 
@@ -68,7 +68,7 @@ resource "aws_sqs_queue_policy" "good_example" {
 }
 POLICY
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue_policy",
 				"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-security-best-practices.html",
@@ -101,8 +101,7 @@ POLICY
 					if strings.ToLower(statement.Effect) == "allow" && (statement.Action == "*" || statement.Action == "sqs:*") {
 						set.Add(
 							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName())).
-								WithRange(resourceBlock.Range()),
+								WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName())),
 						)
 					}
 				}

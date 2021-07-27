@@ -19,29 +19,28 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS025",
+		LegacyID:  "AWS025",
 		Service:   "api-gateway",
 		ShortCode: "use-secure-tls-policy",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "API Gateway domain name uses outdated SSL/TLS protocols.",
-			Impact:       "Outdated SSL policies increase exposure to known vulnerabilities",
-			Resolution:   "Use the most modern TLS/SSL policies available",
-			Explanation:  `
+			Summary:    "API Gateway domain name uses outdated SSL/TLS protocols.",
+			Impact:     "Outdated SSL policies increase exposure to known vulnerabilities",
+			Resolution: "Use the most modern TLS/SSL policies available",
+			Explanation: `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_api_gateway_domain_name" "bad_example" {
 	security_policy = "TLS_1_0"
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_api_gateway_domain_name" "good_example" {
 	security_policy = "TLS_1_2"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_domain_name#security_policy",
 				"https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-custom-domain-tls-version.html",
@@ -57,8 +56,7 @@ resource "aws_api_gateway_domain_name" "good_example" {
 			if securityPolicyAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -67,8 +65,7 @@ resource "aws_api_gateway_domain_name" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", resourceBlock.FullName())).
-						WithRange(securityPolicyAttr.Range()).
-						WithAttributeAnnotation(securityPolicyAttr),
+						WithAttribute(securityPolicyAttr),
 				)
 			}
 

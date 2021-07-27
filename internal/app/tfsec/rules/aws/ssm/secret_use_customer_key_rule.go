@@ -17,25 +17,24 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS095",
+		LegacyID:  "AWS095",
 		Service:   "ssm",
 		ShortCode: "secret-use-customer-key",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Secrets Manager should use customer managed keys",
-			Explanation:  `
+			Summary: "Secrets Manager should use customer managed keys",
+			Explanation: `
 Secrets Manager encrypts secrets by default using a default key created by AWS. To ensure control and granularity of secret encryption, CMK's should be used explicitly.
 `,
-			Impact:       "Using AWS managed keys reduces the flexibility and control over the encryption key",
-			Resolution:   "Use customer managed keys",
-			BadExample:   `
+			Impact:     "Using AWS managed keys reduces the flexibility and control over the encryption key",
+			Resolution: "Use customer managed keys",
+			BadExample: []string{`
 resource "aws_secretsmanager_secret" "bad_example" {
   name       = "lambda_password"
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_kms_key" "secrets" {
 	enable_key_rotation = true
 }
@@ -44,7 +43,7 @@ resource "aws_secretsmanager_secret" "good_example" {
   name       = "lambda_password"
   kms_key_id = aws_kms_key.secrets.arn
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret#kms_key_id",
 				"https://docs.aws.amazon.com/kms/latest/developerguide/services-secrets-manager.html#asm-encrypt",
@@ -59,8 +58,7 @@ resource "aws_secretsmanager_secret" "good_example" {
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not use CMK", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not use CMK", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -76,8 +74,7 @@ resource "aws_secretsmanager_secret" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
-							WithRange(kmsKeyAttr.Range()).
-							WithAttributeAnnotation(kmsKeyAttr),
+							WithAttribute(kmsKeyAttr),
 					)
 				}
 			}

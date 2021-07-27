@@ -36,7 +36,7 @@ Granting permissions to users quickly become unwieldy and complex to make large 
 
 Permissions should be granted on roles, groups, services accounts instead.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "google_project_iam_binding" "bad_example" {
 	members = [
 		"user:test@example.com",
@@ -46,8 +46,8 @@ resource "google_project_iam_binding" "bad_example" {
 resource "google_project_iam_member" "bad_example" {
 	member = "user:test@example.com"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "google_project_iam_binding" "good_example" {
 	members = [
 		"group:test@example.com",
@@ -56,7 +56,7 @@ resource "google_project_iam_binding" "good_example" {
 
 resource "google_storage_bucket_iam_member" "good_example" {
 	member = "serviceAccount:test@example.com"
-}`,
+}`},
 			Links: []string{
 				"https://www.terraform.io/docs/providers/google/d/iam_policy.html#members",
 				"https://cloud.google.com/iam/docs/overview#permissions",
@@ -111,8 +111,7 @@ resource "google_storage_bucket_iam_member" "good_example" {
 				if identities.IsKnown() && identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock.FullName())).
-							WithRange(attribute.Range()),
+							WithDescription(fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock.FullName())),
 					)
 				}
 			}

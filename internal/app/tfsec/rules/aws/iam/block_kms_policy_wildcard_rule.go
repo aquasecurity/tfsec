@@ -78,7 +78,7 @@ IAM policies define which actions an identity (user, group, or role) can perform
 `,
 			Impact:     "Identities may be able to decrypt data which they should not have access to",
 			Resolution: "Scope down the resources of the IAM policy to specific keys",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -113,8 +113,9 @@ data "aws_iam_policy_document" "kms_policy" {
     resources = ["*"]
   }
 }
-`,
-			GoodExample: `
+
+`},
+			GoodExample: []string{`
 resource "aws_kms_key" "main" {
 	enable_key_rotation = true
 }
@@ -153,7 +154,7 @@ data "aws_iam_policy_document" "kms_policy" {
     resources = [aws_kms_key.main.arn]
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document",
 				"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards-fsbp-controls.html#fsbp-kms-1",
@@ -199,8 +200,7 @@ data "aws_iam_policy_document" "kms_policy" {
 									set.Add(
 										result.New(policyDocumentBlock).
 											WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", policyDocumentBlock.FullName())).
-											WithRange(resources.Range()).
-											WithAttributeAnnotation(resources),
+											WithAttribute(resources),
 									)
 								}
 							})
@@ -231,8 +231,7 @@ func checkAWS097PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", resourceBlock.FullName())).
-							WithRange(policyAttr.Range()).
-							WithAttributeAnnotation(policyAttr),
+							WithAttribute(policyAttr),
 					)
 					return
 				}

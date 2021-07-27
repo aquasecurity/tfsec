@@ -24,13 +24,13 @@ The "block public access" settings in S3 override individual policies that apply
 `,
 			Impact:     "Public access policies may be applied to sensitive data buckets",
 			Resolution: "Define a aws_s3_bucket_public_access_block for the given bucket to control public access policies",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_s3_bucket" "example" {
 	bucket = "example"
 	acl = "private-read"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_s3_bucket" "example" {
 	bucket = "example"
 	acl = "private-read"
@@ -41,7 +41,7 @@ resource "aws_s3_bucket_public_access_block" "example" {
 	block_public_acls   = true
 	block_public_policy = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block#bucket",
 				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
@@ -56,8 +56,7 @@ resource "aws_s3_bucket_public_access_block" "example" {
 			if err != nil || len(blocks) == 0 {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource %s has no associated aws_s3_bucket_public_access_block.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource %s has no associated aws_s3_bucket_public_access_block.", resourceBlock.FullName())),
 				)
 			}
 		},

@@ -29,7 +29,7 @@ func init() {
 			Explanation: `
 All artifacts produced by your CodeBuild project pipeline should always be encrypted
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_codebuild_project" "bad_example" {
 	// other config
 
@@ -55,8 +55,8 @@ resource "aws_codebuild_project" "bad_example" {
 		encryption_disabled = true
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_codebuild_project" "good_example" {
 	// other config
 
@@ -88,7 +88,7 @@ resource "aws_codebuild_project" "codebuild" {
 		// other artifacts config
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project#encryption_disabled",
 				"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-codebuild-project-artifacts.html",
@@ -114,15 +114,13 @@ resource "aws_codebuild_project" "codebuild" {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName())).
-								WithRange(artifactBlock.Range()).
-								WithAttributeAnnotation(artifactTypeAttr),
+								WithAttribute(artifactTypeAttr),
 						)
 					} else {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName())).
-								WithRange(artifactBlock.Range()).
-								WithAttributeAnnotation(encryptionDisabledAttr),
+								WithAttribute(encryptionDisabledAttr),
 						)
 					}
 				}

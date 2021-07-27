@@ -24,7 +24,7 @@ func init() {
 			Explanation: `Using 'allUsers' or 'allAuthenticatedUsers' as members in an IAM member/binding causes data to be exposed outside of the organisation.`,
 			Impact:      "Public exposure of sensitive data.",
 			Resolution:  "Restrict public access to the bucket.",
-			BadExample: `
+			BadExample: []string{`
 resource "google_storage_bucket_iam_binding" "binding" {
 	bucket = google_storage_bucket.default.name
 	role = "roles/storage.admin"
@@ -32,8 +32,8 @@ resource "google_storage_bucket_iam_binding" "binding" {
 		"allAuthenticatedUsers",
 	]
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "google_storage_bucket_iam_binding" "binding" {
 	bucket = google_storage_bucket.default.name
 	role = "roles/storage.admin"
@@ -41,7 +41,7 @@ resource "google_storage_bucket_iam_binding" "binding" {
 		"user:jane@example.com",
 	]
 }
-			`,
+			`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_iam#member/members",
 				"https://jbrojbrojbro.medium.com/you-make-the-rules-with-authentication-controls-for-cloud-storage-53c32543747b",
@@ -57,8 +57,7 @@ resource "google_storage_bucket_iam_binding" "binding" {
 				if googleIAMMemberIsExternal(memberAttr.Value().AsString()) {
 					set.Add(result.New(resourceBlock).
 						WithDescription("Resource '%s' allows public access via member attribute.").
-						WithRange(memberAttr.Range()).
-						WithAttributeAnnotation(memberAttr),
+						WithAttribute(memberAttr),
 					)
 				}
 			}
@@ -68,8 +67,7 @@ resource "google_storage_bucket_iam_binding" "binding" {
 					if googleIAMMemberIsExternal(member) {
 						set.Add(result.New(resourceBlock).
 							WithDescription("Resource '%s' allows public access via members attribute.").
-							WithRange(membersAttr.Range()).
-							WithAttributeAnnotation(membersAttr),
+							WithAttribute(membersAttr),
 						)
 					}
 				}

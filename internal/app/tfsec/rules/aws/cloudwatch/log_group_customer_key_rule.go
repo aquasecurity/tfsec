@@ -17,32 +17,31 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS089",
+		LegacyID:  "AWS089",
 		Service:   "cloudwatch",
 		ShortCode: "log-group-customer-key",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "CloudWatch log groups should be encrypted using CMK",
-			Explanation:  `
+			Summary: "CloudWatch log groups should be encrypted using CMK",
+			Explanation: `
 CloudWatch log groups are encrypted by default, however, to get the full benefit of controlling key rotation and other KMS aspects a KMS CMK should be used.
 `,
-			Impact:       "Log data may be leaked if the logs are compromised. No auditing of who have viewed the logs.",
-			Resolution:   "Enable CMK encryption of CloudWatch Log Groups",
-			BadExample:   `
+			Impact:     "Log data may be leaked if the logs are compromised. No auditing of who have viewed the logs.",
+			Resolution: "Enable CMK encryption of CloudWatch Log Groups",
+			BadExample: []string{`
 resource "aws_cloudwatch_log_group" "bad_example" {
 	name = "bad_example"
 
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_cloudwatch_log_group" "good_example" {
 	name = "good_example"
 
 	kms_key_id = aws_kms_key.log_key.arn
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group#kms_key_id",
 				"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html",
@@ -56,8 +55,7 @@ resource "aws_cloudwatch_log_group" "good_example" {
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is only using default encryption", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is only using default encryption", resourceBlock.FullName())),
 				)
 			}
 

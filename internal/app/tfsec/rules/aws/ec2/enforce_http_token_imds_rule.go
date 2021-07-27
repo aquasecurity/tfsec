@@ -31,13 +31,13 @@ IMDS v2 (Instance Metadata Service) introduced session authentication tokens whi
 By default <code>aws_instance</code> resource sets IMDS session auth tokens to be optional. 
 To fully protect IMDS you need to enable session tokens by using <code>metadata_options</code> block and its <code>http_tokens</code> variable set to <code>required</code>.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_instance" "bad_example" {
   ami           = "ami-005e54dee72cc1d00"
   instance_type = "t2.micro"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_instance" "good_example" {
   ami           = "ami-005e54dee72cc1d00"
   instance_type = "t2.micro"
@@ -45,7 +45,7 @@ resource "aws_instance" "good_example" {
 	http_tokens = "required"
   }	
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#metadata-options",
 				"https://aws.amazon.com/blogs/security/defense-in-depth-open-firewalls-reverse-proxies-ssrf-vulnerabilities-ec2-instance-metadata-service",
@@ -61,8 +61,7 @@ resource "aws_instance" "good_example" {
 			if metaDataOptions == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -80,8 +79,7 @@ resource "aws_instance" "good_example" {
 				if !httpTokensAttr.Equals("required") {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())).
-							WithRange(httpTokensAttr.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())),
 					)
 				}
 			}

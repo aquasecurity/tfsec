@@ -35,7 +35,7 @@ func init() {
 			Explanation: `
 You should not make secrets available to a user in plaintext in any scenario. Secrets can instead be pulled from a secure secret storage system by the service requiring them.  
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_ecs_task_definition" "bad_example" {
   container_definitions = <<EOF
 [
@@ -52,8 +52,8 @@ resource "aws_ecs_task_definition" "bad_example" {
 EOF
 
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_ecs_task_definition" "good_example" {
   container_definitions = <<EOF
 [
@@ -69,7 +69,7 @@ resource "aws_ecs_task_definition" "good_example" {
 EOF
 
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition",
 				"https://docs.aws.amazon.com/systems-manager/latest/userguide/integration-ps-secretsmanager.html",
@@ -102,8 +102,7 @@ EOF
 						if security.IsSensitiveAttribute(env.Name) && env.Value != "" {
 							set.Add(result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", resourceBlock.FullName(), env.Name)).
-								WithRange(definitionsAttr.Range()).
-								WithAttributeAnnotation(definitionsAttr),
+								WithAttribute(definitionsAttr),
 							)
 						}
 					}

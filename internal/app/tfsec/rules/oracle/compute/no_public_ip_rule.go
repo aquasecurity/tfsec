@@ -17,33 +17,32 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "OCI001",
+		LegacyID:  "OCI001",
 		Service:   "compute",
 		ShortCode: "no-public-ip",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Compute instance requests an IP reservation from a public pool",
-			Explanation:  `
+			Summary: "Compute instance requests an IP reservation from a public pool",
+			Explanation: `
 Compute instance requests an IP reservation from a public pool
 
 The compute instance has the ability to be reached from outside, you might want to sonder the use of a non public IP.
 `,
-			Impact:       "The compute instance has the ability to be reached from outside",
-			Resolution:   "Reconsider the use of an public IP",
-			BadExample:   `
+			Impact:     "The compute instance has the ability to be reached from outside",
+			Resolution: "Reconsider the use of an public IP",
+			BadExample: []string{`
 resource "opc_compute_ip_address_reservation" "bad_example" {
 	name            = "my-ip-address"
 	ip_address_pool = "public-ippool"
   }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "opc_compute_ip_address_reservation" "good_example" {
 	name            = "my-ip-address"
 	ip_address_pool = "cloud-ippool"
   }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/opc/latest/docs/resources/opc_compute_ip_address_reservation",
 				"https://registry.terraform.io/providers/hashicorp/opc/latest/docs/resources/opc_compute_instance",
@@ -59,8 +58,7 @@ resource "opc_compute_ip_address_reservation" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' is using an IP from a public IP pool", resourceBlock.FullName())).
-							WithRange(attr.Range()).
-							WithAttributeAnnotation(attr),
+							WithAttribute(attr),
 					)
 				}
 			}

@@ -31,16 +31,16 @@ func init() {
 			Explanation: `
 The AWS provider block should not contain hardcoded credentials. These can be passed in securely as runtime using environment variables.
 `,
-			BadExample: `
+			BadExample: []string{`
 provider "aws" {
   access_key = "AKIAABCD12ABCDEF1ABC"
   secret_key = "s8d7ghas9dghd9ophgs9"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 provider "aws" {
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs#argument-reference",
 				"https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html",
@@ -56,15 +56,13 @@ provider "aws" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Provider '%s' has an access key specified.", resourceBlock.FullName())).
-						WithRange(accessKeyAttribute.Range()).
-						WithAttributeAnnotation(accessKeyAttribute),
+						WithAttribute(accessKeyAttribute),
 				)
 			} else if secretKeyAttribute := resourceBlock.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Provider '%s' has a secret key specified.", resourceBlock.FullName())).
-						WithRange(secretKeyAttribute.Range()).
-						WithAttributeAnnotation(secretKeyAttribute),
+						WithAttribute(secretKeyAttribute),
 				)
 			}
 

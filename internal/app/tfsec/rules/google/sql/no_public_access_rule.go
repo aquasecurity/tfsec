@@ -27,7 +27,7 @@ func init() {
 			Explanation: `	`,
 			Impact:     "Public exposure of sensitive data",
 			Resolution: "Remove public access from database instances",
-			BadExample: `
+			BadExample: []string{`
 resource "google_sql_database_instance" "postgres" {
 	name             = "postgres-instance-a"
 	database_version = "POSTGRES_11"
@@ -49,8 +49,8 @@ resource "google_sql_database_instance" "postgres" {
 		}
 	}
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "google_sql_database_instance" "postgres" {
 	name             = "postgres-instance-a"
 	database_version = "POSTGRES_11"
@@ -67,7 +67,7 @@ resource "google_sql_database_instance" "postgres" {
 		}
 	}
 }
-			`,
+			`},
 			Links: []string{"https://www.cloudconformity.com/knowledge-base/gcp/CloudSQL/publicly-accessible-cloud-sql-instances.html#"},
 		},
 		Provider:        provider.GoogleProvider,
@@ -86,7 +86,6 @@ resource "google_sql_database_instance" "postgres" {
 			if ipConfigBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithRange(settingsBlock.Range()).
 						WithDescription(fmt.Sprintf("Resource '%s' has a public ipv4 address assigned by default", resourceBlock.FullName())),
 				)
 				return
@@ -95,14 +94,13 @@ resource "google_sql_database_instance" "postgres" {
 			if ipv4Attr := ipConfigBlock.GetAttribute("ipv4_enabled"); ipv4Attr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithRange(ipConfigBlock.Range()).
 						WithDescription(fmt.Sprintf("Resource '%s' has a public ipv4 address assigned by default", resourceBlock.FullName())),
 				)
 			} else if ipv4Attr.IsTrue() {
 				set.Add(
 					result.New(ipConfigBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has a public ipv4 address explicitly assigned", resourceBlock.FullName())).
-						WithAttributeAnnotation(ipv4Attr),
+						WithAttribute(ipv4Attr),
 				)
 				return
 			}
@@ -112,7 +110,7 @@ resource "google_sql_database_instance" "postgres" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' authorizes access from the public internet", resourceBlock.FullName())).
-							WithAttributeAnnotation(cidrAttr),
+							WithAttribute(cidrAttr),
 					)
 				}
 			}

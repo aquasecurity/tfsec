@@ -12,32 +12,31 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "DIG007",
+		LegacyID:  "DIG007",
 		Service:   "spaces",
 		ShortCode: "disable-force-destroy",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Force destroy is enabled on Spaces bucket which is dangerous",
-			Explanation:  `
+			Summary: "Force destroy is enabled on Spaces bucket which is dangerous",
+			Explanation: `
 Enabling force destroy on a Spaces bucket means that the bucket can be deleted without the additional check that it is empty. This risks important data being accidentally deleted by a bucket removal process.
 `,
-			Impact:       "Accidental deletion of bucket objects",
-			Resolution:   "Don't use force destroy on bucket configuration",
-			BadExample:   `
+			Impact:     "Accidental deletion of bucket objects",
+			Resolution: "Don't use force destroy on bucket configuration",
+			BadExample: []string{`
 resource "digitalocean_spaces_bucket" "bad_example" {
   name   		= "foobar"
   region 		= "nyc3"
   force_destroy = true
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "digitalocean_spaces_bucket" "good_example" {
   name   = "foobar"
   region = "nyc3"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#force_destroy",
 			},
@@ -52,8 +51,8 @@ resource "digitalocean_spaces_bucket" "good_example" {
 				if forceDestroyAttr.IsTrue() {
 					set.Add(result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName())).
-						WithAttributeAnnotation(forceDestroyAttr).
-						WithRange(forceDestroyAttr.Range()))
+						WithAttribute(forceDestroyAttr),
+					)
 				}
 			}
 		},

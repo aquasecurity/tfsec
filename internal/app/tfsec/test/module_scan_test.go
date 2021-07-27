@@ -27,16 +27,16 @@ func Test_ProblemInModule(t *testing.T) {
 			Impact:      "You will look stupid",
 			Resolution:  "Don't do stupid stuff",
 			Explanation: "Bad should not be set.",
-			BadExample: `
+			BadExample: []string{`
 resource "problem" "x" {
 	bad = "1"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "problem" "x" {
 	
 }
-`,
+`},
 			Links: nil,
 		},
 		RequiredTypes:   []string{"resource"},
@@ -45,7 +45,7 @@ resource "problem" "x" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.GetAttribute("bad") != nil {
 				set.Add(
-					result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()),
+					result.New(resourceBlock).WithDescription("example problem"),
 				)
 			}
 		},

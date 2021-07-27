@@ -31,7 +31,7 @@ It is recommended to use Service Accounts and OAuth as authentication methods fo
 
 Basic authentication should be disabled by explicitly unsetting the <code>username</code> and <code>password</code> on the <code>master_auth</code> block.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "google_container_cluster" "bad_example" {
 }
 
@@ -44,15 +44,15 @@ resource "google_container_cluster" "gke" {
 	    }
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "google_container_cluster" "good_example" {
 	master_auth {
 	    username = ""
 	    password = ""
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#master_auth",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#restrict_authn_methods",
@@ -68,8 +68,7 @@ resource "google_container_cluster" "good_example" {
 			if masterAuthBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -78,8 +77,7 @@ resource "google_container_cluster" "good_example" {
 			if staticAuthPass != nil && !staticAuthPass.IsEmpty() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())).
-						WithRange(masterAuthBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())),
 				)
 			}
 
@@ -91,8 +89,7 @@ resource "google_container_cluster" "good_example" {
 			if issueClientCert != nil && issueClientCert.IsTrue() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())).
-						WithRange(issueClientCert.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())),
 				)
 			}
 

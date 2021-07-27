@@ -31,14 +31,14 @@ CIS GKE Benchmark Recommendation: 6.5.5. Ensure Shielded GKE Nodes are Enabled
 
 Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "google_container_cluster" "bad_example" {
 	enable_shielded_nodes = "false"
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "google_container_cluster" "good_example" {
 	enable_shielded_nodes = "true"
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#enable_shielded_nodes",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#shielded_nodes",
@@ -53,8 +53,7 @@ resource "google_container_cluster" "good_example" {
 			if resourceBlock.MissingChild("enable_shielded_nodes") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -63,8 +62,7 @@ resource "google_container_cluster" "good_example" {
 			if enableShieldedNodesAttr != nil && enableShieldedNodesAttr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", resourceBlock.FullName())).
-						WithRange(enableShieldedNodesAttr.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", resourceBlock.FullName())),
 				)
 			}
 

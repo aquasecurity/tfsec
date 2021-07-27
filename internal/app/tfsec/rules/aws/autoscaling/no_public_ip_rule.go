@@ -19,29 +19,28 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS012",
+		LegacyID:  "AWS012",
 		Service:   "autoscaling",
 		ShortCode: "no-public-ip",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "A resource has a public IP address.",
-			Impact:       "The instance or configuration is publicly accessible",
-			Resolution:   "Set the instance to not be publicly accessible",
-			Explanation:  `
+			Summary:    "A resource has a public IP address.",
+			Impact:     "The instance or configuration is publicly accessible",
+			Resolution: "Set the instance to not be publicly accessible",
+			Explanation: `
 You should limit the provision of public IP addresses for resources. Resources should not be exposed on the public internet, but should have access limited to consumers required for the function of your application. 
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_launch_configuration" "bad_example" {
 	associate_public_ip_address = true
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_launch_configuration" "good_example" {
 	associate_public_ip_address = false
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_configuration#associate_public_ip_address",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#associate_public_ip_address",
@@ -59,8 +58,7 @@ resource "aws_launch_configuration" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has a public IP address associated.", resourceBlock.FullName())).
-							WithRange(publicAttr.Range()).
-							WithAttributeAnnotation(publicAttr),
+							WithAttribute(publicAttr),
 					)
 				}
 			}

@@ -19,22 +19,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU011",
+		LegacyID:  "AZU011",
 		Service:   "storage",
 		ShortCode: "no-public-access",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Storage containers in blob storage mode should not have public access",
-			Impact:       "Data in the storage container could be exposed publicly",
-			Resolution:   "Disable public access to storage containers",
-			Explanation:  `
+			Summary:    "Storage containers in blob storage mode should not have public access",
+			Impact:     "Data in the storage container could be exposed publicly",
+			Resolution: "Disable public access to storage containers",
+			Explanation: `
 Storage container public access should be off. It can be configured for blobs only, containers and blobs or off entirely. The default is off, with no public access.
 
 Explicitly overriding publicAccess to anything other than off should be avoided.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "azure_storage_container" "bad_example" {
 	name                  = "terraform-container-storage"
 	container_access_type = "blob"
@@ -43,8 +42,8 @@ resource "azure_storage_container" "bad_example" {
 		"publicAccess" = "blob"
 	}
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azure_storage_container" "good_example" {
 	name                  = "terraform-container-storage"
 	container_access_type = "blob"
@@ -53,7 +52,7 @@ resource "azure_storage_container" "good_example" {
 		"publicAccess" = "off"
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://www.terraform.io/docs/providers/azure/r/storage_container.html#properties",
 				"https://docs.microsoft.com/en-us/azure/storage/blobs/anonymous-read-access-configure?tabs=portal#set-the-public-access-level-for-a-container",
@@ -73,8 +72,7 @@ resource "azure_storage_container" "good_example" {
 					if value == cty.StringVal("blob") || value == cty.StringVal("container") {
 						set.Add(
 							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines publicAccess as '%s', should be 'off .", resourceBlock.FullName(), value)).
-								WithRange(resourceBlock.Range()),
+								WithDescription(fmt.Sprintf("Resource '%s' defines publicAccess as '%s', should be 'off .", resourceBlock.FullName(), value)),
 						)
 					}
 				}

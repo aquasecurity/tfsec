@@ -35,18 +35,18 @@ Pod Security Policy allows you to set smart defaults for your Pods, and enforce 
 
 The policies you define should be specific to the needs of your application
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "google_container_cluster" "bad_example" {
 	pod_security_policy_config {
         enabled = "false"
 	}
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "google_container_cluster" "good_example" {
 	pod_security_policy_config {
         enabled = "true"
 	}
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#pod_security_policy_config",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#admission_controllers",
@@ -62,8 +62,7 @@ resource "google_container_cluster" "good_example" {
 			if pspBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -72,8 +71,7 @@ resource "google_container_cluster" "good_example" {
 			if enforcePSP != nil && enforcePSP.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())).
-						WithRange(enforcePSP.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())),
 				)
 			}
 

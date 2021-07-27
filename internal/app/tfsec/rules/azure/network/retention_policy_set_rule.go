@@ -29,7 +29,7 @@ To enable analysis in security event that was detected late, you need to have th
 Setting an retention policy will help ensure as much information is available for review.`,
 			Impact:     "Not enabling retention or having short expiry on flow logs could lead to compromise being undetected limiting time for analysis",
 			Resolution: "Ensure flow log retention is turned on with an expiry of >90 days",
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_network_watcher_flow_log" "bad_watcher" {
   network_watcher_name = "bad_watcher"
   resource_group_name  = "resource-group"
@@ -43,8 +43,8 @@ resource "azurerm_network_watcher_flow_log" "bad_watcher" {
     days    = 7
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_network_watcher_flow_log" "good_watcher" {
   network_watcher_name = "good_watcher"
   resource_group_name  = "resource-group"
@@ -58,7 +58,7 @@ resource "azurerm_network_watcher_flow_log" "good_watcher" {
     days    = 90
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_watcher_flow_log#retention_policy",
 				"https://docs.microsoft.com/en-us/azure/network-watcher/network-watcher-monitoring-overview",
@@ -80,8 +80,7 @@ resource "azurerm_network_watcher_flow_log" "good_watcher" {
 			retentionPolicyBlock := resourceBlock.GetBlock("retention_policy")
 			if retentionPolicyBlock.MissingChild("enabled") || retentionPolicyBlock.MissingChild("days") {
 				set.Add(
-					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' is missing the required attributes retention policy block", resourceBlock.FullName())).
-						WithRange(retentionPolicyBlock.Range()),
+					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' is missing the required attributes retention policy block", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -92,16 +91,14 @@ resource "azurerm_network_watcher_flow_log" "good_watcher" {
 			if enabledAttr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' has retention policy turned off", resourceBlock.FullName())).
-						WithAttributeAnnotation(enabledAttr).
-						WithRange(enabledAttr.Range()),
+						WithAttribute(enabledAttr),
 				)
 			}
 
 			if daysAttr.LessThan(90) {
 				set.Add(
 					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' has retention policy period of less than 90 days", resourceBlock.FullName())).
-						WithAttributeAnnotation(daysAttr).
-						WithRange(daysAttr.Range()),
+						WithAttribute(daysAttr),
 				)
 			}
 		},

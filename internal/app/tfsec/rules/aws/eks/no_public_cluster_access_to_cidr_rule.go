@@ -30,7 +30,7 @@ func init() {
 			Explanation: `
 EKS Clusters have public access cidrs set to 0.0.0.0/0 by default which is wide open to the internet. This should be explicitly set to a more specific CIDR range
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_eks_cluster" "bad_example" {
     // other config 
 
@@ -40,8 +40,8 @@ resource "aws_eks_cluster" "bad_example" {
         endpoint_public_access = true
     }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_eks_cluster" "good_example" {
     // other config 
 
@@ -52,7 +52,7 @@ resource "aws_eks_cluster" "good_example" {
         public_access_cidrs = ["10.2.0.0/8"]
     }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#vpc_config",
 				"https://docs.aws.amazon.com/eks/latest/userguide/create-public-private-vpc.html",
@@ -84,8 +84,7 @@ resource "aws_eks_cluster" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has public access cidr explicitly set to wide open", resourceBlock.FullName())).
-						WithRange(publicAccessCidrsAttr.Range()).
-						WithAttributeAnnotation(publicAccessCidrsAttr),
+						WithAttribute(publicAccessCidrsAttr),
 				)
 			}
 		},

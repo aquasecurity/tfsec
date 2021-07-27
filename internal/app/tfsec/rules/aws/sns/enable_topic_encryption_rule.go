@@ -19,29 +19,28 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS016",
+		LegacyID:  "AWS016",
 		Service:   "sns",
 		ShortCode: "enable-topic-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Unencrypted SNS topic.",
-			Impact:       "The SNS topic messages could be read if compromised",
-			Resolution:   "Turn on SNS Topic encryption",
-			Explanation:  `
+			Summary:    "Unencrypted SNS topic.",
+			Impact:     "The SNS topic messages could be read if compromised",
+			Resolution: "Turn on SNS Topic encryption",
+			Explanation: `
 Queues should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific queues.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_sns_topic" "bad_example" {
 	# no key id specified
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_sns_topic" "good_example" {
 	kms_master_key_id = "/blah"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic#example-with-server-side-encryption-sse",
 				"https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html",
@@ -57,16 +56,14 @@ resource "aws_sns_topic" "good_example" {
 			if kmsKeyIDAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())),
 				)
 				return
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())).
-						WithRange(kmsKeyIDAttr.Range()).
-						WithAttributeAnnotation(kmsKeyIDAttr),
+						WithAttribute(kmsKeyIDAttr),
 				)
 				return
 			}
@@ -83,8 +80,7 @@ resource "aws_sns_topic" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
-							WithRange(kmsKeyIDAttr.Range()).
-							WithAttributeAnnotation(kmsKeyIDAttr),
+							WithAttribute(kmsKeyIDAttr),
 					)
 				}
 

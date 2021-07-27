@@ -32,14 +32,14 @@ Network security rules should not use very broad subnets.
 
 Where possible, segments should be broken into smaller subnets and avoid using the <code>/0</code> subnet.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "google_compute_firewall" "bad_example" {
 	source_ranges = ["0.0.0.0/0"]
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "google_compute_firewall" "good_example" {
 	source_ranges = ["1.2.3.4/32"]
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall#source_ranges",
 				"https://cloud.google.com/vpc/docs/using-firewalls",
@@ -57,8 +57,7 @@ resource "google_compute_firewall" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", resourceBlock.FullName())).
-							WithAttributeAnnotation(sourceRanges).
-							WithRange(sourceRanges.Range()),
+							WithAttribute(sourceRanges),
 					)
 				}
 			}

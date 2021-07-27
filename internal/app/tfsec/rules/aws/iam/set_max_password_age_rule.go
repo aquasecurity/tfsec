@@ -31,18 +31,18 @@ func init() {
 			Explanation: `IAM account password policies should have a maximum age specified. 
 		
 The account password policy should be set to expire passwords after 90 days or less.`,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# max_password_age not set
 	# ...
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	max_password_age = 90
 	# ...
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
 				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
@@ -56,8 +56,7 @@ resource "aws_iam_account_password_policy" "good_example" {
 			if attr := resourceBlock.GetAttribute("max_password_age"); attr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a max password age set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a max password age set.", resourceBlock.FullName())),
 				)
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
@@ -65,8 +64,7 @@ resource "aws_iam_account_password_policy" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has high password age.", resourceBlock.FullName())).
-							WithRange(attr.Range()).
-							WithAttributeAnnotation(attr),
+							WithAttribute(attr),
 					)
 				}
 			}

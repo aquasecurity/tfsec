@@ -19,7 +19,6 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 var outdatedSSLPolicies = []string{
 	"ELBSecurityPolicy-2015-05",
 	"ELBSecurityPolicy-TLS-1-0-2015-04",
@@ -29,28 +28,28 @@ var outdatedSSLPolicies = []string{
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS010",
+		LegacyID:  "AWS010",
 		Service:   "vpc",
 		ShortCode: "use-secure-tls-policy",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "An outdated SSL policy is in use by a load balancer.",
-			Impact:       "The SSL policy is outdated and has known vulnerabilities",
-			Resolution:   "Use a more recent TLS/SSL policy for the load balancer",
-			Explanation:  `
+			Summary:    "An outdated SSL policy is in use by a load balancer.",
+			Impact:     "The SSL policy is outdated and has known vulnerabilities",
+			Resolution: "Use a more recent TLS/SSL policy for the load balancer",
+			Explanation: `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+. 
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_alb_listener" "bad_example" {
 	ssl_policy = "ELBSecurityPolicy-TLS-1-1-2017-01"
 	protocol = "HTTPS"
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_alb_listener" "good_example" {
 	ssl_policy = "ELBSecurityPolicy-TLS-1-2-2017-01"
 	protocol = "HTTPS"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener",
 			},
@@ -67,8 +66,7 @@ resource "aws_alb_listener" "good_example" {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", resourceBlock.FullName())).
-								WithRange(sslPolicyAttr.Range()).
-								WithAttributeAnnotation(sslPolicyAttr),
+								WithAttribute(sslPolicyAttr),
 						)
 					}
 				}

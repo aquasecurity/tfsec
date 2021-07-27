@@ -19,20 +19,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS031",
+		LegacyID:  "AWS031",
 		Service:   "elastic-service",
 		ShortCode: "enable-domain-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Elasticsearch domain isn't encrypted at rest.",
-			Impact:       "Data will be readable if compromised",
-			Resolution:   "Enable ElasticSearch domain encryption",
-			Explanation:  `
+			Summary:    "Elasticsearch domain isn't encrypted at rest.",
+			Impact:     "Data will be readable if compromised",
+			Resolution: "Enable ElasticSearch domain encryption",
+			Explanation: `
 You should ensure your Elasticsearch data is encrypted at rest to help prevent sensitive information from being read by unauthorised users. 
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
@@ -40,8 +39,8 @@ resource "aws_elasticsearch_domain" "bad_example" {
     enabled = false
   }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
@@ -49,7 +48,7 @@ resource "aws_elasticsearch_domain" "good_example" {
     enabled = true
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#encrypt_at_rest",
 				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/encryption-at-rest.html",
@@ -65,8 +64,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if encryptionBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -75,8 +73,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if enabledAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -88,8 +85,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if !encryptionEnabled {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", resourceBlock.FullName())),
 				)
 			}
 

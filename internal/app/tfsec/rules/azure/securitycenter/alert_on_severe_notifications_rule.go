@@ -27,7 +27,7 @@ func init() {
 Microsoft will notify the security contact directly in the event of a security incident using email and require alerting to be turned on.`,
 			Impact:     "The ability to react to high severity notifications could be delayed",
 			Resolution: " Set alert notifications to be on",
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_security_center_contact" "bad_example" {
   email = "bad_example@example.com"
   phone = "+1-555-555-5555"
@@ -35,8 +35,8 @@ resource "azurerm_security_center_contact" "bad_example" {
   alert_notifications = false
   alerts_to_admins    = false
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "azurerm_security_center_contact" "good_example" {
   email = "good_example@example.com"
   phone = "+1-555-555-5555"
@@ -44,7 +44,7 @@ resource "azurerm_security_center_contact" "good_example" {
   alert_notifications = true
   alerts_to_admins    = true
 }
-			`,
+			`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/security_center_contact#alert_notifications",
 				"https://azure.microsoft.com/en-us/services/security-center/",
@@ -68,8 +68,7 @@ resource "azurerm_security_center_contact" "good_example" {
 			if alertNotificationsAttr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' has alert_notifications turned off", resourceBlock.FullName())).
-						WithAttributeAnnotation(alertNotificationsAttr).
-						WithRange(alertNotificationsAttr.Range()),
+						WithAttribute(alertNotificationsAttr),
 				)
 			}
 

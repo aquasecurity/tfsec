@@ -33,18 +33,18 @@ You should disable Attribute-Based Access Control (ABAC), and instead use Role-B
 
 RBAC has significant security advantages and is now stable in Kubernetes, so it’s time to disable ABAC.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "google_container_cluster" "bad_example" {
 	enable_legacy_abac = "true"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "google_container_cluster" "good_example" {
 	# ...
 	# enable_legacy_abac not set
 	# ...
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#enable_legacy_abac",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#leave_abac_disabled_default_for_110",
@@ -60,8 +60,7 @@ resource "google_container_cluster" "good_example" {
 			if enableLegacyABAC != nil && enableLegacyABAC.Value().Type() == cty.String && enableLegacyABAC.Value().AsString() == "true" {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", resourceBlock.FullName())),
 				)
 			}
 

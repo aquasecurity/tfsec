@@ -27,7 +27,7 @@ You should use the principle of least privilege when defining your IAM policies.
 `,
 			Impact:     "Overly permissive policies may grant access to sensitive resources",
 			Resolution: "Specify the exact permissions required, and to which resources they should apply instead of using wildcards.",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -62,8 +62,8 @@ data "aws_iam_policy_document" "s3_policy" {
     resources = ["*"]
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -98,7 +98,7 @@ data "aws_iam_policy_document" "s3_policy" {
     resources = [aws_s3_bucket.example.arn]
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document",
 				"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
@@ -145,8 +145,7 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 			set.Add(
 				result.New(policyDocumentBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName())).
-					WithRange(actionsAttr.Range()).
-					WithAttributeAnnotation(actionsAttr),
+					WithAttribute(actionsAttr),
 			)
 		}
 	})
@@ -156,8 +155,7 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 		set.Add(
 			result.New(policyDocumentBlock).
 				WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", policyDocumentBlock.FullName())).
-				WithRange(resourcesAttr.Range()).
-				WithAttributeAnnotation(resourcesAttr),
+				WithAttribute(resourcesAttr),
 		)
 	}
 
@@ -172,8 +170,7 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 						set.Add(
 							result.New(policyDocumentBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", policyDocumentBlock.FullName())).
-								WithRange(resourcesAttr.Range()).
-								WithAttributeAnnotation(resourcesAttr),
+								WithAttribute(resourcesAttr),
 						)
 						break
 					}
@@ -206,8 +203,7 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", resourceBlock.FullName())).
-						WithRange(policyAttr.Range()).
-						WithAttributeAnnotation(policyAttr),
+						WithAttribute(policyAttr),
 				)
 			}
 		}
@@ -216,8 +212,7 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", resourceBlock.FullName())).
-						WithRange(policyAttr.Range()).
-						WithAttributeAnnotation(policyAttr),
+						WithAttribute(policyAttr),
 				)
 			}
 		}
@@ -226,8 +221,7 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", resourceBlock.FullName())).
-						WithRange(policyAttr.Range()).
-						WithAttributeAnnotation(policyAttr),
+						WithAttribute(policyAttr),
 				)
 			}
 		}

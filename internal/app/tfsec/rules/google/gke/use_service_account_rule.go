@@ -30,19 +30,19 @@ func init() {
 			Explanation: `
 You should create and use a minimally privileged service account to run your GKE cluster instead of using the Compute Engine default service account.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "google_container_cluster" "bad_example" {
 	node_config {
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "google_container_cluster" "good_example" {
 	node_config {
 		service_account = "cool-service-account@example.com"
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#service_account",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#use_least_privilege_sa",
@@ -64,8 +64,7 @@ resource "google_container_cluster" "good_example" {
 			if resourceBlock.MissingChild("node_config") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -76,8 +75,7 @@ resource "google_container_cluster" "good_example" {
 			if serviceAccount == nil || serviceAccount.IsEmpty() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())).
-						WithRange(nodeConfigBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())),
 				)
 			}
 

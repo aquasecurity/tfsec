@@ -35,18 +35,18 @@ Unless specifically required, we recommend you disable these legacy APIs.
 
 When setting the <code>metadata</code> block, the default value for <code>disable-legacy-endpoints</code> is set to true, they should not be explicitly enabled.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "google_container_cluster" "bad_example" {
 	metadata {
     disable-legacy-endpoints = false
   }
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "google_container_cluster" "good_example" {
 	metadata {
     disable-legacy-endpoints = true
   }
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#metadata",
 				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#protect_node_metadata_default_for_112",
@@ -66,8 +66,7 @@ resource "google_container_cluster" "good_example" {
 			if legacyMetadataAPI != nil && legacyMetadataAPI.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", resourceBlock.FullName())).
-						WithRange(legacyMetadataAPI.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", resourceBlock.FullName())),
 				)
 			}
 

@@ -29,18 +29,18 @@ func init() {
 			Impact:      "Short, simple passwords are easier to compromise",
 			Resolution:  "Enforce longer, more complex passwords in the policy",
 			Explanation: `IAM account password policies should ensure that passwords content including at least one lowercase character.`,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# require_lowercase_characters not set
 	# ...
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	require_lowercase_characters = true
 	# ...
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
 				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
@@ -54,15 +54,13 @@ resource "aws_iam_account_password_policy" "good_example" {
 			if attr := resourceBlock.GetAttribute("require_lowercase_characters"); attr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not require a lowercase character in the password.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not require a lowercase character in the password.", resourceBlock.FullName())),
 				)
 			} else if attr.Value().Type() == cty.Bool {
 				if attr.Value().False() {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least lowercase character in the password.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least lowercase character in the password.", resourceBlock.FullName())),
 					)
 				}
 			}

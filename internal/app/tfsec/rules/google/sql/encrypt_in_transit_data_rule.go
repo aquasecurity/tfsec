@@ -26,7 +26,7 @@ func init() {
 			Explanation: `	`,
 			Impact:     "Intercepted data can be read in transit",
 			Resolution: "Enforce SSL for all connections",
-			BadExample: `
+			BadExample: []string{`
 resource "google_sql_database_instance" "postgres" {
 	name             = "postgres-instance-a"
 	database_version = "POSTGRES_11"
@@ -44,8 +44,8 @@ resource "google_sql_database_instance" "postgres" {
 		}
 	}
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "google_sql_database_instance" "postgres" {
 	name             = "postgres-instance-a"
 	database_version = "POSTGRES_11"
@@ -63,7 +63,7 @@ resource "google_sql_database_instance" "postgres" {
 		}
 	}
 }
-			`,
+			`},
 			Links: []string{"https://cloud.google.com/sql/docs/mysql/configure-ssl-instance"},
 		},
 		Provider:        provider.GoogleProvider,
@@ -81,7 +81,6 @@ resource "google_sql_database_instance" "postgres" {
 			if ipConfigBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithRange(settingsBlock.Range()).
 						WithDescription(fmt.Sprintf("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())),
 				)
 				return
@@ -90,13 +89,12 @@ resource "google_sql_database_instance" "postgres" {
 			if requireSSLAttr := ipConfigBlock.GetAttribute("require_ssl"); requireSSLAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithRange(ipConfigBlock.Range()).
 						WithDescription(fmt.Sprintf("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())),
 				)
 			} else if requireSSLAttr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithAttributeAnnotation(requireSSLAttr).
+						WithAttribute(requireSSLAttr).
 						WithDescription(fmt.Sprintf("Resource '%s' explicitly does not require SSL for all connections", resourceBlock.FullName())),
 				)
 			}

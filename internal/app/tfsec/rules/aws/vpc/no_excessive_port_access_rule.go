@@ -30,15 +30,15 @@ func init() {
 			Explanation: `
 Ensure access to specific required ports is allowed, and nothing else.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_network_acl_rule" "bad_example" {
   egress         = false
   protocol       = "all"
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_network_acl_rule" "good_example" {
   egress         = false
   protocol       = "tcp"
@@ -47,7 +47,7 @@ resource "aws_network_acl_rule" "good_example" {
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl_rule#to_port",
 				"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
@@ -80,8 +80,7 @@ resource "aws_network_acl_rule" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
-							WithRange(cidrBlockAttr.Range()).
-							WithAttributeAnnotation(cidrBlockAttr),
+							WithAttribute(cidrBlockAttr),
 					)
 				}
 			}
@@ -91,8 +90,7 @@ resource "aws_network_acl_rule" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
-							WithRange(ipv6CidrBlockAttr.Range()).
-							WithAttributeAnnotation(ipv6CidrBlockAttr),
+							WithAttribute(ipv6CidrBlockAttr),
 					)
 				}
 			}
