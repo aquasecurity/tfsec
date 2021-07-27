@@ -453,7 +453,7 @@ func (attr *HCLAttribute) IsDataBlockReference() bool {
 	return false
 }
 
-func createDotReferenceFromTraversal(traversals ...hcl.Traversal) *Reference {
+func createDotReferenceFromTraversal(traversals ...hcl.Traversal) (*Reference, error) {
 	var refParts []string
 
 	for _, x := range traversals {
@@ -474,18 +474,54 @@ func (attr *HCLAttribute) Reference() (*Reference, error) {
 	case *hclsyntax.RelativeTraversalExpr:
 		switch s := t.Source.(type) {
 		case *hclsyntax.IndexExpr:
-			collectionRef := createDotReferenceFromTraversal(s.Collection.Variables()...)
+			collectionRef, err := createDotReferenceFromTraversal(s.Collection.Variables()...)
+			if err != nil {
+				return nil, err
+			}
 			key, _ := s.Key.Value(attr.ctx)
 			collectionRef.SetKey(key)
 			return collectionRef, nil
 		default:
-			return createDotReferenceFromTraversal(t.Source.Variables()...), nil
+			return createDotReferenceFromTraversal(t.Source.Variables()...)
 		}
 	case *hclsyntax.ScopeTraversalExpr:
-		return createDotReferenceFromTraversal(t.Traversal), nil
+		return createDotReferenceFromTraversal(t.Traversal)
+	case *hclsyntax.TemplateExpr:
+		refs := attr.referencesInTemplate()
+		if len(refs) == 0 {
+			return nil, fmt.Errorf("no references in template")
+		}
+		return refs[0], nil
 	default:
 		return nil, fmt.Errorf("not a reference: no scope traversal")
 	}
+}
+
+func (attr *HCLAttribute) AllReferences() []*Reference {
+	refs := attr.referencesInTemplate()
+	if len(refs) > 0 {
+		return refs
+	}
+	ref, err := attr.Reference()
+	if err != nil {
+		return nil
+	}
+	return append(refs, ref)
+}
+
+func (attr *HCLAttribute) referencesInTemplate() []*Reference {
+	var refs []*Reference
+	switch t := attr.hclAttribute.Expr.(type) {
+	case *hclsyntax.TemplateExpr:
+		for _, part := range t.Parts {
+			ref, err := createDotReferenceFromTraversal(part.Variables()...)
+			if err != nil {
+				continue
+			}
+			refs = append(refs, ref)
+		}
+	}
+	return refs
 }
 
 func (attr *HCLAttribute) IsResourceBlockReference(resourceType string) bool {
@@ -498,11 +534,12 @@ func (attr *HCLAttribute) IsResourceBlockReference(resourceType string) bool {
 }
 
 func (attr *HCLAttribute) ReferencesBlock(b Block) bool {
-	ref, err := attr.Reference()
-	if err != nil {
-		return false
+	for _, ref := range attr.AllReferences() {
+		if ref.RefersTo(b) {
+			return true
+		}
 	}
-	return ref.RefersTo(b)
+	return false
 }
 
 func getRawValue(value cty.Value) interface{} {

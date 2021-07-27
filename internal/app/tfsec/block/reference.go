@@ -15,30 +15,31 @@ type Reference struct {
 	key       string
 }
 
-func newReference(parts []string) *Reference {
+func newReference(parts []string) (*Reference, error) {
 
 	var ref Reference
 
-	if len(parts) > 0 {
+	if len(parts) == 0 {
+		return nil, fmt.Errorf("cannot create empty reference")
+	}
 
-		blockType, err := TypeFromRefName(parts[0])
-		if err != nil {
-			blockType = &TypeResource
+	blockType, err := TypeFromRefName(parts[0])
+	if err != nil {
+		blockType = &TypeResource
+	}
+
+	ref.blockType = *blockType
+
+	if ref.blockType.removeTypeInReference {
+		ref.typeLabel = parts[0]
+		if len(parts) > 1 {
+			ref.nameLabel = parts[1]
 		}
-
-		ref.blockType = *blockType
-
-		if ref.blockType.removeTypeInReference {
-			ref.typeLabel = parts[0]
-			if len(parts) > 1 {
-				ref.nameLabel = parts[1]
-			}
-		} else {
-			if len(parts) > 1 {
-				ref.typeLabel = parts[1]
-				if len(parts) > 2 {
-					ref.nameLabel = parts[2]
-				}
+	} else {
+		if len(parts) > 1 {
+			ref.typeLabel = parts[1]
+			if len(parts) > 2 {
+				ref.nameLabel = parts[2]
 			}
 		}
 	}
@@ -53,7 +54,7 @@ func newReference(parts []string) *Reference {
 		ref.remainder = parts[3:]
 	}
 
-	return &ref
+	return &ref, nil
 }
 
 func (r *Reference) BlockType() Type {
