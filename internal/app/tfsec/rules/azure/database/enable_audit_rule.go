@@ -84,8 +84,7 @@ resource "azurerm_sql_server" "good_example" {
 
 			set.Add(
 				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have an extended audit policy configured.", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()),
+					WithDescription(fmt.Sprintf("Resource '%s' does not have an extended audit policy configured.", resourceBlock.FullName())),
 			)
 
 		},

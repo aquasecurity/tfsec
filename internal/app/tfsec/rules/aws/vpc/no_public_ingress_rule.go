@@ -82,8 +82,7 @@ resource "aws_network_acl_rule" "good_example" {
 					} else {
 						set.Add(
 							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
-								WithRange(cidrBlockAttr.Range()),
+								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())),
 						)
 					}
 				}
@@ -99,8 +98,7 @@ resource "aws_network_acl_rule" "good_example" {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
-								WithRange(ipv6CidrBlockAttr.Range()).
-								WithAttributeAnnotation(ipv6CidrBlockAttr),
+								WithAttribute(ipv6CidrBlockAttr),
 						)
 					}
 				}

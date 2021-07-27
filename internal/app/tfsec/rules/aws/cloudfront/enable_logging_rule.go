@@ -59,8 +59,7 @@ resource "aws_cloudfront_distribution" "good_example" {
 			if resourceBlock.MissingChild("logging_config") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have Access Logging configured", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have Access Logging configured", resourceBlock.FullName())),
 				)
 			}
 

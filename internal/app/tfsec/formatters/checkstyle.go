@@ -41,16 +41,16 @@ func FormatCheckStyle(w io.Writer, results []result.Result, _ string, _ ...Forma
 			link = res.Links[0]
 		}
 		fileResults := append(
-			files[res.Range.Filename],
+			files[res.Range().Filename],
 			checkstyleResult{
 				Rule:     res.RuleID,
-				Line:     res.Range.StartLine,
+				Line:     res.Range().StartLine,
 				Severity: string(res.Severity),
 				Message:  res.Description,
 				Link:     link,
 			},
 		)
-		files[res.Range.Filename] = fileResults
+		files[res.Range().Filename] = fileResults
 	}
 
 	for name, fileResults := range files {

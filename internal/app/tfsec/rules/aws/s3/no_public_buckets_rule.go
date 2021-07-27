@@ -60,8 +60,7 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 			if resourceBlock.MissingChild("restrict_public_buckets") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not specify restrict_public_buckets, defaults to false", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not specify restrict_public_buckets, defaults to false", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -71,8 +70,7 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' sets restrict_public_buckets explicitly to false", resourceBlock.FullName())).
-						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr),
+						WithAttribute(attr),
 				)
 			}
 		},

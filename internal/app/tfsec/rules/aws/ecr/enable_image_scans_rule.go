@@ -65,8 +65,7 @@ resource "aws_ecr_repository" "good_example" {
 			if resourceBlock.MissingChild("image_scanning_configuration") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -77,15 +76,13 @@ resource "aws_ecr_repository" "good_example" {
 			if ecrScanStatusAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())),
 				)
 			} else if ecrScanStatusAttr.Type() == cty.Bool && ecrScanStatusAttr.Value().False() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
-						WithRange(ecrScanStatusAttr.Range()).
-						WithAttributeAnnotation(ecrScanStatusAttr),
+						WithAttribute(ecrScanStatusAttr),
 				)
 			}
 		},

@@ -46,7 +46,7 @@ func FormatText(writer io.Writer, results []result.Result, _ string, options ...
   [%s][%s] %s
   %s
 
-`, res.RuleID, sev, res.Description, res.Range.String())
+`, res.RuleID, sev, res.Description, res.Range().String())
 		outputCode(res, writer)
 		fmt.Fprintf(writer, "  %s\n\n", link)
 	}
@@ -57,26 +57,26 @@ func FormatText(writer io.Writer, results []result.Result, _ string, options ...
 
 // output the lines of code which caused a problem, if available
 func outputCode(result result.Result, writer io.Writer) {
-	data, err := ioutil.ReadFile(result.Range.Filename)
+	data, err := ioutil.ReadFile(result.Range().Filename)
 	if err != nil {
 		return
 	}
 
 	lines := append([]string{""}, strings.Split(string(data), "\n")...)
 
-	start := result.Range.StartLine - 3
+	start := result.Range().StartLine - 3
 	if start <= 0 {
 		start = 1
 	}
-	end := result.Range.EndLine + 3
+	end := result.Range().EndLine + 3
 	if end >= len(lines) {
 		end = len(lines) - 1
 	}
 
 	for lineNo := start; lineNo <= end; lineNo++ {
 		fmt.Fprintf(writer, "  % 6d | ", lineNo)
-		if lineNo >= result.Range.StartLine && lineNo <= result.Range.EndLine {
-			if lineNo == result.Range.StartLine && result.RangeAnnotation != "" {
+		if lineNo >= result.Range().StartLine && lineNo <= result.Range().EndLine {
+			if lineNo == result.Range().StartLine && result.RangeAnnotation != "" {
 				fmt.Fprintf(writer, "%s    %s\n", lines[lineNo], result.RangeAnnotation)
 			} else {
 				fmt.Fprintf(writer, "%s\n", lines[lineNo])

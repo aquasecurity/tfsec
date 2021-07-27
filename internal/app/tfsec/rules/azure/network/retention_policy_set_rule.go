@@ -80,8 +80,7 @@ resource "azurerm_network_watcher_flow_log" "good_watcher" {
 			retentionPolicyBlock := resourceBlock.GetBlock("retention_policy")
 			if retentionPolicyBlock.MissingChild("enabled") || retentionPolicyBlock.MissingChild("days") {
 				set.Add(
-					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' is missing the required attributes retention policy block", resourceBlock.FullName())).
-						WithRange(retentionPolicyBlock.Range()),
+					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' is missing the required attributes retention policy block", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -92,16 +91,14 @@ resource "azurerm_network_watcher_flow_log" "good_watcher" {
 			if enabledAttr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' has retention policy turned off", resourceBlock.FullName())).
-						WithAttributeAnnotation(enabledAttr).
-						WithRange(enabledAttr.Range()),
+						WithAttribute(enabledAttr),
 				)
 			}
 
 			if daysAttr.LessThan(90) {
 				set.Add(
 					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' has retention policy period of less than 90 days", resourceBlock.FullName())).
-						WithAttributeAnnotation(daysAttr).
-						WithRange(daysAttr.Range()),
+						WithAttribute(daysAttr),
 				)
 			}
 		},

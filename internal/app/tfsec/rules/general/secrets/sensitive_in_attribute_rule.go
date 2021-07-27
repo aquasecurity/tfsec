@@ -97,8 +97,7 @@ resource "evil_corp" "good_example" {
 					if attribute.IsResolvable() && attribute.Type() == cty.String && !attribute.Equals("") {
 						set.Add(result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", resourceBlock.FullName())).
-							WithRange(attribute.Range()).
-							WithAttributeAnnotation(attribute),
+							WithAttribute(attribute),
 						)
 					}
 

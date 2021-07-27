@@ -113,8 +113,7 @@ CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
                     set.Add(
                         result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("The Gibson '%s' is configured to be hackable.", block.Name())).
-						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr).
+						WithAttribute(attr).
 						,
 					)
                 }
@@ -133,3 +132,16 @@ The first example that you add for Good and Bad will be used in the documentatio
 
 
 And that's it! If you have any difficulties, please feel free to raise a draft PR and note any questions/problems in the description and we'll do our best to help you out.
+
+
+### Submitting the PR
+
+When you are ready to submit the PR for review, please run 
+
+```shell
+make pr-ready
+```
+
+This will run all of the tests, validate for cyclomatic complexity, spelling mistakes and run the end to end tests in the `./example` folder.
+
+Raise your PR when this passes okay (you can expect to see failures from the example run, but overall `make pr-ready` should exit 0)

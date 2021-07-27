@@ -109,8 +109,7 @@ resource "azurerm_network_security_group" "example" {
 						if securityRule.GetAttribute("source_address_prefix").IsAny("*", "0.0.0.0", "/0", "internet", "any") {
 							set.Add(
 								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has a .", resourceBlock.FullName())).
-									WithRange(resourceBlock.Range()),
+									WithDescription(fmt.Sprintf("Resource '%s' has a .", resourceBlock.FullName())),
 							)
 						}
 					}

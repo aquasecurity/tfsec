@@ -119,8 +119,7 @@ resource "azurerm_virtual_machine" "good_example" {
 							"Resource '%s' has password authentication enabled.",
 							resourceBlock.FullName(),
 						)).
-						WithRange(passwordAuthAttr.Range()).
-						WithAttributeAnnotation(passwordAuthAttr),
+						WithAttribute(passwordAuthAttr),
 				)
 			}
 		},

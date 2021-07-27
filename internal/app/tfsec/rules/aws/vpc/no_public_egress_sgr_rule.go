@@ -69,8 +69,7 @@ resource "aws_security_group_rule" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName())).
-							WithRange(cidrBlocksAttr.Range()).
-							WithAttributeAnnotation(cidrBlocksAttr),
+							WithAttribute(cidrBlocksAttr),
 					)
 				}
 			}
@@ -81,8 +80,7 @@ resource "aws_security_group_rule" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName())).
-							WithRange(ipv6CidrBlocksAttr.Range()).
-							WithAttributeAnnotation(ipv6CidrBlocksAttr),
+							WithAttribute(ipv6CidrBlocksAttr),
 					)
 				}
 			}

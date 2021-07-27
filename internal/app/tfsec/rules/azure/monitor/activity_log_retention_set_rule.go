@@ -66,8 +66,7 @@ resource "azurerm_monitor_log_profile" "good_example" {
 			if retentionPolicyBlock.MissingChild("enabled") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not enable retention policy", resourceBlock.FullName())).
-						WithRange(retentionPolicyBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not enable retention policy", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -75,8 +74,7 @@ resource "azurerm_monitor_log_profile" "good_example" {
 			if retentionPolicyBlock.MissingChild("days") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not retention policy days set", resourceBlock.FullName())).
-						WithRange(retentionPolicyBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not retention policy days set", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -86,8 +84,7 @@ resource "azurerm_monitor_log_profile" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has retention period of less than 365 days", resourceBlock.FullName())).
-						WithRange(daysAttr.Range()).
-						WithAttributeAnnotation(daysAttr),
+						WithAttribute(daysAttr),
 				)
 			}
 		},

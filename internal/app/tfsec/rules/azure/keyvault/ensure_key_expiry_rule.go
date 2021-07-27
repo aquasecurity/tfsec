@@ -80,8 +80,7 @@ resource "azurerm_key_vault_key" "good_example" {
 			if resourceBlock.MissingChild("expiration_date") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have an expiration date set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have an expiration date set.", resourceBlock.FullName())),
 				)
 			}
 		},

@@ -60,22 +60,19 @@ resource "aws_rds_cluster" "good_example" {
 				(storageEncryptedattr == nil || storageEncryptedattr.IsFalse()) {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName())),
 				)
 			} else if kmsKeyIdAttr != nil && kmsKeyIdAttr.Equals("") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName())).
-						WithRange(kmsKeyIdAttr.Range()).
-						WithAttributeAnnotation(kmsKeyIdAttr),
+						WithAttribute(kmsKeyIdAttr),
 				)
 			} else if storageEncryptedattr == nil || storageEncryptedattr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a enabled RDS Cluster encryption but not the required encrypted_storage.", resourceBlock.FullName())).
-						WithRange(kmsKeyIdAttr.Range()).
-						WithAttributeAnnotation(kmsKeyIdAttr),
+						WithAttribute(kmsKeyIdAttr),
 				)
 			}
 		},

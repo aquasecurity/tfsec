@@ -62,8 +62,7 @@ resource "evil_corp" "good_example" {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {
 						set.Add(result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Local '%s' includes a potentially sensitive value which is defined within the project.", resourceBlock.FullName())).
-							WithRange(attribute.Range()).
-							WithAttributeAnnotation(attribute),
+							WithAttribute(attribute),
 						)
 					}
 				}

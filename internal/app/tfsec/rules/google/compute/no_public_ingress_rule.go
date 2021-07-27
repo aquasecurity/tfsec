@@ -57,8 +57,7 @@ resource "google_compute_firewall" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", resourceBlock.FullName())).
-							WithAttributeAnnotation(sourceRanges).
-							WithRange(sourceRanges.Range()),
+							WithAttribute(sourceRanges),
 					)
 				}
 			}

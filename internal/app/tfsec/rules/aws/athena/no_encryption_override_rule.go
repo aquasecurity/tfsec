@@ -86,8 +86,7 @@ resource "aws_athena_workgroup" "good_example" {
 			if resourceBlock.MissingChild("configuration") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing the configuration block.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is missing the configuration block.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -97,8 +96,7 @@ resource "aws_athena_workgroup" "good_example" {
 				configBlock.GetAttribute("enforce_workgroup_configuration").IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName())).
-						WithRange(configBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName())),
 				)
 			}
 

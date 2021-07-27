@@ -66,8 +66,7 @@ resource "aws_alb_listener" "good_example" {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", resourceBlock.FullName())).
-								WithRange(sslPolicyAttr.Range()).
-								WithAttributeAnnotation(sslPolicyAttr),
+								WithAttribute(sslPolicyAttr),
 						)
 					}
 				}

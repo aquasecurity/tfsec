@@ -63,8 +63,7 @@ resource "aws_ecs_cluster" "good_example" {
 							set.Add(
 								result.New(resourceBlock).
 									WithDescription(fmt.Sprintf("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName())).
-									WithRange(setting.Range()).
-									WithAttributeAnnotation(valueAttr),
+									WithAttribute(valueAttr),
 							)
 						}
 						return
@@ -73,8 +72,7 @@ resource "aws_ecs_cluster" "good_example" {
 			}
 			set.Add(
 				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()),
+					WithDescription(fmt.Sprintf("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName())),
 			)
 		},
 	})

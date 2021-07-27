@@ -7,7 +7,8 @@ image:
 
 .PHONY: test
 test:
-	go test -mod=vendor ./...
+	which gotestsum || (pushd /tmp && go install gotest.tools/gotestsum@latest && popd)
+	GOMOD=vendor gotestsum
 
 .PHONY: build
 build:
@@ -69,8 +70,8 @@ fix-typos:
 clone-image:
 	./scripts/clone-images.sh
 
-.PHONY: end-to-end
-end-to-end: test
+.PHONY: sanity
+sanity: test
 	go run ./cmd/tfsec -s -p --force-all-dirs ./example
 
 .PHONY: pr-lint
@@ -78,4 +79,4 @@ pr-lint:
 	go run ./cmd/tfsec-pr-lint
 
 .PHONY: pr-ready
-pr-ready: quality end-to-end pr-lint typos
+pr-ready: quality sanity pr-lint typos

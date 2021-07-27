@@ -74,8 +74,7 @@ resource "evil_corp" "virtual_machine" {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {
 						set.Add(result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", resourceBlock.FullName())).
-							WithRange(attribute.Range()).
-							WithAttributeAnnotation(attribute),
+							WithAttribute(attribute),
 						)
 					}
 				}

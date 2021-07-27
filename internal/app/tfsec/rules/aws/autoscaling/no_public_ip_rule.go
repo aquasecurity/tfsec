@@ -58,8 +58,7 @@ resource "aws_launch_configuration" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has a public IP address associated.", resourceBlock.FullName())).
-							WithRange(publicAttr.Range()).
-							WithAttributeAnnotation(publicAttr),
+							WithAttribute(publicAttr),
 					)
 				}
 			}

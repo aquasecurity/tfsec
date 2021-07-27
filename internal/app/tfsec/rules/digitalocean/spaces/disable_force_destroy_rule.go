@@ -51,8 +51,8 @@ resource "digitalocean_spaces_bucket" "good_example" {
 				if forceDestroyAttr.IsTrue() {
 					set.Add(result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName())).
-						WithAttributeAnnotation(forceDestroyAttr).
-						WithRange(forceDestroyAttr.Range()))
+						WithAttribute(forceDestroyAttr),
+					)
 				}
 			}
 		},

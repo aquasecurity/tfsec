@@ -54,15 +54,13 @@ resource "aws_iam_account_password_policy" "good_example" {
 			if attr := resourceBlock.GetAttribute("require_lowercase_characters"); attr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not require a lowercase character in the password.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not require a lowercase character in the password.", resourceBlock.FullName())),
 				)
 			} else if attr.Value().Type() == cty.Bool {
 				if attr.Value().False() {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least lowercase character in the password.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least lowercase character in the password.", resourceBlock.FullName())),
 					)
 				}
 			}

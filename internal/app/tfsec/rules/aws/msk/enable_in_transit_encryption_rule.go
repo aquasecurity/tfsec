@@ -64,8 +64,7 @@ resource "aws_msk_cluster" "good_example" {
 			if defaultBehaviorBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_info block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_info block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -74,8 +73,7 @@ resource "aws_msk_cluster" "good_example" {
 			if encryptionInTransit == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_in_transit block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_in_transit block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -84,22 +82,19 @@ resource "aws_msk_cluster" "good_example" {
 			if clientBrokerAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing client_broker block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing client_broker block).", resourceBlock.FullName())),
 				)
 			} else if clientBrokerAttr.Value().AsString() == "PLAINTEXT" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a MSK cluster that only allows plaintext data in transit.", resourceBlock.FullName())).
-						WithRange(clientBrokerAttr.Range()).
-						WithAttributeAnnotation(clientBrokerAttr),
+						WithAttribute(clientBrokerAttr),
 				)
 			} else if clientBrokerAttr.Value().AsString() == "TLS_PLAINTEXT" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit.", resourceBlock.FullName())).
-						WithRange(clientBrokerAttr.Range()).
-						WithAttributeAnnotation(clientBrokerAttr),
+						WithAttribute(clientBrokerAttr),
 				)
 			}
 		},
