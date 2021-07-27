@@ -45,6 +45,7 @@ resource "aws_api_gateway_domain_name" "valid_security_policy" {
   security_policy = "TLS_1_2"
 }
 
+#tfsec:ignore:AWS092
 resource "aws_dynamodb_table" "bad_example" {
   name             = "example"
   hash_key         = "TestTableHashKey"

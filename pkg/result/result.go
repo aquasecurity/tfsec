@@ -25,6 +25,7 @@ type Result struct {
 	RangeAnnotation string            `json:"-"`
 	Severity        severity.Severity `json:"severity"`
 	Status          Status            `json:"status"`
+	Location        block.Range       `json:"location"`
 	blocks          block.Blocks
 	attribute       block.Attribute
 }
@@ -38,10 +39,12 @@ const (
 )
 
 func New(resourceBlock block.Block) *Result {
-	return &Result{
+	result := &Result{
 		Status: Failed,
 		blocks: []block.Block{resourceBlock},
 	}
+	result.Location = result.Range()
+	return result
 }
 
 func (r *Result) Passed() bool {
