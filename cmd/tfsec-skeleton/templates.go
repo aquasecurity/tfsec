@@ -20,7 +20,7 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Service: "{{ .Service}}",
+		Service:   "{{ .Service}}",
 		ShortCode: "{{ .ShortCode}}",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "{{.Summary}}",
@@ -58,37 +58,57 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_{{.CheckName}}(t *testing.T) {
+package s3
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_{{.CheckName}}_FailureExamples(t *testing.T) {
 	expectedCode := "{{ .FullCode}}"
 
-	var tests = []struct {
-		name                  string
-		source                string
-		mustIncludeResultCode string
-		mustExcludeResultCode string
-	}{
-		{
-			name: "TODO: add test name",
-			source: ` + "`" + `
-	// bad test
-` + "`" + `,
-			mustIncludeResultCode: expectedCode,
-		},
-		{
-			name: "TODO: add test name",
-			source: ` + "`" + `
-	// good test
-` + "`" + `,
-			mustExcludeResultCode: expectedCode,
-		},
+	check, err := scanner.GetRuleById(expectedCode)
+	if err != nil {
+		t.FailNow()
 	}
+	for i, badExample := range check.Documentation.BadExample {
+		t.Logf("Running bad example for '%s' #%d", expectedCode, i+1)
+		if strings.TrimSpace(badExample) == "" {
+			t.Fatalf("bad example code not provided for %s", check.ID())
+		}
+		defer func() {
+			if err := recover(); err != nil {
+				t.Fatalf("Scan (bad) failed: %s", err)
+			}
+		}()
+		results := testutil.ScanHCL(badExample, t)
+		testutil.AssertCheckCode(t, check.ID(), "", results)
+	}
+}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+func Test_{{.CheckName}}_SuccessExamples(t *testing.T) {
+	expectedCode := "{{ .FullCode}}"
 
-			results := testutil.ScanHCL(test.source, t)
-			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
-		})
+	check, err := scanner.GetRuleById(expectedCode)
+	if err != nil {
+		t.FailNow()
+	}
+	for i, example := range check.Documentation.GoodExample {
+		t.Logf("Running good example for '%s' #%d", expectedCode, i+1)
+		if strings.TrimSpace(example) == "" {
+			t.Fatalf("good example code not provided for %s", check.ID())
+		}
+		defer func() {
+			if err := recover(); err != nil {
+				t.Fatalf("Scan (good) failed: %s", err)
+			}
+		}()
+		results := testutil.ScanHCL(example, t)
+		testutil.AssertCheckCode(t, "", check.ID(), results)
 	}
 }
 `

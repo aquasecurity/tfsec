@@ -5,8 +5,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -31,34 +29,15 @@ func TestExampleCode(t *testing.T) {
 			}
 		})
 
-		t.Run(fmt.Sprintf("Rule 'good' example code for %s", check.ID()), func(t *testing.T) {
-			for _, goodExample := range check.Documentation.GoodExample {
-				if strings.TrimSpace(goodExample) == "" {
-					t.Fatalf("good example code not provided for %s", check.ID())
-				}
-				defer func() {
-					if err := recover(); err != nil {
-						t.Fatalf("Scan (good) failed: %s", err)
-					}
-				}()
-				results := testutil.ScanHCL(goodExample, t)
-				testutil.AssertCheckCode(t, "", check.ID(), results)
+		t.Run(fmt.Sprintf("Rule bad example(s) for %s", check.ID()), func(t *testing.T) {
+			if len(check.Documentation.BadExample) == 0 {
+				t.Fatalf("No resolution found for %s", check.ID())
 			}
-
 		})
 
-		t.Run(fmt.Sprintf("Rule 'bad' example code for %s", check.ID()), func(t *testing.T) {
-			for _, badExample := range check.Documentation.BadExample {
-				if strings.TrimSpace(badExample) == "" {
-					t.Fatalf("bad example code not provided for %s", check.ID())
-				}
-				defer func() {
-					if err := recover(); err != nil {
-						t.Fatalf("Scan (bad) failed: %s", err)
-					}
-				}()
-				results := testutil.ScanHCL(badExample, t)
-				testutil.AssertCheckCode(t, check.ID(), "", results)
+		t.Run(fmt.Sprintf("Rule good example(s) for %s", check.ID()), func(t *testing.T) {
+			if len(check.Documentation.GoodExample) == 0 {
+				t.Fatalf("No resolution found for %s", check.ID())
 			}
 		})
 	}
