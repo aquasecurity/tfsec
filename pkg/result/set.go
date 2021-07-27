@@ -38,11 +38,6 @@ func (s *resultSet) Add(result *Result) {
 		WithResolution(s.resolution).
 		WithRuleProvider(s.ruleProvider).
 		WithLinks(s.links)
-
-	if result.Range.Filename == "" {
-		result.Range = result.topLevelBlock.Range()
-	}
-
 	s.results = append(s.results, *result)
 }
 

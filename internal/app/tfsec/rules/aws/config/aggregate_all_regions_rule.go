@@ -66,8 +66,7 @@ resource "aws_config_configuration_aggregator" "good_example" {
 			if aggBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources set", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources set", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -75,8 +74,7 @@ resource "aws_config_configuration_aggregator" "good_example" {
 			if aggBlock.MissingChild("all_regions") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName())).
-						WithRange(aggBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -86,8 +84,7 @@ resource "aws_config_configuration_aggregator" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has all_regions set to false", resourceBlock.FullName())).
-						WithRange(allRegionsAttr.Range()).
-						WithAttributeAnnotation(allRegionsAttr),
+						WithAttribute(allRegionsAttr),
 				)
 			}
 

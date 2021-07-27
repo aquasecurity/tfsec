@@ -56,16 +56,14 @@ resource "aws_sns_topic" "good_example" {
 			if kmsKeyIDAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())),
 				)
 				return
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())).
-						WithRange(kmsKeyIDAttr.Range()).
-						WithAttributeAnnotation(kmsKeyIDAttr),
+						WithAttribute(kmsKeyIDAttr),
 				)
 				return
 			}
@@ -82,8 +80,7 @@ resource "aws_sns_topic" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
-							WithRange(kmsKeyIDAttr.Range()).
-							WithAttributeAnnotation(kmsKeyIDAttr),
+							WithAttribute(kmsKeyIDAttr),
 					)
 				}
 

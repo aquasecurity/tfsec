@@ -79,8 +79,7 @@ EOF
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has userdata with access key id defined.", resourceBlock.FullName())).
-						WithRange(userDataAttr.Range()).
-						WithAttributeAnnotation(userDataAttr),
+						WithAttribute(userDataAttr),
 				)
 			}
 
@@ -89,8 +88,7 @@ EOF
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has userdata with access secret key defined.", resourceBlock.FullName())).
-						WithRange(userDataAttr.Range()).
-						WithAttributeAnnotation(userDataAttr),
+						WithAttribute(userDataAttr),
 				)
 			}
 		},

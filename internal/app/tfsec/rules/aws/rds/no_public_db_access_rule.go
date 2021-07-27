@@ -56,8 +56,7 @@ resource "aws_db_instance" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
-							WithRange(publicAttr.Range()).
-							WithAttributeAnnotation(publicAttr),
+							WithAttribute(publicAttr),
 					)
 				}
 			}

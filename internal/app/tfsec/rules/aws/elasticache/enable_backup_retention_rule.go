@@ -72,8 +72,7 @@ resource "aws_elasticache_cluster" "good_example" {
 					if snapshotRetentionAttr == nil {
 						set.Add(
 							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())).
-								WithRange(resourceBlock.Range()),
+								WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())),
 						)
 						return
 					}
@@ -82,8 +81,7 @@ resource "aws_elasticache_cluster" "good_example" {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName())).
-								WithRange(snapshotRetentionAttr.Range()).
-								WithAttributeAnnotation(snapshotRetentionAttr),
+								WithAttribute(snapshotRetentionAttr),
 						)
 					}
 				}

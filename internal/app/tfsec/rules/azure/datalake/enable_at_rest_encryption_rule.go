@@ -58,8 +58,7 @@ resource "azurerm_data_lake_store" "good_example" {
 							"Resource '%s' defines an unencrypted data lake store.",
 							resourceBlock.FullName(),
 						)).
-						WithRange(encryptionStateAttr.Range()).
-						WithAttributeAnnotation(encryptionStateAttr),
+						WithAttribute(encryptionStateAttr),
 				)
 			}
 

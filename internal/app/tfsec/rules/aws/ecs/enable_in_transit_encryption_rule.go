@@ -94,8 +94,7 @@ resource "aws_ecs_task_definition" "good_example" {
 				if efsConfigBlock.MissingChild("transit_encryption") {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has efs configuration with in transit encryption implicitly disabled", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' has efs configuration with in transit encryption implicitly disabled", resourceBlock.FullName())),
 					)
 					continue
 				}
@@ -104,8 +103,7 @@ resource "aws_ecs_task_definition" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has efs configuration with transit encryption explicitly disabled", resourceBlock.FullName())).
-							WithRange(transitAttr.Range()).
-							WithAttributeAnnotation(transitAttr),
+							WithAttribute(transitAttr),
 					)
 				}
 			}

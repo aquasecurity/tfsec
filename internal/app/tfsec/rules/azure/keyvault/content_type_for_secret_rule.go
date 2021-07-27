@@ -60,8 +60,7 @@ resource "azurerm_key_vault_secret" "good_example" {
 			if resourceBlock.MissingChild("content_type") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have a content type set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have a content type set.", resourceBlock.FullName())),
 				)
 			}
 		},

@@ -63,8 +63,7 @@ resource "azurerm_virtual_machine" "good_example" {
 								"Resource '%s' has password authentication enabled. Use SSH keys instead.",
 								resourceBlock.FullName(),
 							)).
-							WithRange(passwordAuthDisabledAttr.Range()).
-							WithAttributeAnnotation(passwordAuthDisabledAttr),
+							WithAttribute(passwordAuthDisabledAttr),
 					)
 				}
 			}

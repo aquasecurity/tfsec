@@ -56,15 +56,13 @@ provider "aws" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Provider '%s' has an access key specified.", resourceBlock.FullName())).
-						WithRange(accessKeyAttribute.Range()).
-						WithAttributeAnnotation(accessKeyAttribute),
+						WithAttribute(accessKeyAttribute),
 				)
 			} else if secretKeyAttribute := resourceBlock.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Provider '%s' has a secret key specified.", resourceBlock.FullName())).
-						WithRange(secretKeyAttribute.Range()).
-						WithAttributeAnnotation(secretKeyAttribute),
+						WithAttribute(secretKeyAttribute),
 				)
 			}
 

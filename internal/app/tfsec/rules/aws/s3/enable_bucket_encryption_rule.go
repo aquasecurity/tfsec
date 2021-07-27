@@ -62,8 +62,7 @@ resource "aws_s3_bucket" "good_example" {
 			if resourceBlock.MissingChild("server_side_encryption_configuration") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -71,8 +70,7 @@ resource "aws_s3_bucket" "good_example" {
 			if encryptionBlock.MissingChild("rule") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -81,8 +79,7 @@ resource "aws_s3_bucket" "good_example" {
 			if ruleBlock.MissingChild("apply_server_side_encryption_by_default") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName())).
-						WithRange(ruleBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -91,8 +88,7 @@ resource "aws_s3_bucket" "good_example" {
 			if sseAttr := applyBlock.GetAttribute("sse_algorithm"); sseAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName())).
-						WithRange(applyBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName())),
 				)
 			}
 

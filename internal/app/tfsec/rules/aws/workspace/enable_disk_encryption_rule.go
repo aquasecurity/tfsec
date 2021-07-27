@@ -75,24 +75,21 @@ resource "aws_workspaces_workspace" "good_example" {
 			if resourceBlock.MissingChild("root_volume_encryption_enabled") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have root volume encryption enables", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have root volume encryption enables", resourceBlock.FullName())),
 				)
 			} else {
 				attr := resourceBlock.GetAttribute("root_volume_encryption_enabled")
 				if attr != nil && attr.IsFalse() {
 					set.Add(result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has the root volume encryption set to false", resourceBlock.FullName())).
-						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr),
+						WithAttribute(attr),
 					)
 				}
 			}
 
 			if resourceBlock.MissingChild("user_volume_encryption_enabled") {
 				set.Add(result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' should have user volume encryption enables", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()),
+					WithDescription(fmt.Sprintf("Resource '%s' should have user volume encryption enables", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -102,8 +99,7 @@ resource "aws_workspaces_workspace" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has the user volume encryption set to false", resourceBlock.FullName())).
-						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr),
+						WithAttribute(attr),
 				)
 			}
 

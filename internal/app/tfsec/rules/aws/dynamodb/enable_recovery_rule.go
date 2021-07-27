@@ -77,8 +77,7 @@ resource "aws_dynamodb_table" "good_example" {
 			if resourceBlock.MissingChild("point_in_time_recovery") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -87,8 +86,7 @@ resource "aws_dynamodb_table" "good_example" {
 			if poitBlock.MissingChild("enabled") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -97,8 +95,7 @@ resource "aws_dynamodb_table" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr),
+						WithAttribute(enabledAttr),
 				)
 			}
 

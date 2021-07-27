@@ -145,8 +145,7 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 			set.Add(
 				result.New(policyDocumentBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName())).
-					WithRange(actionsAttr.Range()).
-					WithAttributeAnnotation(actionsAttr),
+					WithAttribute(actionsAttr),
 			)
 		}
 	})
@@ -156,8 +155,7 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 		set.Add(
 			result.New(policyDocumentBlock).
 				WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", policyDocumentBlock.FullName())).
-				WithRange(resourcesAttr.Range()).
-				WithAttributeAnnotation(resourcesAttr),
+				WithAttribute(resourcesAttr),
 		)
 	}
 
@@ -172,8 +170,7 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 						set.Add(
 							result.New(policyDocumentBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", policyDocumentBlock.FullName())).
-								WithRange(resourcesAttr.Range()).
-								WithAttributeAnnotation(resourcesAttr),
+								WithAttribute(resourcesAttr),
 						)
 						break
 					}
@@ -206,8 +203,7 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", resourceBlock.FullName())).
-						WithRange(policyAttr.Range()).
-						WithAttributeAnnotation(policyAttr),
+						WithAttribute(policyAttr),
 				)
 			}
 		}
@@ -216,8 +212,7 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", resourceBlock.FullName())).
-						WithRange(policyAttr.Range()).
-						WithAttributeAnnotation(policyAttr),
+						WithAttribute(policyAttr),
 				)
 			}
 		}
@@ -226,8 +221,7 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", resourceBlock.FullName())).
-						WithRange(policyAttr.Range()).
-						WithAttributeAnnotation(policyAttr),
+						WithAttribute(policyAttr),
 				)
 			}
 		}

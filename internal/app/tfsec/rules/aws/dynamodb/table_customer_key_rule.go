@@ -96,8 +96,7 @@ resource "aws_dynamodb_table" "good_example" {
 			if resourceBlock.MissingChild("server_side_encryption") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -108,8 +107,7 @@ resource "aws_dynamodb_table" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName())).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr),
+						WithAttribute(enabledAttr),
 				)
 			}
 
@@ -119,8 +117,7 @@ resource "aws_dynamodb_table" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName())).
-							WithRange(keyIdAttr.Range()).
-							WithAttributeAnnotation(keyIdAttr),
+							WithAttribute(keyIdAttr),
 					)
 				}
 			}

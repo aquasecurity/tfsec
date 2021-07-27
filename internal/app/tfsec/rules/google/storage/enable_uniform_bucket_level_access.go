@@ -89,8 +89,7 @@ resource "google_storage_bucket" "static-site" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has uniform_bucket_level_access explicitly disabled.", resourceBlock.FullName())).
-						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr),
+						WithAttribute(attr),
 				)
 			}
 		},

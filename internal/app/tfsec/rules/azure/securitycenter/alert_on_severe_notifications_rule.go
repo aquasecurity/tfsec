@@ -68,8 +68,7 @@ resource "azurerm_security_center_contact" "good_example" {
 			if alertNotificationsAttr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' has alert_notifications turned off", resourceBlock.FullName())).
-						WithAttributeAnnotation(alertNotificationsAttr).
-						WithRange(alertNotificationsAttr.Range()),
+						WithAttribute(alertNotificationsAttr),
 				)
 			}
 

@@ -82,8 +82,7 @@ resource "azurerm_mssql_database_extended_auditing_policy" "good_example" {
 			if resourceBlock.GetAttribute("retention_in_days").LessThan(90) {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies a retention period of less than 90 days.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' specifies a retention period of less than 90 days.", resourceBlock.FullName())),
 				)
 			}
 

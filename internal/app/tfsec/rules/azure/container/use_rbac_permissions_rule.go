@@ -59,8 +59,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 			if rbacBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -73,8 +72,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 							"Resource '%s' RBAC disabled.",
 							resourceBlock.FullName(),
 						)).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr),
+						WithAttribute(enabledAttr),
 				)
 			}
 

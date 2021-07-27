@@ -56,15 +56,13 @@ resource "aws_alb" "good_example" {
 			if internalAttr := resourceBlock.GetAttribute("internal"); internalAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())),
 				)
 			} else if internalAttr.Type() == cty.Bool && internalAttr.Value().False() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
-						WithRange(internalAttr.Range()).
-						WithAttributeAnnotation(internalAttr),
+						WithAttribute(internalAttr),
 				)
 			}
 		},

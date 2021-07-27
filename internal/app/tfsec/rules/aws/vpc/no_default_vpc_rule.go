@@ -51,8 +51,7 @@ resource "aws_default_vpc" "default" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			set.Add(
 				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' should not exist", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()),
+					WithDescription(fmt.Sprintf("Resource '%s' should not exist", resourceBlock.FullName())),
 			)
 		},
 	})

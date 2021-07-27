@@ -69,8 +69,7 @@ resource "azurerm_postgresql_server" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has public access explicitly enabled", resourceBlock.FullName())).
-						WithRange(publicAccessAttr.Range()).
-						WithAttributeAnnotation(publicAccessAttr),
+						WithAttribute(publicAccessAttr),
 				)
 			}
 		},

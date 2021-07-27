@@ -73,8 +73,7 @@ resource "aws_cloudtrail" "good_example" {
 			if resourceBlock.MissingChild("enable_log_file_validation") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not enable log file validation.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not enable log file validation.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -84,8 +83,7 @@ resource "aws_cloudtrail" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not enable log file validation.", resourceBlock.FullName())).
-						WithRange(logFileValidationAttr.Range()).
-						WithAttributeAnnotation(logFileValidationAttr),
+						WithAttribute(logFileValidationAttr),
 				)
 			}
 		},

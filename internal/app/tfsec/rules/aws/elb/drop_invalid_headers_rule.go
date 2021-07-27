@@ -80,8 +80,7 @@ resource "aws_alb" "good_example" {
 				if resourceBlock.MissingChild("drop_invalid_header_fields") {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' does not drop invalid header fields", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' does not drop invalid header fields", resourceBlock.FullName())),
 					)
 					return
 				}
@@ -91,8 +90,7 @@ resource "aws_alb" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", resourceBlock.FullName())).
-							WithRange(attr.Range()).
-							WithAttributeAnnotation(attr),
+							WithAttribute(attr),
 					)
 				}
 

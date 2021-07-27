@@ -45,7 +45,7 @@ resource "problem" "x" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.GetAttribute("bad") != nil {
 				set.Add(
-					result.New(resourceBlock).WithDescription("example problem").WithRange(resourceBlock.Range()),
+					result.New(resourceBlock).WithDescription("example problem"),
 				)
 			}
 		},

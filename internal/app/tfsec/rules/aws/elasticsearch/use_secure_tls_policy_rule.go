@@ -72,8 +72,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if tlsPolicyAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (defaults to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName())).
-						WithRange(endpointBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (defaults to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -82,8 +81,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (set to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName())).
-						WithRange(tlsPolicyAttr.Range()).
-						WithAttributeAnnotation(tlsPolicyAttr),
+						WithAttribute(tlsPolicyAttr),
 				)
 			}
 

@@ -69,8 +69,7 @@ resource "aws_redshift_cluster" "good_example" {
 			if resourceBlock.MissingChild("encrypted") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have encryption enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have encryption enabled", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -80,8 +79,7 @@ resource "aws_redshift_cluster" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has encryption explicitly disabled", resourceBlock.FullName())).
-						WithRange(encryptedAttr.Range()).
-						WithAttributeAnnotation(encryptedAttr),
+						WithAttribute(encryptedAttr),
 				)
 				return
 			}
@@ -89,8 +87,7 @@ resource "aws_redshift_cluster" "good_example" {
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a customer managed key specified", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a customer managed key specified", resourceBlock.FullName())),
 				)
 			}
 

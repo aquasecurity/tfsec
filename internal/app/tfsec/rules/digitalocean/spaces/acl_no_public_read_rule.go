@@ -72,8 +72,8 @@ resource "digitalocean_spaces_bucket_object" "index" {
 				if aclAttr.Equals("public-read", block.IgnoreCase) {
 					set.Add(result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has a publicly readable acl.", resourceBlock.FullName())).
-						WithAttributeAnnotation(aclAttr).
-						WithRange(aclAttr.Range()))
+						WithAttribute(aclAttr),
+					)
 				}
 			}
 		},

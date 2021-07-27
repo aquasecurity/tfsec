@@ -66,8 +66,7 @@ resource "aws_redshift_cluster" "good_example" {
 			if resourceBlock.MissingChild("cluster_subnet_group_name") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is being deployed outside of a VPC", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is being deployed outside of a VPC", resourceBlock.FullName())),
 				)
 			}
 		},

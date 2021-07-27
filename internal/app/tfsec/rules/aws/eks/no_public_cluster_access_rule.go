@@ -66,8 +66,7 @@ resource "aws_eks_cluster" "good_example" {
 			if resourceBlock.MissingChild("vpc_config") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -76,8 +75,7 @@ resource "aws_eks_cluster" "good_example" {
 			if vpcConfig.MissingChild("endpoint_public_access") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName())).
-						WithRange(vpcConfig.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -87,8 +85,7 @@ resource "aws_eks_cluster" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", resourceBlock.FullName())).
-						WithRange(publicAccessEnabledAttr.Range()).
-						WithAttributeAnnotation(publicAccessEnabledAttr),
+						WithAttribute(publicAccessEnabledAttr),
 				)
 			}
 		},

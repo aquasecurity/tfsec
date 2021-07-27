@@ -58,16 +58,14 @@ resource "aws_iam_account_password_policy" "good_example" {
 			if attr := resourceBlock.GetAttribute("minimum_password_length"); attr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a minimum password length set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a minimum password length set.", resourceBlock.FullName())),
 				)
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value < 14 {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has a minimum password length which is less than 14 characters.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' has a minimum password length which is less than 14 characters.", resourceBlock.FullName())),
 					)
 				}
 			}

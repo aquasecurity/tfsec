@@ -73,8 +73,7 @@ resource "aws_ecr_repository" "good_example" {
 			if resourceBlock.MissingChild("encryption_configuration") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -83,8 +82,7 @@ resource "aws_ecr_repository" "good_example" {
 			if encBlock.MissingChild("kms_key") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' configures encryption without using CMK", resourceBlock.FullName())).
-						WithRange(encBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' configures encryption without using CMK", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -92,8 +90,7 @@ resource "aws_ecr_repository" "good_example" {
 			if encBlock.MissingChild("encryption_type") || encBlock.GetAttribute("encryption_type").Equals("AES256") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName())).
-						WithRange(encBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName())),
 				)
 			}
 

@@ -70,8 +70,7 @@ resource "aws_cloudtrail" "good_example" {
 			if resourceBlock.MissingChild("is_multi_region_trail") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not set multi region trail config.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not set multi region trail config.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -81,8 +80,7 @@ resource "aws_cloudtrail" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not enable multi region trail.", resourceBlock.FullName())).
-						WithRange(multiRegionAttr.Range()).
-						WithAttributeAnnotation(multiRegionAttr),
+						WithAttribute(multiRegionAttr),
 				)
 			}
 		},

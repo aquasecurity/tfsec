@@ -62,8 +62,7 @@ resource "aws_kms_key" "good_example" {
 			if keyRotationAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -72,8 +71,7 @@ resource "aws_kms_key" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())).
-						WithRange(keyRotationAttr.Range()).
-						WithAttributeAnnotation(keyRotationAttr),
+						WithAttribute(keyRotationAttr),
 				)
 			}
 
