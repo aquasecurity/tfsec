@@ -12,6 +12,7 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -139,14 +140,16 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 	}
 
 	actionsAttr := statementBlock.GetAttribute("actions")
-	if actionsAttr != nil && actionsAttr.Contains("*") {
-		set.Add(
-			result.New(policyDocumentBlock).
-				WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName())).
-				WithRange(actionsAttr.Range()).
-				WithAttributeAnnotation(actionsAttr),
-		)
-	}
+	actionsAttr.Each(func(key, value cty.Value) {
+		if value.Type() == cty.String && strings.Contains(value.AsString(), ("*")) {
+			set.Add(
+				result.New(policyDocumentBlock).
+					WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName())).
+					WithRange(actionsAttr.Range()).
+					WithAttributeAnnotation(actionsAttr),
+			)
+		}
+	})
 
 	resourcesAttr := statementBlock.GetAttribute("resources")
 	if resourcesAttr != nil && resourcesAttr.Contains("*") && (actionsAttr == nil || !doActionsAllowWildcardResource(actionsAttr.ValueAsStrings())) {

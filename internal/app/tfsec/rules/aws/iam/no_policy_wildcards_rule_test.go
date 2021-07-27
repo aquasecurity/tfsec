@@ -18,45 +18,85 @@ func Test_AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege(t *testing.T) {
 		{
 			name: "Fails on wildcarded resource (inline)",
 			source: `
-		resource "aws_iam_role_policy" "test_policy" {
-			name = "test_policy"
-			role = aws_iam_role.test_role.id
+				resource "aws_iam_role_policy" "test_policy" {
+					name = "test_policy"
+					role = aws_iam_role.test_role.id
 
-			policy = data.aws_iam_policy_document.s3_policy.json
-		}
-
-		resource "aws_iam_role" "test_role" {
-			name = "test_role"
-			assume_role_policy = jsonencode({
-				Version = "2012-10-17"
-				Statement = [
-				{
-					Action = "sts:AssumeRole"
-					Effect = "Allow"
-					Sid    = ""
-					Principal = {
-					Service = "ec2.amazonaws.com"
-					}
-				},
-				]
-			})
-		}
-
-		data "aws_iam_policy_document" "s3_policy" {
-			statement {
-				principals {
-					type        = "AWS"
-					identifiers = ["arn:aws:iam::1234567890:root"]
+					policy = data.aws_iam_policy_document.s3_policy.json
 				}
-				actions   = ["s3:GetObject"]
-				resources = ["*"]
-			}
-		}
-				`,
+
+				resource "aws_iam_role" "test_role" {
+					name = "test_role"
+					assume_role_policy = jsonencode({
+						Version = "2012-10-17"
+						Statement = [
+						{
+							Action = "sts:AssumeRole"
+							Effect = "Allow"
+							Sid    = ""
+							Principal = {
+							Service = "ec2.amazonaws.com"
+							}
+						},
+						]
+					})
+				}
+
+				data "aws_iam_policy_document" "s3_policy" {
+					statement {
+						principals {
+							type        = "AWS"
+							identifiers = ["arn:aws:iam::1234567890:root"]
+						}
+						actions   = ["s3:GetObject"]
+						resources = ["*"]
+					}
+				}
+						`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Fails on wildcarded templated identifier (inline)",
+			source: `
+				resource "aws_iam_role_policy" "test_policy" {
+					name = "test_policy"
+					role = aws_iam_role.test_role.id
+
+					policy = data.aws_iam_policy_document.s3_policy.json
+				}
+
+				resource "aws_iam_role" "test_role" {
+					name = "test_role"
+					assume_role_policy = jsonencode({
+						Version = "2012-10-17"
+						Statement = [
+						{
+							Action = "sts:AssumeRole"
+							Effect = "Allow"
+							Sid    = ""
+							Principal = {
+							Service = "ec2.amazonaws.com"
+							}
+						},
+						]
+					})
+				}
+
+				data "aws_iam_policy_document" "s3_policy" {
+					statement {
+						principals {
+							type        = "AWS"
+							identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:*"]
+						}
+						actions   = ["s3:GetObject"]
+						resources = ["asdasdasd"]
+					}
+				}
+				`,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Fails on wildcarded templated identifier with local (inline)",
 			source: `
 		resource "aws_iam_role_policy" "test_policy" {
 			name = "test_policy"
@@ -82,11 +122,15 @@ func Test_AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege(t *testing.T) {
 			})
 		}
 
+		locals {
+			wildcard = "*"
+		}
+
 		data "aws_iam_policy_document" "s3_policy" {
 			statement {
 				principals {
 					type        = "AWS"
-					identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:*"]
+					identifiers = ["arn:aws:iam::${local.wildcard}:root"]
 				}
 				actions   = ["s3:GetObject"]
 				resources = ["asdasdasd"]
@@ -96,91 +140,47 @@ func Test_AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege(t *testing.T) {
 			mustIncludeResultCode: expectedCode,
 		},
 		{
-			name: "Fails on wildcarded templated identifier with local (inline)",
-			source: `
-resource "aws_iam_role_policy" "test_policy" {
-	name = "test_policy"
-	role = aws_iam_role.test_role.id
-
-	policy = data.aws_iam_policy_document.s3_policy.json
-}
-
-resource "aws_iam_role" "test_role" {
-	name = "test_role"
-	assume_role_policy = jsonencode({
-		Version = "2012-10-17"
-		Statement = [
-		{
-			Action = "sts:AssumeRole"
-			Effect = "Allow"
-			Sid    = ""
-			Principal = {
-			Service = "ec2.amazonaws.com"
-			}
-		},
-		]
-	})
-}
-
-locals {
-	wildcard = "*"
-}
-
-data "aws_iam_policy_document" "s3_policy" {
-	statement {
-		principals {
-			type        = "AWS"
-			identifiers = ["arn:aws:iam::${local.wildcard}:root"]
-		}
-		actions   = ["s3:GetObject"]
-		resources = ["asdasdasd"]
-	}
-}
-`,
-			mustIncludeResultCode: expectedCode,
-		},
-		{
 			name: "Fails on wildcarded templated identifier with variable (inline)",
 			source: `
-resource "aws_iam_role_policy" "test_policy" {
-	name = "test_policy"
-	role = aws_iam_role.test_role.id
+		resource "aws_iam_role_policy" "test_policy" {
+			name = "test_policy"
+			role = aws_iam_role.test_role.id
 
-	policy = data.aws_iam_policy_document.s3_policy.json
-}
-
-resource "aws_iam_role" "test_role" {
-	name = "test_role"
-	assume_role_policy = jsonencode({
-		Version = "2012-10-17"
-		Statement = [
-		{
-			Action = "sts:AssumeRole"
-			Effect = "Allow"
-			Sid    = ""
-			Principal = {
-			Service = "ec2.amazonaws.com"
-			}
-		},
-		]
-	})
-}
-
-variable "wildcard" {
-	default = "*"
-}
-
-data "aws_iam_policy_document" "s3_policy" {
-	statement {
-		principals {
-			type        = "AWS"
-			identifiers = [var.wildcard]
+			policy = data.aws_iam_policy_document.s3_policy.json
 		}
-		actions   = ["s3:GetObject"]
-		resources = ["asdasdasd"]
-	}
-}
-`,
+
+		resource "aws_iam_role" "test_role" {
+			name = "test_role"
+			assume_role_policy = jsonencode({
+				Version = "2012-10-17"
+				Statement = [
+				{
+					Action = "sts:AssumeRole"
+					Effect = "Allow"
+					Sid    = ""
+					Principal = {
+					Service = "ec2.amazonaws.com"
+					}
+				},
+				]
+			})
+		}
+
+		variable "wildcard" {
+			default = "*"
+		}
+
+		data "aws_iam_policy_document" "s3_policy" {
+			statement {
+				principals {
+					type        = "AWS"
+					identifiers = [var.wildcard]
+				}
+				actions   = ["s3:GetObject"]
+				resources = ["asdasdasd"]
+			}
+		}
+		`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{

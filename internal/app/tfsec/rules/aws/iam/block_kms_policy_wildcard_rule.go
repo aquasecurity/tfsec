@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 
@@ -114,6 +115,10 @@ data "aws_iam_policy_document" "kms_policy" {
 }
 `,
 			GoodExample: `
+resource "aws_kms_key" "main" {
+	enable_key_rotation = true
+}
+
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -187,16 +192,19 @@ data "aws_iam_policy_document" "kms_policy" {
 						continue
 					}
 
-					if statementBlock.HasChild("actions") && statementBlock.GetAttribute("actions").Contains("kms") {
+					if statementBlock.HasChild("actions") && statementBlock.GetAttribute("actions").Contains("kms:*") {
 						if resources := statementBlock.GetAttribute("resources"); resources != nil {
-							if resources.Contains("*") {
-								set.Add(
-									result.New(policyDocumentBlock).
-										WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", policyDocumentBlock.FullName())).
-										WithRange(resources.Range()).
-										WithAttributeAnnotation(resources),
-								)
-							}
+							resources.Each(func(key, value cty.Value) {
+								if value.Type() == cty.String && strings.Contains(value.AsString(), ("*")) {
+									set.Add(
+										result.New(policyDocumentBlock).
+											WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", policyDocumentBlock.FullName())).
+											WithRange(resources.Range()).
+											WithAttributeAnnotation(resources),
+									)
+								}
+							})
+
 						}
 					}
 				}

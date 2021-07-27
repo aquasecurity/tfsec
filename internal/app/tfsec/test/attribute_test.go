@@ -258,7 +258,7 @@ resource "aws_security_group" "my-security_group" {
 			ignoreCase:     true,
 		},
 		{
-			name: "contains array of strings ignores case",
+			name: "contains array of strings without ignore case",
 			source: `
 resource "aws_security_group" "my-security_group" {
 	cidr_block = ["Foo", "Bar" ] 
