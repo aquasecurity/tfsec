@@ -7,7 +7,7 @@ image:
 
 .PHONY: test
 test:
-	which gotestsum || go install gotest.tools/gotestsum
+	which gotestsum || GO111MODULE=off go install gotest.tools/gotestsum@latest
 	GOMOD=vendor gotestsum
 
 .PHONY: build
