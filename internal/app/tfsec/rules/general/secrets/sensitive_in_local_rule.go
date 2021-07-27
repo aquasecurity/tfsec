@@ -15,22 +15,21 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GEN002",
+		LegacyID:  "GEN002",
 		Service:   "secrets",
 		ShortCode: "sensitive-in-local",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Potentially sensitive data stored in local value.",
-			Impact:       "Local value could be leaking secrets",
-			Resolution:   "Don't include sensitive data in locals",
-			Explanation:  `
+			Summary:    "Potentially sensitive data stored in local value.",
+			Impact:     "Local value could be leaking secrets",
+			Resolution: "Don't include sensitive data in locals",
+			Explanation: `
 Sensitive attributes such as passwords and API tokens should not be available in your templates, especially in a plaintext form. You can declare variables to hold the secrets, assuming you can provide values for those variables in a secure fashion. Alternatively, you can store these secrets in a secure secret store, such as AWS KMS.
 
 *NOTE: It is also recommended to store your Terraform state in an encrypted form.*
 `,
-			BadExample:   `
+			BadExample: `
 locals {
   password = "p4ssw0rd"
 }
@@ -39,7 +38,7 @@ resource "evil_corp" "bad_example" {
 	root_password = local.password
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 variable "password" {
   description = "The root password for our VM"
   type        = string
@@ -63,8 +62,7 @@ resource "evil_corp" "good_example" {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {
 						set.Add(result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Local '%s' includes a potentially sensitive value which is defined within the project.", resourceBlock.FullName())).
-							WithRange(attribute.Range()).
-							WithAttributeAnnotation(attribute),
+							WithAttribute(attribute),
 						)
 					}
 				}

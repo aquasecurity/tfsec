@@ -79,8 +79,7 @@ resource "azurerm_sql_firewall_rule" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has an open IP range set.", resourceBlock.FullName())).
-							WithRange(endIpAttr.Range()).
-							WithAttributeAnnotation(endIpAttr),
+							WithAttribute(endIpAttr),
 					)
 				}
 			}

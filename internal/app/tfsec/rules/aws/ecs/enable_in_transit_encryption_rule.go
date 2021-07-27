@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS096",
+		LegacyID:  "AWS096",
 		Service:   "ecs",
 		ShortCode: "enable-in-transit-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "ECS Task Definitions with EFS volumes should use in-transit encryption",
-			Explanation:  `
+			Summary: "ECS Task Definitions with EFS volumes should use in-transit encryption",
+			Explanation: `
 ECS task definitions that have volumes using EFS configuration should explicitly enable in transit encryption to prevent the risk of data loss due to interception.
 `,
-			Impact:       "Intercepted traffic to and from EFS may lead to data loss",
-			Resolution:   "Enable in transit encryption when using efs",
-			BadExample:   `
+			Impact:     "Intercepted traffic to and from EFS may lead to data loss",
+			Resolution: "Enable in transit encryption when using efs",
+			BadExample: `
 resource "aws_ecs_task_definition" "bad_example" {
 	family                = "service"
 	container_definitions = file("task-definitions/service.json")
@@ -49,7 +48,7 @@ resource "aws_ecs_task_definition" "bad_example" {
 	}
   }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_ecs_task_definition" "good_example" {
 	family                = "service"
 	container_definitions = file("task-definitions/service.json")
@@ -95,8 +94,7 @@ resource "aws_ecs_task_definition" "good_example" {
 				if efsConfigBlock.MissingChild("transit_encryption") {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has efs configuration with in transit encryption implicitly disabled", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' has efs configuration with in transit encryption implicitly disabled", resourceBlock.FullName())),
 					)
 					continue
 				}
@@ -105,8 +103,7 @@ resource "aws_ecs_task_definition" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has efs configuration with transit encryption explicitly disabled", resourceBlock.FullName())).
-							WithRange(transitAttr.Range()).
-							WithAttributeAnnotation(transitAttr),
+							WithAttribute(transitAttr),
 					)
 				}
 			}

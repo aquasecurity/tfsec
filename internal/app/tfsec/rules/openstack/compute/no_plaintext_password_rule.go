@@ -71,8 +71,7 @@ resource "openstack_compute_instance_v2" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' specifies a plain text password", resourceBlock.FullName())).
-						WithRange(adminPassAttr.Range()).
-						WithAttributeAnnotation(adminPassAttr),
+						WithAttribute(adminPassAttr),
 				)
 			}
 		},

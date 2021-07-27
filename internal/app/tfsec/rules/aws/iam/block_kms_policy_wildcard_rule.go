@@ -199,8 +199,7 @@ data "aws_iam_policy_document" "kms_policy" {
 									set.Add(
 										result.New(policyDocumentBlock).
 											WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", policyDocumentBlock.FullName())).
-											WithRange(resources.Range()).
-											WithAttributeAnnotation(resources),
+											WithAttribute(resources),
 									)
 								}
 							})
@@ -231,8 +230,7 @@ func checkAWS097PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", resourceBlock.FullName())).
-							WithRange(policyAttr.Range()).
-							WithAttributeAnnotation(policyAttr),
+							WithAttribute(policyAttr),
 					)
 					return
 				}

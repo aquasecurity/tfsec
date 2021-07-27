@@ -52,8 +52,7 @@ resource "aws_security_group" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			set.Add(
 				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()),
+					WithDescription(fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", resourceBlock.FullName())),
 			)
 		},
 	})

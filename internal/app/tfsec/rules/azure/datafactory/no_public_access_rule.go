@@ -17,29 +17,28 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU025",
+		LegacyID:  "AZU025",
 		Service:   "datafactory",
 		ShortCode: "no-public-access",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Data Factory should have public access disabled, the default is enabled.",
-			Impact:       "Data factory is publicly accessible",
-			Resolution:   "Set public access to disabled for Data Factory",
-			Explanation:  `
+			Summary:    "Data Factory should have public access disabled, the default is enabled.",
+			Impact:     "Data factory is publicly accessible",
+			Resolution: "Set public access to disabled for Data Factory",
+			Explanation: `
 Data Factory has public access set to true by default.
 
 Disabling public network access is applicable only to the self-hosted integration runtime, not to Azure Integration Runtime and SQL Server Integration Services (SSIS) Integration Runtime.
 `,
-			BadExample:   `
+			BadExample: `
 resource "azurerm_data_factory" "bad_example" {
   name                = "example"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "azurerm_data_factory" "good_example" {
   name                = "example"
   location            = azurerm_resource_group.example.location
@@ -61,16 +60,14 @@ resource "azurerm_data_factory" "good_example" {
 			if resourceBlock.MissingChild("public_network_enabled") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have public_network_enabled set to false, the default is true.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have public_network_enabled set to false, the default is true.", resourceBlock.FullName())),
 				)
 				return
 			}
 			if resourceBlock.GetAttribute("public_network_enabled").IsTrue() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should not have public network set to true.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should not have public network set to true.", resourceBlock.FullName())),
 				)
 			}
 		},

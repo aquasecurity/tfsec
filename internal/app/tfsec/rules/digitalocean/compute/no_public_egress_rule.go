@@ -72,8 +72,7 @@ resource "digitalocean_firewall" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open outbound_rule.", resourceBlock.FullName())).
-							WithRange(destinationAddressesAttr.Range()).
-							WithAttributeAnnotation(destinationAddressesAttr),
+							WithAttribute(destinationAddressesAttr),
 					)
 				}
 			}

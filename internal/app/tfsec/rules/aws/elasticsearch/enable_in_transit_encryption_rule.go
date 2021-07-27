@@ -19,20 +19,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS032",
+		LegacyID:  "AWS032",
 		Service:   "elastic-search",
 		ShortCode: "enable-in-transit-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Elasticsearch domain uses plaintext traffic for node to node communication.",
-			Impact:       "In transit data between nodes could be read if intercepted",
-			Resolution:   "Enable encrypted node to node communication",
-			Explanation:  `
+			Summary:    "Elasticsearch domain uses plaintext traffic for node to node communication.",
+			Impact:     "In transit data between nodes could be read if intercepted",
+			Resolution: "Enable encrypted node to node communication",
+			Explanation: `
 Traffic flowing between Elasticsearch nodes should be encrypted to ensure sensitive data is kept private.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
@@ -41,7 +40,7 @@ resource "aws_elasticsearch_domain" "bad_example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
@@ -65,8 +64,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if encryptionBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing node_to_node_encryption block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing node_to_node_encryption block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -75,8 +73,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if enabledAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enabled attribute).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enabled attribute).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -88,8 +85,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if !nodeToNodeEncryptionEnabled {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName())),
 				)
 			}
 

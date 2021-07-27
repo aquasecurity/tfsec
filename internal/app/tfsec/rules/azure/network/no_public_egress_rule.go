@@ -73,8 +73,7 @@ resource "azurerm_network_security_rule" "good_example" {
 									resourceBlock.FullName(),
 									strings.ToLower(directionAttr.Value().AsString()),
 								)).
-								WithRange(prefixAttr.Range()).
-								WithAttributeAnnotation(prefixAttr),
+								WithAttribute(prefixAttr),
 						)
 					}
 				}
@@ -86,8 +85,7 @@ resource "azurerm_network_security_rule" "good_example" {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName())).
-								WithRange(prefixesAttr.Range()).
-								WithAttributeAnnotation(prefixesAttr),
+								WithAttribute(prefixesAttr),
 						)
 					}
 				}

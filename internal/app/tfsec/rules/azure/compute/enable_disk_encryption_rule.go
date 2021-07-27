@@ -64,8 +64,7 @@ resource "azurerm_managed_disk" "good_example" {
 							"Resource '%s' defines an unencrypted managed disk.",
 							resourceBlock.FullName(),
 						)).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr),
+						WithAttribute(enabledAttr),
 				)
 			}
 

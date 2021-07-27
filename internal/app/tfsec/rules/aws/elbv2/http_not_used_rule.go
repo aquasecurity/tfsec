@@ -75,12 +75,10 @@ resource "aws_alb_listener" "good_example" {
 			}
 
 			res := result.New(resourceBlock).
-				WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName())).
-				WithRange(resourceBlock.Range())
+				WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName()))
 
 			if protocolAttr != nil {
-				res.WithRange(protocolAttr.Range()).
-					WithAttributeAnnotation(protocolAttr)
+				res.WithAttribute(protocolAttr)
 			}
 
 			set.Add(res)

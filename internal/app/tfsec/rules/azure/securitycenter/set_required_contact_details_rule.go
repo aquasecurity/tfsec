@@ -68,8 +68,7 @@ resource "azurerm_security_center_contact" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not have a phone number set for the security contact", resourceBlock.FullName())).
-						WithAttributeAnnotation(phoneAttr).
-						WithRange(phoneAttr.Range()),
+						WithAttribute(phoneAttr),
 				)
 			}
 		},

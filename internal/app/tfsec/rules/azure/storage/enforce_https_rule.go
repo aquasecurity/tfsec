@@ -17,24 +17,23 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU014",
+		LegacyID:  "AZU014",
 		Service:   "storage",
 		ShortCode: "enforce-https",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Storage accounts should be configured to only accept transfers that are over secure connections",
-			Impact:       "Insecure transfer of data into secure accounts could be read if intercepted",
-			Resolution:   "Only allow secure connection for transferring data into storage accounts",
-			Explanation:  `
+			Summary:    "Storage accounts should be configured to only accept transfers that are over secure connections",
+			Impact:     "Insecure transfer of data into secure accounts could be read if intercepted",
+			Resolution: "Only allow secure connection for transferring data into storage accounts",
+			Explanation: `
 You can configure your storage account to accept requests from secure connections only by setting the Secure transfer required property for the storage account. 
 
 When you require secure transfer, any requests originating from an insecure connection are rejected. 
 
 Microsoft recommends that you always require secure transfer for all of your storage accounts.
 `,
-			BadExample:   `
+			BadExample: `
 resource "azurerm_storage_account" "bad_example" {
   name                      = "storageaccountname"
   resource_group_name       = azurerm_resource_group.example.name
@@ -44,7 +43,7 @@ resource "azurerm_storage_account" "bad_example" {
   enable_https_traffic_only = false
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "azurerm_storage_account" "good_example" {
   name                      = "storageaccountname"
   resource_group_name       = azurerm_resource_group.example.name
@@ -68,8 +67,7 @@ resource "azurerm_storage_account" "good_example" {
 			if resourceBlock.HasChild("enable_https_traffic_only") && resourceBlock.GetAttribute("enable_https_traffic_only").IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' explicitly turns off secure transfer to storage account.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' explicitly turns off secure transfer to storage account.", resourceBlock.FullName())),
 				)
 			}
 

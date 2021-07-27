@@ -17,22 +17,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS018",
+		LegacyID:  "AWS018",
 		Service:   "vpc",
 		ShortCode: "add-decription-to-security-group",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Missing description for security group/security group rule.",
-			Impact:       "Descriptions provide context for the firewall rule reasons",
-			Resolution:   "Add descriptions for all security groups and rules",
-			Explanation:  `
+			Summary:    "Missing description for security group/security group rule.",
+			Impact:     "Descriptions provide context for the firewall rule reasons",
+			Resolution: "Add descriptions for all security groups and rules",
+			Explanation: `
 Security groups and security group rules should include a description for auditing purposes.
 
 Simplifies auditing, debugging, and managing security groups.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_security_group" "bad_example" {
   name        = "http"
 
@@ -45,7 +44,7 @@ resource "aws_security_group" "bad_example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_security_group" "good_example" {
   name        = "http"
   description = "Allow inbound HTTP traffic"
@@ -73,8 +72,7 @@ resource "aws_security_group" "good_example" {
 			if resourceBlock.MissingChild("description") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -84,8 +82,7 @@ resource "aws_security_group" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should include a non-empty description for auditing purposes.", resourceBlock.FullName())).
-						WithRange(descriptionAttr.Range()).
-						WithAttributeAnnotation(descriptionAttr),
+						WithAttribute(descriptionAttr),
 				)
 			}
 		},

@@ -17,25 +17,24 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS090",
+		LegacyID:  "AWS090",
 		Service:   "ecs",
 		ShortCode: "enable-container-insight",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "ECS clusters should have container insights enabled",
-			Explanation:  `
+			Summary: "ECS clusters should have container insights enabled",
+			Explanation: `
 Cloudwatch Container Insights provide more metrics and logs for container based applications and micro services.
 `,
-			Impact:       "Not all metrics and logs may be gathered for containers when Container Insights isn't enabled",
-			Resolution:   "Enable Container Insights",
-			BadExample:   `
+			Impact:     "Not all metrics and logs may be gathered for containers when Container Insights isn't enabled",
+			Resolution: "Enable Container Insights",
+			BadExample: `
 resource "aws_ecs_cluster" "bad_example" {
   	name = "services-cluster"
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_ecs_cluster" "good_example" {
 	name = "services-cluster"
   
@@ -64,8 +63,7 @@ resource "aws_ecs_cluster" "good_example" {
 							set.Add(
 								result.New(resourceBlock).
 									WithDescription(fmt.Sprintf("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName())).
-									WithRange(setting.Range()).
-									WithAttributeAnnotation(valueAttr),
+									WithAttribute(valueAttr),
 							)
 						}
 						return
@@ -74,8 +72,7 @@ resource "aws_ecs_cluster" "good_example" {
 			}
 			set.Add(
 				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()),
+					WithDescription(fmt.Sprintf("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName())),
 			)
 		},
 	})

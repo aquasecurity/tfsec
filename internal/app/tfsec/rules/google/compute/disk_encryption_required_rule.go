@@ -63,8 +63,7 @@ resource "google_compute_disk" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' specifies an encryption key in raw format.", resourceBlock.FullName())).
-						WithRange(rawKeyAttr.Range()).
-						WithAttributeAnnotation(rawKeyAttr),
+						WithAttribute(rawKeyAttr),
 				)
 			}
 

@@ -58,14 +58,12 @@ resource "aws_s3_bucket" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows public access.", resourceBlock.FullName())).
-							WithAttributeAnnotation(attr).
-							WithRange(attr.Range()),
+							WithAttribute(attr),
 					)
 				} else if attr.Equals("authenticated-read") {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName())).
-							WithRange(attr.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName())),
 					)
 				}
 			}

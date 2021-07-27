@@ -17,26 +17,25 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS071",
+		LegacyID:  "AWS071",
 		Service:   "cloudfront",
 		ShortCode: "enable-logging",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Cloudfront distribution should have Access Logging configured",
-			Impact:       "Logging provides vital information about access and usage",
-			Resolution:   "Enable logging for CloudFront distributions",
-			Explanation:  `
+			Summary:    "Cloudfront distribution should have Access Logging configured",
+			Impact:     "Logging provides vital information about access and usage",
+			Resolution: "Enable logging for CloudFront distributions",
+			Explanation: `
 You should configure CloudFront Access Logging to create log files that contain detailed information about every user request that CloudFront receives
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_cloudfront_distribution" "bad_example" {
 	// other config
 	// no logging_config
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_cloudfront_distribution" "good_example" {
 	// other config
 	logging_config {
@@ -60,8 +59,7 @@ resource "aws_cloudfront_distribution" "good_example" {
 			if resourceBlock.MissingChild("logging_config") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have Access Logging configured", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have Access Logging configured", resourceBlock.FullName())),
 				)
 			}
 

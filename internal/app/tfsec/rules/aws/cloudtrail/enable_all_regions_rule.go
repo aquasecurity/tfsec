@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS063",
+		LegacyID:  "AWS063",
 		Service:   "cloudtrail",
 		ShortCode: "enable-all-regions",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Cloudtrail should be enabled in all regions regardless of where your AWS resources are generally homed",
-			Impact:       "Activity could be happening in your account in a different region",
-			Resolution:   "Enable Cloudtrail in all regions",
-			Explanation:  `
+			Summary:    "Cloudtrail should be enabled in all regions regardless of where your AWS resources are generally homed",
+			Impact:     "Activity could be happening in your account in a different region",
+			Resolution: "Enable Cloudtrail in all regions",
+			Explanation: `
 When creating Cloudtrail in the AWS Management Console the trail is configured by default to be multi-region, this isn't the case with the Terraform resource. Cloudtrail should cover the full AWS account to ensure you can track changes in regions you are not actively operting in.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_cloudtrail" "bad_example" {
   event_selector {
     read_write_type           = "All"
@@ -43,7 +42,7 @@ resource "aws_cloudtrail" "bad_example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_cloudtrail" "good_example" {
   is_multi_region_trail = true
 
@@ -71,8 +70,7 @@ resource "aws_cloudtrail" "good_example" {
 			if resourceBlock.MissingChild("is_multi_region_trail") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not set multi region trail config.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not set multi region trail config.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -82,8 +80,7 @@ resource "aws_cloudtrail" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' does not enable multi region trail.", resourceBlock.FullName())).
-						WithRange(multiRegionAttr.Range()).
-						WithAttributeAnnotation(multiRegionAttr),
+						WithAttribute(multiRegionAttr),
 				)
 			}
 		},

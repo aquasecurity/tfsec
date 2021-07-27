@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS094",
+		LegacyID:  "AWS094",
 		Service:   "redshift",
 		ShortCode: "encryption-customer-key",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Redshift clusters should use at rest encryption",
-			Explanation:  `
+			Summary: "Redshift clusters should use at rest encryption",
+			Explanation: `
 Redshift clusters that contain sensitive data or are subject to regulation should be encrypted at rest to prevent data leakage should the infrastructure be compromised.
 `,
-			Impact:       "Data may be leaked if infrastructure is compromised",
-			Resolution:   "Enable encryption using CMK",
-			BadExample:   `
+			Impact:     "Data may be leaked if infrastructure is compromised",
+			Resolution: "Enable encryption using CMK",
+			BadExample: `
 resource "aws_redshift_cluster" "bad_example" {
   cluster_identifier = "tf-redshift-cluster"
   database_name      = "mydb"
@@ -40,7 +39,7 @@ resource "aws_redshift_cluster" "bad_example" {
   cluster_type       = "single-node"
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_kms_key" "redshift" {
 	enable_key_rotation = true
 }
@@ -70,8 +69,7 @@ resource "aws_redshift_cluster" "good_example" {
 			if resourceBlock.MissingChild("encrypted") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have encryption enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have encryption enabled", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -81,8 +79,7 @@ resource "aws_redshift_cluster" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has encryption explicitly disabled", resourceBlock.FullName())).
-						WithRange(encryptedAttr.Range()).
-						WithAttributeAnnotation(encryptedAttr),
+						WithAttribute(encryptedAttr),
 				)
 				return
 			}
@@ -90,8 +87,7 @@ resource "aws_redshift_cluster" "good_example" {
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a customer managed key specified", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a customer managed key specified", resourceBlock.FullName())),
 				)
 			}
 

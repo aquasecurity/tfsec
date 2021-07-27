@@ -66,8 +66,7 @@ resource "google_container_cluster" "good_example" {
 			if legacyMetadataAPI != nil && legacyMetadataAPI.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", resourceBlock.FullName())).
-						WithRange(legacyMetadataAPI.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", resourceBlock.FullName())),
 				)
 			}
 

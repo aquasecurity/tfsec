@@ -151,8 +151,7 @@ resource "azurerm_monitor_log_profile" "bad_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' does not have the location '%s'", resourceBlock.LocalName(), location)).
-							WithRange(locationsAttr.Range()).
-							WithAttributeAnnotation(locationsAttr),
+							WithAttribute(locationsAttr),
 					)
 				}
 			}

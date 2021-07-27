@@ -80,8 +80,7 @@ resource "azurerm_monitor_log_profile" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' is missing '%s' category", resourceBlock.FullName(), category)).
-							WithRange(categoriesAttr.Range()).
-							WithAttributeAnnotation(categoriesAttr),
+							WithAttribute(categoriesAttr),
 					)
 				}
 			}

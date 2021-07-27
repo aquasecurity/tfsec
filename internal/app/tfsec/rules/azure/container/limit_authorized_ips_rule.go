@@ -59,8 +59,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 				{
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", resourceBlock.FullName())),
 					)
 				}
 			}

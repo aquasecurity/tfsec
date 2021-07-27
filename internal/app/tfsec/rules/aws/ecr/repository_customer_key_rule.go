@@ -17,21 +17,20 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS093",
+		LegacyID:  "AWS093",
 		Service:   "ecr",
 		ShortCode: "repository-customer-key",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "ECR Repository should use customer managed keys to allow more control",
-			Explanation:  `
+			Summary: "ECR Repository should use customer managed keys to allow more control",
+			Explanation: `
 Images in the ECR repository are encrypted by default using AWS managed encryption keys. To increase control of the encryption and control the management of factors like key rotation, use a Customer Managed Key.
 
 `,
-			Impact:       "Using AWS managed keys does not allow for fine grained control",
-			Resolution:   "Use customer managed keys",
-			BadExample:   `
+			Impact:     "Using AWS managed keys does not allow for fine grained control",
+			Resolution: "Use customer managed keys",
+			BadExample: `
 resource "aws_ecr_repository" "bad_example" {
 	name                 = "bar"
 	image_tag_mutability = "MUTABLE"
@@ -41,7 +40,7 @@ resource "aws_ecr_repository" "bad_example" {
 	}
   }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_kms_key" "ecr_kms" {
 	enable_key_rotation = true
 }
@@ -74,8 +73,7 @@ resource "aws_ecr_repository" "good_example" {
 			if resourceBlock.MissingChild("encryption_configuration") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -84,8 +82,7 @@ resource "aws_ecr_repository" "good_example" {
 			if encBlock.MissingChild("kms_key") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' configures encryption without using CMK", resourceBlock.FullName())).
-						WithRange(encBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' configures encryption without using CMK", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -93,8 +90,7 @@ resource "aws_ecr_repository" "good_example" {
 			if encBlock.MissingChild("encryption_type") || encBlock.GetAttribute("encryption_type").Equals("AES256") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName())).
-						WithRange(encBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName())),
 				)
 			}
 

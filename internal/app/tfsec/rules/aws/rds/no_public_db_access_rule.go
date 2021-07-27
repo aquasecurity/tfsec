@@ -19,25 +19,24 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS011",
+		LegacyID:  "AWS011",
 		Service:   "rds",
 		ShortCode: "no-public-db-access",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "A database resource is marked as publicly accessible.",
-			Impact:       "The database instance is publicly accessible",
-			Resolution:   "Set the database to not be publicly accessible",
-			Explanation:  `
+			Summary:    "A database resource is marked as publicly accessible.",
+			Impact:     "The database instance is publicly accessible",
+			Resolution: "Set the database to not be publicly accessible",
+			Explanation: `
 Database resources should not publicly available. You should limit all access to the minimum that is required for your application to function. 
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_db_instance" "bad_example" {
 	publicly_accessible = true
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_db_instance" "good_example" {
 	publicly_accessible = false
 }
@@ -57,8 +56,7 @@ resource "aws_db_instance" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
-							WithRange(publicAttr.Range()).
-							WithAttributeAnnotation(publicAttr),
+							WithAttribute(publicAttr),
 					)
 				}
 			}

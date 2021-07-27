@@ -19,20 +19,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS034",
+		LegacyID:  "AWS034",
 		Service:   "elastic-search",
 		ShortCode: "use-secure-tls-policy",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Elasticsearch domain endpoint is using outdated TLS policy.",
-			Impact:       "Outdated SSL policies increase exposure to known vulnerabilities",
-			Resolution:   "Use the most modern TLS/SSL policies available",
-			Explanation:  `
+			Summary:    "Elasticsearch domain endpoint is using outdated TLS policy.",
+			Impact:     "Outdated SSL policies increase exposure to known vulnerabilities",
+			Resolution: "Use the most modern TLS/SSL policies available",
+			Explanation: `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
@@ -42,7 +41,7 @@ resource "aws_elasticsearch_domain" "bad_example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
@@ -73,8 +72,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if tlsPolicyAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (defaults to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName())).
-						WithRange(endpointBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (defaults to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -83,8 +81,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (set to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName())).
-						WithRange(tlsPolicyAttr.Range()).
-						WithAttributeAnnotation(tlsPolicyAttr),
+						WithAttribute(tlsPolicyAttr),
 				)
 			}
 

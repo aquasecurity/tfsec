@@ -17,22 +17,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS086",
+		LegacyID:  "AWS086",
 		Service:   "dynamodb",
 		ShortCode: "enable-recovery",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Point in time recovery should be enabled to protect DynamoDB table",
-			Explanation:  `
+			Summary: "Point in time recovery should be enabled to protect DynamoDB table",
+			Explanation: `
 DynamoDB tables should be protected against accidentally or malicious write/delete actions by ensuring that there is adequate protection.
 
 By enabling point-in-time-recovery you can restore to a known point in the event of loss of data.
 `,
-			Impact:       "Accidental or malicious writes and deletes can't be rolled back",
-			Resolution:   "Enable point in time recovery",
-			BadExample:   `
+			Impact:     "Accidental or malicious writes and deletes can't be rolled back",
+			Resolution: "Enable point in time recovery",
+			BadExample: `
 resource "aws_dynamodb_table" "bad_example" {
 	name             = "example"
 	hash_key         = "TestTableHashKey"
@@ -46,7 +45,7 @@ resource "aws_dynamodb_table" "bad_example" {
 	}
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_dynamodb_table" "good_example" {
 	name             = "example"
 	hash_key         = "TestTableHashKey"
@@ -78,8 +77,7 @@ resource "aws_dynamodb_table" "good_example" {
 			if resourceBlock.MissingChild("point_in_time_recovery") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -88,8 +86,7 @@ resource "aws_dynamodb_table" "good_example" {
 			if poitBlock.MissingChild("enabled") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -98,8 +95,7 @@ resource "aws_dynamodb_table" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr),
+						WithAttribute(enabledAttr),
 				)
 			}
 

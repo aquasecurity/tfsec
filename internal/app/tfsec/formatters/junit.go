@@ -50,7 +50,7 @@ func FormatJUnit(w io.Writer, results []result.Result, _ string, options ...Form
 	for _, result := range results {
 		output.TestCases = append(output.TestCases,
 			JUnitTestCase{
-				Classname: result.Range.Filename,
+				Classname: result.Range().Filename,
 				Name:      fmt.Sprintf("[%s][%s] - %s", result.RuleID, result.Severity, result.Description),
 				Time:      "0",
 				Failure:   buildFailure(result),
@@ -71,18 +71,18 @@ func FormatJUnit(w io.Writer, results []result.Result, _ string, options ...Form
 // highlight the lines of code which caused a problem, if available
 func highlightCodeJunit(result result.Result) string {
 
-	data, err := ioutil.ReadFile(result.Range.Filename)
+	data, err := ioutil.ReadFile(result.Range().Filename)
 	if err != nil {
 		return ""
 	}
 
 	lines := append([]string{""}, strings.Split(string(data), "\n")...)
 
-	start := result.Range.StartLine - 3
+	start := result.Range().StartLine - 3
 	if start <= 0 {
 		start = 1
 	}
-	end := result.Range.EndLine + 3
+	end := result.Range().EndLine + 3
 	if end >= len(lines) {
 		end = len(lines) - 1
 	}
@@ -91,8 +91,8 @@ func highlightCodeJunit(result result.Result) string {
 
 	for lineNo := start; lineNo <= end; lineNo++ {
 		output += fmt.Sprintf("  % 6d | ", lineNo)
-		if lineNo >= result.Range.StartLine && lineNo <= result.Range.EndLine {
-			if lineNo == result.Range.StartLine && result.RangeAnnotation != "" {
+		if lineNo >= result.Range().StartLine && lineNo <= result.Range().EndLine {
+			if lineNo == result.Range().StartLine && result.RangeAnnotation != "" {
 				output += fmt.Sprintf("%s    %s\n", lines[lineNo], result.RangeAnnotation)
 			} else {
 				output += fmt.Sprintf("%s\n", lines[lineNo])
@@ -118,7 +118,7 @@ func buildFailure(res result.Result) *JUnitFailure {
 	return &JUnitFailure{
 		Message: res.Description,
 		Contents: fmt.Sprintf("%s\n%s\n%s",
-			res.Range.String(),
+			res.Range().String(),
 			highlightCodeJunit(res),
 			link,
 		),

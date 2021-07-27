@@ -18,27 +18,26 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU007",
+		LegacyID:  "AZU007",
 		Service:   "container",
 		ShortCode: "use-rbac-permissions",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Ensure RBAC is enabled on AKS clusters",
-			Impact:       "No role based access control is in place for the AKS cluster",
-			Resolution:   "Enable RBAC",
-			Explanation:  `
+			Summary:    "Ensure RBAC is enabled on AKS clusters",
+			Impact:     "No role based access control is in place for the AKS cluster",
+			Resolution: "Enable RBAC",
+			Explanation: `
 Using Kubernetes role-based access control (RBAC), you can grant users, groups, and service accounts access to only the resources they need.
 `,
-			BadExample:   `
+			BadExample: `
 resource "azurerm_kubernetes_cluster" "bad_example" {
 	role_based_access_control {
 		enabled = false
 	}
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "azurerm_kubernetes_cluster" "good_example" {
 	role_based_access_control {
 		enabled = true
@@ -60,8 +59,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 			if rbacBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -74,8 +72,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 							"Resource '%s' RBAC disabled.",
 							resourceBlock.FullName(),
 						)).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr),
+						WithAttribute(enabledAttr),
 				)
 			}
 

@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS070",
+		LegacyID:  "AWS070",
 		Service:   "elastic-search",
 		ShortCode: "enable-logging",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "AWS ES Domain should have logging enabled",
-			Impact:       "Logging provides vital information about access and usage",
-			Resolution:   "Enable logging for ElasticSearch domains",
-			Explanation:  `
+			Summary:    "AWS ES Domain should have logging enabled",
+			Impact:     "Logging provides vital information about access and usage",
+			Resolution: "Enable logging for ElasticSearch domains",
+			Explanation: `
 AWS ES domain should have logging enabled by default.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_elasticsearch_domain" "example" {
   // other config
 
@@ -41,7 +40,7 @@ resource "aws_elasticsearch_domain" "example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_elasticsearch_domain" "example" {
   // other config
 
@@ -76,8 +75,7 @@ resource "aws_elasticsearch_domain" "example" {
 				if !auditLogFound {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in one of the `log_publishing_options`-`log_type` attributes so audit log is not enabled", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in one of the `log_publishing_options`-`log_type` attributes so audit log is not enabled", resourceBlock.FullName())),
 					)
 				}
 			}

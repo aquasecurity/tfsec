@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS084",
+		LegacyID:  "AWS084",
 		Service:   "workspace",
 		ShortCode: "enable-disk-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Root and user volumes on Workspaces should be encrypted",
-			Explanation:  `
+			Summary: "Root and user volumes on Workspaces should be encrypted",
+			Explanation: `
 Workspace volumes for both user and root should be encrypted to protect the data stored on them.
 `,
-			Impact:       "Data can be freely read if compromised",
-			Resolution:   "Root and user volume encryption should be enabled",
-			BadExample:   `
+			Impact:     "Data can be freely read if compromised",
+			Resolution: "Root and user volume encryption should be enabled",
+			BadExample: `
 resource "aws_workspaces_workspace" "bad_example" {
 	directory_id = aws_workspaces_directory.test.id
 	bundle_id    = data.aws_workspaces_bundle.value_windows_10.id
@@ -45,7 +44,7 @@ resource "aws_workspaces_workspace" "bad_example" {
 	}
   }
 `,
-			GoodExample:  `	
+			GoodExample: `	
 resource "aws_workspaces_workspace" "good_example" {
 		directory_id 				   = aws_workspaces_directory.test.id
 		bundle_id    				   = data.aws_workspaces_bundle.value_windows_10.id
@@ -76,24 +75,21 @@ resource "aws_workspaces_workspace" "good_example" {
 			if resourceBlock.MissingChild("root_volume_encryption_enabled") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have root volume encryption enables", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have root volume encryption enables", resourceBlock.FullName())),
 				)
 			} else {
 				attr := resourceBlock.GetAttribute("root_volume_encryption_enabled")
 				if attr != nil && attr.IsFalse() {
 					set.Add(result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has the root volume encryption set to false", resourceBlock.FullName())).
-						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr),
+						WithAttribute(attr),
 					)
 				}
 			}
 
 			if resourceBlock.MissingChild("user_volume_encryption_enabled") {
 				set.Add(result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' should have user volume encryption enables", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()),
+					WithDescription(fmt.Sprintf("Resource '%s' should have user volume encryption enables", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -103,8 +99,7 @@ resource "aws_workspaces_workspace" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has the user volume encryption set to false", resourceBlock.FullName())).
-						WithRange(attr.Range()).
-						WithAttributeAnnotation(attr),
+						WithAttribute(attr),
 				)
 			}
 

@@ -60,8 +60,7 @@ resource "google_container_cluster" "good_example" {
 			if enableLegacyABAC != nil && enableLegacyABAC.Value().Type() == cty.String && enableLegacyABAC.Value().AsString() == "true" {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", resourceBlock.FullName())),
 				)
 			}
 

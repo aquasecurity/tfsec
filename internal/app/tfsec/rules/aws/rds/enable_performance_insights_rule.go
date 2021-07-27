@@ -17,29 +17,28 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS053",
+		LegacyID:  "AWS053",
 		Service:   "rds",
 		ShortCode: "enable-performance-insights",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Encryption for RDS Performance Insights should be enabled.",
-			Impact:       "Data can be read from the RDS Performance Insights if it is compromised",
-			Resolution:   "Enable encryption for RDS clusters and instances",
-			Explanation:  `
+			Summary:    "Encryption for RDS Performance Insights should be enabled.",
+			Impact:     "Data can be read from the RDS Performance Insights if it is compromised",
+			Resolution: "Enable encryption for RDS clusters and instances",
+			Explanation: `
 When enabling Performance Insights on an RDS cluster or RDS DB Instance, and encryption key should be provided.
 
 The encryption key specified in ` + "`" + `performance_insights_kms_key_id` + "`" + ` references a KMS ARN
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_rds_cluster_instance" "bad_example" {
   name                 = "bar"
   performance_insights_enabled = true
   performance_insights_kms_key_id = ""
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_rds_cluster_instance" "good_example" {
   name                 = "bar"
   performance_insights_enabled = true
@@ -62,8 +61,7 @@ resource "aws_rds_cluster_instance" "good_example" {
 				if resourceBlock.MissingChild("performance_insights_kms_key_id") {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName())),
 					)
 					return
 				}
@@ -72,8 +70,7 @@ resource "aws_rds_cluster_instance" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName())).
-							WithRange(keyAttr.Range()).
-							WithAttributeAnnotation(keyAttr),
+							WithAttribute(keyAttr),
 					)
 				}
 			}

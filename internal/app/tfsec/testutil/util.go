@@ -52,7 +52,7 @@ func CreateTestFile(filename, contents string) string {
 	return path
 }
 
-func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, results []result.Result) {
+func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, results []result.Result, messages ...string) {
 
 	var foundInclude bool
 	var foundExclude bool

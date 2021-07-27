@@ -58,8 +58,7 @@ resource "aws_s3_bucket" "good_example" {
 			if resourceBlock.MissingChild("versioning") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -68,8 +67,7 @@ resource "aws_s3_bucket" "good_example" {
 			if versioningBlock.HasChild("enabled") && versioningBlock.GetAttribute("enabled").IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has versioning block but is disabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' has versioning block but is disabled", resourceBlock.FullName())),
 				)
 			}
 

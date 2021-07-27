@@ -17,25 +17,24 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS017",
+		LegacyID:  "AWS017",
 		Service:   "s3",
 		ShortCode: "enable-bucket-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Unencrypted S3 bucket.",
-			Impact:       "The bucket objects could be read if compromised",
-			Resolution:   "Configure bucket encryption",
-			Explanation:  `
+			Summary:    "Unencrypted S3 bucket.",
+			Impact:     "The bucket objects could be read if compromised",
+			Resolution: "Configure bucket encryption",
+			Explanation: `
 S3 Buckets should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific buckets.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_s3_bucket" "bad_example" {
   bucket = "mybucket"
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_s3_bucket" "good_example" {
   bucket = "mybucket"
 
@@ -63,8 +62,7 @@ resource "aws_s3_bucket" "good_example" {
 			if resourceBlock.MissingChild("server_side_encryption_configuration") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -72,8 +70,7 @@ resource "aws_s3_bucket" "good_example" {
 			if encryptionBlock.MissingChild("rule") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -82,8 +79,7 @@ resource "aws_s3_bucket" "good_example" {
 			if ruleBlock.MissingChild("apply_server_side_encryption_by_default") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName())).
-						WithRange(ruleBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -92,8 +88,7 @@ resource "aws_s3_bucket" "good_example" {
 			if sseAttr := applyBlock.GetAttribute("sse_algorithm"); sseAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName())).
-						WithRange(applyBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName())),
 				)
 			}
 

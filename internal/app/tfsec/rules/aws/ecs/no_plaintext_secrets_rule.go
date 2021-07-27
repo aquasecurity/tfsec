@@ -102,8 +102,7 @@ EOF
 						if security.IsSensitiveAttribute(env.Name) && env.Value != "" {
 							set.Add(result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", resourceBlock.FullName(), env.Name)).
-								WithRange(definitionsAttr.Range()).
-								WithAttributeAnnotation(definitionsAttr),
+								WithAttribute(definitionsAttr),
 							)
 						}
 					}

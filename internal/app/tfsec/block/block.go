@@ -37,4 +37,5 @@ type Block interface {
 	IsEmpty() bool
 	Values() cty.Value
 	Context() *hcl.EvalContext
+	ReadLines() (lines []string, comments []string, err error)
 }

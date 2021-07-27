@@ -12,20 +12,19 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "DIG003",
+		LegacyID:  "DIG003",
 		Service:   "droplet",
 		ShortCode: "use-ssh-keys",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "SSH Keys are the preferred way to connect to your droplet, no keys are supplied",
-			Explanation:  `
+			Summary: "SSH Keys are the preferred way to connect to your droplet, no keys are supplied",
+			Explanation: `
 When working with a server, you’ll likely spend most of your time in a terminal session connected to your server through SSH. A more secure alternative to password-based logins, SSH keys use encryption to provide a secure way of logging into your server and are recommended for all users.
 `,
-			Impact:       "Logging in with username and password is easier to compromise",
-			Resolution:   "Use ssh keys for login",
-			BadExample:   `
+			Impact:     "Logging in with username and password is easier to compromise",
+			Resolution: "Use ssh keys for login",
+			BadExample: `
 resource "digitalocean_droplet" "good_example" {
 	image    = "ubuntu-18-04-x64"
 	name     = "web-1"
@@ -33,7 +32,7 @@ resource "digitalocean_droplet" "good_example" {
 	size     = "s-1vcpu-1gb"
  }
 `,
-			GoodExample:  `
+			GoodExample: `
 data "digitalocean_ssh_key" "terraform" {
 	name = "myKey"
   }
@@ -60,8 +59,7 @@ resource "digitalocean_droplet" "good_example" {
 			if resourceBlock.MissingChild("ssh_keys") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not define ssh_keys", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not define ssh_keys", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -70,8 +68,7 @@ resource "digitalocean_droplet" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has ssh_key specified but is empty.", resourceBlock.FullName())).
-						WithRange(sshKeysAttr.Range()).
-						WithAttributeAnnotation(sshKeysAttr),
+						WithAttribute(sshKeysAttr),
 				)
 			}
 		},

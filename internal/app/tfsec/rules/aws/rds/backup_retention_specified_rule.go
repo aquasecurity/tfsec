@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS091",
+		LegacyID:  "AWS091",
 		Service:   "rds",
 		ShortCode: "backup-retention-specified",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "RDS Cluster and RDS instance should have backup retention longer than default 1 day",
-			Explanation:  `
+			Summary: "RDS Cluster and RDS instance should have backup retention longer than default 1 day",
+			Explanation: `
 RDS backup retention for clusters defaults to 1 day, this may not be enough to identify and respond to an issue. Backup retention periods should be set to a period that is a balance on cost and limiting risk.
 `,
-			Impact:       "Potential loss of data and short opportunity for recovery",
-			Resolution:   "Explicitly set the retention period to greater than the default",
-			BadExample:   `
+			Impact:     "Potential loss of data and short opportunity for recovery",
+			Resolution: "Explicitly set the retention period to greater than the default",
+			BadExample: `
 resource "aws_db_instance" "bad_example" {
 	allocated_storage    = 10
 	engine               = "mysql"
@@ -54,7 +53,7 @@ resource "aws_rds_cluster" "bad_example" {
 	preferred_backup_window = "07:00-09:00"
   }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_rds_cluster" "good_example" {
 	cluster_identifier      = "aurora-cluster-demo"
 	engine                  = "aurora-mysql"
@@ -98,8 +97,7 @@ resource "aws_rds_cluster" "good_example" {
 			if resourceBlock.MissingChild("backup_retention_period") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have backup retention explicitly set", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have backup retention explicitly set", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -109,8 +107,7 @@ resource "aws_rds_cluster" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has backup retention period set to a low value", resourceBlock.FullName())).
-						WithRange(retentionAttr.Range()).
-						WithAttributeAnnotation(retentionAttr),
+						WithAttribute(retentionAttr),
 				)
 			}
 

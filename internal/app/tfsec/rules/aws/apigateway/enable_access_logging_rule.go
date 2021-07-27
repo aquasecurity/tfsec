@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS061",
+		LegacyID:  "AWS061",
 		Service:   "api-gateway",
 		ShortCode: "enable-access-logging",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "API Gateway stages for V1 and V2 should have access logging enabled",
-			Impact:       "Logging provides vital information about access and usage",
-			Resolution:   "Enable logging for API Gateway stages",
-			Explanation:  `
+			Summary:    "API Gateway stages for V1 and V2 should have access logging enabled",
+			Impact:     "Logging provides vital information about access and usage",
+			Resolution: "Enable logging for API Gateway stages",
+			Explanation: `
 API Gateway stages should have access log settings block configured to track all access to a particular stage. This should be applied to both v1 and v2 gateway stages.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_apigatewayv2_stage" "bad_example" {
   api_id = aws_apigatewayv2_api.example.id
   name   = "example-stage"
@@ -42,7 +41,7 @@ resource "aws_api_gateway_stage" "bad_example" {
   stage_name    = "example"
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_apigatewayv2_stage" "good_example" {
   api_id = aws_apigatewayv2_api.example.id
   name   = "example-stage"
@@ -78,8 +77,7 @@ resource "aws_api_gateway_stage" "good_example" {
 			if resourceBlock.MissingChild("access_log_settings") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing access log settings block.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is missing access log settings block.", resourceBlock.FullName())),
 				)
 			}
 

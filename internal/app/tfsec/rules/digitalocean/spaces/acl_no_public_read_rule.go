@@ -12,20 +12,19 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "DIG005",
+		LegacyID:  "DIG005",
 		Service:   "spaces",
 		ShortCode: "acl-no-public-read",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Spaces bucket or bucket object has public read acl set",
-			Explanation:  `
+			Summary: "Spaces bucket or bucket object has public read acl set",
+			Explanation: `
 Space bucket and bucket object permissions should be set to deny public access unless explicitly required.
 `,
-			Impact:       "The contents of the space can be accessed publicly",
-			Resolution:   "Apply a more restrictive ACL",
-			BadExample:   `
+			Impact:     "The contents of the space can be accessed publicly",
+			Resolution: "Apply a more restrictive ACL",
+			BadExample: `
 resource "digitalocean_spaces_bucket" "bad_example" {
   name   = "public_space"
   region = "nyc3"
@@ -41,7 +40,7 @@ resource "digitalocean_spaces_bucket_object" "index" {
   acl          = "public-read"
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "digitalocean_spaces_bucket" "good_example" {
   name   = "private_space"
   region = "nyc3"
@@ -73,8 +72,8 @@ resource "digitalocean_spaces_bucket_object" "index" {
 				if aclAttr.Equals("public-read", block.IgnoreCase) {
 					set.Add(result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has a publicly readable acl.", resourceBlock.FullName())).
-						WithAttributeAnnotation(aclAttr).
-						WithRange(aclAttr.Range()))
+						WithAttribute(aclAttr),
+					)
 				}
 			}
 		},

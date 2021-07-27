@@ -68,8 +68,7 @@ EOF
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Block '%s' includes potentially sensitive data. %s", resourceBlock.FullName(), scanResult.Description)).
-								WithRange(attribute.Range()).
-								WithAttributeAnnotation(attribute),
+								WithAttribute(attribute),
 						)
 					}
 				}

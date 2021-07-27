@@ -61,8 +61,7 @@ resource "aws_security_group" "good_example" {
 						resultSet.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())).
-								WithRange(cidrBlocksAttr.Range()).
-								WithAttributeAnnotation(cidrBlocksAttr),
+								WithAttribute(cidrBlocksAttr),
 						)
 					}
 				}
@@ -72,8 +71,7 @@ resource "aws_security_group" "good_example" {
 					if cidr.IsOpen(cidrBlocksAttr) {
 						resultSet.Add(
 							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())).
-								WithRange(cidrBlocksAttr.Range()),
+								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())),
 						)
 					}
 				}

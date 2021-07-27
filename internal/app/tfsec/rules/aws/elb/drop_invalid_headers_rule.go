@@ -17,22 +17,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS083",
+		LegacyID:  "AWS083",
 		Service:   "elb",
 		ShortCode: "drop-invalid-headers",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Load balancers should drop invalid headers",
-			Explanation:  `
+			Summary: "Load balancers should drop invalid headers",
+			Explanation: `
 Passing unknown or invalid headers through to the target poses a potential risk of compromise. 
 
 By setting drop_invalid_header_fields to true, anything that doe not conform to well known, defined headers will be removed by the load balancer.
 `,
-			Impact:       "Invalid headers being passed through to the target of the load balance may exploit vulnerabilities",
-			Resolution:   "Set drop_invalid_header_fields to true",
-			BadExample:   `
+			Impact:     "Invalid headers being passed through to the target of the load balance may exploit vulnerabilities",
+			Resolution: "Set drop_invalid_header_fields to true",
+			BadExample: `
 resource "aws_alb" "bad_example" {
 	name               = "bad_alb"
 	internal           = false
@@ -47,7 +46,7 @@ resource "aws_alb" "bad_example" {
 	drop_invalid_header_fields = false
   }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_alb" "good_example" {
 	name               = "good_alb"
 	internal           = false
@@ -81,8 +80,7 @@ resource "aws_alb" "good_example" {
 				if resourceBlock.MissingChild("drop_invalid_header_fields") {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' does not drop invalid header fields", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' does not drop invalid header fields", resourceBlock.FullName())),
 					)
 					return
 				}
@@ -92,8 +90,7 @@ resource "aws_alb" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", resourceBlock.FullName())).
-							WithRange(attr.Range()).
-							WithAttributeAnnotation(attr),
+							WithAttribute(attr),
 					)
 				}
 

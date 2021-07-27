@@ -61,8 +61,7 @@ resource "aws_instance" "good_example" {
 			if metaDataOptions == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -80,8 +79,7 @@ resource "aws_instance" "good_example" {
 				if !httpTokensAttr.Equals("required") {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())).
-							WithRange(httpTokensAttr.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())),
 					)
 				}
 			}

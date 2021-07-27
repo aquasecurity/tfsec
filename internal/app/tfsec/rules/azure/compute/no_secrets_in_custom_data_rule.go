@@ -65,8 +65,7 @@ EOF
 				for _, str := range customDataAttr.ValueAsStrings() {
 					if checkResult := checkStringForSensitive(str, resourceBlock); checkResult != nil {
 						checkResult.
-							WithRange(customDataAttr.Range()).
-							WithAttributeAnnotation(customDataAttr)
+							WithAttribute(customDataAttr)
 						set.Add(checkResult)
 					}
 				}
@@ -78,8 +77,7 @@ EOF
 				}
 				if checkResult := checkStringForSensitive(string(encoded), resourceBlock); checkResult != nil {
 					checkResult.
-						WithRange(customDataAttr.Range()).
-						WithAttributeAnnotation(customDataAttr)
+						WithAttribute(customDataAttr)
 					set.Add(checkResult)
 				}
 

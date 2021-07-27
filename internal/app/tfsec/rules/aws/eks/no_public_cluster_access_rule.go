@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS069",
+		LegacyID:  "AWS069",
 		Service:   "eks",
 		ShortCode: "no-public-cluster-access",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "EKS Clusters should have the public access disabled",
-			Impact:       "EKS can be access from the internet",
-			Resolution:   "Don't enable public access to EKS Clusters",
-			Explanation:  `
+			Summary:    "EKS Clusters should have the public access disabled",
+			Impact:     "EKS can be access from the internet",
+			Resolution: "Don't enable public access to EKS Clusters",
+			Explanation: `
 EKS clusters are available publicly by default, this should be explicitly disabled in the vpc_config of the EKS cluster resource.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_eks_cluster" "bad_example" {
     // other config 
 
@@ -42,7 +41,7 @@ resource "aws_eks_cluster" "bad_example" {
     }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_eks_cluster" "good_example" {
     // other config 
 
@@ -67,8 +66,7 @@ resource "aws_eks_cluster" "good_example" {
 			if resourceBlock.MissingChild("vpc_config") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -77,8 +75,7 @@ resource "aws_eks_cluster" "good_example" {
 			if vpcConfig.MissingChild("endpoint_public_access") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName())).
-						WithRange(vpcConfig.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -88,8 +85,7 @@ resource "aws_eks_cluster" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", resourceBlock.FullName())).
-						WithRange(publicAccessEnabledAttr.Range()).
-						WithAttributeAnnotation(publicAccessEnabledAttr),
+						WithAttribute(publicAccessEnabledAttr),
 				)
 			}
 		},

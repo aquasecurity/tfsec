@@ -80,8 +80,7 @@ resource "aws_network_acl_rule" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
-							WithRange(cidrBlockAttr.Range()).
-							WithAttributeAnnotation(cidrBlockAttr),
+							WithAttribute(cidrBlockAttr),
 					)
 				}
 			}
@@ -91,8 +90,7 @@ resource "aws_network_acl_rule" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
-							WithRange(ipv6CidrBlockAttr.Range()).
-							WithAttributeAnnotation(ipv6CidrBlockAttr),
+							WithAttribute(ipv6CidrBlockAttr),
 					)
 				}
 			}

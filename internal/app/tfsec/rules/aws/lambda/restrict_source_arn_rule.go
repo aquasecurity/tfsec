@@ -17,22 +17,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS058",
+		LegacyID:  "AWS058",
 		Service:   "lambda",
 		ShortCode: "restrict-source-arn",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Ensure that lambda function permission has a source arn specified",
-			Impact:       "Not providing the source ARN allows any resource from principal, even from other accounts",
-			Resolution:   "Always provide a source arn for Lambda permissions",
-			Explanation:  `When the principal is an AWS service, the ARN of the specific resource within that service to grant permission to. 
+			Summary:    "Ensure that lambda function permission has a source arn specified",
+			Impact:     "Not providing the source ARN allows any resource from principal, even from other accounts",
+			Resolution: "Always provide a source arn for Lambda permissions",
+			Explanation: `When the principal is an AWS service, the ARN of the specific resource within that service to grant permission to. 
 
 Without this, any resource from principal will be granted permission – even if that resource is from another account. 
 
 For S3, this should be the ARN of the S3 Bucket. For CloudWatch Events, this should be the ARN of the CloudWatch Events Rule. For API Gateway, this should be the ARN of the API`,
-			BadExample:   `
+			BadExample: `
 resource "aws_lambda_permission" "bad_example" {
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
@@ -40,7 +39,7 @@ resource "aws_lambda_permission" "bad_example" {
   principal     = "sns.amazonaws.com"
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_lambda_permission" "good_example" {
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
@@ -65,8 +64,7 @@ resource "aws_lambda_permission" "good_example" {
 					if resourceBlock.MissingChild("source_arn") {
 						set.Add(
 							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' missing source ARN but has *.amazonaws.com Principal.", resourceBlock.FullName())).
-								WithRange(resourceBlock.Range()),
+								WithDescription(fmt.Sprintf("Resource '%s' missing source ARN but has *.amazonaws.com Principal.", resourceBlock.FullName())),
 						)
 					}
 				}

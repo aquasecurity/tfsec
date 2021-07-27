@@ -64,8 +64,7 @@ resource "google_container_cluster" "good_example" {
 			if resourceBlock.MissingChild("node_config") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -76,8 +75,7 @@ resource "google_container_cluster" "good_example" {
 			if serviceAccount == nil || serviceAccount.IsEmpty() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())).
-						WithRange(nodeConfigBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())),
 				)
 			}
 

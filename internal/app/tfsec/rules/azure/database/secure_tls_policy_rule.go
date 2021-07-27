@@ -105,8 +105,7 @@ resource "azurerm_postgresql_server" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has a value %s that is not %s", resourceBlock.FullName(), attribute, requiredValue)).
-						WithRange(tlsMinimumAttr.Range()).
-						WithAttributeAnnotation(tlsMinimumAttr),
+						WithAttribute(tlsMinimumAttr),
 				)
 			}
 		},

@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS045",
+		LegacyID:  "AWS045",
 		Service:   "cloudfront",
 		ShortCode: "enable-waf",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "CloudFront distribution does not have a WAF in front.",
-			Impact:       "Complex web application attacks can more easily be performed without a WAF",
-			Resolution:   "Enable WAF for the CloudFront distribution",
-			Explanation:  `
+			Summary:    "CloudFront distribution does not have a WAF in front.",
+			Impact:     "Complex web application attacks can more easily be performed without a WAF",
+			Resolution: "Enable WAF for the CloudFront distribution",
+			Explanation: `
 You should configure a Web Application Firewall in front of your CloudFront distribution. This will mitigate many types of attacks on your web application.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_cloudfront_distribution" "bad_example" {
   origin_group {
     origin_id = "groupS3"
@@ -67,7 +66,7 @@ resource "aws_cloudfront_distribution" "bad_example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_cloudfront_distribution" "good_example" {
 
   origin {
@@ -110,8 +109,7 @@ resource "aws_cloudfront_distribution" "good_example" {
 			if wafAclIdBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", resourceBlock.FullName())),
 				)
 			}
 		},

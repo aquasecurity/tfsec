@@ -56,8 +56,7 @@ resource "azurerm_security_center_subscription_pricing" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' sets security center subscription type to free.", resourceBlock.FullName())).
-						WithRange(tierAttr.Range()).
-						WithAttributeAnnotation(tierAttr),
+						WithAttribute(tierAttr),
 				)
 			}
 		},

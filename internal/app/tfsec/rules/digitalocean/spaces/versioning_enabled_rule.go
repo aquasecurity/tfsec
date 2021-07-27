@@ -12,20 +12,19 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "DIG006",
+		LegacyID:  "DIG006",
 		Service:   "spaces",
 		ShortCode: "versioning-enabled",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Spaces buckets should have versioning enabled",
-			Explanation:  `
+			Summary: "Spaces buckets should have versioning enabled",
+			Explanation: `
 Versioning is a means of keeping multiple variants of an object in the same bucket. You can use the Spaces (S3) Versioning feature to preserve, retrieve, and restore every version of every object stored in your buckets. With versioning you can recover more easily from both unintended user actions and application failures.
 `,
-			Impact:       "Deleted or modified data would not be recoverable",
-			Resolution:   "Enable versioning to protect against accidental or malicious removal or modification",
-			BadExample:   `
+			Impact:     "Deleted or modified data would not be recoverable",
+			Resolution: "Enable versioning to protect against accidental or malicious removal or modification",
+			BadExample: `
 resource "digitalocean_spaces_bucket" "bad_example" {
   name   = "foobar"
   region = "nyc3"
@@ -40,7 +39,7 @@ resource "digitalocean_spaces_bucket" "bad_example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "digitalocean_spaces_bucket" "good_example" {
   name   = "foobar"
   region = "nyc3"
@@ -63,8 +62,8 @@ resource "digitalocean_spaces_bucket" "good_example" {
 
 			if resourceBlock.MissingChild("versioning") {
 				set.Add(result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled.", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()))
+					WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled.", resourceBlock.FullName())),
+				)
 
 				return
 			}
@@ -75,8 +74,8 @@ resource "digitalocean_spaces_bucket" "good_example" {
 			if enabledAttr == nil || enabledAttr.IsFalse() {
 				set.Add(result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName())).
-					WithAttributeAnnotation(enabledAttr).
-					WithRange(enabledAttr.Range()))
+					WithAttribute(enabledAttr),
+				)
 
 			}
 

@@ -61,8 +61,7 @@ resource "aws_security_group" "good_example" {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName())).
-								WithRange(cidrBlocksAttr.Range()).
-								WithAttributeAnnotation(cidrBlocksAttr),
+								WithAttribute(cidrBlocksAttr),
 						)
 					}
 				}
@@ -73,8 +72,7 @@ resource "aws_security_group" "good_example" {
 						set.Add(
 							result.New(resourceBlock).
 								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName())).
-								WithRange(cidrBlocksAttr.Range()).
-								WithAttributeAnnotation(cidrBlocksAttr),
+								WithAttribute(cidrBlocksAttr),
 						)
 					}
 				}

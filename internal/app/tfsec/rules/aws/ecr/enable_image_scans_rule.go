@@ -19,20 +19,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS023",
+		LegacyID:  "AWS023",
 		Service:   "ecr",
 		ShortCode: "enable-image-scans",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "ECR repository has image scans disabled.",
-			Impact:       "The ability to scan images is not being used and vulnerabilities will not be highlighted",
-			Resolution:   "Enable ECR image scanning",
-			Explanation:  `
+			Summary:    "ECR repository has image scans disabled.",
+			Impact:     "The ability to scan images is not being used and vulnerabilities will not be highlighted",
+			Resolution: "Enable ECR image scanning",
+			Explanation: `
 Repository image scans should be enabled to ensure vulnerable software can be discovered and remediated as soon as possible.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_ecr_repository" "bad_example" {
   name                 = "bar"
   image_tag_mutability = "MUTABLE"
@@ -42,7 +41,7 @@ resource "aws_ecr_repository" "bad_example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_ecr_repository" "good_example" {
   name                 = "bar"
   image_tag_mutability = "MUTABLE"
@@ -66,8 +65,7 @@ resource "aws_ecr_repository" "good_example" {
 			if resourceBlock.MissingChild("image_scanning_configuration") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -78,15 +76,13 @@ resource "aws_ecr_repository" "good_example" {
 			if ecrScanStatusAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())),
 				)
 			} else if ecrScanStatusAttr.Type() == cty.Bool && ecrScanStatusAttr.Value().False() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
-						WithRange(ecrScanStatusAttr.Range()).
-						WithAttributeAnnotation(ecrScanStatusAttr),
+						WithAttribute(ecrScanStatusAttr),
 				)
 			}
 		},

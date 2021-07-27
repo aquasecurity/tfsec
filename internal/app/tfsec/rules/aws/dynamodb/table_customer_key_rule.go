@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS092",
+		LegacyID:  "AWS092",
 		Service:   "dynamodb",
 		ShortCode: "table-customer-key",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "DynamoDB tables should use at rest encryption with a Customer Managed Key",
-			Explanation:  `
+			Summary: "DynamoDB tables should use at rest encryption with a Customer Managed Key",
+			Explanation: `
 DynamoDB tables are encrypted by default using AWS managed encryption keys. To increase control of the encryption and control the management of factors like key rotation, use a Customer Managed Key.
 `,
-			Impact:       "Using AWS managed keys does not allow for fine grained control",
-			Resolution:   "Enable server side encryption with a customer managed key",
-			BadExample:   `
+			Impact:     "Using AWS managed keys does not allow for fine grained control",
+			Resolution: "Enable server side encryption with a customer managed key",
+			BadExample: `
 resource "aws_dynamodb_table" "bad_example" {
 	name             = "example"
 	hash_key         = "TestTableHashKey"
@@ -52,7 +51,7 @@ resource "aws_dynamodb_table" "bad_example" {
 	}
   }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_kms_key" "dynamo_db_kms" {
 	enable_key_rotation = true
 }
@@ -97,8 +96,7 @@ resource "aws_dynamodb_table" "good_example" {
 			if resourceBlock.MissingChild("server_side_encryption") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -109,8 +107,7 @@ resource "aws_dynamodb_table" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName())).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr),
+						WithAttribute(enabledAttr),
 				)
 			}
 
@@ -120,8 +117,7 @@ resource "aws_dynamodb_table" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName())).
-							WithRange(keyIdAttr.Range()).
-							WithAttributeAnnotation(keyIdAttr),
+							WithAttribute(keyIdAttr),
 					)
 				}
 			}

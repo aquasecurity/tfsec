@@ -17,22 +17,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU026",
+		LegacyID:  "AZU026",
 		Service:   "keyvault",
 		ShortCode: "ensure-key-expiry",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Ensure that the expiration date is set on all keys",
-			Impact:       "Long life keys increase the attack surface when compromised",
-			Resolution:   "Set an expiration date on the vault key",
-			Explanation:  `
+			Summary:    "Ensure that the expiration date is set on all keys",
+			Impact:     "Long life keys increase the attack surface when compromised",
+			Resolution: "Set an expiration date on the vault key",
+			Explanation: `
 Expiration Date is an optional Key Vault Key behavior and is not set by default.
 
 Set when the resource will be become inactive.
 `,
-			BadExample:   `
+			BadExample: `
 resource "azurerm_key_vault_key" "bad_example" {
   name         = "generated-certificate"
   key_vault_id = azurerm_key_vault.example.id
@@ -49,7 +48,7 @@ resource "azurerm_key_vault_key" "bad_example" {
   ]
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "azurerm_key_vault_key" "good_example" {
   name         = "generated-certificate"
   key_vault_id = azurerm_key_vault.example.id
@@ -81,8 +80,7 @@ resource "azurerm_key_vault_key" "good_example" {
 			if resourceBlock.MissingChild("expiration_date") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have an expiration date set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have an expiration date set.", resourceBlock.FullName())),
 				)
 			}
 		},

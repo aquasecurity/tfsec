@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS065",
+		LegacyID:  "AWS065",
 		Service:   "cloudtrail",
 		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Cloudtrail should be encrypted at rest to secure access to sensitive trail data",
-			Impact:       "Data can be freely read if compromised",
-			Resolution:   "Enable encryption at rest",
-			Explanation:  `
+			Summary:    "Cloudtrail should be encrypted at rest to secure access to sensitive trail data",
+			Impact:     "Data can be freely read if compromised",
+			Resolution: "Enable encryption at rest",
+			Explanation: `
 Cloudtrail logs should be encrypted at rest to secure the sensitive data. Cloudtrail logs record all activity that occurs in the the account through API calls and would be one of the first places to look when reacting to a breach.
 `,
-			BadExample:   `
+			BadExample: `
 resource "aws_cloudtrail" "bad_example" {
   is_multi_region_trail = true
 
@@ -45,7 +44,7 @@ resource "aws_cloudtrail" "bad_example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "aws_cloudtrail" "good_example" {
   is_multi_region_trail = true
   enable_log_file_validation = true
@@ -76,8 +75,7 @@ resource "aws_cloudtrail" "good_example" {
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a kms_key_id set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not have a kms_key_id set.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -87,8 +85,7 @@ resource "aws_cloudtrail" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has a kms_key_id but it is not set.", resourceBlock.FullName())).
-						WithRange(kmsKeyIdAttr.Range()).
-						WithAttributeAnnotation(kmsKeyIdAttr),
+						WithAttribute(kmsKeyIdAttr),
 				)
 			}
 

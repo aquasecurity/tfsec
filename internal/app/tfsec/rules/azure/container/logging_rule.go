@@ -59,8 +59,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 			if addonProfileBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -69,8 +68,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 			if omsAgentBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -85,8 +83,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 					))
 
 				if enabledAttr != nil {
-					res.WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr)
+					res.WithAttribute(enabledAttr)
 				}
 
 				set.Add(res)

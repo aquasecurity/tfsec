@@ -17,23 +17,22 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU024",
+		LegacyID:  "AZU024",
 		Service:   "network",
 		ShortCode: "disable-rdp-from-internet",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "RDP access should not be accessible from the Internet, should be blocked on port 3389",
-			Impact:       "Anyone from the internet can potentially RDP onto an instance",
-			Resolution:   "Block RDP port from internet",
-			Explanation:  `
+			Summary:    "RDP access should not be accessible from the Internet, should be blocked on port 3389",
+			Impact:     "Anyone from the internet can potentially RDP onto an instance",
+			Resolution: "Block RDP port from internet",
+			Explanation: `
 RDP access can be configured on either the network security group or in the network security group rule.
 
 RDP access should not be permitted from the internet (*, 0.0.0.0, /0, internet, any). Consider using the Azure Bastion Service.
 
 `,
-			BadExample:   `
+			BadExample: `
 resource "azurerm_network_security_rule" "bad_example" {
      name                        = "bad_example_security_rule"
      direction                   = "Inbound"
@@ -58,7 +57,7 @@ resource "azurerm_network_security_group" "example" {
   }
 }
 `,
-			GoodExample:  `
+			GoodExample: `
 resource "azurerm_network_security_rule" "good_example" {
      name                        = "good_example_security_rule"
      direction                   = "Inbound"
@@ -111,8 +110,7 @@ resource "azurerm_network_security_group" "example" {
 						if securityRule.GetAttribute("source_address_prefix").IsAny("*", "0.0.0.0", "/0", "internet", "any") {
 							set.Add(
 								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", resourceBlock.FullName())).
-									WithRange(resourceBlock.Range()),
+									WithDescription(fmt.Sprintf("Resource '%s' has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", resourceBlock.FullName())),
 							)
 						}
 					}

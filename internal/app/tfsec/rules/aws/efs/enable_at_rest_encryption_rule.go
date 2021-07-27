@@ -59,15 +59,13 @@ resource "aws_efs_file_system" "good_example" {
 			if efsEnabledAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not specify if encryption should be used.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not specify if encryption should be used.", resourceBlock.FullName())),
 				)
 			} else if efsEnabledAttr.Type() == cty.Bool && efsEnabledAttr.Value().False() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' actively does not have encryption applied.", resourceBlock.FullName())).
-						WithRange(efsEnabledAttr.Range()).
-						WithAttributeAnnotation(efsEnabledAttr),
+						WithAttribute(efsEnabledAttr),
 				)
 			}
 		},

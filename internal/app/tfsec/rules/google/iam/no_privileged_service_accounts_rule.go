@@ -81,7 +81,7 @@ resource "google_project_iam_member" "project" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' provides privileged access to a service account", resourceBlock)).
-							WithAttributeAnnotation(roleAttr),
+							WithAttribute(roleAttr),
 					)
 				}
 			}
@@ -93,7 +93,7 @@ resource "google_project_iam_member" "project" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' provides privileged access to service account at %s", resourceBlock, serviceAccountBlock.FullName())).
-						WithAttributeAnnotation(roleAttr),
+						WithAttribute(roleAttr),
 				)
 			}
 		},

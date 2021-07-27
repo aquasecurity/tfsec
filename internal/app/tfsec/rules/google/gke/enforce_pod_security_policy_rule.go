@@ -62,8 +62,7 @@ resource "google_container_cluster" "good_example" {
 			if pspBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -72,8 +71,7 @@ resource "google_container_cluster" "good_example" {
 			if enforcePSP != nil && enforcePSP.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())).
-						WithRange(enforcePSP.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())),
 				)
 			}
 
