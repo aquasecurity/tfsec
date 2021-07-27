@@ -90,8 +90,8 @@ func init() {
 			Impact:      AWSGibsonHackableCodeImpact,
 			Resolution:  AWSGibsonHackableCodeResolution,
 			Explanation: AWSGibsonHackableExplanation,
-			BadExample:  AWSGibsonHackableBadExample,
-			GoodExample: []string{ AWSGibsonHackableGoodExample,
+			BadExample:  []string{AWSGibsonHackableBadExample},
+			GoodExample: []string{ AWSGibsonHackableGoodExample},
 			Links: []string{ // any useful links relating to your check go here
                 		"https://www.imdb.com/title/tt0113243/"
 			},
