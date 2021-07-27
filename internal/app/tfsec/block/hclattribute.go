@@ -129,10 +129,10 @@ func (attr *HCLAttribute) listContains(val cty.Value, stringToLookFor string, ig
 		if !value.IsKnown() {
 			continue
 		}
-		if ignoreCase && containsIgnoreCase(stringToTest.AsString(), stringToLookFor) {
+		if ignoreCase && strings.EqualFold(stringToTest.AsString(), stringToLookFor) {
 			return true
 		}
-		if strings.Contains(stringToTest.AsString(), stringToLookFor) {
+		if stringToTest.AsString() == stringToLookFor {
 			return true
 		}
 	}

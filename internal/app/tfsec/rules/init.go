@@ -41,6 +41,7 @@ import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/datafactory"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/datalake"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/keyvault"
+	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/monitor"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/network"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/securitycenter"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/storage"
