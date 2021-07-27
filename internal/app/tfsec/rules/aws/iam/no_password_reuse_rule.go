@@ -33,20 +33,20 @@ IAM account password policies should prevent the reuse of passwords.
 
 The account password policy should be set to prevent using any of the last five used passwords.
 			`,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	password_reuse_prevention = 1
 	# ...
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	password_reuse_prevention = 5
 	# ...
 }
-			`,
+			`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
 				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",

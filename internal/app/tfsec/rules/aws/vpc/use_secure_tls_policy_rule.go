@@ -38,18 +38,18 @@ func init() {
 			Explanation: `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+. 
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_alb_listener" "bad_example" {
 	ssl_policy = "ELBSecurityPolicy-TLS-1-1-2017-01"
 	protocol = "HTTPS"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_alb_listener" "good_example" {
 	ssl_policy = "ELBSecurityPolicy-TLS-1-2-2017-01"
 	protocol = "HTTPS"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener",
 			},

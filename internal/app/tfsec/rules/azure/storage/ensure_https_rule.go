@@ -30,16 +30,16 @@ func init() {
 			Explanation: `
 Requiring HTTPS in Storage Account helps to minimize the risk of eavesdropping.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_storage_account" "bad_example" {
 	enable_https_traffic_only = false
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_storage_account" "good_example" {
 	enable_https_traffic_only = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account",
 				"https://docs.microsoft.com/en-us/azure/storage/blobs/security-recommendations",

@@ -31,16 +31,16 @@ func init() {
 			Explanation: `
 Database resources should not publicly available. You should limit all access to the minimum that is required for your application to function. 
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_db_instance" "bad_example" {
 	publicly_accessible = true
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_db_instance" "good_example" {
 	publicly_accessible = false
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance",
 			},

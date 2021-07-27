@@ -32,17 +32,17 @@ func init() {
 			Explanation: `
 Kinesis streams should be encrypted to ensure sensitive data is kept private. Additionally, non-default KMS keys should be used so granularity of access control can be ensured.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_kinesis_stream" "bad_example" {
 	encryption_type = "NONE"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_kinesis_stream" "good_example" {
 	encryption_type = "KMS"
 	kms_key_id = "my/special/key"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kinesis_stream#encryption_type",
 				"https://docs.aws.amazon.com/streams/latest/dev/server-side-encryption.html",

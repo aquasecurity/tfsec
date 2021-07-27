@@ -24,15 +24,15 @@ When working with a server, you’ll likely spend most of your time in a termina
 `,
 			Impact:     "Logging in with username and password is easier to compromise",
 			Resolution: "Use ssh keys for login",
-			BadExample: `
+			BadExample: []string{`
 resource "digitalocean_droplet" "good_example" {
 	image    = "ubuntu-18-04-x64"
 	name     = "web-1"
 	region   = "nyc2"
 	size     = "s-1vcpu-1gb"
  }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 data "digitalocean_ssh_key" "terraform" {
 	name = "myKey"
   }
@@ -44,7 +44,7 @@ resource "digitalocean_droplet" "good_example" {
 	size     = "s-1vcpu-1gb"
 	ssh_keys = [ data.digitalocean_ssh_key.myKey.id ]
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/droplet#ssh_keys",
 				"https://www.digitalocean.com/community/tutorials/understanding-the-ssh-encryption-and-connection-process",

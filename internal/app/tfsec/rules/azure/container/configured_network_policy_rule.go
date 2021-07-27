@@ -29,19 +29,19 @@ func init() {
 			Explanation: `
 The Kubernetes object type NetworkPolicy should be defined to have opportunity allow or block traffic to pods, as in a Kubernetes cluster configured with default settings, all pods can discover and communicate with each other without any restrictions.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_kubernetes_cluster" "bad_example" {
 	network_profile {
 	  }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_kubernetes_cluster" "good_example" {
 	network_profile {
 	  network_policy = "calico"
 	  }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#network_policy",
 				"https://kubernetes.io/docs/concepts/services-networking/network-policies",

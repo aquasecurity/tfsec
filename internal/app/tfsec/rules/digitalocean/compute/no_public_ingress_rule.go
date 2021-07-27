@@ -25,7 +25,7 @@ Opening up ports to connect out to the public internet is generally to be avoide
 `,
 			Impact:     "Your port is exposed to the internet",
 			Resolution: "Set a more restrictive CIRDR range",
-			BadExample: `
+			BadExample: []string{`
 resource "digitalocean_firewall" "bad_example" {
 	name = "only-22-80-and-443"
   
@@ -37,8 +37,8 @@ resource "digitalocean_firewall" "bad_example" {
 	  source_addresses = ["0.0.0.0/0", "::/0"]
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "digitalocean_firewall" "good_example" {
 	name = "only-22-80-and-443"
   
@@ -50,7 +50,7 @@ resource "digitalocean_firewall" "good_example" {
 	  source_addresses = ["192.168.1.0/24", "2002:1:2::/48"]
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/firewall",
 				"https://docs.digitalocean.com/products/networking/firewalls/how-to/configure-rules/",

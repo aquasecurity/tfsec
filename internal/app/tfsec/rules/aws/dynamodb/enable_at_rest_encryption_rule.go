@@ -29,7 +29,7 @@ func init() {
 			Explanation: `
 Amazon DynamoDB Accelerator (DAX) encryption at rest provides an additional layer of data protection by helping secure your data from unauthorized access to the underlying storage.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_dax_cluster" "bad_example" {
 	// no server side encryption at all
 }
@@ -49,8 +49,8 @@ resource "aws_dax_cluster" "bad_example" {
 		enabled = false // disabled server side encryption
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_dax_cluster" "good_example" {
 	// other DAX config
 
@@ -58,7 +58,7 @@ resource "aws_dax_cluster" "good_example" {
 		enabled = true // enabled server side encryption
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dax_cluster#server_side_encryption",
 				"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAXEncryptionAtRest.html",

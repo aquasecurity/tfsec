@@ -29,19 +29,19 @@ CloudWatch log groups are encrypted by default, however, to get the full benefit
 `,
 			Impact:     "Log data may be leaked if the logs are compromised. No auditing of who have viewed the logs.",
 			Resolution: "Enable CMK encryption of CloudWatch Log Groups",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_cloudwatch_log_group" "bad_example" {
 	name = "bad_example"
 
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_cloudwatch_log_group" "good_example" {
 	name = "good_example"
 
 	kms_key_id = aws_kms_key.log_key.arn
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group#kms_key_id",
 				"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html",

@@ -31,18 +31,18 @@ The compute instance has the ability to be reached from outside, you might want 
 `,
 			Impact:     "The compute instance has the ability to be reached from outside",
 			Resolution: "Reconsider the use of an public IP",
-			BadExample: `
+			BadExample: []string{`
 resource "opc_compute_ip_address_reservation" "bad_example" {
 	name            = "my-ip-address"
 	ip_address_pool = "public-ippool"
   }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "opc_compute_ip_address_reservation" "good_example" {
 	name            = "my-ip-address"
 	ip_address_pool = "cloud-ippool"
   }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/opc/latest/docs/resources/opc_compute_ip_address_reservation",
 				"https://registry.terraform.io/providers/hashicorp/opc/latest/docs/resources/opc_compute_instance",

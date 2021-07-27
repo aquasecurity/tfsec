@@ -26,7 +26,7 @@ Sensitive data stored in attributes can result in compromised data. Sensitive da
 `,
 			Impact:     "Sensitive credentials may be compromised",
 			Resolution: "Check the code for vulnerabilities and move to variables",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_instance" "bad_example" {
 	instance_type = "t2.small"
 
@@ -35,8 +35,8 @@ resource "aws_instance" "bad_example" {
 EOF
 
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 variable "password" {
 	type = string
 }
@@ -49,7 +49,7 @@ resource "aws_instance" "good_instance" {
 EOF
 
 }
-`,
+`},
 			Links: []string{
 				"https://www.terraform.io/docs/state/sensitive-data.html",
 			},

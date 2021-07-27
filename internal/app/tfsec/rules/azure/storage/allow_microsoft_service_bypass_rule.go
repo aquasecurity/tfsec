@@ -31,7 +31,7 @@ Some Microsoft services that interact with storage accounts operate from network
 
 To help this type of service work as intended, allow the set of trusted Microsoft services to bypass the network rules
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_storage_account" "bad_example" {
   name                = "storageaccountname"
   resource_group_name = azurerm_resource_group.example.name
@@ -61,8 +61,8 @@ resource "azurerm_storage_account_network_rules" "test" {
   virtual_network_subnet_ids = [azurerm_subnet.test.id]
   bypass                     = ["Metrics"]
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_storage_account" "good_example" {
   name                = "storageaccountname"
   resource_group_name = azurerm_resource_group.example.name
@@ -92,7 +92,7 @@ resource "azurerm_storage_account_network_rules" "test" {
   virtual_network_subnet_ids = [azurerm_subnet.test.id]
   bypass                     = ["Metrics", "AzureServices"]
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account#bypass",
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account_network_rules#bypass",

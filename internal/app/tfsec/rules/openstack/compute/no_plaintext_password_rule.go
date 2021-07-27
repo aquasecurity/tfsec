@@ -26,7 +26,7 @@ func init() {
 			Explanation: `Assigning a password to the compute instance using plaintext could lead to compromise; it would be preferable to use key-pairs as a login mechanism`,
 			Impact:      "Including a plaintext password could lead to compromised instance",
 			Resolution:  "Do not use plaintext passwords in terraform files",
-			BadExample: `
+			BadExample: []string{`
 resource "openstack_compute_instance_v2" "bad_example" {
   name            = "basic"
   image_id        = "ad091b52-742f-469e-8f3c-fd81cadf0743"
@@ -38,8 +38,8 @@ resource "openstack_compute_instance_v2" "bad_example" {
   network {
     name = "my_network"
   }
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "openstack_compute_instance_v2" "good_example" {
   name            = "basic"
   image_id        = "ad091b52-742f-469e-8f3c-fd81cadf0743"
@@ -51,7 +51,7 @@ resource "openstack_compute_instance_v2" "good_example" {
   network {
     name = "my_network"
   }
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_instance_v2#admin_pass",
 			},

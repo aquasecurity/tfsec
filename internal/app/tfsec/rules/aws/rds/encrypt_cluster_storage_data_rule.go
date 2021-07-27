@@ -31,17 +31,17 @@ Encryption should be enabled for an RDS Aurora cluster.
 
 When enabling encryption by setting the kms_key_id, the storage_encrypted must also be set to true. 
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_rds_cluster" "bad_example" {
   name       = "bar"
   kms_key_id = ""
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "aws_rds_cluster" "good_example" {
   name              = "bar"
   kms_key_id  = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
   storage_encrypted = true
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster",
 				"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.html",

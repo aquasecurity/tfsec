@@ -29,7 +29,7 @@ func init() {
 			Explanation: `
 Encryption should be forced for Kafka clusters, including for communication between nodes. This ensure sensitive data is kept private.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_msk_cluster" "bad_example" {
 	encryption_info {
 		encryption_in_transit {
@@ -38,8 +38,8 @@ resource "aws_msk_cluster" "bad_example" {
 		}
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_msk_cluster" "good_example" {
 	encryption_info {
 		encryption_in_transit {
@@ -48,7 +48,7 @@ resource "aws_msk_cluster" "good_example" {
 		}
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#encryption_info-argument-reference",
 				"https://docs.aws.amazon.com/msk/latest/developerguide/msk-encryption.html",

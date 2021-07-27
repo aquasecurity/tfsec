@@ -32,18 +32,18 @@ Opening up ports to connect out to the public internet is generally to be avoide
 `,
 			Impact:     "Your port is egressing data to the internet",
 			Resolution: "Set a more restrictive cidr range",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_security_group_rule" "bad_example" {
 	type = "egress"
 	cidr_blocks = ["0.0.0.0/0"]
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_security_group_rule" "good_example" {
 	type = "egress"
 	cidr_blocks = ["10.0.0.0/16"]
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule",
 			},

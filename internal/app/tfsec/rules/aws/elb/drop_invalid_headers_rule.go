@@ -31,7 +31,7 @@ By setting drop_invalid_header_fields to true, anything that doe not conform to 
 `,
 			Impact:     "Invalid headers being passed through to the target of the load balance may exploit vulnerabilities",
 			Resolution: "Set drop_invalid_header_fields to true",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_alb" "bad_example" {
 	name               = "bad_alb"
 	internal           = false
@@ -45,8 +45,8 @@ resource "aws_alb" "bad_example" {
   
 	drop_invalid_header_fields = false
   }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_alb" "good_example" {
 	name               = "good_alb"
 	internal           = false
@@ -60,7 +60,7 @@ resource "aws_alb" "good_example" {
   
 	drop_invalid_header_fields = true
   }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#drop_invalid_header_fields",
 				"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html",

@@ -32,18 +32,18 @@ Opening up ports to the public internet is generally to be avoided. You should r
 `,
 			Impact:     "Your port exposed to the internet",
 			Resolution: "Set a more restrictive cidr range",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_security_group_rule" "bad_example" {
 	type = "ingress"
 	cidr_blocks = ["0.0.0.0/0"]
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_security_group_rule" "good_example" {
 	type = "ingress"
 	cidr_blocks = ["10.0.0.0/16"]
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule#cidr_blocks",
 				"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html",

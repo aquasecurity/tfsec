@@ -33,20 +33,20 @@ Plain HTTP is unencrypted and human-readable. This means that if a malicious act
 
 You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning eavesdroppers cannot read your traffic.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_cloudfront_distribution" "bad_example" {
 	default_cache_behavior {
 	    viewer_protocol_policy = "allow-all"
 	  }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_cloudfront_distribution" "good_example" {
 	default_cache_behavior {
 	    viewer_protocol_policy = "redirect-to-https"
 	  }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#viewer_protocol_policy",
 				"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-cloudfront-to-s3-origin.html",

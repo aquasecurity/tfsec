@@ -31,7 +31,7 @@ func init() {
 Athena databases and workspace result sets should be encrypted at rests. These databases and query sets are generally derived from data in S3 buckets and should have the same level of at rest protection.
 
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_athena_database" "bad_example" {
   name   = "database_name"
   bucket = aws_s3_bucket.hoge.bucket
@@ -49,8 +49,8 @@ resource "aws_athena_workgroup" "bad_example" {
     }
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_athena_database" "good_example" {
   name   = "database_name"
   bucket = aws_s3_bucket.hoge.bucket
@@ -78,7 +78,7 @@ resource "aws_athena_workgroup" "good_example" {
     }
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/athena_workgroup#encryption_configuration",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/athena_database#encryption_configuration",

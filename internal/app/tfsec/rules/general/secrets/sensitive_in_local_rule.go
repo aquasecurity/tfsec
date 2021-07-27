@@ -29,7 +29,7 @@ Sensitive attributes such as passwords and API tokens should not be available in
 
 *NOTE: It is also recommended to store your Terraform state in an encrypted form.*
 `,
-			BadExample: `
+			BadExample: []string{`
 locals {
   password = "p4ssw0rd"
 }
@@ -37,8 +37,8 @@ locals {
 resource "evil_corp" "bad_example" {
 	root_password = local.password
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 variable "password" {
   description = "The root password for our VM"
   type        = string
@@ -47,7 +47,7 @@ variable "password" {
 resource "evil_corp" "good_example" {
 	root_password = var.password
 }
-`,
+`},
 			Links: []string{
 				"https://www.terraform.io/docs/state/sensitive-data.html",
 			},

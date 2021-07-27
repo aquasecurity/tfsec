@@ -31,21 +31,21 @@ Content Type is an optional Key Vault Secret behavior and is not enabled by defa
 
 Clients may specify the content type of a secret to assist in interpreting the secret data when it's retrieved. The maximum length of this field is 255 characters. There are no pre-defined values. The suggested usage is as a hint for interpreting the secret data.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_key_vault_secret" "bad_example" {
   name         = "secret-sauce"
   value        = "szechuan"
   key_vault_id = azurerm_key_vault.example.id
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_key_vault_secret" "good_example" {
   name         = "secret-sauce"
   value        = "szechuan"
   key_vault_id = azurerm_key_vault.example.id
   content_type = "password"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret#content_type",
 				"https://docs.microsoft.com/en-us/azure/key-vault/secrets/about-secrets",

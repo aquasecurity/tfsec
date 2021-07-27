@@ -26,7 +26,8 @@ func init() {
 			Explanation: `Log profiles should capture all regions to ensure that all events are logged`,
 			Impact:      "Activity may be occurring in locations that aren't being monitored",
 			Resolution:  "Enable capture for all locations",
-			BadExample: `
+			BadExample: []string{`
+
 resource "azurerm_monitor_log_profile" "bad_example" {
   name = "bad_example"
 
@@ -42,8 +43,8 @@ resource "azurerm_monitor_log_profile" "bad_example" {
     days    = 7
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_monitor_log_profile" "bad_example" {
   name = "bad_example"
 
@@ -125,7 +126,9 @@ resource "azurerm_monitor_log_profile" "bad_example" {
     days    = 7
   }
 }
-			`,
+
+			`},
+
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_log_profile#locations",
 				"https://docs.microsoft.com/en-us/cli/azure/monitor/log-profiles?view=azure-cli-latest#az_monitor_log_profiles_create-required-parameters",

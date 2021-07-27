@@ -29,12 +29,12 @@ Cloudwatch Container Insights provide more metrics and logs for container based 
 `,
 			Impact:     "Not all metrics and logs may be gathered for containers when Container Insights isn't enabled",
 			Resolution: "Enable Container Insights",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_ecs_cluster" "bad_example" {
   	name = "services-cluster"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_ecs_cluster" "good_example" {
 	name = "services-cluster"
   
@@ -43,7 +43,7 @@ resource "aws_ecs_cluster" "good_example" {
 	  value = "enabled"
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_cluster#setting",
 				"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html",

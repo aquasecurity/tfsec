@@ -31,7 +31,7 @@ By enabling point-in-time-recovery you can restore to a known point in the event
 `,
 			Impact:     "Accidental or malicious writes and deletes can't be rolled back",
 			Resolution: "Enable point in time recovery",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_dynamodb_table" "bad_example" {
 	name             = "example"
 	hash_key         = "TestTableHashKey"
@@ -44,8 +44,8 @@ resource "aws_dynamodb_table" "bad_example" {
 	  type = "S"
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_dynamodb_table" "good_example" {
 	name             = "example"
 	hash_key         = "TestTableHashKey"
@@ -62,7 +62,7 @@ resource "aws_dynamodb_table" "good_example" {
 		enabled = true
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#point_in_time_recovery",
 				"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/PointInTimeRecovery.html",

@@ -31,7 +31,7 @@ func init() {
 			Explanation: `
 You should ensure your Elasticsearch data is encrypted at rest to help prevent sensitive information from being read by unauthorised users. 
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
@@ -39,8 +39,8 @@ resource "aws_elasticsearch_domain" "bad_example" {
     enabled = false
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
@@ -48,7 +48,7 @@ resource "aws_elasticsearch_domain" "good_example" {
     enabled = true
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#encrypt_at_rest",
 				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/encryption-at-rest.html",

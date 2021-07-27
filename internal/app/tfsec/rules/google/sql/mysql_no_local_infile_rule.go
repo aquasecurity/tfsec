@@ -26,7 +26,7 @@ func init() {
 			Explanation: `Arbitrary files can be read from the system using LOAD_DATA unless this setting is disabled.`,
 			Impact:      "Arbitrary files read by attackers when combined with a SQL injection vulnerability.",
 			Resolution:  "Disable the local infile setting",
-			BadExample: `
+			BadExample: []string{`
 resource "google_sql_database_instance" "db" {
 	name             = "db"
 	database_version = "MYSQL_5_6"
@@ -38,8 +38,8 @@ resource "google_sql_database_instance" "db" {
 		}
 	}
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "google_sql_database_instance" "db" {
 	name             = "db"
 	database_version = "MYSQL_5_6"
@@ -51,7 +51,7 @@ resource "google_sql_database_instance" "db" {
 		}
 	}
 }
-			`,
+			`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance",
 				"https://dev.mysql.com/doc/refman/8.0/en/load-data-local-security.html"},

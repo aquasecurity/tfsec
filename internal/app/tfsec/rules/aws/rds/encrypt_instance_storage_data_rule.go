@@ -31,16 +31,16 @@ Encryption should be enabled for an RDS Database instances.
 
 When enabling encryption by setting the kms_key_id. 
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_db_instance" "bad_example" {
 	
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_db_instance" "good_example" {
 	storage_encrypted  = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance",
 				"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.html",

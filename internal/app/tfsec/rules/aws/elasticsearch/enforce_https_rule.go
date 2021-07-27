@@ -33,7 +33,7 @@ Plain HTTP is unencrypted and human-readable. This means that if a malicious act
 
 You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning eavesdroppers cannot read your traffic.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
@@ -41,8 +41,8 @@ resource "aws_elasticsearch_domain" "bad_example" {
     enforce_https = false
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
@@ -50,7 +50,7 @@ resource "aws_elasticsearch_domain" "good_example" {
     enforce_https = true
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#enforce_https",
 				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-data-protection.html",

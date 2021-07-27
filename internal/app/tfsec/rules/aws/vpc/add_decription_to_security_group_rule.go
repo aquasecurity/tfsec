@@ -31,7 +31,7 @@ Security groups and security group rules should include a description for auditi
 
 Simplifies auditing, debugging, and managing security groups.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_security_group" "bad_example" {
   name        = "http"
 
@@ -43,8 +43,8 @@ resource "aws_security_group" "bad_example" {
     cidr_blocks = [aws_vpc.main.cidr_block]
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_security_group" "good_example" {
   name        = "http"
   description = "Allow inbound HTTP traffic"
@@ -57,7 +57,7 @@ resource "aws_security_group" "good_example" {
     cidr_blocks = [aws_vpc.main.cidr_block]
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule",

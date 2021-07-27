@@ -41,3 +41,21 @@ func GetRegisteredRules() []rule.Rule {
 	})
 	return registeredRules
 }
+
+func GetRuleById(ID string) (*rule.Rule, error) {
+	for _, r := range registeredRules {
+		if r.ID() == ID {
+			return &r, nil
+		}
+	}
+	return nil, fmt.Errorf("could not find rule with legacyID '%s'", ID)
+}
+
+func GetRuleByLegacyID(legacyID string) (*rule.Rule, error) {
+	for _, r := range registeredRules {
+		if r.LegacyID == legacyID {
+			return &r, nil
+		}
+	}
+	return nil, fmt.Errorf("could not find rule with legacyID '%s'", legacyID)
+}

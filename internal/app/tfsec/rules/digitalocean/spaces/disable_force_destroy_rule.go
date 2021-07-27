@@ -24,19 +24,19 @@ Enabling force destroy on a Spaces bucket means that the bucket can be deleted w
 `,
 			Impact:     "Accidental deletion of bucket objects",
 			Resolution: "Don't use force destroy on bucket configuration",
-			BadExample: `
+			BadExample: []string{`
 resource "digitalocean_spaces_bucket" "bad_example" {
   name   		= "foobar"
   region 		= "nyc3"
   force_destroy = true
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "digitalocean_spaces_bucket" "good_example" {
   name   = "foobar"
   region = "nyc3"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#force_destroy",
 			},

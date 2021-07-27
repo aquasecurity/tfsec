@@ -29,20 +29,20 @@ func init() {
 			Impact:      "Short, simple passwords are easier to compromise",
 			Resolution:  "Enforce longer, more complex passwords in the policy",
 			Explanation: `IAM account password policies should ensure that passwords content including a symbol.`,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# require_symbols not set
 	# ...
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	require_symbols = true
 	# ...
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
 				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",

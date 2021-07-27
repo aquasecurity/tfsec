@@ -29,7 +29,7 @@ func init() {
 			Explanation: `
 By default cluster control plane logging is not turned on. Logging is available for audit, api, authenticator, controllerManager and scheduler. All logging should be turned on for cluster control plane.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_eks_cluster" "bad_example" {
     encryption_config {
         resources = [ "secrets" ]
@@ -44,8 +44,8 @@ resource "aws_eks_cluster" "bad_example" {
         endpoint_public_access = false
     }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_eks_cluster" "good_example" {
     encryption_config {
         resources = [ "secrets" ]
@@ -62,7 +62,7 @@ resource "aws_eks_cluster" "good_example" {
         endpoint_public_access = false
     }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#enabled_cluster_log_types",
 				"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html",

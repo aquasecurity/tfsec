@@ -31,16 +31,16 @@ func init() {
 			Explanation: `
 Queues should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific queues.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_sqs_queue" "bad_example" {
 	# no key specified
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_sqs_queue" "good_example" {
 	kms_master_key_id = "/blah"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue#server-side-encryption-sse",
 				"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html",

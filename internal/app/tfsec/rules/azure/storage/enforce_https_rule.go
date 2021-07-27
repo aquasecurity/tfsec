@@ -33,7 +33,7 @@ When you require secure transfer, any requests originating from an insecure conn
 
 Microsoft recommends that you always require secure transfer for all of your storage accounts.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_storage_account" "bad_example" {
   name                      = "storageaccountname"
   resource_group_name       = azurerm_resource_group.example.name
@@ -42,8 +42,8 @@ resource "azurerm_storage_account" "bad_example" {
   account_replication_type  = "GRS"
   enable_https_traffic_only = false
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_storage_account" "good_example" {
   name                      = "storageaccountname"
   resource_group_name       = azurerm_resource_group.example.name
@@ -52,7 +52,7 @@ resource "azurerm_storage_account" "good_example" {
   account_replication_type  = "GRS"
   enable_https_traffic_only = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account#enable_https_traffic_only",
 				"https://docs.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer",

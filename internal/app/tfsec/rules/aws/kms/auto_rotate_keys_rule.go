@@ -31,16 +31,16 @@ func init() {
 			Explanation: `
 You should configure your KMS keys to auto rotate to maintain security and defend against compromise.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_kms_key" "bad_example" {
 	enable_key_rotation = false
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_kms_key" "good_example" {
 	enable_key_rotation = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key#enable_key_rotation",
 				"https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html",

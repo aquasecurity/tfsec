@@ -24,20 +24,20 @@ Sensitive values such as raw encryption keys should not be included in your Terr
 `,
 			Impact:     "The encryption key should be considered compromised as it is not stored securely.",
 			Resolution: "Reference a managed key rather than include the key in raw format.",
-			BadExample: `
+			BadExample: []string{`
 resource "google_compute_disk" "good_example" {
 	disk_encryption_key {
 		raw_key="b2ggbm8gdGhpcyBpcyBiYWQ="
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "google_compute_disk" "good_example" {
 	disk_encryption_key {
 		kms_key_self_link = google_kms_crypto_key.my_crypto_key.id
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk#kms_key_self_link",
 				"https://cloud.google.com/compute/docs/disks/customer-supplied-encryption",

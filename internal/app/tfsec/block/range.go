@@ -56,20 +56,7 @@ func (r Range) ReadLines(includeCommentsAfterLines bool) (lines []string, commen
 		comments = append([]string{line}, comments...)
 	}
 	if includeCommentsAfterLines {
-		for commentStart := r.StartLine; commentStart <= r.EndLine; commentStart++ {
-			line := strings.TrimSpace(allLines[commentStart])
-			if strings.Contains(line, "#") {
-				comments = append(comments, line[strings.Index(line, "#")+1:])
-			} else if strings.Contains(line, "//") {
-				comments = append(comments, line[strings.Index(line, "//")+2:])
-			} else if strings.Contains(line, "/*") {
-				line = line[strings.Index(line, "/*")+2:]
-				if strings.Contains(line, "*/") {
-					line = line[:strings.LastIndex(line, "*/")]
-				}
-				comments = append(comments, line)
-			}
-		}
+		comments = append(comments, r.readInlineComments(allLines)...)
 	}
 
 	for i := r.StartLine; i < r.EndLine; i++ {
@@ -77,4 +64,23 @@ func (r Range) ReadLines(includeCommentsAfterLines bool) (lines []string, commen
 	}
 
 	return lines, comments, nil
+}
+
+func (r Range) readInlineComments(allLines []string) []string {
+	var comments []string
+	for commentStart := r.StartLine; commentStart <= r.EndLine; commentStart++ {
+		line := strings.TrimSpace(allLines[commentStart])
+		if strings.Contains(line, "#") {
+			comments = append(comments, line[strings.Index(line, "#")+1:])
+		} else if strings.Contains(line, "//") {
+			comments = append(comments, line[strings.Index(line, "//")+2:])
+		} else if strings.Contains(line, "/*") {
+			line = line[strings.Index(line, "/*")+2:]
+			if strings.Contains(line, "*/") {
+				line = line[:strings.LastIndex(line, "*/")]
+			}
+			comments = append(comments, line)
+		}
+	}
+	return comments
 }

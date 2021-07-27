@@ -30,20 +30,20 @@ func init() {
 			Explanation: `
 Using Kubernetes role-based access control (RBAC), you can grant users, groups, and service accounts access to only the resources they need.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_kubernetes_cluster" "bad_example" {
 	role_based_access_control {
 		enabled = false
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_kubernetes_cluster" "good_example" {
 	role_based_access_control {
 		enabled = true
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html#role_based_access_control",
 				"https://docs.microsoft.com/en-us/azure/aks/concepts-identity",

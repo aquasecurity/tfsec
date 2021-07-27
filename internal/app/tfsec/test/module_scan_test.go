@@ -27,16 +27,16 @@ func Test_ProblemInModule(t *testing.T) {
 			Impact:      "You will look stupid",
 			Resolution:  "Don't do stupid stuff",
 			Explanation: "Bad should not be set.",
-			BadExample: `
+			BadExample: []string{`
 resource "problem" "x" {
 	bad = "1"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "problem" "x" {
 	
 }
-`,
+`},
 			Links: nil,
 		},
 		RequiredTypes:   []string{"resource"},

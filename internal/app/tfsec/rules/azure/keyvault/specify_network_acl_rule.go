@@ -31,7 +31,7 @@ Network ACLs allow you to reduce your exposure to risk by limiting what can acce
 
 The default action of the Network ACL should be set to deny for when IPs are not matched. Azure services can be allowed to bypass.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_key_vault" "bad_example" {
     name                        = "examplekeyvault"
     location                    = azurerm_resource_group.bad_example.location
@@ -39,8 +39,8 @@ resource "azurerm_key_vault" "bad_example" {
     soft_delete_retention_days  = 7
     purge_protection_enabled    = false
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_key_vault" "good_example" {
     name                        = "examplekeyvault"
     location                    = azurerm_resource_group.good_example.location
@@ -53,7 +53,7 @@ resource "azurerm_key_vault" "good_example" {
         default_action = "Deny"
     }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault#network_acls",
 				"https://docs.microsoft.com/en-us/azure/key-vault/general/network-security",

@@ -29,7 +29,7 @@ RDS backup retention for clusters defaults to 1 day, this may not be enough to i
 `,
 			Impact:     "Potential loss of data and short opportunity for recovery",
 			Resolution: "Explicitly set the retention period to greater than the default",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_db_instance" "bad_example" {
 	allocated_storage    = 10
 	engine               = "mysql"
@@ -52,8 +52,8 @@ resource "aws_rds_cluster" "bad_example" {
 	master_password         = "bar"
 	preferred_backup_window = "07:00-09:00"
   }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_rds_cluster" "good_example" {
 	cluster_identifier      = "aurora-cluster-demo"
 	engine                  = "aurora-mysql"
@@ -78,7 +78,7 @@ resource "aws_rds_cluster" "good_example" {
 	backup_retention_period = 5
 	skip_final_snapshot  = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#backup_retention_period",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance#backup_retention_period",

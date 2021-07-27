@@ -31,16 +31,16 @@ func init() {
 			Explanation: `
 You should limit the provision of public IP addresses for resources. Resources should not be exposed on the public internet, but should have access limited to consumers required for the function of your application. 
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_launch_configuration" "bad_example" {
 	associate_public_ip_address = true
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_launch_configuration" "good_example" {
 	associate_public_ip_address = false
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_configuration#associate_public_ip_address",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#associate_public_ip_address",

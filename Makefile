@@ -7,7 +7,8 @@ image:
 
 .PHONY: test
 test:
-	go test -mod=vendor ./...
+	which gotestsum || go get gotest.tools/gotestsum
+	GOMOD=vendor gotestsum
 
 .PHONY: build
 build:

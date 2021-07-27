@@ -36,7 +36,7 @@ Audit logs track user activity for compliance purposes.
 All the logs are disabled by default. 
 
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_elasticsearch_domain" "bad_example" {
   domain_name           = "example"
   elasticsearch_version = "1.5"
@@ -52,8 +52,8 @@ resource "aws_elasticsearch_domain" "bad_example" {
     enabled                  = false  
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_elasticsearch_domain" "good_example" {
   domain_name           = "example"
   elasticsearch_version = "1.5"
@@ -75,7 +75,7 @@ resource "aws_elasticsearch_domain" "good_example" {
     enabled                  = true  
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#log_type",
 				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createdomain-configure-slow-logs.html",

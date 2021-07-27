@@ -31,20 +31,20 @@ func init() {
 			Explanation: `IAM account password policies should ensure that passwords have a minimum length. 
 
 The account password policy should be set to enforce minimum password length of at least 14 characters.`,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# minimum_password_length not set
 	# ...
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	minimum_password_length = 14
 	# ...
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
 				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",

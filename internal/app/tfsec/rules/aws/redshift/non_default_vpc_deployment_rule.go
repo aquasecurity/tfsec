@@ -31,7 +31,7 @@ In order to benefit from the additional security features achieved with using an
 `,
 			Impact:     "Redshift cluster does not benefit from VPC security if it is deployed in EC2 classic mode",
 			Resolution: "Deploy Redshift cluster into a non default VPC",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_redshift_cluster" "bad_example" {
 	cluster_identifier = "tf-redshift-cluster"
 	database_name      = "mydb"
@@ -40,8 +40,8 @@ resource "aws_redshift_cluster" "bad_example" {
 	node_type          = "dc1.large"
 	cluster_type       = "single-node"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_redshift_cluster" "good_example" {
 	cluster_identifier = "tf-redshift-cluster"
 	database_name      = "mydb"
@@ -52,7 +52,7 @@ resource "aws_redshift_cluster" "good_example" {
 
 	cluster_subnet_group_name = "redshift_subnet"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster#cluster_subnet_group_name",
 				"https://docs.aws.amazon.com/redshift/latest/mgmt/managing-clusters-vpc.html",

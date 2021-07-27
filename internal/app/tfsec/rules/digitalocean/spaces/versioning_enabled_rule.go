@@ -24,7 +24,7 @@ Versioning is a means of keeping multiple variants of an object in the same buck
 `,
 			Impact:     "Deleted or modified data would not be recoverable",
 			Resolution: "Enable versioning to protect against accidental or malicious removal or modification",
-			BadExample: `
+			BadExample: []string{`
 resource "digitalocean_spaces_bucket" "bad_example" {
   name   = "foobar"
   region = "nyc3"
@@ -38,8 +38,8 @@ resource "digitalocean_spaces_bucket" "bad_example" {
 	enabled = false	
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "digitalocean_spaces_bucket" "good_example" {
   name   = "foobar"
   region = "nyc3"
@@ -48,7 +48,7 @@ resource "digitalocean_spaces_bucket" "good_example" {
 	enabled = true
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#versioning",
 				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html",

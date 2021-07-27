@@ -29,7 +29,7 @@ func init() {
 			Explanation: `
 EKS clusters are available publicly by default, this should be explicitly disabled in the vpc_config of the EKS cluster resource.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_eks_cluster" "bad_example" {
     // other config 
 
@@ -40,8 +40,8 @@ resource "aws_eks_cluster" "bad_example" {
 		public_access_cidrs = ["0.0.0.0/0"]
     }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_eks_cluster" "good_example" {
     // other config 
 
@@ -51,7 +51,7 @@ resource "aws_eks_cluster" "good_example" {
         endpoint_public_access = false
     }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#endpoint_public_access",
 				"https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html",

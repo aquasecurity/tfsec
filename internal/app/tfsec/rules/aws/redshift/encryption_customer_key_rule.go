@@ -29,7 +29,7 @@ Redshift clusters that contain sensitive data or are subject to regulation shoul
 `,
 			Impact:     "Data may be leaked if infrastructure is compromised",
 			Resolution: "Enable encryption using CMK",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_redshift_cluster" "bad_example" {
   cluster_identifier = "tf-redshift-cluster"
   database_name      = "mydb"
@@ -38,8 +38,8 @@ resource "aws_redshift_cluster" "bad_example" {
   node_type          = "dc1.large"
   cluster_type       = "single-node"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_kms_key" "redshift" {
 	enable_key_rotation = true
 }
@@ -54,7 +54,7 @@ resource "aws_redshift_cluster" "good_example" {
   encrypted          = true
   kms_key_id         = aws_kms_key.redshift.key_id
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster#encrypted",
 				"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-db-encryption.html",

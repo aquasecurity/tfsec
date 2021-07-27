@@ -31,7 +31,7 @@ This will help limit the risk of any unmonitored configuration in regions that a
 `,
 			Impact:     "Sources that aren't covered by the aggregator are not include in the configuration",
 			Resolution: "Set the aggregator to cover all regions",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_config_configuration_aggregator" "bad_example" {
 	name = "example"
 	  
@@ -40,8 +40,8 @@ resource "aws_config_configuration_aggregator" "bad_example" {
 	  regions     = ["us-west-2", "eu-west-1"]
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_config_configuration_aggregator" "good_example" {
 	name = "example"
 	  
@@ -50,7 +50,7 @@ resource "aws_config_configuration_aggregator" "good_example" {
 	  all_regions = true
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/config_configuration_aggregator#all_regions",
 				"https://docs.aws.amazon.com/config/latest/developerguide/aggregate-data.html",

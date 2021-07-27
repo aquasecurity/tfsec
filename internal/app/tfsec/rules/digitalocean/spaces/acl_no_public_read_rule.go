@@ -24,7 +24,7 @@ Space bucket and bucket object permissions should be set to deny public access u
 `,
 			Impact:     "The contents of the space can be accessed publicly",
 			Resolution: "Apply a more restrictive ACL",
-			BadExample: `
+			BadExample: []string{`
 resource "digitalocean_spaces_bucket" "bad_example" {
   name   = "public_space"
   region = "nyc3"
@@ -39,8 +39,8 @@ resource "digitalocean_spaces_bucket_object" "index" {
   content_type = "text/html"
   acl          = "public-read"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "digitalocean_spaces_bucket" "good_example" {
   name   = "private_space"
   region = "nyc3"
@@ -54,7 +54,7 @@ resource "digitalocean_spaces_bucket_object" "index" {
   content      = "<html><body><p>This page is empty.</p></body></html>"
   content_type = "text/html"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#acl",
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket_object#acl",

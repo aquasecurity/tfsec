@@ -29,22 +29,22 @@ func init() {
 			Explanation: `
 Traffic flowing between Elasticache replication nodes should be encrypted to ensure sensitive data is kept private.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_elasticache_replication_group" "bad_example" {
         replication_group_id = "foo"
         replication_group_description = "my foo cluster"
 
         transit_encryption_enabled = false
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_elasticache_replication_group" "good_example" {
         replication_group_id = "foo"
         replication_group_description = "my foo cluster"
 
         transit_encryption_enabled = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_replication_group#transit_encryption_enabled",
 				"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/in-transit-encryption.html",

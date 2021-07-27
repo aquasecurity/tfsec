@@ -31,18 +31,18 @@ func init() {
 If your organization is subject to corporate or regulatory policies that require encryption of data and metadata at rest, we recommend creating a file system that is encrypted at rest, and mounting your file system using encryption of data in transit.
 
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_efs_file_system" "bad_example" {
   name       = "bar"
   encrypted  = false
   kms_key_id = ""
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "aws_efs_file_system" "good_example" {
   name       = "bar"
   encrypted  = true
   kms_key_id = "my_kms_key"
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system",
 				"https://docs.aws.amazon.com/efs/latest/ug/encryption.html",

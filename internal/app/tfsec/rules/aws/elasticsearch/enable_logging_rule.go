@@ -29,7 +29,7 @@ func init() {
 			Explanation: `
 AWS ES domain should have logging enabled by default.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_elasticsearch_domain" "example" {
   // other config
 
@@ -39,8 +39,8 @@ resource "aws_elasticsearch_domain" "example" {
     log_type                 = "INDEX_SLOW_LOGS"
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_elasticsearch_domain" "example" {
   // other config
 
@@ -50,7 +50,7 @@ resource "aws_elasticsearch_domain" "example" {
     log_type                 = "AUDIT_LOGS"
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#log_publishing_options",
 			},

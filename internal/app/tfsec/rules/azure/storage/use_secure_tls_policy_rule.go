@@ -33,21 +33,21 @@ Azure Storage uses TLS 1.2 on public HTTPS endpoints, but TLS 1.0 and TLS 1.1 ar
 
 This check will warn if the minimum TLS is not set to TLS1_2.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_storage_account" "bad_example" {
   name                     = "storageaccountname"
   resource_group_name      = azurerm_resource_group.example.name
   location                 = azurerm_resource_group.example.location
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_storage_account" "good_example" {
   name                     = "storageaccountname"
   resource_group_name      = azurerm_resource_group.example.name
   location                 = azurerm_resource_group.example.location
   min_tls_version          = "TLS1_2"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account#min_tls_version",
 				"https://docs.microsoft.com/en-us/azure/storage/common/transport-layer-security-configure-minimum-version",

@@ -30,7 +30,7 @@ func init() {
 			Explanation: `
 Auditing helps you maintain regulatory compliance, understand database activity, and gain insight into discrepancies and anomalies that could indicate business concerns or suspected security violations.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_sql_server" "bad_example" {
   name                         = "mssqlserver"
   resource_group_name          = azurerm_resource_group.example.name
@@ -39,8 +39,8 @@ resource "azurerm_sql_server" "bad_example" {
   administrator_login          = "mradministrator"
   administrator_login_password = "tfsecRocks"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_sql_server" "good_example" {
   name                         = "mssqlserver"
   resource_group_name          = azurerm_resource_group.example.name
@@ -56,7 +56,7 @@ resource "azurerm_sql_server" "good_example" {
     retention_in_days                       = 6
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_server#extended_auditing_policy",
 				"https://docs.microsoft.com/en-us/azure/azure-sql/database/auditing-overview",

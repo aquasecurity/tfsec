@@ -33,7 +33,7 @@ Storage container public access should be off. It can be configured for blobs on
 
 Explicitly overriding publicAccess to anything other than off should be avoided.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azure_storage_container" "bad_example" {
 	name                  = "terraform-container-storage"
 	container_access_type = "blob"
@@ -42,8 +42,8 @@ resource "azure_storage_container" "bad_example" {
 		"publicAccess" = "blob"
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azure_storage_container" "good_example" {
 	name                  = "terraform-container-storage"
 	container_access_type = "blob"
@@ -52,7 +52,7 @@ resource "azure_storage_container" "good_example" {
 		"publicAccess" = "off"
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://www.terraform.io/docs/providers/azure/r/storage_container.html#properties",
 				"https://docs.microsoft.com/en-us/azure/storage/blobs/anonymous-read-access-configure?tabs=portal#set-the-public-access-level-for-a-container",

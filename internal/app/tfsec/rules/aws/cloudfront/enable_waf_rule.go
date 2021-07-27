@@ -29,7 +29,7 @@ func init() {
 			Explanation: `
 You should configure a Web Application Firewall in front of your CloudFront distribution. This will mitigate many types of attacks on your web application.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_cloudfront_distribution" "bad_example" {
   origin_group {
     origin_id = "groupS3"
@@ -65,8 +65,8 @@ resource "aws_cloudfront_distribution" "bad_example" {
     target_origin_id = "groupS3"
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_cloudfront_distribution" "good_example" {
 
   origin {
@@ -93,7 +93,7 @@ resource "aws_cloudfront_distribution" "good_example" {
 
   web_acl_id = "waf_id"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#web_acl_id",
 				"https://docs.aws.amazon.com/waf/latest/developerguide/cloudfront-features.html",

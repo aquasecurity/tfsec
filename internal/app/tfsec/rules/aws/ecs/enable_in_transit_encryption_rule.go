@@ -29,7 +29,7 @@ ECS task definitions that have volumes using EFS configuration should explicitly
 `,
 			Impact:     "Intercepted traffic to and from EFS may lead to data loss",
 			Resolution: "Enable in transit encryption when using efs",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_ecs_task_definition" "bad_example" {
 	family                = "service"
 	container_definitions = file("task-definitions/service.json")
@@ -47,8 +47,8 @@ resource "aws_ecs_task_definition" "bad_example" {
 	  }
 	}
   }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_ecs_task_definition" "good_example" {
 	family                = "service"
 	container_definitions = file("task-definitions/service.json")
@@ -68,7 +68,7 @@ resource "aws_ecs_task_definition" "good_example" {
 	  }
 	}
   }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition#transit_encryption",
 				"https://docs.aws.amazon.com/AmazonECS/latest/userguide/efs-volumes.html",

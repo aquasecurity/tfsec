@@ -30,12 +30,12 @@ func init() {
 			Explanation: `
 Ensure AKS logging to Azure Monitoring is configured for containers to monitor the performance of workloads.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_kubernetes_cluster" "bad_example" {
     addon_profile {}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_kubernetes_cluster" "good_example" {
     addon_profile {
 		oms_agent {
@@ -43,7 +43,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		}
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#oms_agent",
 				"https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-onboard",

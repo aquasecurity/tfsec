@@ -31,7 +31,7 @@ func init() {
 			Explanation: `
 Repository image scans should be enabled to ensure vulnerable software can be discovered and remediated as soon as possible.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_ecr_repository" "bad_example" {
   name                 = "bar"
   image_tag_mutability = "MUTABLE"
@@ -40,8 +40,8 @@ resource "aws_ecr_repository" "bad_example" {
     scan_on_push = false
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_ecr_repository" "good_example" {
   name                 = "bar"
   image_tag_mutability = "MUTABLE"
@@ -50,7 +50,7 @@ resource "aws_ecr_repository" "good_example" {
     scan_on_push = true
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository#image_scanning_configuration",
 				"https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html",

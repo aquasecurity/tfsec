@@ -29,16 +29,16 @@ Default VPC does not have a lot of the critical security features that standard 
 `,
 			Impact:     "The default VPC does not have critical security features applied",
 			Resolution: "Create a non-default vpc for resources to be created in",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_default_vpc" "default" {
 	tags = {
 	  Name = "Default VPC"
 	}
   }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 # no aws default vpc present
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_vpc",
 				"https://docs.aws.amazon.com/vpc/latest/userguide/default-vpc.html",

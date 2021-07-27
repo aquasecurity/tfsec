@@ -32,7 +32,7 @@ RDP access can be configured on either the network security group or in the netw
 RDP access should not be permitted from the internet (*, 0.0.0.0, /0, internet, any). Consider using the Azure Bastion Service.
 
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_network_security_rule" "bad_example" {
      name                        = "bad_example_security_rule"
      direction                   = "Inbound"
@@ -56,8 +56,8 @@ resource "azurerm_network_security_group" "example" {
      destination_address_prefix  = "*"
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_network_security_rule" "good_example" {
      name                        = "good_example_security_rule"
      direction                   = "Inbound"
@@ -81,7 +81,7 @@ resource "azurerm_network_security_group" "example" {
      destination_address_prefix  = "*"
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/network_security_group#security_rule",
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule#source_port_ranges",

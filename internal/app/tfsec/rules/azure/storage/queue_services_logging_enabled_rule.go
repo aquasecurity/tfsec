@@ -33,7 +33,7 @@ This information can be used to monitor individual requests and to diagnose issu
 
 Requests are logged on a best-effort basis.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_storage_account" "bad_example" {
     name                     = "example"
     resource_group_name      = data.azurerm_resource_group.example.name
@@ -43,8 +43,8 @@ resource "azurerm_storage_account" "bad_example" {
     queue_properties  {
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_storage_account" "good_example" {
     name                     = "example"
     resource_group_name      = data.azurerm_resource_group.example.name
@@ -61,7 +61,7 @@ resource "azurerm_storage_account" "good_example" {
     }
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account#logging",
 				"https://docs.microsoft.com/en-us/azure/storage/common/storage-analytics-logging?tabs=dotnet",

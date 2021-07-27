@@ -31,7 +31,7 @@ Expiration Date is an optional Key Vault Key behavior and is not set by default.
 
 Set when the resource will be become inactive.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_key_vault_key" "bad_example" {
   name         = "generated-certificate"
   key_vault_id = azurerm_key_vault.example.id
@@ -47,8 +47,8 @@ resource "azurerm_key_vault_key" "bad_example" {
     "wrapKey",
   ]
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_key_vault_key" "good_example" {
   name         = "generated-certificate"
   key_vault_id = azurerm_key_vault.example.id
@@ -65,7 +65,7 @@ resource "azurerm_key_vault_key" "good_example" {
     "wrapKey",
   ]
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_key#expiration_date",
 				"https://docs.microsoft.com/en-us/powershell/module/az.keyvault/update-azkeyvaultkey?view=azps-5.8.0#example-1--modify-a-key-to-enable-it--and-set-the-expiration-date-and-tags",

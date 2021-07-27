@@ -29,7 +29,7 @@ By default, clients can connect to function endpoints by using both HTTP or HTTP
 `,
 			Impact:     "Anyone can access the Function App using HTTP.",
 			Resolution: "You can redirect all HTTP requests to the HTTPS port.",
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_function_app" "bad_example" {
   name                       = "test-azure-functions"
   location                   = azurerm_resource_group.example.location
@@ -39,8 +39,8 @@ resource "azurerm_function_app" "bad_example" {
   storage_account_access_key = azurerm_storage_account.example.primary_access_key
   os_type                    = "linux"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_function_app" "good_example" {
   name                       = "test-azure-functions"
   location                   = azurerm_resource_group.example.location
@@ -51,7 +51,7 @@ resource "azurerm_function_app" "good_example" {
   os_type                    = "linux"
   https_only                 = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app#https_only",
 				"https://docs.microsoft.com/en-us/azure/app-service/configure-ssl-bindings#enforce-https",

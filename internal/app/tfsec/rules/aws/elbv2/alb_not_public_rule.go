@@ -31,16 +31,16 @@ There are many scenarios in which you would want to expose a load balancer to th
 `,
 			Impact:     "The load balancer is exposed on the internet",
 			Resolution: "Switch to an internal load balancer or add a tfsec ignore",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_alb" "bad_example" {
 	internal = false
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_alb" "good_example" {
 	internal = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb",
 			},

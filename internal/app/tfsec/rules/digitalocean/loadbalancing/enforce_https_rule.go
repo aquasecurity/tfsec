@@ -26,7 +26,7 @@ You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning 
 `,
 			Impact:     "Your inbound traffic is not protected",
 			Resolution: "Switch to HTTPS to benefit from TLS security features",
-			BadExample: `
+			BadExample: []string{`
 resource "digitalocean_loadbalancer" "bad_example" {
   name   = "bad_example-1"
   region = "nyc3"
@@ -41,8 +41,8 @@ resource "digitalocean_loadbalancer" "bad_example" {
 
   droplet_ids = [digitalocean_droplet.web.id]
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "digitalocean_loadbalancer" "bad_example" {
   name   = "bad_example-1"
   region = "nyc3"
@@ -57,7 +57,7 @@ resource "digitalocean_loadbalancer" "bad_example" {
   
   droplet_ids = [digitalocean_droplet.web.id]
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/loadbalancer",
 				"https://docs.digitalocean.com/products/networking/load-balancers/",

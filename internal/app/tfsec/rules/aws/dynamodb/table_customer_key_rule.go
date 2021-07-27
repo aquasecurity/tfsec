@@ -29,7 +29,7 @@ DynamoDB tables are encrypted by default using AWS managed encryption keys. To i
 `,
 			Impact:     "Using AWS managed keys does not allow for fine grained control",
 			Resolution: "Enable server side encryption with a customer managed key",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_dynamodb_table" "bad_example" {
 	name             = "example"
 	hash_key         = "TestTableHashKey"
@@ -50,8 +50,8 @@ resource "aws_dynamodb_table" "bad_example" {
 	  region_name = "us-west-2"
 	}
   }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_kms_key" "dynamo_db_kms" {
 	enable_key_rotation = true
 }
@@ -81,7 +81,7 @@ resource "aws_dynamodb_table" "good_example" {
 		kms_key_arn = aws_kms_key.dynamo_db_kms.key_id
 	}
   }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#server_side_encryption",
 				"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html",

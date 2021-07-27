@@ -31,7 +31,7 @@ func init() {
 			Explanation: `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
@@ -40,8 +40,8 @@ resource "aws_elasticsearch_domain" "bad_example" {
     tls_security_policy = "Policy-Min-TLS-1-0-2019-07"
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
@@ -50,7 +50,7 @@ resource "aws_elasticsearch_domain" "good_example" {
     tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#tls_security_policy",
 				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-data-protection.html",
