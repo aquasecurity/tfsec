@@ -71,6 +71,18 @@ resource "aws_security_group_rule" "my-rule" {
 `, t)
 	assert.Len(t, results, 0)
 }
+
+func Test_IgnoreLineWithCarriageReturn(t *testing.T) {
+	results := testutil.ScanHCL(strings.ReplaceAll(`
+resource "aws_security_group_rule" "my-rule" {
+    type        = "ingress"
+    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:AWS006
+	description = "test security group rule"
+}
+`, "\n", "\r\n"), t)
+	assert.Len(t, results, 0)
+}
+
 func Test_IgnoreSpecific(t *testing.T) {
 
 	scanner.RegisterCheckRule(rule.Rule{
