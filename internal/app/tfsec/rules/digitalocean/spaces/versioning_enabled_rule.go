@@ -62,8 +62,8 @@ resource "digitalocean_spaces_bucket" "good_example" {
 
 			if resourceBlock.MissingChild("versioning") {
 				set.Add(result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled.", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()))
+					WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled.", resourceBlock.FullName())),
+				)
 
 				return
 			}
@@ -74,8 +74,8 @@ resource "digitalocean_spaces_bucket" "good_example" {
 			if enabledAttr == nil || enabledAttr.IsFalse() {
 				set.Add(result.New(resourceBlock).
 					WithDescription(fmt.Sprintf("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName())).
-					WithAttributeAnnotation(enabledAttr).
-					WithRange(enabledAttr.Range()))
+					WithAttribute(enabledAttr),
+				)
 
 			}
 

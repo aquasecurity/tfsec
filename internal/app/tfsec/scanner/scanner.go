@@ -2,9 +2,6 @@ package scanner
 
 import (
 	"fmt"
-	"io/ioutil"
-	"strings"
-	"time"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
@@ -71,7 +68,6 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 							WithLegacyRuleID(r.LegacyID).
 							WithRuleID(r.ID()).
 							WithDescription(fmt.Sprintf("Resource '%s' passed check: %s", checkBlock.FullName(), r.Documentation.Summary)).
-							WithRange(checkBlock.Range()).
 							WithStatus(result.Passed).
 							WithImpact(r.Documentation.Impact).
 							WithResolution(r.Documentation.Resolution).
@@ -82,7 +78,7 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 							if ruleResult.Severity == severity.None {
 								ruleResult.Severity = r.DefaultSeverity
 							}
-							if !scanner.includeIgnored && (scanner.checkRangeIgnored(ruleResult.RuleID, ruleResult.Range, checkBlock) || scanner.checkRangeIgnored(ruleResult.LegacyRuleID, ruleResult.Range, checkBlock) || checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.excludedRuleIDs)) {
+							if !scanner.includeIgnored && (ruleResult.IsIgnored(scanner.workspaceName) || checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.excludedRuleIDs)) {
 								// rule was ignored
 								metrics.Add(metrics.IgnoredChecks, 1)
 								debug.Log("Ignoring '%s'", ruleResult.RuleID)
@@ -97,146 +93,4 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 		}
 	}
 	return results
-}
-
-func readLines(filename string) ([]string, error) {
-	raw, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-
-	return append([]string{""}, strings.Split(strings.ReplaceAll(string(raw), "\r", ""), "\n")...), nil
-}
-
-func (scanner *Scanner) checkRangeIgnored(id string, r block.Range, b block.Block) bool {
-	lines, err := readLines(b.Range().Filename)
-	if err != nil {
-		debug.Log("the file containing the block could not be opened. %s", err.Error())
-	}
-	startLine := r.StartLine
-
-	ignoreAll := "tfsec:ignore:*"
-	ignoreCode := fmt.Sprintf("tfsec:ignore:%s", id)
-
-	var foundValidIgnore bool
-	var ignoreLine string
-
-	// include the line above the line if available
-	if r.StartLine-1 > 0 {
-		startLine = r.StartLine - 1
-	}
-
-	// check the line itself
-	for number := startLine; number <= r.EndLine; number++ {
-		if number <= 0 || number >= len(lines) {
-			continue
-		}
-
-		if strings.Contains(lines[number], ignoreAll) || strings.Contains(lines[number], ignoreCode) {
-			foundValidIgnore = true
-			ignoreLine = lines[number]
-			break
-		}
-	}
-
-	// check the line above the actual resource block
-	if b.Range().StartLine-1 > 0 {
-		line := lines[b.Range().StartLine-1]
-		if strings.Contains(line, ignoreAll) || strings.Contains(line, ignoreCode) {
-			foundValidIgnore = true
-			ignoreLine = line
-		}
-	}
-
-	// if nothing found yet, walk up any module references
-	if !foundValidIgnore {
-		foundValidIgnore, ignoreLine = traverseModuleTree(b, ignoreAll, ignoreCode)
-	}
-
-	if foundValidIgnore {
-		return scanner.verifyIgnoreConditions(ignoreLine, id, b)
-	}
-
-	return foundValidIgnore
-}
-
-func (scanner *Scanner) verifyIgnoreConditions(ignoreLine string, id string, b block.Block) bool {
-	for _, ignoreCode := range strings.Split(ignoreLine, " ") {
-		ignoreCode = fmt.Sprintf("%s:", ignoreCode)
-		if strings.Contains(ignoreCode, fmt.Sprintf("%s:", id)) || strings.Contains(ignoreCode, "ignore:*") {
-			if scanner.workspaceName != "" && strings.Contains(ignoreCode, ":ws:") {
-				if isIgnoreWithinExpiry(ignoreCode, id, b.Range()) {
-					if scanner.isWorkspaceIgnored(ignoreCode, id, b.Range()) {
-						return true
-					} else {
-						return false
-					}
-				}
-			} else {
-				return isIgnoreWithinExpiry(ignoreCode, id, b.Range())
-			}
-		}
-	}
-	return false
-}
-
-func (s *Scanner) isWorkspaceIgnored(ignoreLine string, id string, r block.Range) bool {
-	ignoreLine = fmt.Sprintf("%s:", ignoreLine)
-	if strings.Contains(ignoreLine, ":ws:") {
-		if s.workspaceName == "" {
-			return false
-		}
-		return strings.Contains(ignoreLine, fmt.Sprintf(":ws:%s:", s.workspaceName))
-	}
-
-	return false
-}
-
-func isIgnoreWithinExpiry(ignoreLine string, id string, r block.Range) bool {
-	expWithCode := fmt.Sprintf("%s:exp:", id)
-	if indexExpFound := strings.Index(ignoreLine, expWithCode); indexExpFound > 0 {
-		debug.Log("Expiration date found on ignore '%s'", ignoreLine)
-		layout := fmt.Sprintf("%s2006-01-02", expWithCode)
-		expDate := ignoreLine[indexExpFound : indexExpFound+len(layout)]
-		parsedDate, err := time.Parse(layout, expDate)
-		if err != nil {
-			// if we can't parse the date then we don't want to ignore the range
-			debug.Log("Unable to parse exp date in ignore: '%s'. The date format is invalid. Supported format 'exp:yyyy-mm-dd'.", ignoreLine)
-			return false
-		}
-		currentTime := time.Now()
-		ignoreExpirationDateBreached := currentTime.After(parsedDate)
-		if ignoreExpirationDateBreached {
-			debug.Log("Ignore expired, check will be performed Filename: %s:%d", r.Filename, r.StartLine)
-		}
-		return !ignoreExpirationDateBreached
-	}
-
-	return true
-}
-
-func traverseModuleTree(b block.Block, ignoreAll, ignoreCode string) (bool, string) {
-
-	// check on the module
-	if b.HasModuleBlock() {
-		moduleBlock, err := b.GetModuleBlock()
-		if err != nil {
-			debug.Log("error occurred trying to get the module block for [%s]. %s", b.FullName(), err.Error())
-			return false, ""
-		}
-		moduleLines, err := readLines(moduleBlock.Range().Filename)
-		if err != nil {
-			return false, ""
-		}
-		if moduleBlock.Range().StartLine-1 > 0 {
-			line := moduleLines[moduleBlock.Range().StartLine-1]
-			if strings.Contains(line, ignoreAll) || strings.Contains(line, ignoreCode) {
-				return true, line
-			}
-		}
-
-		return traverseModuleTree(moduleBlock, ignoreAll, ignoreCode)
-	}
-
-	return false, ""
 }

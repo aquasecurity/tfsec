@@ -111,8 +111,7 @@ resource "google_storage_bucket_iam_member" "good_example" {
 				if identities.IsKnown() && identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock.FullName())).
-							WithRange(attribute.Range()),
+							WithDescription(fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock.FullName())),
 					)
 				}
 			}

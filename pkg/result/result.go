@@ -21,12 +21,12 @@ type Result struct {
 	Impact          string            `json:"impact"`
 	Resolution      string            `json:"resolution"`
 	Links           []string          `json:"links"`
-	Range           block.Range       `json:"location"`
 	Description     string            `json:"description"`
 	RangeAnnotation string            `json:"-"`
 	Severity        severity.Severity `json:"severity"`
 	Status          Status            `json:"status"`
-	topLevelBlock   block.Block
+	blocks          block.Blocks
+	attribute       block.Attribute
 }
 
 type Status string
@@ -39,9 +39,8 @@ const (
 
 func New(resourceBlock block.Block) *Result {
 	return &Result{
-		Status:        Failed,
-		topLevelBlock: resourceBlock,
-		Range:         resourceBlock.Range(),
+		Status: Failed,
+		blocks: []block.Block{resourceBlock},
 	}
 }
 
@@ -49,12 +48,30 @@ func (r *Result) Passed() bool {
 	return r.Status == Passed
 }
 
-func (r *Result) HashCode() string {
-	var blockName string
-	if r.topLevelBlock != nil {
-		blockName = r.topLevelBlock.UniqueName()
+func (r *Result) Blocks() block.Blocks {
+	return r.blocks
+}
+
+func (r *Result) IsOnAttribute() bool {
+	return r.attribute != nil
+}
+
+func (r *Result) Range() block.Range {
+	if r.attribute != nil {
+		return r.attribute.Range()
 	}
-	return fmt.Sprintf("%s:%s:%s", blockName, r.Range, r.RuleID)
+	return r.blocks[0].Range()
+}
+
+func (r *Result) HashCode() string {
+	var hash string
+	for _, block := range r.blocks {
+		hash += "!" + block.UniqueName()
+	}
+	if r.attribute != nil {
+		hash += ":" + r.attribute.Name() + ":" + r.attribute.Range().String()
+	}
+	return fmt.Sprintf("%s:%s", hash, r.RuleID)
 }
 
 func (r *Result) WithRuleID(id string) *Result {
@@ -97,8 +114,8 @@ func (r *Result) WithLinks(links []string) *Result {
 	return r
 }
 
-func (r *Result) WithRange(codeRange block.Range) *Result {
-	r.Range = codeRange
+func (r *Result) WithBlock(block block.Block) *Result {
+	r.blocks = append(r.blocks, block)
 	return r
 }
 
@@ -117,15 +134,15 @@ func (r *Result) WithStatus(status Status) *Result {
 	return r
 }
 
-func (r *Result) WithAttributeAnnotation(attr block.Attribute) *Result {
+func (r *Result) WithAttribute(attr block.Attribute) *Result {
+
+	r.attribute = attr
 
 	var raw string
 
 	var typeStr string
 
 	typ := attr.Type()
-
-	r.WithRange(attr.Range())
 
 	switch typ {
 	case cty.String:

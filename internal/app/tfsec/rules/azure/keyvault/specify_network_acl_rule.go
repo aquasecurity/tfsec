@@ -68,8 +68,7 @@ resource "azurerm_key_vault" "good_example" {
 			if resourceBlock.MissingChild("network_acls") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -78,8 +77,7 @@ resource "azurerm_key_vault" "good_example" {
 			if networkAcls == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -87,8 +85,7 @@ resource "azurerm_key_vault" "good_example" {
 			if networkAcls.MissingChild("default_action") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a default action in the network acl.", resourceBlock.FullName())).
-						WithRange(networkAcls.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a default action in the network acl.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -98,8 +95,7 @@ resource "azurerm_key_vault" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
-						WithRange(defaultActionAttr.Range()).
-						WithAttributeAnnotation(defaultActionAttr),
+						WithAttribute(defaultActionAttr),
 				)
 			}
 

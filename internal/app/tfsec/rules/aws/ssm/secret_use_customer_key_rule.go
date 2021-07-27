@@ -58,8 +58,7 @@ resource "aws_secretsmanager_secret" "good_example" {
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not use CMK", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not use CMK", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -75,8 +74,7 @@ resource "aws_secretsmanager_secret" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
-							WithRange(kmsKeyAttr.Range()).
-							WithAttributeAnnotation(kmsKeyAttr),
+							WithAttribute(kmsKeyAttr),
 					)
 				}
 			}

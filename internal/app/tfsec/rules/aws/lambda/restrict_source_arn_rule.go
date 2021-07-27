@@ -64,8 +64,7 @@ resource "aws_lambda_permission" "good_example" {
 					if resourceBlock.MissingChild("source_arn") {
 						set.Add(
 							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' missing source ARN but has *.amazonaws.com Principal.", resourceBlock.FullName())).
-								WithRange(resourceBlock.Range()),
+								WithDescription(fmt.Sprintf("Resource '%s' missing source ARN but has *.amazonaws.com Principal.", resourceBlock.FullName())),
 						)
 					}
 				}

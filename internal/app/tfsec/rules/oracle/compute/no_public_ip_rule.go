@@ -58,8 +58,7 @@ resource "opc_compute_ip_address_reservation" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' is using an IP from a public IP pool", resourceBlock.FullName())).
-							WithRange(attr.Range()).
-							WithAttributeAnnotation(attr),
+							WithAttribute(attr),
 					)
 				}
 			}

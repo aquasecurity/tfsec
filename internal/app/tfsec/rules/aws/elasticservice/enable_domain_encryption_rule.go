@@ -64,8 +64,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if encryptionBlock == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -74,8 +73,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if enabledAttr == nil {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -87,8 +85,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if !encryptionEnabled {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", resourceBlock.FullName())),
 				)
 			}
 

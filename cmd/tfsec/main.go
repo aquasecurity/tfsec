@@ -325,7 +325,7 @@ func RemoveDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, e
 
 	var returnVal []result.Result
 	for _, res := range reduction {
-		if excludeDownloaded && strings.Contains(res.Range.Filename, fmt.Sprintf("%c.terraform", os.PathSeparator)) {
+		if excludeDownloaded && strings.Contains(res.Range().Filename, fmt.Sprintf("%c.terraform", os.PathSeparator)) {
 			continue
 		}
 

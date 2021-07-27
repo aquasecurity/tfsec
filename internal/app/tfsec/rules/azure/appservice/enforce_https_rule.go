@@ -67,8 +67,7 @@ resource "azurerm_function_app" "good_example" {
 			if resourceBlock.MissingChild("https_only") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -77,8 +76,7 @@ resource "azurerm_function_app" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName())).
-						WithRange(httpsOnlyAttr.Range()).
-						WithAttributeAnnotation(httpsOnlyAttr),
+						WithAttribute(httpsOnlyAttr),
 				)
 			}
 		},

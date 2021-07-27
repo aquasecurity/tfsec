@@ -57,8 +57,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 				if networkProfileBlock.GetAttribute("network_policy") == nil {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' do not have network_policy define. network_policy should be defined to have opportunity allow or block traffic to pods", resourceBlock.FullName())).
-							WithRange(networkProfileBlock.Range()),
+							WithDescription(fmt.Sprintf("Resource '%s' do not have network_policy define. network_policy should be defined to have opportunity allow or block traffic to pods", resourceBlock.FullName())),
 					)
 				}
 			}

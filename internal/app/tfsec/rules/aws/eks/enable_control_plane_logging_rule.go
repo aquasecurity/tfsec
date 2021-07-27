@@ -79,8 +79,7 @@ resource "aws_eks_cluster" "good_example" {
 			if resourceBlock.MissingChild("enabled_cluster_log_types") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -91,8 +90,7 @@ resource "aws_eks_cluster" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' is missing the control plane log type '%s'", resourceBlock.FullName(), logType)).
-							WithRange(configuredLoggingAttr.Range()).
-							WithAttributeAnnotation(configuredLoggingAttr),
+							WithAttribute(configuredLoggingAttr),
 					)
 				}
 			}

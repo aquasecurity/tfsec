@@ -69,8 +69,7 @@ resource "aws_launch_configuration" "good_example" {
 			if rootDeviceBlock == nil && !encryptionByDefault {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device. Consider adding <blue>root_block_device{ encrypted = true }</blue>", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device. Consider adding <blue>root_block_device{ encrypted = true }</blue>", resourceBlock.FullName())),
 				)
 			} else if rootDeviceBlock != nil {
 				checkDeviceEncryption(rootDeviceBlock, encryptionByDefault, set, resourceBlock)
@@ -90,15 +89,13 @@ func checkDeviceEncryption(deviceBlock block.Block, encryptionByDefault bool, se
 	if encryptedAttr == nil && !encryptionByDefault {
 		set.Add(
 			result.New(resourceBlock).
-				WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device. Consider adding <blue>encrypted = true</blue>", resourceBlock.FullName())).
-				WithRange(deviceBlock.Range()),
+				WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device. Consider adding <blue>encrypted = true</blue>", resourceBlock.FullName())),
 		)
 	} else if encryptedAttr != nil && encryptedAttr.Type() == cty.Bool && encryptedAttr.Value().False() {
 		set.Add(
 			result.New(resourceBlock).
 				WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device.", resourceBlock.FullName())).
-				WithRange(encryptedAttr.Range()).
-				WithAttributeAnnotation(encryptedAttr),
+				WithAttribute(encryptedAttr),
 		)
 	}
 }

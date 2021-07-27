@@ -55,8 +55,7 @@ resource "aws_db_instance" "good_example" {
 			if resourceBlock.MissingChild("storage_encrypted") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has no storage encryption defined.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' has no storage encryption defined.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -66,8 +65,7 @@ resource "aws_db_instance" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has storage encrypted set to false", resourceBlock.FullName())).
-						WithRange(storageEncryptedAttr.Range()).
-						WithAttributeAnnotation(storageEncryptedAttr),
+						WithAttribute(storageEncryptedAttr),
 				)
 			}
 		},

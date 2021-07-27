@@ -59,8 +59,7 @@ resource "digitalocean_droplet" "good_example" {
 			if resourceBlock.MissingChild("ssh_keys") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not define ssh_keys", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not define ssh_keys", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -69,8 +68,7 @@ resource "digitalocean_droplet" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has ssh_key specified but is empty.", resourceBlock.FullName())).
-						WithRange(sshKeysAttr.Range()).
-						WithAttributeAnnotation(sshKeysAttr),
+						WithAttribute(sshKeysAttr),
 				)
 			}
 		},

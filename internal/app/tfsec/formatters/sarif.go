@@ -34,13 +34,13 @@ func FormatSarif(w io.Writer, results []result.Result, baseDir string, _ ...Form
 			WithDescription(res.RuleSummary).
 			WithHelp(link)
 
-		relativePath, err := filepath.Rel(baseDir, res.Range.Filename)
+		relativePath, err := filepath.Rel(baseDir, res.Range().Filename)
 		if err != nil {
 			return err
 		}
 
 		message := sarif.NewTextMessage(res.Description)
-		region := sarif.NewSimpleRegion(res.Range.StartLine, res.Range.EndLine)
+		region := sarif.NewSimpleRegion(res.Range().StartLine, res.Range().EndLine)
 		var level string
 		switch res.Severity {
 		case severity.None:

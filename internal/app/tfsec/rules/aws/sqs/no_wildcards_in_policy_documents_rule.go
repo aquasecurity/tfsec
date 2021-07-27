@@ -101,8 +101,7 @@ POLICY
 					if strings.ToLower(statement.Effect) == "allow" && (statement.Action == "*" || statement.Action == "sqs:*") {
 						set.Add(
 							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName())).
-								WithRange(resourceBlock.Range()),
+								WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName())),
 						)
 					}
 				}

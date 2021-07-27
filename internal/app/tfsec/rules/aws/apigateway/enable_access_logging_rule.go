@@ -77,8 +77,7 @@ resource "aws_api_gateway_stage" "good_example" {
 			if resourceBlock.MissingChild("access_log_settings") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing access log settings block.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is missing access log settings block.", resourceBlock.FullName())),
 				)
 			}
 

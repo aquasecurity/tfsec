@@ -56,8 +56,7 @@ resource "aws_s3_bucket_public_access_block" "example" {
 			if err != nil || len(blocks) == 0 {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource %s has no associated aws_s3_bucket_public_access_block.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource %s has no associated aws_s3_bucket_public_access_block.", resourceBlock.FullName())),
 				)
 			}
 		},

@@ -59,8 +59,7 @@ resource "azurerm_storage_account" "good_example" {
 							"Resource '%s' enable_https_traffic_only disabled.",
 							resourceBlock.FullName(),
 						)).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr),
+						WithAttribute(enabledAttr),
 				)
 			}
 

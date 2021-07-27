@@ -84,8 +84,7 @@ resource "aws_eks_cluster" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' has public access cidr explicitly set to wide open", resourceBlock.FullName())).
-						WithRange(publicAccessCidrsAttr.Range()).
-						WithAttributeAnnotation(publicAccessCidrsAttr),
+						WithAttribute(publicAccessCidrsAttr),
 				)
 			}
 		},

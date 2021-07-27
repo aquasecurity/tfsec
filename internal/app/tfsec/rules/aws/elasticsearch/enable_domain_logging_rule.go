@@ -90,8 +90,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if resourceBlock.MissingChild("log_publishing_options") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not configure logging at rest on the domain.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' does not configure logging at rest on the domain.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -103,8 +102,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' explicitly disables logging on the domain.", resourceBlock.FullName())).
-							WithRange(enabledAttr.Range()).
-							WithAttributeAnnotation(enabledAttr),
+							WithAttribute(enabledAttr),
 					)
 					return
 				}

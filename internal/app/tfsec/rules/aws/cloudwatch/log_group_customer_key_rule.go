@@ -55,8 +55,7 @@ resource "aws_cloudwatch_log_group" "good_example" {
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is only using default encryption", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' is only using default encryption", resourceBlock.FullName())),
 				)
 			}
 

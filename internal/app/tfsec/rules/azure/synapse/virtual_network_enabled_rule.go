@@ -87,8 +87,7 @@ resource "azurerm_synapse_workspace" "good_example" {
 			if resourceBlock.MissingChild("managed_virtual_network_enabled") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
+						WithDescription(fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock.FullName())),
 				)
 				return
 			}
@@ -97,8 +96,7 @@ resource "azurerm_synapse_workspace" "good_example" {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock.FullName())).
-						WithRange(managedNetworkAttr.Range()).
-						WithAttributeAnnotation(managedNetworkAttr),
+						WithAttribute(managedNetworkAttr),
 				)
 			}
 		},
