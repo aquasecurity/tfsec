@@ -29,18 +29,18 @@ func init() {
 			`,
 			Impact:     "Using free subscription does not enable Azure Defender for the resource type",
 			Resolution: "Enable standard subscription tier to benefit from Azure Defender",
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_security_center_subscription_pricing" "bad_example" {
   tier          = "Free"
   resource_type = "VirtualMachines"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_security_center_subscription_pricing" "good_example" {
   tier          = "Standard"
   resource_type = "VirtualMachines"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/security_center_subscription_pricing#tier",
 				"https://docs.microsoft.com/en-us/azure/security-center/security-center-pricing",

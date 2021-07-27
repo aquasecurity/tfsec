@@ -31,18 +31,18 @@ func init() {
 			Explanation: `
 Access to instances should be authenticated using SSH keys. Removing the option of password authentication enforces more secure methods while removing the risks inherent with passwords.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_virtual_machine" "bad_example" {
 	os_profile_linux_config {
 		disable_password_authentication = false
 	}
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "azurerm_virtual_machine" "good_example" {
 	os_profile_linux_config {
 		disable_password_authentication = true
 	}
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine",
 				"https://docs.microsoft.com/en-us/azure/virtual-machines/linux/create-ssh-keys-detailed",

@@ -19,33 +19,32 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS014",
+		LegacyID:  "AWS014",
 		Service:   "autoscaling",
 		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Launch configuration with unencrypted block device.",
-			Impact:       "The block device is could be compromised and read from",
-			Resolution:   "Turn on encryption for all block devices",
-			Explanation:  `
+			Summary:    "Launch configuration with unencrypted block device.",
+			Impact:     "The block device is could be compromised and read from",
+			Resolution: "Turn on encryption for all block devices",
+			Explanation: `
 Blocks devices should be encrypted to ensure sensitive data is held securely at rest.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_launch_configuration" "bad_example" {
 	root_block_device {
 		encrypted = false
 	}
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_launch_configuration" "good_example" {
 	root_block_device {
 		encrypted = true
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#ebs-ephemeral-and-root-block-devices",
 				"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/RootDeviceStorage.html",

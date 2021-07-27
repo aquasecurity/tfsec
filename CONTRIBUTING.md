@@ -91,7 +91,7 @@ func init() {
 			Resolution:  AWSGibsonHackableCodeResolution,
 			Explanation: AWSGibsonHackableExplanation,
 			BadExample:  AWSGibsonHackableBadExample,
-			GoodExample: AWSGibsonHackableGoodExample,
+			GoodExample: []string{ AWSGibsonHackableGoodExample,
 			Links: []string{ // any useful links relating to your check go here
                 		"https://www.imdb.com/title/tt0113243/"
 			},

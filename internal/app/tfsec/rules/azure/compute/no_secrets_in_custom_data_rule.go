@@ -29,22 +29,22 @@ func init() {
 			Explanation: `When creating Azure Virtual Machines, custom_data is used to pass start up information into the EC2 instance. This custom_dat must not contain access key credentials.`,
 			Impact:      "Sensitive credentials in custom_data can be leaked",
 			Resolution:  "Don't use sensitive credentials in the VM custom_data",
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_virtual_machine" "bad_example" {
 	name = "bad_example"
 	custom_data =<<EOF
 export DATABASE_PASSWORD=\"SomeSortOfPassword\"
 EOF
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_virtual_machine" "good_example" {
 	name = "good_example"
 	custom_data =<<EOF
 export GREETING="Hello there"
 EOF
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine#custom_data",
 			},

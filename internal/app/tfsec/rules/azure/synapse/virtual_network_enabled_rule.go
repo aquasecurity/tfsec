@@ -17,23 +17,22 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU027",
+		LegacyID:  "AZU027",
 		Service:   "synapse",
 		ShortCode: "virtual-network-enabled",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Synapse Workspace should have managed virtual network enabled, the default is disabled.",
-			Impact:       "Your Synapse workspace is not using the private endpoints",
-			Resolution:   "Set manage virtual network to enabled",
-			Explanation:  `
+			Summary:    "Synapse Workspace should have managed virtual network enabled, the default is disabled.",
+			Impact:     "Your Synapse workspace is not using the private endpoints",
+			Resolution: "Set manage virtual network to enabled",
+			Explanation: `
 Synapse Workspace does not have managed virtual network enabled by default.
 
 When you create your Azure Synapse workspace, you can choose to associate it to a Microsoft Azure Virtual Network. The Virtual Network associated with your workspace is managed by Azure Synapse. This Virtual Network is called a Managed workspace Virtual Network.
 Managed private endpoints are private endpoints created in a Managed Virtual Network associated with your Azure Synapse workspace. Managed private endpoints establish a private link to Azure resources. You can only use private links in a workspace that has a Managed workspace Virtual Network.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "azurerm_synapse_workspace" "bad_example" {
   name                                 = "example"
   resource_group_name                  = azurerm_resource_group.example.name
@@ -52,8 +51,8 @@ resource "azurerm_synapse_workspace" "bad_example" {
     Env = "production"
   }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azurerm_synapse_workspace" "good_example" {
   name                                 = "example"
   resource_group_name                  = azurerm_resource_group.example.name
@@ -72,7 +71,7 @@ resource "azurerm_synapse_workspace" "good_example" {
     Env = "production"
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/synapse_workspace#managed_virtual_network_enabled",
 				"https://docs.microsoft.com/en-us/azure/synapse-analytics/security/synapse-workspace-managed-private-endpoints",

@@ -27,12 +27,12 @@ func init() {
 			Explanation:` + "`" + `	` + "`" + `,
 			Impact:      "{{.Impact}}",
 			Resolution:  "{{.Resolution}}",
-			BadExample:  ` + "`" + `
+			BadExample: []string{  ` + "`" + `
 			// bad example code here
-			` + "`" + `,
-			GoodExample: ` + "`" + `
+			` + "`" + `},
+			GoodExample: []string{ ` + "`" + `
 			// good example code here
-			` + "`" + `,
+			` + "`" + `},
 			Links: []string{
 				
 			},

@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS091",
+		LegacyID:  "AWS091",
 		Service:   "rds",
 		ShortCode: "backup-retention-specified",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "RDS Cluster and RDS instance should have backup retention longer than default 1 day",
-			Explanation:  `
+			Summary: "RDS Cluster and RDS instance should have backup retention longer than default 1 day",
+			Explanation: `
 RDS backup retention for clusters defaults to 1 day, this may not be enough to identify and respond to an issue. Backup retention periods should be set to a period that is a balance on cost and limiting risk.
 `,
-			Impact:       "Potential loss of data and short opportunity for recovery",
-			Resolution:   "Explicitly set the retention period to greater than the default",
-			BadExample:   `
+			Impact:     "Potential loss of data and short opportunity for recovery",
+			Resolution: "Explicitly set the retention period to greater than the default",
+			BadExample: []string{`
 resource "aws_db_instance" "bad_example" {
 	allocated_storage    = 10
 	engine               = "mysql"
@@ -53,8 +52,8 @@ resource "aws_rds_cluster" "bad_example" {
 	master_password         = "bar"
 	preferred_backup_window = "07:00-09:00"
   }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_rds_cluster" "good_example" {
 	cluster_identifier      = "aurora-cluster-demo"
 	engine                  = "aurora-mysql"
@@ -79,7 +78,7 @@ resource "aws_rds_cluster" "good_example" {
 	backup_retention_period = 5
 	skip_final_snapshot  = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#backup_retention_period",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance#backup_retention_period",

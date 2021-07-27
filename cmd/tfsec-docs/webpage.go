@@ -37,7 +37,7 @@ redirect_from:
 The following example will fail the {{$.ID}} check.
 
 {% highlight terraform %}
-{{$.Documentation.BadExample}}
+{{$.Documentation.BadExample[]}}
 {% endhighlight %}
 
 {{end}}
@@ -47,7 +47,7 @@ The following example will fail the {{$.ID}} check.
 The following example will pass the {{$.ID}} check.
 
 {% highlight terraform %}
-{{$.Documentation.GoodExample}}
+{{$.Documentation.GoodExample[]}}
 {% endhighlight %}
 {{end}}
 

@@ -19,29 +19,28 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS005",
+		LegacyID:  "AWS005",
 		Service:   "elbv2",
 		ShortCode: "alb-not-public",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Load balancer is exposed to the internet.",
-			Explanation:  `
+			Summary: "Load balancer is exposed to the internet.",
+			Explanation: `
 There are many scenarios in which you would want to expose a load balancer to the wider internet, but this check exists as a warning to prevent accidental exposure of internal assets. You should ensure that this resource should be exposed publicly.
 `,
-			Impact:       "The load balancer is exposed on the internet",
-			Resolution:   "Switch to an internal load balancer or add a tfsec ignore",
-			BadExample:   `
+			Impact:     "The load balancer is exposed on the internet",
+			Resolution: "Switch to an internal load balancer or add a tfsec ignore",
+			BadExample: []string{`
 resource "aws_alb" "bad_example" {
 	internal = false
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_alb" "good_example" {
 	internal = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb",
 			},

@@ -31,18 +31,18 @@ By default, Compute Engine encrypts all data at rest. Compute Engine handles and
 
 If the <code>disk_encryption_key</code> block is included in the resource declaration then it *must* include a <code>raw_key</code> or <code>kms_key_self_link</code>.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "google_compute_disk" "bad_example" {
 	# ...
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "google_compute_disk" "good_example" {
 	disk_encryption_key {
 		kms_key_self_link = "something"
 	}
 }
 
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk",
 				"https://cloud.google.com/compute/docs/disks/customer-supplied-encryption",

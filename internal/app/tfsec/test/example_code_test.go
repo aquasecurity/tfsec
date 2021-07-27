@@ -32,30 +32,34 @@ func TestExampleCode(t *testing.T) {
 		})
 
 		t.Run(fmt.Sprintf("Rule 'good' example code for %s", check.ID()), func(t *testing.T) {
-			if strings.TrimSpace(check.Documentation.GoodExample) == "" {
-				t.Fatalf("good example code not provided for %s", check.ID())
-			}
-			defer func() {
-				if err := recover(); err != nil {
-					t.Fatalf("Scan (good) failed: %s", err)
+			for _, goodExample := range check.Documentation.GoodExample {
+				if strings.TrimSpace(goodExample) == "" {
+					t.Fatalf("good example code not provided for %s", check.ID())
 				}
-			}()
-			results := testutil.ScanHCL(check.Documentation.GoodExample, t)
-			testutil.AssertCheckCode(t, "", check.ID(), results)
+				defer func() {
+					if err := recover(); err != nil {
+						t.Fatalf("Scan (good) failed: %s", err)
+					}
+				}()
+				results := testutil.ScanHCL(goodExample, t)
+				testutil.AssertCheckCode(t, "", check.ID(), results)
+			}
+
 		})
 
 		t.Run(fmt.Sprintf("Rule 'bad' example code for %s", check.ID()), func(t *testing.T) {
-			if strings.TrimSpace(check.Documentation.BadExample) == "" {
-				t.Fatalf("bad example code not provided for %s", check.ID())
-			}
-			defer func() {
-				if err := recover(); err != nil {
-					t.Fatalf("Scan (bad) failed: %s", err)
+			for _, badExample := range check.Documentation.BadExample {
+				if strings.TrimSpace(badExample) == "" {
+					t.Fatalf("bad example code not provided for %s", check.ID())
 				}
-			}()
-			results := testutil.ScanHCL(check.Documentation.BadExample, t)
-			testutil.AssertCheckCode(t, check.ID(), "", results)
+				defer func() {
+					if err := recover(); err != nil {
+						t.Fatalf("Scan (bad) failed: %s", err)
+					}
+				}()
+				results := testutil.ScanHCL(badExample, t)
+				testutil.AssertCheckCode(t, check.ID(), "", results)
+			}
 		})
-
 	}
 }

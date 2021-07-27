@@ -26,7 +26,7 @@ func init() {
 			Explanation: `Database resources should not publicly available. You should limit all access to the minimum that is required for your application to function.`,
 			Impact:      "Publicly accessible database could lead to compromised data",
 			Resolution:  "Disable public access to database when not required",
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_postgresql_server" "bad_example" {
   name                = "bad_example"
 
@@ -34,8 +34,8 @@ resource "azurerm_postgresql_server" "bad_example" {
   ssl_enforcement_enabled          = false
   ssl_minimal_tls_version_enforced = "TLS1_2"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_postgresql_server" "good_example" {
   name                = "bad_example"
 
@@ -43,7 +43,7 @@ resource "azurerm_postgresql_server" "good_example" {
   ssl_enforcement_enabled          = false
   ssl_minimal_tls_version_enforced = "TLS1_2"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_server#public_network_access_enabled",
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mysql_server#public_network_access_enabled",

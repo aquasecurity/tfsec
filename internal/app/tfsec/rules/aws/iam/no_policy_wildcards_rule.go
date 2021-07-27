@@ -27,7 +27,7 @@ You should use the principle of least privilege when defining your IAM policies.
 `,
 			Impact:     "Overly permissive policies may grant access to sensitive resources",
 			Resolution: "Specify the exact permissions required, and to which resources they should apply instead of using wildcards.",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -62,8 +62,8 @@ data "aws_iam_policy_document" "s3_policy" {
     resources = ["*"]
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -98,7 +98,7 @@ data "aws_iam_policy_document" "s3_policy" {
     resources = [aws_s3_bucket.example.arn]
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document",
 				"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",

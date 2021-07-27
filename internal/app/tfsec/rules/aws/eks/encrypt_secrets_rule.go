@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS066",
+		LegacyID:  "AWS066",
 		Service:   "eks",
 		ShortCode: "encrypt-secrets",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "EKS should have the encryption of secrets enabled",
-			Impact:       "EKS secrets could be read if compromised",
-			Resolution:   "Enable encryption of EKS secrets",
-			Explanation:  `
+			Summary:    "EKS should have the encryption of secrets enabled",
+			Impact:     "EKS secrets could be read if compromised",
+			Resolution: "Enable encryption of EKS secrets",
+			Explanation: `
 EKS cluster resources should have the encryption_config block set with protection of the secrets resource.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_eks_cluster" "bad_example" {
     name = "bad_example_cluster"
 
@@ -39,8 +38,8 @@ resource "aws_eks_cluster" "bad_example" {
         endpoint_public_access = false
     }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_eks_cluster" "good_example" {
     encryption_config {
         resources = [ "secrets" ]
@@ -55,7 +54,7 @@ resource "aws_eks_cluster" "good_example" {
         endpoint_public_access = false
     }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#encryption_config",
 				"https://aws.amazon.com/about-aws/whats-new/2020/03/amazon-eks-adds-envelope-encryption-for-secrets-with-aws-kms/",

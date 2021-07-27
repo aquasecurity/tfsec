@@ -19,20 +19,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS032",
+		LegacyID:  "AWS032",
 		Service:   "elastic-search",
 		ShortCode: "enable-in-transit-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Elasticsearch domain uses plaintext traffic for node to node communication.",
-			Impact:       "In transit data between nodes could be read if intercepted",
-			Resolution:   "Enable encrypted node to node communication",
-			Explanation:  `
+			Summary:    "Elasticsearch domain uses plaintext traffic for node to node communication.",
+			Impact:     "In transit data between nodes could be read if intercepted",
+			Resolution: "Enable encrypted node to node communication",
+			Explanation: `
 Traffic flowing between Elasticsearch nodes should be encrypted to ensure sensitive data is kept private.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
@@ -40,8 +39,8 @@ resource "aws_elasticsearch_domain" "bad_example" {
     enabled = false
   }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
@@ -49,7 +48,7 @@ resource "aws_elasticsearch_domain" "good_example" {
     enabled = true
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#encrypt_at_rest",
 				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/ntn.html",

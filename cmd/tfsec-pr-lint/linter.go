@@ -68,14 +68,19 @@ func (l *linter) checkDocumentation(check rule.Rule) bool {
 		fmt.Printf("%s: %s\n", check.ID(), err.Error())
 		errorFound = true
 	}
-	if err := l.verifyPart(docs.GoodExample, "GoodExample"); err != nil {
-		fmt.Printf("%s: %s\n", check.ID(), err.Error())
-		errorFound = true
+	for _, goodExample := range docs.GoodExample {
+		if err := l.verifyPart(goodExample, "GoodExample"); err != nil {
+			fmt.Printf("%s: %s\n", check.ID(), err.Error())
+			errorFound = true
+		}
 	}
-	if err := l.verifyPart(docs.BadExample, "BadExample"); err != nil {
-		fmt.Printf("%s: %s\n", check.ID(), err.Error())
-		errorFound = true
+	for _, badExample := range docs.BadExample {
+		if err := l.verifyPart(badExample, "BadExample"); err != nil {
+			fmt.Printf("%s: %s\n", check.ID(), err.Error())
+			errorFound = true
+		}
 	}
+
 	if len(docs.Links) == 0 {
 		fmt.Printf("%s: Has no links configure\n", check.ID())
 		errorFound = true

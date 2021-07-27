@@ -29,7 +29,7 @@ func init() {
 			Explanation: `
 S3 buckets should block public ACLs on buckets and any objects they contain. By blocking, PUTs with fail if the object has any public ACL a.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_s3_bucket_public_access_block" "bad_example" {
 	bucket = aws_s3_bucket.example.id
 }
@@ -39,14 +39,14 @@ resource "aws_s3_bucket_public_access_block" "bad_example" {
   
 	block_public_acls = false
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_s3_bucket_public_access_block" "good_example" {
 	bucket = aws_s3_bucket.example.id
   
 	block_public_acls = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block#block_public_acls",
 				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",

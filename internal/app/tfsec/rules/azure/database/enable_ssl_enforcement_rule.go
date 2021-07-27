@@ -26,7 +26,7 @@ func init() {
 			Explanation: `SSL connections should be enforced were available to ensure secure transfer and reduce the risk of compromising data in flight.`,
 			Impact:      "Insecure connections could lead to data loss and other vulnerabilities",
 			Resolution:  "Enable SSL enforcement",
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_postgresql_server" "bad_example" {
   name                = "bad_example"
 
@@ -34,8 +34,8 @@ resource "azurerm_postgresql_server" "bad_example" {
   ssl_enforcement_enabled          = false
   ssl_minimal_tls_version_enforced = "TLS1_2"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_postgresql_server" "good_example" {
   name                = "good_example"
 
@@ -43,7 +43,7 @@ resource "azurerm_postgresql_server" "good_example" {
   ssl_enforcement_enabled          = true
   ssl_minimal_tls_version_enforced = "TLS1_2"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_server#ssl_enforcement_enabled",
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mysql_server#ssl_enforcement_enabled",

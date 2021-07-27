@@ -31,7 +31,7 @@ func init() {
 Opening up ACLs to the public internet is potentially dangerous. You should restrict access to IP addresses or ranges that explicitly require it where possible.
 
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_network_acl_rule" "bad_example" {
   egress         = false
   protocol       = "tcp"
@@ -40,8 +40,8 @@ resource "aws_network_acl_rule" "bad_example" {
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_network_acl_rule" "good_example" {
   egress         = false
   protocol       = "tcp"
@@ -50,7 +50,7 @@ resource "aws_network_acl_rule" "good_example" {
   rule_action    = "allow"
   cidr_block     = "10.0.0.0/16"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl_rule#cidr_block",
 				"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",

@@ -26,7 +26,7 @@ func init() {
 			Explanation: `Log profiles should capture all categories to ensure that all events are logged`,
 			Impact:      "Log profile must capture all activity to be able to ensure that all relevant information possible is available for an investigation",
 			Resolution:  "Configure log profile to capture all activities",
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_monitor_log_profile" "bad_example" {
   name = "bad_example"
 
@@ -37,8 +37,8 @@ resource "azurerm_monitor_log_profile" "bad_example" {
     days    = 7
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_monitor_log_profile" "good_example" {
   name = "good_example"
 
@@ -53,7 +53,7 @@ resource "azurerm_monitor_log_profile" "good_example" {
     days    = 365
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_log_profile#categories",
 				"https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log",

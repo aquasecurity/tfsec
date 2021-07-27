@@ -18,33 +18,32 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU007",
+		LegacyID:  "AZU007",
 		Service:   "container",
 		ShortCode: "use-rbac-permissions",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Ensure RBAC is enabled on AKS clusters",
-			Impact:       "No role based access control is in place for the AKS cluster",
-			Resolution:   "Enable RBAC",
-			Explanation:  `
+			Summary:    "Ensure RBAC is enabled on AKS clusters",
+			Impact:     "No role based access control is in place for the AKS cluster",
+			Resolution: "Enable RBAC",
+			Explanation: `
 Using Kubernetes role-based access control (RBAC), you can grant users, groups, and service accounts access to only the resources they need.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "azurerm_kubernetes_cluster" "bad_example" {
 	role_based_access_control {
 		enabled = false
 	}
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azurerm_kubernetes_cluster" "good_example" {
 	role_based_access_control {
 		enabled = true
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html#role_based_access_control",
 				"https://docs.microsoft.com/en-us/azure/aks/concepts-identity",

@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS088",
+		LegacyID:  "AWS088",
 		Service:   "elasticache",
 		ShortCode: "enable-backup-retention",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Redis cluster should have backup retention turned on",
-			Explanation:  `
+			Summary: "Redis cluster should have backup retention turned on",
+			Explanation: `
 Redis clusters should have a snapshot retention time to ensure that they are backed up and can be restored if required.
 `,
-			Impact:       "Without backups of the redis cluster recovery is made difficult",
-			Resolution:   "Configure snapshot retention for redis cluster",
-			BadExample:   `
+			Impact:     "Without backups of the redis cluster recovery is made difficult",
+			Resolution: "Configure snapshot retention for redis cluster",
+			BadExample: []string{`
 resource "aws_elasticache_cluster" "bad_example" {
 	cluster_id           = "cluster-example"
 	engine               = "redis"
@@ -40,8 +39,8 @@ resource "aws_elasticache_cluster" "bad_example" {
 	engine_version       = "3.2.10"
 	port                 = 6379
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_elasticache_cluster" "good_example" {
 	cluster_id           = "cluster-example"
 	engine               = "redis"
@@ -53,7 +52,7 @@ resource "aws_elasticache_cluster" "good_example" {
 
 	snapshot_retention_limit = 5
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_cluster#snapshot_retention_limit",
 				"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-automatic.html",

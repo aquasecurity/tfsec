@@ -30,20 +30,20 @@ func init() {
 			Explanation: `
 Opening up ports to the public internet is generally to be avoided. You should restrict access to IP addresses or ranges that explicitly require it where possible.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_security_group" "bad_example" {
 	ingress {
 		cidr_blocks = ["0.0.0.0/0"]
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_security_group" "good_example" {
 	ingress {
 		cidr_blocks = ["1.2.3.4/32"]
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group",
 			},
