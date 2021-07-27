@@ -1,6 +1,8 @@
 name: tfsec build
 on:
   pull_request:
+  schedule:
+  - cron:  0 23 * * *
 jobs:
   build:
     name: building tfsec
