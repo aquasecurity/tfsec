@@ -8,21 +8,6 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-/*
-
-Now
-
-	# tfsec:ignore:*
-	# tfsec:ignore:aws-blah-blah
-	# tfsec:ignore:aws-blah:exp:yyyy-mm-dd
-	# tfsec:ignore:aws-blah:ws:development
-	# tfsec:ignore:aws-blah:exp:2020-01-31:ws:development
-
-
-Maybe?
-
-	# tfsec:ignore:aws-*
-*/
 func (res *Result) IsIgnored(workspace string) bool {
 	for _, annotation := range res.Annotations() {
 		// if there is an ignore code
