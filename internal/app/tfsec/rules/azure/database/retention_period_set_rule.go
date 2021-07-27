@@ -17,23 +17,22 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU019",
+		LegacyID:  "AZU019",
 		Service:   "database",
 		ShortCode: "retention-period-set",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Database auditing rentention period should be longer than 90 days",
-			Impact:       "Short logging retention could result in missing valuable historical information",
-			Resolution:   "Set retention periods of database auditing to greater than 90 days",
-			Explanation:  `
+			Summary:    "Database auditing rentention period should be longer than 90 days",
+			Impact:     "Short logging retention could result in missing valuable historical information",
+			Resolution: "Set retention periods of database auditing to greater than 90 days",
+			Explanation: `
 When Auditing is configured for a SQL database, if the retention period is not set, the retention will be unlimited.
 
 If the retention period is to be explicitly set, it should be set for no less than 90 days.
 
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "azurerm_mssql_database_extended_auditing_policy" "bad_example" {
   database_id                             = azurerm_mssql_database.example.id
   storage_endpoint                        = azurerm_storage_account.example.primary_blob_endpoint
@@ -41,8 +40,8 @@ resource "azurerm_mssql_database_extended_auditing_policy" "bad_example" {
   storage_account_access_key_is_secondary = false
   retention_in_days                       = 6
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azurerm_mssql_database_extended_auditing_policy" "good_example" {
   database_id                             = azurerm_mssql_database.example.id
   storage_endpoint                        = azurerm_storage_account.example.primary_blob_endpoint
@@ -57,7 +56,7 @@ resource "azurerm_mssql_database_extended_auditing_policy" "good_example" {
   storage_account_access_key_is_secondary = false
   retention_in_days                       = 90
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy",
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server#retention_in_days",

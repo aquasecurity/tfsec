@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS084",
+		LegacyID:  "AWS084",
 		Service:   "workspace",
 		ShortCode: "enable-disk-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Root and user volumes on Workspaces should be encrypted",
-			Explanation:  `
+			Summary: "Root and user volumes on Workspaces should be encrypted",
+			Explanation: `
 Workspace volumes for both user and root should be encrypted to protect the data stored on them.
 `,
-			Impact:       "Data can be freely read if compromised",
-			Resolution:   "Root and user volume encryption should be enabled",
-			BadExample:   `
+			Impact:     "Data can be freely read if compromised",
+			Resolution: "Root and user volume encryption should be enabled",
+			BadExample: []string{`
 resource "aws_workspaces_workspace" "bad_example" {
 	directory_id = aws_workspaces_directory.test.id
 	bundle_id    = data.aws_workspaces_bundle.value_windows_10.id
@@ -44,8 +43,8 @@ resource "aws_workspaces_workspace" "bad_example" {
 	  running_mode_auto_stop_timeout_in_minutes = 60
 	}
   }
-`,
-			GoodExample:  `	
+`},
+			GoodExample: []string{`	
 resource "aws_workspaces_workspace" "good_example" {
 		directory_id 				   = aws_workspaces_directory.test.id
 		bundle_id    				   = data.aws_workspaces_bundle.value_windows_10.id
@@ -61,7 +60,7 @@ resource "aws_workspaces_workspace" "good_example" {
 		  running_mode_auto_stop_timeout_in_minutes = 60
 		}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/workspaces_workspace#root_volume_encryption_enabled",
 				"https://docs.aws.amazon.com/workspaces/latest/adminguide/encrypt-workspaces.html",

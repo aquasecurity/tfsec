@@ -17,24 +17,23 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU016",
+		LegacyID:  "AZU016",
 		Service:   "storage",
 		ShortCode: "queue-services-logging-enabled",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "When using Queue Services for a storage account, logging should be enabled.",
-			Impact:       "Logging provides valuable information about access and usage",
-			Resolution:   "Enable logging for Queue Services",
-			Explanation:  `
+			Summary:    "When using Queue Services for a storage account, logging should be enabled.",
+			Impact:     "Logging provides valuable information about access and usage",
+			Resolution: "Enable logging for Queue Services",
+			Explanation: `
 Storage Analytics logs detailed information about successful and failed requests to a storage service. 
 
 This information can be used to monitor individual requests and to diagnose issues with a storage service. 
 
 Requests are logged on a best-effort basis.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "azurerm_storage_account" "bad_example" {
     name                     = "example"
     resource_group_name      = data.azurerm_resource_group.example.name
@@ -44,8 +43,8 @@ resource "azurerm_storage_account" "bad_example" {
     queue_properties  {
   }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azurerm_storage_account" "good_example" {
     name                     = "example"
     resource_group_name      = data.azurerm_resource_group.example.name
@@ -62,7 +61,7 @@ resource "azurerm_storage_account" "good_example" {
     }
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account#logging",
 				"https://docs.microsoft.com/en-us/azure/storage/common/storage-analytics-logging?tabs=dotnet",

@@ -27,14 +27,14 @@ func init() {
 			Explanation: `Users with ALTER permissions on users can grant access to a contained database without the knowledge of an administrator`,
 			Impact:      "Access can be granted without knowledge of the database administrator",
 			Resolution:  "Disable contained database authentication",
-			BadExample: `
+			BadExample: []string{`
 resource "google_sql_database_instance" "db" {
 	name             = "db"
 	database_version = "SQLSERVER_2017_STANDARD"
 	region           = "us-central1"
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "google_sql_database_instance" "db" {
 	name             = "db"
 	database_version = "SQLSERVER_2017_STANDARD"
@@ -46,7 +46,7 @@ resource "google_sql_database_instance" "db" {
 		}
 	}
 }
-			`,
+			`},
 			Links: []string{"https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/contained-database-authentication-server-configuration-option?view=sql-server-ver15"},
 		},
 		Provider:        provider.GoogleProvider,

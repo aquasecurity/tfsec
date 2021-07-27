@@ -31,7 +31,7 @@ ECR images should be set to IMMUTABLE to prevent code injection through image mu
 
 This can be done by setting <code>image_tab_mutability</code> to <code>IMMUTABLE</code>
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_ecr_repository" "bad_example" {
   name                 = "bar"
   image_tag_mutability = "MUTABLE"
@@ -40,8 +40,8 @@ resource "aws_ecr_repository" "bad_example" {
     scan_on_push = true
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_ecr_repository" "good_example" {
   name                 = "bar"
   image_tag_mutability = "IMMUTABLE"
@@ -50,7 +50,7 @@ resource "aws_ecr_repository" "good_example" {
     scan_on_push = true
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository",
 				"https://sysdig.com/blog/toctou-tag-mutability/",

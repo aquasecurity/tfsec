@@ -30,7 +30,7 @@ Github repository should be set to be private.
 
 You can do this by either setting <code>private</code> attribute to 'true' or <code>visibility</code> attribute to 'internal' or 'private'.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "github_repository" "bad_example" {
   name        = "example"
   description = "My awesome codebase"
@@ -42,8 +42,8 @@ resource "github_repository" "bad_example" {
     repository = "terraform-module-template"
   }
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "github_repository" "good_example" {
   name        = "example"
   description = "My awesome codebase"
@@ -55,7 +55,7 @@ resource "github_repository" "good_example" {
     repository = "terraform-module-template"
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository",
 				"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-repository-visibility",

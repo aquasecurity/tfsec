@@ -26,7 +26,7 @@ func init() {
 			Explanation: `Access to virtual machines should be authenticated using SSH keys. Removing the option of password authentication enforces more secure methods while removing the risks inherent with passwords.`,
 			Impact:      "Using password authentication is less secure that ssh keys may result in compromised servers",
 			Resolution:  "Use ssh authentication for virtual machines",
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_linux_virtual_machine" "bad_linux_example" {
   name                            = "bad-linux-machine"
   resource_group_name             = azurerm_resource_group.example.name
@@ -55,8 +55,8 @@ resource "azurerm_virtual_machine" "bad_example" {
 		disable_password_authentication = false
 	}
   }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_linux_virtual_machine" "good_linux_example" {
   name                            = "good-linux-machine"
   resource_group_name             = azurerm_resource_group.example.name
@@ -88,7 +88,7 @@ resource "azurerm_virtual_machine" "good_example" {
 		disable_password_authentication = true
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine#disable_password_authentication",
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine#disable_password_authentication",

@@ -17,36 +17,35 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU025",
+		LegacyID:  "AZU025",
 		Service:   "datafactory",
 		ShortCode: "no-public-access",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Data Factory should have public access disabled, the default is enabled.",
-			Impact:       "Data factory is publicly accessible",
-			Resolution:   "Set public access to disabled for Data Factory",
-			Explanation:  `
+			Summary:    "Data Factory should have public access disabled, the default is enabled.",
+			Impact:     "Data factory is publicly accessible",
+			Resolution: "Set public access to disabled for Data Factory",
+			Explanation: `
 Data Factory has public access set to true by default.
 
 Disabling public network access is applicable only to the self-hosted integration runtime, not to Azure Integration Runtime and SQL Server Integration Services (SSIS) Integration Runtime.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "azurerm_data_factory" "bad_example" {
   name                = "example"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azurerm_data_factory" "good_example" {
   name                = "example"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
   public_network_enabled = false
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/data_factory#public_network_enabled",
 				"https://docs.microsoft.com/en-us/azure/data-factory/data-movement-security-considerations#hybrid-scenarios",

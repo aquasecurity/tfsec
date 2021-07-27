@@ -17,20 +17,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS069",
+		LegacyID:  "AWS069",
 		Service:   "eks",
 		ShortCode: "no-public-cluster-access",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "EKS Clusters should have the public access disabled",
-			Impact:       "EKS can be access from the internet",
-			Resolution:   "Don't enable public access to EKS Clusters",
-			Explanation:  `
+			Summary:    "EKS Clusters should have the public access disabled",
+			Impact:     "EKS can be access from the internet",
+			Resolution: "Don't enable public access to EKS Clusters",
+			Explanation: `
 EKS clusters are available publicly by default, this should be explicitly disabled in the vpc_config of the EKS cluster resource.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_eks_cluster" "bad_example" {
     // other config 
 
@@ -41,8 +40,8 @@ resource "aws_eks_cluster" "bad_example" {
 		public_access_cidrs = ["0.0.0.0/0"]
     }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_eks_cluster" "good_example" {
     // other config 
 
@@ -52,7 +51,7 @@ resource "aws_eks_cluster" "good_example" {
         endpoint_public_access = false
     }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#endpoint_public_access",
 				"https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html",

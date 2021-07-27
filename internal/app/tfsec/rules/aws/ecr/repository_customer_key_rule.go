@@ -17,21 +17,20 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS093",
+		LegacyID:  "AWS093",
 		Service:   "ecr",
 		ShortCode: "repository-customer-key",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "ECR Repository should use customer managed keys to allow more control",
-			Explanation:  `
+			Summary: "ECR Repository should use customer managed keys to allow more control",
+			Explanation: `
 Images in the ECR repository are encrypted by default using AWS managed encryption keys. To increase control of the encryption and control the management of factors like key rotation, use a Customer Managed Key.
 
 `,
-			Impact:       "Using AWS managed keys does not allow for fine grained control",
-			Resolution:   "Use customer managed keys",
-			BadExample:   `
+			Impact:     "Using AWS managed keys does not allow for fine grained control",
+			Resolution: "Use customer managed keys",
+			BadExample: []string{`
 resource "aws_ecr_repository" "bad_example" {
 	name                 = "bar"
 	image_tag_mutability = "MUTABLE"
@@ -40,8 +39,8 @@ resource "aws_ecr_repository" "bad_example" {
 	  scan_on_push = true
 	}
   }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_kms_key" "ecr_kms" {
 	enable_key_rotation = true
 }
@@ -59,7 +58,7 @@ resource "aws_ecr_repository" "good_example" {
 		kms_key = aws_kms_key.ecr_kms.key_id
 	}
   }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository#encryption_configuration",
 				"https://docs.aws.amazon.com/AmazonECR/latest/userguide/encryption-at-rest.html",

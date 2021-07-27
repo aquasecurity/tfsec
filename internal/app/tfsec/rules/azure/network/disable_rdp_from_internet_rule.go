@@ -17,23 +17,22 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU024",
+		LegacyID:  "AZU024",
 		Service:   "network",
 		ShortCode: "disable-rdp-from-internet",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "RDP access should not be accessible from the Internet, should be blocked on port 3389",
-			Impact:       "Anyone from the internet can potentially RDP onto an instance",
-			Resolution:   "Block RDP port from internet",
-			Explanation:  `
+			Summary:    "RDP access should not be accessible from the Internet, should be blocked on port 3389",
+			Impact:     "Anyone from the internet can potentially RDP onto an instance",
+			Resolution: "Block RDP port from internet",
+			Explanation: `
 RDP access can be configured on either the network security group or in the network security group rule.
 
 RDP access should not be permitted from the internet (*, 0.0.0.0, /0, internet, any). Consider using the Azure Bastion Service.
 
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "azurerm_network_security_rule" "bad_example" {
      name                        = "bad_example_security_rule"
      direction                   = "Inbound"
@@ -57,8 +56,8 @@ resource "azurerm_network_security_group" "example" {
      destination_address_prefix  = "*"
   }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azurerm_network_security_rule" "good_example" {
      name                        = "good_example_security_rule"
      direction                   = "Inbound"
@@ -82,7 +81,7 @@ resource "azurerm_network_security_group" "example" {
      destination_address_prefix  = "*"
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/network_security_group#security_rule",
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule#source_port_ranges",

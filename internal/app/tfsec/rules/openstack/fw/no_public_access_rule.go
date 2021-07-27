@@ -27,7 +27,7 @@ func init() {
 			Explanation: `Opening up ports to the public internet is generally to be avoided. You should restrict access to IP addresses or ranges that explicitly require it where possible.`,
 			Impact:      "Exposure of infrastructure to the public internet",
 			Resolution:  "Employ more restrictive firewall rules",
-			BadExample: `
+			BadExample: []string{`
 resource "openstack_fw_rule_v1" "rule_1" {
 	name             = "my_rule"
 	description      = "let anyone in"
@@ -36,8 +36,8 @@ resource "openstack_fw_rule_v1" "rule_1" {
 	destination_port = "22"
 	enabled          = "true"
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "openstack_fw_rule_v1" "rule_1" {
 	name                   = "my_rule"
 	description            = "don't let just anyone in"
@@ -48,7 +48,7 @@ resource "openstack_fw_rule_v1" "rule_1" {
 	destination_port       = "22"
 	enabled                = "true"
 }
-			`,
+			`},
 			Links: []string{
 				"https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/fw_rule_v1",
 			},

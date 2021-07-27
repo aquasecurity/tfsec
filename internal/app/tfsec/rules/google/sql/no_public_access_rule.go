@@ -27,7 +27,7 @@ func init() {
 			Explanation: `	`,
 			Impact:     "Public exposure of sensitive data",
 			Resolution: "Remove public access from database instances",
-			BadExample: `
+			BadExample: []string{`
 resource "google_sql_database_instance" "postgres" {
 	name             = "postgres-instance-a"
 	database_version = "POSTGRES_11"
@@ -49,8 +49,8 @@ resource "google_sql_database_instance" "postgres" {
 		}
 	}
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "google_sql_database_instance" "postgres" {
 	name             = "postgres-instance-a"
 	database_version = "POSTGRES_11"
@@ -67,7 +67,7 @@ resource "google_sql_database_instance" "postgres" {
 		}
 	}
 }
-			`,
+			`},
 			Links: []string{"https://www.cloudconformity.com/knowledge-base/gcp/CloudSQL/publicly-accessible-cloud-sql-instances.html#"},
 		},
 		Provider:        provider.GoogleProvider,

@@ -32,16 +32,16 @@ You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning 
 `,
 			Impact:     "Your traffic is not protected",
 			Resolution: "Switch to HTTPS to benefit from TLS security features",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_alb_listener" "bad_example" {
 	protocol = "HTTP"
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_alb_listener" "good_example" {
 	protocol = "HTTPS"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener",
 				"https://www.cloudflare.com/en-gb/learning/ssl/why-is-http-not-secure/",

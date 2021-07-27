@@ -26,7 +26,7 @@ func init() {
 			Explanation: `You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.`,
 			Impact:      "Outdated TLS policies increase exposure to known issues",
 			Resolution:  "Use the most modern TLS policies available",
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_mssql_server" "bad_example" {
   name                         = "mssqlserver"
   resource_group_name          = azurerm_resource_group.example.name
@@ -44,8 +44,8 @@ resource "azurerm_postgresql_server" "bad_example" {
 	ssl_enforcement_enabled          = false
 	ssl_minimal_tls_version_enforced = "TLS1_1"
   }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "azurerm_mssql_server" "good_example" {
   name                         = "mssqlserver"
   resource_group_name          = azurerm_resource_group.example.name
@@ -63,7 +63,7 @@ resource "azurerm_postgresql_server" "good_example" {
   ssl_enforcement_enabled          = false
   ssl_minimal_tls_version_enforced = "TLS1_2"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server#minimum_tls_version",
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mysql_server#ssl_minimal_tls_version_enforced",

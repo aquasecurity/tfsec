@@ -17,25 +17,24 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS017",
+		LegacyID:  "AWS017",
 		Service:   "s3",
 		ShortCode: "enable-bucket-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Unencrypted S3 bucket.",
-			Impact:       "The bucket objects could be read if compromised",
-			Resolution:   "Configure bucket encryption",
-			Explanation:  `
+			Summary:    "Unencrypted S3 bucket.",
+			Impact:     "The bucket objects could be read if compromised",
+			Resolution: "Configure bucket encryption",
+			Explanation: `
 S3 Buckets should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific buckets.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_s3_bucket" "bad_example" {
   bucket = "mybucket"
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_s3_bucket" "good_example" {
   bucket = "mybucket"
 
@@ -48,7 +47,7 @@ resource "aws_s3_bucket" "good_example" {
     }
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#enable-default-server-side-encryption",
 				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html",

@@ -26,7 +26,7 @@ func init() {
 			Explanation: `Setting the minimum log severity too high will cause errors not to be logged`,
 			Impact:      "Loss of error logging",
 			Resolution:  "Set the minimum log severity to at least ERROR",
-			BadExample: `
+			BadExample: []string{`
 resource "google_sql_database_instance" "db" {
 	name             = "db"
 	database_version = "POSTGRES_12"
@@ -38,8 +38,8 @@ resource "google_sql_database_instance" "db" {
 		}
 	}
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "google_sql_database_instance" "db" {
 	name             = "db"
 	database_version = "POSTGRES_12"
@@ -51,7 +51,7 @@ resource "google_sql_database_instance" "db" {
 		}
 	}
 }
-			`,
+			`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance",
 				"https://postgresqlco.nf/doc/en/param/log_min_messages/",

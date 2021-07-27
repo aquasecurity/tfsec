@@ -19,29 +19,28 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS011",
+		LegacyID:  "AWS011",
 		Service:   "rds",
 		ShortCode: "no-public-db-access",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "A database resource is marked as publicly accessible.",
-			Impact:       "The database instance is publicly accessible",
-			Resolution:   "Set the database to not be publicly accessible",
-			Explanation:  `
+			Summary:    "A database resource is marked as publicly accessible.",
+			Impact:     "The database instance is publicly accessible",
+			Resolution: "Set the database to not be publicly accessible",
+			Explanation: `
 Database resources should not publicly available. You should limit all access to the minimum that is required for your application to function. 
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_db_instance" "bad_example" {
 	publicly_accessible = true
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_db_instance" "good_example" {
 	publicly_accessible = false
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance",
 			},

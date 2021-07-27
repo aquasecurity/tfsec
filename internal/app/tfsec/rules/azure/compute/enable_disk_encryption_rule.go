@@ -29,18 +29,18 @@ func init() {
 			Explanation: `
 Manage disks should be encrypted at rest. When specifying the <code>encryption_settings</code> block, the enabled attribute should be set to <code>true</code>.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "azurerm_managed_disk" "bad_example" {
 	encryption_settings {
 		enabled = false
 	}
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "azurerm_managed_disk" "good_example" {
 	encryption_settings {
 		enabled = true
 	}
-}`,
+}`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_disk",
 				"https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption",
