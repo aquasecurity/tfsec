@@ -198,6 +198,17 @@ resource "aws_security_group_rule" "my-rule" {
 	assert.Len(t, results, 0)
 }
 
+func Test_IgnoreInline(t *testing.T) {
+	results := testutil.ScanHCL(`
+	resource "aws_instance" "sample" {
+		metadata_options {
+		  http_tokens = "optional" # tfsec:ignore:aws-ec2-enforce-http-token-imds
+		}
+	  }
+	  `, t)
+	assert.Len(t, results, 0)
+}
+
 func Test_IgnoreIgnoreWithExpiryAndWorkspaceButWrongWorkspaceSupplied(t *testing.T) {
 	results := testutil.ScanHCL(`
 # tfsec:ignore:AWS006:exp:2221-01-02 #tfsec:ignore:AWS018:ws:otherworkspace
