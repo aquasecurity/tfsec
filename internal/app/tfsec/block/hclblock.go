@@ -364,7 +364,7 @@ func (block *HCLBlock) NameLabel() string {
 }
 
 func (block *HCLBlock) HasChild(childElement string) bool {
-	return block.GetAttribute(childElement).IsNil() || block.GetBlock(childElement) != nil
+	return block.GetAttribute(childElement).IsNotNil() || block.GetBlock(childElement).IsNotNil()
 }
 
 func (block *HCLBlock) MissingChild(childElement string) bool {
