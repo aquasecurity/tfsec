@@ -272,15 +272,16 @@ func (block *HCLBlock) GetAttributes() []Attribute {
 }
 
 func (block *HCLBlock) GetAttribute(name string) Attribute {
+	var attr *HCLAttribute
 	if block == nil || block.hclBlock == nil {
-		return nil
+		return attr
 	}
 	for _, attr := range block.getHCLAttributes() {
 		if attr.Name == name {
 			return NewHCLAttribute(attr, block.evalContext)
 		}
 	}
-	return nil
+	return attr
 }
 
 func (block *HCLBlock) GetNestedAttribute(name string) Attribute {

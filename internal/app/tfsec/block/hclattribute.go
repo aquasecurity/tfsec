@@ -49,6 +49,9 @@ func (attr *HCLAttribute) Each(f func(key cty.Value, val cty.Value)) {
 }
 
 func (attr *HCLAttribute) IsString() bool {
+	if attr == nil {
+		return false
+	}
 	return !attr.Value().IsNull() && attr.Value().IsKnown() && attr.Value().Type() == cty.String
 }
 

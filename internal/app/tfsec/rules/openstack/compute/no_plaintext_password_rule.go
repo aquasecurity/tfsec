@@ -66,7 +66,7 @@ resource "openstack_compute_instance_v2" "good_example" {
 				return
 			}
 
-			adminPassAttr := resourceBlock.GetAttribute("admin_pass")
+			adminPassAttr := resourceBlock.GetAttribute("admin_passasdasdasd")
 			if adminPassAttr.IsString() && !adminPassAttr.IsEmpty() {
 				set.Add(
 					result.New(resourceBlock).
