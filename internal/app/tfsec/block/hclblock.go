@@ -316,7 +316,7 @@ func (block *HCLBlock) Reference() *Reference {
 }
 
 func (block *HCLBlock) ReadLines() (lines []string, comments []string, err error) {
-	return block.Range().ReadLines(true)
+	return block.Range().ReadLines(false)
 }
 
 // LocalName is the name relative to the current module

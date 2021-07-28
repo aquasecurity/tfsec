@@ -92,11 +92,18 @@ resource "aws_athena_workgroup" "good_example" {
 			}
 
 			configBlock := resourceBlock.GetBlock("configuration")
-			if configBlock.HasChild("enforce_workgroup_configuration") &&
-				configBlock.GetAttribute("enforce_workgroup_configuration").IsFalse() {
+
+			configBlock.HasChild("enforce_workgroup_configuration")
+			enforceWorkgroupConfigAtt := configBlock.GetAttribute("enforce_workgroup_configuration")
+
+			if enforceWorkgroupConfigAtt == nil {
+				return
+			}
+
+			if enforceWorkgroupConfigAtt.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName())),
+						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName())).WithAttribute(enforceWorkgroupConfigAtt),
 				)
 			}
 
