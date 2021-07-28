@@ -139,6 +139,10 @@ func (r *Result) WithStatus(status Status) *Result {
 
 func (r *Result) WithAttribute(attr block.Attribute) *Result {
 
+	if attr.IsNil() {
+		return r
+	}
+
 	r.attribute = attr
 
 	var raw string
