@@ -46,6 +46,10 @@ var rootCmd = &cobra.Command{
 			return err
 		}
 
+		if err := generateExtensionCodeFile(fileContents); err != nil {
+			return err
+		}
+
 		return generateWebPages(fileContents)
 	},
 }

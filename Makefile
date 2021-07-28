@@ -72,7 +72,7 @@ clone-image:
 
 .PHONY: sanity
 sanity: test
-	go run ./cmd/tfsec -s -p --force-all-dirs ./example
+	go run ./cmd/tfsec -s -p --force-all-dirs ./example > /dev/null
 
 .PHONY: pr-lint
 pr-lint: 
