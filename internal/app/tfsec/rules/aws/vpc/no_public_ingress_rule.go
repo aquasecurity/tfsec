@@ -80,10 +80,8 @@ resource "aws_network_acl_rule" "good_example" {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						return
 					} else {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName()))
 					}
 				}
 
@@ -95,11 +93,9 @@ resource "aws_network_acl_rule" "good_example" {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						return
 					} else {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
-								WithAttribute(ipv6CidrBlockAttr),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
+							WithAttribute(ipv6CidrBlockAttr)
 					}
 				}
 

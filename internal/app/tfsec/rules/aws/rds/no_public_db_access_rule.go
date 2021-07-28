@@ -53,11 +53,9 @@ resource "aws_db_instance" "good_example" {
 
 			if publicAttr := resourceBlock.GetAttribute("publicly_accessible"); publicAttr != nil && publicAttr.Type() == cty.Bool {
 				if publicAttr.Value().True() {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
-							WithAttribute(publicAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
+						WithAttribute(publicAttr)
 				}
 			}
 

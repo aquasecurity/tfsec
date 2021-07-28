@@ -78,22 +78,18 @@ resource "google_project_iam_member" "project-123" {
 			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr != nil {
 				if memberAttr.IsString() && memberAttr.Value().IsKnown() {
 					if isMemberDefaultServiceAccount(memberAttr.Value().AsString()) {
-						set.Add(
-							result.New(resourceBlock).
-								WithAttribute(memberAttr).
-								WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())),
-						)
+						set.Add().
+							WithAttribute(memberAttr).
+							WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName()))
 					}
 				} else {
 					computeServiceAccounts := ctx.GetDatasByType("google_compute_default_service_account")
 					serviceAccounts := append(computeServiceAccounts, ctx.GetResourcesByType("google_app_engine_default_service_account")...)
 					for _, serviceAccount := range serviceAccounts {
 						if memberAttr.ReferencesBlock(serviceAccount) {
-							set.Add(
-								result.New(resourceBlock).
-									WithAttribute(memberAttr).
-									WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())),
-							)
+							set.Add().
+								WithAttribute(memberAttr).
+								WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName()))
 						}
 					}
 				}
@@ -102,22 +98,18 @@ resource "google_project_iam_member" "project-123" {
 			if membersAttr := resourceBlock.GetAttribute("members"); membersAttr != nil {
 				for _, member := range membersAttr.ValueAsStrings() {
 					if isMemberDefaultServiceAccount(member) {
-						set.Add(
-							result.New(resourceBlock).
-								WithAttribute(membersAttr).
-								WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())),
-						)
+						set.Add().
+							WithAttribute(membersAttr).
+							WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName()))
 					}
 				}
 				computeServiceAccounts := ctx.GetDatasByType("google_compute_default_service_account")
 				serviceAccounts := append(computeServiceAccounts, ctx.GetResourcesByType("google_app_engine_default_service_account")...)
 				for _, serviceAccount := range serviceAccounts {
 					if membersAttr.ReferencesBlock(serviceAccount) {
-						set.Add(
-							result.New(resourceBlock).
-								WithAttribute(membersAttr).
-								WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())),
-						)
+						set.Add().
+							WithAttribute(membersAttr).
+							WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName()))
 					}
 				}
 			}

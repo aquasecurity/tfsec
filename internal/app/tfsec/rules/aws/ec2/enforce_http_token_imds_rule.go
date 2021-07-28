@@ -59,10 +59,8 @@ resource "aws_instance" "good_example" {
 
 			metaDataOptions := resourceBlock.GetBlock("metadata_options")
 			if metaDataOptions.IsNil() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName()))
 				return
 			}
 
@@ -77,11 +75,9 @@ resource "aws_instance" "good_example" {
 			httpTokensAttr := metaDataOptions.GetAttribute("http_tokens")
 			if httpTokensAttr.IsNotNil() {
 				if httpTokensAttr.NotEqual("required") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())).
-							WithAttribute(httpTokensAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())).
+						WithAttribute(httpTokensAttr)
 				}
 			}
 

@@ -58,17 +58,13 @@ resource "aws_iam_account_password_policy" "good_example" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if attr := resourceBlock.GetAttribute("password_reuse_prevention"); attr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a password reuse prevention count set.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not have a password reuse prevention count set.", resourceBlock.FullName()))
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value < 5 {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has a password reuse count less than 5.", resourceBlock.FullName())),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' has a password reuse count less than 5.", resourceBlock.FullName()))
 				}
 			}
 		},

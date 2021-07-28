@@ -77,21 +77,17 @@ resource "aws_network_acl_rule" "good_example" {
 
 			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr != nil {
 				if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
-							WithAttribute(cidrBlockAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
+						WithAttribute(cidrBlockAttr)
 				}
 			}
 
 			if ipv6CidrBlockAttr := resourceBlock.GetAttribute("ipv6_cidr_block"); ipv6CidrBlockAttr != nil {
 				if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
-							WithAttribute(ipv6CidrBlockAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
+						WithAttribute(ipv6CidrBlockAttr)
 				}
 			}
 

@@ -107,10 +107,8 @@ resource "azurerm_network_security_group" "example" {
 				if securityRule.HasChild("destination_port_range") && securityRule.GetAttribute("destination_port_range").Contains("22") {
 					if securityRule.HasChild("source_address_prefix") {
 						if securityRule.GetAttribute("source_address_prefix").IsAny("*", "0.0.0.0", "/0", "internet", "any") {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has a .", resourceBlock.FullName())),
-							)
+							set.Add().
+								WithDescription(fmt.Sprintf("Resource '%s' has a .", resourceBlock.FullName()))
 						}
 					}
 				}

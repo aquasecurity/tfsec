@@ -70,19 +70,15 @@ resource "aws_elasticache_cluster" "good_example" {
 				if nodeTypeAttr != nil && !nodeTypeAttr.Equals("cache.t1.micro") {
 					snapshotRetentionAttr := resourceBlock.GetAttribute("snapshot_retention_limit")
 					if snapshotRetentionAttr == nil {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", resourceBlock.FullName()))
 						return
 					}
 
 					if snapshotRetentionAttr.Equals(0) {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName())).
-								WithAttribute(snapshotRetentionAttr),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName())).
+							WithAttribute(snapshotRetentionAttr)
 					}
 				}
 			}

@@ -58,22 +58,18 @@ resource "aws_security_group" "good_example" {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 					if cidr.IsOpen(cidrBlocksAttr) {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName())).
-								WithAttribute(cidrBlocksAttr),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName())).
+							WithAttribute(cidrBlocksAttr)
 					}
 				}
 
 				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr != nil {
 
 					if cidr.IsOpen(cidrBlocksAttr) {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName())).
-								WithAttribute(cidrBlocksAttr),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName())).
+							WithAttribute(cidrBlocksAttr)
 					}
 				}
 			}

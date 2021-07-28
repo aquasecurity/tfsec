@@ -80,10 +80,8 @@ resource "digitalocean_loadbalancer" "bad_example" {
 				}
 				entryPointAttr := rule.GetAttribute("entry_protocol")
 				if entryPointAttr.Equals("http", block.IgnoreCase) {
-					set.Add(result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName())).
-						WithAttribute(entryPointAttr),
-					)
+					set.Add().WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName())).
+						WithAttribute(entryPointAttr)
 				}
 			}
 		},

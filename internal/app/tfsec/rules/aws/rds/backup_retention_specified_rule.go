@@ -95,20 +95,16 @@ resource "aws_rds_cluster" "good_example" {
 			}
 
 			if resourceBlock.MissingChild("backup_retention_period") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have backup retention explicitly set", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not have backup retention explicitly set", resourceBlock.FullName()))
 				return
 			}
 
 			retentionAttr := resourceBlock.GetAttribute("backup_retention_period")
 			if retentionAttr.LessThanOrEqualTo(1) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has backup retention period set to a low value", resourceBlock.FullName())).
-						WithAttribute(retentionAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' has backup retention period set to a low value", resourceBlock.FullName())).
+					WithAttribute(retentionAttr)
 			}
 
 		},

@@ -52,27 +52,23 @@ resource "aws_security_group" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_security_group"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(resultSet result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			for _, directionBlock := range resourceBlock.GetBlocks("ingress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 
 					if cidr.IsOpen(cidrBlocksAttr) {
-						resultSet.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())).
-								WithAttribute(cidrBlocksAttr),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())).
+							WithAttribute(cidrBlocksAttr)
 					}
 				}
 
 				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr != nil {
 
 					if cidr.IsOpen(cidrBlocksAttr) {
-						resultSet.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName()))
 					}
 				}
 			}

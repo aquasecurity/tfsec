@@ -62,19 +62,15 @@ resource "aws_elasticsearch_domain" "good_example" {
 
 			encryptionBlock := resourceBlock.GetBlock("node_to_node_encryption")
 			if encryptionBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing node_to_node_encryption block).", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing node_to_node_encryption block).", resourceBlock.FullName()))
 				return
 			}
 
 			enabledAttr := encryptionBlock.GetAttribute("enabled")
 			if enabledAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enabled attribute).", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enabled attribute).", resourceBlock.FullName()))
 				return
 			}
 
@@ -83,10 +79,8 @@ resource "aws_elasticsearch_domain" "good_example" {
 				enabledAttr.Value().Equals(cty.StringVal("true")).True()
 			nodeToNodeEncryptionEnabled := isTrueBool || isTrueString
 			if !nodeToNodeEncryptionEnabled {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName()))
 			}
 
 		},

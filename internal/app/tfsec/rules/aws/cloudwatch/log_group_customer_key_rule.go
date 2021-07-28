@@ -53,10 +53,8 @@ resource "aws_cloudwatch_log_group" "good_example" {
 		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("kms_key_id") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is only using default encryption", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' is only using default encryption", resourceBlock.FullName()))
 			}
 
 		},

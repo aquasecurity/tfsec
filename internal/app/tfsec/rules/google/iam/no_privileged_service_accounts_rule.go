@@ -78,11 +78,9 @@ resource "google_project_iam_member" "project" {
 			}
 			if memberAttr.IsString() && memberAttr.Value().IsKnown() {
 				if memberAttr.StartsWith("serviceAccount:") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' provides privileged access to a service account", resourceBlock)).
-							WithAttribute(roleAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' provides privileged access to a service account", resourceBlock)).
+						WithAttribute(roleAttr)
 				}
 			}
 
@@ -90,11 +88,9 @@ resource "google_project_iam_member" "project" {
 			if serviceAccountBlock, err := ctx.GetReferencedBlock(memberAttr); err != nil {
 				return
 			} else if serviceAccountBlock != nil && serviceAccountBlock.TypeLabel() == "google_service_account" {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' provides privileged access to service account at %s", resourceBlock, serviceAccountBlock.FullName())).
-						WithAttribute(roleAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' provides privileged access to service account at %s", resourceBlock, serviceAccountBlock.FullName())).
+					WithAttribute(roleAttr)
 			}
 		},
 	})

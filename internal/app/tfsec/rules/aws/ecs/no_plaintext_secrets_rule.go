@@ -100,10 +100,8 @@ EOF
 				for _, definition := range definitions {
 					for _, env := range definition.EnvVars {
 						if security.IsSensitiveAttribute(env.Name) && env.Value != "" {
-							set.Add(result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", resourceBlock.FullName(), env.Name)).
-								WithAttribute(definitionsAttr),
-							)
+							set.Add().WithDescription(fmt.Sprintf("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", resourceBlock.FullName(), env.Name)).
+								WithAttribute(definitionsAttr)
 						}
 					}
 				}

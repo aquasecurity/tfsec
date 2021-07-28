@@ -73,20 +73,16 @@ resource "aws_cloudtrail" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("kms_key_id") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a kms_key_id set.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not have a kms_key_id set.", resourceBlock.FullName()))
 				return
 			}
 
 			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
 			if kmsKeyIdAttr.IsEmpty() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has a kms_key_id but it is not set.", resourceBlock.FullName())).
-						WithAttribute(kmsKeyIdAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' has a kms_key_id but it is not set.", resourceBlock.FullName())).
+					WithAttribute(kmsKeyIdAttr)
 			}
 
 		},

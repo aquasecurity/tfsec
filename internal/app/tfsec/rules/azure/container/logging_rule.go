@@ -57,38 +57,27 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 
 			addonProfileBlock := resourceBlock.GetBlock("addon_profile")
 			if addonProfileBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", resourceBlock.FullName()))
 				return
 			}
 
 			omsAgentBlock := addonProfileBlock.GetBlock("oms_agent")
 			if omsAgentBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", resourceBlock.FullName()))
 				return
 			}
 
 			enabledAttr := omsAgentBlock.GetAttribute("enabled")
 			if enabledAttr == nil || (enabledAttr.Type() == cty.Bool && enabledAttr.Value().False()) {
-
-				res := result.New(resourceBlock).
+				set.Add().
 					WithDescription(fmt.Sprintf(
 						"Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).",
 						resourceBlock.FullName(),
-					))
-
-				if enabledAttr != nil {
-					res.WithAttribute(enabledAttr)
-				}
-
-				set.Add(res)
+					)).
+					WithAttribute(enabledAttr)
 			}
-
 		},
 	})
 }

@@ -71,27 +71,22 @@ resource "aws_dax_cluster" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("server_side_encryption") {
-				res := result.New(resourceBlock).
+				set.Add().
 					WithDescription(fmt.Sprintf("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", resourceBlock.FullName()))
-				set.Add(res)
 				return
 			}
 
 			sseBlock := resourceBlock.GetBlock("server_side_encryption")
 			if sseBlock.MissingChild("enabled") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", resourceBlock.FullName())).
-						WithBlock(sseBlock),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", resourceBlock.FullName())).
+					WithBlock(sseBlock)
 			}
 
 			if sseEnabledAttr := sseBlock.GetAttribute("enabled"); sseEnabledAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("DAX cluster '%s' has disabled server side encryption", resourceBlock.FullName())).
-						WithAttribute(sseEnabledAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("DAX cluster '%s' has disabled server side encryption", resourceBlock.FullName())).
+					WithAttribute(sseEnabledAttr)
 			}
 
 		},

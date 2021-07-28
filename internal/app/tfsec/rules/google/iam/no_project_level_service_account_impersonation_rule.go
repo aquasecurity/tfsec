@@ -62,11 +62,9 @@ resource "google_project_iam_binding" "project-123" {
 				return
 			}
 			if roleAttr.Value().AsString() == "roles/iam.serviceAccountUser" || roleAttr.Value().AsString() == "roles/iam.serviceAccountTokenCreator" {
-				set.Add(
-					result.New(resourceBlock).
-						WithAttribute(roleAttr).
-						WithDescription(fmt.Sprintf("Resource '%s' grants service account access to a user at project level.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithAttribute(roleAttr).
+					WithDescription(fmt.Sprintf("Resource '%s' grants service account access to a user at project level.", resourceBlock.FullName()))
 			}
 
 		},

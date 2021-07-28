@@ -53,17 +53,13 @@ provider "aws" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if accessKeyAttribute := resourceBlock.GetAttribute("access_key"); accessKeyAttribute != nil && accessKeyAttribute.Type() == cty.String {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Provider '%s' has an access key specified.", resourceBlock.FullName())).
-						WithAttribute(accessKeyAttribute),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Provider '%s' has an access key specified.", resourceBlock.FullName())).
+					WithAttribute(accessKeyAttribute)
 			} else if secretKeyAttribute := resourceBlock.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Provider '%s' has a secret key specified.", resourceBlock.FullName())).
-						WithAttribute(secretKeyAttribute),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Provider '%s' has a secret key specified.", resourceBlock.FullName())).
+					WithAttribute(secretKeyAttribute)
 			}
 
 		},

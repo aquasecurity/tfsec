@@ -75,10 +75,8 @@ resource "aws_api_gateway_stage" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("access_log_settings") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing access log settings block.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' is missing access log settings block.", resourceBlock.FullName()))
 			}
 
 		},

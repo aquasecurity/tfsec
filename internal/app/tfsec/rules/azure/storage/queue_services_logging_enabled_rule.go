@@ -76,10 +76,8 @@ resource "azurerm_storage_account" "good_example" {
 			if resourceBlock.HasChild("queue_properties") {
 				queueProps := resourceBlock.GetBlock("queue_properties")
 				if queueProps.MissingChild("logging") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", resourceBlock.FullName())),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", resourceBlock.FullName()))
 				}
 			}
 

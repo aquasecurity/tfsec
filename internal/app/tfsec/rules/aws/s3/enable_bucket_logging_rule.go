@@ -55,10 +55,8 @@ resource "aws_s3_bucket" "good_example" {
 				if resourceBlock.GetAttribute("acl") != nil && resourceBlock.GetAttribute("acl").Equals("log-delivery-write") {
 					return
 				}
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have logging enabled.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not have logging enabled.", resourceBlock.FullName()))
 			}
 		},
 	})

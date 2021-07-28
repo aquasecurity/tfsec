@@ -64,19 +64,15 @@ resource "aws_ecr_repository" "good_example" {
 
 			imageTagMutabilityAttr := resourceBlock.GetAttribute("image_tag_mutability")
 			if imageTagMutabilityAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", resourceBlock.FullName()))
 				return
 			}
 
 			if !imageTagMutabilityAttr.Equals("IMMUTABLE") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has `image_tag_mutability` attribute  not set to `IMMUTABLE`", resourceBlock.FullName())).
-						WithAttribute(imageTagMutabilityAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' has `image_tag_mutability` attribute  not set to `IMMUTABLE`", resourceBlock.FullName())).
+					WithAttribute(imageTagMutabilityAttr)
 			}
 
 		},

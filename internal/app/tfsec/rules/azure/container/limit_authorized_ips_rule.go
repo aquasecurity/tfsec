@@ -57,10 +57,8 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 				(resourceBlock.MissingChild("private_cluster_enabled") ||
 					resourceBlock.GetAttribute("private_cluster_enabled").IsFalse()) {
 				{
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", resourceBlock.FullName())),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", resourceBlock.FullName()))
 				}
 			}
 		},

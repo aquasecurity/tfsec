@@ -95,10 +95,8 @@ resource "evil_corp" "good_example" {
 				}
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.IsResolvable() && attribute.Type() == cty.String && !attribute.Equals("") {
-						set.Add(result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", resourceBlock.FullName())).
-							WithAttribute(attribute),
-						)
+						set.Add().WithDescription(fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", resourceBlock.FullName())).
+							WithAttribute(attribute)
 					}
 
 				}

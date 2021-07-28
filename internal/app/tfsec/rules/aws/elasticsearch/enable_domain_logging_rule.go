@@ -88,10 +88,8 @@ resource "aws_elasticsearch_domain" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("log_publishing_options") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not configure logging at rest on the domain.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not configure logging at rest on the domain.", resourceBlock.FullName()))
 				return
 			}
 
@@ -99,11 +97,9 @@ resource "aws_elasticsearch_domain" "good_example" {
 			for _, logOption := range logOptions {
 				enabledAttr := logOption.GetAttribute("enabled")
 				if enabledAttr != nil && enabledAttr.IsFalse() {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' explicitly disables logging on the domain.", resourceBlock.FullName())).
-							WithAttribute(enabledAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' explicitly disables logging on the domain.", resourceBlock.FullName())).
+						WithAttribute(enabledAttr)
 					return
 				}
 			}

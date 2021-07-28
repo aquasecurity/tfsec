@@ -54,10 +54,8 @@ resource "aws_s3_bucket_public_access_block" "example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 			blocks, err := ctx.GetReferencingResources(resourceBlock, "aws_s3_bucket_public_access_block", "bucket")
 			if err != nil || len(blocks) == 0 {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource %s has no associated aws_s3_bucket_public_access_block.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource %s has no associated aws_s3_bucket_public_access_block.", resourceBlock.FullName()))
 			}
 		},
 	})

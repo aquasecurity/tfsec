@@ -64,19 +64,15 @@ resource "aws_elasticsearch_domain" "good_example" {
 
 			endpointBlock := resourceBlock.GetBlock("domain_endpoint_options")
 			if endpointBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing domain_endpoint_options block).", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing domain_endpoint_options block).", resourceBlock.FullName()))
 				return
 			}
 
 			enforceHTTPSAttr := endpointBlock.GetAttribute("enforce_https")
 			if enforceHTTPSAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enforce_https attribute).", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enforce_https attribute).", resourceBlock.FullName()))
 				return
 			}
 
@@ -85,10 +81,8 @@ resource "aws_elasticsearch_domain" "good_example" {
 				enforceHTTPSAttr.Value().Equals(cty.StringVal("true")).True()
 			enforcedHTTPS := isTrueBool || isTrueString
 			if !enforcedHTTPS {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName()))
 			}
 
 		},

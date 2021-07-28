@@ -107,11 +107,9 @@ resource "aws_cloudfront_distribution" "good_example" {
 
 			wafAclIdBlock := resourceBlock.GetAttribute("web_acl_id")
 			if wafAclIdBlock.IsNil() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", resourceBlock.FullName())).
-						WithAttribute(wafAclIdBlock),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", resourceBlock.FullName())).
+					WithAttribute(wafAclIdBlock)
 			}
 		},
 	})

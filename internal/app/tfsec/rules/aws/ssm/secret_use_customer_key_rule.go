@@ -56,10 +56,8 @@ resource "aws_secretsmanager_secret" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("kms_key_id") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not use CMK", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not use CMK", resourceBlock.FullName()))
 				return
 			}
 
@@ -71,11 +69,9 @@ resource "aws_secretsmanager_secret" "good_example" {
 				}
 				keyIdAttr := kmsData.GetAttribute("key_id")
 				if keyIdAttr != nil && keyIdAttr.Equals("alias/aws/secretsmanager") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
-							WithAttribute(kmsKeyAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
+						WithAttribute(kmsKeyAttr)
 				}
 			}
 

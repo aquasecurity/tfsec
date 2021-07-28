@@ -66,21 +66,17 @@ resource "aws_security_group_rule" "good_example" {
 
 			if cidrBlocksAttr := resourceBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
 				if cidr.IsOpen(cidrBlocksAttr) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName())).
-							WithAttribute(cidrBlocksAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName())).
+						WithAttribute(cidrBlocksAttr)
 				}
 			}
 
 			if ipv6CidrBlocksAttr := resourceBlock.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr != nil {
 				if cidr.IsOpen(ipv6CidrBlocksAttr) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName())).
-							WithAttribute(ipv6CidrBlocksAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName())).
+						WithAttribute(ipv6CidrBlocksAttr)
 				}
 
 			}

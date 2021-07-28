@@ -60,20 +60,16 @@ resource "aws_ecs_cluster" "good_example" {
 				if name := setting.GetAttribute("name"); name != nil && name.Equals("containerinsights", block.IgnoreCase) {
 					if valueAttr := setting.GetAttribute("value"); valueAttr != nil {
 						if !valueAttr.Equals("enabled", block.IgnoreCase) {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName())).
-									WithAttribute(valueAttr),
-							)
+							set.Add().
+								WithDescription(fmt.Sprintf("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName())).
+								WithAttribute(valueAttr)
 						}
 						return
 					}
 				}
 			}
-			set.Add(
-				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName())),
-			)
+			set.Add().
+				WithDescription(fmt.Sprintf("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName()))
 		},
 	})
 }

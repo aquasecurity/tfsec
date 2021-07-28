@@ -142,20 +142,16 @@ resource "azurerm_monitor_log_profile" "bad_example" {
 
 			locationsAttr := resourceBlock.GetAttribute("locations")
 			if locationsAttr == nil || locationsAttr.IsEmpty() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have all locations specified", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not have all locations specified", resourceBlock.FullName()))
 				return
 			}
 
 			for _, location := range locations {
 				if !locationsAttr.Contains(location) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' does not have the location '%s'", resourceBlock.LocalName(), location)).
-							WithAttribute(locationsAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' does not have the location '%s'", resourceBlock.LocalName(), location)).
+						WithAttribute(locationsAttr)
 				}
 			}
 

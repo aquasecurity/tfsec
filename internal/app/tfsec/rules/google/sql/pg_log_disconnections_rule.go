@@ -68,30 +68,25 @@ resource "google_sql_database_instance" "db" {
 
 			settingsBlock := resourceBlock.GetBlock("settings")
 			if settingsBlock.IsNil() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is not configured to log disconnections", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' is not configured to log disconnections", resourceBlock.FullName()))
 				return
 			}
 
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
 				if dbFlagBlock.GetAttribute("name").Equals("log_disconnections") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.Equals("off") {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' is configured not to log disconnections", resourceBlock.FullName())).
-								WithAttribute(valueAttr),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' is configured not to log disconnections", resourceBlock.FullName())).
+							WithAttribute(valueAttr)
 					}
 					return
 				}
 			}
 
-			set.Add(
-				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' is not configured to log disconnections", resourceBlock.FullName())),
-			)
+			set.Add().
+				WithDescription(fmt.Sprintf("Resource '%s' is not configured to log disconnections", resourceBlock.FullName())).
+				WithBlock(settingsBlock)
 
 		},
 	})

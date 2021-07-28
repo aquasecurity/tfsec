@@ -54,17 +54,13 @@ resource "aws_sqs_queue" "good_example" {
 
 			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName()))
 
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())).
-						WithAttribute(kmsKeyIDAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())).
+					WithAttribute(kmsKeyIDAttr)
 			}
 
 		},

@@ -57,23 +57,19 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 
 			rbacBlock := resourceBlock.GetBlock("role_based_access_control")
 			if rbacBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", resourceBlock.FullName()))
 				return
 			}
 
 			enabledAttr := rbacBlock.GetAttribute("enabled")
 			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf(
-							"Resource '%s' RBAC disabled.",
-							resourceBlock.FullName(),
-						)).
-						WithAttribute(enabledAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf(
+						"Resource '%s' RBAC disabled.",
+						resourceBlock.FullName(),
+					)).
+					WithAttribute(enabledAttr)
 			}
 
 		},

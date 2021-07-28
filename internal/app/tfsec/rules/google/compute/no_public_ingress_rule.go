@@ -54,11 +54,9 @@ resource "google_compute_firewall" "good_example" {
 
 			if sourceRanges := resourceBlock.GetAttribute("source_ranges"); sourceRanges != nil {
 				if cidr.IsOpen(sourceRanges) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", resourceBlock.FullName())).
-							WithAttribute(sourceRanges),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' defines a fully open inbound firewall rule.", resourceBlock.FullName())).
+						WithAttribute(sourceRanges)
 				}
 			}
 

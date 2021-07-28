@@ -2,7 +2,6 @@ package sql
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
@@ -56,33 +55,23 @@ resource "google_sql_database_instance" "db" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			// we only need to check this for SQLSERVER, not mysql/postgres
-			dbVersionAttr := resourceBlock.GetAttribute("database_version")
-			if dbVersionAttr == nil || !dbVersionAttr.IsString() {
-				// default is postgres
-				return
-			}
-
-			if !strings.HasPrefix(dbVersionAttr.Value().AsString(), "SQLSERVER") {
+			if !resourceBlock.GetAttribute("database_version").StartsWith("SQLSERVER") {
 				return
 			}
 
 			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has cross-database ownership chaining enabled by default", resourceBlock.FullName())),
-				)
+			if settingsBlock.IsNil() {
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' has cross-database ownership chaining enabled by default", resourceBlock.FullName()))
 				return
 			}
 
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
-				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Value().AsString() == "cross db ownership chaining" {
+				if dbFlagBlock.GetAttribute("name").Equals("cross db ownership chaining") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
 						if valueAttr.Value().AsString() == "on" {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has cross-database ownership chaining explicitly enabled", resourceBlock.FullName())),
-							)
+							set.Add().
+								WithDescription(fmt.Sprintf("Resource '%s' has cross-database ownership chaining explicitly enabled", resourceBlock.FullName()))
 						}
 						// otherwise it's off, awesome
 						return
@@ -91,10 +80,9 @@ resource "google_sql_database_instance" "db" {
 			}
 
 			// we didn't find the flag so it must be on by default
-			set.Add(
-				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' has cross-database ownership chaining enabled by default", resourceBlock.FullName())),
-			)
+			set.Add().
+				WithDescription(fmt.Sprintf("Resource '%s' has cross-database ownership chaining enabled by default", resourceBlock.FullName())).
+				WithBlock(settingsBlock)
 
 		},
 	})

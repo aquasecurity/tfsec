@@ -57,19 +57,17 @@ resource "azurerm_security_center_contact" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("alert_notifications") {
-				set.Add(
-					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' is missing the required setting for alert_notifications", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' is missing the required setting for alert_notifications", resourceBlock.FullName()))
 
 				return
 			}
 
 			alertNotificationsAttr := resourceBlock.GetAttribute("alert_notifications")
 			if alertNotificationsAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).WithDescription(fmt.Sprintf("Resource '%s' has alert_notifications turned off", resourceBlock.FullName())).
-						WithAttribute(alertNotificationsAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' has alert_notifications turned off", resourceBlock.FullName())).
+					WithAttribute(alertNotificationsAttr)
 			}
 
 		},

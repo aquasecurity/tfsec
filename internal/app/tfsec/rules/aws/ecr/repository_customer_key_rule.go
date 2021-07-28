@@ -71,27 +71,21 @@ resource "aws_ecr_repository" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("encryption_configuration") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName()))
 				return
 			}
 
 			encBlock := resourceBlock.GetBlock("encryption_configuration")
 			if encBlock.MissingChild("kms_key") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' configures encryption without using CMK", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' configures encryption without using CMK", resourceBlock.FullName()))
 				return
 			}
 
 			if encBlock.MissingChild("encryption_type") || encBlock.GetAttribute("encryption_type").Equals("AES256") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName()))
 			}
 
 		},

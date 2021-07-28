@@ -29,7 +29,24 @@ resource "google_sql_database_instance" "postgres" {
 			ipv4_enabled = true
 		}
 	}
+}
+`,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check detects issue with public ipv4 address being assigned by default",
+			source: `
+resource "google_sql_database_instance" "postgres" {
+	name             = "postgres-instance-a"
+	database_version = "POSTGRES_11"
+	
+	settings {
+			tier = "db-f1-micro"
+	
+			ip_configuration {
+			}
 	}
+}
 `,
 			mustIncludeResultCode: expectedCode,
 		},
@@ -42,11 +59,19 @@ resource "google_sql_database_instance" "postgres" {
 	
 	settings {
 		tier = "db-f1-micro"
+	}
+}
+`,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check detects issue with public ipv4 address being assigned by default",
+			source: `
+resource "google_sql_database_instance" "postgres" {
+	name             = "postgres-instance-a"
+	database_version = "POSTGRES_11"
 	
-		ip_configuration {
-		}
-	}
-	}
+}
 `,
 			mustIncludeResultCode: expectedCode,
 		},

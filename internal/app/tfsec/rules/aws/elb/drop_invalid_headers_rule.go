@@ -78,20 +78,16 @@ resource "aws_alb" "good_example" {
 
 			if resourceBlock.GetAttribute("load_balancer_type").Equals("application", block.IgnoreCase) {
 				if resourceBlock.MissingChild("drop_invalid_header_fields") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' does not drop invalid header fields", resourceBlock.FullName())),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' does not drop invalid header fields", resourceBlock.FullName()))
 					return
 				}
 
 				attr := resourceBlock.GetAttribute("drop_invalid_header_fields")
 				if attr.IsFalse() {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", resourceBlock.FullName())).
-							WithAttribute(attr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", resourceBlock.FullName())).
+						WithAttribute(attr)
 				}
 
 			}

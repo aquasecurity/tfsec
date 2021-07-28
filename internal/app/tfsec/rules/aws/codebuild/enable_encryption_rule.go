@@ -112,17 +112,13 @@ resource "aws_codebuild_project" "codebuild" {
 					artifactTypeAttr := artifactBlock.GetAttribute("type")
 
 					if artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName())).
-								WithAttribute(artifactTypeAttr),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName())).
+							WithAttribute(artifactTypeAttr)
 					} else {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName())).
-								WithAttribute(encryptionDisabledAttr),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName())).
+							WithAttribute(encryptionDisabledAttr)
 					}
 				}
 			}

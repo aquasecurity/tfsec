@@ -99,10 +99,8 @@ POLICY
 			if err := json.Unmarshal(rawJSON, &policy); err == nil {
 				for _, statement := range policy.Statement {
 					if strings.ToLower(statement.Effect) == "allow" && (statement.Action == "*" || statement.Action == "sqs:*") {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName())),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName()))
 					}
 				}
 			}

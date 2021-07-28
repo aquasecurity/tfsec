@@ -66,37 +66,29 @@ resource "azurerm_key_vault" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("network_acls") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName()))
 				return
 			}
 
 			networkAcls := resourceBlock.GetBlock("network_acls")
 			if networkAcls == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName()))
 				return
 			}
 
 			if networkAcls.MissingChild("default_action") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a default action in the network acl.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a default action in the network acl.", resourceBlock.FullName()))
 				return
 			}
 
 			defaultActionAttr := networkAcls.GetAttribute("default_action")
 			if !defaultActionAttr.Equals("Deny") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
-						WithAttribute(defaultActionAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
+					WithAttribute(defaultActionAttr)
 			}
 
 		},

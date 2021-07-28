@@ -58,20 +58,16 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("restrict_public_buckets") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not specify restrict_public_buckets, defaults to false", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not specify restrict_public_buckets, defaults to false", resourceBlock.FullName()))
 				return
 			}
 
 			attr := resourceBlock.GetAttribute("restrict_public_buckets")
 			if attr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' sets restrict_public_buckets explicitly to false", resourceBlock.FullName())).
-						WithAttribute(attr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' sets restrict_public_buckets explicitly to false", resourceBlock.FullName())).
+					WithAttribute(attr)
 			}
 		},
 	})

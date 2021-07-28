@@ -70,11 +70,9 @@ resource "google_sql_database_instance" "db" {
 			for _, dbFlagBlock := range resourceBlock.GetBlock("settings").GetBlocks("database_flags") {
 				if dbFlagBlock.GetAttribute("name").Equals("log_min_duration_statement") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.NotEqual("-1") {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' causes database query statements to be logged", resourceBlock.FullName())).
-								WithAttribute(valueAttr),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' causes database query statements to be logged", resourceBlock.FullName())).
+							WithAttribute(valueAttr)
 					}
 				}
 			}

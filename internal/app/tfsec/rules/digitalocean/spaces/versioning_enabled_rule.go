@@ -61,9 +61,6 @@ resource "digitalocean_spaces_bucket" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("versioning") {
-				set.Add(result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled.", resourceBlock.FullName())),
-				)
 
 				return
 			}
@@ -72,10 +69,8 @@ resource "digitalocean_spaces_bucket" "good_example" {
 			enabledAttr := versioningBlock.GetAttribute("enabled")
 
 			if enabledAttr == nil || enabledAttr.IsFalse() {
-				set.Add(result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName())).
-					WithAttribute(enabledAttr),
-				)
+				set.Add().WithDescription(fmt.Sprintf("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName())).
+					WithAttribute(enabledAttr)
 
 			}
 

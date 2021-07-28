@@ -54,19 +54,15 @@ resource "aws_api_gateway_domain_name" "good_example" {
 
 			securityPolicyAttr := resourceBlock.GetAttribute("security_policy")
 			if securityPolicyAttr.IsNil() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName()))
 				return
 			}
 
 			if securityPolicyAttr.Type() == cty.String && securityPolicyAttr.NotEqual("TLS_1_2") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", resourceBlock.FullName())).
-						WithAttribute(securityPolicyAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", resourceBlock.FullName())).
+					WithAttribute(securityPolicyAttr)
 			}
 
 		},

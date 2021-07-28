@@ -58,14 +58,12 @@ resource "azurerm_managed_disk" "good_example" {
 
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
 			if enabledAttr != nil && enabledAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf(
-							"Resource '%s' defines an unencrypted managed disk.",
-							resourceBlock.FullName(),
-						)).
-						WithAttribute(enabledAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf(
+						"Resource '%s' defines an unencrypted managed disk.",
+						resourceBlock.FullName(),
+					)).
+					WithAttribute(enabledAttr)
 			}
 
 		},

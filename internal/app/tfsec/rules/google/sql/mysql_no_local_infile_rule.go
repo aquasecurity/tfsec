@@ -73,7 +73,7 @@ resource "google_sql_database_instance" "db" {
 			}
 
 			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock == nil {
+			if settingsBlock.IsNil() {
 				return
 			}
 
@@ -81,10 +81,8 @@ resource "google_sql_database_instance" "db" {
 				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Equals("local_infile") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
 						if valueAttr.Equals("on", block.IgnoreCase) {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has local file read access enabled.", resourceBlock.FullName())),
-							)
+							set.Add().
+								WithDescription(fmt.Sprintf("Resource '%s' has local file read access enabled.", resourceBlock.FullName()))
 						}
 					}
 				}

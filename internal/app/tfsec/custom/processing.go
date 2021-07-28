@@ -139,11 +139,9 @@ func processFoundChecks(checks ChecksFile) {
 				CheckFunc: func(set result.Set, rootBlock block.Block, ctx *hclcontext.Context) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, ctx) {
-						set.Add(
-							result.New(rootBlock).
-								WithDescription(fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage)).
-								WithSeverity(customCheck.Severity),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage)).
+							WithSeverity(customCheck.Severity)
 					}
 				},
 			})

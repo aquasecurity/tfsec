@@ -63,10 +63,10 @@ EOF
 
 			if resourceBlock.TypeLabel() == "azurerm_virtual_machine" {
 				for _, str := range customDataAttr.ValueAsStrings() {
-					if checkResult := checkStringForSensitive(str, resourceBlock); checkResult != nil {
-						checkResult.
+					if checkStringForSensitive(str) {
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName())).
 							WithAttribute(customDataAttr)
-						set.Add(checkResult)
 					}
 				}
 			} else if customDataAttr.IsResolvable() && customDataAttr.IsString() {
@@ -75,10 +75,10 @@ EOF
 					debug.Log("could not decode the base64 string in the terraform, trying with the string verbatim")
 					encoded = []byte(customDataAttr.Value().AsString())
 				}
-				if checkResult := checkStringForSensitive(string(encoded), resourceBlock); checkResult != nil {
-					checkResult.
+				if checkStringForSensitive(string(encoded)) {
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName())).
 						WithAttribute(customDataAttr)
-					set.Add(checkResult)
 				}
 
 			}
@@ -86,10 +86,7 @@ EOF
 	})
 }
 
-func checkStringForSensitive(stringToCheck string, resourceBlock block.Block) *result.Result {
-	if scanResult := squealer.NewStringScanner().Scan(stringToCheck); scanResult.TransgressionFound {
-		return result.New(resourceBlock).
-			WithDescription(fmt.Sprintf("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName()))
-	}
-	return nil
+func checkStringForSensitive(stringToCheck string) bool {
+	scanResult := squealer.NewStringScanner().Scan(stringToCheck)
+	return scanResult.TransgressionFound
 }

@@ -54,17 +54,13 @@ resource "aws_sns_topic" "good_example" {
 
 			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName()))
 				return
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())).
-						WithAttribute(kmsKeyIDAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())).
+					WithAttribute(kmsKeyIDAttr)
 				return
 			}
 
@@ -77,11 +73,9 @@ resource "aws_sns_topic" "good_example" {
 
 				keyIdAttr := kmsData.GetAttribute("key_id")
 				if keyIdAttr != nil && keyIdAttr.Equals("alias/aws/sns") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
-							WithAttribute(kmsKeyIDAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
+						WithAttribute(kmsKeyIDAttr)
 				}
 
 			}

@@ -62,38 +62,31 @@ resource "google_sql_database_instance" "db" {
 		RequiredLabels:  []string{"google_sql_database_instance"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			dbVersionAttr := resourceBlock.GetAttribute("database_version")
-			if dbVersionAttr != nil && dbVersionAttr.IsString() && !dbVersionAttr.StartsWith("POSTGRES") {
+			if !resourceBlock.GetAttribute("database_version").StartsWith("POSTGRES") {
 				return
 			}
 
 			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is not configured to log checkpoints", resourceBlock.FullName())),
-				)
+			if settingsBlock.IsNil() {
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' is not configured to log checkpoints", resourceBlock.FullName()))
 				return
 			}
 
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
-				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Equals("log_checkpoints") {
-					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
-						if valueAttr.Value().AsString() == "off" {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' is configured not to log checkpoints", resourceBlock.FullName())),
-							)
-						}
-						return
+				if dbFlagBlock.GetAttribute("name").Equals("log_checkpoints") {
+					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.Equals("off") {
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' is configured not to log checkpoints", resourceBlock.FullName())).
+							WithAttribute(valueAttr)
 					}
+					return
 				}
 			}
 
-			set.Add(
-				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' is not configured to log checkpoints", resourceBlock.FullName())),
-			)
+			set.Add().
+				WithDescription(fmt.Sprintf("Resource '%s' is not configured to log checkpoints", resourceBlock.FullName())).
+				WithBlock(settingsBlock)
 
 		},
 	})

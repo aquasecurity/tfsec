@@ -52,14 +52,12 @@ resource "azurerm_data_lake_store" "good_example" {
 
 			encryptionStateAttr := resourceBlock.GetAttribute("encryption_state")
 			if encryptionStateAttr != nil && encryptionStateAttr.Type() == cty.String && encryptionStateAttr.Value().AsString() == "Disabled" {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf(
-							"Resource '%s' defines an unencrypted data lake store.",
-							resourceBlock.FullName(),
-						)).
-						WithAttribute(encryptionStateAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf(
+						"Resource '%s' defines an unencrypted data lake store.",
+						resourceBlock.FullName(),
+					)).
+					WithAttribute(encryptionStateAttr)
 			}
 
 		},

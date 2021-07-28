@@ -69,10 +69,8 @@ resource "azurerm_storage_account_network_rules" "good_example" {
 
 			defaultAction := resourceBlock.GetAttribute("default_action")
 			if defaultAction != nil && defaultAction.Equals("Allow", block.IgnoreCase) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a default_action of Allow. It should be Deny.", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' defines a default_action of Allow. It should be Deny.", resourceBlock.FullName()))
 			}
 
 		},

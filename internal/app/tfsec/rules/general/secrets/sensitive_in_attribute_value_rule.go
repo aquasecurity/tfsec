@@ -65,11 +65,9 @@ EOF
 			for _, attribute := range attributes {
 				if attribute.IsString() {
 					if scanResult := security.StringScanner.Scan(attribute.Value().AsString()); scanResult.TransgressionFound {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Block '%s' includes potentially sensitive data. %s", resourceBlock.FullName(), scanResult.Description)).
-								WithAttribute(attribute),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Block '%s' includes potentially sensitive data. %s", resourceBlock.FullName(), scanResult.Description)).
+							WithAttribute(attribute)
 					}
 				}
 			}

@@ -57,14 +57,12 @@ resource "azurerm_virtual_machine" "good_example" {
 			if linuxConfigBlock := resourceBlock.GetBlock("os_profile_linux_config"); linuxConfigBlock != nil {
 				passwordAuthDisabledAttr := linuxConfigBlock.GetAttribute("disable_password_authentication")
 				if passwordAuthDisabledAttr != nil && passwordAuthDisabledAttr.Type() == cty.Bool && passwordAuthDisabledAttr.Value().False() {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf(
-								"Resource '%s' has password authentication enabled. Use SSH keys instead.",
-								resourceBlock.FullName(),
-							)).
-							WithAttribute(passwordAuthDisabledAttr),
-					)
+					set.Add().
+						WithDescription(fmt.Sprintf(
+							"Resource '%s' has password authentication enabled. Use SSH keys instead.",
+							resourceBlock.FullName(),
+						)).
+						WithAttribute(passwordAuthDisabledAttr)
 				}
 			}
 

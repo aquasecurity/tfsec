@@ -76,42 +76,26 @@ resource "google_sql_database_instance" "postgres" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			// function contents here
-			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock == nil {
+			ipConfigBlock := resourceBlock.GetBlock("settings").GetBlock("ip_configuration")
+			ipv4Attr := ipConfigBlock.GetAttribute("ipv4_enabled")
+			if ipv4Attr.IsNil() {
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' has a public ipv4 address assigned by default", resourceBlock.FullName()))
 				return
 			}
 
-			ipConfigBlock := settingsBlock.GetBlock("ip_configuration")
-			if ipConfigBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has a public ipv4 address assigned by default", resourceBlock.FullName())),
-				)
-				return
-			}
-
-			if ipv4Attr := ipConfigBlock.GetAttribute("ipv4_enabled"); ipv4Attr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has a public ipv4 address assigned by default", resourceBlock.FullName())),
-				)
-			} else if ipv4Attr.IsTrue() {
-				set.Add(
-					result.New(ipConfigBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has a public ipv4 address explicitly assigned", resourceBlock.FullName())).
-						WithAttribute(ipv4Attr),
-				)
+			if ipv4Attr.IsTrue() {
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' has a public ipv4 address explicitly assigned", resourceBlock.FullName())).
+					WithAttribute(ipv4Attr)
 				return
 			}
 
 			for _, authorizedNetworkBlock := range ipConfigBlock.GetBlocks("authorized_networks") {
-				if cidrAttr := authorizedNetworkBlock.GetAttribute("value"); cidrAttr != nil && cidrAttr.IsString() && cidr.IsOpen(cidrAttr) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' authorizes access from the public internet", resourceBlock.FullName())).
-							WithAttribute(cidrAttr),
-					)
+				if cidrAttr := authorizedNetworkBlock.GetAttribute("value"); cidr.IsOpen(cidrAttr) {
+					set.Add().
+						WithDescription(fmt.Sprintf("Resource '%s' authorizes access from the public internet", resourceBlock.FullName())).
+						WithAttribute(cidrAttr)
 				}
 			}
 

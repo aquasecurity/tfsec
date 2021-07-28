@@ -73,30 +73,24 @@ resource "google_sql_database_instance" "postgres" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock == nil {
+			if settingsBlock.IsNil() {
 				return
 			}
 
 			ipConfigBlock := settingsBlock.GetBlock("ip_configuration")
 			if ipConfigBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not require SSL for all connections", resourceBlock.FullName()))
 				return
 			}
 
 			if requireSSLAttr := ipConfigBlock.GetAttribute("require_ssl"); requireSSLAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' does not require SSL for all connections", resourceBlock.FullName()))
 			} else if requireSSLAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithAttribute(requireSSLAttr).
-						WithDescription(fmt.Sprintf("Resource '%s' explicitly does not require SSL for all connections", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithAttribute(requireSSLAttr).
+					WithDescription(fmt.Sprintf("Resource '%s' explicitly does not require SSL for all connections", resourceBlock.FullName()))
 			}
 
 		},

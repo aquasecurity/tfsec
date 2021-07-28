@@ -66,15 +66,13 @@ resource "azurerm_network_security_rule" "good_example" {
 			if prefixAttr := resourceBlock.GetAttribute("source_address_prefix"); prefixAttr != nil && prefixAttr.Type() == cty.String {
 				if cidr.IsOpen(prefixAttr) {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr != nil && strings.ToUpper(accessAttr.Value().AsString()) == "ALLOW" {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf(
-									"Resource '%s' defines a fully open %s network security group rule.",
-									resourceBlock.FullName(),
-									strings.ToLower(directionAttr.Value().AsString()),
-								)).
-								WithAttribute(prefixAttr),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf(
+								"Resource '%s' defines a fully open %s network security group rule.",
+								resourceBlock.FullName(),
+								strings.ToLower(directionAttr.Value().AsString()),
+							)).
+							WithAttribute(prefixAttr)
 					}
 				}
 			}
@@ -82,11 +80,9 @@ resource "azurerm_network_security_rule" "good_example" {
 			if prefixesAttr := resourceBlock.GetAttribute("source_address_prefixes"); prefixesAttr != nil && prefixesAttr.Value().LengthInt() > 0 {
 				if cidr.IsOpen(prefixesAttr) {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr != nil && strings.ToUpper(accessAttr.Value().AsString()) == "ALLOW" {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName())).
-								WithAttribute(prefixesAttr),
-						)
+						set.Add().
+							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName())).
+							WithAttribute(prefixesAttr)
 					}
 				}
 			}

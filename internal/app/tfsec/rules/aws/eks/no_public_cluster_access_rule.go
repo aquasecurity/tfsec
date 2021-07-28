@@ -64,29 +64,23 @@ resource "aws_eks_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("vpc_config") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName()))
 				return
 			}
 
 			vpcConfig := resourceBlock.GetBlock("vpc_config")
 			if vpcConfig.MissingChild("endpoint_public_access") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName())),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName()))
 				return
 			}
 
 			publicAccessEnabledAttr := vpcConfig.GetAttribute("endpoint_public_access")
 			if publicAccessEnabledAttr.IsTrue() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", resourceBlock.FullName())).
-						WithAttribute(publicAccessEnabledAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", resourceBlock.FullName())).
+					WithAttribute(publicAccessEnabledAttr)
 			}
 		},
 	})

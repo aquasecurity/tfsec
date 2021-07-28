@@ -113,14 +113,12 @@ resource "azurerm_virtual_machine" "good_example" {
 
 			passwordAuthAttr := workingBlock.GetAttribute("disable_password_authentication")
 			if passwordAuthAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf(
-							"Resource '%s' has password authentication enabled.",
-							resourceBlock.FullName(),
-						)).
-						WithAttribute(passwordAuthAttr),
-				)
+				set.Add().
+					WithDescription(fmt.Sprintf(
+						"Resource '%s' has password authentication enabled.",
+						resourceBlock.FullName(),
+					)).
+					WithAttribute(passwordAuthAttr)
 			}
 		},
 	})
