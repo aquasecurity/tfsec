@@ -53,7 +53,7 @@ resource "aws_api_gateway_domain_name" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			securityPolicyAttr := resourceBlock.GetAttribute("security_policy")
-			if securityPolicyAttr == nil {
+			if securityPolicyAttr.IsNil() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName())),
@@ -61,7 +61,7 @@ resource "aws_api_gateway_domain_name" "good_example" {
 				return
 			}
 
-			if securityPolicyAttr.Type() == cty.String && securityPolicyAttr.Value().AsString() != "TLS_1_2" {
+			if securityPolicyAttr.Type() == cty.String && securityPolicyAttr.NotEqual("TLS_1_2") {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", resourceBlock.FullName())).

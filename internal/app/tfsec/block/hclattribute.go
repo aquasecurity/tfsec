@@ -283,7 +283,8 @@ func (attr *HCLAttribute) Equals(checkValue interface{}, equalityOptions ...Equa
 				return strings.EqualFold(strings.ToLower(attr.Value().AsString()), strings.ToLower(fmt.Sprintf("%v", checkValue)))
 			}
 		}
-		return strings.EqualFold(attr.Value().AsString(), fmt.Sprintf("%v", checkValue))
+		result := strings.EqualFold(attr.Value().AsString(), fmt.Sprintf("%v", checkValue))
+		return result
 	}
 	if attr.Value().Type() == cty.Bool {
 		return attr.Value().True() == checkValue
@@ -297,6 +298,10 @@ func (attr *HCLAttribute) Equals(checkValue interface{}, equalityOptions ...Equa
 		return attr.Value().RawEquals(checkNumber)
 	}
 	return false
+}
+
+func (attr *HCLAttribute) NotEqual(checkValue interface{}, equalityOptions ...EqualityOption) bool {
+	return !attr.Equals(checkValue, equalityOptions...)
 }
 
 func (attr *HCLAttribute) RegexMatches(pattern interface{}) bool {
@@ -664,4 +669,8 @@ func getRawValue(value cty.Value) interface{} {
 
 func (attr *HCLAttribute) IsNil() bool {
 	return attr == nil
+}
+
+func (attr *HCLAttribute) IsNotNil() bool {
+	return !attr.IsNil()
 }

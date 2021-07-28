@@ -426,3 +426,7 @@ func (block *HCLBlock) Values() cty.Value {
 func (block *HCLBlock) IsNil() bool {
 	return block == nil
 }
+
+func (block *HCLBlock) IsNotNil() bool {
+	return !block.IsNil()
+}

@@ -39,4 +39,5 @@ type Block interface {
 	Context() *hcl.EvalContext
 	ReadLines() (lines []string, comments []string, err error)
 	IsNil() bool
+	IsNotNil() bool
 }

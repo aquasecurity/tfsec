@@ -103,7 +103,8 @@ resource "aws_athena_workgroup" "good_example" {
 			if enforceWorkgroupConfigAtt.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName())).WithAttribute(enforceWorkgroupConfigAtt),
+						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName())).
+						WithAttribute(enforceWorkgroupConfigAtt),
 				)
 			}
 
