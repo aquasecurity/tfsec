@@ -62,13 +62,12 @@ resource "google_sql_database_instance" "db" {
 		RequiredLabels:  []string{"google_sql_database_instance"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			dbVersionAttr := resourceBlock.GetAttribute("database_version")
-			if dbVersionAttr != nil && dbVersionAttr.IsString() && !dbVersionAttr.StartsWith("POSTGRES") {
+			if !resourceBlock.GetAttribute("database_version").StartsWith("POSTGRES") {
 				return
 			}
 
 			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock == nil {
+			if settingsBlock.IsNil() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' is not configured to log disconnections", resourceBlock.FullName())),
@@ -77,16 +76,15 @@ resource "google_sql_database_instance" "db" {
 			}
 
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
-				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Equals("log_disconnections") {
-					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
-						if valueAttr.Value().AsString() == "off" {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' is configured not to log disconnections", resourceBlock.FullName())),
-							)
-						}
-						return
+				if dbFlagBlock.GetAttribute("name").Equals("log_disconnections") {
+					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.Equals("off") {
+						set.Add(
+							result.New(resourceBlock).
+								WithDescription(fmt.Sprintf("Resource '%s' is configured not to log disconnections", resourceBlock.FullName())).
+								WithAttribute(valueAttr),
+						)
 					}
+					return
 				}
 			}
 

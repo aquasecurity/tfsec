@@ -66,8 +66,7 @@ resource "openstack_compute_instance_v2" "good_example" {
 				return
 			}
 
-			adminPassAttr := resourceBlock.GetAttribute("admin_pass")
-			if adminPassAttr.IsString() && !adminPassAttr.IsEmpty() {
+			if adminPassAttr := resourceBlock.GetAttribute("admin_pass"); adminPassAttr.IsString() && !adminPassAttr.IsEmpty() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' specifies a plain text password", resourceBlock.FullName())).

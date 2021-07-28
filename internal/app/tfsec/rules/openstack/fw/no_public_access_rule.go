@@ -59,21 +59,22 @@ resource "openstack_fw_rule_v1" "rule_1" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if enabledAttr := resourceBlock.GetAttribute("enabled"); enabledAttr != nil && enabledAttr.IsFalse() {
+			if resourceBlock.GetAttribute("enabled").IsFalse() {
 				return
 			}
 
-			if actionAttr := resourceBlock.GetAttribute("action"); actionAttr != nil && actionAttr.Equals("deny") {
+			if resourceBlock.GetAttribute("action").Equals("deny") {
 				return
 			}
 
-			if destinationIP := resourceBlock.GetAttribute("destination_ip_address"); destinationIP == nil || destinationIP.Equals("") {
-				res := result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' defines a firewall rule with no restriction on destination IP", resourceBlock))
-				if destinationIP != nil {
-					res.WithAttribute(destinationIP)
-				}
-				set.Add(res)
+			if destinationIP := resourceBlock.GetAttribute("destination_ip_address"); destinationIP.IsNil() || destinationIP.Equals("") {
+				set.Add(
+					result.New(resourceBlock).
+						WithDescription(
+							fmt.Sprintf("Resource '%s' defines a firewall rule with no restriction on destination IP", resourceBlock),
+						).
+						WithAttribute(destinationIP),
+				)
 			} else if cidr.IsOpen(destinationIP) {
 				set.Add(
 					result.New(resourceBlock).
@@ -82,13 +83,12 @@ resource "openstack_fw_rule_v1" "rule_1" {
 				)
 			}
 
-			if sourceIP := resourceBlock.GetAttribute("source_ip_address"); sourceIP == nil || sourceIP.Equals("") {
-				res := result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' defines a firewall rule with no restriction on source IP", resourceBlock))
-				if sourceIP != nil {
-					res.WithAttribute(sourceIP)
-				}
-				set.Add(res)
+			if sourceIP := resourceBlock.GetAttribute("source_ip_address"); sourceIP.IsNil() || sourceIP.Equals("") {
+				set.Add(
+					result.New(resourceBlock).
+						WithDescription(fmt.Sprintf("Resource '%s' defines a firewall rule with no restriction on source IP", resourceBlock)).
+						WithAttribute(sourceIP),
+				)
 			} else if cidr.IsOpen(sourceIP) {
 				set.Add(
 					result.New(resourceBlock).

@@ -63,24 +63,18 @@ resource "google_sql_database_instance" "db" {
 		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			dbVersionAttr := resourceBlock.GetAttribute("database_version")
-			if dbVersionAttr != nil && dbVersionAttr.IsString() && !dbVersionAttr.StartsWith("POSTGRES") {
+			if dbVersionAttr.IsString() && !dbVersionAttr.StartsWith("POSTGRES") {
 				return
 			}
 
-			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock == nil {
-				return
-			}
-
-			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
-				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Equals("log_min_duration_statement") {
-					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
-						if valueAttr.Value().AsString() != "-1" {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' causes database query statements to be logged", resourceBlock.FullName())),
-							)
-						}
+			for _, dbFlagBlock := range resourceBlock.GetBlock("settings").GetBlocks("database_flags") {
+				if dbFlagBlock.GetAttribute("name").Equals("log_min_duration_statement") {
+					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.NotEqual("-1") {
+						set.Add(
+							result.New(resourceBlock).
+								WithDescription(fmt.Sprintf("Resource '%s' causes database query statements to be logged", resourceBlock.FullName())).
+								WithAttribute(valueAttr),
+						)
 					}
 				}
 			}

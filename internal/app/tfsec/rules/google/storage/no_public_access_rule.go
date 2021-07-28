@@ -53,7 +53,7 @@ resource "google_storage_bucket_iam_binding" "binding" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr != nil && memberAttr.IsString() {
+			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr.IsString() {
 				if googleIAMMemberIsExternal(memberAttr.Value().AsString()) {
 					set.Add(result.New(resourceBlock).
 						WithDescription("Resource '%s' allows public access via member attribute.").
@@ -62,7 +62,7 @@ resource "google_storage_bucket_iam_binding" "binding" {
 				}
 			}
 
-			if membersAttr := resourceBlock.GetAttribute("members"); membersAttr != nil {
+			if membersAttr := resourceBlock.GetAttribute("members"); membersAttr.IsNotNil() {
 				for _, member := range membersAttr.ValueAsStrings() {
 					if googleIAMMemberIsExternal(member) {
 						set.Add(result.New(resourceBlock).

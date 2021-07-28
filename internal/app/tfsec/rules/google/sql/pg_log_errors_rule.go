@@ -63,24 +63,19 @@ resource "google_sql_database_instance" "db" {
 		RequiredLabels:  []string{"google_sql_database_instance"},
 		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			dbVersionAttr := resourceBlock.GetAttribute("database_version")
-			if dbVersionAttr != nil && dbVersionAttr.IsString() && !dbVersionAttr.StartsWith("POSTGRES") {
+			if !resourceBlock.GetAttribute("database_version").StartsWith("POSTGRES") {
 				return
 			}
 
-			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock == nil {
-				return
-			}
-
-			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
-				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Equals("log_min_messages") {
-					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
+			for _, dbFlagBlock := range resourceBlock.GetBlock("settings").GetBlocks("database_flags") {
+				if dbFlagBlock.GetAttribute("name").Equals("log_min_messages") {
+					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.IsString() {
 						switch valueAttr.Value().AsString() {
 						case "FATAL", "PANIC", "LOG":
 							set.Add(
 								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has a minimum log severity set which ignores errors", resourceBlock.FullName())),
+									WithDescription(fmt.Sprintf("Resource '%s' has a minimum log severity set which ignores errors", resourceBlock.FullName())).
+									WithAttribute(valueAttr),
 							)
 						}
 					}
