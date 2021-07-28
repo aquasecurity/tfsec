@@ -59,14 +59,9 @@ resource "google_sql_database_instance" "db" {
 		RequiredLabels:  []string{"google_sql_database_instance"},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			// we only need to check this for SQLSERVER, not mysql/postgres
-			dbVersionAttr := resourceBlock.GetAttribute("database_version")
-			if dbVersionAttr == nil || !dbVersionAttr.IsString() {
-				// default is postgres
-				return
-			}
 
-			if !dbVersionAttr.StartsWith("MYSQL") {
+			// we only need to check this for MYSQL
+			if !resourceBlock.GetAttribute("database_version").StartsWith("MYSQL") {
 				return
 			}
 
