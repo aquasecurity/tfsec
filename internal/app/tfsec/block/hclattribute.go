@@ -661,3 +661,7 @@ func getRawValue(value cty.Value) interface{} {
 
 	return value
 }
+
+func (attr *HCLAttribute) IsNil() bool {
+	return attr == nil
+}

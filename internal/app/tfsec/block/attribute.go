@@ -20,6 +20,7 @@ type Attribute interface {
 	IsTrue() bool
 	IsFalse() bool
 	IsEmpty() bool
+	IsNil() bool
 	MapValue(mapKey string) cty.Value
 	LessThan(checkValue interface{}) bool
 	LessThanOrEqualTo(checkValue interface{}) bool

@@ -91,6 +91,9 @@ func (block *HCLBlock) AttachEvalContext(ctx *hcl.EvalContext) {
 }
 
 func (block *HCLBlock) HasModuleBlock() bool {
+	if block == nil {
+		return false
+	}
 	return block.moduleBlock != nil
 }
 
@@ -176,8 +179,9 @@ func (block *HCLBlock) getHCLAttributes() hcl.Attributes {
 }
 
 func (block *HCLBlock) GetBlock(name string) Block {
+	var returnBlock *HCLBlock
 	if block == nil || block.hclBlock == nil {
-		return nil
+		return returnBlock
 	}
 	for _, child := range block.getHCLBlocks() {
 		if child.Type == name {
@@ -188,10 +192,10 @@ func (block *HCLBlock) GetBlock(name string) Block {
 			if len(blocks) > 0 {
 				return blocks[0]
 			}
-			return nil
+			return returnBlock
 		}
 	}
-	return nil
+	return returnBlock
 }
 
 func (block *HCLBlock) AllBlocks() Blocks {
@@ -360,14 +364,21 @@ func (block *HCLBlock) NameLabel() string {
 }
 
 func (block *HCLBlock) HasChild(childElement string) bool {
-	return block.GetAttribute(childElement) != nil || block.GetBlock(childElement) != nil
+	return block.GetAttribute(childElement).IsNil() || block.GetBlock(childElement) != nil
 }
 
 func (block *HCLBlock) MissingChild(childElement string) bool {
+	if block == nil {
+		return true
+	}
+
 	return !block.HasChild(childElement)
 }
 
 func (block *HCLBlock) InModule() bool {
+	if block == nil {
+		return false
+	}
 	return block.moduleBlock != nil
 }
 
@@ -376,7 +387,7 @@ func (block *HCLBlock) Label() string {
 }
 
 func (block *HCLBlock) HasBlock(childElement string) bool {
-	return block.GetBlock(childElement) != nil
+	return block.GetBlock(childElement).IsNil()
 }
 
 func (block *HCLBlock) IsResourceType(resourceType string) bool {
@@ -410,4 +421,8 @@ func (block *HCLBlock) Values() cty.Value {
 		}()
 	}
 	return cty.ObjectVal(values)
+}
+
+func (block *HCLBlock) IsNil() bool {
+	return block == nil
 }
