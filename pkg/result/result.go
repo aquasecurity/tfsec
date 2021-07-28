@@ -183,5 +183,6 @@ func (r *Result) WithAttribute(attr block.Attribute) *Result {
 	}
 
 	r.RangeAnnotation = fmt.Sprintf("%s: %s", typeStr, raw)
+	r.Location = r.Range()
 	return r
 }
