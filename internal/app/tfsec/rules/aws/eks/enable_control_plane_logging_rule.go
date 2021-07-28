@@ -1,8 +1,6 @@
 package eks
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -78,7 +76,7 @@ resource "aws_eks_cluster" "good_example" {
 
 			if resourceBlock.MissingChild("enabled_cluster_log_types") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", resourceBlock.FullName()))
+					WithDescription("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", resourceBlock.FullName())
 				return
 			}
 
@@ -86,7 +84,7 @@ resource "aws_eks_cluster" "good_example" {
 			for _, logType := range controlPlaneLogging {
 				if !configuredLoggingAttr.Contains(logType) {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' is missing the control plane log type '%s'", resourceBlock.FullName(), logType)).
+						WithDescription("Resource '%s' is missing the control plane log type '%s'", resourceBlock.FullName(), logType).
 						WithAttribute(configuredLoggingAttr)
 				}
 			}

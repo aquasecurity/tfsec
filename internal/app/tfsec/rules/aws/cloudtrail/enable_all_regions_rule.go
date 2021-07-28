@@ -1,8 +1,6 @@
 package cloudtrail
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -69,14 +67,14 @@ resource "aws_cloudtrail" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("is_multi_region_trail") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not set multi region trail config.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not set multi region trail config.", resourceBlock.FullName())
 				return
 			}
 
 			multiRegionAttr := resourceBlock.GetAttribute("is_multi_region_trail")
 			if multiRegionAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not enable multi region trail.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' does not enable multi region trail.", resourceBlock.FullName()).
 					WithAttribute(multiRegionAttr)
 			}
 		},

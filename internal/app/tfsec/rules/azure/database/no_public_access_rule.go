@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,14 +56,14 @@ resource "azurerm_postgresql_server" "good_example" {
 
 			if resourceBlock.MissingChild("public_network_access_enabled") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has default public network access of enabled", resourceBlock.FullName()))
+					WithDescription("Resource '%s' has default public network access of enabled", resourceBlock.FullName())
 				return
 			}
 
 			publicAccessAttr := resourceBlock.GetAttribute("public_network_access_enabled")
 			if publicAccessAttr.IsTrue() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has public access explicitly enabled", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has public access explicitly enabled", resourceBlock.FullName()).
 					WithAttribute(publicAccessAttr)
 			}
 		},

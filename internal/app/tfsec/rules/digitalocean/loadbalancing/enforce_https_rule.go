@@ -1,8 +1,6 @@
 package loadbalancing
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -80,7 +78,7 @@ resource "digitalocean_loadbalancer" "bad_example" {
 				}
 				entryPointAttr := rule.GetAttribute("entry_protocol")
 				if entryPointAttr.Equals("http", block.IgnoreCase) {
-					set.Add().WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName())).
+					set.Add().WithDescription("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName()).
 						WithAttribute(entryPointAttr)
 				}
 			}

@@ -1,8 +1,6 @@
 package s3
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -57,14 +55,14 @@ resource "aws_s3_bucket" "good_example" {
 
 			if resourceBlock.MissingChild("versioning") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not have versioning enabled", resourceBlock.FullName())
 				return
 			}
 
 			versioningBlock := resourceBlock.GetBlock("versioning")
 			if versioningBlock.HasChild("enabled") && versioningBlock.GetAttribute("enabled").IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has versioning block but is disabled", resourceBlock.FullName()))
+					WithDescription("Resource '%s' has versioning block but is disabled", resourceBlock.FullName())
 			}
 
 		},

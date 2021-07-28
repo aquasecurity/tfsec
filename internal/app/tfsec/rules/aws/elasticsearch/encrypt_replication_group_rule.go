@@ -1,8 +1,6 @@
 package elasticsearch
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -59,10 +57,10 @@ resource "aws_elasticache_replication_group" "good_example" {
 			encryptionAttr := resourceBlock.GetAttribute("at_rest_encryption_enabled")
 			if encryptionAttr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (missing at_rest_encryption_enabled attribute).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an unencrypted Elasticache Replication Group (missing at_rest_encryption_enabled attribute).", resourceBlock.FullName())
 			} else if !encryptionAttr.IsTrue() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (at_rest_encryption_enabled set to false).", resourceBlock.FullName())).
+					WithDescription("Resource '%s' defines an unencrypted Elasticache Replication Group (at_rest_encryption_enabled set to false).", resourceBlock.FullName()).
 					WithAttribute(encryptionAttr)
 			}
 

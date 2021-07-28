@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -59,10 +57,7 @@ resource "azurerm_managed_disk" "good_example" {
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
 			if enabledAttr != nil && enabledAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf(
-						"Resource '%s' defines an unencrypted managed disk.",
-						resourceBlock.FullName(),
-					)).
+					WithDescription("Resource '%s' defines an unencrypted managed disk.", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}
 

@@ -1,7 +1,6 @@
 package network
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -67,11 +66,7 @@ resource "azurerm_network_security_rule" "good_example" {
 				if cidr.IsOpen(prefixAttr) {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr != nil && strings.ToUpper(accessAttr.Value().AsString()) == "ALLOW" {
 						set.Add().
-							WithDescription(fmt.Sprintf(
-								"Resource '%s' defines a fully open %s network security group rule.",
-								resourceBlock.FullName(),
-								strings.ToLower(directionAttr.Value().AsString()),
-							)).
+							WithDescription("Resource '%s' defines a fully open %s network security group rule.", resourceBlock.FullName(), strings.ToLower(directionAttr.Value().AsString())).
 							WithAttribute(prefixAttr)
 					}
 				}
@@ -81,7 +76,7 @@ resource "azurerm_network_security_rule" "good_example" {
 				if cidr.IsOpen(prefixesAttr) {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr != nil && strings.ToUpper(accessAttr.Value().AsString()) == "ALLOW" {
 						set.Add().
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName())).
+							WithDescription("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName()).
 							WithAttribute(prefixesAttr)
 					}
 				}

@@ -75,17 +75,17 @@ resource "openstack_fw_rule_v1" "rule_1" {
 					WithAttribute(destinationIP)
 			} else if cidr.IsOpen(destinationIP) {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a firewall rule with a public destination CIDR", resourceBlock)).
+					WithDescription("Resource '%s' defines a firewall rule with a public destination CIDR", resourceBlock).
 					WithAttribute(destinationIP)
 			}
 
 			if sourceIP := resourceBlock.GetAttribute("source_ip_address"); sourceIP.IsNil() || sourceIP.Equals("") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a firewall rule with no restriction on source IP", resourceBlock)).
+					WithDescription("Resource '%s' defines a firewall rule with no restriction on source IP", resourceBlock).
 					WithAttribute(sourceIP)
 			} else if cidr.IsOpen(sourceIP) {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a firewall rule with a public source CIDR", resourceBlock)).
+					WithDescription("Resource '%s' defines a firewall rule with a public source CIDR", resourceBlock).
 					WithAttribute(sourceIP)
 			}
 		},

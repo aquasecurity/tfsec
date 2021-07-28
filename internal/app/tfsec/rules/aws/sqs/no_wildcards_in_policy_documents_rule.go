@@ -2,7 +2,6 @@ package sqs
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -100,7 +99,7 @@ POLICY
 				for _, statement := range policy.Statement {
 					if strings.ToLower(statement.Effect) == "allow" && (statement.Action == "*" || statement.Action == "sqs:*") {
 						set.Add().
-							WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName()))
+							WithDescription("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName())
 					}
 				}
 			}

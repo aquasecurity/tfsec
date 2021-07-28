@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,10 +56,7 @@ resource "azurerm_virtual_machine" "good_example" {
 				passwordAuthDisabledAttr := linuxConfigBlock.GetAttribute("disable_password_authentication")
 				if passwordAuthDisabledAttr != nil && passwordAuthDisabledAttr.Type() == cty.Bool && passwordAuthDisabledAttr.Value().False() {
 					set.Add().
-						WithDescription(fmt.Sprintf(
-							"Resource '%s' has password authentication enabled. Use SSH keys instead.",
-							resourceBlock.FullName(),
-						)).
+						WithDescription("Resource '%s' has password authentication enabled. Use SSH keys instead.", resourceBlock.FullName()).
 						WithAttribute(passwordAuthDisabledAttr)
 				}
 			}

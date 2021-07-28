@@ -1,8 +1,6 @@
 package container
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,7 +56,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 					resourceBlock.GetAttribute("private_cluster_enabled").IsFalse()) {
 				{
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", resourceBlock.FullName()))
+						WithDescription("Resource '%s' defined without limited set of IP address ranges to the API server.", resourceBlock.FullName())
 				}
 			}
 		},

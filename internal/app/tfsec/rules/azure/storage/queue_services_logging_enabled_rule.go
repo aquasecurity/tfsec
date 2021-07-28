@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -77,7 +75,7 @@ resource "azurerm_storage_account" "good_example" {
 				queueProps := resourceBlock.GetBlock("queue_properties")
 				if queueProps.MissingChild("logging") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", resourceBlock.FullName()))
+						WithDescription("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", resourceBlock.FullName())
 				}
 			}
 

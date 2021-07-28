@@ -1,8 +1,6 @@
 package s3
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -56,11 +54,11 @@ resource "aws_s3_bucket" "good_example" {
 			if attr := resourceBlock.GetAttribute("acl"); attr != nil {
 				if attr.IsAny("public-read", "public-read-write", "website") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows public access.", resourceBlock.FullName())).
+						WithDescription("Resource '%s' has an ACL which allows public access.", resourceBlock.FullName()).
 						WithAttribute(attr)
 				} else if attr.Equals("authenticated-read") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName()))
+						WithDescription("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName())
 				}
 			}
 		},

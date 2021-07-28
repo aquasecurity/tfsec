@@ -1,8 +1,6 @@
 package elbv2
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -75,7 +73,7 @@ resource "aws_alb_listener" "good_example" {
 			}
 
 			set.Add().
-				WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName())).
+				WithDescription("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName()).
 				WithAttribute(protocolAttr)
 
 		},

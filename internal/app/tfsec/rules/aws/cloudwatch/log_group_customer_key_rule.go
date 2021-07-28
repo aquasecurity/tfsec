@@ -1,8 +1,6 @@
 package cloudwatch
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -54,7 +52,7 @@ resource "aws_cloudwatch_log_group" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is only using default encryption", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is only using default encryption", resourceBlock.FullName())
 			}
 
 		},

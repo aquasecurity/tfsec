@@ -1,8 +1,6 @@
 package vpc
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -81,7 +79,7 @@ resource "aws_network_acl_rule" "good_example" {
 						return
 					} else {
 						set.Add().
-							WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName()))
+							WithDescription("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())
 					}
 				}
 
@@ -94,7 +92,7 @@ resource "aws_network_acl_rule" "good_example" {
 						return
 					} else {
 						set.Add().
-							WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
+							WithDescription("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName()).
 							WithAttribute(ipv6CidrBlockAttr)
 					}
 				}

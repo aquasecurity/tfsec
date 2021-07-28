@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -68,7 +66,7 @@ resource "openstack_compute_instance_v2" "good_example" {
 
 			if adminPassAttr := resourceBlock.GetAttribute("admin_pass"); adminPassAttr.IsString() && !adminPassAttr.IsEmpty() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' specifies a plain text password", resourceBlock.FullName())).
+					WithDescription("Resource '%s' specifies a plain text password", resourceBlock.FullName()).
 					WithAttribute(adminPassAttr)
 			}
 		},

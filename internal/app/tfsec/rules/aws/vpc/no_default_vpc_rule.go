@@ -1,8 +1,6 @@
 package vpc
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -50,7 +48,7 @@ resource "aws_default_vpc" "default" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			set.Add().
-				WithDescription(fmt.Sprintf("Resource '%s' should not exist", resourceBlock.FullName()))
+				WithDescription("Resource '%s' should not exist", resourceBlock.FullName())
 		},
 	})
 }

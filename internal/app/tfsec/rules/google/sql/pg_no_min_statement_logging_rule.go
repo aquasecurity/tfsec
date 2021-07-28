@@ -1,8 +1,6 @@
 package sql
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -71,7 +69,7 @@ resource "google_sql_database_instance" "db" {
 				if dbFlagBlock.GetAttribute("name").Equals("log_min_duration_statement") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.NotEqual("-1") {
 						set.Add().
-							WithDescription(fmt.Sprintf("Resource '%s' causes database query statements to be logged", resourceBlock.FullName())).
+							WithDescription("Resource '%s' causes database query statements to be logged", resourceBlock.FullName()).
 							WithAttribute(valueAttr)
 					}
 				}

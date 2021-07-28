@@ -1,8 +1,6 @@
 package elasticsearch
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -63,14 +61,14 @@ resource "aws_elasticsearch_domain" "good_example" {
 			encryptionBlock := resourceBlock.GetBlock("node_to_node_encryption")
 			if encryptionBlock == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing node_to_node_encryption block).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing node_to_node_encryption block).", resourceBlock.FullName())
 				return
 			}
 
 			enabledAttr := encryptionBlock.GetAttribute("enabled")
 			if enabledAttr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enabled attribute).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enabled attribute).", resourceBlock.FullName())
 				return
 			}
 
@@ -80,7 +78,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			nodeToNodeEncryptionEnabled := isTrueBool || isTrueString
 			if !nodeToNodeEncryptionEnabled {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName())
 			}
 
 		},

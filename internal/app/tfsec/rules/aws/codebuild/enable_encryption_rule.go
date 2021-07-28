@@ -1,8 +1,6 @@
 package codebuild
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -113,11 +111,11 @@ resource "aws_codebuild_project" "codebuild" {
 
 					if artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
 						set.Add().
-							WithDescription(fmt.Sprintf("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName())).
+							WithDescription("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName()).
 							WithAttribute(artifactTypeAttr)
 					} else {
 						set.Add().
-							WithDescription(fmt.Sprintf("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName())).
+							WithDescription("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName()).
 							WithAttribute(encryptionDisabledAttr)
 					}
 				}

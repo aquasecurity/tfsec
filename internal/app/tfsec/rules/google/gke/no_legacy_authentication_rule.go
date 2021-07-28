@@ -1,8 +1,6 @@
 package gke
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -67,14 +65,14 @@ resource "google_container_cluster" "good_example" {
 			masterAuthBlock := resourceBlock.GetBlock("master_auth")
 			if masterAuthBlock == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", resourceBlock.FullName())
 				return
 			}
 
 			staticAuthPass := masterAuthBlock.GetAttribute("password")
 			if staticAuthPass != nil && !staticAuthPass.IsEmpty() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())
 			}
 
 			if masterAuthBlock.MissingChild("client_certificate_config") {
@@ -84,7 +82,7 @@ resource "google_container_cluster" "good_example" {
 			issueClientCert := masterAuthBlock.GetBlock("client_certificate_config").GetAttribute("issue_client_certificate")
 			if issueClientCert != nil && issueClientCert.IsTrue() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())
 			}
 
 		},

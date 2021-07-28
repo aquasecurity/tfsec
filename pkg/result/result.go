@@ -122,8 +122,13 @@ func (r *Result) WithBlock(block block.Block) *Result {
 	return r
 }
 
-func (r *Result) WithDescription(description string) *Result {
-	r.Description = description
+func (r *Result) WithDescription(description string, parts ...interface{}) *Result {
+	if len(parts) == 0 {
+		r.Description = description
+	} else {
+		r.Description = fmt.Sprintf(description, parts...)
+	}
+
 	return r
 }
 

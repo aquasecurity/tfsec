@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -81,7 +79,7 @@ resource "azurerm_mssql_database_extended_auditing_policy" "good_example" {
 			}
 			if resourceBlock.GetAttribute("retention_in_days").LessThan(90) {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' specifies a retention period of less than 90 days.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' specifies a retention period of less than 90 days.", resourceBlock.FullName())
 			}
 
 		},

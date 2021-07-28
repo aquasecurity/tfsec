@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -71,7 +69,7 @@ resource "azure_storage_container" "good_example" {
 					value := properties.MapValue("publicAccess")
 					if value == cty.StringVal("blob") || value == cty.StringVal("container") {
 						set.Add().
-							WithDescription(fmt.Sprintf("Resource '%s' defines publicAccess as '%s', should be 'off .", resourceBlock.FullName(), value))
+							WithDescription("Resource '%s' defines publicAccess as '%s', should be 'off .", resourceBlock.FullName(), value)
 					}
 				}
 			}

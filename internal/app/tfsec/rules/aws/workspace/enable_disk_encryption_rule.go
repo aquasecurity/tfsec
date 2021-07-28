@@ -1,8 +1,6 @@
 package workspace
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -74,26 +72,26 @@ resource "aws_workspaces_workspace" "good_example" {
 
 			if resourceBlock.MissingChild("root_volume_encryption_enabled") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' should have root volume encryption enabled", resourceBlock.FullName()))
+					WithDescription("Resource '%s' should have root volume encryption enabled", resourceBlock.FullName())
 			} else {
 				attr := resourceBlock.GetAttribute("root_volume_encryption_enabled")
 				if attr != nil && attr.IsFalse() {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' has the root volume encryption set to false", resourceBlock.FullName())).
+						WithDescription("Resource '%s' has the root volume encryption set to false", resourceBlock.FullName()).
 						WithAttribute(attr)
 				}
 			}
 
 			if resourceBlock.MissingChild("user_volume_encryption_enabled") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' should have user volume encryption enabled", resourceBlock.FullName()))
+					WithDescription("Resource '%s' should have user volume encryption enabled", resourceBlock.FullName())
 				return
 			}
 
 			attr := resourceBlock.GetAttribute("user_volume_encryption_enabled")
 			if attr != nil && attr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has the user volume encryption set to false", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has the user volume encryption set to false", resourceBlock.FullName()).
 					WithAttribute(attr)
 			}
 

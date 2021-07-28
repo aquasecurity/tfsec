@@ -1,7 +1,6 @@
 package sql
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -63,7 +62,7 @@ resource "google_sql_database_instance" "db" {
 			settingsBlock := resourceBlock.GetBlock("settings")
 			if settingsBlock.IsNil() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has temporary file logging disabled by default", resourceBlock.FullName()))
+					WithDescription("Resource '%s' has temporary file logging disabled by default", resourceBlock.FullName())
 				return
 			}
 
@@ -72,10 +71,10 @@ resource "google_sql_database_instance" "db" {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
 						if valueAttr.Value().AsString() == "-1" {
 							set.Add().
-								WithDescription(fmt.Sprintf("Resource '%s' has temporary file logging explicitly disabled", resourceBlock.FullName()))
+								WithDescription("Resource '%s' has temporary file logging explicitly disabled", resourceBlock.FullName())
 						} else if valueAttr.Value().AsString() != "0" {
 							set.Add().
-								WithDescription(fmt.Sprintf("Resource '%s' has temporary file logging disabled for files of certain sizes", resourceBlock.FullName()))
+								WithDescription("Resource '%s' has temporary file logging disabled for files of certain sizes", resourceBlock.FullName())
 						}
 						// otherwise it's off, awesome
 						return
@@ -85,7 +84,7 @@ resource "google_sql_database_instance" "db" {
 
 			// we didn't find the flag so it must be on by default
 			set.Add().
-				WithDescription(fmt.Sprintf("Resource '%s' has temporary file logging disabled by default", resourceBlock.FullName()))
+				WithDescription("Resource '%s' has temporary file logging disabled by default", resourceBlock.FullName())
 
 		},
 	})

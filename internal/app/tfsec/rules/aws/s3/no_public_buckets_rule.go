@@ -1,8 +1,6 @@
 package s3
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -59,14 +57,14 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("restrict_public_buckets") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not specify restrict_public_buckets, defaults to false", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not specify restrict_public_buckets, defaults to false", resourceBlock.FullName())
 				return
 			}
 
 			attr := resourceBlock.GetAttribute("restrict_public_buckets")
 			if attr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' sets restrict_public_buckets explicitly to false", resourceBlock.FullName())).
+					WithDescription("Resource '%s' sets restrict_public_buckets explicitly to false", resourceBlock.FullName()).
 					WithAttribute(attr)
 			}
 		},

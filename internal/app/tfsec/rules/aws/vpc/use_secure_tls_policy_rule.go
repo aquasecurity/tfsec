@@ -1,8 +1,6 @@
 package vpc
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -64,7 +62,7 @@ resource "aws_alb_listener" "good_example" {
 				for _, policy := range outdatedSSLPolicies {
 					if policy == sslPolicyAttr.Value().AsString() {
 						set.Add().
-							WithDescription(fmt.Sprintf("Resource '%s' is using an outdated SSL policy.", resourceBlock.FullName())).
+							WithDescription("Resource '%s' is using an outdated SSL policy.", resourceBlock.FullName()).
 							WithAttribute(sslPolicyAttr)
 					}
 				}

@@ -1,8 +1,6 @@
 package ec2
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -60,7 +58,7 @@ resource "aws_instance" "good_example" {
 			metaDataOptions := resourceBlock.GetBlock("metadata_options")
 			if metaDataOptions.IsNil() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())
 				return
 			}
 
@@ -76,7 +74,7 @@ resource "aws_instance" "good_example" {
 			if httpTokensAttr.IsNotNil() {
 				if httpTokensAttr.NotEqual("required") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())).
+						WithDescription("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName()).
 						WithAttribute(httpTokensAttr)
 				}
 			}

@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
@@ -71,7 +69,7 @@ resource "digitalocean_firewall" "good_example" {
 				sourceAddressesAttr := inboundRuleBlock.GetAttribute("source_addresses")
 				if cidr.IsOpen(sourceAddressesAttr) {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a fully open inbound_rule.", resourceBlock.FullName())).
+						WithDescription("Resource '%s' defines a fully open inbound_rule.", resourceBlock.FullName()).
 						WithAttribute(sourceAddressesAttr)
 				}
 			}

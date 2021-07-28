@@ -1,8 +1,6 @@
 package elasticsearch
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -89,7 +87,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 
 			if resourceBlock.MissingChild("log_publishing_options") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not configure logging at rest on the domain.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not configure logging at rest on the domain.", resourceBlock.FullName())
 				return
 			}
 
@@ -98,7 +96,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 				enabledAttr := logOption.GetAttribute("enabled")
 				if enabledAttr != nil && enabledAttr.IsFalse() {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' explicitly disables logging on the domain.", resourceBlock.FullName())).
+						WithDescription("Resource '%s' explicitly disables logging on the domain.", resourceBlock.FullName()).
 						WithAttribute(enabledAttr)
 					return
 				}

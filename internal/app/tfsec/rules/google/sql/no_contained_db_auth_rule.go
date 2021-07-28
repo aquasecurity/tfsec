@@ -1,7 +1,6 @@
 package sql
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -69,7 +68,7 @@ resource "google_sql_database_instance" "db" {
 			settingsBlock := resourceBlock.GetBlock("settings")
 			if settingsBlock.IsNil() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has contained database authentication enabled by default", resourceBlock.FullName()))
+					WithDescription("Resource '%s' has contained database authentication enabled by default", resourceBlock.FullName())
 				return
 			}
 
@@ -78,7 +77,7 @@ resource "google_sql_database_instance" "db" {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
 						if valueAttr.Value().AsString() == "on" {
 							set.Add().
-								WithDescription(fmt.Sprintf("Resource '%s' has contained database authentication explicitly enabled", resourceBlock.FullName()))
+								WithDescription("Resource '%s' has contained database authentication explicitly enabled", resourceBlock.FullName())
 						}
 						// otherwise it's off, awesome
 						return
@@ -88,7 +87,7 @@ resource "google_sql_database_instance" "db" {
 
 			// we didn't find the flag so it must be on by default
 			set.Add().
-				WithDescription(fmt.Sprintf("Resource '%s' has contained database authentication enabled by default", resourceBlock.FullName()))
+				WithDescription("Resource '%s' has contained database authentication enabled by default", resourceBlock.FullName())
 		},
 	})
 }

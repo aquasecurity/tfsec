@@ -1,8 +1,6 @@
 package dynamodb
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -72,20 +70,20 @@ resource "aws_dax_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("server_side_encryption") {
 				set.Add().
-					WithDescription(fmt.Sprintf("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", resourceBlock.FullName()))
+					WithDescription("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", resourceBlock.FullName())
 				return
 			}
 
 			sseBlock := resourceBlock.GetBlock("server_side_encryption")
 			if sseBlock.MissingChild("enabled") {
 				set.Add().
-					WithDescription(fmt.Sprintf("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", resourceBlock.FullName())).
+					WithDescription("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", resourceBlock.FullName()).
 					WithBlock(sseBlock)
 			}
 
 			if sseEnabledAttr := sseBlock.GetAttribute("enabled"); sseEnabledAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("DAX cluster '%s' has disabled server side encryption", resourceBlock.FullName())).
+					WithDescription("DAX cluster '%s' has disabled server side encryption", resourceBlock.FullName()).
 					WithAttribute(sseEnabledAttr)
 			}
 

@@ -1,8 +1,6 @@
 package vpc
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -71,14 +69,14 @@ resource "aws_security_group" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("description") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' should include a description for auditing purposes.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' should include a description for auditing purposes.", resourceBlock.FullName())
 				return
 			}
 
 			descriptionAttr := resourceBlock.GetAttribute("description")
 			if descriptionAttr.IsEmpty() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' should include a non-empty description for auditing purposes.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' should include a non-empty description for auditing purposes.", resourceBlock.FullName()).
 					WithAttribute(descriptionAttr)
 			}
 		},

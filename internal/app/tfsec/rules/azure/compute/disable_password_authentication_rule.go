@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -114,11 +112,7 @@ resource "azurerm_virtual_machine" "good_example" {
 			passwordAuthAttr := workingBlock.GetAttribute("disable_password_authentication")
 			if passwordAuthAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf(
-						"Resource '%s' has password authentication enabled.",
-						resourceBlock.FullName(),
-					)).
-					WithAttribute(passwordAuthAttr)
+					WithDescription("Resource '%s' has password authentication enabled.", resourceBlock.FullName()).WithAttribute(passwordAuthAttr)
 			}
 		},
 	})

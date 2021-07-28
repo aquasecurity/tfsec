@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -94,14 +92,14 @@ resource "azurerm_postgresql_server" "good_example" {
 				}
 
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have %s set", resourceBlock.FullName(), attribute))
+					WithDescription("Resource '%s' does not have %s set", resourceBlock.FullName(), attribute)
 				return
 			}
 
 			tlsMinimumAttr := resourceBlock.GetAttribute(attribute)
 			if !tlsMinimumAttr.Equals(requiredValue) {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has a value %s that is not %s", resourceBlock.FullName(), attribute, requiredValue)).
+					WithDescription("Resource '%s' has a value %s that is not %s", resourceBlock.FullName(), attribute, requiredValue).
 					WithAttribute(tlsMinimumAttr)
 			}
 		},

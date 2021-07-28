@@ -1,8 +1,6 @@
 package sql
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -73,7 +71,7 @@ resource "google_sql_database_instance" "db" {
 						switch valueAttr.Value().AsString() {
 						case "FATAL", "PANIC", "LOG":
 							set.Add().
-								WithDescription(fmt.Sprintf("Resource '%s' has a minimum log severity set which ignores errors", resourceBlock.FullName())).
+								WithDescription("Resource '%s' has a minimum log severity set which ignores errors", resourceBlock.FullName()).
 								WithAttribute(valueAttr)
 						}
 					}

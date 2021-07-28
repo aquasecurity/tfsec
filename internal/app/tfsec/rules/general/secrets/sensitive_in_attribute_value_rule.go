@@ -1,8 +1,6 @@
 package secrets
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -66,7 +64,7 @@ EOF
 				if attribute.IsString() {
 					if scanResult := security.StringScanner.Scan(attribute.Value().AsString()); scanResult.TransgressionFound {
 						set.Add().
-							WithDescription(fmt.Sprintf("Block '%s' includes potentially sensitive data. %s", resourceBlock.FullName(), scanResult.Description)).
+							WithDescription("Block '%s' includes potentially sensitive data. %s", resourceBlock.FullName(), scanResult.Description).
 							WithAttribute(attribute)
 					}
 				}

@@ -1,8 +1,6 @@
 package athena
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -85,7 +83,7 @@ resource "aws_athena_workgroup" "good_example" {
 
 			if resourceBlock.MissingChild("configuration") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is missing the configuration block.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is missing the configuration block.", resourceBlock.FullName())
 				return
 			}
 
@@ -100,7 +98,7 @@ resource "aws_athena_workgroup" "good_example" {
 
 			if enforceWorkgroupConfigAtt.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName()).
 					WithAttribute(enforceWorkgroupConfigAtt)
 			}
 

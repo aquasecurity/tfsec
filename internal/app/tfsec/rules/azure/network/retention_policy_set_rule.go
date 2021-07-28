@@ -1,8 +1,6 @@
 package network
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -72,14 +70,14 @@ resource "azurerm_network_watcher_flow_log" "good_watcher" {
 
 			if resourceBlock.MissingChild("retention_policy") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is missing the required retention policy block", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is missing the required retention policy block", resourceBlock.FullName())
 				return
 			}
 
 			retentionPolicyBlock := resourceBlock.GetBlock("retention_policy")
 			if retentionPolicyBlock.MissingChild("enabled") || retentionPolicyBlock.MissingChild("days") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is missing the required attributes retention policy block", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is missing the required attributes retention policy block", resourceBlock.FullName())
 				return
 			}
 
@@ -88,13 +86,13 @@ resource "azurerm_network_watcher_flow_log" "good_watcher" {
 
 			if enabledAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has retention policy turned off", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has retention policy turned off", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}
 
 			if daysAttr.LessThan(90) {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has retention policy period of less than 90 days", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has retention policy period of less than 90 days", resourceBlock.FullName()).
 					WithAttribute(daysAttr)
 			}
 		},

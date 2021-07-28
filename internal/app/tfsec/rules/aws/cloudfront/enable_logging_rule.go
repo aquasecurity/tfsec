@@ -1,8 +1,6 @@
 package cloudfront
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,7 +56,7 @@ resource "aws_cloudfront_distribution" "good_example" {
 
 			if resourceBlock.MissingChild("logging_config") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have Access Logging configured", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not have Access Logging configured", resourceBlock.FullName())
 			}
 
 		},

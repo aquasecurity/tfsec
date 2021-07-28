@@ -1,8 +1,6 @@
 package config
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -65,20 +63,20 @@ resource "aws_config_configuration_aggregator" "good_example" {
 			aggBlock := resourceBlock.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")
 			if aggBlock.IsNil() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources set", resourceBlock.FullName()))
+					WithDescription("Resource '%s' should have account aggregation sources set", resourceBlock.FullName())
 				return
 			}
 
 			if aggBlock.MissingChild("all_regions") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName()))
+					WithDescription("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName())
 				return
 			}
 
 			allRegionsAttr := aggBlock.GetAttribute("all_regions")
 			if allRegionsAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has all_regions set to false", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has all_regions set to false", resourceBlock.FullName()).
 					WithAttribute(allRegionsAttr)
 			}
 

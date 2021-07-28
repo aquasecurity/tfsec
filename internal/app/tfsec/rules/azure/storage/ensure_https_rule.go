@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -54,10 +52,7 @@ resource "azurerm_storage_account" "good_example" {
 			enabledAttr := resourceBlock.GetAttribute("enable_https_traffic_only")
 			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
 				set.Add().
-					WithDescription(fmt.Sprintf(
-						"Resource '%s' enable_https_traffic_only disabled.",
-						resourceBlock.FullName(),
-					)).
+					WithDescription("Resource '%s' enable_https_traffic_only disabled.", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}
 

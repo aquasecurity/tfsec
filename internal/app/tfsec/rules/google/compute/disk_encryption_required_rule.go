@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -61,7 +59,7 @@ resource "google_compute_disk" "good_example" {
 
 			if rawKeyAttr.IsString() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' specifies an encryption key in raw format.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' specifies an encryption key in raw format.", resourceBlock.FullName()).
 					WithAttribute(rawKeyAttr)
 			}
 

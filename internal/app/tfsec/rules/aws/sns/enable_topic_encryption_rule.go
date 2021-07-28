@@ -1,8 +1,6 @@
 package sns
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -55,11 +53,11 @@ resource "aws_sns_topic" "good_example" {
 			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())
 				return
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName()).
 					WithAttribute(kmsKeyIDAttr)
 				return
 			}
@@ -74,7 +72,7 @@ resource "aws_sns_topic" "good_example" {
 				keyIdAttr := kmsData.GetAttribute("key_id")
 				if keyIdAttr != nil && keyIdAttr.Equals("alias/aws/sns") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
+						WithDescription("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName()).
 						WithAttribute(kmsKeyIDAttr)
 				}
 

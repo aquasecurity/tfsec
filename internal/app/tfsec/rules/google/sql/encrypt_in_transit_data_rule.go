@@ -1,8 +1,6 @@
 package sql
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -80,17 +78,17 @@ resource "google_sql_database_instance" "postgres" {
 			ipConfigBlock := settingsBlock.GetBlock("ip_configuration")
 			if ipConfigBlock == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not require SSL for all connections", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())
 				return
 			}
 
 			if requireSSLAttr := ipConfigBlock.GetAttribute("require_ssl"); requireSSLAttr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not require SSL for all connections", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())
 			} else if requireSSLAttr.IsFalse() {
 				set.Add().
 					WithAttribute(requireSSLAttr).
-					WithDescription(fmt.Sprintf("Resource '%s' explicitly does not require SSL for all connections", resourceBlock.FullName()))
+					WithDescription("Resource '%s' explicitly does not require SSL for all connections", resourceBlock.FullName())
 			}
 
 		},

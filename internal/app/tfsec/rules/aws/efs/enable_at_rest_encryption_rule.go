@@ -1,8 +1,6 @@
 package efs
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,10 +56,10 @@ resource "aws_efs_file_system" "good_example" {
 
 			if efsEnabledAttr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not specify if encryption should be used.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not specify if encryption should be used.", resourceBlock.FullName())
 			} else if efsEnabledAttr.Type() == cty.Bool && efsEnabledAttr.Value().False() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' actively does not have encryption applied.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' actively does not have encryption applied.", resourceBlock.FullName()).
 					WithAttribute(efsEnabledAttr)
 			}
 		},

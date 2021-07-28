@@ -1,8 +1,6 @@
 package misc
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -54,11 +52,11 @@ provider "aws" {
 
 			if accessKeyAttribute := resourceBlock.GetAttribute("access_key"); accessKeyAttribute != nil && accessKeyAttribute.Type() == cty.String {
 				set.Add().
-					WithDescription(fmt.Sprintf("Provider '%s' has an access key specified.", resourceBlock.FullName())).
+					WithDescription("Provider '%s' has an access key specified.", resourceBlock.FullName()).
 					WithAttribute(accessKeyAttribute)
 			} else if secretKeyAttribute := resourceBlock.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
 				set.Add().
-					WithDescription(fmt.Sprintf("Provider '%s' has a secret key specified.", resourceBlock.FullName())).
+					WithDescription("Provider '%s' has a secret key specified.", resourceBlock.FullName()).
 					WithAttribute(secretKeyAttribute)
 			}
 

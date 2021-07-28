@@ -1,8 +1,6 @@
 package ecr
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -13,8 +11,6 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
-
-	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
@@ -64,19 +60,18 @@ resource "aws_ecr_repository" "good_example" {
 
 			if resourceBlock.MissingChild("image_scanning_configuration") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())
 				return
 			}
 
-			ecrScanStatusBlock := resourceBlock.GetBlock("image_scanning_configuration")
-			ecrScanStatusAttr := ecrScanStatusBlock.GetAttribute("scan_on_push")
+			ecrScanStatusAttr := resourceBlock.GetNestedAttribute("image_scanning_configuration.scan_on_push")
 
-			if ecrScanStatusAttr == nil {
+			if ecrScanStatusAttr.IsNil() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName()))
-			} else if ecrScanStatusAttr.Type() == cty.Bool && ecrScanStatusAttr.Value().False() {
+					WithDescription("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())
+			} else if ecrScanStatusAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName()).
 					WithAttribute(ecrScanStatusAttr)
 			}
 		},

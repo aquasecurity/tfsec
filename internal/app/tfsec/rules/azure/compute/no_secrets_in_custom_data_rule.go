@@ -2,7 +2,6 @@ package compute
 
 import (
 	"encoding/base64"
-	"fmt"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
@@ -65,7 +64,7 @@ EOF
 				for _, str := range customDataAttr.ValueAsStrings() {
 					if checkStringForSensitive(str) {
 						set.Add().
-							WithDescription(fmt.Sprintf("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName())).
+							WithDescription("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName()).
 							WithAttribute(customDataAttr)
 					}
 				}
@@ -77,7 +76,7 @@ EOF
 				}
 				if checkStringForSensitive(string(encoded)) {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName())).
+						WithDescription("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName()).
 						WithAttribute(customDataAttr)
 				}
 

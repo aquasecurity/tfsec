@@ -1,7 +1,6 @@
 package iam
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -80,7 +79,7 @@ resource "google_project_iam_member" "project-123" {
 					if isMemberDefaultServiceAccount(memberAttr.Value().AsString()) {
 						set.Add().
 							WithAttribute(memberAttr).
-							WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName()))
+							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 					}
 				} else {
 					computeServiceAccounts := ctx.GetDatasByType("google_compute_default_service_account")
@@ -89,7 +88,7 @@ resource "google_project_iam_member" "project-123" {
 						if memberAttr.ReferencesBlock(serviceAccount) {
 							set.Add().
 								WithAttribute(memberAttr).
-								WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName()))
+								WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 						}
 					}
 				}
@@ -100,7 +99,7 @@ resource "google_project_iam_member" "project-123" {
 					if isMemberDefaultServiceAccount(member) {
 						set.Add().
 							WithAttribute(membersAttr).
-							WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName()))
+							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 					}
 				}
 				computeServiceAccounts := ctx.GetDatasByType("google_compute_default_service_account")
@@ -109,7 +108,7 @@ resource "google_project_iam_member" "project-123" {
 					if membersAttr.ReferencesBlock(serviceAccount) {
 						set.Add().
 							WithAttribute(membersAttr).
-							WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName()))
+							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 					}
 				}
 			}

@@ -1,7 +1,6 @@
 package athena
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -106,7 +105,7 @@ resource "aws_athena_workgroup" "good_example" {
 
 			if resourceBlock.MissingChild("encryption_configuration") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' missing encryption configuration block.", blockName))
+					WithDescription("Resource '%s' missing encryption configuration block.", blockName)
 			}
 
 		},

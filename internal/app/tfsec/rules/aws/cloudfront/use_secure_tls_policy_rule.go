@@ -1,8 +1,6 @@
 package cloudfront
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -59,18 +57,18 @@ resource "aws_cloudfront_distribution" "good_example" {
 			viewerCertificateBlock := resourceBlock.GetBlock("viewer_certificate")
 			if viewerCertificateBlock.IsNil() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing viewer_certificate block)", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines outdated SSL/TLS policies (missing viewer_certificate block)", resourceBlock.FullName())
 				return
 			}
 
 			minVersionAttr := viewerCertificateBlock.GetAttribute("minimum_protocol_version")
 			if minVersionAttr.IsNil() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName())).
+					WithDescription("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName()).
 					WithBlock(viewerCertificateBlock)
 			} else if minVersionAttr.NotEqual("TLSv1.2_2021") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName())).
+					WithDescription("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName()).
 					WithAttribute(minVersionAttr)
 			}
 		},

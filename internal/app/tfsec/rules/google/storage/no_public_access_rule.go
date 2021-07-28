@@ -55,7 +55,7 @@ resource "google_storage_bucket_iam_binding" "binding" {
 
 			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr.IsString() {
 				if googleIAMMemberIsExternal(memberAttr.Value().AsString()) {
-					set.Add().WithDescription("Resource '%s' allows public access via member attribute.").
+					set.Add().WithDescription("Resource '%s' allows public access via member attribute.", resourceBlock.FullName()).
 						WithAttribute(memberAttr)
 				}
 			}
@@ -63,7 +63,7 @@ resource "google_storage_bucket_iam_binding" "binding" {
 			if membersAttr := resourceBlock.GetAttribute("members"); membersAttr.IsNotNil() {
 				for _, member := range membersAttr.ValueAsStrings() {
 					if googleIAMMemberIsExternal(member) {
-						set.Add().WithDescription("Resource '%s' allows public access via members attribute.").
+						set.Add().WithDescription("Resource '%s' allows public access via members attribute.", resourceBlock.FullName()).
 							WithAttribute(membersAttr)
 					}
 				}

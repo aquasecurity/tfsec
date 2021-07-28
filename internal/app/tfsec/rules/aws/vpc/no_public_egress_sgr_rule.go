@@ -1,8 +1,6 @@
 package vpc
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -67,7 +65,7 @@ resource "aws_security_group_rule" "good_example" {
 
 				if cidr.IsOpen(cidrBlocksAttr) {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName())).
+						WithDescription("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName()).
 						WithAttribute(cidrBlocksAttr)
 				}
 			}
@@ -76,7 +74,7 @@ resource "aws_security_group_rule" "good_example" {
 
 				if cidr.IsOpen(ipv6CidrBlocksAttr) {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName())).
+						WithDescription("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName()).
 						WithAttribute(ipv6CidrBlocksAttr)
 				}
 			}

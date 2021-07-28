@@ -1,8 +1,6 @@
 package sql
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -80,13 +78,13 @@ resource "google_sql_database_instance" "postgres" {
 			ipv4Attr := ipConfigBlock.GetAttribute("ipv4_enabled")
 			if ipv4Attr.IsNil() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has a public ipv4 address assigned by default", resourceBlock.FullName()))
+					WithDescription("Resource '%s' has a public ipv4 address assigned by default", resourceBlock.FullName())
 				return
 			}
 
 			if ipv4Attr.IsTrue() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has a public ipv4 address explicitly assigned", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has a public ipv4 address explicitly assigned", resourceBlock.FullName()).
 					WithAttribute(ipv4Attr)
 				return
 			}
@@ -94,7 +92,7 @@ resource "google_sql_database_instance" "postgres" {
 			for _, authorizedNetworkBlock := range ipConfigBlock.GetBlocks("authorized_networks") {
 				if cidrAttr := authorizedNetworkBlock.GetAttribute("value"); cidr.IsOpen(cidrAttr) {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' authorizes access from the public internet", resourceBlock.FullName())).
+						WithDescription("Resource '%s' authorizes access from the public internet", resourceBlock.FullName()).
 						WithAttribute(cidrAttr)
 				}
 			}

@@ -1,8 +1,6 @@
 package autoscaling
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -66,7 +64,7 @@ resource "aws_launch_configuration" "good_example" {
 			rootDeviceBlock := resourceBlock.GetBlock("root_block_device")
 			if rootDeviceBlock.IsNil() && !encryptionByDefault {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device. Consider adding <blue>root_block_device{ encrypted = true }</blue>", resourceBlock.FullName()))
+					WithDescription("Resource '%s' uses an unencrypted root EBS block device. Consider adding <blue>root_block_device{ encrypted = true }</blue>", resourceBlock.FullName())
 			} else if rootDeviceBlock.IsNotNil() {
 				checkDeviceEncryption(rootDeviceBlock, encryptionByDefault, set, resourceBlock)
 			}
@@ -84,10 +82,10 @@ func checkDeviceEncryption(deviceBlock block.Block, encryptionByDefault bool, se
 	encryptedAttr := deviceBlock.GetAttribute("encrypted")
 	if encryptedAttr.IsNil() && !encryptionByDefault {
 		set.Add().
-			WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted EBS block device. Consider adding <blue>encrypted = true</blue>", resourceBlock.FullName()))
+			WithDescription("Resource '%s' uses an unencrypted EBS block device. Consider adding <blue>encrypted = true</blue>", resourceBlock.FullName())
 	} else if encryptedAttr.IsFalse() {
 		set.Add().
-			WithDescription(fmt.Sprintf("Resource '%s' uses an unencrypted root EBS block device.", resourceBlock.FullName())).
+			WithDescription("Resource '%s' uses an unencrypted root EBS block device.", resourceBlock.FullName()).
 			WithAttribute(encryptedAttr)
 	}
 }

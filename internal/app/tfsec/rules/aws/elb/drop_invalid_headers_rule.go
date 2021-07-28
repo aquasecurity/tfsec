@@ -1,8 +1,6 @@
 package elb
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -79,14 +77,14 @@ resource "aws_alb" "good_example" {
 			if resourceBlock.GetAttribute("load_balancer_type").Equals("application", block.IgnoreCase) {
 				if resourceBlock.MissingChild("drop_invalid_header_fields") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' does not drop invalid header fields", resourceBlock.FullName()))
+						WithDescription("Resource '%s' does not drop invalid header fields", resourceBlock.FullName())
 					return
 				}
 
 				attr := resourceBlock.GetAttribute("drop_invalid_header_fields")
 				if attr.IsFalse() {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' sets the drop_invalid_header_fields to false", resourceBlock.FullName())).
+						WithDescription("Resource '%s' sets the drop_invalid_header_fields to false", resourceBlock.FullName()).
 						WithAttribute(attr)
 				}
 

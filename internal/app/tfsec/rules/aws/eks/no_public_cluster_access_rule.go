@@ -1,8 +1,6 @@
 package eks
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -65,21 +63,21 @@ resource "aws_eks_cluster" "good_example" {
 
 			if resourceBlock.MissingChild("vpc_config") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName()))
+					WithDescription("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName())
 				return
 			}
 
 			vpcConfig := resourceBlock.GetBlock("vpc_config")
 			if vpcConfig.MissingChild("endpoint_public_access") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName())
 				return
 			}
 
 			publicAccessEnabledAttr := vpcConfig.GetAttribute("endpoint_public_access")
 			if publicAccessEnabledAttr.IsTrue() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has public access is explicitly set to enabled", resourceBlock.FullName()).
 					WithAttribute(publicAccessEnabledAttr)
 			}
 		},

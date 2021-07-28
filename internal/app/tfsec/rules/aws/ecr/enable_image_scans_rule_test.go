@@ -33,6 +33,18 @@ resource "aws_ecr_repository" "foo" {
 			mustIncludeResultCode: expectedCode,
 		},
 		{
+			name: "check ECR Image Scan on push not set",
+			source: `
+resource "aws_ecr_repository" "foo" {
+  name                 = "bar"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+  }
+}`,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
 			name: "check ECR Image Scan disabled",
 			source: `
 resource "aws_ecr_repository" "foo" {

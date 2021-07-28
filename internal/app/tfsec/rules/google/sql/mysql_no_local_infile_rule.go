@@ -1,8 +1,6 @@
 package sql
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -82,7 +80,7 @@ resource "google_sql_database_instance" "db" {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
 						if valueAttr.Equals("on", block.IgnoreCase) {
 							set.Add().
-								WithDescription(fmt.Sprintf("Resource '%s' has local file read access enabled.", resourceBlock.FullName()))
+								WithDescription("Resource '%s' has local file read access enabled.", resourceBlock.FullName())
 						}
 					}
 				}

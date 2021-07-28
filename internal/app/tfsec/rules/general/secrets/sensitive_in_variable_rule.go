@@ -1,8 +1,6 @@
 package secrets
 
 import (
-	"fmt"
-
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -72,7 +70,7 @@ resource "evil_corp" "virtual_machine" {
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if attribute.Name() == "default" {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {
-						set.Add().WithDescription(fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", resourceBlock.FullName())).
+						set.Add().WithDescription("Variable '%s' includes a potentially sensitive default value.", resourceBlock.FullName()).
 							WithAttribute(attribute)
 					}
 				}

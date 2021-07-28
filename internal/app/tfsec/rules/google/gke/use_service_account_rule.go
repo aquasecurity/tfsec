@@ -1,7 +1,6 @@
 package gke
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -63,7 +62,7 @@ resource "google_container_cluster" "good_example" {
 
 			if resourceBlock.MissingChild("node_config") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())
 				return
 			}
 
@@ -72,7 +71,7 @@ resource "google_container_cluster" "good_example" {
 
 			if serviceAccount == nil || serviceAccount.IsEmpty() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())
 			}
 
 		},

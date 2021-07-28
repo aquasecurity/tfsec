@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -55,7 +53,7 @@ resource "opc_compute_ip_address_reservation" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if attr := resourceBlock.GetAttribute("ip_address_pool"); attr.Equals("public-ippool") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is using an IP from a public IP pool", resourceBlock.FullName())).
+					WithDescription("Resource '%s' is using an IP from a public IP pool", resourceBlock.FullName()).
 					WithAttribute(attr)
 			}
 		},

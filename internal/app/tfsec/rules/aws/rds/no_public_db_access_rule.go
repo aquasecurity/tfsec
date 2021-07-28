@@ -1,8 +1,6 @@
 package rds
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -54,7 +52,7 @@ resource "aws_db_instance" "good_example" {
 			if publicAttr := resourceBlock.GetAttribute("publicly_accessible"); publicAttr != nil && publicAttr.Type() == cty.Bool {
 				if publicAttr.Value().True() {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
+						WithDescription("Resource '%s' is exposed publicly.", resourceBlock.FullName()).
 						WithAttribute(publicAttr)
 				}
 			}

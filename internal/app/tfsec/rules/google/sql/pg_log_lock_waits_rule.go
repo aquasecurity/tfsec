@@ -1,8 +1,6 @@
 package sql
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -69,7 +67,7 @@ resource "google_sql_database_instance" "db" {
 			settingsBlock := resourceBlock.GetBlock("settings")
 			if settingsBlock.IsNil() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is not configured to log lock waits", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is not configured to log lock waits", resourceBlock.FullName())
 				return
 			}
 
@@ -77,7 +75,7 @@ resource "google_sql_database_instance" "db" {
 				if dbFlagBlock.GetAttribute("name").Equals("log_lock_waits") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.Equals("off") {
 						set.Add().
-							WithDescription(fmt.Sprintf("Resource '%s' is configured not to log lock waits", resourceBlock.FullName())).
+							WithDescription("Resource '%s' is configured not to log lock waits", resourceBlock.FullName()).
 							WithAttribute(valueAttr)
 					}
 					return
@@ -85,7 +83,7 @@ resource "google_sql_database_instance" "db" {
 			}
 
 			set.Add().
-				WithDescription(fmt.Sprintf("Resource '%s' is not configured to log lock waits", resourceBlock.FullName())).
+				WithDescription("Resource '%s' is not configured to log lock waits", resourceBlock.FullName()).
 				WithBlock(settingsBlock)
 
 		},

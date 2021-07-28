@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -83,7 +81,7 @@ resource "azurerm_sql_server" "good_example" {
 			}
 
 			set.Add().
-				WithDescription(fmt.Sprintf("Resource '%s' does not have an extended audit policy configured.", resourceBlock.FullName()))
+				WithDescription("Resource '%s' does not have an extended audit policy configured.", resourceBlock.FullName())
 
 		},
 	})

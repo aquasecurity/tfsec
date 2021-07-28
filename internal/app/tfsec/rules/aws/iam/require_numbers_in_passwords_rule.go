@@ -1,8 +1,6 @@
 package iam
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -55,11 +53,11 @@ resource "aws_iam_account_password_policy" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if attr := resourceBlock.GetAttribute("require_numbers"); attr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not require a number in the password.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not require a number in the password.", resourceBlock.FullName())
 			} else if attr.Value().Type() == cty.Bool {
 				if attr.Value().False() {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least one number in the password.", resourceBlock.FullName()))
+						WithDescription("Resource '%s' explicitly specifies not requiring at least one number in the password.", resourceBlock.FullName())
 				}
 			}
 		},

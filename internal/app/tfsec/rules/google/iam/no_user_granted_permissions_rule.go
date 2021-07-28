@@ -1,7 +1,6 @@
 package iam
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -110,7 +109,7 @@ resource "google_storage_bucket_iam_member" "good_example" {
 			for _, identities := range members {
 				if identities.IsKnown() && identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
 					set.Add().
-						WithDescription(fmt.Sprintf("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock.FullName()))
+						WithDescription("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock.FullName())
 				}
 			}
 		},

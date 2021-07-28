@@ -1,8 +1,6 @@
 package rds
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -59,14 +57,14 @@ resource "aws_rds_cluster" "good_example" {
 			if (kmsKeyIdAttr == nil || kmsKeyIdAttr.IsEmpty()) &&
 				(storageEncryptedattr == nil || storageEncryptedattr.IsFalse()) {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName())
 			} else if kmsKeyIdAttr != nil && kmsKeyIdAttr.Equals("") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' defines a disabled RDS Cluster encryption.", resourceBlock.FullName()).
 					WithAttribute(kmsKeyIdAttr)
 			} else if storageEncryptedattr == nil || storageEncryptedattr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a enabled RDS Cluster encryption but not the required encrypted_storage.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' defines a enabled RDS Cluster encryption but not the required encrypted_storage.", resourceBlock.FullName()).
 					WithAttribute(kmsKeyIdAttr)
 			}
 		},

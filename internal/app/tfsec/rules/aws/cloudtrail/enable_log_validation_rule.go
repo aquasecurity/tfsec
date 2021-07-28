@@ -1,8 +1,6 @@
 package cloudtrail
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -72,14 +70,14 @@ resource "aws_cloudtrail" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("enable_log_file_validation") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not enable log file validation.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not enable log file validation.", resourceBlock.FullName())
 				return
 			}
 
 			logFileValidationAttr := resourceBlock.GetAttribute("enable_log_file_validation")
 			if logFileValidationAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not enable log file validation.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' does not enable log file validation.", resourceBlock.FullName()).
 					WithAttribute(logFileValidationAttr)
 			}
 		},

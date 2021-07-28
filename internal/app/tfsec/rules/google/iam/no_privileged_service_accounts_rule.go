@@ -1,7 +1,6 @@
 package iam
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -79,7 +78,7 @@ resource "google_project_iam_member" "project" {
 			if memberAttr.IsString() && memberAttr.Value().IsKnown() {
 				if memberAttr.StartsWith("serviceAccount:") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' provides privileged access to a service account", resourceBlock)).
+						WithDescription("Resource '%s' provides privileged access to a service account", resourceBlock).
 						WithAttribute(roleAttr)
 				}
 			}
@@ -89,7 +88,7 @@ resource "google_project_iam_member" "project" {
 				return
 			} else if serviceAccountBlock != nil && serviceAccountBlock.TypeLabel() == "google_service_account" {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' provides privileged access to service account at %s", resourceBlock, serviceAccountBlock.FullName())).
+					WithDescription("Resource '%s' provides privileged access to service account at %s", resourceBlock, serviceAccountBlock.FullName()).
 					WithAttribute(roleAttr)
 			}
 		},

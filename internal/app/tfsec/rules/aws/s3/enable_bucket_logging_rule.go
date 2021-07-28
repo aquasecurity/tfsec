@@ -1,8 +1,6 @@
 package s3
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -56,7 +54,7 @@ resource "aws_s3_bucket" "good_example" {
 					return
 				}
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have logging enabled.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not have logging enabled.", resourceBlock.FullName())
 			}
 		},
 	})

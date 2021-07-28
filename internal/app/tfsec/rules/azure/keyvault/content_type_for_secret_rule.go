@@ -1,8 +1,6 @@
 package keyvault
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -59,7 +57,7 @@ resource "azurerm_key_vault_secret" "good_example" {
 
 			if resourceBlock.MissingChild("content_type") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' should have a content type set.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' should have a content type set.", resourceBlock.FullName())
 			}
 		},
 	})

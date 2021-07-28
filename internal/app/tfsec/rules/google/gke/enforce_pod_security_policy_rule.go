@@ -1,8 +1,6 @@
 package gke
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -61,14 +59,14 @@ resource "google_container_cluster" "good_example" {
 			pspBlock := resourceBlock.GetBlock("pod_security_policy_config")
 			if pspBlock == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())
 				return
 			}
 
 			enforcePSP := pspBlock.GetAttribute("enabled")
 			if enforcePSP != nil && enforcePSP.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())
 			}
 
 		},

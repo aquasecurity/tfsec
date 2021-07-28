@@ -1,8 +1,6 @@
 package sqs
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -55,11 +53,11 @@ resource "aws_sqs_queue" "good_example" {
 			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())
 
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName()).
 					WithAttribute(kmsKeyIDAttr)
 			}
 

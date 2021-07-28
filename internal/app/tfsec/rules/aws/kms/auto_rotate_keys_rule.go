@@ -1,8 +1,6 @@
 package kms
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -61,13 +59,13 @@ resource "aws_kms_key" "good_example" {
 
 			if keyRotationAttr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())
 				return
 			}
 
 			if keyRotationAttr.Type() == cty.Bool && keyRotationAttr.Value().False() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName()).
 					WithAttribute(keyRotationAttr)
 			}
 

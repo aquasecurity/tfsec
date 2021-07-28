@@ -1,8 +1,6 @@
 package autoscaling
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -54,7 +52,7 @@ resource "aws_launch_configuration" "good_example" {
 			publicAttr := resourceBlock.GetAttribute("associate_public_ip_address")
 			if publicAttr.IsTrue() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has a public IP address associated.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has a public IP address associated.", resourceBlock.FullName()).
 					WithAttribute(publicAttr)
 			}
 		},

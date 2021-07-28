@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -116,7 +114,7 @@ resource "azurerm_storage_account_network_rules" "test" {
 				bypass := resourceBlock.GetAttribute("bypass")
 				if bypass != nil && !bypass.Contains("AzureServices") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a network rule that doesn't allow bypass of Microsoft Services.", resourceBlock.FullName()))
+						WithDescription("Resource '%s' defines a network rule that doesn't allow bypass of Microsoft Services.", resourceBlock.FullName())
 				}
 			}
 

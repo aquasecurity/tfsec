@@ -1,8 +1,6 @@
 package redshift
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -68,21 +66,21 @@ resource "aws_redshift_cluster" "good_example" {
 
 			if resourceBlock.MissingChild("encrypted") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have encryption enabled", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not have encryption enabled", resourceBlock.FullName())
 				return
 			}
 
 			encryptedAttr := resourceBlock.GetAttribute("encrypted")
 			if encryptedAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has encryption explicitly disabled", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has encryption explicitly disabled", resourceBlock.FullName()).
 					WithAttribute(encryptedAttr)
 				return
 			}
 
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have a customer managed key specified", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not have a customer managed key specified", resourceBlock.FullName())
 			}
 
 		},

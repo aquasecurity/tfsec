@@ -1,8 +1,6 @@
 package network
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -108,7 +106,7 @@ resource "azurerm_network_security_group" "example" {
 					if securityRule.HasChild("source_address_prefix") {
 						if securityRule.GetAttribute("source_address_prefix").IsAny("*", "0.0.0.0", "/0", "internet", "any") {
 							set.Add().
-								WithDescription(fmt.Sprintf("Resource '%s' has a .", resourceBlock.FullName()))
+								WithDescription("Resource '%s' has a .", resourceBlock.FullName())
 						}
 					}
 				}

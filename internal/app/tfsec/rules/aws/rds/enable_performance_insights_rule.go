@@ -1,8 +1,6 @@
 package rds
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -60,13 +58,13 @@ resource "aws_rds_cluster_instance" "good_example" {
 			if resourceBlock.HasChild("performance_insights_enabled") && resourceBlock.GetAttribute("performance_insights_enabled").IsTrue() {
 				if resourceBlock.MissingChild("performance_insights_kms_key_id") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName()))
+						WithDescription("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName())
 					return
 				}
 
 				if keyAttr := resourceBlock.GetAttribute("performance_insights_kms_key_id"); keyAttr.IsEmpty() {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName())).
+						WithDescription("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName()).
 						WithAttribute(keyAttr)
 				}
 			}

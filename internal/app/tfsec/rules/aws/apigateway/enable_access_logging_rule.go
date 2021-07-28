@@ -1,8 +1,6 @@
 package apigateway
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -76,7 +74,7 @@ resource "aws_api_gateway_stage" "good_example" {
 
 			if resourceBlock.MissingChild("access_log_settings") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is missing access log settings block.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is missing access log settings block.", resourceBlock.FullName())
 			}
 
 		},

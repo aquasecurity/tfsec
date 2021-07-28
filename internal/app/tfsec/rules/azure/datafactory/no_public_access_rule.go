@@ -1,8 +1,6 @@
 package datafactory
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -59,12 +57,12 @@ resource "azurerm_data_factory" "good_example" {
 
 			if resourceBlock.MissingChild("public_network_enabled") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' should have public_network_enabled set to false, the default is true.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' should have public_network_enabled set to false, the default is true.", resourceBlock.FullName())
 				return
 			}
 			if resourceBlock.GetAttribute("public_network_enabled").IsTrue() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' should not have public network set to true.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' should not have public network set to true.", resourceBlock.FullName())
 			}
 		},
 	})

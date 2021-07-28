@@ -1,8 +1,6 @@
 package iam
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -64,7 +62,7 @@ resource "google_project_iam_binding" "project-123" {
 			if roleAttr.Value().AsString() == "roles/iam.serviceAccountUser" || roleAttr.Value().AsString() == "roles/iam.serviceAccountTokenCreator" {
 				set.Add().
 					WithAttribute(roleAttr).
-					WithDescription(fmt.Sprintf("Resource '%s' grants service account access to a user at project level.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' grants service account access to a user at project level.", resourceBlock.FullName())
 			}
 
 		},

@@ -1,8 +1,6 @@
 package ecr
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -72,20 +70,20 @@ resource "aws_ecr_repository" "good_example" {
 
 			if resourceBlock.MissingChild("encryption_configuration") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName())
 				return
 			}
 
 			encBlock := resourceBlock.GetBlock("encryption_configuration")
 			if encBlock.MissingChild("kms_key") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' configures encryption without using CMK", resourceBlock.FullName()))
+					WithDescription("Resource '%s' configures encryption without using CMK", resourceBlock.FullName())
 				return
 			}
 
 			if encBlock.MissingChild("encryption_type") || encBlock.GetAttribute("encryption_type").Equals("AES256") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName()))
+					WithDescription("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName())
 			}
 
 		},

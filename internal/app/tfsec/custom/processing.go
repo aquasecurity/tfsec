@@ -140,7 +140,7 @@ func processFoundChecks(checks ChecksFile) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, ctx) {
 						set.Add().
-							WithDescription(fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage)).
+							WithDescription("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage).
 							WithSeverity(customCheck.Severity)
 					}
 				},

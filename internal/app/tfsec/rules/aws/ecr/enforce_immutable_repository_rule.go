@@ -1,8 +1,6 @@
 package ecr
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -63,15 +61,15 @@ resource "aws_ecr_repository" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			imageTagMutabilityAttr := resourceBlock.GetAttribute("image_tag_mutability")
-			if imageTagMutabilityAttr == nil {
+			if imageTagMutabilityAttr.IsNil() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", resourceBlock.FullName())
 				return
 			}
 
-			if !imageTagMutabilityAttr.Equals("IMMUTABLE") {
+			if imageTagMutabilityAttr.NotEqual("IMMUTABLE") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has `image_tag_mutability` attribute  not set to `IMMUTABLE`", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has `image_tag_mutability` attribute  not set to `IMMUTABLE`", resourceBlock.FullName()).
 					WithAttribute(imageTagMutabilityAttr)
 			}
 

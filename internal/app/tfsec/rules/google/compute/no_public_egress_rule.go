@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -55,7 +53,7 @@ resource "google_compute_firewall" "good_example" {
 
 				if cidr.IsOpen(destinationRanges) {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a fully open outbound firewall rule.", resourceBlock.FullName())).
+						WithDescription("Resource '%s' defines a fully open outbound firewall rule.", resourceBlock.FullName()).
 						WithAttribute(destinationRanges)
 				}
 			}

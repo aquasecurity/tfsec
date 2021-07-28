@@ -1,8 +1,6 @@
 package elasticservice
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -63,14 +61,14 @@ resource "aws_elasticsearch_domain" "good_example" {
 			encryptionBlock := resourceBlock.GetBlock("encrypt_at_rest")
 			if encryptionBlock == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", resourceBlock.FullName())
 				return
 			}
 
 			enabledAttr := encryptionBlock.GetAttribute("enabled")
 			if enabledAttr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", resourceBlock.FullName())
 				return
 			}
 
@@ -80,7 +78,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			encryptionEnabled := isTrueBool || isTrueString
 			if !encryptionEnabled {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", resourceBlock.FullName())
 			}
 
 		},

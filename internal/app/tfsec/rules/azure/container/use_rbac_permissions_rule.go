@@ -1,8 +1,6 @@
 package container
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,17 +56,14 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 			rbacBlock := resourceBlock.GetBlock("role_based_access_control")
 			if rbacBlock == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines without RBAC", resourceBlock.FullName())
 				return
 			}
 
 			enabledAttr := rbacBlock.GetAttribute("enabled")
 			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
 				set.Add().
-					WithDescription(fmt.Sprintf(
-						"Resource '%s' RBAC disabled.",
-						resourceBlock.FullName(),
-					)).
+					WithDescription("Resource '%s' RBAC disabled.", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}
 

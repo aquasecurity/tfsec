@@ -1,8 +1,6 @@
 package dynamodb
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -76,21 +74,21 @@ resource "aws_dynamodb_table" "good_example" {
 
 			if resourceBlock.MissingChild("point_in_time_recovery") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery", resourceBlock.FullName()))
+					WithDescription("Resource '%s' doesn't have point in time recovery", resourceBlock.FullName())
 				return
 			}
 
 			pointBlock := resourceBlock.GetBlock("point_in_time_recovery")
 			if pointBlock.MissingChild("enabled") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())).
+					WithDescription("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName()).
 					WithBlock(pointBlock)
 				return
 			}
 			enabledAttr := pointBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())).
+					WithDescription("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}
 

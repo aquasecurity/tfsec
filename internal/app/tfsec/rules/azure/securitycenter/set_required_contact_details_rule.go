@@ -1,8 +1,6 @@
 package securitycenter
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,7 +56,7 @@ resource "azurerm_security_center_contact" "good_example" {
 
 			if resourceBlock.MissingChild("phone") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have a phone number set for the security contact", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not have a phone number set for the security contact", resourceBlock.FullName())
 
 				return
 			}
@@ -66,7 +64,7 @@ resource "azurerm_security_center_contact" "good_example" {
 			phoneAttr := resourceBlock.GetAttribute("phone")
 			if phoneAttr.IsEmpty() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have a phone number set for the security contact", resourceBlock.FullName())).
+					WithDescription("Resource '%s' does not have a phone number set for the security contact", resourceBlock.FullName()).
 					WithAttribute(phoneAttr)
 			}
 		},

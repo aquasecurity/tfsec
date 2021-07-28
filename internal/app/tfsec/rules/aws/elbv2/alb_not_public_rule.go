@@ -1,8 +1,6 @@
 package elbv2
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -55,10 +53,10 @@ resource "aws_alb" "good_example" {
 			}
 			if internalAttr := resourceBlock.GetAttribute("internal"); internalAttr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is exposed publicly.", resourceBlock.FullName())
 			} else if internalAttr.Type() == cty.Bool && internalAttr.Value().False() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' is exposed publicly.", resourceBlock.FullName()).
 					WithAttribute(internalAttr)
 			}
 		},

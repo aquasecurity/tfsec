@@ -1,8 +1,6 @@
 package s3
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -55,7 +53,7 @@ resource "aws_s3_bucket_public_access_block" "example" {
 			blocks, err := ctx.GetReferencingResources(resourceBlock, "aws_s3_bucket_public_access_block", "bucket")
 			if err != nil || len(blocks) == 0 {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource %s has no associated aws_s3_bucket_public_access_block.", resourceBlock.FullName()))
+					WithDescription("Resource %s has no associated aws_s3_bucket_public_access_block.", resourceBlock.FullName())
 			}
 		},
 	})

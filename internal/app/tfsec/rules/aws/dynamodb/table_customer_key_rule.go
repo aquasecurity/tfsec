@@ -1,8 +1,6 @@
 package dynamodb
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -95,7 +93,7 @@ resource "aws_dynamodb_table" "good_example" {
 
 			if resourceBlock.MissingChild("server_side_encryption") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())
 				return
 			}
 
@@ -103,7 +101,7 @@ resource "aws_dynamodb_table" "good_example" {
 			enabledAttr := sseBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName()).
 					WithBlock(sseBlock)
 			}
 
@@ -111,7 +109,7 @@ resource "aws_dynamodb_table" "good_example" {
 				keyIdAttr := sseBlock.GetAttribute("kms_key_arn")
 				if keyIdAttr.Equals("alias/aws/dynamodb") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName())).
+						WithDescription("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName()).
 						WithAttribute(keyIdAttr)
 				}
 			}

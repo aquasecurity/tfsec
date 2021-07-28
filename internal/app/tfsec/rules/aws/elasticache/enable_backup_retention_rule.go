@@ -1,8 +1,6 @@
 package elasticache
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -71,13 +69,13 @@ resource "aws_elasticache_cluster" "good_example" {
 					snapshotRetentionAttr := resourceBlock.GetAttribute("snapshot_retention_limit")
 					if snapshotRetentionAttr == nil {
 						set.Add().
-							WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", resourceBlock.FullName()))
+							WithDescription("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())
 						return
 					}
 
 					if snapshotRetentionAttr.Equals(0) {
 						set.Add().
-							WithDescription(fmt.Sprintf("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName())).
+							WithDescription("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName()).
 							WithAttribute(snapshotRetentionAttr)
 					}
 				}

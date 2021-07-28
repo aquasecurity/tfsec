@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,14 +56,14 @@ resource "azurerm_postgresql_server" "good_example" {
 
 			if resourceBlock.MissingChild("ssl_enforcement_enabled") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is missing the required ssl_enforcement_enabled attribute", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is missing the required ssl_enforcement_enabled attribute", resourceBlock.FullName())
 				return
 			}
 
 			sslEnforceAttr := resourceBlock.GetAttribute("ssl_enforcement_enabled")
 			if sslEnforceAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has ssl_enforcement_enabled disabled", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has ssl_enforcement_enabled disabled", resourceBlock.FullName()).
 					WithAttribute(sslEnforceAttr)
 			}
 		},

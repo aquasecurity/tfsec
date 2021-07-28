@@ -1,8 +1,6 @@
 package scanner
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -67,7 +65,7 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 						res := result.New(checkBlock).
 							WithLegacyRuleID(r.LegacyID).
 							WithRuleID(r.ID()).
-							WithDescription(fmt.Sprintf("Resource '%s' passed check: %s", checkBlock.FullName(), r.Documentation.Summary)).
+							WithDescription("Resource '%s' passed check: %s", checkBlock.FullName(), r.Documentation.Summary).
 							WithStatus(result.Passed).
 							WithImpact(r.Documentation.Impact).
 							WithResolution(r.Documentation.Resolution).

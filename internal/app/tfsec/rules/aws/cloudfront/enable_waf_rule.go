@@ -1,8 +1,6 @@
 package cloudfront
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -108,7 +106,7 @@ resource "aws_cloudfront_distribution" "good_example" {
 			wafAclIdBlock := resourceBlock.GetAttribute("web_acl_id")
 			if wafAclIdBlock.IsNil() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' does not have a WAF in front of it.", resourceBlock.FullName()).
 					WithAttribute(wafAclIdBlock)
 			}
 		},

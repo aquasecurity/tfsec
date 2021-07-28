@@ -1,8 +1,6 @@
 package monitor
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -69,14 +67,14 @@ resource "azurerm_monitor_log_profile" "good_example" {
 			categoriesAttr := resourceBlock.GetAttribute("categories")
 			if categoriesAttr == nil || categoriesAttr.IsEmpty() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not have required categories", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not have required categories", resourceBlock.FullName())
 				return
 			}
 
 			for _, category := range []string{"Action", "Write", "Delete"} {
 				if !categoriesAttr.Contains(category) {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' is missing '%s' category", resourceBlock.FullName(), category)).
+						WithDescription("Resource '%s' is missing '%s' category", resourceBlock.FullName(), category).
 						WithAttribute(categoriesAttr)
 				}
 			}

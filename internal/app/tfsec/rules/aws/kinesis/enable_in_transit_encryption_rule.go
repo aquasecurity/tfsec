@@ -1,7 +1,6 @@
 package kinesis
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -57,16 +56,16 @@ resource "aws_kinesis_stream" "good_example" {
 			encryptionTypeAttr := resourceBlock.GetAttribute("encryption_type")
 			if encryptionTypeAttr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName())
 			} else if encryptionTypeAttr.Type() == cty.String && strings.ToUpper(encryptionTypeAttr.Value().AsString()) != "KMS" {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName())).
+					WithDescription("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName()).
 					WithAttribute(encryptionTypeAttr)
 			} else {
 				keyIDAttr := resourceBlock.GetAttribute("kms_key_id")
 				if keyIDAttr == nil || keyIDAttr.IsEmpty() || keyIDAttr.Equals("alias/aws/kinesis") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' defines a Kinesis Stream encrypted with the default Kinesis key.", resourceBlock.FullName()))
+						WithDescription("Resource '%s' defines a Kinesis Stream encrypted with the default Kinesis key.", resourceBlock.FullName())
 				}
 			}
 		},

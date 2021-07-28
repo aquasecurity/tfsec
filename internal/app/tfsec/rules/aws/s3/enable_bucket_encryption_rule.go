@@ -1,8 +1,6 @@
 package s3
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -61,27 +59,27 @@ resource "aws_s3_bucket" "good_example" {
 
 			if resourceBlock.MissingChild("server_side_encryption_configuration") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", resourceBlock.FullName())
 				return
 			}
 			encryptionBlock := resourceBlock.GetBlock("server_side_encryption_configuration")
 			if encryptionBlock.MissingChild("rule") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", resourceBlock.FullName())
 				return
 			}
 
 			ruleBlock := encryptionBlock.GetBlock("rule")
 			if ruleBlock.MissingChild("apply_server_side_encryption_by_default") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName())
 				return
 			}
 
 			applyBlock := ruleBlock.GetBlock("apply_server_side_encryption_by_default")
 			if sseAttr := applyBlock.GetAttribute("sse_algorithm"); sseAttr == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName())
 			}
 
 		},

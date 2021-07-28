@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -77,7 +75,7 @@ resource "azurerm_sql_firewall_rule" "good_example" {
 				endIpAttr := resourceBlock.GetAttribute("end_ip_address")
 				if !endIpAttr.Equals("0.0.0.0") {
 					set.Add().
-						WithDescription(fmt.Sprintf("Resource '%s' has an open IP range set.", resourceBlock.FullName())).
+						WithDescription("Resource '%s' has an open IP range set.", resourceBlock.FullName()).
 						WithAttribute(endIpAttr)
 				}
 			}

@@ -1,8 +1,6 @@
 package container
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,24 +56,21 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 			addonProfileBlock := resourceBlock.GetBlock("addon_profile")
 			if addonProfileBlock == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", resourceBlock.FullName())
 				return
 			}
 
 			omsAgentBlock := addonProfileBlock.GetBlock("oms_agent")
 			if omsAgentBlock == nil {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", resourceBlock.FullName()))
+					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", resourceBlock.FullName())
 				return
 			}
 
 			enabledAttr := omsAgentBlock.GetAttribute("enabled")
 			if enabledAttr == nil || (enabledAttr.Type() == cty.Bool && enabledAttr.Value().False()) {
 				set.Add().
-					WithDescription(fmt.Sprintf(
-						"Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).",
-						resourceBlock.FullName(),
-					)).
+					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}
 		},

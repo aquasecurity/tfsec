@@ -1,8 +1,6 @@
 package monitor
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -65,20 +63,20 @@ resource "azurerm_monitor_log_profile" "good_example" {
 
 			if retentionPolicyBlock.MissingChild("enabled") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not enable retention policy", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not enable retention policy", resourceBlock.FullName())
 				return
 			}
 
 			if retentionPolicyBlock.MissingChild("days") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' does not retention policy days set", resourceBlock.FullName()))
+					WithDescription("Resource '%s' does not retention policy days set", resourceBlock.FullName())
 				return
 			}
 
 			daysAttr := retentionPolicyBlock.GetAttribute("days")
 			if daysAttr.LessThan(356) {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has retention period of less than 365 days", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has retention period of less than 365 days", resourceBlock.FullName()).
 					WithAttribute(daysAttr)
 			}
 		},

@@ -1,8 +1,6 @@
 package securitycenter
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,7 +56,7 @@ resource "azurerm_security_center_contact" "good_example" {
 
 			if resourceBlock.MissingChild("alert_notifications") {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' is missing the required setting for alert_notifications", resourceBlock.FullName()))
+					WithDescription("Resource '%s' is missing the required setting for alert_notifications", resourceBlock.FullName())
 
 				return
 			}
@@ -66,7 +64,7 @@ resource "azurerm_security_center_contact" "good_example" {
 			alertNotificationsAttr := resourceBlock.GetAttribute("alert_notifications")
 			if alertNotificationsAttr.IsFalse() {
 				set.Add().
-					WithDescription(fmt.Sprintf("Resource '%s' has alert_notifications turned off", resourceBlock.FullName())).
+					WithDescription("Resource '%s' has alert_notifications turned off", resourceBlock.FullName()).
 					WithAttribute(alertNotificationsAttr)
 			}
 
