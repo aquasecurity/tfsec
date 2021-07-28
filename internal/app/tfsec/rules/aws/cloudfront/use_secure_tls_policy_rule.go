@@ -14,8 +14,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -59,7 +57,7 @@ resource "aws_cloudfront_distribution" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			viewerCertificateBlock := resourceBlock.GetBlock("viewer_certificate")
-			if viewerCertificateBlock == nil {
+			if viewerCertificateBlock.IsNil() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing viewer_certificate block)", resourceBlock.FullName())),
@@ -67,15 +65,18 @@ resource "aws_cloudfront_distribution" "good_example" {
 				return
 			}
 
-			if minVersion := viewerCertificateBlock.GetAttribute("minimum_protocol_version"); minVersion == nil {
+			minVersionAttr := viewerCertificateBlock.GetAttribute("minimum_protocol_version")
+			if minVersionAttr.IsNil() {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName())),
+						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName())).
+						WithBlock(viewerCertificateBlock),
 				)
-			} else if minVersion.Type() == cty.String && minVersion.Value().AsString() != "TLSv1.2_2021" {
+			} else if minVersionAttr.NotEqual("TLSv1.2_2021") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName())),
+						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName())).
+						WithAttribute(minVersionAttr),
 				)
 			}
 		},

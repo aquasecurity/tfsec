@@ -15,8 +15,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -59,19 +57,20 @@ resource "aws_cloudfront_distribution" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			defaultBehaviorBlock := resourceBlock.GetBlock("default_cache_behavior")
-			if defaultBehaviorBlock == nil {
+			if defaultBehaviorBlock.IsNil() {
 				set.Add(
 					result.New(resourceBlock).
 						WithDescription(fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing default_cache_behavior block).", resourceBlock.FullName())),
 				)
 			} else {
 				protocolPolicyAttr := defaultBehaviorBlock.GetAttribute("viewer_protocol_policy")
-				if protocolPolicyAttr == nil {
+				if protocolPolicyAttr.IsNil() {
 					set.Add(
 						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", resourceBlock.FullName())),
+							WithDescription(fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", resourceBlock.FullName())).
+							WithBlock(defaultBehaviorBlock),
 					)
-				} else if protocolPolicyAttr.Type() == cty.String && protocolPolicyAttr.Value().AsString() == "allow-all" {
+				} else if protocolPolicyAttr.Equals("allow-all") {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", resourceBlock.FullName())).
@@ -83,12 +82,12 @@ resource "aws_cloudfront_distribution" "good_example" {
 			orderedBehaviorBlocks := resourceBlock.GetBlocks("ordered_cache_behavior")
 			for _, orderedBehaviorBlock := range orderedBehaviorBlocks {
 				orderedProtocolPolicyAttr := orderedBehaviorBlock.GetAttribute("viewer_protocol_policy")
-				if orderedProtocolPolicyAttr == nil {
+				if orderedProtocolPolicyAttr.IsNil() {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", resourceBlock.FullName())),
 					)
-				} else if orderedProtocolPolicyAttr.Type() == cty.String && orderedProtocolPolicyAttr.Value().AsString() == "allow-all" {
+				} else if orderedProtocolPolicyAttr.Equals("allow-all") {
 					set.Add(
 						result.New(resourceBlock).
 							WithDescription(fmt.Sprintf("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", resourceBlock.FullName())).

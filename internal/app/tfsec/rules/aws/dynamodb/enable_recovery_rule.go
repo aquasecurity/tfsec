@@ -82,15 +82,16 @@ resource "aws_dynamodb_table" "good_example" {
 				return
 			}
 
-			poitBlock := resourceBlock.GetBlock("point_in_time_recovery")
-			if poitBlock.MissingChild("enabled") {
+			pointBlock := resourceBlock.GetBlock("point_in_time_recovery")
+			if pointBlock.MissingChild("enabled") {
 				set.Add(
 					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())),
+						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())).
+						WithBlock(pointBlock),
 				)
 				return
 			}
-			enabledAttr := poitBlock.GetAttribute("enabled")
+			enabledAttr := pointBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {
 				set.Add(
 					result.New(resourceBlock).

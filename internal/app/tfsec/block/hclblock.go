@@ -132,13 +132,14 @@ func (block *HCLBlock) Range() Range {
 }
 
 func (block *HCLBlock) GetFirstMatchingBlock(names ...string) Block {
+	var returnBlock *HCLBlock
 	for _, name := range names {
 		b := block.GetBlock(name)
-		if b != nil {
+		if b.IsNotNil() {
 			return b
 		}
 	}
-	return nil
+	return returnBlock
 }
 
 func (block *HCLBlock) getHCLBlocks() hcl.Blocks {
@@ -289,14 +290,16 @@ func (block *HCLBlock) GetAttribute(name string) Attribute {
 }
 
 func (block *HCLBlock) GetNestedAttribute(name string) Attribute {
-	parts := strings.Split(name, "/")
+
+	var returnAttr *HCLAttribute
+	parts := strings.Split(name, ".")
 	blocks := parts[:len(parts)-1]
 	attrName := parts[len(parts)-1]
 
 	var working Block = block
 	for _, b := range blocks {
 		if checkBlock := working.GetBlock(b); checkBlock == nil {
-			return nil
+			return returnAttr
 		} else {
 			working = checkBlock
 		}
@@ -306,7 +309,7 @@ func (block *HCLBlock) GetNestedAttribute(name string) Attribute {
 		return working.GetAttribute(attrName)
 	}
 
-	return nil
+	return returnAttr
 }
 
 func (block *HCLBlock) Reference() *Reference {

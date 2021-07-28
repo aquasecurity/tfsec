@@ -63,7 +63,7 @@ func (r *Result) Range() block.Range {
 	if r.attribute != nil {
 		return r.attribute.Range()
 	}
-	return r.blocks[0].Range()
+	return r.blocks[len(r.blocks)-1].Range()
 }
 
 func (r *Result) HashCode() string {
