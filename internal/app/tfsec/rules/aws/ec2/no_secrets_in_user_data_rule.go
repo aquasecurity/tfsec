@@ -1,8 +1,6 @@
 package ec2
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -76,20 +74,16 @@ EOF
 			userDataAttr := resourceBlock.GetAttribute("user_data")
 			if userDataAttr.Contains("AWS_ACCESS_KEY_ID", block.IgnoreCase) &&
 				userDataAttr.RegexMatches("(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has userdata with access key id defined.", resourceBlock.FullName())).
-						WithAttribute(userDataAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has userdata with access key id defined.", resourceBlock.FullName()).
+					WithAttribute(userDataAttr)
 			}
 
 			if userDataAttr.Contains("AWS_SECRET_ACCESS_KEY", block.IgnoreCase) &&
 				userDataAttr.RegexMatches("(?i)aws_secre.+[=:]\\s{0,}[A-Za-z0-9\\/+=]{40}.?") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has userdata with access secret key defined.", resourceBlock.FullName())).
-						WithAttribute(userDataAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has userdata with access secret key defined.", resourceBlock.FullName()).
+					WithAttribute(userDataAttr)
 			}
 		},
 	})

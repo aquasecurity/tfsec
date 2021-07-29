@@ -1,8 +1,6 @@
 package container
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -53,12 +51,10 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if networkProfileBlock := resourceBlock.GetBlock("network_profile"); networkProfileBlock != nil {
-				if networkProfileBlock.GetAttribute("network_policy") == nil {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' do not have network_policy define. network_policy should be defined to have opportunity allow or block traffic to pods", resourceBlock.FullName())),
-					)
+			if networkProfileBlock := resourceBlock.GetBlock("network_profile"); networkProfileBlock.IsNotNil() {
+				if networkProfileBlock.MissingChild("network_policy") {
+					set.AddResult().
+						WithDescription("Resource '%s' do not have network_policy define. network_policy should be defined to have opportunity allow or block traffic to pods", resourceBlock.FullName())
 				}
 			}
 

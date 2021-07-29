@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -15,8 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -54,17 +50,16 @@ resource "azurerm_virtual_machine" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if linuxConfigBlock := resourceBlock.GetBlock("os_profile_linux_config"); linuxConfigBlock != nil {
+			if linuxConfigBlock := resourceBlock.GetBlock("os_profile_linux_config"); linuxConfigBlock.IsNotNil() {
+				if linuxConfigBlock.MissingChild("disable_password_authentication") {
+					set.AddResult().WithDescription("Resource '%s' missing required attribute in os_profile_linux_config", resourceBlock.FullName()).WithBlock(linuxConfigBlock)
+				}
+
 				passwordAuthDisabledAttr := linuxConfigBlock.GetAttribute("disable_password_authentication")
-				if passwordAuthDisabledAttr != nil && passwordAuthDisabledAttr.Type() == cty.Bool && passwordAuthDisabledAttr.Value().False() {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf(
-								"Resource '%s' has password authentication enabled. Use SSH keys instead.",
-								resourceBlock.FullName(),
-							)).
-							WithAttribute(passwordAuthDisabledAttr),
-					)
+				if passwordAuthDisabledAttr.IsNotNil() && passwordAuthDisabledAttr.IsFalse() {
+					set.AddResult().
+						WithDescription("Resource '%s' has password authentication enabled. Use SSH keys instead.", resourceBlock.FullName()).
+						WithAttribute(passwordAuthDisabledAttr)
 				}
 			}
 

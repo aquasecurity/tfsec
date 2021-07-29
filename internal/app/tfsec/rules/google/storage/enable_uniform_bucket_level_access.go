@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -80,17 +78,13 @@ resource "google_storage_bucket" "static-site" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if attr := resourceBlock.GetAttribute("uniform_bucket_level_access"); attr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have uniform_bucket_level_access enabled.", resourceBlock.FullName())),
-				)
-			} else if attr.Value().IsKnown() && !attr.IsTrue() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has uniform_bucket_level_access explicitly disabled.", resourceBlock.FullName())).
-						WithAttribute(attr),
-				)
+			if attr := resourceBlock.GetAttribute("uniform_bucket_level_access"); attr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have uniform_bucket_level_access enabled.", resourceBlock.FullName())
+			} else if attr.Value().IsKnown() && attr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' has uniform_bucket_level_access explicitly disabled.", resourceBlock.FullName()).
+					WithAttribute(attr)
 			}
 		},
 	})

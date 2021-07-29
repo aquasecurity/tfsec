@@ -1,8 +1,6 @@
 package elasticache
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -57,17 +55,13 @@ resource "aws_elasticache_replication_group" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			encryptionAttr := resourceBlock.GetAttribute("transit_encryption_enabled")
-			if encryptionAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (missing transit_encryption_enabled attribute).", resourceBlock.FullName())),
-				)
+			if encryptionAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an unencrypted Elasticache Replication Group (missing transit_encryption_enabled attribute).", resourceBlock.FullName())
 			} else if !encryptionAttr.IsTrue() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (transit_encryption_enabled set to false).", resourceBlock.FullName())).
-						WithAttribute(encryptionAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' defines an unencrypted Elasticache Replication Group (transit_encryption_enabled set to false).", resourceBlock.FullName()).
+					WithAttribute(encryptionAttr)
 
 			}
 

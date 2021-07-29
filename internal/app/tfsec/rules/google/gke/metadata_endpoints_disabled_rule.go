@@ -1,8 +1,6 @@
 package gke
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -62,12 +60,10 @@ resource "google_container_cluster" "good_example" {
 				return
 			}
 
-			legacyMetadataAPI := resourceBlock.GetBlock("metadata").GetAttribute("disable-legacy-endpoints")
-			if legacyMetadataAPI != nil && legacyMetadataAPI.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", resourceBlock.FullName())),
-				)
+			legacyMetadataAPI := resourceBlock.GetNestedAttribute("metadata.disable-legacy-endpoints")
+			if legacyMetadataAPI.IsNotNil() && legacyMetadataAPI.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", resourceBlock.FullName())
 			}
 
 		},

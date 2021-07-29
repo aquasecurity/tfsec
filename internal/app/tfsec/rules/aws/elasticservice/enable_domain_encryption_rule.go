@@ -1,8 +1,6 @@
 package elasticservice
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -13,8 +11,6 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
-
-	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
@@ -61,34 +57,24 @@ resource "aws_elasticsearch_domain" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			encryptionBlock := resourceBlock.GetBlock("encrypt_at_rest")
-			if encryptionBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", resourceBlock.FullName())),
-				)
+			if encryptionBlock.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", resourceBlock.FullName())
 				return
 			}
 
 			enabledAttr := encryptionBlock.GetAttribute("enabled")
-			if enabledAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", resourceBlock.FullName())),
-				)
+			if enabledAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an unencrypted Elasticsearch domain (missing enabled attribute).", resourceBlock.FullName())
 				return
 			}
 
-			isTrueBool := enabledAttr.Type() == cty.Bool && enabledAttr.Value().True()
-			isTrueString := enabledAttr.Type() == cty.String &&
-				enabledAttr.Value().Equals(cty.StringVal("true")).True()
-			encryptionEnabled := isTrueBool || isTrueString
-			if !encryptionEnabled {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", resourceBlock.FullName())),
-				)
+			if enabledAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an unencrypted Elasticsearch domain (enabled attribute set to false).", resourceBlock.FullName()).
+					WithAttribute(enabledAttr)
 			}
-
 		},
 	})
 }

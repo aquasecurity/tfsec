@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -105,20 +103,21 @@ resource "azurerm_storage_account_network_rules" "test" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
+			blockName := resourceBlock.FullName()
+
 			if resourceBlock.IsResourceType("azurerm_storage_account") {
 				if resourceBlock.MissingChild("network_rules") {
 					return
 				}
 				resourceBlock = resourceBlock.GetBlock("network_rules")
+
 			}
 
 			if resourceBlock.HasChild("bypass") {
 				bypass := resourceBlock.GetAttribute("bypass")
-				if bypass != nil && !bypass.Contains("AzureServices") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a network rule that doesn't allow bypass of Microsoft Services.", resourceBlock.FullName())),
-					)
+				if bypass.IsNotNil() && !bypass.Contains("AzureServices") {
+					set.AddResult().
+						WithDescription("Resource '%s' defines a network rule that doesn't allow bypass of Microsoft Services.", blockName)
 				}
 			}
 

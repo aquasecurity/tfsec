@@ -1,8 +1,6 @@
 package iam
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -53,19 +51,15 @@ resource "aws_iam_account_password_policy" "good_example" {
 		RequiredLabels:  []string{"aws_iam_account_password_policy"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			if attr := resourceBlock.GetAttribute("max_password_age"); attr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a max password age set.", resourceBlock.FullName())),
-				)
+			if attr := resourceBlock.GetAttribute("max_password_age"); attr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have a max password age set.", resourceBlock.FullName())
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value > 90 {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has high password age.", resourceBlock.FullName())).
-							WithAttribute(attr),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' has high password age.", resourceBlock.FullName()).
+						WithAttribute(attr)
 				}
 			}
 		},

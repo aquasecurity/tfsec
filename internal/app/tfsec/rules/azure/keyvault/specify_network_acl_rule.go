@@ -1,8 +1,6 @@
 package keyvault
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -65,38 +63,17 @@ resource "azurerm_key_vault" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if resourceBlock.MissingChild("network_acls") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())),
-				)
+			defaultActionAttr := resourceBlock.GetNestedAttribute("network_acls.default_action")
+			if defaultActionAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' specifies does not specify a network acl block with default action.", resourceBlock.FullName())
 				return
 			}
 
-			networkAcls := resourceBlock.GetBlock("network_acls")
-			if networkAcls == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())),
-				)
-				return
-			}
-
-			if networkAcls.MissingChild("default_action") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a default action in the network acl.", resourceBlock.FullName())),
-				)
-				return
-			}
-
-			defaultActionAttr := networkAcls.GetAttribute("default_action")
 			if !defaultActionAttr.Equals("Deny") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName())).
-						WithAttribute(defaultActionAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName()).
+					WithAttribute(defaultActionAttr)
 			}
 
 		},

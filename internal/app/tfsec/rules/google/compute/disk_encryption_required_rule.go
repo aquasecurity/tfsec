@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -49,22 +47,20 @@ resource "google_compute_disk" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			keyBlock := resourceBlock.GetBlock("disk_encryption_key")
-			if keyBlock == nil {
+			if resourceBlock.MissingChild("disk_encryption_key") {
 				return
 			}
 
-			rawKeyAttr := keyBlock.GetAttribute("raw_key")
-			if rawKeyAttr == nil {
+			if resourceBlock.MissingNestedChild("disk_encryption_key.raw_key") {
 				return
 			}
+
+			rawKeyAttr := resourceBlock.GetNestedAttribute("disk_encryption_key.raw_key")
 
 			if rawKeyAttr.IsString() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies an encryption key in raw format.", resourceBlock.FullName())).
-						WithAttribute(rawKeyAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' specifies an encryption key in raw format.", resourceBlock.FullName()).
+					WithAttribute(rawKeyAttr)
 			}
 
 		},

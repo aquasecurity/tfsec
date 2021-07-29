@@ -1,8 +1,6 @@
 package gke
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -64,33 +62,29 @@ resource "google_container_cluster" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			masterAuthBlock := resourceBlock.GetBlock("master_auth")
-			if masterAuthBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", resourceBlock.FullName())),
-				)
+			if resourceBlock.MissingChild("master_auth") {
+				set.AddResult().
+					WithDescription("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", resourceBlock.FullName())
 				return
 			}
 
-			staticAuthPass := masterAuthBlock.GetAttribute("password")
-			if staticAuthPass != nil && !staticAuthPass.IsEmpty() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())),
-				)
+			staticAuthPass := resourceBlock.GetNestedAttribute("master_auth.password")
+			if staticAuthPass.IsNotNil() && !staticAuthPass.IsEmpty() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())
 			}
 
-			if masterAuthBlock.MissingChild("client_certificate_config") {
+			if resourceBlock.MissingNestedChild("master_auth.client_certificate_config") {
 				return
 			}
 
-			issueClientCert := masterAuthBlock.GetBlock("client_certificate_config").GetAttribute("issue_client_certificate")
-			if issueClientCert != nil && issueClientCert.IsTrue() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())),
-				)
+			issueClientCert := resourceBlock.GetNestedAttribute("master_auth.client_certificate_config.issue_client_certificate")
+			if issueClientCert.IsNil() {
+				return
+			}
+			if issueClientCert.IsTrue() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())
 			}
 
 		},

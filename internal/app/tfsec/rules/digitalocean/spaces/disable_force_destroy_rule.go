@@ -1,8 +1,6 @@
 package spaces
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -49,10 +47,8 @@ resource "digitalocean_spaces_bucket" "good_example" {
 			if resourceBlock.HasChild("force_destroy") {
 				forceDestroyAttr := resourceBlock.GetAttribute("force_destroy")
 				if forceDestroyAttr.IsTrue() {
-					set.Add(result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName())).
-						WithAttribute(forceDestroyAttr),
-					)
+					set.AddResult().WithDescription("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName()).
+						WithAttribute(forceDestroyAttr)
 				}
 			}
 		},

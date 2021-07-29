@@ -1,8 +1,6 @@
 package elasticsearch
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -60,26 +58,23 @@ resource "aws_elasticsearch_domain" "example" {
 		RequiredLabels:  []string{"aws_elasticsearch_domain"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			logPublishingOptions := resourceBlock.GetBlocks("log_publishing_options")
-			if len(logPublishingOptions) > 0 {
-				auditLogFound := false
-				for _, logPublishingOption := range logPublishingOptions {
-					logType := logPublishingOption.GetAttribute("log_type")
-					if logType != nil {
-						if logType.Equals("AUDIT_LOGS") {
-							auditLogFound = true
-						}
-					}
-				}
 
-				if !auditLogFound {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in one of the `log_publishing_options`-`log_type` attributes so audit log is not enabled", resourceBlock.FullName())),
-					)
+			logPublishingOptions := resourceBlock.GetBlocks("log_publishing_options")
+
+			auditLogFound := false
+			for _, logPublishingOption := range logPublishingOptions {
+				logType := logPublishingOption.GetAttribute("log_type")
+				if logType.IsNotNil() {
+					if logType.Equals("AUDIT_LOGS") {
+						auditLogFound = true
+					}
 				}
 			}
 
+			if !auditLogFound {
+				set.AddResult().
+					WithDescription("Resource '%s' is missing 'AUDIT_LOGS` in one of the `log_publishing_options`-`log_type` attributes so audit log is not enabled", resourceBlock.FullName())
+			}
 		},
 	})
 }

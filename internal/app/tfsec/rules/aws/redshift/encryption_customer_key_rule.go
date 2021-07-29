@@ -1,8 +1,6 @@
 package redshift
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -67,28 +65,22 @@ resource "aws_redshift_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("encrypted") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have encryption enabled", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not have encryption enabled", resourceBlock.FullName())
 				return
 			}
 
 			encryptedAttr := resourceBlock.GetAttribute("encrypted")
 			if encryptedAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has encryption explicitly disabled", resourceBlock.FullName())).
-						WithAttribute(encryptedAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has encryption explicitly disabled", resourceBlock.FullName()).
+					WithAttribute(encryptedAttr)
 				return
 			}
 
 			if resourceBlock.MissingChild("kms_key_id") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a customer managed key specified", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not have a customer managed key specified", resourceBlock.FullName())
 			}
 
 		},

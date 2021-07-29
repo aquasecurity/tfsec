@@ -1,8 +1,6 @@
 package eks
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -67,55 +65,44 @@ resource "aws_eks_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("encryption_config") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has no encryptionConfigBlock block", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has no encryptionConfigBlock block", resourceBlock.FullName())
 				return
 			}
 
 			encryptionConfigBlock := resourceBlock.GetBlock("encryption_config")
 			if encryptionConfigBlock.MissingChild("resources") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with no resourcesAttr attribute specified", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has encryptionConfigBlock block with no resourcesAttr attribute specified", resourceBlock.FullName()).
+					WithBlock(encryptionConfigBlock)
 				return
 			}
 
 			resourcesAttr := encryptionConfigBlock.GetAttribute("resources")
 			if !resourcesAttr.Contains("secrets") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not include secrets in encrypted resources", resourceBlock.FullName())).
-						WithAttribute(resourcesAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not include secrets in encrypted resources", resourceBlock.FullName()).
+					WithAttribute(resourcesAttr)
 			}
 
 			if encryptionConfigBlock.MissingChild("provider") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with no provider block specified", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has encryptionConfigBlock block with no provider block specified", resourceBlock.FullName())
 				return
 			}
 
 			providerBlock := encryptionConfigBlock.GetBlock("provider")
 			if providerBlock.MissingChild("key_arn") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with provider block specified missing key arn", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has encryptionConfigBlock block with provider block specified missing key arn", resourceBlock.FullName())
 				return
 			}
 
 			keyArnAttr := providerBlock.GetAttribute("key_arn")
 			if keyArnAttr.IsEmpty() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with provider block specified but key_arn is empty", resourceBlock.FullName())).
-						WithAttribute(keyArnAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has encryptionConfigBlock block with provider block specified but key_arn is empty", resourceBlock.FullName()).
+					WithAttribute(keyArnAttr)
 			}
 
 		},

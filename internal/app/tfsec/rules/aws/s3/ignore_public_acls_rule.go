@@ -1,8 +1,6 @@
 package s3
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -59,20 +57,16 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("ignore_public_acls") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not specify ignore_public_acls, defaults to false", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not specify ignore_public_acls, defaults to false", resourceBlock.FullName())
 				return
 			}
 
-			attr := resourceBlock.GetAttribute("ignore_public_acls")
-			if attr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' sets ignore_public_acls explicitly to false", resourceBlock.FullName())).
-						WithAttribute(attr),
-				)
+			ignorePublicAclsAttr := resourceBlock.GetAttribute("ignore_public_acls")
+			if ignorePublicAclsAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' sets ignore_public_acls explicitly to false", resourceBlock.FullName()).
+					WithAttribute(ignorePublicAclsAttr)
 			}
 		},
 	})

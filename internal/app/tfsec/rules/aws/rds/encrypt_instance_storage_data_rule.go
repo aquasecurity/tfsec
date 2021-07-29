@@ -1,8 +1,6 @@
 package rds
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -53,20 +51,16 @@ resource "aws_db_instance" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("storage_encrypted") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has no storage encryption defined.", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has no storage encryption defined.", resourceBlock.FullName())
 				return
 			}
 
 			storageEncryptedAttr := resourceBlock.GetAttribute("storage_encrypted")
 			if storageEncryptedAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has storage encrypted set to false", resourceBlock.FullName())).
-						WithAttribute(storageEncryptedAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has storage encrypted set to false", resourceBlock.FullName()).
+					WithAttribute(storageEncryptedAttr)
 			}
 		},
 	})

@@ -1,8 +1,6 @@
 package autoscaling
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -15,8 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -53,16 +49,16 @@ resource "aws_launch_configuration" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if publicAttr := resourceBlock.GetAttribute("associate_public_ip_address"); publicAttr != nil && publicAttr.Type() == cty.Bool {
-				if publicAttr.Value().True() {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has a public IP address associated.", resourceBlock.FullName())).
-							WithAttribute(publicAttr),
-					)
-				}
+			if resourceBlock.MissingChild("associate_public_ip_address") {
+				return
 			}
 
+			publicAttr := resourceBlock.GetAttribute("associate_public_ip_address")
+			if publicAttr.IsTrue() {
+				set.AddResult().
+					WithDescription("Resource '%s' has a public IP address associated.", resourceBlock.FullName()).
+					WithAttribute(publicAttr)
+			}
 		},
 	})
 }

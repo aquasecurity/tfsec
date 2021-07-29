@@ -1,8 +1,6 @@
 package container
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -53,14 +51,12 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if (resourceBlock.MissingChild("api_server_authorized_ip_ranges") ||
-				resourceBlock.GetAttribute("api_server_authorized_ip_ranges").Value().LengthInt() < 1) &&
+				resourceBlock.GetAttribute("api_server_authorized_ip_ranges").IsEmpty()) &&
 				(resourceBlock.MissingChild("private_cluster_enabled") ||
 					resourceBlock.GetAttribute("private_cluster_enabled").IsFalse()) {
 				{
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defined without limited set of IP address ranges to the API server.", resourceBlock.FullName())),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' defined without limited set of IP address ranges to the API server.", resourceBlock.FullName())
 				}
 			}
 		},

@@ -8,7 +8,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
-	
 	"github.com/stretchr/testify/assert"
 )
 

@@ -1,8 +1,6 @@
 package athena
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -84,20 +82,24 @@ resource "aws_athena_workgroup" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("configuration") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing the configuration block.", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' is missing the configuration block.", resourceBlock.FullName())
 				return
 			}
 
 			configBlock := resourceBlock.GetBlock("configuration")
-			if configBlock.HasChild("enforce_workgroup_configuration") &&
-				configBlock.GetAttribute("enforce_workgroup_configuration").IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName())),
-				)
+
+			configBlock.HasChild("enforce_workgroup_configuration")
+			enforceWorkgroupConfigAttr := configBlock.GetAttribute("enforce_workgroup_configuration")
+
+			if enforceWorkgroupConfigAttr.IsNil() {
+				return
+			}
+
+			if enforceWorkgroupConfigAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName()).
+					WithAttribute(enforceWorkgroupConfigAttr)
 			}
 
 		},

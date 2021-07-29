@@ -1,8 +1,6 @@
 package eks
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -70,22 +68,20 @@ resource "aws_eks_cluster" "good_example" {
 			vpcConfig := resourceBlock.GetBlock("vpc_config")
 
 			publicAccessEnabledAttr := vpcConfig.GetAttribute("endpoint_public_access")
-			if publicAccessEnabledAttr != nil && publicAccessEnabledAttr.IsFalse() {
+			if publicAccessEnabledAttr.IsNotNil() && publicAccessEnabledAttr.IsFalse() {
 				return
 			}
 
 			publicAccessCidrsAttr := vpcConfig.GetAttribute("public_access_cidrs")
-			if publicAccessCidrsAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' uses the default public access cidr of 0.0.0.0/0", resourceBlock.FullName())),
-				)
+			if publicAccessCidrsAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' uses the default public access cidr of 0.0.0.0/0", resourceBlock.FullName()).
+					WithBlock(vpcConfig)
+
 			} else if cidr.IsOpen(publicAccessCidrsAttr) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has public access cidr explicitly set to wide open", resourceBlock.FullName())).
-						WithAttribute(publicAccessCidrsAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has public access cidr explicitly set to wide open", resourceBlock.FullName()).
+					WithAttribute(publicAccessCidrsAttr)
 			}
 		},
 	})

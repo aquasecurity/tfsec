@@ -1,8 +1,6 @@
 package datalake
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -15,8 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -50,16 +46,14 @@ resource "azurerm_data_lake_store" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
+			if resourceBlock.MissingChild("encryption_state") {
+				return
+			}
+
 			encryptionStateAttr := resourceBlock.GetAttribute("encryption_state")
-			if encryptionStateAttr != nil && encryptionStateAttr.Type() == cty.String && encryptionStateAttr.Value().AsString() == "Disabled" {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf(
-							"Resource '%s' defines an unencrypted data lake store.",
-							resourceBlock.FullName(),
-						)).
-						WithAttribute(encryptionStateAttr),
-				)
+			if encryptionStateAttr.Equals("Disabled") {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an unencrypted data lake store.", resourceBlock.FullName()).WithAttribute(encryptionStateAttr)
 			}
 
 		},

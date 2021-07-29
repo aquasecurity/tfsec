@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -51,14 +49,12 @@ resource "google_compute_firewall" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if destinationRanges := resourceBlock.GetAttribute("destination_ranges"); destinationRanges != nil {
+			if destinationRanges := resourceBlock.GetAttribute("destination_ranges"); destinationRanges.IsNotNil() {
 
 				if cidr.IsOpen(destinationRanges) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open outbound firewall rule.", resourceBlock.FullName())).
-							WithAttribute(destinationRanges),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' defines a fully open outbound firewall rule.", resourceBlock.FullName()).
+						WithAttribute(destinationRanges)
 				}
 			}
 

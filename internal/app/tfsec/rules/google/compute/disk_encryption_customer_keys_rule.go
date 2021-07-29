@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -54,12 +52,9 @@ resource "google_compute_disk" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			keyBlock := resourceBlock.GetBlock("disk_encryption_key")
-			if keyBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a disk encrypted with an auto-generated key.", resourceBlock.FullName())),
-				)
+			if resourceBlock.MissingChild("disk_encryption_key") {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a disk encrypted with an auto-generated key.", resourceBlock.FullName())
 			}
 		},
 	})

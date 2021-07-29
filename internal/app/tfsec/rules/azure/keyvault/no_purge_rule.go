@@ -1,8 +1,6 @@
 package keyvault
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -59,18 +57,21 @@ resource "azurerm_key_vault" "good_example" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if resourceBlock.MissingChild("purge_protection_enabled") || resourceBlock.GetAttribute("purge_protection_enabled").IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have purge protection enabled.", resourceBlock.FullName())),
-				)
+			if resourceBlock.MissingChild("purge_protection_enabled") {
+				set.AddResult().
+					WithDescription("Resource '%s' should have purge protection enabled.", resourceBlock.FullName())
 				return
 			}
+			purgeProtectionAttr := resourceBlock.GetAttribute("purge_protection_enabled")
+			if purgeProtectionAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' should have purge protection enabled.", resourceBlock.FullName()).WithAttribute(purgeProtectionAttr)
+				return
+			}
+
 			if resourceBlock.MissingChild("soft_delete_retention_days") || resourceBlock.GetAttribute("soft_delete_retention_days").LessThan(1) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have soft_delete_retention_days set in order to enabled purge protection.", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have soft_delete_retention_days set in order to enabled purge protection.", resourceBlock.FullName())
 			}
 		},
 	})

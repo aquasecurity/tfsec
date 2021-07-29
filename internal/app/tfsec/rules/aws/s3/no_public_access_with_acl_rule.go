@@ -1,8 +1,6 @@
 package s3
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -53,19 +51,18 @@ resource "aws_s3_bucket" "good_example" {
 		RequiredLabels:  []string{"aws_s3_bucket"},
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			if attr := resourceBlock.GetAttribute("acl"); attr != nil {
-				if attr.IsAny("public-read", "public-read-write", "website") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows public access.", resourceBlock.FullName())).
-							WithAttribute(attr),
-					)
-				} else if attr.Equals("authenticated-read") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName())),
-					)
-				}
+			if resourceBlock.MissingChild("acl") {
+				return
+			}
+
+			aclAttr := resourceBlock.GetAttribute("acl")
+			if aclAttr.IsAny("public-read", "public-read-write", "website") {
+				set.AddResult().
+					WithDescription("Resource '%s' has an ACL which allows public access.", resourceBlock.FullName()).
+					WithAttribute(aclAttr)
+			} else if aclAttr.Equals("authenticated-read") {
+				set.AddResult().
+					WithDescription("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName())
 			}
 		},
 	})

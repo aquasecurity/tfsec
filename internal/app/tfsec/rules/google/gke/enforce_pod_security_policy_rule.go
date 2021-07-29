@@ -1,8 +1,6 @@
 package gke
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,21 +56,16 @@ resource "google_container_cluster" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			pspBlock := resourceBlock.GetBlock("pod_security_policy_config")
-			if pspBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())),
-				)
+			if resourceBlock.MissingChild("pod_security_policy_config") {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a cluster with no Pod Security Policy config defined. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())
 				return
 			}
 
-			enforcePSP := pspBlock.GetAttribute("enabled")
-			if enforcePSP != nil && enforcePSP.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())),
-				)
+			enforcePSP := resourceBlock.GetNestedAttribute("pod_security_policy_config.enabled")
+			if enforcePSP.IsNotNil() && enforcePSP.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a cluster with Pod Security Policy enforcement disabled. It is recommended to define a PSP for your pods and enable PSP enforcement.", resourceBlock.FullName())
 			}
 
 		},

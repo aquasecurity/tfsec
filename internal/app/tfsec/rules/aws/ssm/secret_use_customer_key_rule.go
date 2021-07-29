@@ -1,8 +1,6 @@
 package ssm
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -56,10 +54,8 @@ resource "aws_secretsmanager_secret" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("kms_key_id") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not use CMK", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not use CMK", resourceBlock.FullName())
 				return
 			}
 
@@ -70,12 +66,10 @@ resource "aws_secretsmanager_secret" "good_example" {
 					return
 				}
 				keyIdAttr := kmsData.GetAttribute("key_id")
-				if keyIdAttr != nil && keyIdAttr.Equals("alias/aws/secretsmanager") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName())).
-							WithAttribute(kmsKeyAttr),
-					)
+				if keyIdAttr.IsNotNil() && keyIdAttr.Equals("alias/aws/secretsmanager") {
+					set.AddResult().
+						WithDescription("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName()).
+						WithAttribute(kmsKeyAttr)
 				}
 			}
 

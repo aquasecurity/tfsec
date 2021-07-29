@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -59,11 +57,16 @@ resource "azurerm_storage_account" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if resourceBlock.MissingChild("min_tls_version") || resourceBlock.GetAttribute("min_tls_version").IsNone("TLS1_2") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have the min tls version set to TLS1_2 .", resourceBlock.FullName())),
-				)
+			if resourceBlock.MissingChild("min_tls_version") {
+				set.AddResult().
+					WithDescription("Resource '%s' should have the min tls version set to TLS1_2 .", resourceBlock.FullName())
+				return
+			}
+
+			minTlsAttr := resourceBlock.GetAttribute("min_tls_version")
+			if minTlsAttr.IsNone("TLS1_2") {
+				set.AddResult().
+					WithDescription("Resource '%s' should have the min tls version set to TLS1_2 .", resourceBlock.FullName())
 			}
 		},
 	})

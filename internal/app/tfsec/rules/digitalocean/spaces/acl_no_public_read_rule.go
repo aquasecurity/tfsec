@@ -1,8 +1,6 @@
 package spaces
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -70,10 +68,8 @@ resource "digitalocean_spaces_bucket_object" "index" {
 			if resourceBlock.HasChild("acl") {
 				aclAttr := resourceBlock.GetAttribute("acl")
 				if aclAttr.Equals("public-read", block.IgnoreCase) {
-					set.Add(result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has a publicly readable acl.", resourceBlock.FullName())).
-						WithAttribute(aclAttr),
-					)
+					set.AddResult().WithDescription("Resource '%s' has a publicly readable acl.", resourceBlock.FullName()).
+						WithAttribute(aclAttr)
 				}
 			}
 		},

@@ -1,8 +1,6 @@
 package workspace
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -73,34 +71,28 @@ resource "aws_workspaces_workspace" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("root_volume_encryption_enabled") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have root volume encryption enables", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have root volume encryption enabled", resourceBlock.FullName())
 			} else {
-				attr := resourceBlock.GetAttribute("root_volume_encryption_enabled")
-				if attr != nil && attr.IsFalse() {
-					set.Add(result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has the root volume encryption set to false", resourceBlock.FullName())).
-						WithAttribute(attr),
-					)
+				rootVolEncAttr := resourceBlock.GetAttribute("root_volume_encryption_enabled")
+				if rootVolEncAttr.IsNotNil() && rootVolEncAttr.IsFalse() {
+					set.AddResult().
+						WithDescription("Resource '%s' has the root volume encryption set to false", resourceBlock.FullName()).
+						WithAttribute(rootVolEncAttr)
 				}
 			}
 
 			if resourceBlock.MissingChild("user_volume_encryption_enabled") {
-				set.Add(result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' should have user volume encryption enables", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have user volume encryption enabled", resourceBlock.FullName())
 				return
 			}
 
-			attr := resourceBlock.GetAttribute("user_volume_encryption_enabled")
-			if attr != nil && attr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has the user volume encryption set to false", resourceBlock.FullName())).
-						WithAttribute(attr),
-				)
+			userVolEncAttr := resourceBlock.GetAttribute("user_volume_encryption_enabled")
+			if userVolEncAttr.IsNotNil() && userVolEncAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' has the user volume encryption set to false", resourceBlock.FullName()).
+					WithAttribute(userVolEncAttr)
 			}
 
 		},

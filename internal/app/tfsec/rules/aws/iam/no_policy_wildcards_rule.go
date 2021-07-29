@@ -2,7 +2,6 @@ package iam
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
@@ -110,7 +109,7 @@ data "aws_iam_policy_document" "s3_policy" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 			policyAttr := resourceBlock.GetAttribute("policy")
-			if policyAttr == nil {
+			if policyAttr.IsNil() {
 				return
 			}
 
@@ -142,36 +141,30 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 	actionsAttr := statementBlock.GetAttribute("actions")
 	actionsAttr.Each(func(key, value cty.Value) {
 		if value.Type() == cty.String && strings.Contains(value.AsString(), ("*")) {
-			set.Add(
-				result.New(policyDocumentBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName())).
-					WithAttribute(actionsAttr),
-			)
+			set.AddResult().
+				WithDescription("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName()).
+				WithAttribute(actionsAttr)
 		}
 	})
 
 	resourcesAttr := statementBlock.GetAttribute("resources")
-	if resourcesAttr != nil && resourcesAttr.Contains("*") && (actionsAttr == nil || !doActionsAllowWildcardResource(actionsAttr.ValueAsStrings())) {
-		set.Add(
-			result.New(policyDocumentBlock).
-				WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", policyDocumentBlock.FullName())).
-				WithAttribute(resourcesAttr),
-		)
+	if resourcesAttr.IsNotNil() && resourcesAttr.Contains("*") && (actionsAttr.IsNil() || !doActionsAllowWildcardResource(actionsAttr.ValueAsStrings())) {
+		set.AddResult().
+			WithDescription("Resource '%s' defines a policy with wildcarded resources.", policyDocumentBlock.FullName()).
+			WithAttribute(resourcesAttr)
 	}
 
 	principalsBlock := statementBlock.GetBlock("principals")
-	if principalsBlock != nil {
+	if principalsBlock.IsNotNil() {
 		principalTypeAttr := principalsBlock.GetAttribute("type")
-		if principalTypeAttr != nil && principalTypeAttr.Equals("AWS") {
+		if principalTypeAttr.IsNotNil() && principalTypeAttr.Equals("AWS") {
 			identifiersAttr := principalsBlock.GetAttribute("identifiers")
-			if identifiersAttr != nil {
+			if identifiersAttr.IsNotNil() {
 				for _, ident := range identifiersAttr.ValueAsStrings() {
 					if strings.Contains(ident, "*") {
-						set.Add(
-							result.New(policyDocumentBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", policyDocumentBlock.FullName())).
-								WithAttribute(resourcesAttr),
-						)
+						set.AddResult().
+							WithDescription("Resource '%s' defines a policy with wildcarded principal identifiers.", policyDocumentBlock.FullName()).
+							WithAttribute(resourcesAttr)
 						break
 					}
 				}
@@ -200,29 +193,23 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 		}
 		for _, action := range statement.Action {
 			if strings.Contains(action, "*") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded actions.", resourceBlock.FullName())).
-						WithAttribute(policyAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' defines a policy with wildcarded actions.", resourceBlock.FullName()).
+					WithAttribute(policyAttr)
 			}
 		}
 		for _, resource := range statement.Resource {
 			if strings.Contains(resource, "*") && !doActionsAllowWildcardResource(statement.Action) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded resources.", resourceBlock.FullName())).
-						WithAttribute(policyAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' defines a policy with wildcarded resources.", resourceBlock.FullName()).
+					WithAttribute(policyAttr)
 			}
 		}
 		for _, identifier := range statement.Principal.AWS {
 			if strings.Contains(identifier, "*") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a policy with wildcarded principal identifiers.", resourceBlock.FullName())).
-						WithAttribute(policyAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' defines a policy with wildcarded principal identifiers.", resourceBlock.FullName()).
+					WithAttribute(policyAttr)
 			}
 		}
 	}

@@ -1,8 +1,6 @@
 package gke
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -13,8 +11,6 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
-
-	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
@@ -57,11 +53,9 @@ resource "google_container_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			enableLegacyABAC := resourceBlock.GetAttribute("enable_legacy_abac")
-			if enableLegacyABAC != nil && enableLegacyABAC.Value().Type() == cty.String && enableLegacyABAC.Value().AsString() == "true" {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", resourceBlock.FullName())),
-				)
+			if enableLegacyABAC.IsNotNil() && enableLegacyABAC.IsTrue() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", resourceBlock.FullName())
 			}
 
 		},

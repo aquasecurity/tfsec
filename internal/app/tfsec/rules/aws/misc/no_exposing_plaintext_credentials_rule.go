@@ -1,8 +1,6 @@
 package misc
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -52,18 +50,14 @@ provider "aws" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if accessKeyAttribute := resourceBlock.GetAttribute("access_key"); accessKeyAttribute != nil && accessKeyAttribute.Type() == cty.String {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Provider '%s' has an access key specified.", resourceBlock.FullName())).
-						WithAttribute(accessKeyAttribute),
-				)
-			} else if secretKeyAttribute := resourceBlock.GetAttribute("secret_key"); secretKeyAttribute != nil && secretKeyAttribute.Type() == cty.String {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Provider '%s' has a secret key specified.", resourceBlock.FullName())).
-						WithAttribute(secretKeyAttribute),
-				)
+			if accessKeyAttribute := resourceBlock.GetAttribute("access_key"); accessKeyAttribute.IsNotNil() && accessKeyAttribute.Type() == cty.String {
+				set.AddResult().
+					WithDescription("Provider '%s' has an access key specified.", resourceBlock.FullName()).
+					WithAttribute(accessKeyAttribute)
+			} else if secretKeyAttribute := resourceBlock.GetAttribute("secret_key"); secretKeyAttribute.IsNotNil() && secretKeyAttribute.Type() == cty.String {
+				set.AddResult().
+					WithDescription("Provider '%s' has a secret key specified.", resourceBlock.FullName()).
+					WithAttribute(secretKeyAttribute)
 			}
 
 		},

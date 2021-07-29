@@ -1,8 +1,6 @@
 package synapse
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -85,19 +83,15 @@ resource "azurerm_synapse_workspace" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("managed_virtual_network_enabled") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock.FullName())
 				return
 			}
 			managedNetworkAttr := resourceBlock.GetAttribute("managed_virtual_network_enabled")
 			if managedNetworkAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock.FullName())).
-						WithAttribute(managedNetworkAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock.FullName()).
+					WithAttribute(managedNetworkAttr)
 			}
 		},
 	})

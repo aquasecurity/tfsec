@@ -1,8 +1,6 @@
 package ec2
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,16 +56,14 @@ resource "aws_instance" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			metaDataOptions := resourceBlock.GetBlock("metadata_options")
-			if metaDataOptions == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())),
-				)
+			if metaDataOptions.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())
 				return
 			}
 
 			httpEndpointAttr := metaDataOptions.GetAttribute("http_endpoint")
-			if httpEndpointAttr != nil {
+			if httpEndpointAttr.IsNotNil() {
 				if httpEndpointAttr.Equals("disabled") {
 					// IMDS disabled and we don't need to check if http_tokens are correctly set up
 					return
@@ -75,12 +71,11 @@ resource "aws_instance" "good_example" {
 			}
 
 			httpTokensAttr := metaDataOptions.GetAttribute("http_tokens")
-			if httpTokensAttr != nil {
-				if !httpTokensAttr.Equals("required") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName())),
-					)
+			if httpTokensAttr.IsNotNil() {
+				if httpTokensAttr.NotEqual("required") {
+					set.AddResult().
+						WithDescription("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName()).
+						WithAttribute(httpTokensAttr)
 				}
 			}
 

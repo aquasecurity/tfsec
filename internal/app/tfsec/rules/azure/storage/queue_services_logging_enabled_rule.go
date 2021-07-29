@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -73,14 +71,13 @@ resource "azurerm_storage_account" "good_example" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if resourceBlock.HasChild("queue_properties") {
-				queueProps := resourceBlock.GetBlock("queue_properties")
-				if queueProps.MissingChild("logging") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", resourceBlock.FullName())),
-					)
-				}
+			if resourceBlock.MissingChild("queue_properties") {
+				return
+			}
+			queueProps := resourceBlock.GetBlock("queue_properties")
+			if queueProps.MissingChild("logging") {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", resourceBlock.FullName()).WithBlock(queueProps)
 			}
 
 		},

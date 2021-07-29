@@ -1,8 +1,6 @@
 package codebuild
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -102,26 +100,24 @@ resource "aws_codebuild_project" "codebuild" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			blocks := resourceBlock.GetBlocks("secondary_artifacts")
-			if artifact := resourceBlock.GetBlock("artifacts"); artifact != nil {
+
+			if artifact := resourceBlock.GetBlock("artifacts"); artifact.IsNotNil() {
 				blocks = append(blocks, artifact)
 			}
 
 			for _, artifactBlock := range blocks {
-				if encryptionDisabledAttr := artifactBlock.GetAttribute("encryption_disabled"); encryptionDisabledAttr != nil && encryptionDisabledAttr.IsTrue() {
+				encryptionDisabledAttr := artifactBlock.GetAttribute("encryption_disabled")
+				if encryptionDisabledAttr.IsTrue() {
 					artifactTypeAttr := artifactBlock.GetAttribute("type")
 
-					if artifactTypeAttr != nil && artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName())).
-								WithAttribute(artifactTypeAttr),
-						)
+					if artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
+						set.AddResult().
+							WithDescription("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName()).
+							WithAttribute(artifactTypeAttr)
 					} else {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName())).
-								WithAttribute(encryptionDisabledAttr),
-						)
+						set.AddResult().
+							WithDescription("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName()).
+							WithAttribute(encryptionDisabledAttr)
 					}
 				}
 			}

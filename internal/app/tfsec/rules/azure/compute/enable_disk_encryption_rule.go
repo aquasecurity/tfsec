@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -52,20 +50,19 @@ resource "azurerm_managed_disk" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			encryptionSettingsBlock := resourceBlock.GetBlock("encryption_settings")
-			if encryptionSettingsBlock == nil {
+			if encryptionSettingsBlock.IsNil() {
 				return // encryption is by default now, so this is fine
 			}
 
+			if encryptionSettingsBlock.MissingChild("enabled") {
+				return
+			}
+
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
-			if enabledAttr != nil && enabledAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf(
-							"Resource '%s' defines an unencrypted managed disk.",
-							resourceBlock.FullName(),
-						)).
-						WithAttribute(enabledAttr),
-				)
+			if enabledAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an unencrypted managed disk.", resourceBlock.FullName()).
+					WithAttribute(enabledAttr)
 			}
 
 		},

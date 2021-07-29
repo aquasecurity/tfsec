@@ -44,9 +44,8 @@ resource "problem" "x" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.GetAttribute("bad") != nil {
-				set.Add(
-					result.New(resourceBlock).WithDescription("example problem"),
-				)
+				set.AddResult().
+					WithDescription("example problem")
 			}
 		},
 	})

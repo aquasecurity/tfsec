@@ -1,8 +1,6 @@
 package config
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -63,29 +61,23 @@ resource "aws_config_configuration_aggregator" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			aggBlock := resourceBlock.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")
-			if aggBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources set", resourceBlock.FullName())),
-				)
+			if aggBlock.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' should have account aggregation sources set", resourceBlock.FullName())
 				return
 			}
 
 			if aggBlock.MissingChild("all_regions") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName())
 				return
 			}
 
 			allRegionsAttr := aggBlock.GetAttribute("all_regions")
 			if allRegionsAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has all_regions set to false", resourceBlock.FullName())).
-						WithAttribute(allRegionsAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has all_regions set to false", resourceBlock.FullName()).
+					WithAttribute(allRegionsAttr)
 			}
 
 		},

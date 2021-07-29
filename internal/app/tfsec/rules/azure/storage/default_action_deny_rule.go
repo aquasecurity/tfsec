@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -60,6 +58,8 @@ resource "azurerm_storage_account_network_rules" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
+			blockName := resourceBlock.FullName()
+
 			if resourceBlock.IsResourceType("azurerm_storage_account") {
 				if resourceBlock.MissingChild("network_rules") {
 					return
@@ -68,11 +68,9 @@ resource "azurerm_storage_account_network_rules" "good_example" {
 			}
 
 			defaultAction := resourceBlock.GetAttribute("default_action")
-			if defaultAction != nil && defaultAction.Equals("Allow", block.IgnoreCase) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a default_action of Allow. It should be Deny.", resourceBlock.FullName())),
-				)
+			if defaultAction.IsNotNil() && defaultAction.Equals("Allow", block.IgnoreCase) {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a default_action of Allow. It should be Deny.", blockName)
 			}
 
 		},

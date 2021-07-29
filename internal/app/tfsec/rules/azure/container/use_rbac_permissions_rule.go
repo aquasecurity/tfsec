@@ -1,8 +1,6 @@
 package container
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -15,7 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -55,25 +52,17 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			rbacBlock := resourceBlock.GetBlock("role_based_access_control")
-			if rbacBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines without RBAC", resourceBlock.FullName())),
-				)
+			if resourceBlock.MissingChild("role_based_access_control") {
+				set.AddResult().
+					WithDescription("Resource '%s' defines without RBAC", resourceBlock.FullName())
 				return
 			}
 
-			enabledAttr := rbacBlock.GetAttribute("enabled")
-			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf(
-							"Resource '%s' RBAC disabled.",
-							resourceBlock.FullName(),
-						)).
-						WithAttribute(enabledAttr),
-				)
+			enabledAttr := resourceBlock.GetNestedAttribute("role_based_access_control.enabled")
+			if enabledAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' RBAC disabled.", resourceBlock.FullName()).
+					WithAttribute(enabledAttr)
 			}
 
 		},

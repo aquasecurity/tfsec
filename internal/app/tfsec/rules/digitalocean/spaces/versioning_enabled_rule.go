@@ -1,8 +1,6 @@
 package spaces
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -61,22 +59,16 @@ resource "digitalocean_spaces_bucket" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("versioning") {
-				set.Add(result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have versioning enabled.", resourceBlock.FullName())),
-				)
-
+				set.AddResult().WithDescription("Resource '%s' does not have versioning block specified", resourceBlock.FullName())
 				return
 			}
 
 			versioningBlock := resourceBlock.GetBlock("versioning")
 			enabledAttr := versioningBlock.GetAttribute("enabled")
 
-			if enabledAttr == nil || enabledAttr.IsFalse() {
-				set.Add(result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName())).
-					WithAttribute(enabledAttr),
-				)
-
+			if enabledAttr.IsNil() || enabledAttr.IsFalse() {
+				set.AddResult().WithDescription("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName()).
+					WithAttribute(enabledAttr)
 			}
 
 		},

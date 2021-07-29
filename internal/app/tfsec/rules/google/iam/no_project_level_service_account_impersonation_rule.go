@@ -1,8 +1,6 @@
 package iam
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,15 +56,13 @@ resource "google_project_iam_binding" "project-123" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			roleAttr := resourceBlock.GetAttribute("role")
-			if roleAttr == nil || !roleAttr.IsString() || !roleAttr.Value().IsKnown() {
+			if !roleAttr.IsString() {
 				return
 			}
-			if roleAttr.Value().AsString() == "roles/iam.serviceAccountUser" || roleAttr.Value().AsString() == "roles/iam.serviceAccountTokenCreator" {
-				set.Add(
-					result.New(resourceBlock).
-						WithAttribute(roleAttr).
-						WithDescription(fmt.Sprintf("Resource '%s' grants service account access to a user at project level.", resourceBlock.FullName())),
-				)
+			if roleAttr.IsAny("roles/iam.serviceAccountUser", "roles/iam.serviceAccountTokenCreator") {
+				set.AddResult().
+					WithAttribute(roleAttr).
+					WithDescription("Resource '%s' grants service account access to a user at project level.", resourceBlock.FullName())
 			}
 
 		},

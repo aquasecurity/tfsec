@@ -59,36 +59,34 @@ resource "openstack_fw_rule_v1" "rule_1" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if enabledAttr := resourceBlock.GetAttribute("enabled"); enabledAttr != nil && enabledAttr.IsFalse() {
+			if resourceBlock.GetAttribute("enabled").IsFalse() {
 				return
 			}
 
-			if actionAttr := resourceBlock.GetAttribute("action"); actionAttr != nil && actionAttr.Equals("deny") {
+			if resourceBlock.GetAttribute("action").Equals("deny") {
 				return
 			}
 
-			if destinationIP := resourceBlock.GetAttribute("destination_ip_address"); destinationIP == nil || destinationIP.Equals("") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a firewall rule with no restriction on destination IP", resourceBlock)),
-				)
+			if destinationIP := resourceBlock.GetAttribute("destination_ip_address"); destinationIP.IsNil() || destinationIP.Equals("") {
+				set.AddResult().
+					WithDescription(
+						fmt.Sprintf("Resource '%s' defines a firewall rule with no restriction on destination IP", resourceBlock),
+					).
+					WithAttribute(destinationIP)
 			} else if cidr.IsOpen(destinationIP) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a firewall rule with a public destination CIDR", resourceBlock)),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' defines a firewall rule with a public destination CIDR", resourceBlock).
+					WithAttribute(destinationIP)
 			}
 
-			if sourceIP := resourceBlock.GetAttribute("source_ip_address"); sourceIP == nil || sourceIP.Equals("") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a firewall rule with no restriction on source IP", resourceBlock)),
-				)
+			if sourceIP := resourceBlock.GetAttribute("source_ip_address"); sourceIP.IsNil() || sourceIP.Equals("") {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a firewall rule with no restriction on source IP", resourceBlock).
+					WithAttribute(sourceIP)
 			} else if cidr.IsOpen(sourceIP) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a firewall rule with a public source CIDR", resourceBlock)),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' defines a firewall rule with a public source CIDR", resourceBlock).
+					WithAttribute(sourceIP)
 			}
 		},
 	})

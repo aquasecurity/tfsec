@@ -1,8 +1,6 @@
 package vpc
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -15,7 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -63,35 +60,27 @@ resource "aws_network_acl_rule" "good_example" {
 			actionAttr := resourceBlock.GetAttribute("rule_action")
 			protoAttr := resourceBlock.GetAttribute("protocol")
 
-			if egressAttr != nil && egressAttr.IsTrue() {
+			if egressAttr.IsNotNil() && egressAttr.IsTrue() {
 				return
 			}
 
-			if actionAttr == nil || actionAttr.Type() != cty.String {
+			if actionAttr.IsNil() || !actionAttr.IsString() || actionAttr.NotEqual("allow") {
 				return
 			}
 
-			if actionAttr.Value().AsString() != "allow" {
-				return
-			}
-
-			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr != nil {
+			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr.IsNotNil() {
 				if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
-							WithAttribute(cidrBlockAttr),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName()).
+						WithAttribute(cidrBlockAttr)
 				}
 			}
 
-			if ipv6CidrBlockAttr := resourceBlock.GetAttribute("ipv6_cidr_block"); ipv6CidrBlockAttr != nil {
+			if ipv6CidrBlockAttr := resourceBlock.GetAttribute("ipv6_cidr_block"); ipv6CidrBlockAttr.IsNotNil() {
 				if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName())).
-							WithAttribute(ipv6CidrBlockAttr),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' defines a fully open ingress Network ACL rule with ALL ports open.", resourceBlock.FullName()).
+						WithAttribute(ipv6CidrBlockAttr)
 				}
 			}
 

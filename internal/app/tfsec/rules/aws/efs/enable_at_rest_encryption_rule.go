@@ -1,8 +1,6 @@
 package efs
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -15,7 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -56,17 +53,15 @@ resource "aws_efs_file_system" "good_example" {
 
 			efsEnabledAttr := resourceBlock.GetAttribute("encrypted")
 
-			if efsEnabledAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not specify if encryption should be used.", resourceBlock.FullName())),
-				)
-			} else if efsEnabledAttr.Type() == cty.Bool && efsEnabledAttr.Value().False() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' actively does not have encryption applied.", resourceBlock.FullName())).
-						WithAttribute(efsEnabledAttr),
-				)
+			if efsEnabledAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not specify if encryption should be used.", resourceBlock.FullName())
+				return
+			}
+			if efsEnabledAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' actively does not have encryption applied.", resourceBlock.FullName()).
+					WithAttribute(efsEnabledAttr)
 			}
 		},
 	})

@@ -14,12 +14,15 @@ type Attribute interface {
 	StartsWith(prefix interface{}) bool
 	EndsWith(suffix interface{}) bool
 	Equals(checkValue interface{}, equalityOptions ...EqualityOption) bool
+	NotEqual(checkValue interface{}, equalityOptions ...EqualityOption) bool
 	RegexMatches(pattern interface{}) bool
 	IsAny(options ...interface{}) bool
 	IsNone(options ...interface{}) bool
 	IsTrue() bool
 	IsFalse() bool
 	IsEmpty() bool
+	IsNil() bool
+	IsNotNil() bool
 	MapValue(mapKey string) cty.Value
 	LessThan(checkValue interface{}) bool
 	LessThanOrEqualTo(checkValue interface{}) bool

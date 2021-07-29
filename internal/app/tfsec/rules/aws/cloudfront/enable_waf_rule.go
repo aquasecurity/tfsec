@@ -1,8 +1,6 @@
 package cloudfront
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -106,11 +104,9 @@ resource "aws_cloudfront_distribution" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			wafAclIdBlock := resourceBlock.GetAttribute("web_acl_id")
-			if wafAclIdBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a WAF in front of it.", resourceBlock.FullName())),
-				)
+			if wafAclIdBlock.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have a WAF in front of it.", resourceBlock.FullName())
 			}
 		},
 	})

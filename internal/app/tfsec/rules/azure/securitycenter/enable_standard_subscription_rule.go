@@ -1,8 +1,6 @@
 package securitycenter
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -51,13 +49,16 @@ resource "azurerm_security_center_subscription_pricing" "good_example" {
 		RequiredLabels:  []string{"azurerm_security_center_subscription_pricing"},
 		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+
+			if resourceBlock.MissingChild("tier") {
+				return
+			}
+
 			tierAttr := resourceBlock.GetAttribute("tier")
-			if tierAttr != nil && tierAttr.Equals("Free", block.IgnoreCase) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' sets security center subscription type to free.", resourceBlock.FullName())).
-						WithAttribute(tierAttr),
-				)
+			if tierAttr.Equals("Free", block.IgnoreCase) {
+				set.AddResult().
+					WithDescription("Resource '%s' sets security center subscription type to free.", resourceBlock.FullName()).
+					WithAttribute(tierAttr)
 			}
 		},
 	})

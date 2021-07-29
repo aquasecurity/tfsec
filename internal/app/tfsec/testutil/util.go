@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -53,7 +54,6 @@ func CreateTestFile(filename, contents string) string {
 }
 
 func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, results []result.Result, messages ...string) {
-
 	var foundInclude bool
 	var foundExclude bool
 
@@ -72,6 +72,10 @@ func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 	assert.False(t, foundExclude, fmt.Sprintf("res with code '%s' was found but should not have been: %s", excludeCode, excludeText))
 	if includeCode != "" {
 		assert.True(t, foundInclude, fmt.Sprintf("res with code '%s' was not found but should have been", includeCode))
+	}
+
+	if t.Failed() {
+		t.Log(strings.ReplaceAll(t.Name(), "_", " "))
 	}
 }
 

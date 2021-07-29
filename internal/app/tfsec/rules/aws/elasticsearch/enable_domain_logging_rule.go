@@ -1,8 +1,6 @@
 package elasticsearch
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -88,22 +86,18 @@ resource "aws_elasticsearch_domain" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("log_publishing_options") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not configure logging at rest on the domain.", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not configure logging at rest on the domain.", resourceBlock.FullName())
 				return
 			}
 
 			logOptions := resourceBlock.GetBlocks("log_publishing_options")
 			for _, logOption := range logOptions {
 				enabledAttr := logOption.GetAttribute("enabled")
-				if enabledAttr != nil && enabledAttr.IsFalse() {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' explicitly disables logging on the domain.", resourceBlock.FullName())).
-							WithAttribute(enabledAttr),
-					)
+				if enabledAttr.IsNotNil() && enabledAttr.IsFalse() {
+					set.AddResult().
+						WithDescription("Resource '%s' explicitly disables logging on the domain.", resourceBlock.FullName()).
+						WithAttribute(enabledAttr)
 					return
 				}
 			}

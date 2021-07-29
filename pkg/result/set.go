@@ -1,9 +1,12 @@
 package result
 
-import "github.com/aquasecurity/tfsec/pkg/provider"
+import (
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/pkg/provider"
+)
 
 type Set interface {
-	Add(result *Result)
+	AddResult() *Result
 	WithRuleID(id string) Set
 	WithLegacyRuleID(id string) Set
 	WithRuleSummary(description string) Set
@@ -11,26 +14,29 @@ type Set interface {
 	WithImpact(impact string) Set
 	WithResolution(resolution string) Set
 	WithLinks(links []string) Set
-	All() []Result
+	All() []*Result
 }
 
-func NewSet() *resultSet {
-	return &resultSet{}
+func NewSet(resourceBlock block.Block) *resultSet {
+	return &resultSet{
+		resourceBlock: resourceBlock,
+	}
 }
 
 type resultSet struct {
-	results      []Result
-	ruleID       string
-	legacyID     string
-	ruleSummary  string
-	ruleProvider provider.Provider
-	impact       string
-	resolution   string
-	links        []string
+	resourceBlock block.Block
+	results       []*Result
+	ruleID        string
+	legacyID      string
+	ruleSummary   string
+	ruleProvider  provider.Provider
+	impact        string
+	resolution    string
+	links         []string
 }
 
-func (s *resultSet) Add(result *Result) {
-	result.
+func (s *resultSet) AddResult() *Result {
+	result := New(s.resourceBlock).
 		WithRuleID(s.ruleID).
 		WithLegacyRuleID(s.legacyID).
 		WithRuleSummary(s.ruleSummary).
@@ -38,10 +44,11 @@ func (s *resultSet) Add(result *Result) {
 		WithResolution(s.resolution).
 		WithRuleProvider(s.ruleProvider).
 		WithLinks(s.links)
-	s.results = append(s.results, *result)
+	s.results = append(s.results, result)
+	return result
 }
 
-func (s *resultSet) All() []Result {
+func (s *resultSet) All() []*Result {
 	return s.results
 }
 

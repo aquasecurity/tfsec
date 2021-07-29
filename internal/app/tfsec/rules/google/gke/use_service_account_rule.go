@@ -1,7 +1,6 @@
 package gke
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -56,27 +55,23 @@ resource "google_container_cluster" "good_example" {
 
 			if strings.HasPrefix(resourceBlock.Label(), "google_container_cluster") {
 				attr := resourceBlock.GetAttribute("remove_default_node_pool")
-				if attr != nil && attr.IsTrue() {
+				if attr.IsNotNil() && attr.IsTrue() {
 					return
 				}
 			}
 
 			if resourceBlock.MissingChild("node_config") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())
 				return
 			}
 
 			nodeConfigBlock := resourceBlock.GetBlock("node_config")
 			serviceAccount := nodeConfigBlock.GetAttribute("service_account")
 
-			if serviceAccount == nil || serviceAccount.IsEmpty() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())),
-				)
+			if serviceAccount.IsNil() || serviceAccount.IsEmpty() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock.FullName())
 			}
 
 		},

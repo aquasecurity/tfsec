@@ -1,8 +1,6 @@
 package cloudfront
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -13,8 +11,6 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
-
-	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
@@ -59,24 +55,24 @@ resource "aws_cloudfront_distribution" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			viewerCertificateBlock := resourceBlock.GetBlock("viewer_certificate")
-			if viewerCertificateBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing viewer_certificate block)", resourceBlock.FullName())),
-				)
+			if viewerCertificateBlock.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines outdated SSL/TLS policies (missing viewer_certificate block)", resourceBlock.FullName())
 				return
 			}
 
-			if minVersion := viewerCertificateBlock.GetAttribute("minimum_protocol_version"); minVersion == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName())),
-				)
-			} else if minVersion.Type() == cty.String && minVersion.Value().AsString() != "TLSv1.2_2021" {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName())),
-				)
+			minVersionAttr := viewerCertificateBlock.GetAttribute("minimum_protocol_version")
+			if minVersionAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName()).
+					WithBlock(viewerCertificateBlock)
+				return
+			}
+
+			if minVersionAttr.NotEqual("TLSv1.2_2021") {
+				set.AddResult().
+					WithDescription("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName()).
+					WithAttribute(minVersionAttr)
 			}
 		},
 	})

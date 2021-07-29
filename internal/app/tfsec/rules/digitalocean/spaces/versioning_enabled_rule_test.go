@@ -18,15 +18,15 @@ func Test_DIGSpacesBucketVersioningEnabled(t *testing.T) {
 		{
 			name: "Spaces bucket with versioning actively disabled fails check",
 			source: `
-resource "digitalocean_spaces_bucket" "bad_example" {
-  name   = "foobar"
-  region = "nyc3"
+		resource "digitalocean_spaces_bucket" "bad_example" {
+		  name   = "foobar"
+		  region = "nyc3"
 
-  versioning {
-	enabled = false	
-  }
-}
-`,
+		  versioning {
+			enabled = false
+		  }
+		}
+		`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{

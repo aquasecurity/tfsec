@@ -1,8 +1,6 @@
 package monitor
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -67,21 +65,17 @@ resource "azurerm_monitor_log_profile" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			categoriesAttr := resourceBlock.GetAttribute("categories")
-			if categoriesAttr == nil || categoriesAttr.IsEmpty() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have required categories", resourceBlock.FullName())),
-				)
+			if categoriesAttr.IsNil() || categoriesAttr.IsEmpty() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have required categories", resourceBlock.FullName())
 				return
 			}
 
 			for _, category := range []string{"Action", "Write", "Delete"} {
 				if !categoriesAttr.Contains(category) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' is missing '%s' category", resourceBlock.FullName(), category)).
-							WithAttribute(categoriesAttr),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' is missing '%s' category", resourceBlock.FullName(), category).
+						WithAttribute(categoriesAttr)
 				}
 			}
 

@@ -1,8 +1,6 @@
 package rds
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -15,8 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -50,17 +46,12 @@ resource "aws_db_instance" "good_example" {
 		RequiredLabels:  []string{"aws_db_instance", "aws_dms_replication_instance", "aws_rds_cluster_instance", "aws_redshift_cluster"},
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-
-			if publicAttr := resourceBlock.GetAttribute("publicly_accessible"); publicAttr != nil && publicAttr.Type() == cty.Bool {
-				if publicAttr.Value().True() {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
-							WithAttribute(publicAttr),
-					)
-				}
+			publicAttr := resourceBlock.GetAttribute("publicly_accessible")
+			if publicAttr.IsTrue() {
+				set.AddResult().
+					WithDescription("Resource '%s' is exposed publicly.", resourceBlock.FullName()).
+					WithAttribute(publicAttr)
 			}
-
 		},
 	})
 }

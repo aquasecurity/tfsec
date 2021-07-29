@@ -1,7 +1,6 @@
 package iam
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -75,49 +74,41 @@ resource "google_project_iam_member" "project-123" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
-			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr != nil {
-				if memberAttr.IsString() && memberAttr.Value().IsKnown() {
+			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr.IsNotNil() {
+				if memberAttr.IsString() {
 					if isMemberDefaultServiceAccount(memberAttr.Value().AsString()) {
-						set.Add(
-							result.New(resourceBlock).
-								WithAttribute(memberAttr).
-								WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())),
-						)
+						set.AddResult().
+							WithAttribute(memberAttr).
+							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 					}
 				} else {
 					computeServiceAccounts := ctx.GetDatasByType("google_compute_default_service_account")
 					serviceAccounts := append(computeServiceAccounts, ctx.GetResourcesByType("google_app_engine_default_service_account")...)
 					for _, serviceAccount := range serviceAccounts {
 						if memberAttr.ReferencesBlock(serviceAccount) {
-							set.Add(
-								result.New(resourceBlock).
-									WithAttribute(memberAttr).
-									WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())),
-							)
+							set.AddResult().
+								WithAttribute(memberAttr).
+								WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 						}
 					}
 				}
 			}
 
-			if membersAttr := resourceBlock.GetAttribute("members"); membersAttr != nil {
+			if membersAttr := resourceBlock.GetAttribute("members"); membersAttr.IsNotNil() {
 				for _, member := range membersAttr.ValueAsStrings() {
 					if isMemberDefaultServiceAccount(member) {
-						set.Add(
-							result.New(resourceBlock).
-								WithAttribute(membersAttr).
-								WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())),
-						)
+						set.AddResult().
+							WithAttribute(membersAttr).
+							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 					}
 				}
 				computeServiceAccounts := ctx.GetDatasByType("google_compute_default_service_account")
 				serviceAccounts := append(computeServiceAccounts, ctx.GetResourcesByType("google_app_engine_default_service_account")...)
 				for _, serviceAccount := range serviceAccounts {
 					if membersAttr.ReferencesBlock(serviceAccount) {
-						set.Add(
-							result.New(resourceBlock).
-								WithAttribute(membersAttr).
-								WithDescription(fmt.Sprintf("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())),
-						)
+						set.AddResult().
+							WithAttribute(membersAttr).
+							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 					}
 				}
 			}

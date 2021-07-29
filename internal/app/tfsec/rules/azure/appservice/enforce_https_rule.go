@@ -1,8 +1,6 @@
 package appservice
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -65,19 +63,15 @@ resource "azurerm_function_app" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("https_only") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName())
 				return
 			}
 			httpsOnlyAttr := resourceBlock.GetAttribute("https_only")
 			if httpsOnlyAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName())).
-						WithAttribute(httpsOnlyAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName()).
+					WithAttribute(httpsOnlyAttr)
 			}
 		},
 	})

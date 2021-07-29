@@ -1,8 +1,6 @@
 package sql
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -62,29 +60,21 @@ resource "google_sql_database_instance" "db" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have backups enabled.", resourceBlock.FullName())),
-				)
+			if settingsBlock.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have backups enabled.", resourceBlock.FullName())
 				return
 			}
 
-			if backupBlock := settingsBlock.GetBlock("backup_configuration"); backupBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have backups enabled.", resourceBlock.FullName())),
-				)
-			} else if enabledAttr := backupBlock.GetAttribute("enabled"); enabledAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have backups enabled.", resourceBlock.FullName())),
-				)
+			if backupBlock := settingsBlock.GetBlock("backup_configuration"); backupBlock.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have backups enabled.", resourceBlock.FullName())
+			} else if enabledAttr := backupBlock.GetAttribute("enabled"); enabledAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have backups enabled.", resourceBlock.FullName())
 			} else if enabledAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has backups explicitly disabled.", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has backups explicitly disabled.", resourceBlock.FullName())
 			}
 		},
 	})

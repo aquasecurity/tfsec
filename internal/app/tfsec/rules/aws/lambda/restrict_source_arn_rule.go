@@ -1,8 +1,6 @@
 package lambda
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -62,10 +60,8 @@ resource "aws_lambda_permission" "good_example" {
 			if resourceBlock.HasChild("principal") {
 				if resourceBlock.GetAttribute("principal").EndsWith("amazonaws.com") {
 					if resourceBlock.MissingChild("source_arn") {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' missing source ARN but has *.amazonaws.com Principal.", resourceBlock.FullName())),
-						)
+						set.AddResult().
+							WithDescription("Resource '%s' missing source ARN but has *.amazonaws.com Principal.", resourceBlock.FullName())
 					}
 				}
 			}

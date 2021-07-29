@@ -1,8 +1,6 @@
 package container
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -15,7 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -55,40 +52,18 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			addonProfileBlock := resourceBlock.GetBlock("addon_profile")
-			if addonProfileBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", resourceBlock.FullName())),
-				)
+			if resourceBlock.MissingNestedChild("addon_profile.oms_agent") {
+				set.AddResult().
+					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured.", resourceBlock.FullName())
 				return
 			}
 
-			omsAgentBlock := addonProfileBlock.GetBlock("oms_agent")
-			if omsAgentBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", resourceBlock.FullName())),
-				)
-				return
+			enabledAttr := resourceBlock.GetNestedAttribute("addon_profile.oms_agent.enabled")
+			if enabledAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).", resourceBlock.FullName()).
+					WithAttribute(enabledAttr)
 			}
-
-			enabledAttr := omsAgentBlock.GetAttribute("enabled")
-			if enabledAttr == nil || (enabledAttr.Type() == cty.Bool && enabledAttr.Value().False()) {
-
-				res := result.New(resourceBlock).
-					WithDescription(fmt.Sprintf(
-						"Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).",
-						resourceBlock.FullName(),
-					))
-
-				if enabledAttr != nil {
-					res.WithAttribute(enabledAttr)
-				}
-
-				set.Add(res)
-			}
-
 		},
 	})
 }

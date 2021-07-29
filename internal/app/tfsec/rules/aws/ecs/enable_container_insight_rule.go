@@ -1,8 +1,6 @@
 package ecs
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -57,23 +55,19 @@ resource "aws_ecs_cluster" "good_example" {
 
 			settingsBlock := resourceBlock.GetBlocks("setting")
 			for _, setting := range settingsBlock {
-				if name := setting.GetAttribute("name"); name != nil && name.Equals("containerinsights", block.IgnoreCase) {
-					if valueAttr := setting.GetAttribute("value"); valueAttr != nil {
+				if name := setting.GetAttribute("name"); name.IsNotNil() && name.Equals("containerinsights", block.IgnoreCase) {
+					if valueAttr := setting.GetAttribute("value"); valueAttr.IsNotNil() {
 						if !valueAttr.Equals("enabled", block.IgnoreCase) {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName())).
-									WithAttribute(valueAttr),
-							)
+							set.AddResult().
+								WithDescription("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName()).
+								WithAttribute(valueAttr)
 						}
 						return
 					}
 				}
 			}
-			set.Add(
-				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName())),
-			)
+			set.AddResult().
+				WithDescription("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName())
 		},
 	})
 }

@@ -1,8 +1,6 @@
 package vpc
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -66,40 +64,36 @@ resource "aws_network_acl_rule" "good_example" {
 			actionAttr := resourceBlock.GetAttribute("rule_action")
 			protoAttr := resourceBlock.GetAttribute("protocol")
 
-			if egressAttr != nil && egressAttr.IsTrue() {
+			if egressAttr.IsNotNil() && egressAttr.IsTrue() {
 				return
 			}
 
-			if actionAttr != nil && !actionAttr.Equals("allow") {
+			if actionAttr.IsNotNil() && actionAttr.NotEqual("allow") {
 				return
 			}
 
-			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr != nil {
+			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr.IsNotNil() {
 
 				if cidr.IsOpen(cidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						return
 					} else {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())),
-						)
+						set.AddResult().
+							WithDescription("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())
 					}
 				}
 
 			}
 
-			if ipv6CidrBlockAttr := resourceBlock.GetAttribute("ipv6_cidr_block"); ipv6CidrBlockAttr != nil {
+			if ipv6CidrBlockAttr := resourceBlock.GetAttribute("ipv6_cidr_block"); ipv6CidrBlockAttr.IsNotNil() {
 
 				if cidr.IsOpen(ipv6CidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						return
 					} else {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName())).
-								WithAttribute(ipv6CidrBlockAttr),
-						)
+						set.AddResult().
+							WithDescription("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName()).
+							WithAttribute(ipv6CidrBlockAttr)
 					}
 				}
 

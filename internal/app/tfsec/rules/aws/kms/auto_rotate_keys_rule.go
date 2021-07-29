@@ -1,8 +1,6 @@
 package kms
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -53,26 +51,22 @@ resource "aws_kms_key" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			keyUsageAttr := resourceBlock.GetAttribute("key_usage")
 
-			if keyUsageAttr != nil && keyUsageAttr.Equals("SIGN_VERIFY") {
+			if keyUsageAttr.IsNotNil() && keyUsageAttr.Equals("SIGN_VERIFY") {
 				return
 			}
 
 			keyRotationAttr := resourceBlock.GetAttribute("enable_key_rotation")
 
-			if keyRotationAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())),
-				)
+			if keyRotationAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())
 				return
 			}
 
 			if keyRotationAttr.Type() == cty.Bool && keyRotationAttr.Value().False() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())).
-						WithAttribute(keyRotationAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName()).
+					WithAttribute(keyRotationAttr)
 			}
 
 		},

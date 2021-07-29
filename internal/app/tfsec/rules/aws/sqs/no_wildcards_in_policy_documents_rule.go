@@ -2,7 +2,6 @@ package sqs
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -15,8 +14,6 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
-
-	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
@@ -80,15 +77,12 @@ POLICY
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if resourceBlock.MissingChild("policy") {
+			if resourceBlock.MissingChild("policy") || !resourceBlock.GetAttribute("policy").IsString() {
 				return
 			}
 
-			if resourceBlock.GetAttribute("policy").Value().Type() != cty.String {
-				return
-			}
-
-			rawJSON := []byte(resourceBlock.GetAttribute("policy").Value().AsString())
+			policyAttr := resourceBlock.GetAttribute("policy")
+			rawJSON := []byte(policyAttr.Value().AsString())
 			var policy struct {
 				Statement []struct {
 					Effect string `json:"Effect"`
@@ -99,10 +93,8 @@ POLICY
 			if err := json.Unmarshal(rawJSON, &policy); err == nil {
 				for _, statement := range policy.Statement {
 					if strings.ToLower(statement.Effect) == "allow" && (statement.Action == "*" || statement.Action == "sqs:*") {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName())),
-						)
+						set.AddResult().
+							WithDescription("SQS policy '%s' has a wildcard action specified.", resourceBlock.FullName()).WithAttribute(policyAttr)
 					}
 				}
 			}

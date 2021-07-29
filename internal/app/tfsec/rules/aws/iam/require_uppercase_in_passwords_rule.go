@@ -1,8 +1,6 @@
 package iam
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -55,17 +53,13 @@ resource "aws_iam_account_password_policy" "good_example" {
 		RequiredLabels:  []string{"aws_iam_account_password_policy"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			if attr := resourceBlock.GetAttribute("require_uppercase_characters"); attr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not require an uppercase character in the password.", resourceBlock.FullName())),
-				)
+			if attr := resourceBlock.GetAttribute("require_uppercase_characters"); attr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not require an uppercase character in the password.", resourceBlock.FullName())
 			} else if attr.Value().Type() == cty.Bool {
 				if attr.Value().False() {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least one uppercase character in the password.", resourceBlock.FullName())),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' explicitly specifies not requiring at least one uppercase character in the password.", resourceBlock.FullName())
 				}
 			}
 		},

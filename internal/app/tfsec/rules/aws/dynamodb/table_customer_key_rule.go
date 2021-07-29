@@ -1,8 +1,6 @@
 package dynamodb
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -94,31 +92,25 @@ resource "aws_dynamodb_table" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("server_side_encryption") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())
 				return
 			}
 
 			sseBlock := resourceBlock.GetBlock("server_side_encryption")
 			enabledAttr := sseBlock.GetAttribute("enabled")
-			if enabledAttr != nil && enabledAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName())).
-						WithAttribute(enabledAttr),
-				)
+			if enabledAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName()).
+					WithBlock(sseBlock)
 			}
 
 			if sseBlock.HasChild("kms_key_arn") {
 				keyIdAttr := sseBlock.GetAttribute("kms_key_arn")
 				if keyIdAttr.Equals("alias/aws/dynamodb") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName())).
-							WithAttribute(keyIdAttr),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName()).
+						WithAttribute(keyIdAttr)
 				}
 			}
 

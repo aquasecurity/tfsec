@@ -8,7 +8,7 @@ import (
 )
 
 func IsOpen(attr block.Attribute) bool {
-	if attr.Value().IsNull() {
+	if attr.IsNil() || attr.Value().IsNull() {
 		return false
 	}
 

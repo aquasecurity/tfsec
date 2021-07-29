@@ -1,8 +1,6 @@
 package repositories
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -71,22 +69,18 @@ resource "github_repository" "good_example" {
 
 			privateAttribute := resourceBlock.GetAttribute("private")
 			visibilityAttribute := resourceBlock.GetAttribute("visibility")
-			if visibilityAttribute == nil && privateAttribute == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is missing both of `private` or `visibility` attributes - one of these is required to make repository private", resourceBlock.FullName())),
-				)
+			if visibilityAttribute.IsNil() && privateAttribute.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' is missing both of `private` or `visibility` attributes - one of these is required to make repository private", resourceBlock.FullName())
 				return
 			}
 
 			// this should be evaluated first as visibility overrides private
-			if visibilityAttribute != nil {
+			if visibilityAttribute.IsNotNil() {
 				if visibilityAttribute.Equals("public") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has visibility set to public - visibility should be set to `private` or `internal` to make repository private", resourceBlock.FullName())).
-							WithAttribute(visibilityAttribute),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' has visibility set to public - visibility should be set to `private` or `internal` to make repository private", resourceBlock.FullName()).
+						WithAttribute(visibilityAttribute)
 				}
 				// stop here as visibility parameter trumps the private one
 				// see https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository
@@ -94,12 +88,10 @@ resource "github_repository" "good_example" {
 			}
 
 			// this should be evaluated first as visibility overrides private
-			if privateAttribute != nil {
+			if privateAttribute.IsNotNil() {
 				if privateAttribute.IsFalse() {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has private set to false - it should be set to `true` to make repository private", resourceBlock.FullName())),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' has private set to false - it should be set to `true` to make repository private", resourceBlock.FullName())
 				}
 			}
 

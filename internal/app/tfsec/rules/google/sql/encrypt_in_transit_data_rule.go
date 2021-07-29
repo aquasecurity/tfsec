@@ -1,8 +1,6 @@
 package sql
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -73,30 +71,24 @@ resource "google_sql_database_instance" "postgres" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock == nil {
+			if settingsBlock.IsNil() {
 				return
 			}
 
 			ipConfigBlock := settingsBlock.GetBlock("ip_configuration")
-			if ipConfigBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())),
-				)
+			if ipConfigBlock.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())
 				return
 			}
 
-			if requireSSLAttr := ipConfigBlock.GetAttribute("require_ssl"); requireSSLAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())),
-				)
+			if requireSSLAttr := ipConfigBlock.GetAttribute("require_ssl"); requireSSLAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())
 			} else if requireSSLAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithAttribute(requireSSLAttr).
-						WithDescription(fmt.Sprintf("Resource '%s' explicitly does not require SSL for all connections", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithAttribute(requireSSLAttr).
+					WithDescription("Resource '%s' explicitly does not require SSL for all connections", resourceBlock.FullName())
 			}
 
 		},

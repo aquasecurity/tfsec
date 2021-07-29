@@ -1,8 +1,6 @@
 package secrets
 
 import (
-	"fmt"
-
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
@@ -60,10 +58,8 @@ resource "evil_corp" "good_example" {
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {
-						set.Add(result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Local '%s' includes a potentially sensitive value which is defined within the project.", resourceBlock.FullName())).
-							WithAttribute(attribute),
-						)
+						set.AddResult().WithDescription("Local '%s' includes a potentially sensitive value which is defined within the project.", resourceBlock.FullName()).
+							WithAttribute(attribute)
 					}
 				}
 			}

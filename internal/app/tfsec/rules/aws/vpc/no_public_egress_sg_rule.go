@@ -1,8 +1,6 @@
 package vpc
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -55,25 +53,21 @@ resource "aws_security_group" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			for _, directionBlock := range resourceBlock.GetBlocks("egress") {
-				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
+				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 
 					if cidr.IsOpen(cidrBlocksAttr) {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName())).
-								WithAttribute(cidrBlocksAttr),
-						)
+						set.AddResult().
+							WithDescription("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName()).
+							WithAttribute(cidrBlocksAttr)
 					}
 				}
 
-				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr != nil {
+				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 
 					if cidr.IsOpen(cidrBlocksAttr) {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName())).
-								WithAttribute(cidrBlocksAttr),
-						)
+						set.AddResult().
+							WithDescription("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName()).
+							WithAttribute(cidrBlocksAttr)
 					}
 				}
 			}

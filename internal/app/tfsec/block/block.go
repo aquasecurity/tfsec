@@ -30,6 +30,7 @@ type Block interface {
 	IsCountExpanded() bool
 	HasChild(childElement string) bool
 	MissingChild(childElement string) bool
+	MissingNestedChild(childElement string) bool
 	InModule() bool
 	Label() string
 	HasBlock(childElement string) bool
@@ -38,4 +39,6 @@ type Block interface {
 	Values() cty.Value
 	Context() *hcl.EvalContext
 	ReadLines() (lines []string, comments []string, err error)
+	IsNil() bool
+	IsNotNil() bool
 }

@@ -1,8 +1,6 @@
 package vpc
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -16,8 +14,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -56,31 +52,23 @@ resource "aws_security_group_rule" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			typeAttr := resourceBlock.GetAttribute("type")
-			if typeAttr == nil || typeAttr.Type() != cty.String {
+			if typeAttr.IsNil() || !typeAttr.IsString() || typeAttr.NotEqual("ingress") {
 				return
 			}
 
-			if typeAttr.Value().AsString() != "ingress" {
-				return
-			}
-
-			if cidrBlocksAttr := resourceBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
+			if cidrBlocksAttr := resourceBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 				if cidr.IsOpen(cidrBlocksAttr) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName())).
-							WithAttribute(cidrBlocksAttr),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName()).
+						WithAttribute(cidrBlocksAttr)
 				}
 			}
 
-			if ipv6CidrBlocksAttr := resourceBlock.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr != nil {
+			if ipv6CidrBlocksAttr := resourceBlock.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr.IsNotNil() {
 				if cidr.IsOpen(ipv6CidrBlocksAttr) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName())).
-							WithAttribute(ipv6CidrBlocksAttr),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName()).
+						WithAttribute(ipv6CidrBlocksAttr)
 				}
 
 			}

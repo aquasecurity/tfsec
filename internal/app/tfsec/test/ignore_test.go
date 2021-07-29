@@ -93,9 +93,8 @@ func Test_IgnoreSpecific(t *testing.T) {
 		RequiredLabels:  []string{"bad"},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			set.Add(
-				result.New(resourceBlock).WithDescription("example problem"),
-			)
+			set.AddResult().
+				WithDescription("example problem")
 		},
 	})
 
@@ -107,9 +106,8 @@ func Test_IgnoreSpecific(t *testing.T) {
 		RequiredLabels:  []string{"bad"},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			set.Add(
-				result.New(resourceBlock).WithDescription("example problem"),
-			)
+			set.AddResult().
+				WithDescription("example problem")
 		},
 	})
 
@@ -195,6 +193,17 @@ resource "aws_security_group_rule" "my-rule" {
     cidr_blocks = ["0.0.0.0/0"]
 }
 `, t, scanner.OptionWithWorkspaceName("testworkspace"))
+	assert.Len(t, results, 0)
+}
+
+func Test_IgnoreInline(t *testing.T) {
+	results := testutil.ScanHCL(`
+	resource "aws_instance" "sample" {
+		metadata_options {
+		  http_tokens = "optional" # tfsec:ignore:aws-ec2-enforce-http-token-imds
+		}
+	  }
+	  `, t)
 	assert.Len(t, results, 0)
 }
 

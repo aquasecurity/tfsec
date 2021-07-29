@@ -1,8 +1,6 @@
 package s3
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -58,20 +56,16 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("block_public_acls") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not specify block_public_acls, defaults to false", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not specify block_public_acls, defaults to false", resourceBlock.FullName())
 				return
 			}
 
-			attr := resourceBlock.GetAttribute("block_public_acls")
-			if attr != nil && attr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' sets block_public_acls explicitly to false", resourceBlock.FullName())).
-						WithAttribute(attr),
-				)
+			publicAclAttr := resourceBlock.GetAttribute("block_public_acls")
+			if publicAclAttr.IsNotNil() && publicAclAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' sets block_public_acls explicitly to false", resourceBlock.FullName()).
+					WithAttribute(publicAclAttr)
 			}
 		},
 	})

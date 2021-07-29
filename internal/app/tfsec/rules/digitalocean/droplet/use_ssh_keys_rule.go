@@ -1,8 +1,6 @@
 package droplet
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -57,19 +55,15 @@ resource "digitalocean_droplet" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("ssh_keys") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not define ssh_keys", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not define ssh_keys", resourceBlock.FullName())
 				return
 			}
 			sshKeysAttr := resourceBlock.GetAttribute("ssh_keys")
 			if sshKeysAttr.IsEmpty() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has ssh_key specified but is empty.", resourceBlock.FullName())).
-						WithAttribute(sshKeysAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has ssh_key specified but is empty.", resourceBlock.FullName()).
+					WithAttribute(sshKeysAttr)
 			}
 		},
 	})

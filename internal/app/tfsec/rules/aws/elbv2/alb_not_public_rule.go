@@ -1,8 +1,6 @@
 package elbv2
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -53,17 +51,13 @@ resource "aws_alb" "good_example" {
 			if resourceBlock.HasChild("load_balancer_type") && resourceBlock.GetAttribute("load_balancer_type").Equals("gateway") {
 				return
 			}
-			if internalAttr := resourceBlock.GetAttribute("internal"); internalAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())),
-				)
+			if internalAttr := resourceBlock.GetAttribute("internal"); internalAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' is exposed publicly.", resourceBlock.FullName())
 			} else if internalAttr.Type() == cty.Bool && internalAttr.Value().False() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is exposed publicly.", resourceBlock.FullName())).
-						WithAttribute(internalAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' is exposed publicly.", resourceBlock.FullName()).
+					WithAttribute(internalAttr)
 			}
 		},
 	})

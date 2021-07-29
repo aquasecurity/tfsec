@@ -1,8 +1,6 @@
 package rds
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -50,10 +48,8 @@ resource "aws_security_group" "good_example" {
 		RequiredLabels:  []string{"aws_db_security_group", "aws_redshift_security_group", "aws_elasticache_security_group"},
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			set.Add(
-				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' uses EC2 Classic. Use a VPC instead.", resourceBlock.FullName())),
-			)
+			set.AddResult().
+				WithDescription("Resource '%s' uses EC2 Classic. Use a VPC instead.", resourceBlock.FullName())
 		},
 	})
 }

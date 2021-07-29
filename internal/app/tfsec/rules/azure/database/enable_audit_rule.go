@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -68,7 +66,7 @@ resource "azurerm_sql_server" "good_example" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
-			if !resourceBlock.MissingChild("extended_auditing_policy") {
+			if resourceBlock.HasChild("extended_auditing_policy") {
 				return
 			}
 
@@ -82,10 +80,8 @@ resource "azurerm_sql_server" "good_example" {
 				return
 			}
 
-			set.Add(
-				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have an extended audit policy configured.", resourceBlock.FullName())),
-			)
+			set.AddResult().
+				WithDescription("Resource '%s' does not have an extended audit policy configured.", resourceBlock.FullName())
 
 		},
 	})

@@ -110,9 +110,8 @@ CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
 
             if attr := block.GetAttribute("hackable"); attr != nil && attr.Value().Type() == cty.Bool {
                 if attr.Value().True() {
-                    set.Add(
-                        result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("The Gibson '%s' is configured to be hackable.", block.Name())).
+                    set.Add().
+                        						WithDescription("The Gibson '%s' is configured to be hackable.", block.Name()).
 						WithAttribute(attr).
 						,
 					)

@@ -1,7 +1,6 @@
 package iam
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -64,7 +63,7 @@ resource "google_project_iam_member" "project" {
 
 			// is this a sensitive role?
 			roleAttr := resourceBlock.GetAttribute("role")
-			if roleAttr == nil || !roleAttr.IsString() || !roleAttr.Value().IsKnown() {
+			if !roleAttr.IsString() {
 				return
 			}
 			if !isRolePrivileged(roleAttr.Value().AsString()) {
@@ -73,28 +72,24 @@ resource "google_project_iam_member" "project" {
 
 			// is it linked to a service account?
 			memberAttr := resourceBlock.GetAttribute("member")
-			if memberAttr == nil {
+			if memberAttr.IsNil() {
 				return
 			}
-			if memberAttr.IsString() && memberAttr.Value().IsKnown() {
+			if memberAttr.IsString() {
 				if memberAttr.StartsWith("serviceAccount:") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' provides privileged access to a service account", resourceBlock)).
-							WithAttribute(roleAttr),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' provides privileged access to a service account", resourceBlock).
+						WithAttribute(roleAttr)
 				}
 			}
 
 			// the service account may be populated via a templated reference that we don't have, so we need to check references
 			if serviceAccountBlock, err := ctx.GetReferencedBlock(memberAttr); err != nil {
 				return
-			} else if serviceAccountBlock != nil && serviceAccountBlock.TypeLabel() == "google_service_account" {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' provides privileged access to service account at %s", resourceBlock, serviceAccountBlock.FullName())).
-						WithAttribute(roleAttr),
-				)
+			} else if serviceAccountBlock.IsNotNil() && serviceAccountBlock.TypeLabel() == "google_service_account" {
+				set.AddResult().
+					WithDescription("Resource '%s' provides privileged access to service account at %s", resourceBlock, serviceAccountBlock.FullName()).
+					WithAttribute(roleAttr)
 			}
 		},
 	})

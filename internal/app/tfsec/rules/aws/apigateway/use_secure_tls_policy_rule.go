@@ -1,8 +1,6 @@
 package apigateway
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -13,8 +11,6 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
-
-	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
@@ -53,22 +49,16 @@ resource "aws_api_gateway_domain_name" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			securityPolicyAttr := resourceBlock.GetAttribute("security_policy")
-			if securityPolicyAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName())),
-				)
+			if securityPolicyAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName())
 				return
 			}
-
-			if securityPolicyAttr.Type() == cty.String && securityPolicyAttr.Value().AsString() != "TLS_1_2" {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", resourceBlock.FullName())).
-						WithAttribute(securityPolicyAttr),
-				)
+			if securityPolicyAttr.NotEqual("TLS_1_2") {
+				set.AddResult().
+					WithDescription("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", resourceBlock.FullName()).
+					WithAttribute(securityPolicyAttr)
 			}
-
 		},
 	})
 }

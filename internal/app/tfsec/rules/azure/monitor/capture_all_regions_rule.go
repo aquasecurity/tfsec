@@ -1,8 +1,6 @@
 package monitor
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -140,22 +138,24 @@ resource "azurerm_monitor_log_profile" "bad_example" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
+			if resourceBlock.MissingChild("locations") {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have the locations block set", resourceBlock.FullName())
+				return
+			}
+
 			locationsAttr := resourceBlock.GetAttribute("locations")
-			if locationsAttr == nil || locationsAttr.IsEmpty() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have all locations specified", resourceBlock.FullName())),
-				)
+			if locationsAttr.IsEmpty() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have all locations specified", resourceBlock.FullName())
 				return
 			}
 
 			for _, location := range locations {
 				if !locationsAttr.Contains(location) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' does not have the location '%s'", resourceBlock.LocalName(), location)).
-							WithAttribute(locationsAttr),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' does not have the location '%s'", resourceBlock.LocalName(), location).
+						WithAttribute(locationsAttr)
 				}
 			}
 

@@ -1,8 +1,6 @@
 package ecr
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -71,27 +69,23 @@ resource "aws_ecr_repository" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("encryption_configuration") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName())
 				return
 			}
 
 			encBlock := resourceBlock.GetBlock("encryption_configuration")
 			if encBlock.MissingChild("kms_key") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' configures encryption without using CMK", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' configures encryption without using CMK", resourceBlock.FullName()).
+					WithBlock(encBlock)
 				return
 			}
 
 			if encBlock.MissingChild("encryption_type") || encBlock.GetAttribute("encryption_type").Equals("AES256") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName())),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName()).
+					WithBlock(encBlock)
 			}
 
 		},

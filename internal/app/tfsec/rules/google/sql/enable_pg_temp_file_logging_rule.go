@@ -1,7 +1,6 @@
 package sql
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -56,32 +55,26 @@ resource "google_sql_database_instance" "db" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			dbVersionAttr := resourceBlock.GetAttribute("database_version")
-			if dbVersionAttr != nil && dbVersionAttr.IsString() && !strings.HasPrefix(dbVersionAttr.Value().AsString(), "POSTGRES") {
+			if dbVersionAttr.IsNotNil() && dbVersionAttr.IsString() && !strings.HasPrefix(dbVersionAttr.Value().AsString(), "POSTGRES") {
 				return
 			}
 
 			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has temporary file logging disabled by default", resourceBlock.FullName())),
-				)
+			if settingsBlock.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' has temporary file logging disabled by default", resourceBlock.FullName())
 				return
 			}
 
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
-				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Value().AsString() == "log_temp_files" {
-					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
+				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr.IsNotNil() && nameAttr.IsString() && nameAttr.Value().AsString() == "log_temp_files" {
+					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.IsNotNil() && valueAttr.IsString() {
 						if valueAttr.Value().AsString() == "-1" {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has temporary file logging explicitly disabled", resourceBlock.FullName())),
-							)
+							set.AddResult().
+								WithDescription("Resource '%s' has temporary file logging explicitly disabled", resourceBlock.FullName())
 						} else if valueAttr.Value().AsString() != "0" {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has temporary file logging disabled for files of certain sizes", resourceBlock.FullName())),
-							)
+							set.AddResult().
+								WithDescription("Resource '%s' has temporary file logging disabled for files of certain sizes", resourceBlock.FullName())
 						}
 						// otherwise it's off, awesome
 						return
@@ -90,10 +83,8 @@ resource "google_sql_database_instance" "db" {
 			}
 
 			// we didn't find the flag so it must be on by default
-			set.Add(
-				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' has temporary file logging disabled by default", resourceBlock.FullName())),
-			)
+			set.AddResult().
+				WithDescription("Resource '%s' has temporary file logging disabled by default", resourceBlock.FullName())
 
 		},
 	})
