@@ -413,7 +413,7 @@ func updateResultSeverity(results []result.Result) []result.Result {
 	var overriddenResults []result.Result
 	for _, res := range results {
 		for code, sev := range overrides {
-			if res.RuleID == code {
+			if res.RuleID == code || res.LegacyRuleID == code {
 				res.WithSeverity(severity.Severity(sev))
 			}
 		}

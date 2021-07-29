@@ -1,0 +1,4 @@
+---
+severity_overrides:
+  AWS077: CRITICAL
+  aws-s3-specify-public-access-block: CRITICAL

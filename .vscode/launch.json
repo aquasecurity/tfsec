@@ -1,6 +1,8 @@
 {
   "version": "0.2.0",
   "configurations": [
+
+
     {
       "name": "Basic tfsec",
       "type": "go",
@@ -39,6 +41,14 @@
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/tfsec/main.go",
       "args": ["${workspaceFolder}/example/foreach-module/src"]
+    },
+    {
+      "name": "config override test",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/tfsec/main.go",
+      "args": ["${workspaceFolder}/example/with_config_overrides"]
     },
     {
       "name": "workspace test",
