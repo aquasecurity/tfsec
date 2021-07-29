@@ -95,16 +95,51 @@ func Test_ResourcesWithCount(t *testing.T) {
 			mustExcludeResultCode: "aws-vpc-no-default-vpc",
 		},
 		{
-			name: "count is 1 from conditional",
+			name: "count is 0 from conditional",
 			source: `
 			variable "enabled" {
-				default = true
+				default = false
 			}
 			resource "aws_default_vpc" "this" {
-				count =  var.enabled ? 1 : 0
+				count = var.enabled ? 1 : 0
 			}
 `,
-			mustIncludeResultCode: "aws-vpc-no-default-vpc",
+			mustExcludeResultCode: "aws-vpc-no-default-vpc",
+		},
+		{
+			name: "issue 962",
+			source: `
+			resource "aws_s3_bucket" "access-logs-bucket" {
+			count = var.enable_cloudtrail ? 1 : 0
+			bucket = "cloudtrail-access-logs"
+			acl    = "private"
+			force_destroy = true
+
+			versioning {
+				enabled = true
+			}
+
+			server_side_encryption_configuration {
+				rule {
+				apply_server_side_encryption_by_default {
+					sse_algorithm = "AES256"
+				}
+				}
+			}
+			}
+
+			resource "aws_s3_bucket_public_access_block" "access-logs" {
+			count = var.enable_cloudtrail ? 1 : 0
+
+			bucket = aws_s3_bucket.access-logs-bucket[0].id
+			
+			block_public_acls   = true
+			block_public_policy = true
+			ignore_public_acls  = true
+			restrict_public_buckets = true
+			}	
+`,
+			mustExcludeResultCode: "aws-s3-specify-public-access-block",
 		},
 		{
 			name: "Test use of count.index",
@@ -138,7 +173,7 @@ variable "trust-sg-rules" {
 	]
 }
 			`,
-			mustExcludeResultCode: "AWS018",
+			mustExcludeResultCode: "aws-vpc-add-decription-to-security-group",
 		},
 	}
 
