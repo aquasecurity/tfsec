@@ -59,6 +59,11 @@ func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 
 	var excludeText string
 
+	if !validateCodes(includeCode, excludeCode) {
+		t.Logf("Either includeCode (%s) or excludeCode (%s) was invalid ", includeCode, excludeCode)
+		t.FailNow()
+	}
+
 	for _, res := range results {
 		if res.RuleID == excludeCode {
 			foundExclude = true
@@ -105,4 +110,19 @@ func CreateTestFileWithModule(contents string, moduleContents string) string {
 	}
 
 	return rootPath
+}
+
+func validateCodes(includeCode, excludeCode string) bool {
+	if includeCode != "" {
+		if _, err := scanner.GetRuleById(includeCode); err != nil {
+			return false
+		}
+	}
+
+	if excludeCode != "" {
+		if _, err := scanner.GetRuleById(excludeCode); err != nil {
+			return false
+		}
+	}
+	return true
 }

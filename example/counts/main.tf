@@ -32,3 +32,33 @@ variable "trust-sg-rules" {
 		}
 	]
 }
+
+resource "aws_s3_bucket" "access-logs-bucket" {
+  count = var.enable_cloudtrail ? 1 : 0
+  bucket = "cloudtrail-access-logs"
+  acl    = "private"
+  force_destroy = true
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "access-logs" {
+  count = var.enable_cloudtrail ? 1 : 0
+
+  bucket = aws_s3_bucket.access-logs-bucket[0].id
+  
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls  = true
+  restrict_public_buckets = true
+}
