@@ -321,6 +321,10 @@ func (attr *HCLAttribute) RegexMatches(pattern interface{}) bool {
 	return false
 }
 
+func (attr *HCLAttribute) IsNotAny(options ...interface{}) bool {
+	return !attr.IsAny(options...)
+}
+
 func (attr *HCLAttribute) IsAny(options ...interface{}) bool {
 	if attr == nil {
 		return false
