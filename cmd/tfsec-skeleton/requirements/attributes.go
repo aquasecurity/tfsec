@@ -54,6 +54,30 @@ func (a *attributeBase) GenerateGoodExample() string {
 		}
 	case ComparisonNotAnyOf:
 		value = "something"
+	case ComparisonGreaterThan:
+		if i, ok := a.value.(int); ok {
+			value = i + 1
+		} else {
+			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+		}
+	case ComparisonLessThan:
+		if i, ok := a.value.(int); ok {
+			value = i - 1
+		} else {
+			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+		}
+	case ComparisonGreaterThanOrEqual:
+		if i, ok := a.value.(int); ok {
+			value = i
+		} else {
+			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+		}
+	case ComparisonLessThanOrEqual:
+		if i, ok := a.value.(int); ok {
+			value = i
+		} else {
+			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+		}
 	default:
 		panic(fmt.Sprintf("comparison '%s' is not supported", a.comparison))
 	}
@@ -84,6 +108,30 @@ func (a *attributeBase) GenerateBadExample() string {
 			value = strs[0]
 		} else {
 			panic("only non-zero length list of strings are supported")
+		}
+	case ComparisonGreaterThan:
+		if i, ok := a.value.(int); ok {
+			value = i - 1
+		} else {
+			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+		}
+	case ComparisonLessThan:
+		if i, ok := a.value.(int); ok {
+			value = i + 1
+		} else {
+			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+		}
+	case ComparisonGreaterThanOrEqual:
+		if i, ok := a.value.(int); ok {
+			value = i - 1
+		} else {
+			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+		}
+	case ComparisonLessThanOrEqual:
+		if i, ok := a.value.(int); ok {
+			value = i + 1
+		} else {
+			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 		}
 	default:
 		panic(fmt.Sprintf("comparison'%s' is not supported", a.comparison))
