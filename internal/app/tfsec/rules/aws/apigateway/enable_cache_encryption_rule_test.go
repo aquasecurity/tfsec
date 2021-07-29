@@ -9,7 +9,7 @@ import (
 )
 
 func Test_AWSEnableCacheEncryption_FailureExamples(t *testing.T) {
-	expectedCode := "aws-apigateway-enable-cache-encryption"
+	expectedCode := "aws-api-gateway-enable-cache-encryption"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_AWSEnableCacheEncryption_FailureExamples(t *testing.T) {
 }
 
 func Test_AWSEnableCacheEncryption_SuccessExamples(t *testing.T) {
-	expectedCode := "aws-apigateway-enable-cache-encryption"
+	expectedCode := "aws-api-gateway-enable-cache-encryption"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

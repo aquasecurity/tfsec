@@ -26,7 +26,7 @@ clone_site
 go run ./cmd/tfsec-docs
 cp -r checkdocs/docs/* ./_site/_docs/
 cp -r checkdocs/data/* ./_site/_data/
-cp =r checkdocs/codes.json ./_site/assets/codes.json
+cp -r checkdocs/codes.json ./_site/assets/codes.json
 deploy
 
 rm -rf checkdocs
