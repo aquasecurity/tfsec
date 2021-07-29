@@ -558,10 +558,28 @@ func createDotReferenceFromTraversal(traversals ...hcl.Traversal) (*Reference, e
 				refParts = append(refParts, part.Name)
 			case hcl.TraverseAttr:
 				refParts = append(refParts, part.Name)
+			case hcl.TraverseIndex:
+				refParts[len(refParts)-1] = fmt.Sprintf("%s[%s]", refParts[len(refParts)-1], getIndexValue(part))
 			}
 		}
 	}
 	return newReference(refParts)
+}
+
+func getIndexValue(part hcl.TraverseIndex) string {
+	switch part.Key.Type() {
+	case cty.String:
+		return fmt.Sprintf("%q", part.Key.AsString())
+	case cty.Number:
+		var intVal int
+		if err := gocty.FromCtyValue(part.Key, &intVal); err != nil {
+			debug.Log("could not unpack the int, returning 0")
+			return "0"
+		}
+		return fmt.Sprintf("%d", intVal)
+	default:
+		return "0"
+	}
 }
 
 func (attr *HCLAttribute) Reference() (*Reference, error) {
