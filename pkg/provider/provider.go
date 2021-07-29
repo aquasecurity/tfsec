@@ -21,3 +21,19 @@ const (
 func RuleProviderToString(provider Provider) string {
 	return strings.ToUpper(string(provider))
 }
+
+func (p Provider) DisplayName() string {
+	switch p {
+	case "aws":
+		return strings.ToUpper(string(p))
+	case "digitalocean":
+		return "Digital Ocean"
+	case "openstack":
+		return "OpenStack"
+	default:
+		return strings.Title(strings.ToLower(string(p)))
+	}
+}
+func (p Provider) ConstName() string {
+	return strings.ReplaceAll(p.DisplayName(), " ", "")
+}
