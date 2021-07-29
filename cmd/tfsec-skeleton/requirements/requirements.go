@@ -16,7 +16,7 @@ func sprintGo(value interface{}) string {
 		return fmt.Sprintf("%q", s)
 	}
 	if s, ok := value.([]string); ok {
-		return fmt.Sprintf("%#v", s)
+		return fmt.Sprintf(`"%s"`, strings.Join(s, `", "`))
 	}
 	return fmt.Sprintf("%v", value)
 }
