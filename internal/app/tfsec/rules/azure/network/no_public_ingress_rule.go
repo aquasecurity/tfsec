@@ -16,8 +16,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -58,13 +56,13 @@ resource "azurerm_network_security_rule" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			directionAttr := resourceBlock.GetAttribute("direction")
-			if directionAttr.IsNil() || directionAttr.Type() != cty.String || strings.ToUpper(directionAttr.Value().AsString()) != "INBOUND" {
+			if directionAttr.NotEqual("INBOUND", block.IgnoreCase) {
 				return
 			}
 
-			if prefixAttr := resourceBlock.GetAttribute("source_address_prefix"); prefixAttr.IsNotNil() && prefixAttr.Type() == cty.String {
+			if prefixAttr := resourceBlock.GetAttribute("source_address_prefix"); prefixAttr.IsString() {
 				if cidr.IsOpen(prefixAttr) {
-					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.IsNotNil() && strings.ToUpper(accessAttr.Value().AsString()) == "ALLOW" {
+					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.Equals("ALLOW", block.IgnoreCase) {
 						set.AddResult().
 							WithDescription("Resource '%s' defines a fully open %s network security group rule.", resourceBlock.FullName(), strings.ToLower(directionAttr.Value().AsString())).
 							WithAttribute(prefixAttr)
@@ -72,9 +70,9 @@ resource "azurerm_network_security_rule" "good_example" {
 				}
 			}
 
-			if prefixesAttr := resourceBlock.GetAttribute("source_address_prefixes"); prefixesAttr.IsNotNil() && prefixesAttr.Value().LengthInt() > 0 {
+			if prefixesAttr := resourceBlock.GetAttribute("source_address_prefixes"); !prefixesAttr.IsEmpty() {
 				if cidr.IsOpen(prefixesAttr) {
-					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.IsNotNil() && strings.ToUpper(accessAttr.Value().AsString()) == "ALLOW" {
+					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.Equals("ALLOW", block.IgnoreCase) {
 						set.AddResult().
 							WithDescription("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName()).
 							WithAttribute(prefixesAttr)

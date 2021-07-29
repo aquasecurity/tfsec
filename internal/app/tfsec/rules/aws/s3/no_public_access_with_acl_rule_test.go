@@ -49,6 +49,14 @@ resource "aws_s3_bucket" "my-bucket" {
 }`,
 			mustExcludeResultCode: expectedCode,
 		},
+		{
+			name: "check aws_s3_bucket with acl not set",
+			source: `
+resource "aws_s3_bucket" "my-bucket" {
+
+}`,
+			mustExcludeResultCode: expectedCode,
+		},
 	}
 
 	for _, test := range tests {

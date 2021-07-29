@@ -138,8 +138,14 @@ resource "azurerm_monitor_log_profile" "bad_example" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
+			if resourceBlock.MissingChild("locations") {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have the locations block set", resourceBlock.FullName())
+				return
+			}
+
 			locationsAttr := resourceBlock.GetAttribute("locations")
-			if locationsAttr.IsNil() || locationsAttr.IsEmpty() {
+			if locationsAttr.IsEmpty() {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have all locations specified", resourceBlock.FullName())
 				return

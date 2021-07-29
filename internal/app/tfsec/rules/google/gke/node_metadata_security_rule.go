@@ -13,8 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -59,23 +57,12 @@ resource "google_container_node_pool" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if resourceBlock.MissingChild("node_config") {
-				return
-			}
-			nodeConfigBlock := resourceBlock.GetBlock("node_config")
-
-			if nodeConfigBlock.MissingChild("workload_metadata_config") {
-				return
-			}
-			workloadMetadataConfigBlock := nodeConfigBlock.GetBlock("workload_metadata_config")
-
-			if workloadMetadataConfigBlock.MissingChild("node_metadata") {
+			if resourceBlock.MissingNestedChild("node_config.workload_metadata_config.node_metadata") {
 				return
 			}
 
-			nodeMetadata := workloadMetadataConfigBlock.GetAttribute("node_metadata")
-			if nodeMetadata.IsNotNil() && nodeMetadata.Type() == cty.String &&
-				(nodeMetadata.Value().AsString() == "EXPOSE" || nodeMetadata.Value().AsString() == "UNSPECIFIED") {
+			nodeMetadata := resourceBlock.GetNestedAttribute("node_config.workload_metadata_config.node_metadata")
+			if nodeMetadata.IsAny("EXPOSE", "UNSPECIFIED") {
 				set.AddResult().
 					WithDescription("Resource '%s' defines a cluster with node metadata exposed. node_metadata set to EXPOSE or UNSPECIFIED disables metadata concealment. ", resourceBlock.FullName())
 			}

@@ -18,31 +18,31 @@ func Test_AZUKeyVaultNetworkAcl(t *testing.T) {
 		{
 			name: "check fails when no network acl block is provided",
 			source: `
-resource "azurerm_key_vault" "bad_example" {
-    name                        = "examplekeyvault"
-    location                    = azurerm_resource_group.bad_example.location
-    enabled_for_disk_encryption = true
-    soft_delete_retention_days  = 7
-    purge_protection_enabled    = false
-}
-`,
+		resource "azurerm_key_vault" "bad_example" {
+		    name                        = "examplekeyvault"
+		    location                    = azurerm_resource_group.bad_example.location
+		    enabled_for_disk_encryption = true
+		    soft_delete_retention_days  = 7
+		    purge_protection_enabled    = false
+		}
+		`,
 			mustIncludeResultCode: expectedCode,
 		}, {
 			name: "check fails when network acl block is provided with default action as allow",
 			source: `
-resource "azurerm_key_vault" "bad_example" {
-    name                        = "examplekeyvault"
-    location                    = azurerm_resource_group.bad_example.location
-    enabled_for_disk_encryption = true
-    soft_delete_retention_days  = 7
-    purge_protection_enabled    = false
+		resource "azurerm_key_vault" "bad_example" {
+		    name                        = "examplekeyvault"
+		    location                    = azurerm_resource_group.bad_example.location
+		    enabled_for_disk_encryption = true
+		    soft_delete_retention_days  = 7
+		    purge_protection_enabled    = false
 
-    network_acls {
-        bypass = "AzureServices"
-        default_action = "Allow"
-    }
-}
-`,
+		    network_acls {
+		        bypass = "AzureServices"
+		        default_action = "Allow"
+		    }
+		}
+		`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{

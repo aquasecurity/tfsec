@@ -13,8 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 var outdatedSSLPolicies = []string{
@@ -58,9 +56,9 @@ resource "aws_alb_listener" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if sslPolicyAttr := resourceBlock.GetAttribute("ssl_policy"); sslPolicyAttr.IsNotNil() && sslPolicyAttr.Type() == cty.String {
+			if sslPolicyAttr := resourceBlock.GetAttribute("ssl_policy"); sslPolicyAttr.IsString() {
 				for _, policy := range outdatedSSLPolicies {
-					if policy == sslPolicyAttr.Value().AsString() {
+					if sslPolicyAttr.Equals(policy) {
 						set.AddResult().
 							WithDescription("Resource '%s' is using an outdated SSL policy.", resourceBlock.FullName()).
 							WithAttribute(sslPolicyAttr)

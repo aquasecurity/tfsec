@@ -49,7 +49,8 @@ resource "aws_s3_bucket" "good_example" {
 		RequiredLabels:  []string{"aws_s3_bucket"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			if loggingBlock := resourceBlock.GetBlock("logging"); loggingBlock.IsNil() {
+
+			if resourceBlock.MissingChild("logging") {
 				if resourceBlock.GetAttribute("acl").IsNotNil() && resourceBlock.GetAttribute("acl").Equals("log-delivery-write") {
 					return
 				}

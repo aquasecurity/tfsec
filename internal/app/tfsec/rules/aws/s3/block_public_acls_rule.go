@@ -61,11 +61,11 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 				return
 			}
 
-			attr := resourceBlock.GetAttribute("block_public_acls")
-			if attr.IsNotNil() && attr.IsFalse() {
+			publicAclAttr := resourceBlock.GetAttribute("block_public_acls")
+			if publicAclAttr.IsNotNil() && publicAclAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' sets block_public_acls explicitly to false", resourceBlock.FullName()).
-					WithAttribute(attr)
+					WithAttribute(publicAclAttr)
 			}
 		},
 	})

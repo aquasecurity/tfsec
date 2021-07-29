@@ -378,6 +378,27 @@ func (b *HCLBlock) MissingChild(childElement string) bool {
 	return !b.HasChild(childElement)
 }
 
+func (b *HCLBlock) MissingNestedChild(name string) bool {
+	if b == nil {
+		return true
+	}
+
+	parts := strings.Split(name, ".")
+	blocks := parts[:len(parts)-1]
+	last := parts[len(parts)-1]
+
+	var working Block = b
+	for _, subBlock := range blocks {
+		if checkBlock := working.GetBlock(subBlock); checkBlock == nil {
+			return true
+		} else {
+			working = checkBlock
+		}
+	}
+	return !working.HasChild(last)
+
+}
+
 func (b *HCLBlock) InModule() bool {
 	if b == nil {
 		return false

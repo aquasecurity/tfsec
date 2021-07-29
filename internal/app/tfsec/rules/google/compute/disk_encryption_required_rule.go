@@ -47,15 +47,15 @@ resource "google_compute_disk" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			keyBlock := resourceBlock.GetBlock("disk_encryption_key")
-			if keyBlock.IsNil() {
+			if resourceBlock.MissingChild("disk_encryption_key") {
 				return
 			}
 
-			rawKeyAttr := keyBlock.GetAttribute("raw_key")
-			if rawKeyAttr.IsNil() {
+			if resourceBlock.MissingNestedChild("disk_encryption_key.raw_key") {
 				return
 			}
+
+			rawKeyAttr := resourceBlock.GetNestedAttribute("disk_encryption_key.raw_key")
 
 			if rawKeyAttr.IsString() {
 				set.AddResult().

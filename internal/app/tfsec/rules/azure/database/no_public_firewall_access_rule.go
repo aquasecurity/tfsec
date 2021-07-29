@@ -71,13 +71,12 @@ resource "azurerm_sql_firewall_rule" "good_example" {
 			}
 
 			sourceIpAttr := resourceBlock.GetAttribute("start_ip_address")
-			if sourceIpAttr.Equals("0.0.0.0") {
-				endIpAttr := resourceBlock.GetAttribute("end_ip_address")
-				if !endIpAttr.Equals("0.0.0.0") {
-					set.AddResult().
-						WithDescription("Resource '%s' has an open IP range set.", resourceBlock.FullName()).
-						WithAttribute(endIpAttr)
-				}
+			endIpAttr := resourceBlock.GetAttribute("end_ip_address")
+			if sourceIpAttr.Equals("0.0.0.0") && endIpAttr.NotEqual("0.0.0.0") {
+				set.AddResult().
+					WithDescription("Resource '%s' has an open IP range set.", resourceBlock.FullName()).
+					WithAttribute(endIpAttr)
+
 			}
 
 		},

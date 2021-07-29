@@ -74,11 +74,11 @@ resource "aws_workspaces_workspace" "good_example" {
 				set.AddResult().
 					WithDescription("Resource '%s' should have root volume encryption enabled", resourceBlock.FullName())
 			} else {
-				attr := resourceBlock.GetAttribute("root_volume_encryption_enabled")
-				if attr.IsNotNil() && attr.IsFalse() {
+				rootVolEncAttr := resourceBlock.GetAttribute("root_volume_encryption_enabled")
+				if rootVolEncAttr.IsNotNil() && rootVolEncAttr.IsFalse() {
 					set.AddResult().
 						WithDescription("Resource '%s' has the root volume encryption set to false", resourceBlock.FullName()).
-						WithAttribute(attr)
+						WithAttribute(rootVolEncAttr)
 				}
 			}
 
@@ -88,11 +88,11 @@ resource "aws_workspaces_workspace" "good_example" {
 				return
 			}
 
-			attr := resourceBlock.GetAttribute("user_volume_encryption_enabled")
-			if attr.IsNotNil() && attr.IsFalse() {
+			userVolEncAttr := resourceBlock.GetAttribute("user_volume_encryption_enabled")
+			if userVolEncAttr.IsNotNil() && userVolEncAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' has the user volume encryption set to false", resourceBlock.FullName()).
-					WithAttribute(attr)
+					WithAttribute(userVolEncAttr)
 			}
 
 		},

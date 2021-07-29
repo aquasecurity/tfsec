@@ -51,7 +51,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if (resourceBlock.MissingChild("api_server_authorized_ip_ranges") ||
-				resourceBlock.GetAttribute("api_server_authorized_ip_ranges").Value().LengthInt() < 1) &&
+				resourceBlock.GetAttribute("api_server_authorized_ip_ranges").IsEmpty()) &&
 				(resourceBlock.MissingChild("private_cluster_enabled") ||
 					resourceBlock.GetAttribute("private_cluster_enabled").IsFalse()) {
 				{

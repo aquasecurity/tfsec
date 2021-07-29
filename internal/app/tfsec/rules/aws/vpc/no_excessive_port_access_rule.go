@@ -13,7 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -65,11 +64,7 @@ resource "aws_network_acl_rule" "good_example" {
 				return
 			}
 
-			if actionAttr.IsNil() || actionAttr.Type() != cty.String {
-				return
-			}
-
-			if actionAttr.Value().AsString() != "allow" {
+			if actionAttr.IsNil() || !actionAttr.IsString() || actionAttr.NotEqual("allow") {
 				return
 			}
 

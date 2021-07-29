@@ -62,9 +62,14 @@ resource "azurerm_storage_account" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if resourceBlock.HasChild("enable_https_traffic_only") && resourceBlock.GetAttribute("enable_https_traffic_only").IsFalse() {
-				set.AddResult().
-					WithDescription("Resource '%s' explicitly turns off secure transfer to storage account.", resourceBlock.FullName())
+			if resourceBlock.HasChild("enable_https_traffic_only") {
+
+				httpsOnlyAttr := resourceBlock.GetAttribute("enable_https_traffic_only")
+
+				if httpsOnlyAttr.IsFalse() {
+					set.AddResult().
+						WithDescription("Resource '%s' explicitly turns off secure transfer to storage account.", resourceBlock.FullName())
+				}
 			}
 
 		},

@@ -13,8 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -53,8 +51,12 @@ resource "azurerm_virtual_machine" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if linuxConfigBlock := resourceBlock.GetBlock("os_profile_linux_config"); linuxConfigBlock.IsNotNil() {
+				if linuxConfigBlock.MissingChild("disable_password_authentication") {
+					set.AddResult().WithDescription("Resource '%s' missing required attribute in os_profile_linux_config", resourceBlock.FullName()).WithBlock(linuxConfigBlock)
+				}
+
 				passwordAuthDisabledAttr := linuxConfigBlock.GetAttribute("disable_password_authentication")
-				if passwordAuthDisabledAttr.IsNotNil() && passwordAuthDisabledAttr.Type() == cty.Bool && passwordAuthDisabledAttr.Value().False() {
+				if passwordAuthDisabledAttr.IsNotNil() && passwordAuthDisabledAttr.IsFalse() {
 					set.AddResult().
 						WithDescription("Resource '%s' has password authentication enabled. Use SSH keys instead.", resourceBlock.FullName()).
 						WithAttribute(passwordAuthDisabledAttr)

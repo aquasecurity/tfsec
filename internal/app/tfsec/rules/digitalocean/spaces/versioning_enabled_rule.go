@@ -69,7 +69,6 @@ resource "digitalocean_spaces_bucket" "good_example" {
 			if enabledAttr.IsNil() || enabledAttr.IsFalse() {
 				set.AddResult().WithDescription("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
-
 			}
 
 		},

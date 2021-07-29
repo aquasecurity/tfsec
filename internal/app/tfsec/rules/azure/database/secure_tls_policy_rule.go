@@ -97,7 +97,7 @@ resource "azurerm_postgresql_server" "good_example" {
 			}
 
 			tlsMinimumAttr := resourceBlock.GetAttribute(attribute)
-			if !tlsMinimumAttr.Equals(requiredValue) {
+			if tlsMinimumAttr.NotEqual(requiredValue) {
 				set.AddResult().
 					WithDescription("Resource '%s' has a value %s that is not %s", resourceBlock.FullName(), attribute, requiredValue).
 					WithAttribute(tlsMinimumAttr)

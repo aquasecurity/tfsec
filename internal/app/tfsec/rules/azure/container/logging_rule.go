@@ -13,7 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -53,22 +52,14 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			addonProfileBlock := resourceBlock.GetBlock("addon_profile")
-			if addonProfileBlock.IsNil() {
+			if resourceBlock.MissingNestedChild("addon_profile.oms_agent") {
 				set.AddResult().
-					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", resourceBlock.FullName())
+					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured.", resourceBlock.FullName())
 				return
 			}
 
-			omsAgentBlock := addonProfileBlock.GetBlock("oms_agent")
-			if omsAgentBlock.IsNil() {
-				set.AddResult().
-					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", resourceBlock.FullName())
-				return
-			}
-
-			enabledAttr := omsAgentBlock.GetAttribute("enabled")
-			if enabledAttr.IsNil() || (enabledAttr.Type() == cty.Bool && enabledAttr.Value().False()) {
+			enabledAttr := resourceBlock.GetNestedAttribute("addon_profile.oms_agent.enabled")
+			if enabledAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)

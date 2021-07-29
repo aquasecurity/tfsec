@@ -12,8 +12,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -55,7 +53,7 @@ resource "google_container_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			enableLegacyABAC := resourceBlock.GetAttribute("enable_legacy_abac")
-			if enableLegacyABAC.IsNotNil() && enableLegacyABAC.Value().Type() == cty.String && enableLegacyABAC.Value().AsString() == "true" {
+			if enableLegacyABAC.IsNotNil() && enableLegacyABAC.IsTrue() {
 				set.AddResult().
 					WithDescription("Resource '%s' defines a cluster with ABAC enabled. Disable and rely on RBAC instead. ", resourceBlock.FullName())
 			}

@@ -55,7 +55,7 @@ resource "google_container_cluster" "good_example" {
 			}
 
 			enableShieldedNodesAttr := resourceBlock.GetAttribute("enable_shielded_nodes")
-			if enableShieldedNodesAttr.IsNotNil() && enableShieldedNodesAttr.IsFalse() {
+			if enableShieldedNodesAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", resourceBlock.FullName())
 			}

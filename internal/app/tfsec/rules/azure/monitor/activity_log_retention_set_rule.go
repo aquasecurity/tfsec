@@ -63,13 +63,13 @@ resource "azurerm_monitor_log_profile" "good_example" {
 
 			if retentionPolicyBlock.MissingChild("enabled") {
 				set.AddResult().
-					WithDescription("Resource '%s' does not enable retention policy", resourceBlock.FullName())
+					WithDescription("Resource '%s' does not enable retention policy", resourceBlock.FullName()).WithBlock(retentionPolicyBlock)
 				return
 			}
 
 			if retentionPolicyBlock.MissingChild("days") {
 				set.AddResult().
-					WithDescription("Resource '%s' does not retention policy days set", resourceBlock.FullName())
+					WithDescription("Resource '%s' does not retention policy days set", resourceBlock.FullName()).WithBlock(retentionPolicyBlock)
 				return
 			}
 

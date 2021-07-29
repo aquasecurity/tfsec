@@ -58,6 +58,8 @@ resource "azurerm_storage_account_network_rules" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
+			blockName := resourceBlock.FullName()
+
 			if resourceBlock.IsResourceType("azurerm_storage_account") {
 				if resourceBlock.MissingChild("network_rules") {
 					return
@@ -68,7 +70,7 @@ resource "azurerm_storage_account_network_rules" "good_example" {
 			defaultAction := resourceBlock.GetAttribute("default_action")
 			if defaultAction.IsNotNil() && defaultAction.Equals("Allow", block.IgnoreCase) {
 				set.AddResult().
-					WithDescription("Resource '%s' defines a default_action of Allow. It should be Deny.", resourceBlock.FullName())
+					WithDescription("Resource '%s' defines a default_action of Allow. It should be Deny.", blockName)
 			}
 
 		},

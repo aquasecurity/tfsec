@@ -75,7 +75,7 @@ resource "google_project_iam_member" "project-123" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
 			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr.IsNotNil() {
-				if memberAttr.IsString() && memberAttr.Value().IsKnown() {
+				if memberAttr.IsString() {
 					if isMemberDefaultServiceAccount(memberAttr.Value().AsString()) {
 						set.AddResult().
 							WithAttribute(memberAttr).

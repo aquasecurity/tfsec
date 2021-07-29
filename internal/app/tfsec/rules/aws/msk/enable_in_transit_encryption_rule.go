@@ -68,14 +68,14 @@ resource "aws_msk_cluster" "good_example" {
 			encryptionInTransit := defaultBehaviorBlock.GetBlock("encryption_in_transit")
 			if encryptionInTransit.IsNil() {
 				set.AddResult().
-					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_in_transit block).", resourceBlock.FullName())
+					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_in_transit block).", resourceBlock.FullName()).WithBlock(defaultBehaviorBlock)
 				return
 			}
 
 			clientBrokerAttr := encryptionInTransit.GetAttribute("client_broker")
 			if clientBrokerAttr.IsNil() {
 				set.AddResult().
-					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing client_broker block).", resourceBlock.FullName())
+					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing client_broker block).", resourceBlock.FullName()).WithBlock(encryptionInTransit)
 			} else if clientBrokerAttr.Value().AsString() == "PLAINTEXT" {
 				set.AddResult().
 					WithDescription("Resource '%s' defines a MSK cluster that only allows plaintext data in transit.", resourceBlock.FullName()).

@@ -68,7 +68,7 @@ resource "aws_network_acl_rule" "good_example" {
 				return
 			}
 
-			if actionAttr.IsNotNil() && !actionAttr.Equals("allow") {
+			if actionAttr.IsNotNil() && actionAttr.NotEqual("allow") {
 				return
 			}
 

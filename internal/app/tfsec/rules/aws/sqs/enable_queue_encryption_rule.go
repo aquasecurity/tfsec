@@ -12,8 +12,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -55,7 +53,7 @@ resource "aws_sqs_queue" "good_example" {
 				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())
 
-			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
+			} else if kmsKeyIDAttr.IsEmpty() {
 				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName()).
 					WithAttribute(kmsKeyIDAttr)

@@ -105,9 +105,10 @@ resource "azurerm_network_security_group" "example" {
 				}
 				if securityRule.HasChild("destination_port_range") && securityRule.GetAttribute("destination_port_range").Contains("3389") {
 					if securityRule.HasChild("source_address_prefix") {
-						if securityRule.GetAttribute("source_address_prefix").IsAny("*", "0.0.0.0", "/0", "internet", "any") {
+						sourceAddrAttr := securityRule.GetAttribute("source_address_prefix")
+						if sourceAddrAttr.IsAny("*", "0.0.0.0", "/0", "internet", "any") {
 							set.AddResult().
-								WithDescription("Resource '%s' has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", resourceBlock.FullName())
+								WithDescription("Resource '%s' has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", resourceBlock.FullName()).WithAttribute(sourceAddrAttr)
 						}
 					}
 				}

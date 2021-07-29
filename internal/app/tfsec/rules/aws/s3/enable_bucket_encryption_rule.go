@@ -72,14 +72,14 @@ resource "aws_s3_bucket" "good_example" {
 			ruleBlock := encryptionBlock.GetBlock("rule")
 			if ruleBlock.MissingChild("apply_server_side_encryption_by_default") {
 				set.AddResult().
-					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName())
+					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName()).WithBlock(ruleBlock)
 				return
 			}
 
 			applyBlock := ruleBlock.GetBlock("apply_server_side_encryption_by_default")
 			if sseAttr := applyBlock.GetAttribute("sse_algorithm"); sseAttr.IsNil() {
 				set.AddResult().
-					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName())
+					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName()).WithBlock(applyBlock)
 			}
 
 		},

@@ -13,8 +13,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -53,11 +51,7 @@ resource "aws_security_group_rule" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			typeAttr := resourceBlock.GetAttribute("type")
-			if typeAttr.IsNil() || typeAttr.Type() != cty.String {
-				return
-			}
-
-			if typeAttr.Value().AsString() != "egress" {
+			if typeAttr.IsNil() || !typeAttr.IsString() || typeAttr.NotEqual("egress") {
 				return
 			}
 

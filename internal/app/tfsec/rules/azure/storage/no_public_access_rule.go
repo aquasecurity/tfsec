@@ -62,18 +62,17 @@ resource "azure_storage_container" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			// function contents here
-			if resourceBlock.HasChild("properties") {
-				properties := resourceBlock.GetAttribute("properties")
-				if properties.IsNotNil() && properties.Contains("publicAccess") {
-					value := properties.MapValue("publicAccess")
-					if value == cty.StringVal("blob") || value == cty.StringVal("container") {
-						set.AddResult().
-							WithDescription("Resource '%s' defines publicAccess as '%s', should be 'off .", resourceBlock.FullName(), value)
-					}
+			if resourceBlock.MissingChild("properties") {
+				return
+			}
+			properties := resourceBlock.GetAttribute("properties")
+			if properties.Contains("publicAccess") {
+				value := properties.MapValue("publicAccess")
+				if value == cty.StringVal("blob") || value == cty.StringVal("container") {
+					set.AddResult().
+						WithDescription("Resource '%s' defines publicAccess as '%s', should be 'off .", resourceBlock.FullName(), value).WithAttribute(properties)
 				}
 			}
-
 		},
 	})
 }

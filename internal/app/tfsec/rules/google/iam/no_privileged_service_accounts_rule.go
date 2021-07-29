@@ -63,7 +63,7 @@ resource "google_project_iam_member" "project" {
 
 			// is this a sensitive role?
 			roleAttr := resourceBlock.GetAttribute("role")
-			if roleAttr.IsNil() || !roleAttr.IsString() || !roleAttr.Value().IsKnown() {
+			if !roleAttr.IsString() {
 				return
 			}
 			if !isRolePrivileged(roleAttr.Value().AsString()) {
@@ -75,7 +75,7 @@ resource "google_project_iam_member" "project" {
 			if memberAttr.IsNil() {
 				return
 			}
-			if memberAttr.IsString() && memberAttr.Value().IsKnown() {
+			if memberAttr.IsString() {
 				if memberAttr.StartsWith("serviceAccount:") {
 					set.AddResult().
 						WithDescription("Resource '%s' provides privileged access to a service account", resourceBlock).

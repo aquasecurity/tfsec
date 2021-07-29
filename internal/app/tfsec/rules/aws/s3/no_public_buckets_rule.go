@@ -61,11 +61,11 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 				return
 			}
 
-			attr := resourceBlock.GetAttribute("restrict_public_buckets")
-			if attr.IsFalse() {
+			restrictPublicAttr := resourceBlock.GetAttribute("restrict_public_buckets")
+			if restrictPublicAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' sets restrict_public_buckets explicitly to false", resourceBlock.FullName()).
-					WithAttribute(attr)
+					WithAttribute(restrictPublicAttr)
 			}
 		},
 	})

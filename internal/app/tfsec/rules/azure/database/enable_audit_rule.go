@@ -66,7 +66,7 @@ resource "azurerm_sql_server" "good_example" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
-			if !resourceBlock.MissingChild("extended_auditing_policy") {
+			if resourceBlock.HasChild("extended_auditing_policy") {
 				return
 			}
 

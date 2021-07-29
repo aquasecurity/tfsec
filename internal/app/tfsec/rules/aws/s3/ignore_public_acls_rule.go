@@ -62,11 +62,11 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 				return
 			}
 
-			attr := resourceBlock.GetAttribute("ignore_public_acls")
-			if attr.IsFalse() {
+			ignorePublicAclsAttr := resourceBlock.GetAttribute("ignore_public_acls")
+			if ignorePublicAclsAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' sets ignore_public_acls explicitly to false", resourceBlock.FullName()).
-					WithAttribute(attr)
+					WithAttribute(ignorePublicAclsAttr)
 			}
 		},
 	})

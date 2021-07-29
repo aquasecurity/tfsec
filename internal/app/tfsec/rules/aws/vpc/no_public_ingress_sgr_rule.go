@@ -14,8 +14,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -54,11 +52,7 @@ resource "aws_security_group_rule" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			typeAttr := resourceBlock.GetAttribute("type")
-			if typeAttr.IsNil() || typeAttr.Type() != cty.String {
-				return
-			}
-
-			if typeAttr.Value().AsString() != "ingress" {
+			if typeAttr.IsNil() || !typeAttr.IsString() || typeAttr.NotEqual("ingress") {
 				return
 			}
 

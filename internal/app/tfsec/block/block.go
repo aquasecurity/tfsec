@@ -30,6 +30,7 @@ type Block interface {
 	IsCountExpanded() bool
 	HasChild(childElement string) bool
 	MissingChild(childElement string) bool
+	MissingNestedChild(childElement string) bool
 	InModule() bool
 	Label() string
 	HasBlock(childElement string) bool

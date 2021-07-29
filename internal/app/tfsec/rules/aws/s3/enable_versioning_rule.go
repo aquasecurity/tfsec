@@ -62,9 +62,8 @@ resource "aws_s3_bucket" "good_example" {
 			versioningBlock := resourceBlock.GetBlock("versioning")
 			if versioningBlock.HasChild("enabled") && versioningBlock.GetAttribute("enabled").IsFalse() {
 				set.AddResult().
-					WithDescription("Resource '%s' has versioning block but is disabled", resourceBlock.FullName())
+					WithDescription("Resource '%s' has versioning block but is disabled", resourceBlock.FullName()).WithBlock(versioningBlock)
 			}
-
 		},
 	})
 }

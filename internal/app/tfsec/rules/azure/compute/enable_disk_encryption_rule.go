@@ -54,8 +54,12 @@ resource "azurerm_managed_disk" "good_example" {
 				return // encryption is by default now, so this is fine
 			}
 
+			if encryptionSettingsBlock.MissingChild("enabled") {
+				return
+			}
+
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
-			if enabledAttr.IsNotNil() && enabledAttr.IsFalse() {
+			if enabledAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted managed disk.", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
