@@ -119,7 +119,7 @@ func buildStringSliceComparison(values []string, comparison Comparison) string {
 	case ComparisonAnyOf:
 		return fmt.Sprintf(`IsAny(%s)`, sprintGo(values))
 	case ComparisonNotAnyOf:
-		return fmt.Sprintf(`IsNone(%s)`, sprintGo(values))
+		return fmt.Sprintf(`IsNotAny(%s)`, sprintGo(values))
 	}
 	panic(fmt.Sprintf("Comparison '%s' not supported for string slice", comparison))
 }

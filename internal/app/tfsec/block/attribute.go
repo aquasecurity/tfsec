@@ -17,6 +17,7 @@ type Attribute interface {
 	NotEqual(checkValue interface{}, equalityOptions ...EqualityOption) bool
 	RegexMatches(pattern interface{}) bool
 	IsAny(options ...interface{}) bool
+	IsNotAny(options ...interface{}) bool
 	IsNone(options ...interface{}) bool
 	IsTrue() bool
 	IsFalse() bool
