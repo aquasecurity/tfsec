@@ -5,6 +5,98 @@ import (
 	"strings"
 )
 
+type machine struct {
+	stack           []string
+	inPath          bool
+	found           bool
+	output          []string
+	tabStr          string
+	tabChecked      bool
+	multilineMarker string
+	dotPath         string
+	value           interface{}
+	renameResource  string
+}
+
+func (m *machine) calcTabs(line string) {
+	if !m.tabChecked && strings.TrimPrefix(line, " ") != line {
+		var size int
+		for _, c := range line {
+			if c == ' ' {
+				size++
+				continue
+			}
+			break
+		}
+		m.tabChecked = true
+		m.tabStr = strings.Repeat(" ", size)
+	}
+}
+
+func (m *machine) processAttributeLine(line string) string {
+	parts := strings.Split(line, "=")
+	name := strings.TrimSpace(parts[0])
+	if strings.Join(append(m.stack, name), ".") == m.dotPath {
+		line = fmt.Sprintf("%s= %s", parts[0], sprintGo(m.value))
+		m.found = true
+	}
+	if strings.Contains(line, "<<") {
+		m.multilineMarker = strings.Split(line, "<<")[1]
+	}
+	if strings.HasSuffix(line, "{") {
+		m.stack = append(m.stack, name)
+	}
+	return line
+}
+
+func (m *machine) processBlockOpening(line string) string {
+	if m.renameResource != "" && len(strings.Split(m.dotPath, ".")) >= 3 {
+		if dotSegmentFromLine(line) == strings.Join(strings.Split(m.dotPath, ".")[:3], ".") {
+			parts := strings.Split(strings.TrimSpace(line), " ")
+			line = fmt.Sprintf("%s %s \"%s\" {", parts[0], parts[1], m.renameResource)
+		}
+	}
+	m.stack = append(m.stack, dotSegmentFromLine(line))
+	return line
+}
+
+func (m *machine) processBlockClosing(line string) string {
+	if m.inPath && !m.found {
+		// we were in the right place - did we find our attr? if not, we need to add it
+		inject := expandPathAndValue(strings.TrimPrefix(m.dotPath, strings.Join(m.stack, ".")+"."), m.value, m.tabStr, len(m.stack))
+		m.output = append(m.output, inject)
+		m.found = true
+	}
+
+	m.stack = m.stack[:len(m.stack)-1]
+	return line
+}
+
+func (m *machine) processLine(line string) {
+
+	if m.multilineMarker != "" {
+		if line == m.multilineMarker {
+			m.multilineMarker = ""
+		}
+		m.output = append(m.output, line)
+		return
+	}
+
+	m.calcTabs(line)
+
+	if strings.Contains(line, "=") {
+		// handle attribute definition
+		line = m.processAttributeLine(line)
+	} else if strings.HasSuffix(strings.TrimSpace(line), "{") {
+		line = m.processBlockOpening(line)
+	} else if strings.HasSuffix(strings.TrimSpace(line), "}") {
+		line = m.processBlockClosing(line)
+	}
+
+	m.inPath = strings.HasPrefix(m.dotPath, strings.Join(m.stack, "."))
+	m.output = append(m.output, line)
+}
+
 /*
  SetAttribute sets a given attribute value from a dot separated hcl path. resource paths should be prefixed with "resource."
 	This assumes a certain standard of clean Terraform code as is available in the provider examples.
@@ -12,75 +104,18 @@ import (
 */
 func SetAttribute(rawHCL string, dotPath string, value interface{}, renameResource string) string {
 
-	var stack []string
-	var inPath bool
-	var found bool
-	var output []string
-	var tabStr = "\t"
-	var tabChecked bool
-	var multilineMarker string
-
-	for _, line := range strings.Split(rawHCL, "\n") {
-
-		if multilineMarker != "" {
-			if line == multilineMarker {
-				multilineMarker = ""
-			}
-			output = append(output, line)
-			continue
-		}
-
-		if !tabChecked && strings.TrimPrefix(line, " ") != line {
-			var size int
-			for _, c := range line {
-				if c == ' ' {
-					size++
-					continue
-				}
-				break
-			}
-			tabChecked = true
-			tabStr = strings.Repeat(" ", size)
-		}
-
-		if strings.Contains(line, "=") {
-			// handle attribute definition
-			parts := strings.Split(line, "=")
-			name := strings.TrimSpace(parts[0])
-			if strings.Join(append(stack, name), ".") == dotPath {
-				line = fmt.Sprintf("%s= %s", parts[0], sprintGo(value))
-				found = true
-			}
-			if strings.Contains(line, "<<") {
-				multilineMarker = strings.Split(line, "<<")[1]
-			}
-			if strings.HasSuffix(line, "{") {
-				stack = append(stack, name)
-			}
-		} else if strings.HasSuffix(strings.TrimSpace(line), "{") {
-			if renameResource != "" && len(strings.Split(dotPath, ".")) >= 3 {
-				if dotSegmentFromLine(line) == strings.Join(strings.Split(dotPath, ".")[:3], ".") {
-					parts := strings.Split(strings.TrimSpace(line), " ")
-					line = fmt.Sprintf("%s %s \"%s\" {", parts[0], parts[1], renameResource)
-				}
-			}
-			stack = append(stack, dotSegmentFromLine(line))
-		} else if strings.HasSuffix(strings.TrimSpace(line), "}") {
-			if inPath && !found {
-				// we were in the right place - did we find our attr? if not, we need to add it
-				inject := expandPathAndValue(strings.TrimPrefix(dotPath, strings.Join(stack, ".")+"."), value, tabStr, len(stack))
-				output = append(output, inject)
-				found = true
-			}
-
-			stack = stack[:len(stack)-1]
-		}
-
-		inPath = strings.HasPrefix(dotPath, strings.Join(stack, "."))
-		output = append(output, line)
+	m := machine{
+		tabStr:         "\t",
+		dotPath:        dotPath,
+		value:          value,
+		renameResource: renameResource,
 	}
 
-	return strings.Join(output, "\n")
+	for _, line := range strings.Split(rawHCL, "\n") {
+		m.processLine(line)
+	}
+
+	return strings.Join(m.output, "\n")
 }
 
 func expandPathAndValue(dotPath string, value interface{}, tabStr string, tabSize int) string {

@@ -16,7 +16,7 @@ func Test_Mutation(t *testing.T) {
 	}{
 		{
 			input: `
-resource "google_project" "example" {
+resource "google_project" "something" {
 	auto_create_network = true	
 }
 			`,
@@ -30,7 +30,7 @@ resource "google_project" "example" {
 		},
 		{
 			input: `
-resource "google_project" "example" {
+resource "google_project" "something" {
 	name = "something"
 }
 			`,
@@ -45,7 +45,7 @@ resource "google_project" "example" {
 		},
 		{
 			input: `
-resource "computer" "example" {
+resource "computer" "something" {
 	name = "something"
 	settings {
 		security {

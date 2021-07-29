@@ -100,62 +100,68 @@ func snakeToCamel(input string) string {
 
 func buildComparisonForValue(value interface{}, comparison Comparison) string {
 
-	var function string
-
 	switch t := value.(type) {
 	case []string:
-		switch comparison {
-		case ComparisonAnyOf:
-			function = "IsAny"
-		case ComparisonNotAnyOf:
-			function = "IsNone"
-		default:
-			panic(fmt.Sprintf("Comparison '%s' not supported for int", comparison))
-		}
+		return buildStringSliceComparison(t, comparison)
 	case int:
-		switch comparison {
-		case ComparisonEquals:
-			function = "Equals"
-		case ComparisonNotEquals:
-			function = "NotEqual"
-		default:
-			panic(fmt.Sprintf("Comparison '%s' not supported for int", comparison))
-		}
+		return buildIntComparison(t, comparison)
 	case string:
-		switch comparison {
-		case ComparisonEquals:
-			function = "Equals"
-			if t == "" {
-				return "IsEmpty()"
-			}
-		case ComparisonNotEquals:
-			function = "NotEqual"
-			if t == "" {
-				return "!IsEmpty()"
-			}
-		default:
-			panic(fmt.Sprintf("Comparison '%s' not supported for string", comparison))
-		}
+		return buildStringComparison(t, comparison)
 	case bool:
-		switch comparison {
-		case ComparisonEquals:
-			if t {
-				return "IsTrue()"
-			}
-			return "IsFalse()"
-		case ComparisonNotEquals:
-			if t {
-				return "IsFalse()"
-			}
-			return "IsTrue()"
-		default:
-			panic(fmt.Sprintf("Comparison '%s' not supported for string", comparison))
-
-		}
+		return buildBoolComparison(t, comparison)
 	default:
 		panic(fmt.Sprintf("Cannot do comparisons on type %T", t))
 	}
+}
 
-	return fmt.Sprintf(`%s(%s)`, function, sprintGo(value))
+func buildStringSliceComparison(values []string, comparison Comparison) string {
+	switch comparison {
+	case ComparisonAnyOf:
+		return fmt.Sprintf(`IsAny(%s)`, sprintGo(values))
+	case ComparisonNotAnyOf:
+		return fmt.Sprintf(`IsNone(%s)`, sprintGo(values))
+	}
+	panic(fmt.Sprintf("Comparison '%s' not supported for string slice", comparison))
+}
 
+func buildStringComparison(value string, comparison Comparison) string {
+	switch comparison {
+	case ComparisonEquals:
+		if value == "" {
+			return "IsEmpty()"
+		}
+		return fmt.Sprintf(`Equals(%s)`, sprintGo(value))
+	case ComparisonNotEquals:
+		if value == "" {
+			return "!IsEmpty()"
+		}
+		return fmt.Sprintf(`NotEqual(%s)`, sprintGo(value))
+	}
+	panic(fmt.Sprintf("Comparison '%s' not supported for string", comparison))
+}
+
+func buildIntComparison(value int, comparison Comparison) string {
+	switch comparison {
+	case ComparisonEquals:
+		return fmt.Sprintf(`Equals(%s)`, sprintGo(value))
+	case ComparisonNotEquals:
+		return fmt.Sprintf(`NotEqual(%s)`, sprintGo(value))
+	}
+	panic(fmt.Sprintf("Comparison '%s' not supported for int", comparison))
+}
+
+func buildBoolComparison(value bool, comparison Comparison) string {
+	switch comparison {
+	case ComparisonEquals:
+		if value {
+			return "IsTrue()"
+		}
+		return "IsFalse()"
+	case ComparisonNotEquals:
+		if value {
+			return "IsFalse()"
+		}
+		return "IsTrue()"
+	}
+	panic(fmt.Sprintf("Comparison '%s' not supported for bool", comparison))
 }

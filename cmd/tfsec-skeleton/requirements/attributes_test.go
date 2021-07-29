@@ -29,12 +29,11 @@ resource "made_up_resource" "bad_example" {
 }
 `, requirement.GenerateBadExample())
 
-	assert.Equal(t, `
-			if enabledAttr := resourceBlock.GetBlock("settings").GetBlock("encryption").GetAttribute("enabled"); enabledAttr.IsNil() { // alert on use of default value
-				set.Add().
+	assert.Equal(t, `if enabledAttr := resourceBlock.GetBlock("settings").GetBlock("encryption").GetAttribute("enabled"); enabledAttr.IsNil() { // alert on use of default value
+				set.AddResult().
 					WithDescription("Resource '%s' uses default value for settings.encryption.enabled", resourceBlock.FullName())
 			} else if enabledAttr.IsFalse() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not have settings.encryption.enabled set to true", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}`, requirement.GenerateRuleCode())
@@ -60,12 +59,11 @@ resource "made_up_resource" "bad_example" {
 }
 `, requirement.GenerateBadExample())
 
-	assert.Equal(t, `
-			if luckyNumberAttr := resourceBlock.GetBlock("settings").GetAttribute("lucky_number"); luckyNumberAttr.IsNil() { // alert on use of default value
-				set.Add().
+	assert.Equal(t, `if luckyNumberAttr := resourceBlock.GetBlock("settings").GetAttribute("lucky_number"); luckyNumberAttr.IsNil() { // alert on use of default value
+				set.AddResult().
 					WithDescription("Resource '%s' uses default value for settings.lucky_number", resourceBlock.FullName())
 			} else if luckyNumberAttr.Equals(13) {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has settings.lucky_number set to 13", resourceBlock.FullName()).
 					WithAttribute(luckyNumberAttr)
 			}`, requirement.GenerateRuleCode())

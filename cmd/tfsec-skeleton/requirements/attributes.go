@@ -37,50 +37,47 @@ func NewAttributeRequirement(blockType string, blockLabel string, dotPath string
 	return &req
 }
 
-func (a *attributeBase) GenerateGoodExample() string {
-
-	var value interface{}
-
+func (a *attributeBase) makeGoodValue(value interface{}, comparison Comparison) interface{} {
 	switch a.comparison {
 	case ComparisonEquals:
-		value = a.value
+		return a.value
 	case ComparisonNotEquals:
-		value = flipValue(a.value)
+		return flipValue(a.value)
 	case ComparisonAnyOf:
 		if strs, ok := a.value.([]string); ok && len(strs) > 0 {
-			value = strs[0]
-		} else {
-			panic("only non-zero length list of strings are supported")
+			return strs[0]
 		}
+		panic("only non-zero length list of strings are supported")
 	case ComparisonNotAnyOf:
-		value = "something"
+		return "something"
 	case ComparisonGreaterThan:
 		if i, ok := a.value.(int); ok {
-			value = i + 1
-		} else {
-			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+			return i + 1
 		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 	case ComparisonLessThan:
 		if i, ok := a.value.(int); ok {
-			value = i - 1
-		} else {
-			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+			return i - 1
 		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 	case ComparisonGreaterThanOrEqual:
 		if i, ok := a.value.(int); ok {
-			value = i
-		} else {
-			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+			return i
 		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 	case ComparisonLessThanOrEqual:
 		if i, ok := a.value.(int); ok {
-			value = i
-		} else {
-			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+			return i
 		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 	default:
 		panic(fmt.Sprintf("comparison '%s' is not supported", a.comparison))
 	}
+}
+
+func (a *attributeBase) GenerateGoodExample() string {
+
+	value := a.makeGoodValue(a.value, a.comparison)
 
 	if a.exampleCode != "" {
 		return examples.SetAttribute(a.exampleCode, fmt.Sprintf("%s.%s.*.%s", a.blockType, a.blockLabel, a.dotPath), value, "good_example")
@@ -92,50 +89,47 @@ func (a *attributeBase) GenerateGoodExample() string {
 `, a.blockType, a.blockLabel, "good_example", createTerraformFromDotPath(a.dotPath, value))
 }
 
-func (a *attributeBase) GenerateBadExample() string {
-
-	var value interface{}
-
+func (a *attributeBase) makeBadValue(value interface{}, comparison Comparison) interface{} {
 	switch a.comparison {
 	case ComparisonEquals:
-		value = flipValue(a.value)
+		return flipValue(a.value)
 	case ComparisonNotEquals:
-		value = a.value
+		return a.value
 	case ComparisonAnyOf:
-		value = "something"
+		return "something"
 	case ComparisonNotAnyOf:
 		if strs, ok := a.value.([]string); ok && len(strs) > 0 {
-			value = strs[0]
-		} else {
-			panic("only non-zero length list of strings are supported")
+			return strs[0]
 		}
+		panic("only non-zero length list of strings are supported")
 	case ComparisonGreaterThan:
 		if i, ok := a.value.(int); ok {
-			value = i - 1
-		} else {
-			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+			return i - 1
 		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 	case ComparisonLessThan:
 		if i, ok := a.value.(int); ok {
-			value = i + 1
-		} else {
-			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+			return i + 1
 		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 	case ComparisonGreaterThanOrEqual:
 		if i, ok := a.value.(int); ok {
-			value = i - 1
-		} else {
-			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+			return i - 1
 		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 	case ComparisonLessThanOrEqual:
 		if i, ok := a.value.(int); ok {
-			value = i + 1
-		} else {
-			panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+			return i + 1
 		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 	default:
 		panic(fmt.Sprintf("comparison'%s' is not supported", a.comparison))
 	}
+}
+
+func (a *attributeBase) GenerateBadExample() string {
+
+	value := a.makeBadValue(a.value, a.comparison)
 
 	if a.exampleCode != "" {
 		return examples.SetAttribute(a.exampleCode, fmt.Sprintf("%s.%s.*.%s", a.blockType, a.blockLabel, a.dotPath), value, "bad_example")

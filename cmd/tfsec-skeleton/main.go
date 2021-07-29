@@ -36,8 +36,8 @@ var rootCmd = &cobra.Command{
 			}
 
 		} else {
-			input, err := gatherInputsInteractively()
-			if err != nil {
+			input := &Input{}
+			if err := input.gatherInputsInteractively(); err != nil {
 				return err
 			}
 			inputs = []*Input{input}

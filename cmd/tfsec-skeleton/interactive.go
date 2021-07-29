@@ -14,25 +14,26 @@ import (
 	"github.com/liamg/clinch/prompt"
 )
 
-func gatherInputsInteractively() (*Input, error) {
-
-	var input Input
-
+func (input *Input) trySwap() error {
 	if swapExists() {
 		if inputYesNo("Swap file found! Would you like to continue your progress?") {
 			loaded, err := loadFromSwap()
 			if err != nil {
-				return nil, err
+				return err
 			}
-			input = *loaded
+			*input = *loaded
 			fmt.Println("Swap file loaded!")
 		}
 	}
+	return nil
+}
+
+func (input *Input) readInitialInputs() error {
 
 	if input.Provider == "" {
 		_, providerStr, err := prompt.ChooseFromList("Select provider:", providers)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		input.Provider = provider.Provider(providerStr)
 		saveSwapFile(input)
@@ -71,7 +72,7 @@ func gatherInputsInteractively() (*Input, error) {
 	if input.Severity == "" {
 		_, severityStr, err := prompt.ChooseFromList("Which severity should be used?", []string{"Critical", "High", "Medium", "Low"})
 		if err != nil {
-			return nil, err
+			return err
 		}
 		input.Severity = severityStr
 		saveSwapFile(input)
@@ -86,6 +87,19 @@ func gatherInputsInteractively() (*Input, error) {
 		blockLabels := prompt.EnterInput("Enter the supported block labels (e.g. aws_s3_bucket: ")
 		input.RequiredLabels = strings.Split(blockLabels, ",")
 		saveSwapFile(input)
+	}
+
+	return nil
+}
+
+func (input *Input) gatherInputsInteractively() error {
+
+	if err := input.trySwap(); err != nil {
+		return err
+	}
+
+	if err := input.readInitialInputs(); err != nil {
+		return err
 	}
 
 	requirementTypes := []requirements.Comparison{
@@ -107,7 +121,7 @@ func gatherInputsInteractively() (*Input, error) {
 
 	requirementIndex, _, err := prompt.ChooseFromList("Which comparison does your rule involve?", requirementStrs)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	exampleCode, _ := examples.FindCode(string(input.Provider), input.RequiredTypes[0], input.RequiredLabels[0])
@@ -124,10 +138,10 @@ func gatherInputsInteractively() (*Input, error) {
 	_ = deleteSwap()
 
 	if err := input.Validate(); err != nil {
-		return nil, err
+		return err
 	}
 
-	return &input, nil
+	return nil
 }
 
 func swapPath() string {
@@ -155,7 +169,7 @@ func loadFromSwap() (*Input, error) {
 	return &input, nil
 }
 
-func saveSwapFile(input Input) error {
+func saveSwapFile(input *Input) error {
 	data, err := json.Marshal(input)
 	if err != nil {
 		return err
