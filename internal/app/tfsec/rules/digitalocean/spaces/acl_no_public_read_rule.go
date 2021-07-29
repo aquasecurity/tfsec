@@ -68,7 +68,7 @@ resource "digitalocean_spaces_bucket_object" "index" {
 			if resourceBlock.HasChild("acl") {
 				aclAttr := resourceBlock.GetAttribute("acl")
 				if aclAttr.Equals("public-read", block.IgnoreCase) {
-					set.Add().WithDescription("Resource '%s' has a publicly readable acl.", resourceBlock.FullName()).
+					set.AddResult().WithDescription("Resource '%s' has a publicly readable acl.", resourceBlock.FullName()).
 						WithAttribute(aclAttr)
 				}
 			}

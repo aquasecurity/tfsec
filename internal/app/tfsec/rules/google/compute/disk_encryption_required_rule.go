@@ -48,17 +48,17 @@ resource "google_compute_disk" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			keyBlock := resourceBlock.GetBlock("disk_encryption_key")
-			if keyBlock == nil {
+			if keyBlock.IsNil() {
 				return
 			}
 
 			rawKeyAttr := keyBlock.GetAttribute("raw_key")
-			if rawKeyAttr == nil {
+			if rawKeyAttr.IsNil() {
 				return
 			}
 
 			if rawKeyAttr.IsString() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' specifies an encryption key in raw format.", resourceBlock.FullName()).
 					WithAttribute(rawKeyAttr)
 			}

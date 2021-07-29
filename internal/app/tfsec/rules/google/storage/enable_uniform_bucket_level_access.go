@@ -79,10 +79,10 @@ resource "google_storage_bucket" "static-site" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if attr := resourceBlock.GetAttribute("uniform_bucket_level_access"); attr.IsNil() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not have uniform_bucket_level_access enabled.", resourceBlock.FullName())
 			} else if attr.Value().IsKnown() && attr.IsFalse() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has uniform_bucket_level_access explicitly disabled.", resourceBlock.FullName()).
 					WithAttribute(attr)
 			}

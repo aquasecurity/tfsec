@@ -49,11 +49,11 @@ resource "aws_s3_bucket" "good_example" {
 		RequiredLabels:  []string{"aws_s3_bucket"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			if loggingBlock := resourceBlock.GetBlock("logging"); loggingBlock == nil {
-				if resourceBlock.GetAttribute("acl") != nil && resourceBlock.GetAttribute("acl").Equals("log-delivery-write") {
+			if loggingBlock := resourceBlock.GetBlock("logging"); loggingBlock.IsNil() {
+				if resourceBlock.GetAttribute("acl").IsNotNil() && resourceBlock.GetAttribute("acl").Equals("log-delivery-write") {
 					return
 				}
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not have logging enabled.", resourceBlock.FullName())
 			}
 		},

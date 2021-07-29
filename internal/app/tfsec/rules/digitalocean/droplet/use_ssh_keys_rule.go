@@ -55,13 +55,13 @@ resource "digitalocean_droplet" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("ssh_keys") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not define ssh_keys", resourceBlock.FullName())
 				return
 			}
 			sshKeysAttr := resourceBlock.GetAttribute("ssh_keys")
 			if sshKeysAttr.IsEmpty() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has ssh_key specified but is empty.", resourceBlock.FullName()).
 					WithAttribute(sshKeysAttr)
 			}

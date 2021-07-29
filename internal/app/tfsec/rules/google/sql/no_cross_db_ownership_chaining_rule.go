@@ -59,7 +59,7 @@ resource "google_sql_database_instance" "db" {
 
 			settingsBlock := resourceBlock.GetBlock("settings")
 			if settingsBlock.IsNil() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has cross-database ownership chaining enabled by default", resourceBlock.FullName())
 				return
 			}
@@ -67,7 +67,7 @@ resource "google_sql_database_instance" "db" {
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
 				if dbFlagBlock.GetAttribute("name").Equals("cross db ownership chaining") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.Equals("on") {
-						set.Add().
+						set.AddResult().
 							WithDescription("Resource '%s' has cross-database ownership chaining explicitly enabled", resourceBlock.FullName()).
 							WithAttribute(valueAttr)
 					}
@@ -77,7 +77,7 @@ resource "google_sql_database_instance" "db" {
 			}
 
 			// we didn't find the flag so it must be on by default
-			set.Add().
+			set.AddResult().
 				WithDescription("Resource '%s' has cross-database ownership chaining enabled by default", resourceBlock.FullName()).
 				WithBlock(settingsBlock)
 

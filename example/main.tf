@@ -62,3 +62,7 @@ resource "aws_dynamodb_table" "bad_example" {
     enabled = true
   }
 }
+
+resource "aws_instance" "my_project" {
+
+}

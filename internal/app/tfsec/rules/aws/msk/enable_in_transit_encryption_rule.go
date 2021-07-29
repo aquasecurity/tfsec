@@ -59,29 +59,29 @@ resource "aws_msk_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			defaultBehaviorBlock := resourceBlock.GetBlock("encryption_info")
-			if defaultBehaviorBlock == nil {
-				set.Add().
+			if defaultBehaviorBlock.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_info block).", resourceBlock.FullName())
 				return
 			}
 
 			encryptionInTransit := defaultBehaviorBlock.GetBlock("encryption_in_transit")
-			if encryptionInTransit == nil {
-				set.Add().
+			if encryptionInTransit.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_in_transit block).", resourceBlock.FullName())
 				return
 			}
 
 			clientBrokerAttr := encryptionInTransit.GetAttribute("client_broker")
-			if clientBrokerAttr == nil {
-				set.Add().
+			if clientBrokerAttr.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing client_broker block).", resourceBlock.FullName())
 			} else if clientBrokerAttr.Value().AsString() == "PLAINTEXT" {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines a MSK cluster that only allows plaintext data in transit.", resourceBlock.FullName()).
 					WithAttribute(clientBrokerAttr)
 			} else if clientBrokerAttr.Value().AsString() == "TLS_PLAINTEXT" {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit.", resourceBlock.FullName()).
 					WithAttribute(clientBrokerAttr)
 			}

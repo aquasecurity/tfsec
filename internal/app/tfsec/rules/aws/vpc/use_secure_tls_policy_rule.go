@@ -58,10 +58,10 @@ resource "aws_alb_listener" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if sslPolicyAttr := resourceBlock.GetAttribute("ssl_policy"); sslPolicyAttr != nil && sslPolicyAttr.Type() == cty.String {
+			if sslPolicyAttr := resourceBlock.GetAttribute("ssl_policy"); sslPolicyAttr.IsNotNil() && sslPolicyAttr.Type() == cty.String {
 				for _, policy := range outdatedSSLPolicies {
 					if policy == sslPolicyAttr.Value().AsString() {
-						set.Add().
+						set.AddResult().
 							WithDescription("Resource '%s' is using an outdated SSL policy.", resourceBlock.FullName()).
 							WithAttribute(sslPolicyAttr)
 					}

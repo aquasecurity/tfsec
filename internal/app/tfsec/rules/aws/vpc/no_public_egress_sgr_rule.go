@@ -53,7 +53,7 @@ resource "aws_security_group_rule" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			typeAttr := resourceBlock.GetAttribute("type")
-			if typeAttr == nil || typeAttr.Type() != cty.String {
+			if typeAttr.IsNil() || typeAttr.Type() != cty.String {
 				return
 			}
 
@@ -61,19 +61,19 @@ resource "aws_security_group_rule" "good_example" {
 				return
 			}
 
-			if cidrBlocksAttr := resourceBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
+			if cidrBlocksAttr := resourceBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 
 				if cidr.IsOpen(cidrBlocksAttr) {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName()).
 						WithAttribute(cidrBlocksAttr)
 				}
 			}
 
-			if ipv6CidrBlocksAttr := resourceBlock.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr != nil {
+			if ipv6CidrBlocksAttr := resourceBlock.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr.IsNotNil() {
 
 				if cidr.IsOpen(ipv6CidrBlocksAttr) {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName()).
 						WithAttribute(ipv6CidrBlocksAttr)
 				}

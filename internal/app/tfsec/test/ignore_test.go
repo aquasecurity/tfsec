@@ -93,7 +93,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		RequiredLabels:  []string{"bad"},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			set.Add().
+			set.AddResult().
 				WithDescription("example problem")
 		},
 	})
@@ -106,7 +106,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		RequiredLabels:  []string{"bad"},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			set.Add().
+			set.AddResult().
 				WithDescription("example problem")
 		},
 	})

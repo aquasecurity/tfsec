@@ -82,7 +82,7 @@ resource "aws_athena_workgroup" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("configuration") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' is missing the configuration block.", resourceBlock.FullName())
 				return
 			}
@@ -90,16 +90,16 @@ resource "aws_athena_workgroup" "good_example" {
 			configBlock := resourceBlock.GetBlock("configuration")
 
 			configBlock.HasChild("enforce_workgroup_configuration")
-			enforceWorkgroupConfigAtt := configBlock.GetAttribute("enforce_workgroup_configuration")
+			enforceWorkgroupConfigAttr := configBlock.GetAttribute("enforce_workgroup_configuration")
 
-			if enforceWorkgroupConfigAtt == nil {
+			if enforceWorkgroupConfigAttr.IsNil() {
 				return
 			}
 
-			if enforceWorkgroupConfigAtt.IsFalse() {
-				set.Add().
+			if enforceWorkgroupConfigAttr.IsFalse() {
+				set.AddResult().
 					WithDescription("Resource '%s' has enforce_workgroup_configuration set to false.", resourceBlock.FullName()).
-					WithAttribute(enforceWorkgroupConfigAtt)
+					WithAttribute(enforceWorkgroupConfigAttr)
 			}
 
 		},

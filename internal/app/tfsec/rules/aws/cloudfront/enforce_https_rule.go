@@ -56,29 +56,33 @@ resource "aws_cloudfront_distribution" "good_example" {
 
 			defaultBehaviorBlock := resourceBlock.GetBlock("default_cache_behavior")
 			if defaultBehaviorBlock.IsNil() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing default_cache_behavior block).", resourceBlock.FullName())
-			} else {
-				protocolPolicyAttr := defaultBehaviorBlock.GetAttribute("viewer_protocol_policy")
-				if protocolPolicyAttr.IsNil() {
-					set.Add().
-						WithDescription("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", resourceBlock.FullName()).
-						WithBlock(defaultBehaviorBlock)
-				} else if protocolPolicyAttr.Equals("allow-all") {
-					set.Add().
-						WithDescription("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", resourceBlock.FullName()).
-						WithAttribute(protocolPolicyAttr)
-				}
+				return
+			}
+
+			protocolPolicyAttr := defaultBehaviorBlock.GetAttribute("viewer_protocol_policy")
+			if protocolPolicyAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", resourceBlock.FullName()).
+					WithBlock(defaultBehaviorBlock)
+				return
+			}
+			if protocolPolicyAttr.Equals("allow-all") {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", resourceBlock.FullName()).
+					WithAttribute(protocolPolicyAttr)
+				return
 			}
 
 			orderedBehaviorBlocks := resourceBlock.GetBlocks("ordered_cache_behavior")
 			for _, orderedBehaviorBlock := range orderedBehaviorBlocks {
 				orderedProtocolPolicyAttr := orderedBehaviorBlock.GetAttribute("viewer_protocol_policy")
 				if orderedProtocolPolicyAttr.IsNil() {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", resourceBlock.FullName())
 				} else if orderedProtocolPolicyAttr.Equals("allow-all") {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", resourceBlock.FullName()).
 						WithAttribute(orderedProtocolPolicyAttr)
 				}

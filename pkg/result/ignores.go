@@ -24,7 +24,6 @@ func (res *Result) IsIgnored(workspace string) bool {
 		// ignore rule matches!
 		return true
 	}
-
 	// no ignore rule found for this result
 	return false
 }

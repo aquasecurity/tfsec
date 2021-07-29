@@ -49,10 +49,10 @@ resource "google_compute_firewall" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if destinationRanges := resourceBlock.GetAttribute("destination_ranges"); destinationRanges != nil {
+			if destinationRanges := resourceBlock.GetAttribute("destination_ranges"); destinationRanges.IsNotNil() {
 
 				if cidr.IsOpen(destinationRanges) {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' defines a fully open outbound firewall rule.", resourceBlock.FullName()).
 						WithAttribute(destinationRanges)
 				}

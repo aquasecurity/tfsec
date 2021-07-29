@@ -66,7 +66,7 @@ resource "google_sql_database_instance" "db" {
 
 			settingsBlock := resourceBlock.GetBlock("settings")
 			if settingsBlock.IsNil() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' is not configured to log checkpoints", resourceBlock.FullName())
 				return
 			}
@@ -74,7 +74,7 @@ resource "google_sql_database_instance" "db" {
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
 				if dbFlagBlock.GetAttribute("name").Equals("log_checkpoints") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.Equals("off") {
-						set.Add().
+						set.AddResult().
 							WithDescription("Resource '%s' is configured not to log checkpoints", resourceBlock.FullName()).
 							WithAttribute(valueAttr)
 					}
@@ -82,7 +82,7 @@ resource "google_sql_database_instance" "db" {
 				}
 			}
 
-			set.Add().
+			set.AddResult().
 				WithDescription("Resource '%s' is not configured to log checkpoints", resourceBlock.FullName()).
 				WithBlock(settingsBlock)
 

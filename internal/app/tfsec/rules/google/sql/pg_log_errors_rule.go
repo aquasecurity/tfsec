@@ -70,7 +70,7 @@ resource "google_sql_database_instance" "db" {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.IsString() {
 						switch valueAttr.Value().AsString() {
 						case "FATAL", "PANIC", "LOG":
-							set.Add().
+							set.AddResult().
 								WithDescription("Resource '%s' has a minimum log severity set which ignores errors", resourceBlock.FullName()).
 								WithAttribute(valueAttr)
 						}

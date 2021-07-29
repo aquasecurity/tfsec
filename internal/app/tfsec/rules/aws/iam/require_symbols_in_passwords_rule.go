@@ -51,12 +51,12 @@ resource "aws_iam_account_password_policy" "good_example" {
 		RequiredLabels:  []string{"aws_iam_account_password_policy"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			if attr := resourceBlock.GetAttribute("require_symbols"); attr == nil {
-				set.Add().
+			if attr := resourceBlock.GetAttribute("require_symbols"); attr.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' does not require a symbol in the password.", resourceBlock.FullName())
 			} else if attr.Value().Type() == cty.Bool {
 				if attr.Value().False() {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' explicitly specifies not requiring at least one symbol in the password.", resourceBlock.FullName())
 				}
 			}

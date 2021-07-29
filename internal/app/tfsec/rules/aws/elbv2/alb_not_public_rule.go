@@ -51,11 +51,11 @@ resource "aws_alb" "good_example" {
 			if resourceBlock.HasChild("load_balancer_type") && resourceBlock.GetAttribute("load_balancer_type").Equals("gateway") {
 				return
 			}
-			if internalAttr := resourceBlock.GetAttribute("internal"); internalAttr == nil {
-				set.Add().
+			if internalAttr := resourceBlock.GetAttribute("internal"); internalAttr.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' is exposed publicly.", resourceBlock.FullName())
 			} else if internalAttr.Type() == cty.Bool && internalAttr.Value().False() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' is exposed publicly.", resourceBlock.FullName()).
 					WithAttribute(internalAttr)
 			}

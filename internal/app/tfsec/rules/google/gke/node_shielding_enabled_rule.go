@@ -49,14 +49,14 @@ resource "google_container_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("enable_shielded_nodes") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", resourceBlock.FullName())
 				return
 			}
 
 			enableShieldedNodesAttr := resourceBlock.GetAttribute("enable_shielded_nodes")
-			if enableShieldedNodesAttr != nil && enableShieldedNodesAttr.IsFalse() {
-				set.Add().
+			if enableShieldedNodesAttr.IsNotNil() && enableShieldedNodesAttr.IsFalse() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines a cluster with shielded nodes disabled. Shielded GKE Nodes provide strong, verifiable node identity and integrity to increase the security of GKE nodes and should be enabled on all GKE clusters.", resourceBlock.FullName())
 			}
 

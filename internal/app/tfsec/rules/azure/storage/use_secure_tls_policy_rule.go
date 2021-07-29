@@ -58,7 +58,7 @@ resource "azurerm_storage_account" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("min_tls_version") || resourceBlock.GetAttribute("min_tls_version").IsNone("TLS1_2") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' should have the min tls version set to TLS1_2 .", resourceBlock.FullName())
 			}
 		},

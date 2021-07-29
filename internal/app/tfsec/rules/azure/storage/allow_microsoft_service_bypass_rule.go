@@ -112,8 +112,8 @@ resource "azurerm_storage_account_network_rules" "test" {
 
 			if resourceBlock.HasChild("bypass") {
 				bypass := resourceBlock.GetAttribute("bypass")
-				if bypass != nil && !bypass.Contains("AzureServices") {
-					set.Add().
+				if bypass.IsNotNil() && !bypass.Contains("AzureServices") {
+					set.AddResult().
 						WithDescription("Resource '%s' defines a network rule that doesn't allow bypass of Microsoft Services.", resourceBlock.FullName())
 				}
 			}

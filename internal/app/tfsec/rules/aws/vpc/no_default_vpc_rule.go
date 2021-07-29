@@ -47,7 +47,7 @@ resource "aws_default_vpc" "default" {
 		RequiredLabels:  []string{"aws_default_vpc"},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			set.Add().
+			set.AddResult().
 				WithDescription("Resource '%s' should not exist", resourceBlock.FullName())
 		},
 	})

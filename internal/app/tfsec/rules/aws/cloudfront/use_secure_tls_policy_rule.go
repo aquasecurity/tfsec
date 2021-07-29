@@ -56,18 +56,21 @@ resource "aws_cloudfront_distribution" "good_example" {
 
 			viewerCertificateBlock := resourceBlock.GetBlock("viewer_certificate")
 			if viewerCertificateBlock.IsNil() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines outdated SSL/TLS policies (missing viewer_certificate block)", resourceBlock.FullName())
 				return
 			}
 
 			minVersionAttr := viewerCertificateBlock.GetAttribute("minimum_protocol_version")
 			if minVersionAttr.IsNil() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName()).
 					WithBlock(viewerCertificateBlock)
-			} else if minVersionAttr.NotEqual("TLSv1.2_2021") {
-				set.Add().
+				return
+			}
+
+			if minVersionAttr.NotEqual("TLSv1.2_2021") {
+				set.AddResult().
 					WithDescription("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName()).
 					WithAttribute(minVersionAttr)
 			}

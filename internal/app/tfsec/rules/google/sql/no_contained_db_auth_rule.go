@@ -59,7 +59,7 @@ resource "google_sql_database_instance" "db" {
 
 			settingsBlock := resourceBlock.GetBlock("settings")
 			if settingsBlock.IsNil() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has contained database authentication enabled by default", resourceBlock.FullName())
 				return
 			}
@@ -67,7 +67,7 @@ resource "google_sql_database_instance" "db" {
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
 				if dbFlagBlock.GetAttribute("name").Equals("contained database authentication") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.Equals("on") {
-						set.Add().
+						set.AddResult().
 							WithDescription("Resource '%s' has contained database authentication explicitly enabled", resourceBlock.FullName()).
 							WithAttribute(valueAttr)
 					}
@@ -77,7 +77,7 @@ resource "google_sql_database_instance" "db" {
 			}
 
 			// we didn't find the flag so it must be on by default
-			set.Add().
+			set.AddResult().
 				WithDescription("Resource '%s' has contained database authentication enabled by default", resourceBlock.FullName()).
 				WithBlock(settingsBlock)
 		},

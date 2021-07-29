@@ -50,8 +50,8 @@ resource "azurerm_storage_account" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			enabledAttr := resourceBlock.GetAttribute("enable_https_traffic_only")
-			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
-				set.Add().
+			if enabledAttr.IsNotNil() && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
+				set.AddResult().
 					WithDescription("Resource '%s' enable_https_traffic_only disabled.", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}

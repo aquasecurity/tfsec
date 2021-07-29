@@ -62,13 +62,13 @@ resource "aws_ecr_repository" "good_example" {
 
 			imageTagMutabilityAttr := resourceBlock.GetAttribute("image_tag_mutability")
 			if imageTagMutabilityAttr.IsNil() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", resourceBlock.FullName())
 				return
 			}
 
 			if imageTagMutabilityAttr.NotEqual("IMMUTABLE") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has `image_tag_mutability` attribute  not set to `IMMUTABLE`", resourceBlock.FullName()).
 					WithAttribute(imageTagMutabilityAttr)
 			}

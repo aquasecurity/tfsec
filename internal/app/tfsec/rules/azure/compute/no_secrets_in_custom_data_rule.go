@@ -63,7 +63,7 @@ EOF
 			if resourceBlock.TypeLabel() == "azurerm_virtual_machine" {
 				for _, str := range customDataAttr.ValueAsStrings() {
 					if checkStringForSensitive(str) {
-						set.Add().
+						set.AddResult().
 							WithDescription("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName()).
 							WithAttribute(customDataAttr)
 					}
@@ -75,7 +75,7 @@ EOF
 					encoded = []byte(customDataAttr.Value().AsString())
 				}
 				if checkStringForSensitive(string(encoded)) {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName()).
 						WithAttribute(customDataAttr)
 				}

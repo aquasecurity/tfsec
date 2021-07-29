@@ -51,12 +51,12 @@ resource "aws_sqs_queue" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
-			if kmsKeyIDAttr == nil {
-				set.Add().
+			if kmsKeyIDAttr.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())
 
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName()).
 					WithAttribute(kmsKeyIDAttr)
 			}

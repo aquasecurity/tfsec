@@ -50,13 +50,13 @@ resource "azurerm_managed_disk" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			encryptionSettingsBlock := resourceBlock.GetBlock("encryption_settings")
-			if encryptionSettingsBlock == nil {
+			if encryptionSettingsBlock.IsNil() {
 				return // encryption is by default now, so this is fine
 			}
 
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
-			if enabledAttr != nil && enabledAttr.IsFalse() {
-				set.Add().
+			if enabledAttr.IsNotNil() && enabledAttr.IsFalse() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted managed disk.", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}

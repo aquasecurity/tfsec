@@ -50,8 +50,8 @@ resource "azurerm_security_center_subscription_pricing" "good_example" {
 		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			tierAttr := resourceBlock.GetAttribute("tier")
-			if tierAttr != nil && tierAttr.Equals("Free", block.IgnoreCase) {
-				set.Add().
+			if tierAttr.IsNotNil() && tierAttr.Equals("Free", block.IgnoreCase) {
+				set.AddResult().
 					WithDescription("Resource '%s' sets security center subscription type to free.", resourceBlock.FullName()).
 					WithAttribute(tierAttr)
 			}

@@ -52,10 +52,10 @@ resource "azurerm_virtual_machine" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if linuxConfigBlock := resourceBlock.GetBlock("os_profile_linux_config"); linuxConfigBlock != nil {
+			if linuxConfigBlock := resourceBlock.GetBlock("os_profile_linux_config"); linuxConfigBlock.IsNotNil() {
 				passwordAuthDisabledAttr := linuxConfigBlock.GetAttribute("disable_password_authentication")
-				if passwordAuthDisabledAttr != nil && passwordAuthDisabledAttr.Type() == cty.Bool && passwordAuthDisabledAttr.Value().False() {
-					set.Add().
+				if passwordAuthDisabledAttr.IsNotNil() && passwordAuthDisabledAttr.Type() == cty.Bool && passwordAuthDisabledAttr.Value().False() {
+					set.AddResult().
 						WithDescription("Resource '%s' has password authentication enabled. Use SSH keys instead.", resourceBlock.FullName()).
 						WithAttribute(passwordAuthDisabledAttr)
 				}

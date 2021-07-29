@@ -74,7 +74,7 @@ resource "azurerm_sql_firewall_rule" "good_example" {
 			if sourceIpAttr.Equals("0.0.0.0") {
 				endIpAttr := resourceBlock.GetAttribute("end_ip_address")
 				if !endIpAttr.Equals("0.0.0.0") {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' has an open IP range set.", resourceBlock.FullName()).
 						WithAttribute(endIpAttr)
 				}

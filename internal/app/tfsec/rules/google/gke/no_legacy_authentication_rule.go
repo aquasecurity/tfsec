@@ -63,15 +63,15 @@ resource "google_container_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			masterAuthBlock := resourceBlock.GetBlock("master_auth")
-			if masterAuthBlock == nil {
-				set.Add().
+			if masterAuthBlock.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' does not disable basic auth with static passwords for client authentication. Disable this with a master_auth block container empty strings for user and password.", resourceBlock.FullName())
 				return
 			}
 
 			staticAuthPass := masterAuthBlock.GetAttribute("password")
-			if staticAuthPass != nil && !staticAuthPass.IsEmpty() {
-				set.Add().
+			if staticAuthPass.IsNotNil() && !staticAuthPass.IsEmpty() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines a cluster using basic auth with static passwords for client authentication. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())
 			}
 
@@ -80,8 +80,8 @@ resource "google_container_cluster" "good_example" {
 			}
 
 			issueClientCert := masterAuthBlock.GetBlock("client_certificate_config").GetAttribute("issue_client_certificate")
-			if issueClientCert != nil && issueClientCert.IsTrue() {
-				set.Add().
+			if issueClientCert.IsNotNil() && issueClientCert.IsTrue() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines a cluster using basic auth with client certificates for authentication. This cert has no permissions if RBAC is enabled and ABAC is disabled. It is recommended to use OAuth or service accounts instead.", resourceBlock.FullName())
 			}
 

@@ -51,20 +51,20 @@ resource "aws_kms_key" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			keyUsageAttr := resourceBlock.GetAttribute("key_usage")
 
-			if keyUsageAttr != nil && keyUsageAttr.Equals("SIGN_VERIFY") {
+			if keyUsageAttr.IsNotNil() && keyUsageAttr.Equals("SIGN_VERIFY") {
 				return
 			}
 
 			keyRotationAttr := resourceBlock.GetAttribute("enable_key_rotation")
 
-			if keyRotationAttr == nil {
-				set.Add().
+			if keyRotationAttr.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName())
 				return
 			}
 
 			if keyRotationAttr.Type() == cty.Bool && keyRotationAttr.Value().False() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not have KMS Key auto-rotation enabled.", resourceBlock.FullName()).
 					WithAttribute(keyRotationAttr)
 			}

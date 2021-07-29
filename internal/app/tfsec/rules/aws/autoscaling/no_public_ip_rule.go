@@ -49,9 +49,13 @@ resource "aws_launch_configuration" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
+			if resourceBlock.MissingChild("associate_public_ip_address") {
+				return
+			}
+
 			publicAttr := resourceBlock.GetAttribute("associate_public_ip_address")
 			if publicAttr.IsTrue() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has a public IP address associated.", resourceBlock.FullName()).
 					WithAttribute(publicAttr)
 			}

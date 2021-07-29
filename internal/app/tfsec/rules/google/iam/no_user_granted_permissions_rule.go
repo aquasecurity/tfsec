@@ -97,18 +97,18 @@ resource "google_storage_bucket_iam_member" "good_example" {
 			var members []cty.Value
 			var attribute block.Attribute
 
-			if attribute = resourceBlock.GetAttribute("member"); attribute != nil {
+			if attribute = resourceBlock.GetAttribute("member"); attribute.IsNotNil() {
 				members = append(members, attribute.Value())
-			} else if attribute = resourceBlock.GetAttribute("members"); attribute != nil {
+			} else if attribute = resourceBlock.GetAttribute("members"); attribute.IsNotNil() {
 				members = attribute.Value().AsValueSlice()
 			} else if resourceBlock.HasChild("binding") {
-				if attribute = resourceBlock.GetBlock("binding").GetAttribute("members"); attribute != nil {
+				if attribute = resourceBlock.GetBlock("binding").GetAttribute("members"); attribute.IsNotNil() {
 					members = attribute.Value().AsValueSlice()
 				}
 			}
 			for _, identities := range members {
 				if identities.IsKnown() && identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
-					set.Add().
+					set.AddResult().
 						WithDescription("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock.FullName())
 				}
 			}

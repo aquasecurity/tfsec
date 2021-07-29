@@ -68,14 +68,14 @@ resource "aws_security_group" "good_example" {
 		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("description") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' should include a description for auditing purposes.", resourceBlock.FullName())
 				return
 			}
 
 			descriptionAttr := resourceBlock.GetAttribute("description")
 			if descriptionAttr.IsEmpty() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' should include a non-empty description for auditing purposes.", resourceBlock.FullName()).
 					WithAttribute(descriptionAttr)
 			}

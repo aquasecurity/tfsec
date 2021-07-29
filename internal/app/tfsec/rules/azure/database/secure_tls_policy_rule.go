@@ -91,14 +91,14 @@ resource "azurerm_postgresql_server" "good_example" {
 					return
 				}
 
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not have %s set", resourceBlock.FullName(), attribute)
 				return
 			}
 
 			tlsMinimumAttr := resourceBlock.GetAttribute(attribute)
 			if !tlsMinimumAttr.Equals(requiredValue) {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has a value %s that is not %s", resourceBlock.FullName(), attribute, requiredValue).
 					WithAttribute(tlsMinimumAttr)
 			}

@@ -73,21 +73,21 @@ resource "aws_dynamodb_table" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("point_in_time_recovery") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' doesn't have point in time recovery", resourceBlock.FullName())
 				return
 			}
 
 			pointBlock := resourceBlock.GetBlock("point_in_time_recovery")
 			if pointBlock.MissingChild("enabled") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName()).
 					WithBlock(pointBlock)
 				return
 			}
 			enabledAttr := pointBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}

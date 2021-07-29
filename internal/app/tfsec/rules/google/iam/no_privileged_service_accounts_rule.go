@@ -63,7 +63,7 @@ resource "google_project_iam_member" "project" {
 
 			// is this a sensitive role?
 			roleAttr := resourceBlock.GetAttribute("role")
-			if roleAttr == nil || !roleAttr.IsString() || !roleAttr.Value().IsKnown() {
+			if roleAttr.IsNil() || !roleAttr.IsString() || !roleAttr.Value().IsKnown() {
 				return
 			}
 			if !isRolePrivileged(roleAttr.Value().AsString()) {
@@ -72,12 +72,12 @@ resource "google_project_iam_member" "project" {
 
 			// is it linked to a service account?
 			memberAttr := resourceBlock.GetAttribute("member")
-			if memberAttr == nil {
+			if memberAttr.IsNil() {
 				return
 			}
 			if memberAttr.IsString() && memberAttr.Value().IsKnown() {
 				if memberAttr.StartsWith("serviceAccount:") {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' provides privileged access to a service account", resourceBlock).
 						WithAttribute(roleAttr)
 				}
@@ -86,8 +86,8 @@ resource "google_project_iam_member" "project" {
 			// the service account may be populated via a templated reference that we don't have, so we need to check references
 			if serviceAccountBlock, err := ctx.GetReferencedBlock(memberAttr); err != nil {
 				return
-			} else if serviceAccountBlock != nil && serviceAccountBlock.TypeLabel() == "google_service_account" {
-				set.Add().
+			} else if serviceAccountBlock.IsNotNil() && serviceAccountBlock.TypeLabel() == "google_service_account" {
+				set.AddResult().
 					WithDescription("Resource '%s' provides privileged access to service account at %s", resourceBlock, serviceAccountBlock.FullName()).
 					WithAttribute(roleAttr)
 			}

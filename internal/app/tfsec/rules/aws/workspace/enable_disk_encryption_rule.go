@@ -71,26 +71,26 @@ resource "aws_workspaces_workspace" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("root_volume_encryption_enabled") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' should have root volume encryption enabled", resourceBlock.FullName())
 			} else {
 				attr := resourceBlock.GetAttribute("root_volume_encryption_enabled")
-				if attr != nil && attr.IsFalse() {
-					set.Add().
+				if attr.IsNotNil() && attr.IsFalse() {
+					set.AddResult().
 						WithDescription("Resource '%s' has the root volume encryption set to false", resourceBlock.FullName()).
 						WithAttribute(attr)
 				}
 			}
 
 			if resourceBlock.MissingChild("user_volume_encryption_enabled") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' should have user volume encryption enabled", resourceBlock.FullName())
 				return
 			}
 
 			attr := resourceBlock.GetAttribute("user_volume_encryption_enabled")
-			if attr != nil && attr.IsFalse() {
-				set.Add().
+			if attr.IsNotNil() && attr.IsFalse() {
+				set.AddResult().
 					WithDescription("Resource '%s' has the user volume encryption set to false", resourceBlock.FullName()).
 					WithAttribute(attr)
 			}

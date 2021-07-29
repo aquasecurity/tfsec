@@ -55,7 +55,7 @@ resource "azurerm_security_center_contact" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("phone") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not have a phone number set for the security contact", resourceBlock.FullName())
 
 				return
@@ -63,7 +63,7 @@ resource "azurerm_security_center_contact" "good_example" {
 
 			phoneAttr := resourceBlock.GetAttribute("phone")
 			if phoneAttr.IsEmpty() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not have a phone number set for the security contact", resourceBlock.FullName()).
 					WithAttribute(phoneAttr)
 			}

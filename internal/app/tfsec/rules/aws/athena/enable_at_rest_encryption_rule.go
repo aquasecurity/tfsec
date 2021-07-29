@@ -91,7 +91,6 @@ resource "aws_athena_workgroup" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			blockName := resourceBlock.FullName()
-
 			if strings.EqualFold(resourceBlock.TypeLabel(), "aws_athena_workgroup") {
 				if !resourceBlock.HasChild("configuration") {
 					return
@@ -104,7 +103,7 @@ resource "aws_athena_workgroup" "good_example" {
 			}
 
 			if resourceBlock.MissingChild("encryption_configuration") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' missing encryption configuration block.", blockName)
 			}
 

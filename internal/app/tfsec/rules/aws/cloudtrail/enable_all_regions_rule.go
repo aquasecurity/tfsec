@@ -65,15 +65,16 @@ resource "aws_cloudtrail" "good_example" {
 		RequiredLabels:  []string{"aws_cloudtrail"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+
 			if resourceBlock.MissingChild("is_multi_region_trail") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not set multi region trail config.", resourceBlock.FullName())
 				return
 			}
 
 			multiRegionAttr := resourceBlock.GetAttribute("is_multi_region_trail")
 			if multiRegionAttr.IsFalse() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not enable multi region trail.", resourceBlock.FullName()).
 					WithAttribute(multiRegionAttr)
 			}

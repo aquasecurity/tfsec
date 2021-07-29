@@ -55,7 +55,7 @@ resource "aws_cloudfront_distribution" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("logging_config") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not have Access Logging configured", resourceBlock.FullName())
 			}
 

@@ -65,15 +65,15 @@ resource "azurerm_monitor_log_profile" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			categoriesAttr := resourceBlock.GetAttribute("categories")
-			if categoriesAttr == nil || categoriesAttr.IsEmpty() {
-				set.Add().
+			if categoriesAttr.IsNil() || categoriesAttr.IsEmpty() {
+				set.AddResult().
 					WithDescription("Resource '%s' does not have required categories", resourceBlock.FullName())
 				return
 			}
 
 			for _, category := range []string{"Action", "Write", "Delete"} {
 				if !categoriesAttr.Contains(category) {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' is missing '%s' category", resourceBlock.FullName(), category).
 						WithAttribute(categoriesAttr)
 				}

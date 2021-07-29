@@ -55,14 +55,14 @@ resource "azurerm_postgresql_server" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("public_network_access_enabled") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has default public network access of enabled", resourceBlock.FullName())
 				return
 			}
 
 			publicAccessAttr := resourceBlock.GetAttribute("public_network_access_enabled")
 			if publicAccessAttr.IsTrue() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has public access explicitly enabled", resourceBlock.FullName()).
 					WithAttribute(publicAccessAttr)
 			}

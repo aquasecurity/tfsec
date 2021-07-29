@@ -56,14 +56,14 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("block_public_acls") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not specify block_public_acls, defaults to false", resourceBlock.FullName())
 				return
 			}
 
 			attr := resourceBlock.GetAttribute("block_public_acls")
-			if attr != nil && attr.IsFalse() {
-				set.Add().
+			if attr.IsNotNil() && attr.IsFalse() {
+				set.AddResult().
 					WithDescription("Resource '%s' sets block_public_acls explicitly to false", resourceBlock.FullName()).
 					WithAttribute(attr)
 			}

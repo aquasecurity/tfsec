@@ -54,17 +54,17 @@ resource "aws_kinesis_stream" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			encryptionTypeAttr := resourceBlock.GetAttribute("encryption_type")
-			if encryptionTypeAttr == nil {
-				set.Add().
+			if encryptionTypeAttr.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName())
 			} else if encryptionTypeAttr.Type() == cty.String && strings.ToUpper(encryptionTypeAttr.Value().AsString()) != "KMS" {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName()).
 					WithAttribute(encryptionTypeAttr)
 			} else {
 				keyIDAttr := resourceBlock.GetAttribute("kms_key_id")
-				if keyIDAttr == nil || keyIDAttr.IsEmpty() || keyIDAttr.Equals("alias/aws/kinesis") {
-					set.Add().
+				if keyIDAttr.IsNil() || keyIDAttr.IsEmpty() || keyIDAttr.Equals("alias/aws/kinesis") {
+					set.AddResult().
 						WithDescription("Resource '%s' defines a Kinesis Stream encrypted with the default Kinesis key.", resourceBlock.FullName())
 				}
 			}

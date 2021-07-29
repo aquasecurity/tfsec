@@ -62,20 +62,20 @@ resource "aws_config_configuration_aggregator" "good_example" {
 
 			aggBlock := resourceBlock.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")
 			if aggBlock.IsNil() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' should have account aggregation sources set", resourceBlock.FullName())
 				return
 			}
 
 			if aggBlock.MissingChild("all_regions") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName())
 				return
 			}
 
 			allRegionsAttr := aggBlock.GetAttribute("all_regions")
 			if allRegionsAttr.IsFalse() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has all_regions set to false", resourceBlock.FullName()).
 					WithAttribute(allRegionsAttr)
 			}

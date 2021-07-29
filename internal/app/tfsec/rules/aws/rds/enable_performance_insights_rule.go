@@ -57,13 +57,13 @@ resource "aws_rds_cluster_instance" "good_example" {
 
 			if resourceBlock.HasChild("performance_insights_enabled") && resourceBlock.GetAttribute("performance_insights_enabled").IsTrue() {
 				if resourceBlock.MissingChild("performance_insights_kms_key_id") {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName())
 					return
 				}
 
 				if keyAttr := resourceBlock.GetAttribute("performance_insights_kms_key_id"); keyAttr.IsEmpty() {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' defines Performance Insights without encryption key specified.", resourceBlock.FullName()).
 						WithAttribute(keyAttr)
 				}

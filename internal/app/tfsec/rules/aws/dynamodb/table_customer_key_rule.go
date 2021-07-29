@@ -92,7 +92,7 @@ resource "aws_dynamodb_table" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("server_side_encryption") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())
 				return
 			}
@@ -100,7 +100,7 @@ resource "aws_dynamodb_table" "good_example" {
 			sseBlock := resourceBlock.GetBlock("server_side_encryption")
 			enabledAttr := sseBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName()).
 					WithBlock(sseBlock)
 			}
@@ -108,7 +108,7 @@ resource "aws_dynamodb_table" "good_example" {
 			if sseBlock.HasChild("kms_key_arn") {
 				keyIdAttr := sseBlock.GetAttribute("kms_key_arn")
 				if keyIdAttr.Equals("alias/aws/dynamodb") {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName()).
 						WithAttribute(keyIdAttr)
 				}

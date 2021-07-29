@@ -63,18 +63,18 @@ resource "aws_elasticache_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			engineAttr := resourceBlock.GetAttribute("engine")
-			if engineAttr != nil && engineAttr.Equals("redis", block.IgnoreCase) {
+			if engineAttr.IsNotNil() && engineAttr.Equals("redis", block.IgnoreCase) {
 				nodeTypeAttr := resourceBlock.GetAttribute("node_type")
-				if nodeTypeAttr != nil && !nodeTypeAttr.Equals("cache.t1.micro") {
+				if nodeTypeAttr.IsNotNil() && !nodeTypeAttr.Equals("cache.t1.micro") {
 					snapshotRetentionAttr := resourceBlock.GetAttribute("snapshot_retention_limit")
-					if snapshotRetentionAttr == nil {
-						set.Add().
+					if snapshotRetentionAttr.IsNil() {
+						set.AddResult().
 							WithDescription("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())
 						return
 					}
 
 					if snapshotRetentionAttr.Equals(0) {
-						set.Add().
+						set.AddResult().
 							WithDescription("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName()).
 							WithAttribute(snapshotRetentionAttr)
 					}

@@ -80,7 +80,7 @@ resource "azurerm_sql_server" "good_example" {
 				return
 			}
 
-			set.Add().
+			set.AddResult().
 				WithDescription("Resource '%s' does not have an extended audit policy configured.", resourceBlock.FullName())
 
 		},

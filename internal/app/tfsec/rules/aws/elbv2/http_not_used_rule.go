@@ -57,14 +57,14 @@ resource "aws_alb_listener" "good_example" {
 
 			protocolAttr := resourceBlock.GetAttribute("protocol")
 
-			if protocolAttr != nil {
+			if protocolAttr.IsNotNil() {
 				if protocolAttr.IsResolvable() && (protocolAttr.Equals("HTTPS", block.IgnoreCase) ||
 					protocolAttr.Equals("TLS", block.IgnoreCase)) {
 					return
 				}
 				if protocolAttr.IsResolvable() && protocolAttr.Equals("HTTP") {
 					// check if this is a redirect to HTTPS - if it is, then no problem
-					if redirectProtocolAttr := resourceBlock.GetNestedAttribute("default_action.redirect.protocol"); redirectProtocolAttr != nil {
+					if redirectProtocolAttr := resourceBlock.GetNestedAttribute("default_action.redirect.protocol"); redirectProtocolAttr.IsNotNil() {
 						if redirectProtocolAttr.IsResolvable() && redirectProtocolAttr.Equals("HTTPS") {
 							return
 						}
@@ -72,7 +72,7 @@ resource "aws_alb_listener" "good_example" {
 				}
 			}
 
-			set.Add().
+			set.AddResult().
 				WithDescription("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName()).
 				WithAttribute(protocolAttr)
 

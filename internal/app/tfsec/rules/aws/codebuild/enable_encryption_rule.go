@@ -100,7 +100,8 @@ resource "aws_codebuild_project" "codebuild" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			blocks := resourceBlock.GetBlocks("secondary_artifacts")
-			if artifact := resourceBlock.GetBlock("artifacts"); artifact != nil {
+
+			if artifact := resourceBlock.GetBlock("artifacts"); artifact.IsNotNil() {
 				blocks = append(blocks, artifact)
 			}
 
@@ -110,11 +111,11 @@ resource "aws_codebuild_project" "codebuild" {
 					artifactTypeAttr := artifactBlock.GetAttribute("type")
 
 					if artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
-						set.Add().
+						set.AddResult().
 							WithDescription("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName()).
 							WithAttribute(artifactTypeAttr)
 					} else {
-						set.Add().
+						set.AddResult().
 							WithDescription("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName()).
 							WithAttribute(encryptionDisabledAttr)
 					}

@@ -12,8 +12,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -61,25 +59,21 @@ resource "aws_elasticsearch_domain" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			endpointBlock := resourceBlock.GetBlock("domain_endpoint_options")
-			if endpointBlock == nil {
-				set.Add().
+			if endpointBlock.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing domain_endpoint_options block).", resourceBlock.FullName())
 				return
 			}
 
 			enforceHTTPSAttr := endpointBlock.GetAttribute("enforce_https")
-			if enforceHTTPSAttr == nil {
-				set.Add().
+			if enforceHTTPSAttr.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enforce_https attribute).", resourceBlock.FullName())
 				return
 			}
 
-			isTrueBool := enforceHTTPSAttr.Type() == cty.Bool && enforceHTTPSAttr.Value().True()
-			isTrueString := enforceHTTPSAttr.Type() == cty.String &&
-				enforceHTTPSAttr.Value().Equals(cty.StringVal("true")).True()
-			enforcedHTTPS := isTrueBool || isTrueString
-			if !enforcedHTTPS {
-				set.Add().
+			if enforceHTTPSAttr.IsFalse() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName())
 			}
 

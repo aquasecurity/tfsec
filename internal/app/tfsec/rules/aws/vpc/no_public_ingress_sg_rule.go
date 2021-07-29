@@ -53,19 +53,19 @@ resource "aws_security_group" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			for _, directionBlock := range resourceBlock.GetBlocks("ingress") {
-				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
+				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 
 					if cidr.IsOpen(cidrBlocksAttr) {
-						set.Add().
+						set.AddResult().
 							WithDescription("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName()).
 							WithAttribute(cidrBlocksAttr)
 					}
 				}
 
-				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr != nil {
+				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 
 					if cidr.IsOpen(cidrBlocksAttr) {
-						set.Add().
+						set.AddResult().
 							WithDescription("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())
 					}
 				}

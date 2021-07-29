@@ -75,7 +75,7 @@ resource "aws_eks_cluster" "good_example" {
 			controlPlaneLogging := []string{"api", "audit", "authenticator", "controllerManager", "scheduler"}
 
 			if resourceBlock.MissingChild("enabled_cluster_log_types") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", resourceBlock.FullName())
 				return
 			}
@@ -83,7 +83,7 @@ resource "aws_eks_cluster" "good_example" {
 			configuredLoggingAttr := resourceBlock.GetAttribute("enabled_cluster_log_types")
 			for _, logType := range controlPlaneLogging {
 				if !configuredLoggingAttr.Contains(logType) {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' is missing the control plane log type '%s'", resourceBlock.FullName(), logType).
 						WithAttribute(configuredLoggingAttr)
 				}

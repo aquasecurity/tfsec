@@ -62,7 +62,7 @@ resource "aws_redshift_cluster" "good_example" {
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 			if resourceBlock.MissingChild("cluster_subnet_group_name") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' is being deployed outside of a VPC", resourceBlock.FullName())
 			}
 		},

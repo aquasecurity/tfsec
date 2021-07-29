@@ -62,20 +62,20 @@ resource "azurerm_monitor_log_profile" "good_example" {
 			retentionPolicyBlock := resourceBlock.GetBlock("retention_policy")
 
 			if retentionPolicyBlock.MissingChild("enabled") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not enable retention policy", resourceBlock.FullName())
 				return
 			}
 
 			if retentionPolicyBlock.MissingChild("days") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' does not retention policy days set", resourceBlock.FullName())
 				return
 			}
 
 			daysAttr := retentionPolicyBlock.GetAttribute("days")
 			if daysAttr.LessThan(356) {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has retention period of less than 365 days", resourceBlock.FullName()).
 					WithAttribute(daysAttr)
 			}

@@ -55,14 +55,14 @@ resource "azurerm_postgresql_server" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("ssl_enforcement_enabled") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' is missing the required ssl_enforcement_enabled attribute", resourceBlock.FullName())
 				return
 			}
 
 			sslEnforceAttr := resourceBlock.GetAttribute("ssl_enforcement_enabled")
 			if sslEnforceAttr.IsFalse() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has ssl_enforcement_enabled disabled", resourceBlock.FullName()).
 					WithAttribute(sslEnforceAttr)
 			}

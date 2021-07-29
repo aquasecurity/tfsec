@@ -69,14 +69,14 @@ resource "azurerm_network_watcher_flow_log" "good_watcher" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("retention_policy") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' is missing the required retention policy block", resourceBlock.FullName())
 				return
 			}
 
 			retentionPolicyBlock := resourceBlock.GetBlock("retention_policy")
 			if retentionPolicyBlock.MissingChild("enabled") || retentionPolicyBlock.MissingChild("days") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' is missing the required attributes retention policy block", resourceBlock.FullName())
 				return
 			}
@@ -85,13 +85,13 @@ resource "azurerm_network_watcher_flow_log" "good_watcher" {
 			daysAttr := retentionPolicyBlock.GetAttribute("days")
 
 			if enabledAttr.IsFalse() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has retention policy turned off", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}
 
 			if daysAttr.LessThan(90) {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' has retention policy period of less than 90 days", resourceBlock.FullName()).
 					WithAttribute(daysAttr)
 			}

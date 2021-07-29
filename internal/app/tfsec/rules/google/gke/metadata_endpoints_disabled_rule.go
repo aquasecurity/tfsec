@@ -61,8 +61,8 @@ resource "google_container_cluster" "good_example" {
 			}
 
 			legacyMetadataAPI := resourceBlock.GetBlock("metadata").GetAttribute("disable-legacy-endpoints")
-			if legacyMetadataAPI != nil && legacyMetadataAPI.IsFalse() {
-				set.Add().
+			if legacyMetadataAPI.IsNotNil() && legacyMetadataAPI.IsFalse() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines a cluster with legacy metadata endpoints enabled.", resourceBlock.FullName())
 			}
 

@@ -56,7 +56,7 @@ resource "azurerm_key_vault_secret" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("expiration_date") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' should have an expiration date set.", resourceBlock.FullName())
 			}
 		},

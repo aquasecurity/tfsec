@@ -70,7 +70,7 @@ resource "evil_corp" "virtual_machine" {
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if attribute.Name() == "default" {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {
-						set.Add().WithDescription("Variable '%s' includes a potentially sensitive default value.", resourceBlock.FullName()).
+						set.AddResult().WithDescription("Variable '%s' includes a potentially sensitive default value.", resourceBlock.FullName()).
 							WithAttribute(attribute)
 					}
 				}

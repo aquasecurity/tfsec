@@ -81,7 +81,7 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 								metrics.Add(metrics.IgnoredChecks, 1)
 								debug.Log("Ignoring '%s'", ruleResult.RuleID)
 							} else {
-								results = append(results, ruleResult)
+								results = append(results, *ruleResult)
 
 							}
 						}

@@ -54,15 +54,15 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			rbacBlock := resourceBlock.GetBlock("role_based_access_control")
-			if rbacBlock == nil {
-				set.Add().
+			if rbacBlock.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines without RBAC", resourceBlock.FullName())
 				return
 			}
 
 			enabledAttr := rbacBlock.GetAttribute("enabled")
-			if enabledAttr != nil && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
-				set.Add().
+			if enabledAttr.IsNotNil() && enabledAttr.Type() == cty.Bool && enabledAttr.Value().False() {
+				set.AddResult().
 					WithDescription("Resource '%s' RBAC disabled.", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}

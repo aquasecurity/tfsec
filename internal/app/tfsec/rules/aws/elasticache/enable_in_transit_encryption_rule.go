@@ -55,11 +55,11 @@ resource "aws_elasticache_replication_group" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			encryptionAttr := resourceBlock.GetAttribute("transit_encryption_enabled")
-			if encryptionAttr == nil {
-				set.Add().
+			if encryptionAttr.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted Elasticache Replication Group (missing transit_encryption_enabled attribute).", resourceBlock.FullName())
 			} else if !encryptionAttr.IsTrue() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted Elasticache Replication Group (transit_encryption_enabled set to false).", resourceBlock.FullName()).
 					WithAttribute(encryptionAttr)
 

@@ -76,17 +76,17 @@ resource "google_sql_database_instance" "postgres" {
 			}
 
 			ipConfigBlock := settingsBlock.GetBlock("ip_configuration")
-			if ipConfigBlock == nil {
-				set.Add().
+			if ipConfigBlock.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())
 				return
 			}
 
-			if requireSSLAttr := ipConfigBlock.GetAttribute("require_ssl"); requireSSLAttr == nil {
-				set.Add().
+			if requireSSLAttr := ipConfigBlock.GetAttribute("require_ssl"); requireSSLAttr.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())
 			} else if requireSSLAttr.IsFalse() {
-				set.Add().
+				set.AddResult().
 					WithAttribute(requireSSLAttr).
 					WithDescription("Resource '%s' explicitly does not require SSL for all connections", resourceBlock.FullName())
 			}

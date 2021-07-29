@@ -59,7 +59,7 @@ resource "aws_ecr_repository" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("image_scanning_configuration") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())
 				return
 			}
@@ -67,10 +67,10 @@ resource "aws_ecr_repository" "good_example" {
 			ecrScanStatusAttr := resourceBlock.GetNestedAttribute("image_scanning_configuration.scan_on_push")
 
 			if ecrScanStatusAttr.IsNil() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName())
 			} else if ecrScanStatusAttr.IsFalse() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines a disabled ECR image scan.", resourceBlock.FullName()).
 					WithAttribute(ecrScanStatusAttr)
 			}

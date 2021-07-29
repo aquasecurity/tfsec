@@ -71,10 +71,10 @@ resource "google_sql_database_instance" "db" {
 			}
 
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
-				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr != nil && nameAttr.IsString() && nameAttr.Equals("local_infile") {
-					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr != nil && valueAttr.IsString() {
+				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr.IsNotNil() && nameAttr.IsString() && nameAttr.Equals("local_infile") {
+					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.IsNotNil() && valueAttr.IsString() {
 						if valueAttr.Equals("on", block.IgnoreCase) {
-							set.Add().
+							set.AddResult().
 								WithDescription("Resource '%s' has local file read access enabled.", resourceBlock.FullName())
 						}
 					}

@@ -12,8 +12,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -61,20 +59,19 @@ resource "aws_elasticsearch_domain" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			endpointBlock := resourceBlock.GetBlock("domain_endpoint_options")
-			if endpointBlock == nil {
-				// Rule AWS033 covers this case.
+			if endpointBlock.IsNil() {
 				return
 			}
 
 			tlsPolicyAttr := endpointBlock.GetAttribute("tls_security_policy")
-			if tlsPolicyAttr == nil {
-				set.Add().
+			if tlsPolicyAttr.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (defaults to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName())
 				return
 			}
 
-			if tlsPolicyAttr.Value().Equals(cty.StringVal("Policy-Min-TLS-1-0-2019-07")).True() {
-				set.Add().
+			if tlsPolicyAttr.Equals("Policy-Min-TLS-1-0-2019-07") {
+				set.AddResult().
 					WithDescription("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (set to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName()).
 					WithAttribute(tlsPolicyAttr)
 			}

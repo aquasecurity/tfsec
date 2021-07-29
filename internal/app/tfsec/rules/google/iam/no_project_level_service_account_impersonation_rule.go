@@ -56,11 +56,11 @@ resource "google_project_iam_binding" "project-123" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			roleAttr := resourceBlock.GetAttribute("role")
-			if roleAttr == nil || !roleAttr.IsString() || !roleAttr.Value().IsKnown() {
+			if roleAttr.IsNil() || !roleAttr.IsString() || !roleAttr.Value().IsKnown() {
 				return
 			}
 			if roleAttr.Value().AsString() == "roles/iam.serviceAccountUser" || roleAttr.Value().AsString() == "roles/iam.serviceAccountTokenCreator" {
-				set.Add().
+				set.AddResult().
 					WithAttribute(roleAttr).
 					WithDescription("Resource '%s' grants service account access to a user at project level.", resourceBlock.FullName())
 			}

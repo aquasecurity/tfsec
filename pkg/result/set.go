@@ -6,7 +6,7 @@ import (
 )
 
 type Set interface {
-	Add() *Result
+	AddResult() *Result
 	WithRuleID(id string) Set
 	WithLegacyRuleID(id string) Set
 	WithRuleSummary(description string) Set
@@ -14,7 +14,7 @@ type Set interface {
 	WithImpact(impact string) Set
 	WithResolution(resolution string) Set
 	WithLinks(links []string) Set
-	All() []Result
+	All() []*Result
 }
 
 func NewSet(resourceBlock block.Block) *resultSet {
@@ -25,7 +25,7 @@ func NewSet(resourceBlock block.Block) *resultSet {
 
 type resultSet struct {
 	resourceBlock block.Block
-	results       []Result
+	results       []*Result
 	ruleID        string
 	legacyID      string
 	ruleSummary   string
@@ -35,7 +35,7 @@ type resultSet struct {
 	links         []string
 }
 
-func (s *resultSet) Add() *Result {
+func (s *resultSet) AddResult() *Result {
 	result := New(s.resourceBlock).
 		WithRuleID(s.ruleID).
 		WithLegacyRuleID(s.legacyID).
@@ -44,11 +44,11 @@ func (s *resultSet) Add() *Result {
 		WithResolution(s.resolution).
 		WithRuleProvider(s.ruleProvider).
 		WithLinks(s.links)
-	s.results = append(s.results, *result)
+	s.results = append(s.results, result)
 	return result
 }
 
-func (s *resultSet) All() []Result {
+func (s *resultSet) All() []*Result {
 	return s.results
 }
 

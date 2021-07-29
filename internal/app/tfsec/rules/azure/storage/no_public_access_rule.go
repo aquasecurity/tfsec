@@ -65,10 +65,10 @@ resource "azure_storage_container" "good_example" {
 			// function contents here
 			if resourceBlock.HasChild("properties") {
 				properties := resourceBlock.GetAttribute("properties")
-				if properties != nil && properties.Contains("publicAccess") {
+				if properties.IsNotNil() && properties.Contains("publicAccess") {
 					value := properties.MapValue("publicAccess")
 					if value == cty.StringVal("blob") || value == cty.StringVal("container") {
-						set.Add().
+						set.AddResult().
 							WithDescription("Resource '%s' defines publicAccess as '%s', should be 'off .", resourceBlock.FullName(), value)
 					}
 				}

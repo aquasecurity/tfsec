@@ -90,13 +90,13 @@ resource "aws_ecs_task_definition" "good_example" {
 				}
 				efsConfigBlock := v.GetBlock("efs_volume_configuration")
 				if efsConfigBlock.MissingChild("transit_encryption") {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' has efs configuration with in transit encryption implicitly disabled", resourceBlock.FullName())
 					continue
 				}
 				transitAttr := efsConfigBlock.GetAttribute("transit_encryption")
-				if transitAttr != nil && transitAttr.Equals("disabled", block.IgnoreCase) {
-					set.Add().
+				if transitAttr.Equals("disabled", block.IgnoreCase) {
+					set.AddResult().
 						WithDescription("Resource '%s' has efs configuration with transit encryption explicitly disabled", resourceBlock.FullName()).
 						WithAttribute(transitAttr)
 				}

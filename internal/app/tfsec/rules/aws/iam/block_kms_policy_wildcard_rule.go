@@ -167,7 +167,7 @@ data "aws_iam_policy_document" "kms_policy" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
 			policyAttr := resourceBlock.GetAttribute("policy")
-			if policyAttr == nil {
+			if policyAttr.IsNil() {
 				return
 			}
 
@@ -194,10 +194,10 @@ data "aws_iam_policy_document" "kms_policy" {
 					}
 
 					if statementBlock.HasChild("actions") && statementBlock.GetAttribute("actions").Contains("kms:*") {
-						if resources := statementBlock.GetAttribute("resources"); resources != nil {
+						if resources := statementBlock.GetAttribute("resources"); resources.IsNotNil() {
 							resources.Each(func(key, value cty.Value) {
 								if value.Type() == cty.String && strings.Contains(value.AsString(), ("*")) {
-									set.Add().
+									set.AddResult().
 										WithDescription("Resource '%s' a policy with KMS actions for all KMS keys.", policyDocumentBlock.FullName()).
 										WithAttribute(resources)
 								}
@@ -226,7 +226,7 @@ func checkAWS097PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 			}
 			for _, resource := range statement.Resource {
 				if strings.Contains(resource, "*") {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' a policy with KMS actions for all KMS keys.", resourceBlock.FullName()).
 						WithAttribute(policyAttr)
 					return

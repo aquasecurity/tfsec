@@ -74,9 +74,9 @@ resource "google_container_node_pool" "good_example" {
 			}
 
 			nodeMetadata := workloadMetadataConfigBlock.GetAttribute("node_metadata")
-			if nodeMetadata != nil && nodeMetadata.Type() == cty.String &&
+			if nodeMetadata.IsNotNil() && nodeMetadata.Type() == cty.String &&
 				(nodeMetadata.Value().AsString() == "EXPOSE" || nodeMetadata.Value().AsString() == "UNSPECIFIED") {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' defines a cluster with node metadata exposed. node_metadata set to EXPOSE or UNSPECIFIED disables metadata concealment. ", resourceBlock.FullName())
 			}
 

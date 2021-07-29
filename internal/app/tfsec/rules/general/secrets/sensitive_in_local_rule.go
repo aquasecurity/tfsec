@@ -58,7 +58,7 @@ resource "evil_corp" "good_example" {
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {
-						set.Add().WithDescription("Local '%s' includes a potentially sensitive value which is defined within the project.", resourceBlock.FullName()).
+						set.AddResult().WithDescription("Local '%s' includes a potentially sensitive value which is defined within the project.", resourceBlock.FullName()).
 							WithAttribute(attribute)
 					}
 				}

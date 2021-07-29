@@ -49,9 +49,9 @@ resource "aws_db_instance" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if publicAttr := resourceBlock.GetAttribute("publicly_accessible"); publicAttr != nil && publicAttr.Type() == cty.Bool {
+			if publicAttr := resourceBlock.GetAttribute("publicly_accessible"); publicAttr.IsNotNil() && publicAttr.Type() == cty.Bool {
 				if publicAttr.Value().True() {
-					set.Add().
+					set.AddResult().
 						WithDescription("Resource '%s' is exposed publicly.", resourceBlock.FullName()).
 						WithAttribute(publicAttr)
 				}

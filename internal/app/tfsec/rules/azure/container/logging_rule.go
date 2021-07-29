@@ -54,22 +54,22 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			addonProfileBlock := resourceBlock.GetBlock("addon_profile")
-			if addonProfileBlock == nil {
-				set.Add().
+			if addonProfileBlock.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured (missing addon_profile).", resourceBlock.FullName())
 				return
 			}
 
 			omsAgentBlock := addonProfileBlock.GetBlock("oms_agent")
-			if omsAgentBlock == nil {
-				set.Add().
+			if omsAgentBlock.IsNil() {
+				set.AddResult().
 					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured (missing oms_agent).", resourceBlock.FullName())
 				return
 			}
 
 			enabledAttr := omsAgentBlock.GetAttribute("enabled")
-			if enabledAttr == nil || (enabledAttr.Type() == cty.Bool && enabledAttr.Value().False()) {
-				set.Add().
+			if enabledAttr.IsNil() || (enabledAttr.Type() == cty.Bool && enabledAttr.Value().False()) {
+				set.AddResult().
 					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).", resourceBlock.FullName()).
 					WithAttribute(enabledAttr)
 			}

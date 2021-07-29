@@ -12,8 +12,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -52,17 +50,15 @@ resource "aws_api_gateway_domain_name" "good_example" {
 
 			securityPolicyAttr := resourceBlock.GetAttribute("security_policy")
 			if securityPolicyAttr.IsNil() {
-				set.Add().
+				set.AddResult().
 					WithDescription("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName())
 				return
 			}
-
-			if securityPolicyAttr.Type() == cty.String && securityPolicyAttr.NotEqual("TLS_1_2") {
-				set.Add().
+			if securityPolicyAttr.NotEqual("TLS_1_2") {
+				set.AddResult().
 					WithDescription("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", resourceBlock.FullName()).
 					WithAttribute(securityPolicyAttr)
 			}
-
 		},
 	})
 }
