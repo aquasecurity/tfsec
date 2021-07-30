@@ -1,5 +1,6 @@
 package spaces
 
+// generator-locked
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"

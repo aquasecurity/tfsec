@@ -1,5 +1,6 @@
 package container
 
+// generator-locked
 import (
 	"testing"
 

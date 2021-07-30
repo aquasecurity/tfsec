@@ -1,5 +1,6 @@
 package vpc
 
+// generator-locked
 import (
 	"testing"
 

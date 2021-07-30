@@ -1,5 +1,6 @@
 package repositories
 
+// generator-locked
 import (
 	"testing"
 

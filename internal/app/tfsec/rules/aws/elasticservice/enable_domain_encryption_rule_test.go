@@ -1,5 +1,6 @@
 package elasticservice
 
+// generator-locked
 import (
 	"testing"
 

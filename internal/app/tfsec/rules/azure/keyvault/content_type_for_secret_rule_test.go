@@ -1,5 +1,6 @@
 package keyvault
 
+// generator-locked
 import (
 	"testing"
 

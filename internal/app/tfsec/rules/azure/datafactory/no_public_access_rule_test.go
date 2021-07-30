@@ -1,5 +1,6 @@
 package datafactory
 
+// generator-locked
 import (
 	"testing"
 

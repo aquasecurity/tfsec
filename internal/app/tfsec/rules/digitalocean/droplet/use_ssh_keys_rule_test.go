@@ -1,5 +1,6 @@
 package droplet
 
+// generator-locked
 import (
 	"testing"
 

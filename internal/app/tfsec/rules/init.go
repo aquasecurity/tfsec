@@ -1,5 +1,6 @@
 package rules
 
+// generator-locked
 import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/apigateway"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/athena"

@@ -1,5 +1,6 @@
 package compute
 
+// generator-locked
 import (
 	"encoding/base64"
 

@@ -1,5 +1,6 @@
 package fw
 
+// generator-locked
 import (
 	"testing"
 

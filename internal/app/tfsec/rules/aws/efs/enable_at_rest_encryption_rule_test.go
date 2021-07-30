@@ -1,5 +1,6 @@
 package efs
 
+// generator-locked
 import (
 	"testing"
 
