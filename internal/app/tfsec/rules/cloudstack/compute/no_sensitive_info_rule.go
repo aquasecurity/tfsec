@@ -25,7 +25,7 @@ func init() {
 		ShortCode: "no-sensitive-info",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "No sensitive data stored in user_data",
-			Explanation: `When creating instances, user data can be used during the initial confiugtation. User data must not contain sensitive information`,
+			Explanation: `When creating instances, user data can be used during the initial configuration. User data must not contain sensitive information`,
 			Impact:      "Sensitive credentials in the user data can be leaked",
 			Resolution:  "Don't use sensitive data in the user data section",
 			BadExample: []string{`
