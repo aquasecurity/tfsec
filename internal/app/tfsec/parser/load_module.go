@@ -86,7 +86,7 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleInfo,
 	if modulePath == "" {
 		// if we have no metadata, we can only support modules available on the local filesystem
 		// users wanting this feature should run a `terraform init` before running tfsec to cache all modules locally
-		if !strings.HasPrefix(source, "./") && !strings.HasPrefix(source, "../") {
+		if !strings.HasPrefix(source, fmt.Sprintf(".%c", os.PathSeparator)) && !strings.HasPrefix(source, fmt.Sprintf("..%c", os.PathSeparator)) {
 			return nil, fmt.Errorf("missing module with source '%s' -  try to 'terraform init' first", source)
 		}
 
@@ -114,9 +114,9 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleInfo,
 func reconstructPath(projectBasePath string, source string) string {
 
 	// get the parent directory until we reach the shared parent directory
-	for strings.HasPrefix(source, "../") {
+	for strings.HasPrefix(source, fmt.Sprintf("..%c", os.PathSeparator)) {
 		projectBasePath = filepath.Dir(projectBasePath)
-		source = strings.TrimPrefix(source, "../")
+		source = strings.TrimPrefix(source, fmt.Sprintf("..%c", os.PathSeparator))
 	}
 	return filepath.Join(projectBasePath, source)
 }
