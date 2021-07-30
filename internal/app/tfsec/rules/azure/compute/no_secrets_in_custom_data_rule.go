@@ -70,7 +70,7 @@ EOF
 					}
 				}
 			} else if customDataAttr.IsResolvable() && customDataAttr.IsString() {
-				encoded, err := base64.RawStdEncoding.DecodeString(customDataAttr.Value().AsString())
+				encoded, err := base64.StdEncoding.DecodeString(customDataAttr.Value().AsString())
 				if err != nil {
 					debug.Log("could not decode the base64 string in the terraform, trying with the string verbatim")
 					encoded = []byte(customDataAttr.Value().AsString())

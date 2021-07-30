@@ -37,37 +37,25 @@ func NewAttributeRequirement(blockType string, blockLabel string, dotPath string
 	return &req
 }
 
-func (a *attributeBase) makeGoodValue(value interface{}, comparison Comparison) interface{} {
+func (a *attributeBase) makeGoodValue() interface{} {
 	switch a.comparison {
 	case ComparisonEquals:
 		return a.value
-	case ComparisonNotEquals:
+	case ComparisonNotEquals, ComparisonNotAnyOf:
 		return flipValue(a.value)
 	case ComparisonAnyOf:
 		if strs, ok := a.value.([]string); ok && len(strs) > 0 {
 			return strs[0]
 		}
 		panic("only non-zero length list of strings are supported")
-	case ComparisonNotAnyOf:
-		return "something"
-	case ComparisonGreaterThan:
+	case ComparisonGreaterThan, ComparisonGreaterThanOrEqual:
 		if i, ok := a.value.(int); ok {
 			return i + 1
 		}
 		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
-	case ComparisonLessThan:
+	case ComparisonLessThan, ComparisonLessThanOrEqual:
 		if i, ok := a.value.(int); ok {
 			return i - 1
-		}
-		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
-	case ComparisonGreaterThanOrEqual:
-		if i, ok := a.value.(int); ok {
-			return i
-		}
-		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
-	case ComparisonLessThanOrEqual:
-		if i, ok := a.value.(int); ok {
-			return i
 		}
 		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 	case ComparisonContains:
@@ -87,7 +75,7 @@ func (a *attributeBase) makeGoodValue(value interface{}, comparison Comparison) 
 
 func (a *attributeBase) GenerateGoodExample() string {
 
-	value := a.makeGoodValue(a.value, a.comparison)
+	value := a.makeGoodValue()
 
 	if a.exampleCode != "" {
 		return examples.SetAttribute(a.exampleCode, fmt.Sprintf("%s.%s.*.%s", a.blockType, a.blockLabel, a.dotPath), value, "good_example")
@@ -99,35 +87,23 @@ func (a *attributeBase) GenerateGoodExample() string {
 `, a.blockType, a.blockLabel, "good_example", createTerraformFromDotPath(a.dotPath, value))
 }
 
-func (a *attributeBase) makeBadValue(value interface{}, comparison Comparison) interface{} {
+func (a *attributeBase) makeBadValue() interface{} {
 	switch a.comparison {
-	case ComparisonEquals:
+	case ComparisonEquals, ComparisonAnyOf:
 		return flipValue(a.value)
 	case ComparisonNotEquals:
 		return a.value
-	case ComparisonAnyOf:
-		return "something"
 	case ComparisonNotAnyOf:
 		if strs, ok := a.value.([]string); ok && len(strs) > 0 {
 			return strs[0]
 		}
 		panic("only non-zero length list of strings are supported")
-	case ComparisonGreaterThan:
+	case ComparisonGreaterThan, ComparisonGreaterThanOrEqual:
 		if i, ok := a.value.(int); ok {
 			return i - 1
 		}
 		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
-	case ComparisonLessThan:
-		if i, ok := a.value.(int); ok {
-			return i + 1
-		}
-		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
-	case ComparisonGreaterThanOrEqual:
-		if i, ok := a.value.(int); ok {
-			return i - 1
-		}
-		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
-	case ComparisonLessThanOrEqual:
+	case ComparisonLessThan, ComparisonLessThanOrEqual:
 		if i, ok := a.value.(int); ok {
 			return i + 1
 		}
@@ -149,7 +125,7 @@ func (a *attributeBase) makeBadValue(value interface{}, comparison Comparison) i
 
 func (a *attributeBase) GenerateBadExample() string {
 
-	value := a.makeBadValue(a.value, a.comparison)
+	value := a.makeBadValue()
 
 	if a.exampleCode != "" {
 		return examples.SetAttribute(a.exampleCode, fmt.Sprintf("%s.%s.*.%s", a.blockType, a.blockLabel, a.dotPath), value, "bad_example")

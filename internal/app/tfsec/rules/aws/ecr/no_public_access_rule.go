@@ -16,7 +16,7 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Provider:       provider.AWSProvider,
+		Provider:  provider.AWSProvider,
 		Service:   "ecr",
 		ShortCode: "no-public-access",
 		Documentation: rule.RuleDocumentation{
@@ -24,7 +24,7 @@ func init() {
 			Explanation: `Allowing public access to the ECR repository risks leaking sensitive of abusable information`,
 			Impact:      "Risk of potential data leakage of sensitive artifacts",
 			Resolution:  "Do not allow public access in the policy",
-			BadExample: []string{  `
+			BadExample: []string{`
 resource "aws_ecr_repository" "foo" {
   name = "bar"
 }
@@ -62,7 +62,7 @@ resource "aws_ecr_repository_policy" "foopolicy" {
 EOF
 }
 `},
-			GoodExample: []string{ `
+			GoodExample: []string{`
 resource "aws_ecr_repository" "foo" {
   name = "bar"
 }
@@ -104,15 +104,15 @@ EOF
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository_policy#policy",
 			},
 		},
-		RequiredTypes:  []string{ 
+		RequiredTypes: []string{
 			"resource",
 		},
-		RequiredLabels: []string{ 
+		RequiredLabels: []string{
 			"aws_ecr_repository_policy",
 		},
-		DefaultSeverity: severity.High, 
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context){
-			 // TODO: code goes here
+		DefaultSeverity: severity.High,
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+			// TODO: code goes here
 		},
 	})
 }
