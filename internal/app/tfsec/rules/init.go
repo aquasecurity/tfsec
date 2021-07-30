@@ -52,6 +52,7 @@ import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/securitycenter"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/storage"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/synapse"
+	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/cloudstack/compute"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/digitalocean/compute"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/digitalocean/droplet"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/digitalocean/loadbalancing"

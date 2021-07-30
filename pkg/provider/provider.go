@@ -17,6 +17,7 @@ const (
 	KubernetesProvider   Provider = "kubernetes"
 	OracleProvider       Provider = "oracle"
 	OpenStackProvider    Provider = "openstack"
+	CloudStackProvider   Provider = "cloudstack"
 )
 
 func RuleProviderToString(provider Provider) string {
@@ -31,6 +32,8 @@ func (p Provider) DisplayName() string {
 		return "Digital Ocean"
 	case "openstack":
 		return "OpenStack"
+	case "cloudstack":
+		return "Cloudstack"
 	default:
 		return strings.Title(strings.ToLower(string(p)))
 	}

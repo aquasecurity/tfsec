@@ -27,7 +27,7 @@ func init() {
 		ShortCode: "no-sensitive-info",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "Ensure all data stored in the Launch configuration EBS is securely encrypted",
-			Explanation: `When creating Launch Configurations, user data can be used for the initial configuration of the check. User data must not contain any sensitive data.`,
+			Explanation: `When creating Launch Configurations, user data can be used for the initial configuration of the instance. User data must not contain any sensitive data.`,
 			Impact:      "Sensitive credentials in user data can be leaked",
 			Resolution:  "Don't use sensitive data in user data",
 			BadExample: []string{`

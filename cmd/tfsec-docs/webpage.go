@@ -6,6 +6,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
@@ -90,14 +91,7 @@ func formatProviderName(providerName string) string {
 	if providerName == "digitalocean" {
 		providerName = "digital ocean"
 	}
-	switch providerName {
-	case "aws":
-		return strings.ToUpper(providerName)
-	case "openstack":
-		return "OpenStack"
-	default:
-		return strings.Title(strings.ToLower(providerName))
-	}
+	return provider.Provider(providerName).DisplayName()
 }
 
 func generateWebPage(webProviderPath string, r rule.Rule) error {
