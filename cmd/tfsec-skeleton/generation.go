@@ -21,6 +21,7 @@ var providers = []string{
 	"Google",
 	"Kubernetes",
 	"OpenStack",
+	"CloudStack",
 	"Oracle",
 }
 
