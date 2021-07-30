@@ -1,9 +1,6 @@
 package iam
 
-// generator-locked
 import (
-	"strings"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -21,22 +18,22 @@ import (
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		Service:   "iam",
-		ShortCode: "no-default-service-account-assignment",
+		ShortCode: "no-org-level-default-service-account-assignment",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "Roles should not be assigned to default service accounts",
 			Explanation: `Default service accounts should not be used - consider creating specialised service accounts for individual purposes.`,
 			Impact:      "Violation of principal of least privilege",
 			Resolution:  "Use specialised service accounts for specific purposes.",
 			BadExample: []string{`
-resource "google_project_iam_member" "project-123" {
-	project = "project-123"
+resource "google_organization_iam_member" "org-123" {
+	org_id = "organization-123"
 	role    = "roles/whatever"
 	member  = "123-compute@developer.gserviceaccount.com"
 }
 `,
 				`
-resource "google_project_iam_member" "project-123" {
-	project = "project-123"
+resource "google_organization_iam_member" "org-123" {
+	org_id = "org-123"
 	role    = "roles/whatever"
 	member  = "123@appspot.gserviceaccount.com"
 }
@@ -44,8 +41,8 @@ resource "google_project_iam_member" "project-123" {
 data "google_compute_default_service_account" "default" {
 }
 
-resource "google_project_iam_member" "project-123" {
-	project = "project-123"
+resource "google_organization_iam_member" "org-123" {
+	org_id = "org-123"
 	role    = "roles/whatever"
 	member  = data.google_compute_default_service_account.default.id
 }
@@ -57,21 +54,21 @@ resource "google_service_account" "test" {
 	display_name = "account123"
 }
 			  
-resource "google_project_iam_member" "project-123" {
-	project = "project-123"
+resource "google_organization_iam_member" "org-123" {
+	org_id = "org-123"
 	role    = "roles/whatever"
 	member  = "serviceAccount:${google_service_account.test.email}"
 }
 `,
 			},
 			Links: []string{
-				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam",
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_organization_iam",
 				"",
 			},
 		},
 		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"google_project_iam_binding,", "google_project_iam_member"},
+		RequiredLabels:  []string{"google_organization_iam_binding", "google_organization_iam_member"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
@@ -116,8 +113,4 @@ resource "google_project_iam_member" "project-123" {
 
 		},
 	})
-}
-
-func isMemberDefaultServiceAccount(member string) bool {
-	return strings.HasSuffix(member, "-compute@developer.gserviceaccount.com") || strings.HasSuffix(member, "@appspot.gserviceaccount.com")
 }
