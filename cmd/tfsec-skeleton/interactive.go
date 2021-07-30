@@ -129,10 +129,10 @@ func (input *Input) gatherInputsInteractively() error {
 	if requirementIndex == len(requirementStrs)-1 {
 		input.Requirement = requirements.Custom(input.RequiredTypes[0], input.RequiredLabels[0], exampleCode)
 	} else {
-		dotPath := prompt.EnterInput("Enter the path to the attribute to check (e.g. settings.encryption.enabled): ")
+		input.AttributeName = prompt.EnterInput("Enter the path to the attribute to check (e.g. settings.encryption.enabled): ")
 		expectedValue := enterInterfaceValue("Enter the value the attribute must have to pass the check (e.g. true): ")
 		failForDefault := inputYesNo("Should the check fail if a default value is used?")
-		input.Requirement = requirements.NewAttributeRequirement(input.RequiredTypes[0], input.RequiredLabels[0], dotPath, expectedValue, failForDefault, exampleCode, requirementTypes[requirementIndex])
+		input.Requirement = requirements.NewAttributeRequirement(input.RequiredTypes[0], input.RequiredLabels[0], input.AttributeName, expectedValue, failForDefault, exampleCode, requirementTypes[requirementIndex])
 	}
 
 	_ = deleteSwap()

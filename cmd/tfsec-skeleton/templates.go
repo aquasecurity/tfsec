@@ -65,7 +65,7 @@ func Test_{{.TestName}}_FailureExamples(t *testing.T) {
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
-		t.FailNow()
+		t.Fatalf("Rule not found: %s", expectedCode)
 	}
 	for i, badExample := range rule.Documentation.BadExample {
 		t.Logf("Running bad example for '%s' #%d", expectedCode, i+1)
@@ -87,7 +87,7 @@ func Test_{{.TestName}}_SuccessExamples(t *testing.T) {
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
-		t.FailNow()
+		t.Fatalf("Rule not found: %s", expectedCode)
 	}
 	for i, example := range rule.Documentation.GoodExample {
 		t.Logf("Running good example for '%s' #%d", expectedCode, i+1)

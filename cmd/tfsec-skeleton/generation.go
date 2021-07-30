@@ -19,6 +19,7 @@ var providers = []string{
 	"General",
 	"GitHub",
 	"Google",
+	"Kubernetes",
 	"OpenStack",
 	"Oracle",
 }
