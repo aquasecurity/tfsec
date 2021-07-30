@@ -1,5 +1,6 @@
 package gke
 
+// generator-locked
 import (
 	"testing"
 

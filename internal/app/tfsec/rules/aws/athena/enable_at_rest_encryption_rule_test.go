@@ -1,5 +1,6 @@
 package athena
 
+// generator-locked
 import (
 	"testing"
 

@@ -1,5 +1,6 @@
 package autoscaling
 
+// generator-locked
 import (
 	"testing"
 

@@ -1,5 +1,6 @@
 package eks
 
+// generator-locked
 import (
 	"testing"
 

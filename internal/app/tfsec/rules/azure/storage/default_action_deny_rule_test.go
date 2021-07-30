@@ -1,5 +1,6 @@
 package storage
 
+// generator-locked
 import (
 	"testing"
 

@@ -1,5 +1,6 @@
 package ec2
 
+// generator-locked
 import (
 	"testing"
 

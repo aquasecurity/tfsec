@@ -1,5 +1,6 @@
 package secrets
 
+// generator-locked
 import (
 	"testing"
 

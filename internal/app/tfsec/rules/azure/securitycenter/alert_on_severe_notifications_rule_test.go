@@ -1,5 +1,6 @@
 package securitycenter
 
+// generator-locked
 import (
 	"testing"
 
