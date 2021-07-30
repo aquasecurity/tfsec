@@ -3,6 +3,7 @@
   "configurations": [
 
 
+
     {
       "name": "Basic tfsec",
       "type": "go",
@@ -49,6 +50,14 @@
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/tfsec/main.go",
       "args": ["${workspaceFolder}/example/with_config_overrides"]
+    },
+    {
+      "name": "module loading without init test",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/tfsec/main.go",
+      "args": ["${workspaceFolder}/example/971/configurations/project"]
     },
     {
       "name": "workspace test",
