@@ -138,7 +138,6 @@ func printStatistics() {
 		metrics.BlocksEvaluated,
 		metrics.ModuleLoadCount,
 		metrics.ModuleBlocksLoaded,
-		metrics.IgnoredChecks,
 	} {
 		_ = tml.Printf("  <blue>%-20s</blue> %d\n", name, counts[name])
 	}
@@ -153,6 +152,7 @@ func printStatistics() {
 		count := metrics.CountSeverity(sev)
 		_ = tml.Printf("  <blue>%-20s</blue> %d\n", strings.ToLower(string(sev)), count)
 	}
+	_ = tml.Printf("  <blue>%-20s</blue> %d\n", "ignored", counts[metrics.IgnoredChecks])
 }
 
 // highlight the lines of code which caused a problem, if available
