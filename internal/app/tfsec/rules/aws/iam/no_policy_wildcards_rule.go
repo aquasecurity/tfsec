@@ -184,7 +184,7 @@ func checkAWS099PolicyDocumentBlock(set result.Set, policyDocumentBlock block.Bl
 }
 
 func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr block.Attribute) {
-	var document awsIAMPolicyDocument
+	var document PolicyDocument
 	if err := json.Unmarshal([]byte(policyAttr.Value().AsString()), &document); err != nil {
 		return
 	}

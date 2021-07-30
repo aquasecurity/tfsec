@@ -5,8 +5,13 @@ package ecr
 // Before making changes, consider updating the generator.
 
 import (
+	"encoding/json"
+	"strings"
+
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/iam"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -77,7 +82,7 @@ resource "aws_ecr_repository_policy" "foopolicy" {
         {
             "Sid": "new policy",
             "Effect": "Allow",
-            "Principal": "*",
+            "Principal": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
             "Action": [
                 "ecr:GetDownloadUrlForLayer",
                 "ecr:BatchGetImage",
@@ -112,7 +117,37 @@ EOF
 		},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			// TODO: code goes here
+
+			policyAttr := resourceBlock.GetAttribute("policy")
+			if policyAttr.IsNil() || !policyAttr.IsString() {
+				return
+			}
+
+			var document iam.PolicyDocument
+			if err := json.Unmarshal([]byte(policyAttr.Value().AsString()), &document); err != nil {
+				debug.Log("Error decoding IAM policy JSON at %s: %s", policyAttr.Range(), err)
+				return
+			}
+
+			for _, statement := range document.Statements {
+				var hasECRAction bool
+				for _, action := range statement.Action {
+					if strings.HasPrefix(action, "ecr:") {
+						hasECRAction = true
+						break
+					}
+				}
+				if !hasECRAction {
+					continue
+				}
+				for _, account := range statement.Principal.AWS {
+					if account == "*" {
+						set.AddResult().
+							WithDescription("Resource '%s' provides public access to the ECR repository.", resourceBlock.FullName())
+					}
+					return
+				}
+			}
 		},
 	})
 }
