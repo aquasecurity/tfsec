@@ -1,5 +1,6 @@
 package config
 
+// generator-locked
 import (
 	"testing"
 

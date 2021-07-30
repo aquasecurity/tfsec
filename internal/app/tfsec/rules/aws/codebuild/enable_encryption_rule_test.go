@@ -1,5 +1,6 @@
 package codebuild
 
+// generator-locked
 import (
 	"fmt"
 	"testing"

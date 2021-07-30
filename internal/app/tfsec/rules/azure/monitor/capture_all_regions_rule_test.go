@@ -1,5 +1,6 @@
 package monitor
 
+// generator-locked
 import (
 	"testing"
 

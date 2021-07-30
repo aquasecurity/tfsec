@@ -1,5 +1,6 @@
 package network
 
+// generator-locked
 import (
 	"strings"
 

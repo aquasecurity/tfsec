@@ -1,5 +1,6 @@
 package cloudtrail
 
+// generator-locked
 import (
 	"testing"
 

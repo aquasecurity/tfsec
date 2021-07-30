@@ -1,5 +1,6 @@
 package apigateway
 
+// generator-locked
 import (
 	"testing"
 

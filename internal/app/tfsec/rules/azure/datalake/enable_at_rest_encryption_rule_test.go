@@ -1,5 +1,6 @@
 package datalake
 
+// generator-locked
 import (
 	"testing"
 

@@ -1,5 +1,6 @@
 package spaces
 
+// generator-locked
 import (
 	"testing"
 

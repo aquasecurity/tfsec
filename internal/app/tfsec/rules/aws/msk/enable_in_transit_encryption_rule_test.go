@@ -1,5 +1,6 @@
 package msk
 
+// generator-locked
 import (
 	"testing"
 

@@ -1,5 +1,6 @@
 package documentdb
 
+// generator-locked
 import (
 	"strings"
 	"testing"

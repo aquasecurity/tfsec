@@ -1,5 +1,6 @@
 package sqs
 
+// generator-locked
 import (
 	"encoding/json"
 	"strings"
