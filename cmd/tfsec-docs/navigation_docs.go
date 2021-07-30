@@ -15,7 +15,8 @@ const navDocsTemplate = `---
 - title: Getting Started
   state: open
   docs:
-    - installation
+  	- installation
+	- usage
 
 ||CHECKBLOCK||
 
