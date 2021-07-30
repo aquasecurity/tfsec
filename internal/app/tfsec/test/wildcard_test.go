@@ -54,7 +54,7 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 
 	for i, test := range tests {
 
-		code := fmt.Sprintf("WILD%d", i)
+		code := fmt.Sprintf("wild%d", i)
 
 		scanner.RegisterCheckRule(rule.Rule{
 			Service:   "service",

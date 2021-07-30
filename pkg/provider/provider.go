@@ -14,6 +14,7 @@ const (
 	GeneralProvider      Provider = "general"
 	GitHubProvider       Provider = "github"
 	GoogleProvider       Provider = "google"
+	KubernetesProvider   Provider = "kubernetes"
 	OracleProvider       Provider = "oracle"
 	OpenStackProvider    Provider = "openstack"
 )
