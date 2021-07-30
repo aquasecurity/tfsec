@@ -66,12 +66,8 @@ resource "aws_msk_cluster" "example" {
 
   logging_info {
     broker_logs {
-      cloudwatch_logs {
-        enabled   = true
-        log_group = aws_cloudwatch_log_group.test.name
-      }
       firehose {
-        enabled         = true
+        enabled         = false
         delivery_stream = aws_kinesis_firehose_delivery_stream.test_stream.name
       }
       s3 {
@@ -106,17 +102,12 @@ resource "aws_msk_cluster" "example" {
   logging_info {
     broker_logs {
       cloudwatch_logs {
-        enabled   = true
+        enabled   = false
         log_group = aws_cloudwatch_log_group.test.name
       }
       firehose {
         enabled         = true
         delivery_stream = aws_kinesis_firehose_delivery_stream.test_stream.name
-      }
-      s3 {
-        enabled = true
-        bucket  = aws_s3_bucket.bucket.id
-        prefix  = "logs/msk-"
       }
     }
   }
@@ -149,7 +140,7 @@ resource "aws_msk_cluster" "example" {
         log_group = aws_cloudwatch_log_group.test.name
       }
       firehose {
-        enabled         = true
+        enabled         = false
         delivery_stream = aws_kinesis_firehose_delivery_stream.test_stream.name
       }
       s3 {
@@ -178,20 +169,20 @@ resource "aws_msk_cluster" "example" {
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			cwLogAttr := resourceBlock.GetNestedAttribute("logging_info.broker_logs.cloudwatch_logs.enabled")
-			firehoseLogAttr := resourceBlock.GetNestedAttribute("logging_info.broker_logs.firehose.enabled")
-			s3LogAttr := resourceBlock.GetNestedAttribute("logging_info.broker_logs.s3.enabled")
-
-			if cwLogAttr.IsNotNil() && cwLogAttr.IsTrue() {
-				return
-			}
-			if firehoseLogAttr.IsNotNil() && firehoseLogAttr.IsTrue() {
-				return
-			}
-			if s3LogAttr.IsNotNil() && s3LogAttr.IsTrue() {
+			if cwLogAttr := resourceBlock.GetNestedAttribute("logging_info.broker_logs.cloudwatch_logs.enabled"); cwLogAttr.IsNotNil() && cwLogAttr.IsTrue() {
 				return
 			}
 
+			if firehoseLogAttr := resourceBlock.GetNestedAttribute("logging_info.broker_logs.firehose.enabled"); firehoseLogAttr.IsNotNil() && firehoseLogAttr.IsTrue() {
+				return
+			}
+
+			if s3LogAttr := resourceBlock.GetNestedAttribute("logging_info.broker_logs.s3.enabled"); s3LogAttr.IsNotNil() && s3LogAttr.IsTrue() {
+				return
+			}
+
+			set.AddResult().
+				WithDescription("Resource '%s' does not have any broker logging enabled", resourceBlock.FullName())
 		},
 	})
 }
