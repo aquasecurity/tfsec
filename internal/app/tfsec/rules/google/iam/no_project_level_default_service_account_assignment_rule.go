@@ -20,7 +20,7 @@ import (
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		Service:   "iam",
-		ShortCode: "no-default-service-account-assignment",
+		ShortCode: "no-project-level-default-service-account-assignment",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "Roles should not be assigned to default service accounts",
 			Explanation: `Default service accounts should not be used - consider creating specialised service accounts for individual purposes.`,
@@ -70,7 +70,7 @@ resource "google_project_iam_member" "project-123" {
 		},
 		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"google_project_iam_binding,", "google_project_iam_member"},
+		RequiredLabels:  []string{"google_project_iam_binding", "google_project_iam_member"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 

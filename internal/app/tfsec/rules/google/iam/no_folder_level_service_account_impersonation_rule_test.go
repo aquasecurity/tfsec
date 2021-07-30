@@ -8,8 +8,8 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_GoogleNoDefaultServiceAccountAssignment_FailureExamples(t *testing.T) {
-	expectedCode := "google-iam-no-default-service-account-assignment"
+func Test_GoogleNoFolderLevelServiceAccountAccess_FailureExamples(t *testing.T) {
+	expectedCode := "google-iam-no-folder-level-service-account-impersonation"
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -30,8 +30,8 @@ func Test_GoogleNoDefaultServiceAccountAssignment_FailureExamples(t *testing.T) 
 	}
 }
 
-func Test_GoogleNoDefaultServiceAccountAssignment_SuccessExamples(t *testing.T) {
-	expectedCode := "google-iam-no-default-service-account-assignment"
+func Test_GoogleNoFolderLevelServiceAccountAccess_SuccessExamples(t *testing.T) {
+	expectedCode := "google-iam-no-folder-level-service-account-impersonation"
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
