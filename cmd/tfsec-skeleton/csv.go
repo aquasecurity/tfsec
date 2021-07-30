@@ -90,7 +90,7 @@ func generateFromCSV(path string) ([]*Input, error) {
 		}
 
 		if err := input.Validate(); err != nil {
-			return nil, fmt.Errorf("line %d of csv failed validation: %s", i, err)
+			return nil, fmt.Errorf("line %d [%s] of csv failed validation: %s", i, input.Summary, err)
 		}
 
 		inputs = append(inputs, &input)

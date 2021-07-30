@@ -11,6 +11,7 @@ type Attribute interface {
 	Range() Range
 	Name() string
 	Contains(checkValue interface{}, equalityOptions ...EqualityOption) bool
+	NotContains(checkValue interface{}, equalityOptions ...EqualityOption) bool
 	StartsWith(prefix interface{}) bool
 	EndsWith(suffix interface{}) bool
 	Equals(checkValue interface{}, equalityOptions ...EqualityOption) bool

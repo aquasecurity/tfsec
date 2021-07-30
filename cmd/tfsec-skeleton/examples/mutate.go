@@ -37,7 +37,7 @@ func (m *machine) processAttributeLine(line string) string {
 	parts := strings.Split(line, "=")
 	name := strings.TrimSpace(parts[0])
 	if strings.Join(append(m.stack, name), ".") == m.dotPath {
-		line = fmt.Sprintf("%s= %s", parts[0], sprintGo(m.value))
+		line = fmt.Sprintf("%s= %s", parts[0], sprintHCL(m.value))
 		m.found = true
 	}
 	if strings.Contains(line, "<<") {
@@ -122,7 +122,7 @@ func expandPathAndValue(dotPath string, value interface{}, tabStr string, tabSiz
 	tab := strings.Repeat(tabStr, tabSize)
 	segments := strings.Split(dotPath, ".")
 	if len(segments) == 1 {
-		return fmt.Sprintf("%s%s = %s", tab, segments[0], sprintGo(value))
+		return fmt.Sprintf("%s%s = %s", tab, segments[0], sprintHCL(value))
 	}
 
 	return fmt.Sprintf("%s%s {\n%s\n%s}", tab, segments[0], expandPathAndValue(strings.Join(segments[1:], "."), value, tabStr, tabSize+1), tab)
@@ -144,12 +144,15 @@ func dotSegmentFromLine(line string) string {
 	return strings.Join(output, ".")
 }
 
-func sprintGo(value interface{}) string {
+func sprintHCL(value interface{}) string {
 	if s, ok := value.(string); ok {
 		return fmt.Sprintf("%q", s)
 	}
 	if s, ok := value.([]string); ok {
-		return fmt.Sprintf("%#v", s)
+		if len(s) == 0 {
+			return `[]`
+		}
+		return fmt.Sprintf(`["%s"]`, strings.Join(s, `", "`))
 	}
 	return fmt.Sprintf("%v", value)
 }
