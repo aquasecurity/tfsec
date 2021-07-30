@@ -22,10 +22,10 @@ func init() {
 		Service:   "sql",
 		ShortCode: "no-public-access",
 		Documentation: rule.RuleDocumentation{
-			Summary: "Ensure that Cloud SQL Database Instances are not publicly exposed",
-			Explanation: `	`,
-			Impact:     "Public exposure of sensitive data",
-			Resolution: "Remove public access from database instances",
+			Summary:     "Ensure that Cloud SQL Database Instances are not publicly exposed",
+			Explanation: `Database instances should be configured so that they are not available over the public internet, but to internal compute resources which access them.`,
+			Impact:      "Public exposure of sensitive data",
+			Resolution:  "Remove public access from database instances",
 			BadExample: []string{`
 resource "google_sql_database_instance" "postgres" {
 	name             = "postgres-instance-a"
@@ -67,7 +67,10 @@ resource "google_sql_database_instance" "postgres" {
 	}
 }
 			`},
-			Links: []string{"https://www.cloudconformity.com/knowledge-base/gcp/CloudSQL/publicly-accessible-cloud-sql-instances.html#"},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance",
+				"https://www.cloudconformity.com/knowledge-base/gcp/CloudSQL/publicly-accessible-cloud-sql-instances.html",
+			},
 		},
 		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},

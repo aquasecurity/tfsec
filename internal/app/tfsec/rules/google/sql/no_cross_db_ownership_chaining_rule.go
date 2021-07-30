@@ -45,7 +45,10 @@ resource "google_sql_database_instance" "db" {
 	}
 }
 			`},
-			Links: []string{"https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/cross-db-ownership-chaining-server-configuration-option?view=sql-server-ver15"},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance",
+				"https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/cross-db-ownership-chaining-server-configuration-option?view=sql-server-ver15",
+			},
 		},
 		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},

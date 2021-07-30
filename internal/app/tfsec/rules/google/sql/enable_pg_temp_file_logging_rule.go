@@ -47,7 +47,10 @@ resource "google_sql_database_instance" "db" {
 	}
 }
 			`},
-			Links: []string{"https://postgresqlco.nf/doc/en/param/log_temp_files/"},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance",
+				"https://postgresqlco.nf/doc/en/param/log_temp_files/",
+			},
 		},
 		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
