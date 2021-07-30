@@ -1,5 +1,6 @@
 package kms
 
+// generator-locked
 import (
 	"testing"
 

@@ -1,5 +1,6 @@
 package loadbalancing
 
+// generator-locked
 import (
 	"testing"
 

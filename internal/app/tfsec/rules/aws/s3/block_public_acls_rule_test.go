@@ -1,5 +1,6 @@
 package s3
 
+// generator-locked
 import (
 	"strings"
 	"testing"

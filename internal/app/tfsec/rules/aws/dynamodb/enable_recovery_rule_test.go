@@ -1,5 +1,6 @@
 package dynamodb
 
+// generator-locked
 import (
 	"testing"
 

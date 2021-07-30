@@ -1,5 +1,6 @@
 package ecr
 
+// generator-locked
 import (
 	"testing"
 

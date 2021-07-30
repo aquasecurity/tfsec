@@ -1,5 +1,6 @@
 package workspace
 
+// generator-locked
 import (
 	"testing"
 

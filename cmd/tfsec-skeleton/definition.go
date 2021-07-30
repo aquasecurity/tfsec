@@ -49,13 +49,11 @@ func writeRuleFromInput(input *Input, forceOverwrite bool) error {
 		return err
 	}
 
-	if !forceOverwrite {
-		if err := verifyPathDoesNotExist(checkPath); err != nil {
-			return err
-		}
-		if err := verifyPathDoesNotExist(testPath); err != nil {
-			return err
-		}
+	if err := verifyPathDoesNotExist(checkPath, forceOverwrite); err != nil {
+		return err
+	}
+	if err := verifyPathDoesNotExist(testPath, forceOverwrite); err != nil {
+		return err
 	}
 
 	if err := writeTemplate(checkPath, checkTmpl, definition); err != nil {

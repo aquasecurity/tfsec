@@ -1,5 +1,6 @@
 package synapse
 
+// generator-locked
 import (
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"

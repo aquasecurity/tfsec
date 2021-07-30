@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -36,10 +37,20 @@ func writeTemplate(checkPath string, checkTmpl *template.Template, definition De
 	return nil
 }
 
-func verifyPathDoesNotExist(checkPath string) error {
+func verifyPathDoesNotExist(checkPath string, forceOverwrite bool) error {
 	stat, _ := os.Stat(checkPath)
 	if stat != nil {
-		return fmt.Errorf("file [%s] already exists so not creating check", checkPath)
+		file, err := ioutil.ReadFile(checkPath)
+		if err != nil {
+			return err
+		}
+		if strings.Contains(string(file), "// generator-locked") {
+			return fmt.Errorf("file [%s] is locked for update, remove comment to overwrite", checkPath)
+		}
+
+		if !forceOverwrite {
+			return fmt.Errorf("file [%s] already exists so not creating check", checkPath)
+		}
 	}
 	return nil
 }

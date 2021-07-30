@@ -1,5 +1,6 @@
 package database
 
+// generator-locked
 import (
 	"testing"
 

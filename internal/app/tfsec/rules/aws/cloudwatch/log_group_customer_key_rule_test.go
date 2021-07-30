@@ -1,5 +1,6 @@
 package cloudwatch
 
+// generator-locked
 import (
 	"testing"
 

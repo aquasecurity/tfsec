@@ -1,5 +1,6 @@
 package appservice
 
+// generator-locked
 import (
 	"testing"
 

@@ -1,5 +1,6 @@
 package secrets
 
+// generator-locked
 import (
 	"github.com/zclconf/go-cty/cty"
 

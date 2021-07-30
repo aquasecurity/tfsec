@@ -1,5 +1,6 @@
 package sql
 
+// generator-locked
 import (
 	"strings"
 

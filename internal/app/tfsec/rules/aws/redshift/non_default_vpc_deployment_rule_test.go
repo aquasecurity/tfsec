@@ -1,5 +1,6 @@
 package redshift
 
+// generator-locked
 import (
 	"testing"
 
