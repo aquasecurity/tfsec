@@ -62,7 +62,26 @@ resource "kubernetes_network_policy" "bad_example" {
       }
     }
 
-    egress {} # single empty rule to allow all egress traffic
+    ingress {
+      ports {
+        port     = "http"
+        protocol = "TCP"
+      }
+      ports {
+        port     = "8125"
+        protocol = "UDP"
+      }
+
+      from {
+        ip_block {
+          cidr = "10.0.0.0/16"
+          except = [
+            "10.0.0.0/24",
+            "10.0.1.0/24",
+          ]
+        }
+      }
+    }
 
     policy_types = ["Ingress", "Egress"]
   }
@@ -105,7 +124,26 @@ resource "kubernetes_network_policy" "good_example" {
       }
     }
 
-    egress {} # single empty rule to allow all egress traffic
+    ingress {
+      ports {
+        port     = "http"
+        protocol = "TCP"
+      }
+      ports {
+        port     = "8125"
+        protocol = "UDP"
+      }
+
+      from {
+        ip_block {
+          cidr = "10.0.0.0/16"
+          except = [
+            "10.0.0.0/24",
+            "10.0.1.0/24",
+          ]
+        }
+      }
+    }
 
     policy_types = ["Ingress", "Egress"]
   }
