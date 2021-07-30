@@ -21,10 +21,10 @@ func init() {
 		Service:   "sql",
 		ShortCode: "encrypt-in-transit-data",
 		Documentation: rule.RuleDocumentation{
-			Summary: "SSL connections to a SQL database instance should be enforced.",
-			Explanation: `	`,
-			Impact:     "Intercepted data can be read in transit",
-			Resolution: "Enforce SSL for all connections",
+			Summary:     "SSL connections to a SQL database instance should be enforced.",
+			Explanation: `In-transit data should be encrypted so that if traffic is intercepted data will not be exposed in plaintext to attackers.`,
+			Impact:      "Intercepted data can be read in transit",
+			Resolution:  "Enforce SSL for all connections",
 			BadExample: []string{`
 resource "google_sql_database_instance" "postgres" {
 	name             = "postgres-instance-a"
@@ -63,7 +63,10 @@ resource "google_sql_database_instance" "postgres" {
 	}
 }
 			`},
-			Links: []string{"https://cloud.google.com/sql/docs/mysql/configure-ssl-instance"},
+			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance",
+				"https://cloud.google.com/sql/docs/mysql/configure-ssl-instance",
+			},
 		},
 		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
