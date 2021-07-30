@@ -22,7 +22,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-type awsIAMPolicyDocument struct {
+type PolicyDocument struct {
 	Statements []awsIAMPolicyDocumentStatement `json:"Statement"`
 }
 
@@ -34,11 +34,52 @@ type awsIAMPolicyDocumentStatement struct {
 }
 
 type awsIAMPolicyPrincipal struct {
-	AWS awsIAMPolicyDocumentValue `json:"AWS"`
+	AWS     []string
+	Service []string
 }
 
 // AWS allows string or []string as value, we convert everything to []string to avoid casting
 type awsIAMPolicyDocumentValue []string
+
+func (value *awsIAMPolicyPrincipal) UnmarshalJSON(b []byte) error {
+
+	var raw interface{}
+	err := json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+
+	//  value can be string or []string, convert everything to []string
+	switch v := raw.(type) {
+	case map[string]interface{}:
+		for key, each := range v {
+			switch raw := each.(type) {
+			case string:
+				if key == "Service" {
+					value.Service = append(value.Service, raw)
+				} else {
+					value.AWS = append(value.AWS, raw)
+				}
+			case []string:
+				if key == "Service" {
+					value.Service = append(value.Service, raw...)
+				} else {
+					value.AWS = append(value.AWS, raw...)
+				}
+			}
+		}
+	case string:
+		value.AWS = []string{v}
+	case []interface{}:
+		for _, item := range v {
+			value.AWS = append(value.AWS, fmt.Sprintf("%v", item))
+		}
+	default:
+		return fmt.Errorf("invalid %s value element: allowed is only string or []string", value)
+	}
+
+	return nil
+}
 
 func (value *awsIAMPolicyDocumentValue) UnmarshalJSON(b []byte) error {
 
@@ -213,7 +254,7 @@ data "aws_iam_policy_document" "kms_policy" {
 }
 
 func checkAWS097PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr block.Attribute) {
-	var document awsIAMPolicyDocument
+	var document PolicyDocument
 	if err := json.Unmarshal([]byte(policyAttr.Value().AsString()), &document); err != nil {
 		return
 	}

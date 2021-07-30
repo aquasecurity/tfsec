@@ -5,7 +5,15 @@ import (
 	"strings"
 )
 
+type RequirementType int
+
+const (
+	CustomRequirement RequirementType = iota
+	AttributeRequirement
+)
+
 type Requirement interface {
+	RequirementType() RequirementType
 	GenerateGoodExample() string
 	GenerateBadExample() string
 	GenerateRuleCode() string
@@ -136,6 +144,10 @@ func buildStringComparison(value string, comparison Comparison) string {
 			return "!IsEmpty()"
 		}
 		return fmt.Sprintf(`NotEqual(%s)`, sprintGo(value))
+	case ComparisonContains:
+		return fmt.Sprintf(`Contains(%s)`, sprintGo(value))
+	case ComparisonNotContains:
+		return fmt.Sprintf(`NotContains(%s)`, sprintGo(value))
 	}
 	panic(fmt.Sprintf("Comparison '%s' not supported for string", comparison))
 }

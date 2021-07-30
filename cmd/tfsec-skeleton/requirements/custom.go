@@ -43,3 +43,7 @@ func (a *custom) GenerateBadExample() string {
 func (a *custom) GenerateRuleCode() string {
 	return " // TODO: code goes here"
 }
+
+func (a *custom) RequirementType() RequirementType {
+	return CustomRequirement
+}
