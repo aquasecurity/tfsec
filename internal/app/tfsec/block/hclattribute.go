@@ -211,6 +211,10 @@ func (attr *HCLAttribute) mapContains(checkValue interface{}, val cty.Value) boo
 	}
 }
 
+func (attr *HCLAttribute) NotContains(checkValue interface{}, equalityOptions ...EqualityOption) bool {
+	return !attr.Contains(checkValue, equalityOptions...)
+}
+
 func (attr *HCLAttribute) Contains(checkValue interface{}, equalityOptions ...EqualityOption) bool {
 	if attr == nil {
 		return false

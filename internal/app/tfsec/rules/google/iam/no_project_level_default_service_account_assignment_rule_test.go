@@ -9,7 +9,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_GoogleNoDefaultServiceAccountAssignment_FailureExamples(t *testing.T) {
+func Test_GoogleNoDefaultServiceAccountAtProjectAssignment_FailureExamples(t *testing.T) {
 	expectedCode := "google-iam-no-project-level-default-service-account-assignment"
 
 	check, err := scanner.GetRuleById(expectedCode)
@@ -31,7 +31,7 @@ func Test_GoogleNoDefaultServiceAccountAssignment_FailureExamples(t *testing.T) 
 	}
 }
 
-func Test_GoogleNoDefaultServiceAccountAssignment_SuccessExamples(t *testing.T) {
+func Test_GoogleNoDefaultServiceAccountAtProjectAssignment_SuccessExamples(t *testing.T) {
 	expectedCode := "google-iam-no-project-level-default-service-account-assignment"
 
 	check, err := scanner.GetRuleById(expectedCode)

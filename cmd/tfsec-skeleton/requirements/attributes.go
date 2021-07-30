@@ -70,6 +70,16 @@ func (a *attributeBase) makeGoodValue(value interface{}, comparison Comparison) 
 			return i
 		}
 		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+	case ComparisonContains:
+		if s, ok := a.value.(string); ok {
+			return []string{s}
+		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+	case ComparisonNotContains:
+		if _, ok := a.value.(string); ok {
+			return []string{}
+		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 	default:
 		panic(fmt.Sprintf("comparison '%s' is not supported", a.comparison))
 	}
@@ -120,6 +130,16 @@ func (a *attributeBase) makeBadValue(value interface{}, comparison Comparison) i
 	case ComparisonLessThanOrEqual:
 		if i, ok := a.value.(int); ok {
 			return i + 1
+		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+	case ComparisonContains:
+		if _, ok := a.value.(string); ok {
+			return []string{}
+		}
+		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+	case ComparisonNotContains:
+		if s, ok := a.value.(string); ok {
+			return []string{s}
 		}
 		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
 	default:
@@ -187,6 +207,11 @@ func (a *attributeBase) GenerateRuleCode() string {
 		messageTemplate = fmt.Sprintf("Resource '%%s' does not have %s set to greater than or equal to %d", a.dotPath, a.value)
 	case ComparisonLessThanOrEqual:
 		messageTemplate = fmt.Sprintf("Resource '%%s' does not have %s set to greater than or equal to %d", a.dotPath, a.value)
+	case ComparisonContains:
+		messageTemplate = fmt.Sprintf("Resource '%%s' should have %s in %s", a.value, a.dotPath)
+	case ComparisonNotContains:
+		messageTemplate = fmt.Sprintf("Resource '%%s' has %s in %s", a.value, a.dotPath)
+
 	default:
 		panic(fmt.Sprintf("comparison '%s' is not supported", a.comparison))
 	}
