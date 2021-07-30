@@ -5,7 +5,15 @@ import (
 	"strings"
 )
 
+type RequirementType int
+
+const (
+	CustomRequirement RequirementType = iota
+	AttributeRequirement
+)
+
 type Requirement interface {
+	RequirementType() RequirementType
 	GenerateGoodExample() string
 	GenerateBadExample() string
 	GenerateRuleCode() string

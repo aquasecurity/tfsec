@@ -224,3 +224,7 @@ func (a *attributeBase) GenerateRuleCode() string {
 
 	return code
 }
+
+func (a *attributeBase) RequirementType() RequirementType {
+	return RequirementType(AttributeRequirement)
+}

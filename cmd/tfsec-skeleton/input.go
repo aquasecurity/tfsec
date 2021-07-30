@@ -56,7 +56,7 @@ func (i Input) Validate() error {
 	if i.Requirement == nil {
 		return fmt.Errorf("no requirement specified")
 	}
-	if i.AttributeName == "" {
+	if i.AttributeName == "" && i.Requirement.RequirementType() != requirements.CustomRequirement {
 		return fmt.Errorf("no attribute path specified")
 	}
 	return nil
