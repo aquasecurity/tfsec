@@ -23,7 +23,7 @@ func init() {
 		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
 			Summary:    "Launch configuration with unencrypted block device.",
-			Impact:     "The block device is could be compromised and read from",
+			Impact:     "The block device could be compromised and read from",
 			Resolution: "Turn on encryption for all block devices",
 			Explanation: `
 Blocks devices should be encrypted to ensure sensitive data is held securely at rest.
