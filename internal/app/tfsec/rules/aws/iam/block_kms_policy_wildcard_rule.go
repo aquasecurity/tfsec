@@ -241,6 +241,7 @@ data "aws_iam_policy_document" "kms_policy" {
 								if value.Type() == cty.String && strings.Contains(value.AsString(), ("*")) {
 									set.AddResult().
 										WithDescription("Resource '%s' a policy with KMS actions for all KMS keys.", policyDocumentBlock.FullName()).
+										WithBlock(policyDocumentBlock).
 										WithAttribute(resources)
 								}
 							})

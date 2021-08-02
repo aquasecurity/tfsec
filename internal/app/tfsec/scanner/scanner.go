@@ -37,7 +37,7 @@ func New(options ...Option) *Scanner {
 // Find element in list
 func checkInList(id string, legacyID string, list []string) bool {
 	for _, codeIgnored := range list {
-		if codeIgnored == id || codeIgnored == legacyID {
+		if codeIgnored == id || (legacyID != "" && codeIgnored == legacyID) {
 			return true
 		}
 	}
