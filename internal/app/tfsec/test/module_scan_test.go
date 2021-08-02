@@ -17,7 +17,7 @@ import (
 
 func Test_ProblemInModule(t *testing.T) {
 
-	scanner.RegisterCheckRule(rule.Rule{
+	rule := rule.Rule{
 		LegacyID:  "EXA001",
 		Provider:  provider.AWSProvider,
 		Service:   "service",
@@ -48,7 +48,9 @@ resource "problem" "x" {
 					WithDescription("example problem")
 			}
 		},
-	})
+	}
+	scanner.RegisterCheckRule(rule)
+	defer scanner.DeregisterCheckRule(rule)
 
 	var tests = []struct {
 		name                  string
