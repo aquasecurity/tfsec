@@ -144,6 +144,7 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 		if value.Type() == cty.String && strings.Contains(value.AsString(), ("*")) {
 			set.AddResult().
 				WithDescription("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName()).
+				WithBlock(policyDocumentBlock).
 				WithAttribute(actionsAttr)
 		}
 	})
@@ -152,6 +153,7 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 	if resourcesAttr.IsNotNil() && resourcesAttr.Contains("*") && (actionsAttr.IsNil() || !doActionsAllowWildcardResource(actionsAttr.ValueAsStrings())) {
 		set.AddResult().
 			WithDescription("Resource '%s' defines a policy with wildcarded resources.", policyDocumentBlock.FullName()).
+			WithBlock(policyDocumentBlock).
 			WithAttribute(resourcesAttr)
 	}
 
@@ -165,6 +167,7 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 					if strings.Contains(ident, "*") {
 						set.AddResult().
 							WithDescription("Resource '%s' defines a policy with wildcarded principal identifiers.", policyDocumentBlock.FullName()).
+							WithBlock(policyDocumentBlock).
 							WithAttribute(resourcesAttr)
 						break
 					}
