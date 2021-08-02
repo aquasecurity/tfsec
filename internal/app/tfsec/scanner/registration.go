@@ -34,6 +34,18 @@ func RegisterCheckRule(rule rule.Rule) {
 	registeredRules = append(registeredRules, rule)
 }
 
+func DeregisterCheckRule(r rule.Rule) {
+	rulesLock.Lock()
+	defer rulesLock.Unlock()
+	var filtered []rule.Rule
+	for _, existing := range registeredRules {
+		if existing.ID() != r.ID() {
+			filtered = append(filtered, existing)
+		}
+	}
+	registeredRules = filtered
+}
+
 // GetRegisteredRules provides all Checks which have been registered with this package
 func GetRegisteredRules() []rule.Rule {
 	sort.Slice(registeredRules, func(i, j int) bool {

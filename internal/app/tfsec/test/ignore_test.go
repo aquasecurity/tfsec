@@ -85,7 +85,7 @@ resource "aws_security_group_rule" "my-rule" {
 
 func Test_IgnoreSpecific(t *testing.T) {
 
-	scanner.RegisterCheckRule(rule.Rule{
+	r1 := rule.Rule{
 		LegacyID:        "ABC123",
 		Provider:        provider.AWSProvider,
 		Service:         "service",
@@ -96,9 +96,11 @@ func Test_IgnoreSpecific(t *testing.T) {
 			set.AddResult().
 				WithDescription("example problem")
 		},
-	})
+	}
+	scanner.RegisterCheckRule(r1)
+	defer scanner.DeregisterCheckRule(r1)
 
-	scanner.RegisterCheckRule(rule.Rule{
+	r2 := rule.Rule{
 		LegacyID:        "DEF456",
 		Provider:        provider.AWSProvider,
 		Service:         "service",
@@ -109,7 +111,9 @@ func Test_IgnoreSpecific(t *testing.T) {
 			set.AddResult().
 				WithDescription("example problem")
 		},
-	})
+	}
+	scanner.RegisterCheckRule(r2)
+	defer scanner.DeregisterCheckRule(r2)
 
 	results := testutil.ScanHCL(`
 	//tfsec:ignore:ABC123
