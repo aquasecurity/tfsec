@@ -32,13 +32,13 @@ func TestExampleCode(t *testing.T) {
 
 		t.Run(fmt.Sprintf("Rule bad example(s) for %s", rule.ID()), func(t *testing.T) {
 			if len(rule.Documentation.BadExample) == 0 {
-				t.Fatalf("No resolution found for %s", rule.ID())
+				t.Fatalf("No bad example found for %s", rule.ID())
 			}
 		})
 
 		t.Run(fmt.Sprintf("Rule good example(s) for %s", rule.ID()), func(t *testing.T) {
 			if len(rule.Documentation.GoodExample) == 0 {
-				t.Fatalf("No resolution found for %s", rule.ID())
+				t.Fatalf("No good example found for %s", rule.ID())
 			}
 		})
 	}
