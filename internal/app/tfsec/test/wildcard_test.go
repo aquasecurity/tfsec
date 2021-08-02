@@ -56,7 +56,7 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 
 		code := fmt.Sprintf("wild%d", i)
 
-		scanner.RegisterCheckRule(rule.Rule{
+		rule := rule.Rule{
 			Service:   "service",
 			ShortCode: code,
 			Documentation: rule.RuleDocumentation{
@@ -70,7 +70,9 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 				set.AddResult().
 					WithDescription("Custom check failed for resource %s.", rootBlock.FullName())
 			},
-		})
+		}
+		scanner.RegisterCheckRule(rule)
+		defer scanner.DeregisterCheckRule(rule)
 
 		results := testutil.ScanHCL(test.input, t)
 
