@@ -143,6 +143,10 @@ You can set expiration date for `ignore` with `yyyy-mm-dd` format. This is a use
 ```
 Ignore like this will be active only till `2022-01-02`, after this date it will be deactivated.
 
+### Recent Ignore Changes
+
+As of `v0.52.0`, we fixed an issue where ignores were being incorrectly applied to entire blocks. This has made it more important that ignore comments are added to the correct line(s) in your templates. If tfsec mentions a particular line number as containing an issue you want to ignore, you should add the comment on that same line, or by itself on the line above it. If tfsec mentions an entire block as being the issue, you should add a comment on the line above the first line of the block.
+
 ## Disable checks
 
 You may wish to exclude some checks from running. If you'd like to do so, you can
