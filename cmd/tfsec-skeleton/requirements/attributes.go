@@ -68,6 +68,10 @@ func (a *attributeBase) makeGoodValue() interface{} {
 			return []string{}
 		}
 		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+	case ComparisonDefined:
+		return "something"
+	case ComparisonNotDefined:
+		return nil
 	default:
 		panic(fmt.Sprintf("comparison '%s' is not supported", a.comparison))
 	}
@@ -118,6 +122,10 @@ func (a *attributeBase) makeBadValue() interface{} {
 			return []string{s}
 		}
 		panic(fmt.Sprintf("comparison '%s' cannot support value %#v", a.comparison, a.value))
+	case ComparisonDefined:
+		return nil
+	case ComparisonNotDefined:
+		return "something"
 	default:
 		panic(fmt.Sprintf("comparison'%s' is not supported", a.comparison))
 	}
@@ -187,6 +195,10 @@ func (a *attributeBase) GenerateRuleCode() string {
 		messageTemplate = fmt.Sprintf("Resource '%%s' should have %s in %s", a.value, a.dotPath)
 	case ComparisonNotContains:
 		messageTemplate = fmt.Sprintf("Resource '%%s' has %s in %s", a.value, a.dotPath)
+	case ComparisonDefined:
+		messageTemplate = fmt.Sprintf("Resource '%%s' does not set %s", a.dotPath)
+	case ComparisonNotDefined:
+		messageTemplate = fmt.Sprintf("Resource '%%s' sets %s", a.dotPath)
 
 	default:
 		panic(fmt.Sprintf("comparison '%s' is not supported", a.comparison))

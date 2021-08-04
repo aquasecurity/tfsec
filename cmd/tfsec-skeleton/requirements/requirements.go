@@ -108,6 +108,13 @@ func snakeToCamel(input string) string {
 
 func buildComparisonForValue(value interface{}, comparison Comparison) string {
 
+	switch comparison {
+	case ComparisonDefined:
+		return `IsResolvable()`
+	case ComparisonNotDefined:
+		return `!IsResolvable()`
+	}
+
 	switch t := value.(type) {
 	case []string:
 		return buildStringSliceComparison(t, comparison)

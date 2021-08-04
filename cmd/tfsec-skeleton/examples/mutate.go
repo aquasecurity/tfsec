@@ -38,6 +38,9 @@ func (m *machine) processAttributeLine(line string) string {
 	name := strings.TrimSpace(parts[0])
 	if strings.Join(append(m.stack, name), ".") == m.dotPath {
 		line = fmt.Sprintf("%s= %s", parts[0], sprintHCL(m.value))
+		if m.value == nil {
+			line = ""
+		}
 		m.found = true
 	}
 	if strings.Contains(line, "<<") {

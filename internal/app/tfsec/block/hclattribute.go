@@ -35,7 +35,7 @@ func (attr *HCLAttribute) IsResolvable() bool {
 	if attr == nil {
 		return false
 	}
-	return attr.Value() != cty.NilVal
+	return attr.Value() != cty.NilVal && attr.Value().IsKnown()
 }
 
 func (attr *HCLAttribute) Type() cty.Type {
