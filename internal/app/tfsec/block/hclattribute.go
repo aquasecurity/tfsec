@@ -38,6 +38,10 @@ func (attr *HCLAttribute) IsResolvable() bool {
 	return attr.Value() != cty.NilVal && attr.Value().IsKnown()
 }
 
+func (attr *HCLAttribute) IsNotResolvable() bool {
+	return !attr.IsResolvable()
+}
+
 func (attr *HCLAttribute) Type() cty.Type {
 	if attr == nil {
 		return cty.NilType
@@ -477,7 +481,7 @@ func (attr *HCLAttribute) MapValue(mapKey string) cty.Value {
 			}
 		}
 	}
-	return cty.StringVal("")
+	return cty.NilVal
 }
 
 func (attr *HCLAttribute) LessThan(checkValue interface{}) bool {

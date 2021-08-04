@@ -1,4 +1,4 @@
-package ecr
+package project
 
 import (
 	"strings"
@@ -8,8 +8,8 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_AWSNoPublicAccess_FailureExamples(t *testing.T) {
-	expectedCode := "aws-ecr-no-public-access"
+func Test_GoogleNoDefaultNetwork_FailureExamples(t *testing.T) {
+	expectedCode := "google-project-no-default-network"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -30,8 +30,8 @@ func Test_AWSNoPublicAccess_FailureExamples(t *testing.T) {
 	}
 }
 
-func Test_AWSNoPublicAccess_SuccessExamples(t *testing.T) {
-	expectedCode := "aws-ecr-no-public-access"
+func Test_GoogleNoDefaultNetwork_SuccessExamples(t *testing.T) {
+	expectedCode := "google-project-no-default-network"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

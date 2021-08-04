@@ -64,7 +64,7 @@ func (m *machine) processBlockOpening(line string) string {
 }
 
 func (m *machine) processBlockClosing(line string) string {
-	if m.inPath && !m.found {
+	if m.inPath && !m.found && m.value != nil {
 		// we were in the right place - did we find our attr? if not, we need to add it
 		inject := expandPathAndValue(strings.TrimPrefix(m.dotPath, strings.Join(m.stack, ".")+"."), m.value, m.tabStr, len(m.stack))
 		m.output = append(m.output, inject)

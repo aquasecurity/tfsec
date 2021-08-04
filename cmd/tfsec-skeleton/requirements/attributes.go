@@ -39,8 +39,6 @@ func NewAttributeRequirement(blockType string, blockLabel string, dotPath string
 
 func (a *attributeBase) makeGoodValue() interface{} {
 	switch a.comparison {
-	case ComparisonEquals:
-		return a.value
 	case ComparisonNotEquals, ComparisonNotAnyOf:
 		return flipValue(a.value)
 	case ComparisonAnyOf:
@@ -73,7 +71,7 @@ func (a *attributeBase) makeGoodValue() interface{} {
 	case ComparisonNotDefined:
 		return nil
 	default:
-		panic(fmt.Sprintf("comparison '%s' is not supported", a.comparison))
+		return a.value
 	}
 }
 
@@ -95,8 +93,6 @@ func (a *attributeBase) makeBadValue() interface{} {
 	switch a.comparison {
 	case ComparisonEquals, ComparisonAnyOf:
 		return flipValue(a.value)
-	case ComparisonNotEquals:
-		return a.value
 	case ComparisonNotAnyOf:
 		if strs, ok := a.value.([]string); ok && len(strs) > 0 {
 			return strs[0]
@@ -127,7 +123,40 @@ func (a *attributeBase) makeBadValue() interface{} {
 	case ComparisonNotDefined:
 		return "something"
 	default:
-		panic(fmt.Sprintf("comparison'%s' is not supported", a.comparison))
+		return a.value
+	}
+}
+
+func (a *attributeBase) getMessageForComparison() string {
+
+	switch a.comparison {
+	case ComparisonEquals:
+		return fmt.Sprintf("Resource '%%s' does not have %s set to %v", a.dotPath, a.value)
+	case ComparisonNotEquals:
+		return fmt.Sprintf("Resource '%%s' has %s set to %v", a.dotPath, a.value)
+	case ComparisonAnyOf:
+		return fmt.Sprintf("Resource '%%s' does not have %s set to one of %s", a.dotPath, a.value)
+	case ComparisonNotAnyOf:
+		return fmt.Sprintf("Resource '%%s' has %s set to one of %s", a.dotPath, a.value)
+	case ComparisonGreaterThan:
+		return fmt.Sprintf("Resource '%%s' does not have %s set to greater than %d", a.dotPath, a.value)
+	case ComparisonLessThan:
+		return fmt.Sprintf("Resource '%%s' does not have %s set to less than %d", a.dotPath, a.value)
+	case ComparisonGreaterThanOrEqual:
+		return fmt.Sprintf("Resource '%%s' does not have %s set to greater than or equal to %d", a.dotPath, a.value)
+	case ComparisonLessThanOrEqual:
+		return fmt.Sprintf("Resource '%%s' does not have %s set to greater than or equal to %d", a.dotPath, a.value)
+	case ComparisonContains:
+		return fmt.Sprintf("Resource '%%s' should have %s in %s", a.value, a.dotPath)
+	case ComparisonNotContains:
+		return fmt.Sprintf("Resource '%%s' has %s in %s", a.value, a.dotPath)
+	case ComparisonDefined:
+		return fmt.Sprintf("Resource '%%s' does not set %s", a.dotPath)
+	case ComparisonNotDefined:
+		return fmt.Sprintf("Resource '%%s' sets %s", a.dotPath)
+
+	default:
+		panic(fmt.Sprintf("comparison '%s' is not supported", a.comparison))
 	}
 }
 
@@ -172,37 +201,7 @@ func (a *attributeBase) GenerateRuleCode() string {
 			} else if `, attrVarName, a.dotPath)
 	}
 
-	var messageTemplate string
-
-	switch a.comparison {
-	case ComparisonEquals:
-		messageTemplate = fmt.Sprintf("Resource '%%s' does not have %s set to %v", a.dotPath, a.value)
-	case ComparisonNotEquals:
-		messageTemplate = fmt.Sprintf("Resource '%%s' has %s set to %v", a.dotPath, a.value)
-	case ComparisonAnyOf:
-		messageTemplate = fmt.Sprintf("Resource '%%s' does not have %s set to one of %s", a.dotPath, a.value)
-	case ComparisonNotAnyOf:
-		messageTemplate = fmt.Sprintf("Resource '%%s' has %s set to one of %s", a.dotPath, a.value)
-	case ComparisonGreaterThan:
-		messageTemplate = fmt.Sprintf("Resource '%%s' does not have %s set to greater than %d", a.dotPath, a.value)
-	case ComparisonLessThan:
-		messageTemplate = fmt.Sprintf("Resource '%%s' does not have %s set to less than %d", a.dotPath, a.value)
-	case ComparisonGreaterThanOrEqual:
-		messageTemplate = fmt.Sprintf("Resource '%%s' does not have %s set to greater than or equal to %d", a.dotPath, a.value)
-	case ComparisonLessThanOrEqual:
-		messageTemplate = fmt.Sprintf("Resource '%%s' does not have %s set to greater than or equal to %d", a.dotPath, a.value)
-	case ComparisonContains:
-		messageTemplate = fmt.Sprintf("Resource '%%s' should have %s in %s", a.value, a.dotPath)
-	case ComparisonNotContains:
-		messageTemplate = fmt.Sprintf("Resource '%%s' has %s in %s", a.value, a.dotPath)
-	case ComparisonDefined:
-		messageTemplate = fmt.Sprintf("Resource '%%s' does not set %s", a.dotPath)
-	case ComparisonNotDefined:
-		messageTemplate = fmt.Sprintf("Resource '%%s' sets %s", a.dotPath)
-
-	default:
-		panic(fmt.Sprintf("comparison '%s' is not supported", a.comparison))
-	}
+	messageTemplate := a.getMessageForComparison()
 
 	code += fmt.Sprintf(`%s.%s {
 				set.AddResult().

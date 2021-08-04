@@ -46,12 +46,11 @@ func verifyPathDoesNotExist(checkPath string, forceOverwrite bool) error {
 		if err != nil {
 			return err
 		}
-		if strings.Contains(string(file), "// generator-locked") {
-			return fmt.Errorf("file [%s] is locked for update, remove comment to overwrite", checkPath)
-		}
-
 		if !forceOverwrite {
 			return fmt.Errorf("file [%s] already exists so not creating check", checkPath)
+		}
+		if strings.Contains(string(file), "// generator-locked") {
+			return fmt.Errorf("file [%s] is locked for update, remove comment to overwrite", checkPath)
 		}
 	}
 	return nil

@@ -112,7 +112,7 @@ func buildComparisonForValue(value interface{}, comparison Comparison) string {
 	case ComparisonDefined:
 		return `IsResolvable()`
 	case ComparisonNotDefined:
-		return `!IsResolvable()`
+		return `IsNotResolvable()`
 	}
 
 	switch t := value.(type) {
