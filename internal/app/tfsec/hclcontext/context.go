@@ -77,6 +77,15 @@ func (c *Context) getReferencingBlocks(originalBlock block.Block, referencingTyp
 		}
 		if attr.ReferencesBlock(originalBlock) {
 			results = append(results, block)
+		} else {
+			for _, ref := range attr.AllReferences() {
+				if ref.TypeLabel() == "each" {
+					fe := block.GetAttribute("for_each")
+					if fe.ReferencesBlock(originalBlock) {
+						results = append(results, block)
+					}
+				}
+			}
 		}
 	}
 	return results, nil
