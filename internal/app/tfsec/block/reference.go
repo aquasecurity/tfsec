@@ -98,7 +98,7 @@ func (r *Reference) RefersTo(b Block) bool {
 	if r.NameLabel() != b.Reference().NameLabel() {
 		return false
 	}
-	if r.Key() != b.Reference().Key() {
+	if r.Key() != "" && r.Key() != b.Reference().Key() {
 		return false
 	}
 	return true
