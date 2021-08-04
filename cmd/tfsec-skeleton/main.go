@@ -43,15 +43,18 @@ var rootCmd = &cobra.Command{
 			inputs = []*Input{input}
 		}
 
+		var count int
 		for _, input := range inputs {
 			deref := *input
 			if err := writeRuleFromInput(&deref, forceOverwrite); err != nil {
-				return err
+				fmt.Println(err)
+				continue
 			}
+			count++
 			fmt.Printf("Added %s-%s-%s...\n", input.Provider, input.Service, input.ShortCode)
 		}
 
-		terminal.PrintSuccessf("\nAdded %d new rule(s).\n", len(inputs))
+		terminal.PrintSuccessf("\nAdded %d new rule(s).\n", count)
 		return nil
 	},
 }

@@ -38,6 +38,9 @@ func (m *machine) processAttributeLine(line string) string {
 	name := strings.TrimSpace(parts[0])
 	if strings.Join(append(m.stack, name), ".") == m.dotPath {
 		line = fmt.Sprintf("%s= %s", parts[0], sprintHCL(m.value))
+		if m.value == nil {
+			line = ""
+		}
 		m.found = true
 	}
 	if strings.Contains(line, "<<") {
@@ -61,7 +64,7 @@ func (m *machine) processBlockOpening(line string) string {
 }
 
 func (m *machine) processBlockClosing(line string) string {
-	if m.inPath && !m.found {
+	if m.inPath && !m.found && m.value != nil {
 		// we were in the right place - did we find our attr? if not, we need to add it
 		inject := expandPathAndValue(strings.TrimPrefix(m.dotPath, strings.Join(m.stack, ".")+"."), m.value, m.tabStr, len(m.stack))
 		m.output = append(m.output, inject)

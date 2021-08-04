@@ -14,6 +14,8 @@ const (
 	ComparisonLessThanOrEqual    Comparison = "lessthanorequal"
 	ComparisonContains           Comparison = "contains"
 	ComparisonNotContains        Comparison = "notcontains"
+	ComparisonDefined            Comparison = "defined"
+	ComparisonNotDefined         Comparison = "notdefined"
 )
 
 func (c Comparison) Reverse() Comparison {
@@ -38,6 +40,10 @@ func (c Comparison) Reverse() Comparison {
 		return ComparisonContains
 	case ComparisonContains:
 		return ComparisonNotContains
+	case ComparisonDefined:
+		return ComparisonNotDefined
+	case ComparisonNotDefined:
+		return ComparisonDefined
 	default:
 		return ComparisonNone
 	}
