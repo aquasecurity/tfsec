@@ -62,7 +62,7 @@ resource "azurerm_network_security_rule" "good_example" {
 			}
 
 			if prefixAttr := resourceBlock.GetAttribute("source_address_prefix"); prefixAttr.IsString() {
-				if cidr.IsOpen(prefixAttr) {
+				if cidr.IsAttributeOpen(prefixAttr) {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.Equals("ALLOW", block.IgnoreCase) {
 						set.AddResult().
 							WithDescription("Resource '%s' defines a fully open %s network security group rule.", resourceBlock.FullName(), strings.ToLower(directionAttr.Value().AsString())).
@@ -72,7 +72,7 @@ resource "azurerm_network_security_rule" "good_example" {
 			}
 
 			if prefixesAttr := resourceBlock.GetAttribute("source_address_prefixes"); !prefixesAttr.IsEmpty() {
-				if cidr.IsOpen(prefixesAttr) {
+				if cidr.IsAttributeOpen(prefixesAttr) {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.Equals("ALLOW", block.IgnoreCase) {
 						set.AddResult().
 							WithDescription("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName()).

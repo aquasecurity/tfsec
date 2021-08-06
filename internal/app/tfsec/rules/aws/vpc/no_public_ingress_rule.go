@@ -75,7 +75,7 @@ resource "aws_network_acl_rule" "good_example" {
 
 			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr.IsNotNil() {
 
-				if cidr.IsOpen(cidrBlockAttr) {
+				if cidr.IsAttributeOpen(cidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						return
 					} else {
@@ -88,7 +88,7 @@ resource "aws_network_acl_rule" "good_example" {
 
 			if ipv6CidrBlockAttr := resourceBlock.GetAttribute("ipv6_cidr_block"); ipv6CidrBlockAttr.IsNotNil() {
 
-				if cidr.IsOpen(ipv6CidrBlockAttr) {
+				if cidr.IsAttributeOpen(ipv6CidrBlockAttr) {
 					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
 						return
 					} else {
