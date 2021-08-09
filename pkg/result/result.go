@@ -118,6 +118,9 @@ func (r *Result) WithLinks(links []string) *Result {
 }
 
 func (r *Result) WithBlock(block block.Block) *Result {
+	if block.IsNil() {
+		return r
+	}
 	r.blocks = append(r.blocks, block)
 	return r
 }
