@@ -85,7 +85,7 @@ func IsValidBlockReference(name string) bool {
 
 func TypeFromRefName(name string) (*Type, error) {
 	for _, valid := range ValidTypes {
-		if valid.refName == name {
+		if valid.refName == name || (valid.refName == "" && valid.name == name) {
 			return &valid, nil
 		}
 	}

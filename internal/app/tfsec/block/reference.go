@@ -30,7 +30,7 @@ func newReference(parts []string) (*Reference, error) {
 
 	ref.blockType = *blockType
 
-	if ref.blockType.removeTypeInReference {
+	if ref.blockType.removeTypeInReference && parts[0] != blockType.name {
 		ref.typeLabel = parts[0]
 		if len(parts) > 1 {
 			ref.nameLabel = parts[1]
@@ -40,6 +40,9 @@ func newReference(parts []string) (*Reference, error) {
 			ref.typeLabel = parts[1]
 			if len(parts) > 2 {
 				ref.nameLabel = parts[2]
+			} else {
+				ref.nameLabel = ref.typeLabel
+				ref.typeLabel = ""
 			}
 		}
 	}
@@ -74,7 +77,13 @@ func (r *Reference) String() string {
 	base := fmt.Sprintf("%s.%s", r.typeLabel, r.nameLabel)
 
 	if !r.blockType.removeTypeInReference {
-		base = fmt.Sprintf("%s.%s.%s", r.blockType.Name(), r.typeLabel, r.nameLabel)
+		base = r.blockType.Name()
+		if r.typeLabel != "" {
+			base += "." + r.typeLabel
+		}
+		if r.nameLabel != "" {
+			base += "." + r.nameLabel
+		}
 	}
 
 	if r.key != "" {
