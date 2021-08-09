@@ -1,6 +1,6 @@
 name: tfsec code scanning
 on:
-  pull_request: master
+  pull_request:
 jobs:
   tfsec:
     name: tfsec sarif report
