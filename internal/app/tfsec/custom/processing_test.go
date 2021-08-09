@@ -330,7 +330,7 @@ func TestPreCondition(t *testing.T) {
 		expected  bool
 	}{
 		{
-			name: "check that precondition check prevents check being perfomed",
+			name: "check that precondition check prevents check being performed",
 			source: `
 resource "aws_ami" "testing" {
 	name = "something else"
@@ -340,7 +340,7 @@ resource "aws_ami" "testing" {
 			expected:  true,
 		},
 		{
-			name: "check that precondition which passes allows check to be perfomed which fails",
+			name: "check that precondition which passes allows check to be performed which fails",
 			source: `
 resource "aws_ami" "testing" {
 	name = "something else"
@@ -351,7 +351,7 @@ resource "aws_ami" "testing" {
 			expected:  false,
 		},
 		{
-			name: "check that precondition which passes allows check to be perfomed which passes",
+			name: "check that precondition which passes allows check to be performed which passes",
 			source: `
 resource "aws_ami" "testing" {
 	name = "test-name"
