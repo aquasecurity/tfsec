@@ -23,7 +23,7 @@ func Test_IfIgnoreWarningsSetShouldRemoveWarningScanResults(t *testing.T) {
 		},
 	}
 
-	actualResults := RemoveDuplicatesAndUnwanted(twoScanResultsWithOneWarning, true, false)
+	actualResults := removeDuplicatesAndUnwanted(twoScanResultsWithOneWarning, true, false)
 	assert.Len(t, actualResults, expectedResultsAfterFiltering)
 }
 
@@ -40,6 +40,6 @@ func Test_IfIgnoreWarningsIsNotSetThenWarningShouldBeInScanResults(t *testing.T)
 		},
 	}
 
-	actualResults := RemoveDuplicatesAndUnwanted(twoScanResultsWithOneWarning, false, false)
+	actualResults := removeDuplicatesAndUnwanted(twoScanResultsWithOneWarning, false, false)
 	assert.Len(t, actualResults, expectedResultsAfterFiltering)
 }
