@@ -61,6 +61,7 @@ import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/github/repositories"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/bigquery"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/compute"
+	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/dns"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/gke"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/iam"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/project"
