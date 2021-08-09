@@ -94,7 +94,7 @@ resource "google_sql_database_instance" "postgres" {
 			}
 
 			for _, authorizedNetworkBlock := range ipConfigBlock.GetBlocks("authorized_networks") {
-				if cidrAttr := authorizedNetworkBlock.GetAttribute("value"); cidr.IsOpen(cidrAttr) {
+				if cidrAttr := authorizedNetworkBlock.GetAttribute("value"); cidr.IsAttributeOpen(cidrAttr) {
 					set.AddResult().
 						WithDescription("Resource '%s' authorizes access from the public internet", resourceBlock.FullName()).
 						WithAttribute(cidrAttr)

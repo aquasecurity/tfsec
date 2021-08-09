@@ -79,7 +79,7 @@ resource "aws_eks_cluster" "good_example" {
 					WithDescription("Resource '%s' uses the default public access cidr of 0.0.0.0/0", resourceBlock.FullName()).
 					WithBlock(vpcConfig)
 
-			} else if cidr.IsOpen(publicAccessCidrsAttr) {
+			} else if cidr.IsAttributeOpen(publicAccessCidrsAttr) {
 				set.AddResult().
 					WithDescription("Resource '%s' has public access cidr explicitly set to wide open", resourceBlock.FullName()).
 					WithAttribute(publicAccessCidrsAttr)
