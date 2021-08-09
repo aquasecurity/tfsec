@@ -52,7 +52,7 @@ resource "google_compute_firewall" "good_example" {
 
 			if destinationRanges := resourceBlock.GetAttribute("destination_ranges"); destinationRanges.IsNotNil() {
 
-				if cidr.IsOpen(destinationRanges) {
+				if cidr.IsAttributeOpen(destinationRanges) {
 					set.AddResult().
 						WithDescription("Resource '%s' defines a fully open outbound firewall rule.", resourceBlock.FullName()).
 						WithAttribute(destinationRanges)

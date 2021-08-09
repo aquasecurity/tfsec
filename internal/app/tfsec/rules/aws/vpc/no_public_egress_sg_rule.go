@@ -56,7 +56,7 @@ resource "aws_security_group" "good_example" {
 			for _, directionBlock := range resourceBlock.GetBlocks("egress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 
-					if cidr.IsOpen(cidrBlocksAttr) {
+					if cidr.IsAttributeOpen(cidrBlocksAttr) {
 						set.AddResult().
 							WithDescription("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName()).
 							WithAttribute(cidrBlocksAttr)
@@ -65,7 +65,7 @@ resource "aws_security_group" "good_example" {
 
 				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 
-					if cidr.IsOpen(cidrBlocksAttr) {
+					if cidr.IsAttributeOpen(cidrBlocksAttr) {
 						set.AddResult().
 							WithDescription("Resource '%s' defines a fully open egress security group.", resourceBlock.FullName()).
 							WithAttribute(cidrBlocksAttr)
