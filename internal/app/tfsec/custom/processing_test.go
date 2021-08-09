@@ -103,6 +103,18 @@ var testNotMatchSpec = MatchSpec{
 		},
 	},
 }
+var testPreConditionCheck = MatchSpec{
+	Action:     "equals",
+	Name:       "name",
+	MatchValue: "test-name",
+	PreConditions: []MatchSpec{
+		{
+			Action:     "equals",
+			Name:       "id",
+			MatchValue: "test-id",
+		},
+	},
+}
 
 func TestRequiresPresenceWithResourcePresent(t *testing.T) {
 	scanResults := scanTerraform(t, `
@@ -309,6 +321,57 @@ resource "aws_ami" "example" {
 		})
 	}
 }
+
+func TestPreCondition(t *testing.T) {
+	var tests = []struct {
+		name      string
+		source    string
+		matchSpec MatchSpec
+		expected  bool
+	}{
+		{
+			name: "check that precondition check prevents check being perfomed",
+			source: `
+resource "aws_ami" "testing" {
+	name = "something else"
+}
+`,
+			matchSpec: testPreConditionCheck,
+			expected:  true,
+		},
+		{
+			name: "check that precondition which passes allows check to be perfomed which fails",
+			source: `
+resource "aws_ami" "testing" {
+	name = "something else"
+	id   = "test-id"
+}
+`,
+			matchSpec: testPreConditionCheck,
+			expected:  false,
+		},
+		{
+			name: "check that precondition which passes allows check to be perfomed which passes",
+			source: `
+resource "aws_ami" "testing" {
+	name = "test-name"
+	id   = "test-id"
+}
+`,
+			matchSpec: testPreConditionCheck,
+			expected:  true,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			blocks := CreateBlocksFromSource(test.source)[0]
+			result := evalMatchSpec(blocks, &test.matchSpec, nil)
+			assert.Equal(t, result, test.expected, "precondition functions evaluating incorrectly.")
+		})
+	}
+}
+
 func givenCheck(jsonContent string) {
 	var checksfile ChecksFile
 	err := json.NewDecoder(strings.NewReader(jsonContent)).Decode(&checksfile)
