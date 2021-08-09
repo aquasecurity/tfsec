@@ -1,0 +1,63 @@
+{
+  "checks": [
+    {
+      "code": "CUS001",
+      "description": "Custom check to ensure no instance has SSH open to internet with public tag",
+      "impact": "If an instance has SSH accessible to internet with public tag, then that instance is not abiding by the AWS security standards",
+      "resolution": "Remove the SSH access for public instances",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_security_group"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "action": "or",
+        "predicateMatchSpec": [
+          {
+            "name": "ingress",
+            "action": "isPresent",
+            "subMatch": {
+              "action": "and",
+              "predicateMatchSpec": [
+                {
+                  "name": "cidr_blocks",
+                  "action": "notContains",
+                  "value": "0.0.0.0/0"
+                },
+                {
+                  "name": "from_port",
+                  "action": "notEqual",
+                  "value": "22"
+                }
+              ]
+            }
+          },
+          {
+            "preConditions": [
+              {
+                "name": "ingress",
+                "action": "isPresent"
+              },
+              {
+                "name": "tags",
+                "action": "contains",
+                "value": {
+                  "Type": "Public"
+                }
+              }
+            ],
+            "name": "from_port",
+            "action": "notEqual",
+            "value": "22"
+          }
+        ]
+      },
+      "errorMessage": "[Error] Port 22 open for a public instance",
+      "relatedLinks": [
+        "http://internal.acmecorp.com/standards/aws/tagging.html"
+      ]
+    }
+  ]
+}

@@ -219,7 +219,7 @@ var rootCmd = &cobra.Command{
 		debug.Log("Starting scanner...")
 		results := scanner.New(getScannerOptions()...).Scan(blocks)
 		results = updateResultSeverity(results)
-		results = RemoveDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
+		results = removeDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {
 			var filteredResult []result.Result
 			for _, result := range results {
@@ -316,7 +316,7 @@ func getDetailedExitCode(results []result.Result) int {
 	return 1
 }
 
-func RemoveDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, excludeDownloaded bool) []result.Result {
+func removeDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, excludeDownloaded bool) []result.Result {
 	reduction := make(map[string]result.Result)
 
 	for _, res := range results {
