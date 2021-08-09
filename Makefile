@@ -8,7 +8,7 @@ image:
 .PHONY: test
 test:
 	which gotestsum || (pushd /tmp && go install gotest.tools/gotestsum@latest && popd)
-	GOMOD=vendor gotestsum
+	gotestsum -- --mod=vendor -race ./...
 
 .PHONY: build
 build:
@@ -80,3 +80,7 @@ pr-lint:
 
 .PHONY: pr-ready
 pr-ready: quality sanity pr-lint typos
+
+.PHONY: bench
+bench:
+	go test -run ^$$ -bench . ./...

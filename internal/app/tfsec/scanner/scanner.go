@@ -1,6 +1,8 @@
 package scanner
 
 import (
+	"sort"
+
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -90,5 +92,15 @@ func (scanner *Scanner) Scan(blocks []block.Block) []result.Result {
 			}(&r)
 		}
 	}
+	sort.Slice(results, func(i, j int) bool {
+		switch {
+		case results[i].RuleID < results[j].RuleID:
+			return true
+		case results[i].RuleID > results[j].RuleID:
+			return false
+		default:
+			return results[i].HashCode() > results[j].HashCode()
+		}
+	})
 	return results
 }
