@@ -1,8 +1,7 @@
 package dynamodb
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,22 +16,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS086",
+		LegacyID:  "AWS086",
 		Service:   "dynamodb",
 		ShortCode: "enable-recovery",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Point in time recovery should be enabled to protect DynamoDB table",
-			Explanation:  `
+			Summary: "Point in time recovery should be enabled to protect DynamoDB table",
+			Explanation: `
 DynamoDB tables should be protected against accidentally or malicious write/delete actions by ensuring that there is adequate protection.
 
 By enabling point-in-time-recovery you can restore to a known point in the event of loss of data.
 `,
-			Impact:       "Accidental or malicious writes and deletes can't be rolled back",
-			Resolution:   "Enable point in time recovery",
-			BadExample:   `
+			Impact:     "Accidental or malicious writes and deletes can't be rolled back",
+			Resolution: "Enable point in time recovery",
+			BadExample: []string{`
 resource "aws_dynamodb_table" "bad_example" {
 	name             = "example"
 	hash_key         = "TestTableHashKey"
@@ -45,8 +43,8 @@ resource "aws_dynamodb_table" "bad_example" {
 	  type = "S"
 	}
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_dynamodb_table" "good_example" {
 	name             = "example"
 	hash_key         = "TestTableHashKey"
@@ -63,7 +61,7 @@ resource "aws_dynamodb_table" "good_example" {
 		enabled = true
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#point_in_time_recovery",
 				"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/PointInTimeRecovery.html",
@@ -76,31 +74,23 @@ resource "aws_dynamodb_table" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("point_in_time_recovery") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' doesn't have point in time recovery", resourceBlock.FullName())
 				return
 			}
 
-			poitBlock := resourceBlock.GetBlock("point_in_time_recovery")
-			if poitBlock.MissingChild("enabled") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+			pointBlock := resourceBlock.GetBlock("point_in_time_recovery")
+			if pointBlock.MissingChild("enabled") {
+				set.AddResult().
+					WithDescription("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName()).
+					WithBlock(pointBlock)
 				return
 			}
-			enabledAttr := poitBlock.GetAttribute("enabled")
+			enabledAttr := pointBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName())).
-						WithRange(enabledAttr.Range()).
-						WithAttributeAnnotation(enabledAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName()).
+					WithAttribute(enabledAttr)
 			}
 
 		},

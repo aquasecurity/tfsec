@@ -1,8 +1,7 @@
 package secrets
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -13,21 +12,20 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GEN005",
+		LegacyID:  "GEN005",
 		Service:   "secrets",
 		ShortCode: "sensitive-in-attribute-value",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "The attribute has potentially sensitive data, passwords, tokens or keys in it",
-			Explanation:  `
+			Summary: "The attribute has potentially sensitive data, passwords, tokens or keys in it",
+			Explanation: `
 Sensitive data stored in attributes can result in compromised data. Sensitive data should be passed in through secret variables
 
 `,
-			Impact:       "Sensitive credentials may be compromised",
-			Resolution:   "Check the code for vulnerabilities and move to variables",
-			BadExample:   `
+			Impact:     "Sensitive credentials may be compromised",
+			Resolution: "Check the code for vulnerabilities and move to variables",
+			BadExample: []string{`
 resource "aws_instance" "bad_example" {
 	instance_type = "t2.small"
 
@@ -36,8 +34,8 @@ resource "aws_instance" "bad_example" {
 EOF
 
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 variable "password" {
 	type = string
 }
@@ -46,11 +44,11 @@ resource "aws_instance" "good_instance" {
 	instance_type = "t2.small"
 
 	user_data = <<EOF
-		Password = var.password
+		export EDITOR=vimacs
 EOF
 
 }
-`,
+`},
 			Links: []string{
 				"https://www.terraform.io/docs/state/sensitive-data.html",
 			},
@@ -66,12 +64,9 @@ EOF
 			for _, attribute := range attributes {
 				if attribute.IsString() {
 					if scanResult := security.StringScanner.Scan(attribute.Value().AsString()); scanResult.TransgressionFound {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Block '%s' includes potentially sensitive data. %s", resourceBlock.FullName(), scanResult.Description)).
-								WithRange(attribute.Range()).
-								WithAttributeAnnotation(attribute),
-						)
+						set.AddResult().
+							WithDescription("Block '%s' includes potentially sensitive data. %s", resourceBlock.FullName(), scanResult.Description).
+							WithAttribute(attribute)
 					}
 				}
 			}

@@ -1,8 +1,7 @@
 package eks
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,20 +16,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS066",
+		LegacyID:  "AWS066",
 		Service:   "eks",
 		ShortCode: "encrypt-secrets",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "EKS should have the encryption of secrets enabled",
-			Impact:       "EKS secrets could be read if compromised",
-			Resolution:   "Enable encryption of EKS secrets",
-			Explanation:  `
+			Summary:    "EKS should have the encryption of secrets enabled",
+			Impact:     "EKS secrets could be read if compromised",
+			Resolution: "Enable encryption of EKS secrets",
+			Explanation: `
 EKS cluster resources should have the encryption_config block set with protection of the secrets resource.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_eks_cluster" "bad_example" {
     name = "bad_example_cluster"
 
@@ -39,8 +37,8 @@ resource "aws_eks_cluster" "bad_example" {
         endpoint_public_access = false
     }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_eks_cluster" "good_example" {
     encryption_config {
         resources = [ "secrets" ]
@@ -55,7 +53,7 @@ resource "aws_eks_cluster" "good_example" {
         endpoint_public_access = false
     }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#encryption_config",
 				"https://aws.amazon.com/about-aws/whats-new/2020/03/amazon-eks-adds-envelope-encryption-for-secrets-with-aws-kms/",
@@ -68,61 +66,44 @@ resource "aws_eks_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("encryption_config") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has no encryptionConfigBlock block", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has no encryptionConfigBlock block", resourceBlock.FullName())
 				return
 			}
 
 			encryptionConfigBlock := resourceBlock.GetBlock("encryption_config")
 			if encryptionConfigBlock.MissingChild("resources") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with no resourcesAttr attribute specified", resourceBlock.FullName())).
-						WithRange(encryptionConfigBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has encryptionConfigBlock block with no resourcesAttr attribute specified", resourceBlock.FullName()).
+					WithBlock(encryptionConfigBlock)
 				return
 			}
 
 			resourcesAttr := encryptionConfigBlock.GetAttribute("resources")
 			if !resourcesAttr.Contains("secrets") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not include secrets in encrypted resources", resourceBlock.FullName())).
-						WithRange(resourcesAttr.Range()).
-						WithAttributeAnnotation(resourcesAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not include secrets in encrypted resources", resourceBlock.FullName()).
+					WithAttribute(resourcesAttr)
 			}
 
 			if encryptionConfigBlock.MissingChild("provider") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with no provider block specified", resourceBlock.FullName())).
-						WithRange(encryptionConfigBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has encryptionConfigBlock block with no provider block specified", resourceBlock.FullName())
 				return
 			}
 
 			providerBlock := encryptionConfigBlock.GetBlock("provider")
 			if providerBlock.MissingChild("key_arn") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with provider block specified missing key arn", resourceBlock.FullName())).
-						WithRange(encryptionConfigBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has encryptionConfigBlock block with provider block specified missing key arn", resourceBlock.FullName())
 				return
 			}
 
 			keyArnAttr := providerBlock.GetAttribute("key_arn")
 			if keyArnAttr.IsEmpty() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has encryptionConfigBlock block with provider block specified but key_arn is empty", resourceBlock.FullName())).
-						WithRange(keyArnAttr.Range()).
-						WithAttributeAnnotation(keyArnAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has encryptionConfigBlock block with provider block specified but key_arn is empty", resourceBlock.FullName()).
+					WithAttribute(keyArnAttr)
 			}
 
 		},

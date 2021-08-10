@@ -1,5 +1,6 @@
 package ecr
 
+// generator-locked
 import (
 	"testing"
 
@@ -28,6 +29,18 @@ resource "aws_ecr_repository" "foo" {
 
   image_scanning_configuration {
     scan_on_push = false
+  }
+}`,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check ECR Image Scan on push not set",
+			source: `
+resource "aws_ecr_repository" "foo" {
+  name                 = "bar"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
   }
 }`,
 			mustIncludeResultCode: expectedCode,

@@ -17,7 +17,7 @@ import (
 )
 
 // CheckRule the provided HCL block against the rule
-func CheckRule(r *Rule, block block.Block, ctx *hclcontext.Context, ignoreErrors bool) result.Set {
+func CheckRule(r *Rule, resourceBlock block.Block, ctx *hclcontext.Context, ignoreErrors bool) result.Set {
 	if ignoreErrors {
 		defer func() {
 			if err := recover(); err != nil {
@@ -30,12 +30,12 @@ func CheckRule(r *Rule, block block.Block, ctx *hclcontext.Context, ignoreErrors
 	var links []string
 
 	if r.Provider != provider.CustomProvider {
-		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s", r.Provider, r.Service, r.ShortCode))
+		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s#%s/%s", r.Provider, r.Service, r.ShortCode, r.Provider, r.Service))
 	}
 
 	links = append(links, r.Documentation.Links...)
 
-	resultSet := result.NewSet().
+	resultSet := result.NewSet(resourceBlock).
 		WithRuleID(r.ID()).
 		WithLegacyRuleID(r.LegacyID).
 		WithRuleSummary(r.Documentation.Summary).
@@ -44,7 +44,7 @@ func CheckRule(r *Rule, block block.Block, ctx *hclcontext.Context, ignoreErrors
 		WithRuleProvider(r.Provider).
 		WithLinks(links)
 
-	r.CheckFunc(resultSet, block, ctx)
+	r.CheckFunc(resultSet, resourceBlock, ctx)
 	return resultSet
 }
 

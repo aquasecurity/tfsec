@@ -1,5 +1,6 @@
 package elb
 
+// generator-locked
 import (
 	"testing"
 

@@ -207,7 +207,7 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 	var forEachFiltered block.Blocks
 	for _, block := range blocks {
 		forEachAttr := block.GetAttribute("for_each")
-		if forEachAttr == nil || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
+		if forEachAttr.IsNil() || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
 			forEachFiltered = append(forEachFiltered, block)
 			continue
 		}
@@ -237,7 +237,7 @@ func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 	var countFiltered block.Blocks
 	for _, block := range blocks {
 		countAttr := block.GetAttribute("count")
-		if countAttr == nil || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
+		if countAttr.IsNil() || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
 			countFiltered = append(countFiltered, block)
 			continue
 		}
@@ -412,4 +412,10 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 
 	return cty.ObjectVal(values)
 
+}
+
+func (e *Evaluator) SetWorkspace(workspaceName string) {
+
+	ctyWorkspaceName := cty.StringVal(workspaceName)
+	e.ctx.Variables["terraform"] = cty.ObjectVal(map[string]cty.Value{"workspace": ctyWorkspaceName})
 }

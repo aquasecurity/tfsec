@@ -1,11 +1,13 @@
 package iam
 
+// generator-locked
 import (
 	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 
@@ -20,8 +22,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
-type awsIAMPolicyDocument struct {
+type PolicyDocument struct {
 	Statements []awsIAMPolicyDocumentStatement `json:"Statement"`
 }
 
@@ -33,11 +34,52 @@ type awsIAMPolicyDocumentStatement struct {
 }
 
 type awsIAMPolicyPrincipal struct {
-	AWS awsIAMPolicyDocumentValue `json:"AWS"`
+	AWS     []string
+	Service []string
 }
 
 // AWS allows string or []string as value, we convert everything to []string to avoid casting
 type awsIAMPolicyDocumentValue []string
+
+func (value *awsIAMPolicyPrincipal) UnmarshalJSON(b []byte) error {
+
+	var raw interface{}
+	err := json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+
+	//  value can be string or []string, convert everything to []string
+	switch v := raw.(type) {
+	case map[string]interface{}:
+		for key, each := range v {
+			switch raw := each.(type) {
+			case string:
+				if key == "Service" {
+					value.Service = append(value.Service, raw)
+				} else {
+					value.AWS = append(value.AWS, raw)
+				}
+			case []string:
+				if key == "Service" {
+					value.Service = append(value.Service, raw...)
+				} else {
+					value.AWS = append(value.AWS, raw...)
+				}
+			}
+		}
+	case string:
+		value.AWS = []string{v}
+	case []interface{}:
+		for _, item := range v {
+			value.AWS = append(value.AWS, fmt.Sprintf("%v", item))
+		}
+	default:
+		return fmt.Errorf("invalid %s value element: allowed is only string or []string", value)
+	}
+
+	return nil
+}
 
 func (value *awsIAMPolicyDocumentValue) UnmarshalJSON(b []byte) error {
 
@@ -68,17 +110,17 @@ func (value *awsIAMPolicyDocumentValue) UnmarshalJSON(b []byte) error {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS097",
+		LegacyID:  "AWS097",
 		Service:   "iam",
 		ShortCode: "block-kms-policy-wildcard",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "IAM customer managed policies should not allow decryption actions on all KMS keys",
-			Explanation:  `
+			Summary: "IAM customer managed policies should not allow decryption actions on all KMS keys",
+			Explanation: `
 IAM policies define which actions an identity (user, group, or role) can perform on which resources. Following security best practices, AWS recommends that you allow least privilege. In other words, you should grant to identities only the kms:Decrypt or kms:ReEncryptFrom permissions and only for the keys that are required to perform a task.
 `,
-			Impact:       "Identities may be able to decrypt data which they should not have access to",
-			Resolution:   "Scope down the resources of the IAM policy to specific keys",
-			BadExample:   `
+			Impact:     "Identities may be able to decrypt data which they should not have access to",
+			Resolution: "Scope down the resources of the IAM policy to specific keys",
+			BadExample: []string{`
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -113,8 +155,13 @@ data "aws_iam_policy_document" "kms_policy" {
     resources = ["*"]
   }
 }
-`,
-			GoodExample:  `
+
+`},
+			GoodExample: []string{`
+resource "aws_kms_key" "main" {
+	enable_key_rotation = true
+}
+
 resource "aws_iam_role_policy" "test_policy" {
 	name = "test_policy"
 	role = aws_iam_role.test_role.id
@@ -149,8 +196,9 @@ data "aws_iam_policy_document" "kms_policy" {
     resources = [aws_kms_key.main.arn]
   }
 }
-`,
+`},
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document",
 				"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards-fsbp-controls.html#fsbp-kms-1",
 			},
 		},
@@ -161,7 +209,7 @@ data "aws_iam_policy_document" "kms_policy" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
 
 			policyAttr := resourceBlock.GetAttribute("policy")
-			if policyAttr == nil {
+			if policyAttr.IsNil() {
 				return
 			}
 
@@ -187,16 +235,17 @@ data "aws_iam_policy_document" "kms_policy" {
 						continue
 					}
 
-					if statementBlock.HasChild("actions") && statementBlock.GetAttribute("actions").Contains("kms") {
-						if resources := statementBlock.GetAttribute("resources"); resources != nil {
-							if resources.Contains("*") {
-								set.Add(
-									result.New(policyDocumentBlock).
-										WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", policyDocumentBlock.FullName())).
-										WithRange(resources.Range()).
-										WithAttributeAnnotation(resources),
-								)
-							}
+					if statementBlock.HasChild("actions") && statementBlock.GetAttribute("actions").Contains("kms:*") {
+						if resources := statementBlock.GetAttribute("resources"); resources.IsNotNil() {
+							resources.Each(func(key, value cty.Value) {
+								if value.Type() == cty.String && strings.Contains(value.AsString(), ("*")) {
+									set.AddResult().
+										WithDescription("Resource '%s' a policy with KMS actions for all KMS keys.", policyDocumentBlock.FullName()).
+										WithBlock(policyDocumentBlock).
+										WithAttribute(resources)
+								}
+							})
+
 						}
 					}
 				}
@@ -206,7 +255,7 @@ data "aws_iam_policy_document" "kms_policy" {
 }
 
 func checkAWS097PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr block.Attribute) {
-	var document awsIAMPolicyDocument
+	var document PolicyDocument
 	if err := json.Unmarshal([]byte(policyAttr.Value().AsString()), &document); err != nil {
 		return
 	}
@@ -220,12 +269,9 @@ func checkAWS097PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 			}
 			for _, resource := range statement.Resource {
 				if strings.Contains(resource, "*") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' a policy with KMS actions for all KMS keys.", resourceBlock.FullName())).
-							WithRange(policyAttr.Range()).
-							WithAttributeAnnotation(policyAttr),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' a policy with KMS actions for all KMS keys.", resourceBlock.FullName()).
+						WithAttribute(policyAttr)
 					return
 				}
 			}

@@ -1,7 +1,7 @@
 package athena
 
+// generator-locked
 import (
-	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -18,21 +18,20 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS059",
+		LegacyID:  "AWS059",
 		Service:   "athena",
 		ShortCode: "enable-at-rest-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Athena databases and workgroup configurations are created unencrypted at rest by default, they should be encrypted",
-			Impact:       "Data can be read if the Athena Database is compromised",
-			Resolution:   "Enable encryption at rest for Athena databases and workgroup configurations",
-			Explanation:  `
+			Summary:    "Athena databases and workgroup configurations are created unencrypted at rest by default, they should be encrypted",
+			Impact:     "Data can be read if the Athena Database is compromised",
+			Resolution: "Enable encryption at rest for Athena databases and workgroup configurations",
+			Explanation: `
 Athena databases and workspace result sets should be encrypted at rests. These databases and query sets are generally derived from data in S3 buckets and should have the same level of at rest protection.
 
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_athena_database" "bad_example" {
   name   = "database_name"
   bucket = aws_s3_bucket.hoge.bucket
@@ -50,8 +49,8 @@ resource "aws_athena_workgroup" "bad_example" {
     }
   }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_athena_database" "good_example" {
   name   = "database_name"
   bucket = aws_s3_bucket.hoge.bucket
@@ -79,7 +78,7 @@ resource "aws_athena_workgroup" "good_example" {
     }
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/athena_workgroup#encryption_configuration",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/athena_database#encryption_configuration",
@@ -93,7 +92,6 @@ resource "aws_athena_workgroup" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			blockName := resourceBlock.FullName()
-
 			if strings.EqualFold(resourceBlock.TypeLabel(), "aws_athena_workgroup") {
 				if !resourceBlock.HasChild("configuration") {
 					return
@@ -106,11 +104,8 @@ resource "aws_athena_workgroup" "good_example" {
 			}
 
 			if resourceBlock.MissingChild("encryption_configuration") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' missing encryption configuration block.", blockName)).
-						WithRange(resourceBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' missing encryption configuration block.", blockName)
 			}
 
 		},

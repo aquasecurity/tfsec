@@ -1,5 +1,6 @@
 package secrets
 
+// generator-locked
 import (
 	"testing"
 
@@ -82,7 +83,7 @@ resource "aws_instance" "good_instance" {
 	instance_type = "t2.small"
 
 	user_data = <<EOF
-		Password = var.password
+		export EDITOR=vimacs
 EOF
 
 }

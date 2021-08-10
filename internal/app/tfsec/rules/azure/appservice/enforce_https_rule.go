@@ -1,8 +1,7 @@
 package appservice
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,20 +16,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU028",
+		LegacyID:  "AZU028",
 		Service:   "appservice",
 		ShortCode: "enforce-https",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Ensure the Function App can only be accessed via HTTPS. The default is false.",
-			Explanation:  `
+			Summary: "Ensure the Function App can only be accessed via HTTPS. The default is false.",
+			Explanation: `
 By default, clients can connect to function endpoints by using both HTTP or HTTPS. You should redirect HTTP to HTTPs because HTTPS uses the SSL/TLS protocol to provide a secure connection, which is both encrypted and authenticated.
 `,
-			Impact:       "Anyone can access the Function App using HTTP.",
-			Resolution:   "You can redirect all HTTP requests to the HTTPS port.",
-			BadExample:   `
+			Impact:     "Anyone can access the Function App using HTTP.",
+			Resolution: "You can redirect all HTTP requests to the HTTPS port.",
+			BadExample: []string{`
 resource "azurerm_function_app" "bad_example" {
   name                       = "test-azure-functions"
   location                   = azurerm_resource_group.example.location
@@ -40,8 +38,8 @@ resource "azurerm_function_app" "bad_example" {
   storage_account_access_key = azurerm_storage_account.example.primary_access_key
   os_type                    = "linux"
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azurerm_function_app" "good_example" {
   name                       = "test-azure-functions"
   location                   = azurerm_resource_group.example.location
@@ -52,7 +50,7 @@ resource "azurerm_function_app" "good_example" {
   os_type                    = "linux"
   https_only                 = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app#https_only",
 				"https://docs.microsoft.com/en-us/azure/app-service/configure-ssl-bindings#enforce-https",
@@ -66,21 +64,15 @@ resource "azurerm_function_app" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("https_only") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName())
 				return
 			}
 			httpsOnlyAttr := resourceBlock.GetAttribute("https_only")
 			if httpsOnlyAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName())).
-						WithRange(httpsOnlyAttr.Range()).
-						WithAttributeAnnotation(httpsOnlyAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName()).
+					WithAttribute(httpsOnlyAttr)
 			}
 		},
 	})

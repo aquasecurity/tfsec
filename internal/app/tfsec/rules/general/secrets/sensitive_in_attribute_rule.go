@@ -1,8 +1,7 @@
 package secrets
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 	"github.com/zclconf/go-cty/cty"
@@ -19,7 +18,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
-
 
 var sensitiveWhitelist = []struct {
 	Resource  string
@@ -49,24 +47,24 @@ var sensitiveWhitelist = []struct {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GEN003",
+		LegacyID:  "GEN003",
 		Service:   "secrets",
 		ShortCode: "sensitive-in-attribute",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Potentially sensitive data stored in block attribute.",
-			Impact:       "Block attribute could be leaking secrets",
-			Resolution:   "Don't include sensitive data in blocks",
-			Explanation:  `
+			Summary:    "Potentially sensitive data stored in block attribute.",
+			Impact:     "Block attribute could be leaking secrets",
+			Resolution: "Don't include sensitive data in blocks",
+			Explanation: `
 Sensitive attributes such as passwords and API tokens should not be available in your templates, especially in a plaintext form. You can declare variables to hold the secrets, assuming you can provide values for those variables in a secure fashion. Alternatively, you can store these secrets in a secure secret store, such as AWS KMS.
 
 *NOTE: It is also recommended to store your Terraform state in an encrypted form.*
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "evil_corp" "bad_example" {
 	root_password = "p4ssw0rd"
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 variable "password" {
   description = "The root password for our VM"
   type        = string
@@ -75,7 +73,7 @@ variable "password" {
 resource "evil_corp" "good_example" {
 	root_password = var.passwordx
 }
-`,
+`},
 			Links: []string{
 				"https://www.terraform.io/docs/state/sensitive-data.html",
 			},
@@ -96,11 +94,8 @@ resource "evil_corp" "good_example" {
 				}
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.IsResolvable() && attribute.Type() == cty.String && !attribute.Equals("") {
-						set.Add(result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Block '%s' includes a potentially sensitive attribute which is defined within the project.", resourceBlock.FullName())).
-							WithRange(attribute.Range()).
-							WithAttributeAnnotation(attribute),
-						)
+						set.AddResult().WithDescription("Block '%s' includes a potentially sensitive attribute which is defined within the project.", resourceBlock.FullName()).
+							WithAttribute(attribute)
 					}
 
 				}

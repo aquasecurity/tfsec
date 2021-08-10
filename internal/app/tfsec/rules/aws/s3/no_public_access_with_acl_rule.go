@@ -1,8 +1,7 @@
 package s3
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,36 +16,35 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS001",
+		LegacyID:  "AWS001",
 		Service:   "s3",
 		ShortCode: "no-public-access-with-acl",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "S3 Bucket has an ACL defined which allows public access.",
-			Explanation:  `
+			Summary: "S3 Bucket has an ACL defined which allows public access.",
+			Explanation: `
 S3 bucket permissions should be set to deny public access unless explicitly required.
 
 Granting write access publicly with <code>public-read-write</code> is especially dangerous as you will be billed for any uploaded files.
 
 Additionally, you should not use the <code>authenticated-read</code> canned ACL, as this provides read access to any authenticated AWS user, not just AWS users within your organisation.
 `,
-			Impact:       "The contents of the bucket can be accessed publicly",
-			Resolution:   "Apply a more restrictive bucket ACL",
-			BadExample:   `
+			Impact:     "The contents of the bucket can be accessed publicly",
+			Resolution: "Apply a more restrictive bucket ACL",
+			BadExample: []string{`
 resource "aws_s3_bucket" "bad_example" {
 	acl = "public-read"
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_s3_bucket" "good_example" {
 	acl = "private"
 }
-`,
+`},
 			Links: []string{
-				"https://aws.amazon.com/premiumsupport/knowledge-center/secure-s3-resources/",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket",
+				"https://aws.amazon.com/premiumsupport/knowledge-center/secure-s3-resources/",
 			},
 		},
 		Provider:        provider.AWSProvider,
@@ -54,21 +52,18 @@ resource "aws_s3_bucket" "good_example" {
 		RequiredLabels:  []string{"aws_s3_bucket"},
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			if attr := resourceBlock.GetAttribute("acl"); attr != nil {
-				if attr.IsAny("public-read", "public-read-write", "website") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows public access.", resourceBlock.FullName())).
-							WithAttributeAnnotation(attr).
-							WithRange(attr.Range()),
-					)
-				} else if attr.Equals("authenticated-read") {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName())).
-							WithRange(attr.Range()),
-					)
-				}
+			if resourceBlock.MissingChild("acl") {
+				return
+			}
+
+			aclAttr := resourceBlock.GetAttribute("acl")
+			if aclAttr.IsAny("public-read", "public-read-write", "website") {
+				set.AddResult().
+					WithDescription("Resource '%s' has an ACL which allows public access.", resourceBlock.FullName()).
+					WithAttribute(aclAttr)
+			} else if aclAttr.Equals("authenticated-read") {
+				set.AddResult().
+					WithDescription("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName())
 			}
 		},
 	})

@@ -1,5 +1,6 @@
 package elbv2
 
+// generator-locked
 import (
 	"testing"
 

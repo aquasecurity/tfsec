@@ -1,8 +1,7 @@
 package elasticsearch
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,20 +16,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS070",
+		LegacyID:  "AWS070",
 		Service:   "elastic-search",
 		ShortCode: "enable-logging",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "AWS ES Domain should have logging enabled",
-			Impact:       "Logging provides vital information about access and usage",
-			Resolution:   "Enable logging for ElasticSearch domains",
-			Explanation:  `
+			Summary:    "AWS ES Domain should have logging enabled",
+			Impact:     "Logging provides vital information about access and usage",
+			Resolution: "Enable logging for ElasticSearch domains",
+			Explanation: `
 AWS ES domain should have logging enabled by default.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_elasticsearch_domain" "example" {
   // other config
 
@@ -40,8 +38,8 @@ resource "aws_elasticsearch_domain" "example" {
     log_type                 = "INDEX_SLOW_LOGS"
   }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_elasticsearch_domain" "example" {
   // other config
 
@@ -51,7 +49,7 @@ resource "aws_elasticsearch_domain" "example" {
     log_type                 = "AUDIT_LOGS"
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#log_publishing_options",
 			},
@@ -61,27 +59,23 @@ resource "aws_elasticsearch_domain" "example" {
 		RequiredLabels:  []string{"aws_elasticsearch_domain"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			logPublishingOptions := resourceBlock.GetBlocks("log_publishing_options")
-			if len(logPublishingOptions) > 0 {
-				auditLogFound := false
-				for _, logPublishingOption := range logPublishingOptions {
-					logType := logPublishingOption.GetAttribute("log_type")
-					if logType != nil {
-						if logType.Equals("AUDIT_LOGS") {
-							auditLogFound = true
-						}
-					}
-				}
 
-				if !auditLogFound {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' is missing 'AUDIT_LOGS` in one of the `log_publishing_options`-`log_type` attributes so audit log is not enabled", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
-					)
+			logPublishingOptions := resourceBlock.GetBlocks("log_publishing_options")
+
+			auditLogFound := false
+			for _, logPublishingOption := range logPublishingOptions {
+				logType := logPublishingOption.GetAttribute("log_type")
+				if logType.IsNotNil() {
+					if logType.Equals("AUDIT_LOGS") {
+						auditLogFound = true
+					}
 				}
 			}
 
+			if !auditLogFound {
+				set.AddResult().
+					WithDescription("Resource '%s' is missing 'AUDIT_LOGS` in one of the `log_publishing_options`-`log_type` attributes so audit log is not enabled", resourceBlock.FullName())
+			}
 		},
 	})
 }

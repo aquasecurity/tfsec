@@ -1,8 +1,7 @@
 package s3
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,34 +16,33 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS002",
+		LegacyID:  "AWS002",
 		Service:   "s3",
 		ShortCode: "enable-bucket-logging",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "S3 Bucket does not have logging enabled.",
-			Explanation:  `
+			Summary: "S3 Bucket does not have logging enabled.",
+			Explanation: `
 Buckets should have logging enabled so that access can be audited. 
 `,
-			Impact:       "There is no way to determine the access to this bucket",
-			Resolution:   "Add a logging block to the resource to enable access logging",
-			BadExample:   `
+			Impact:     "There is no way to determine the access to this bucket",
+			Resolution: "Add a logging block to the resource to enable access logging",
+			BadExample: []string{`
 resource "aws_s3_bucket" "bad_example" {
 
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_s3_bucket" "good_example" {
 	logging {
 		target_bucket = "target-bucket"
 	}
 }
-`,
+`},
 			Links: []string{
-				"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket",
+				"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html",
 			},
 		},
 		Provider:        provider.AWSProvider,
@@ -52,15 +50,13 @@ resource "aws_s3_bucket" "good_example" {
 		RequiredLabels:  []string{"aws_s3_bucket"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			if loggingBlock := resourceBlock.GetBlock("logging"); loggingBlock == nil {
-				if resourceBlock.GetAttribute("acl") != nil && resourceBlock.GetAttribute("acl").Equals("log-delivery-write") {
+
+			if resourceBlock.MissingChild("logging") {
+				if resourceBlock.GetAttribute("acl").IsNotNil() && resourceBlock.GetAttribute("acl").Equals("log-delivery-write") {
 					return
 				}
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have logging enabled.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' does not have logging enabled.", resourceBlock.FullName())
 			}
 		},
 	})

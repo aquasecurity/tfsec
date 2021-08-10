@@ -1,8 +1,7 @@
 package compute
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -12,61 +11,57 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GCP013",
+		LegacyID:  "GCP013",
 		Service:   "compute",
 		ShortCode: "disk-encryption-required",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "The encryption key used to encrypt a compute disk has been specified in plaintext.",
-			Explanation:  `
+			Summary: "The encryption key used to encrypt a compute disk has been specified in plaintext.",
+			Explanation: `
 Sensitive values such as raw encryption keys should not be included in your Terraform code, and should be stored securely by a secrets manager.
 `,
-			Impact:       "The encryption key should be considered compromised as it is not stored securely.",
-			Resolution:   "Reference a managed key rather than include the key in raw format.",
-			BadExample:   `
+			Impact:     "The encryption key should be considered compromised as it is not stored securely.",
+			Resolution: "Reference a managed key rather than include the key in raw format.",
+			BadExample: []string{`
 resource "google_compute_disk" "good_example" {
 	disk_encryption_key {
 		raw_key="b2ggbm8gdGhpcyBpcyBiYWQ="
 	}
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "google_compute_disk" "good_example" {
 	disk_encryption_key {
 		kms_key_self_link = google_kms_crypto_key.my_crypto_key.id
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk#kms_key_self_link",
 				"https://cloud.google.com/compute/docs/disks/customer-supplied-encryption",
 			},
 		},
-		Provider:        provider.GCPProvider,
+		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_compute_disk"},
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			keyBlock := resourceBlock.GetBlock("disk_encryption_key")
-			if keyBlock == nil {
+			if resourceBlock.MissingChild("disk_encryption_key") {
 				return
 			}
 
-			rawKeyAttr := keyBlock.GetAttribute("raw_key")
-			if rawKeyAttr == nil {
+			if resourceBlock.MissingNestedChild("disk_encryption_key.raw_key") {
 				return
 			}
+
+			rawKeyAttr := resourceBlock.GetNestedAttribute("disk_encryption_key.raw_key")
 
 			if rawKeyAttr.IsString() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' specifies an encryption key in raw format.", resourceBlock.FullName())).
-						WithRange(rawKeyAttr.Range()).
-						WithAttributeAnnotation(rawKeyAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' specifies an encryption key in raw format.", resourceBlock.FullName()).
+					WithAttribute(rawKeyAttr)
 			}
 
 		},

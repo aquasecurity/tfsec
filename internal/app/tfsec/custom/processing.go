@@ -37,70 +37,77 @@ var matchFunctions = map[CheckAction]func(block.Block, *MatchSpec) bool{
 	},
 	StartsWith: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		if attribute == nil {
+		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.StartsWith(spec.MatchValue)
 	},
 	EndsWith: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		if attribute == nil {
+		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.EndsWith(spec.MatchValue)
 	},
 	Contains: func(b block.Block, spec *MatchSpec) bool {
 		attribute := b.GetAttribute(spec.Name)
-		if attribute == nil {
+		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.Contains(spec.MatchValue, block.IgnoreCase)
 	},
 	NotContains: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		if attribute == nil {
+		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return !attribute.Contains(spec.MatchValue)
 	},
 	Equals: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		if attribute == nil {
+		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.Equals(spec.MatchValue)
 	},
+	NotEqual: func(block block.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		if attribute.IsNil() {
+			return spec.IgnoreUndefined
+		}
+		return attribute.NotEqual(spec.MatchValue)
+	},
 	LessThan: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		if attribute == nil {
+		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThan(spec.MatchValue)
 	},
 	LessThanOrEqualTo: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		if attribute == nil {
+		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThanOrEqualTo(spec.MatchValue)
 	},
 	GreaterThan: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		if attribute == nil {
+		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThan(spec.MatchValue)
 	},
 	GreaterThanOrEqualTo: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		if attribute == nil {
+		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThanOrEqualTo(spec.MatchValue)
 	},
 	RegexMatches: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		if attribute == nil {
+		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.RegexMatches(spec.MatchValue)
@@ -111,7 +118,7 @@ var matchFunctions = map[CheckAction]func(block.Block, *MatchSpec) bool{
 	},
 	IsNone: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
-		if attribute == nil {
+		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.IsNone(unpackInterfaceToInterfaceSlice(spec.MatchValue)...)
@@ -139,12 +146,9 @@ func processFoundChecks(checks ChecksFile) {
 				CheckFunc: func(set result.Set, rootBlock block.Block, ctx *hclcontext.Context) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, ctx) {
-						set.Add(
-							result.New(rootBlock).
-								WithDescription(fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage)).
-								WithSeverity(customCheck.Severity).
-								WithRange(rootBlock.Range()),
-						)
+						set.AddResult().
+							WithDescription("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage).
+							WithSeverity(customCheck.Severity)
 					}
 				},
 			})
@@ -153,10 +157,19 @@ func processFoundChecks(checks ChecksFile) {
 }
 
 func evalMatchSpec(b block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
-	if b == nil {
+	if b.IsNil() {
 		return false
 	}
 	var evalResult bool
+
+	if spec.PreConditions != nil {
+		for _, preCondition := range spec.PreConditions {
+			if !evalMatchSpec(b, &preCondition, ctx) {
+				// precondition not met
+				return true
+			}
+		}
+	}
 
 	switch spec.Action {
 	case InModule:
@@ -202,12 +215,15 @@ func processOrPredicate(spec *MatchSpec, b block.Block, ctx *hclcontext.Context)
 }
 
 func processAndPredicate(spec *MatchSpec, b block.Block, ctx *hclcontext.Context) bool {
+	set := make(map[bool]bool)
+
 	for _, childSpec := range spec.PredicateMatchSpec {
-		if !evalMatchSpec(b, &childSpec, ctx) {
-			return false
-		}
+		result := evalMatchSpec(b, &childSpec, ctx)
+		set[result] = true
+
 	}
-	return true
+
+	return len(set) == 1 && set[true] == true
 }
 
 func processSubMatches(spec *MatchSpec, b block.Block, evalResult bool) bool {

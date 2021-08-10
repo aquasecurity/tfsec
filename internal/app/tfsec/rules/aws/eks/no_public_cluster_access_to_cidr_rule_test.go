@@ -1,5 +1,6 @@
 package eks
 
+// generator-locked
 import (
 	"testing"
 
@@ -16,18 +17,18 @@ func Test_AWSEKSClusterNotOpenPublicly(t *testing.T) {
 		mustExcludeResultCode string
 	}{
 		{
-			name: "Test public access cidrs left to default causes check to fail",
+			name: "Test public access cidrs left to default causes check to pass if public access is disabled",
 			source: `
-resource "aws_eks_cluster" "bad_example" {
+resource "aws_eks_cluster" "good_example" {
 
-    name = "bad_example_cluster"
+    name = "good_example_cluster"
     role_arn = var.cluster_arn
     vpc_config {
         endpoint_public_access = false
     }
 }
 `,
-			mustIncludeResultCode: expectedCode,
+			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "Test public access cidrs actively set to open check to fail",
@@ -37,9 +38,36 @@ resource "aws_eks_cluster" "bad_example" {
     name = "bad_example_cluster"
     role_arn = var.cluster_arn
     vpc_config {
-        endpoint_public_access = false
+        endpoint_public_access = true
 		public_access_cidrs = [ "0.0.0.0/0" ]
     }
+}
+`,
+		},
+		{
+			name: "Test public access cidrs actively set to open check to fail",
+			source: `
+resource "aws_eks_cluster" "bad_example" {
+
+name = "bad_example_cluster"
+role_arn = var.cluster_arn
+vpc_config {
+public_access_cidrs = [ "0.0.0.0/0" ]
+}
+}
+`,
+			mustIncludeResultCode: expectedCode,
+		},
+
+		{
+			name: "Test public access cidrs using default set to open check to fail",
+			source: `
+resource "aws_eks_cluster" "bad_example" {
+
+name = "bad_example_cluster"
+role_arn = var.cluster_arn
+vpc_config {
+}
 }
 `,
 			mustIncludeResultCode: expectedCode,

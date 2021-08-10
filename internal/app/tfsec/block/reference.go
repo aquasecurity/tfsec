@@ -15,30 +15,34 @@ type Reference struct {
 	key       string
 }
 
-func newReference(parts []string) *Reference {
+func newReference(parts []string) (*Reference, error) {
 
 	var ref Reference
 
-	if len(parts) > 0 {
+	if len(parts) == 0 {
+		return nil, fmt.Errorf("cannot create empty reference")
+	}
 
-		blockType, err := TypeFromRefName(parts[0])
-		if err != nil {
-			blockType = &TypeResource
+	blockType, err := TypeFromRefName(parts[0])
+	if err != nil {
+		blockType = &TypeResource
+	}
+
+	ref.blockType = *blockType
+
+	if ref.blockType.removeTypeInReference && parts[0] != blockType.name {
+		ref.typeLabel = parts[0]
+		if len(parts) > 1 {
+			ref.nameLabel = parts[1]
 		}
-
-		ref.blockType = *blockType
-
-		if ref.blockType.removeTypeInReference {
-			ref.typeLabel = parts[0]
-			if len(parts) > 1 {
-				ref.nameLabel = parts[1]
-			}
-		} else {
-			if len(parts) > 1 {
-				ref.typeLabel = parts[1]
-				if len(parts) > 2 {
-					ref.nameLabel = parts[2]
-				}
+	} else {
+		if len(parts) > 1 {
+			ref.typeLabel = parts[1]
+			if len(parts) > 2 {
+				ref.nameLabel = parts[2]
+			} else {
+				ref.nameLabel = ref.typeLabel
+				ref.typeLabel = ""
 			}
 		}
 	}
@@ -53,7 +57,7 @@ func newReference(parts []string) *Reference {
 		ref.remainder = parts[3:]
 	}
 
-	return &ref
+	return &ref, nil
 }
 
 func (r *Reference) BlockType() Type {
@@ -73,7 +77,13 @@ func (r *Reference) String() string {
 	base := fmt.Sprintf("%s.%s", r.typeLabel, r.nameLabel)
 
 	if !r.blockType.removeTypeInReference {
-		base = fmt.Sprintf("%s.%s.%s", r.blockType.Name(), r.typeLabel, r.nameLabel)
+		base = r.blockType.Name()
+		if r.typeLabel != "" {
+			base += "." + r.typeLabel
+		}
+		if r.nameLabel != "" {
+			base += "." + r.nameLabel
+		}
 	}
 
 	if r.key != "" {
@@ -97,7 +107,7 @@ func (r *Reference) RefersTo(b Block) bool {
 	if r.NameLabel() != b.Reference().NameLabel() {
 		return false
 	}
-	if r.Key() != b.Reference().Key() {
+	if r.Key() != "" && r.Key() != b.Reference().Key() {
 		return false
 	}
 	return true

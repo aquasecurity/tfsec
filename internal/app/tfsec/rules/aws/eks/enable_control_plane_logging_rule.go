@@ -1,8 +1,7 @@
 package eks
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,20 +16,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS067",
+		LegacyID:  "AWS067",
 		Service:   "eks",
 		ShortCode: "enable-control-plane-logging",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "EKS Clusters should have cluster control plane logging turned on",
-			Impact:       "Logging provides valuable information about access and usage",
-			Resolution:   "Enable logging for the EKS control plane",
-			Explanation:  `
+			Summary:    "EKS Clusters should have cluster control plane logging turned on",
+			Impact:     "Logging provides valuable information about access and usage",
+			Resolution: "Enable logging for the EKS control plane",
+			Explanation: `
 By default cluster control plane logging is not turned on. Logging is available for audit, api, authenticator, controllerManager and scheduler. All logging should be turned on for cluster control plane.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_eks_cluster" "bad_example" {
     encryption_config {
         resources = [ "secrets" ]
@@ -45,8 +43,8 @@ resource "aws_eks_cluster" "bad_example" {
         endpoint_public_access = false
     }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_eks_cluster" "good_example" {
     encryption_config {
         resources = [ "secrets" ]
@@ -63,7 +61,7 @@ resource "aws_eks_cluster" "good_example" {
         endpoint_public_access = false
     }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#enabled_cluster_log_types",
 				"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html",
@@ -78,23 +76,17 @@ resource "aws_eks_cluster" "good_example" {
 			controlPlaneLogging := []string{"api", "audit", "authenticator", "controllerManager", "scheduler"}
 
 			if resourceBlock.MissingChild("enabled_cluster_log_types") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", resourceBlock.FullName())
 				return
 			}
 
 			configuredLoggingAttr := resourceBlock.GetAttribute("enabled_cluster_log_types")
 			for _, logType := range controlPlaneLogging {
 				if !configuredLoggingAttr.Contains(logType) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' is missing the control plane log type '%s'", resourceBlock.FullName(), logType)).
-							WithRange(configuredLoggingAttr.Range()).
-							WithAttributeAnnotation(configuredLoggingAttr),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' is missing the control plane log type '%s'", resourceBlock.FullName(), logType).
+						WithAttribute(configuredLoggingAttr)
 				}
 			}
 		},

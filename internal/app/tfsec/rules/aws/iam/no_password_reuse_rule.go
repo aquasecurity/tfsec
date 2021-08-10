@@ -1,8 +1,7 @@
 package iam
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -33,23 +32,23 @@ IAM account password policies should prevent the reuse of passwords.
 
 The account password policy should be set to prevent using any of the last five used passwords.
 			`,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	password_reuse_prevention = 1
 	# ...
 }
-			`,
-			GoodExample: `
+			`},
+			GoodExample: []string{`
 resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	password_reuse_prevention = 5
 	# ...
 }
-			`,
+			`},
 			Links: []string{
-				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
+				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
 			},
 		},
 		Provider:        provider.AWSProvider,
@@ -57,20 +56,14 @@ resource "aws_iam_account_password_policy" "good_example" {
 		RequiredLabels:  []string{"aws_iam_account_password_policy"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			if attr := resourceBlock.GetAttribute("password_reuse_prevention"); attr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not have a password reuse prevention count set.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+			if attr := resourceBlock.GetAttribute("password_reuse_prevention"); attr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have a password reuse prevention count set.", resourceBlock.FullName())
 			} else if attr.Value().Type() == cty.Number {
 				value, _ := attr.Value().AsBigFloat().Float64()
 				if value < 5 {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' has a password reuse count less than 5.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' has a password reuse count less than 5.", resourceBlock.FullName())
 				}
 			}
 		},

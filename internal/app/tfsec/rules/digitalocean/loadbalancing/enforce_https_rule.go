@@ -1,8 +1,7 @@
 package loadbalancing
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -12,22 +11,21 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "DIG004",
+		LegacyID:  "DIG004",
 		Service:   "loadbalancing",
 		ShortCode: "enforce-https",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "The load balancer forwarding rule is using an insecure protocol as an entrypoint",
-			Explanation:  `
+			Summary: "The load balancer forwarding rule is using an insecure protocol as an entrypoint",
+			Explanation: `
 Plain HTTP is unencrypted and human-readable. This means that if a malicious actor was to eavesdrop on your connection, they would be able to see all of your data flowing back and forth.
 
 You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning eavesdroppers cannot read your traffic.
 `,
-			Impact:       "Your inbound traffic is not protected",
-			Resolution:   "Switch to HTTPS to benefit from TLS security features",
-			BadExample:   `
+			Impact:     "Your inbound traffic is not protected",
+			Resolution: "Switch to HTTPS to benefit from TLS security features",
+			BadExample: []string{`
 resource "digitalocean_loadbalancer" "bad_example" {
   name   = "bad_example-1"
   region = "nyc3"
@@ -42,8 +40,8 @@ resource "digitalocean_loadbalancer" "bad_example" {
 
   droplet_ids = [digitalocean_droplet.web.id]
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "digitalocean_loadbalancer" "bad_example" {
   name   = "bad_example-1"
   region = "nyc3"
@@ -58,7 +56,7 @@ resource "digitalocean_loadbalancer" "bad_example" {
   
   droplet_ids = [digitalocean_droplet.web.id]
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/loadbalancer",
 				"https://docs.digitalocean.com/products/networking/load-balancers/",
@@ -81,10 +79,8 @@ resource "digitalocean_loadbalancer" "bad_example" {
 				}
 				entryPointAttr := rule.GetAttribute("entry_protocol")
 				if entryPointAttr.Equals("http", block.IgnoreCase) {
-					set.Add(result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName())).
-						WithAttributeAnnotation(entryPointAttr).
-						WithRange(entryPointAttr.Range()))
+					set.AddResult().WithDescription("Resource '%s' uses plain HTTP instead of HTTPS.", resourceBlock.FullName()).
+						WithAttribute(entryPointAttr)
 				}
 			}
 		},

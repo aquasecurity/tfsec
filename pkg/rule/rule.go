@@ -2,6 +2,7 @@ package rule
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -28,7 +29,7 @@ type Rule struct {
 }
 
 func (r Rule) ID() string {
-	return fmt.Sprintf("%s-%s-%s", r.Provider, r.Service, r.ShortCode)
+	return strings.ToLower(fmt.Sprintf("%s-%s-%s", r.Provider, r.Service, r.ShortCode))
 }
 
 func (r Rule) MatchesID(id string) bool {
@@ -50,10 +51,10 @@ type RuleDocumentation struct {
 	Resolution string
 
 	// BadExample (hcl) contains Terraform code which would cause the check to fail
-	BadExample string
+	BadExample []string
 
 	// GoodExample (hcl) modifies the BadExample content to cause the check to pass
-	GoodExample string
+	GoodExample []string
 
 	// Links are URLs which contain further reading related to the check
 	Links []string

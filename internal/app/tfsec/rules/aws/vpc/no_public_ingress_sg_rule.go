@@ -1,8 +1,7 @@
 package vpc
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -30,20 +29,20 @@ func init() {
 			Explanation: `
 Opening up ports to the public internet is generally to be avoided. You should restrict access to IP addresses or ranges that explicitly require it where possible.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_security_group" "bad_example" {
 	ingress {
 		cidr_blocks = ["0.0.0.0/0"]
 	}
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_security_group" "good_example" {
 	ingress {
 		cidr_blocks = ["1.2.3.4/32"]
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group",
 			},
@@ -52,29 +51,23 @@ resource "aws_security_group" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_security_group"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(resultSet result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			for _, directionBlock := range resourceBlock.GetBlocks("ingress") {
-				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
+				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 
-					if cidr.IsOpen(cidrBlocksAttr) {
-						resultSet.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())).
-								WithRange(cidrBlocksAttr.Range()).
-								WithAttributeAnnotation(cidrBlocksAttr),
-						)
+					if cidr.IsAttributeOpen(cidrBlocksAttr) {
+						set.AddResult().
+							WithDescription("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName()).
+							WithAttribute(cidrBlocksAttr)
 					}
 				}
 
-				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr != nil {
+				if cidrBlocksAttr := directionBlock.GetAttribute("ipv6_cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 
-					if cidr.IsOpen(cidrBlocksAttr) {
-						resultSet.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())).
-								WithRange(cidrBlocksAttr.Range()),
-						)
+					if cidr.IsAttributeOpen(cidrBlocksAttr) {
+						set.AddResult().
+							WithDescription("Resource '%s' defines a fully open ingress security group.", resourceBlock.FullName())
 					}
 				}
 			}

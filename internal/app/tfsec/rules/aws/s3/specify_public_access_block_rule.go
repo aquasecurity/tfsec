@@ -1,8 +1,7 @@
 package s3
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -12,26 +11,25 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS098",
+		LegacyID:  "AWS098",
 		Service:   "s3",
 		ShortCode: "specify-public-access-block",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "S3 buckets should each define an aws_s3_bucket_public_access_block",
-			Explanation:  `
+			Summary: "S3 buckets should each define an aws_s3_bucket_public_access_block",
+			Explanation: `
 The "block public access" settings in S3 override individual policies that apply to a given bucket, meaning that all public access can be controlled in one central definition for that bucket. It is therefore good practice to define these settings for each bucket in order to clearly define the public access that can be allowed for it.
 `,
-			Impact:       "Public access policies may be applied to sensitive data buckets",
-			Resolution:   "Define a aws_s3_bucket_public_access_block for the given bucket to control public access policies",
-			BadExample:   `
+			Impact:     "Public access policies may be applied to sensitive data buckets",
+			Resolution: "Define a aws_s3_bucket_public_access_block for the given bucket to control public access policies",
+			BadExample: []string{`
 resource "aws_s3_bucket" "example" {
 	bucket = "example"
 	acl = "private-read"
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_s3_bucket" "example" {
 	bucket = "example"
 	acl = "private-read"
@@ -42,8 +40,9 @@ resource "aws_s3_bucket_public_access_block" "example" {
 	block_public_acls   = true
 	block_public_policy = true
 }
-`,
+`},
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block#bucket",
 				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
 			},
 		},
@@ -52,13 +51,11 @@ resource "aws_s3_bucket_public_access_block" "example" {
 		RequiredLabels:  []string{"aws_s3_bucket"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
+
 			blocks, err := ctx.GetReferencingResources(resourceBlock, "aws_s3_bucket_public_access_block", "bucket")
 			if err != nil || len(blocks) == 0 {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource %s has no associated aws_s3_bucket_public_access_block.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource %s has no associated aws_s3_bucket_public_access_block.", resourceBlock.FullName())
 			}
 		},
 	})

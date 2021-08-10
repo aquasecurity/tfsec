@@ -1,8 +1,7 @@
 package iam
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -31,23 +30,23 @@ func init() {
 			Explanation: `,
 IAM account password policies should ensure that passwords content including at least one uppercase character.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_iam_account_password_policy" "bad_example" {
 	# ...
 	# require_uppercase_characters not set
 	# ...
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_iam_account_password_policy" "good_example" {
 	# ...
 	require_uppercase_characters = true
 	# ...
 }
-`,
+`},
 			Links: []string{
-				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
+				"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
 			},
 		},
 		Provider:        provider.AWSProvider,
@@ -55,19 +54,13 @@ resource "aws_iam_account_password_policy" "good_example" {
 		RequiredLabels:  []string{"aws_iam_account_password_policy"},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
-			if attr := resourceBlock.GetAttribute("require_uppercase_characters"); attr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' does not require an uppercase character in the password.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+			if attr := resourceBlock.GetAttribute("require_uppercase_characters"); attr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not require an uppercase character in the password.", resourceBlock.FullName())
 			} else if attr.Value().Type() == cty.Bool {
 				if attr.Value().False() {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' explicitly specifies not requiring at least one uppercase character in the password.", resourceBlock.FullName())).
-							WithRange(resourceBlock.Range()),
-					)
+					set.AddResult().
+						WithDescription("Resource '%s' explicitly specifies not requiring at least one uppercase character in the password.", resourceBlock.FullName())
 				}
 			}
 		},

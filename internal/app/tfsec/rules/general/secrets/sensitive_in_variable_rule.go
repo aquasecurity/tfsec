@@ -1,8 +1,7 @@
 package secrets
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -21,22 +20,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "GEN001",
+		LegacyID:  "GEN001",
 		Service:   "secrets",
 		ShortCode: "sensitive-in-variable",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Potentially sensitive data stored in \"default\" value of variable.",
-			Impact:       "Default values could be exposing sensitive data",
-			Resolution:   "Don't include sensitive data in variable defaults",
-			Explanation:  `
+			Summary:    "Potentially sensitive data stored in \"default\" value of variable.",
+			Impact:     "Default values could be exposing sensitive data",
+			Resolution: "Don't include sensitive data in variable defaults",
+			Explanation: `
 Sensitive attributes such as passwords and API tokens should not be available in your templates, especially in a plaintext form. You can declare variables to hold the secrets, assuming you can provide values for those variables in a secure fashion. Alternatively, you can store these secrets in a secure secret store, such as AWS KMS.
 
 *NOTE: It is also recommended to store your Terraform state in an encrypted form.*
 `,
-			BadExample:   `
+			BadExample: []string{`
 variable "password" {
   description = "The root password for our VM"
   type        = string
@@ -46,8 +44,8 @@ variable "password" {
 resource "evil_corp" "virtual_machine" {
 	root_password = var.password
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 variable "password" {
   description = "The root password for our VM"
   type        = string
@@ -56,7 +54,7 @@ variable "password" {
 resource "evil_corp" "virtual_machine" {
 	root_password = var.password
 }
-`,
+`},
 			Links: []string{
 				"https://www.terraform.io/docs/state/sensitive-data.html",
 			},
@@ -73,11 +71,8 @@ resource "evil_corp" "virtual_machine" {
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if attribute.Name() == "default" {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {
-						set.Add(result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Variable '%s' includes a potentially sensitive default value.", resourceBlock.FullName())).
-							WithRange(attribute.Range()).
-							WithAttributeAnnotation(attribute),
-						)
+						set.AddResult().WithDescription("Variable '%s' includes a potentially sensitive default value.", resourceBlock.FullName()).
+							WithAttribute(attribute)
 					}
 				}
 			}

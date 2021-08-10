@@ -1,8 +1,7 @@
 package config
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,22 +16,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS085",
+		LegacyID:  "AWS085",
 		Service:   "config",
 		ShortCode: "aggregate-all-regions",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Config configuration aggregator should be using all regions for source",
-			Explanation:  `
+			Summary: "Config configuration aggregator should be using all regions for source",
+			Explanation: `
 The configuration aggregator should be configured with all_regions for the source. 
 
 This will help limit the risk of any unmonitored configuration in regions that are thought to be unused.
 `,
-			Impact:       "Sources that aren't covered by the aggregator are not include in the configuration",
-			Resolution:   "Set the aggregator to cover all regions",
-			BadExample:   `
+			Impact:     "Sources that aren't covered by the aggregator are not include in the configuration",
+			Resolution: "Set the aggregator to cover all regions",
+			BadExample: []string{`
 resource "aws_config_configuration_aggregator" "bad_example" {
 	name = "example"
 	  
@@ -41,8 +39,8 @@ resource "aws_config_configuration_aggregator" "bad_example" {
 	  regions     = ["us-west-2", "eu-west-1"]
 	}
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_config_configuration_aggregator" "good_example" {
 	name = "example"
 	  
@@ -51,7 +49,7 @@ resource "aws_config_configuration_aggregator" "good_example" {
 	  all_regions = true
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/config_configuration_aggregator#all_regions",
 				"https://docs.aws.amazon.com/config/latest/developerguide/aggregate-data.html",
@@ -64,32 +62,23 @@ resource "aws_config_configuration_aggregator" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			aggBlock := resourceBlock.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")
-			if aggBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources set", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+			if aggBlock.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' should have account aggregation sources set", resourceBlock.FullName())
 				return
 			}
 
 			if aggBlock.MissingChild("all_regions") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName())).
-						WithRange(aggBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' should have account aggregation sources to all regions", resourceBlock.FullName())
 				return
 			}
 
 			allRegionsAttr := aggBlock.GetAttribute("all_regions")
 			if allRegionsAttr.IsFalse() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has all_regions set to false", resourceBlock.FullName())).
-						WithRange(allRegionsAttr.Range()).
-						WithAttributeAnnotation(allRegionsAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has all_regions set to false", resourceBlock.FullName()).
+					WithAttribute(allRegionsAttr)
 			}
 
 		},

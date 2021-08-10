@@ -55,6 +55,8 @@ var allDirs = false
 var runStatistics bool
 var ignoreHCLErrors bool
 var stopOnCheckError bool
+var workspace string
+var passingGif bool
 
 func init() {
 	rootCmd.Flags().BoolVar(&ignoreHCLErrors, "ignore-hcl-errors", ignoreHCLErrors, "Stop and report an error if an HCL parse error is encountered")
@@ -81,6 +83,8 @@ func init() {
 	rootCmd.Flags().BoolVar(&ignoreWarnings, "ignore-warnings", ignoreWarnings, "[DEPRECATED] Don't show warnings in the output.")
 	rootCmd.Flags().BoolVar(&ignoreInfo, "ignore-info", ignoreWarnings, "[DEPRECATED] Don't show info results in the output.")
 	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
+	rootCmd.Flags().StringVarP(&workspace, "workspace", "w", workspace, "Specify a workspace for ignore limits")
+	rootCmd.Flags().BoolVar(&passingGif, "gif", passingGif, "Show a celebratory gif in the terminal if no problems are found (default formatter only)")
 }
 
 func main() {
@@ -215,7 +219,7 @@ var rootCmd = &cobra.Command{
 		debug.Log("Starting scanner...")
 		results := scanner.New(getScannerOptions()...).Scan(blocks)
 		results = updateResultSeverity(results)
-		results = RemoveDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
+		results = removeDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {
 			var filteredResult []result.Result
 			for _, result := range results {
@@ -287,6 +291,11 @@ func getParserOptions() []parser.Option {
 	if !ignoreHCLErrors {
 		opts = append(opts, parser.OptionStopOnHCLError())
 	}
+
+	if workspace != "" {
+		opts = append(opts, parser.OptionWithWorkspaceName(workspace))
+	}
+
 	return opts
 }
 
@@ -307,7 +316,7 @@ func getDetailedExitCode(results []result.Result) int {
 	return 1
 }
 
-func RemoveDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, excludeDownloaded bool) []result.Result {
+func removeDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, excludeDownloaded bool) []result.Result {
 	reduction := make(map[string]result.Result)
 
 	for _, res := range results {
@@ -316,7 +325,7 @@ func RemoveDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, e
 
 	var returnVal []result.Result
 	for _, res := range reduction {
-		if excludeDownloaded && strings.Contains(res.Range.Filename, fmt.Sprintf("%c.terraform", os.PathSeparator)) {
+		if excludeDownloaded && strings.Contains(res.Range().Filename, fmt.Sprintf("%c.terraform", os.PathSeparator)) {
 			continue
 		}
 
@@ -341,6 +350,9 @@ func getFormatterOptions() []formatters.FormatterOption {
 	if includePassed {
 		options = append(options, formatters.IncludePassed)
 	}
+	if passingGif {
+		options = append(options, formatters.PassingGif)
+	}
 	return options
 }
 
@@ -351,6 +363,9 @@ func getScannerOptions() []scanner.Option {
 	}
 	if includeIgnored {
 		options = append(options, scanner.OptionIncludeIgnored())
+	}
+	if workspace != "" {
+		options = append(options, scanner.OptionWithWorkspaceName(workspace))
 	}
 
 	options = append(options, scanner.OptionIgnoreCheckErrors(!stopOnCheckError))
@@ -398,7 +413,7 @@ func updateResultSeverity(results []result.Result) []result.Result {
 	var overriddenResults []result.Result
 	for _, res := range results {
 		for code, sev := range overrides {
-			if res.RuleID == code {
+			if res.RuleID == code || res.LegacyRuleID == code {
 				res.WithSeverity(severity.Severity(sev))
 			}
 		}

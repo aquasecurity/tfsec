@@ -1,5 +1,6 @@
 package cloudfront
 
+// generator-locked
 import (
 	"testing"
 

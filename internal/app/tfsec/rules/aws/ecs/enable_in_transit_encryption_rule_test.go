@@ -1,5 +1,6 @@
 package ecs
 
+// generator-locked
 import (
 	"testing"
 

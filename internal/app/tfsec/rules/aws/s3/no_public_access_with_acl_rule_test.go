@@ -1,5 +1,6 @@
 package s3
 
+// generator-locked
 import (
 	"testing"
 
@@ -46,6 +47,14 @@ resource "aws_s3_bucket" "my-bucket" {
 			source: `
 resource "aws_s3_bucket" "my-bucket" {
 	acl = "private"
+}`,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_s3_bucket with acl not set",
+			source: `
+resource "aws_s3_bucket" "my-bucket" {
+
 }`,
 			mustExcludeResultCode: expectedCode,
 		},

@@ -54,9 +54,9 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 
 	for i, test := range tests {
 
-		code := fmt.Sprintf("WILD%d", i)
+		code := fmt.Sprintf("wild%d", i)
 
-		scanner.RegisterCheckRule(rule.Rule{
+		rule := rule.Rule{
 			Service:   "service",
 			ShortCode: code,
 			Documentation: rule.RuleDocumentation{
@@ -67,12 +67,12 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 			RequiredLabels:  []string{test.pattern},
 			DefaultSeverity: severity.High,
 			CheckFunc: func(set result.Set, rootBlock block.Block, ctx *hclcontext.Context) {
-				set.Add(
-					result.New(rootBlock).WithDescription(fmt.Sprintf("Custom check failed for resource %s.", rootBlock.FullName())).
-						WithRange(rootBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Custom check failed for resource %s.", rootBlock.FullName())
 			},
-		})
+		}
+		scanner.RegisterCheckRule(rule)
+		defer scanner.DeregisterCheckRule(rule)
 
 		results := testutil.ScanHCL(test.input, t)
 

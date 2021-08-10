@@ -7,8 +7,8 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-func IsOpen(attr block.Attribute) bool {
-	if attr.Value().IsNull() {
+func IsAttributeOpen(attr block.Attribute) bool {
+	if attr.IsNil() || attr.Value().IsNull() {
 		return false
 	}
 
@@ -29,10 +29,14 @@ func IsOpen(attr block.Attribute) bool {
 		}
 
 		cidrStr := cidr.AsString()
-		if strings.HasSuffix(cidrStr, "/0") || cidrStr == "*" {
+		if IsOpen(cidrStr) {
 			return true
 		}
 	}
 
 	return false
+}
+
+func IsOpen(cidrStr string) bool {
+	return strings.HasSuffix(cidrStr, "/0") || cidrStr == "*"
 }

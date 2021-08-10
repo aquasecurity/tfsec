@@ -37,6 +37,47 @@ github.com/emirpasic/gods/lists/arraylist
 github.com/emirpasic/gods/trees
 github.com/emirpasic/gods/trees/binaryheap
 github.com/emirpasic/gods/utils
+# github.com/gdamore/encoding v1.0.0
+github.com/gdamore/encoding
+# github.com/gdamore/tcell/v2 v2.2.0
+github.com/gdamore/tcell/v2
+github.com/gdamore/tcell/v2/terminfo
+github.com/gdamore/tcell/v2/terminfo/a/aixterm
+github.com/gdamore/tcell/v2/terminfo/a/alacritty
+github.com/gdamore/tcell/v2/terminfo/a/ansi
+github.com/gdamore/tcell/v2/terminfo/b/beterm
+github.com/gdamore/tcell/v2/terminfo/base
+github.com/gdamore/tcell/v2/terminfo/c/cygwin
+github.com/gdamore/tcell/v2/terminfo/d/dtterm
+github.com/gdamore/tcell/v2/terminfo/dynamic
+github.com/gdamore/tcell/v2/terminfo/e/emacs
+github.com/gdamore/tcell/v2/terminfo/extended
+github.com/gdamore/tcell/v2/terminfo/g/gnome
+github.com/gdamore/tcell/v2/terminfo/h/hpterm
+github.com/gdamore/tcell/v2/terminfo/k/konsole
+github.com/gdamore/tcell/v2/terminfo/k/kterm
+github.com/gdamore/tcell/v2/terminfo/l/linux
+github.com/gdamore/tcell/v2/terminfo/p/pcansi
+github.com/gdamore/tcell/v2/terminfo/r/rxvt
+github.com/gdamore/tcell/v2/terminfo/s/screen
+github.com/gdamore/tcell/v2/terminfo/s/simpleterm
+github.com/gdamore/tcell/v2/terminfo/s/sun
+github.com/gdamore/tcell/v2/terminfo/t/termite
+github.com/gdamore/tcell/v2/terminfo/t/tmux
+github.com/gdamore/tcell/v2/terminfo/v/vt100
+github.com/gdamore/tcell/v2/terminfo/v/vt102
+github.com/gdamore/tcell/v2/terminfo/v/vt220
+github.com/gdamore/tcell/v2/terminfo/v/vt320
+github.com/gdamore/tcell/v2/terminfo/v/vt400
+github.com/gdamore/tcell/v2/terminfo/v/vt420
+github.com/gdamore/tcell/v2/terminfo/v/vt52
+github.com/gdamore/tcell/v2/terminfo/w/wy50
+github.com/gdamore/tcell/v2/terminfo/w/wy60
+github.com/gdamore/tcell/v2/terminfo/w/wy99_ansi
+github.com/gdamore/tcell/v2/terminfo/x/xfce
+github.com/gdamore/tcell/v2/terminfo/x/xterm
+github.com/gdamore/tcell/v2/terminfo/x/xterm_kitty
+github.com/gdamore/tcell/v2/terminfo/x/xterm_termite
 # github.com/go-git/gcfg v1.5.0
 github.com/go-git/gcfg
 github.com/go-git/gcfg/scanner
@@ -83,7 +124,7 @@ github.com/hashicorp/go-uuid
 # github.com/hashicorp/go-version v1.3.0
 ## explicit
 github.com/hashicorp/go-version
-# github.com/hashicorp/hcl/v2 v2.10.0
+# github.com/hashicorp/hcl/v2 v2.10.1
 ## explicit
 github.com/hashicorp/hcl/v2
 github.com/hashicorp/hcl/v2/ext/customdecode
@@ -106,9 +147,14 @@ github.com/jbenet/go-context/io
 ## explicit
 github.com/liamg/clinch/prompt
 github.com/liamg/clinch/terminal
+# github.com/liamg/gifwrap v0.0.6
+## explicit
+github.com/liamg/gifwrap/pkg/ascii
 # github.com/liamg/tml v0.4.0
 ## explicit
 github.com/liamg/tml
+# github.com/lucasb-eyer/go-colorful v1.0.3
+github.com/lucasb-eyer/go-colorful
 # github.com/mattn/go-runewidth v0.0.12
 ## explicit
 github.com/mattn/go-runewidth
@@ -124,7 +170,7 @@ github.com/olekukonko/tablewriter
 # github.com/owenrumney/go-sarif v1.0.11
 ## explicit
 github.com/owenrumney/go-sarif/sarif
-# github.com/owenrumney/squealer v0.2.26
+# github.com/owenrumney/squealer v0.2.28
 ## explicit
 github.com/owenrumney/squealer/internal/app/squealer/match
 github.com/owenrumney/squealer/internal/app/squealer/mertics
@@ -188,7 +234,6 @@ golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 # golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf
-## explicit
 golang.org/x/term
 # golang.org/x/text v0.3.6
 ## explicit

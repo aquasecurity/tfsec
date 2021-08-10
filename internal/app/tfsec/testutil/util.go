@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -17,9 +18,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-func ScanHCL(source string, t *testing.T) []result.Result {
+func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) []result.Result {
 	blocks := CreateBlocksFromSource(source, ".tf", t)
-	return scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	scanner := scanner.New(scanner.OptionIgnoreCheckErrors(false))
+	for _, opt := range additionalOptions {
+		opt(scanner)
+	}
+	return scanner.Scan(blocks)
 }
 
 func ScanJSON(source string, t *testing.T) []result.Result {
@@ -48,12 +53,16 @@ func CreateTestFile(filename, contents string) string {
 	return path
 }
 
-func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, results []result.Result) {
-
+func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, results []result.Result, messages ...string) {
 	var foundInclude bool
 	var foundExclude bool
 
 	var excludeText string
+
+	if !validateCodes(includeCode, excludeCode) {
+		t.Logf("Either includeCode (%s) or excludeCode (%s) was invalid ", includeCode, excludeCode)
+		t.FailNow()
+	}
 
 	for _, res := range results {
 		if res.RuleID == excludeCode {
@@ -68,6 +77,10 @@ func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 	assert.False(t, foundExclude, fmt.Sprintf("res with code '%s' was found but should not have been: %s", excludeCode, excludeText))
 	if includeCode != "" {
 		assert.True(t, foundInclude, fmt.Sprintf("res with code '%s' was not found but should have been", includeCode))
+	}
+
+	if t.Failed() {
+		t.Log(strings.ReplaceAll(t.Name(), "_", " "))
 	}
 }
 
@@ -97,4 +110,19 @@ func CreateTestFileWithModule(contents string, moduleContents string) string {
 	}
 
 	return rootPath
+}
+
+func validateCodes(includeCode, excludeCode string) bool {
+	if includeCode != "" {
+		if _, err := scanner.GetRuleById(includeCode); err != nil {
+			return false
+		}
+	}
+
+	if excludeCode != "" {
+		if _, err := scanner.GetRuleById(excludeCode); err != nil {
+			return false
+		}
+	}
+	return true
 }

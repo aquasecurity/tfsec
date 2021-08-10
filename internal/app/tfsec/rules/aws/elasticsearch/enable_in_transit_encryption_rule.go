@@ -1,8 +1,7 @@
 package elasticsearch
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -14,25 +13,22 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS032",
+		LegacyID:  "AWS032",
 		Service:   "elastic-search",
 		ShortCode: "enable-in-transit-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Elasticsearch domain uses plaintext traffic for node to node communication.",
-			Impact:       "In transit data between nodes could be read if intercepted",
-			Resolution:   "Enable encrypted node to node communication",
-			Explanation:  `
+			Summary:    "Elasticsearch domain uses plaintext traffic for node to node communication.",
+			Impact:     "In transit data between nodes could be read if intercepted",
+			Resolution: "Enable encrypted node to node communication",
+			Explanation: `
 Traffic flowing between Elasticsearch nodes should be encrypted to ensure sensitive data is kept private.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_elasticsearch_domain" "bad_example" {
   domain_name = "domain-foo"
 
@@ -40,8 +36,8 @@ resource "aws_elasticsearch_domain" "bad_example" {
     enabled = false
   }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_elasticsearch_domain" "good_example" {
   domain_name = "domain-foo"
 
@@ -49,7 +45,7 @@ resource "aws_elasticsearch_domain" "good_example" {
     enabled = true
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#encrypt_at_rest",
 				"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/ntn.html",
@@ -62,35 +58,23 @@ resource "aws_elasticsearch_domain" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			encryptionBlock := resourceBlock.GetBlock("node_to_node_encryption")
-			if encryptionBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing node_to_node_encryption block).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+			if encryptionBlock.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing node_to_node_encryption block).", resourceBlock.FullName())
 				return
 			}
 
 			enabledAttr := encryptionBlock.GetAttribute("enabled")
-			if enabledAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enabled attribute).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()),
-				)
+			if enabledAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an Elasticsearch domain with plaintext traffic (missing enabled attribute).", resourceBlock.FullName())
 				return
 			}
 
-			isTrueBool := enabledAttr.Type() == cty.Bool && enabledAttr.Value().True()
-			isTrueString := enabledAttr.Type() == cty.String &&
-				enabledAttr.Value().Equals(cty.StringVal("true")).True()
-			nodeToNodeEncryptionEnabled := isTrueBool || isTrueString
-			if !nodeToNodeEncryptionEnabled {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName())).
-						WithRange(encryptionBlock.Range()),
-				)
+			if enabledAttr.IsFalse() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an Elasticsearch domain with plaintext traffic (enabled attribute set to false).", resourceBlock.FullName()).
+					WithAttribute(enabledAttr)
 			}
 
 		},

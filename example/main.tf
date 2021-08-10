@@ -23,6 +23,7 @@ variable "enableEncryption" {
   default = false
 }
 
+#tfsec:ignore:azure-compute-enable-disk-encryption
 resource "azurerm_managed_disk" "source" {
   encryption_settings {
     enabled = var.enableEncryption
@@ -44,6 +45,7 @@ resource "aws_api_gateway_domain_name" "valid_security_policy" {
   security_policy = "TLS_1_2"
 }
 
+#tfsec:ignore:AWS092
 resource "aws_dynamodb_table" "bad_example" {
   name             = "example"
   hash_key         = "TestTableHashKey"
@@ -59,4 +61,8 @@ resource "aws_dynamodb_table" "bad_example" {
   point_in_time_recovery {
     enabled = true
   }
+}
+
+resource "aws_instance" "my_project" {
+
 }

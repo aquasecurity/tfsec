@@ -1,8 +1,7 @@
 package cloudfront
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -14,40 +13,37 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS021",
+		LegacyID:  "AWS021",
 		Service:   "cloudfront",
 		ShortCode: "use-secure-tls-policy",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "CloudFront distribution uses outdated SSL/TLS protocols.",
-			Impact:       "Outdated SSL policies increase exposure to known vulnerabilities",
-			Resolution:   "Use the most modern TLS/SSL policies available",
-			Explanation:  `
+			Summary:    "CloudFront distribution uses outdated SSL/TLS protocols.",
+			Impact:     "Outdated SSL policies increase exposure to known vulnerabilities",
+			Resolution: "Use the most modern TLS/SSL policies available",
+			Explanation: `
 You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_cloudfront_distribution" "bad_example" {
   viewer_certificate {
     cloudfront_default_certificate = true
     minimum_protocol_version = "TLSv1.0"
   }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_cloudfront_distribution" "good_example" {
   viewer_certificate {
     cloudfront_default_certificate = true
     minimum_protocol_version = "TLSv1.2_2021"
   }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#minimum_protocol_version",
 				"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html",
@@ -60,27 +56,24 @@ resource "aws_cloudfront_distribution" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			viewerCertificateBlock := resourceBlock.GetBlock("viewer_certificate")
-			if viewerCertificateBlock == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing viewer_certificate block)", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+			if viewerCertificateBlock.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines outdated SSL/TLS policies (missing viewer_certificate block)", resourceBlock.FullName())
 				return
 			}
 
-			if minVersion := viewerCertificateBlock.GetAttribute("minimum_protocol_version"); minVersion == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName())).
-						WithRange(viewerCertificateBlock.Range()),
-				)
-			} else if minVersion.Type() == cty.String && minVersion.Value().AsString() != "TLSv1.2_2021" {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName())).
-						WithRange(minVersion.Range()),
-				)
+			minVersionAttr := viewerCertificateBlock.GetAttribute("minimum_protocol_version")
+			if minVersionAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName()).
+					WithBlock(viewerCertificateBlock)
+				return
+			}
+
+			if minVersionAttr.NotEqual("TLSv1.2_2021") {
+				set.AddResult().
+					WithDescription("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName()).
+					WithAttribute(minVersionAttr)
 			}
 		},
 	})

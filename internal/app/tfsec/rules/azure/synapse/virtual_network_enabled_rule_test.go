@@ -1,5 +1,6 @@
 package synapse
 
+// generator-locked
 import (
 	"testing"
 

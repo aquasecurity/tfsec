@@ -1,8 +1,7 @@
 package vpc
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -14,8 +13,6 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
-
-	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
@@ -32,18 +29,18 @@ Opening up ports to connect out to the public internet is generally to be avoide
 `,
 			Impact:     "Your port is egressing data to the internet",
 			Resolution: "Set a more restrictive cidr range",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_security_group_rule" "bad_example" {
 	type = "egress"
 	cidr_blocks = ["0.0.0.0/0"]
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_security_group_rule" "good_example" {
 	type = "egress"
 	cidr_blocks = ["10.0.0.0/16"]
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule",
 			},
@@ -55,35 +52,25 @@ resource "aws_security_group_rule" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			typeAttr := resourceBlock.GetAttribute("type")
-			if typeAttr == nil || typeAttr.Type() != cty.String {
+			if typeAttr.IsNil() || !typeAttr.IsString() || typeAttr.NotEqual("egress") {
 				return
 			}
 
-			if typeAttr.Value().AsString() != "egress" {
-				return
-			}
+			if cidrBlocksAttr := resourceBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 
-			if cidrBlocksAttr := resourceBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
-
-				if cidr.IsOpen(cidrBlocksAttr) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName())).
-							WithRange(cidrBlocksAttr.Range()).
-							WithAttributeAnnotation(cidrBlocksAttr),
-					)
+				if cidr.IsAttributeOpen(cidrBlocksAttr) {
+					set.AddResult().
+						WithDescription("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName()).
+						WithAttribute(cidrBlocksAttr)
 				}
 			}
 
-			if ipv6CidrBlocksAttr := resourceBlock.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr != nil {
+			if ipv6CidrBlocksAttr := resourceBlock.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr.IsNotNil() {
 
-				if cidr.IsOpen(ipv6CidrBlocksAttr) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName())).
-							WithRange(ipv6CidrBlocksAttr.Range()).
-							WithAttributeAnnotation(ipv6CidrBlocksAttr),
-					)
+				if cidr.IsAttributeOpen(ipv6CidrBlocksAttr) {
+					set.AddResult().
+						WithDescription("Resource '%s' defines a fully open egress security group rule.", resourceBlock.FullName()).
+						WithAttribute(ipv6CidrBlocksAttr)
 				}
 			}
 		},

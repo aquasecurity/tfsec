@@ -1,8 +1,7 @@
 package elasticache
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,20 +16,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS088",
+		LegacyID:  "AWS088",
 		Service:   "elasticache",
 		ShortCode: "enable-backup-retention",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Redis cluster should have backup retention turned on",
-			Explanation:  `
+			Summary: "Redis cluster should have backup retention turned on",
+			Explanation: `
 Redis clusters should have a snapshot retention time to ensure that they are backed up and can be restored if required.
 `,
-			Impact:       "Without backups of the redis cluster recovery is made difficult",
-			Resolution:   "Configure snapshot retention for redis cluster",
-			BadExample:   `
+			Impact:     "Without backups of the redis cluster recovery is made difficult",
+			Resolution: "Configure snapshot retention for redis cluster",
+			BadExample: []string{`
 resource "aws_elasticache_cluster" "bad_example" {
 	cluster_id           = "cluster-example"
 	engine               = "redis"
@@ -40,8 +38,8 @@ resource "aws_elasticache_cluster" "bad_example" {
 	engine_version       = "3.2.10"
 	port                 = 6379
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_elasticache_cluster" "good_example" {
 	cluster_id           = "cluster-example"
 	engine               = "redis"
@@ -53,7 +51,7 @@ resource "aws_elasticache_cluster" "good_example" {
 
 	snapshot_retention_limit = 5
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_cluster#snapshot_retention_limit",
 				"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-automatic.html",
@@ -66,26 +64,20 @@ resource "aws_elasticache_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			engineAttr := resourceBlock.GetAttribute("engine")
-			if engineAttr != nil && engineAttr.Equals("redis", block.IgnoreCase) {
+			if engineAttr.IsNotNil() && engineAttr.Equals("redis", block.IgnoreCase) {
 				nodeTypeAttr := resourceBlock.GetAttribute("node_type")
-				if nodeTypeAttr != nil && !nodeTypeAttr.Equals("cache.t1.micro") {
+				if nodeTypeAttr.IsNotNil() && !nodeTypeAttr.Equals("cache.t1.micro") {
 					snapshotRetentionAttr := resourceBlock.GetAttribute("snapshot_retention_limit")
-					if snapshotRetentionAttr == nil {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())).
-								WithRange(resourceBlock.Range()),
-						)
+					if snapshotRetentionAttr.IsNil() {
+						set.AddResult().
+							WithDescription("Resource '%s' should have snapshot retention specified", resourceBlock.FullName())
 						return
 					}
 
 					if snapshotRetentionAttr.Equals(0) {
-						set.Add(
-							result.New(resourceBlock).
-								WithDescription(fmt.Sprintf("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName())).
-								WithRange(snapshotRetentionAttr.Range()).
-								WithAttributeAnnotation(snapshotRetentionAttr),
-						)
+						set.AddResult().
+							WithDescription("Resource '%s' has snapshot retention set to 0", resourceBlock.FullName()).
+							WithAttribute(snapshotRetentionAttr)
 					}
 				}
 			}

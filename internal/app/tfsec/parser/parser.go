@@ -20,6 +20,7 @@ type Parser struct {
 	tfvarsPaths    []string
 	stopOnFirstTf  bool
 	stopOnHCLError bool
+	workspaceName  string
 }
 
 // New creates a new Parser
@@ -27,6 +28,7 @@ func New(initialPath string, options ...Option) *Parser {
 	p := &Parser{
 		initialPath:   initialPath,
 		stopOnFirstTf: true,
+		workspaceName: "default",
 	}
 
 	for _, option := range options {
@@ -100,6 +102,7 @@ func (parser *Parser) ParseDirectory() (block.Blocks, error) {
 
 	debug.Log("Evaluating expressions...")
 	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, nil, parser.stopOnHCLError)
+	evaluator.SetWorkspace(parser.workspaceName)
 	evaluatedBlocks, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err

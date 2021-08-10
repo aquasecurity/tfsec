@@ -1,8 +1,7 @@
 package vpc
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -16,8 +15,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -32,19 +29,20 @@ Opening up ports to the public internet is generally to be avoided. You should r
 `,
 			Impact:     "Your port exposed to the internet",
 			Resolution: "Set a more restrictive cidr range",
-			BadExample: `
+			BadExample: []string{`
 resource "aws_security_group_rule" "bad_example" {
 	type = "ingress"
 	cidr_blocks = ["0.0.0.0/0"]
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_security_group_rule" "good_example" {
 	type = "ingress"
 	cidr_blocks = ["10.0.0.0/16"]
 }
-`,
+`},
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule#cidr_blocks",
 				"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html",
 			},
 		},
@@ -55,33 +53,23 @@ resource "aws_security_group_rule" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			typeAttr := resourceBlock.GetAttribute("type")
-			if typeAttr == nil || typeAttr.Type() != cty.String {
+			if typeAttr.IsNil() || !typeAttr.IsString() || typeAttr.NotEqual("ingress") {
 				return
 			}
 
-			if typeAttr.Value().AsString() != "ingress" {
-				return
-			}
-
-			if cidrBlocksAttr := resourceBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr != nil {
-				if cidr.IsOpen(cidrBlocksAttr) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName())).
-							WithAttributeAnnotation(cidrBlocksAttr).
-							WithRange(cidrBlocksAttr.Range()),
-					)
+			if cidrBlocksAttr := resourceBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr.IsNotNil() {
+				if cidr.IsAttributeOpen(cidrBlocksAttr) {
+					set.AddResult().
+						WithDescription("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName()).
+						WithAttribute(cidrBlocksAttr)
 				}
 			}
 
-			if ipv6CidrBlocksAttr := resourceBlock.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr != nil {
-				if cidr.IsOpen(ipv6CidrBlocksAttr) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName())).
-							WithRange(ipv6CidrBlocksAttr.Range()).
-							WithAttributeAnnotation(ipv6CidrBlocksAttr),
-					)
+			if ipv6CidrBlocksAttr := resourceBlock.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr.IsNotNil() {
+				if cidr.IsAttributeOpen(ipv6CidrBlocksAttr) {
+					set.AddResult().
+						WithDescription("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName()).
+						WithAttribute(ipv6CidrBlocksAttr)
 				}
 
 			}

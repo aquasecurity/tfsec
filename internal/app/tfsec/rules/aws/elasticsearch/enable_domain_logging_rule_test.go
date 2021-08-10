@@ -1,5 +1,6 @@
 package elasticsearch
 
+// generator-locked
 import (
 	"testing"
 

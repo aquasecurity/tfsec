@@ -1,8 +1,7 @@
 package spaces
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -12,20 +11,19 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "DIG005",
+		LegacyID:  "DIG005",
 		Service:   "spaces",
 		ShortCode: "acl-no-public-read",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Spaces bucket or bucket object has public read acl set",
-			Explanation:  `
+			Summary: "Spaces bucket or bucket object has public read acl set",
+			Explanation: `
 Space bucket and bucket object permissions should be set to deny public access unless explicitly required.
 `,
-			Impact:       "The contents of the space can be accessed publicly",
-			Resolution:   "Apply a more restrictive ACL",
-			BadExample:   `
+			Impact:     "The contents of the space can be accessed publicly",
+			Resolution: "Apply a more restrictive ACL",
+			BadExample: []string{`
 resource "digitalocean_spaces_bucket" "bad_example" {
   name   = "public_space"
   region = "nyc3"
@@ -40,8 +38,8 @@ resource "digitalocean_spaces_bucket_object" "index" {
   content_type = "text/html"
   acl          = "public-read"
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "digitalocean_spaces_bucket" "good_example" {
   name   = "private_space"
   region = "nyc3"
@@ -55,7 +53,7 @@ resource "digitalocean_spaces_bucket_object" "index" {
   content      = "<html><body><p>This page is empty.</p></body></html>"
   content_type = "text/html"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#acl",
 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket_object#acl",
@@ -71,10 +69,8 @@ resource "digitalocean_spaces_bucket_object" "index" {
 			if resourceBlock.HasChild("acl") {
 				aclAttr := resourceBlock.GetAttribute("acl")
 				if aclAttr.Equals("public-read", block.IgnoreCase) {
-					set.Add(result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has a publicly readable acl.", resourceBlock.FullName())).
-						WithAttributeAnnotation(aclAttr).
-						WithRange(aclAttr.Range()))
+					set.AddResult().WithDescription("Resource '%s' has a publicly readable acl.", resourceBlock.FullName()).
+						WithAttribute(aclAttr)
 				}
 			}
 		},

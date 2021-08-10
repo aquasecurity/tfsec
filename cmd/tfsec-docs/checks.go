@@ -17,10 +17,9 @@ has_toc: false
 
 The included {{$.Provider | FormatProviderName }} checks are listed below. For more information about each check, see the link provided.
 
-| ID  | Summary |
-|:-------|:-------------|
-{{range $check := .Checks}}|[{{$check.ID}}](/docs/{{$.Provider}}/{{$check.ID}})|{{$check.Documentation.Summary}}|
-{{end}}
+| Checks |
+|:------------|{{range $check := .Checks}}
+|[{{$check.ID}}](/docs/{{$.Provider}}/{{$check.Service}}/{{$check.ShortCode}})<br>{{$check.Documentation.Summary}}|{{end}}
 `
 
 func generateChecksFiles(registeredChecks []*FileContent) error {

@@ -1,5 +1,6 @@
 package misc
 
+// generator-locked
 import (
 	"testing"
 

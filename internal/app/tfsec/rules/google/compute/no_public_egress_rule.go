@@ -1,8 +1,7 @@
 package compute
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -32,34 +31,31 @@ Network security rules should not use very broad subnets.
 
 Where possible, segments should be broken into smaller subnets and avoid using the <code>/0</code> subnet.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "google_compute_firewall" "bad_example" {
 	destination_ranges = ["0.0.0.0/0"]
-}`,
-			GoodExample: `
+}`},
+			GoodExample: []string{`
 resource "google_compute_firewall" "good_example" {
 	destination_ranges = ["1.2.3.4/32"]
-}`,
+}`},
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall",
 				"https://cloud.google.com/vpc/docs/using-firewalls",
-				"https://www.terraform.io/docs/providers/google/r/compute_firewall.html",
 			},
 		},
-		Provider:        provider.GCPProvider,
+		Provider:        provider.GoogleProvider,
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_compute_firewall"},
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
-			if destinationRanges := resourceBlock.GetAttribute("destination_ranges"); destinationRanges != nil {
+			if destinationRanges := resourceBlock.GetAttribute("destination_ranges"); destinationRanges.IsNotNil() {
 
-				if cidr.IsOpen(destinationRanges) {
-					set.Add(
-						result.New(resourceBlock).
-							WithDescription(fmt.Sprintf("Resource '%s' defines a fully open outbound firewall rule.", resourceBlock.FullName())).
-							WithAttributeAnnotation(destinationRanges).
-							WithRange(destinationRanges.Range()),
-					)
+				if cidr.IsAttributeOpen(destinationRanges) {
+					set.AddResult().
+						WithDescription("Resource '%s' defines a fully open outbound firewall rule.", resourceBlock.FullName()).
+						WithAttribute(destinationRanges)
 				}
 			}
 

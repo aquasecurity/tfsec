@@ -1,8 +1,7 @@
 package eks
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,20 +16,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS069",
+		LegacyID:  "AWS069",
 		Service:   "eks",
 		ShortCode: "no-public-cluster-access",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "EKS Clusters should have the public access disabled",
-			Impact:       "EKS can be access from the internet",
-			Resolution:   "Don't enable public access to EKS Clusters",
-			Explanation:  `
+			Summary:    "EKS Clusters should have the public access disabled",
+			Impact:     "EKS can be access from the internet",
+			Resolution: "Don't enable public access to EKS Clusters",
+			Explanation: `
 EKS clusters are available publicly by default, this should be explicitly disabled in the vpc_config of the EKS cluster resource.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_eks_cluster" "bad_example" {
     // other config 
 
@@ -41,8 +39,8 @@ resource "aws_eks_cluster" "bad_example" {
 		public_access_cidrs = ["0.0.0.0/0"]
     }
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_eks_cluster" "good_example" {
     // other config 
 
@@ -52,7 +50,7 @@ resource "aws_eks_cluster" "good_example" {
         endpoint_public_access = false
     }
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#endpoint_public_access",
 				"https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html",
@@ -65,32 +63,24 @@ resource "aws_eks_cluster" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
 			if resourceBlock.MissingChild("vpc_config") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has no vpc_config block specified so default public access is enabled", resourceBlock.FullName())
 				return
 			}
 
 			vpcConfig := resourceBlock.GetBlock("vpc_config")
 			if vpcConfig.MissingChild("endpoint_public_access") {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName())).
-						WithRange(vpcConfig.Range()),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' is using default public access in the vpc config", resourceBlock.FullName()).
+					WithBlock(vpcConfig)
 				return
 			}
 
 			publicAccessEnabledAttr := vpcConfig.GetAttribute("endpoint_public_access")
 			if publicAccessEnabledAttr.IsTrue() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' has public access is explicitly set to enabled", resourceBlock.FullName())).
-						WithRange(publicAccessEnabledAttr.Range()).
-						WithAttributeAnnotation(publicAccessEnabledAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' has public access is explicitly set to enabled", resourceBlock.FullName()).
+					WithAttribute(publicAccessEnabledAttr)
 			}
 		},
 	})

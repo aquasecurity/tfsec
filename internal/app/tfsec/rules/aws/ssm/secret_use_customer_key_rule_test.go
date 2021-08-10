@@ -1,5 +1,6 @@
 package ssm
 
+// generator-locked
 import (
 	"testing"
 

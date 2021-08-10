@@ -1,5 +1,6 @@
 package codebuild
 
+// generator-locked
 import (
 	"fmt"
 	"testing"
@@ -8,7 +9,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
-	
 	"github.com/stretchr/testify/assert"
 )
 

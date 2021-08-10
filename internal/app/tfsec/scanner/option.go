@@ -25,3 +25,9 @@ func OptionIgnoreCheckErrors(ignore bool) func(s *Scanner) {
 		s.ignoreCheckErrors = ignore
 	}
 }
+
+func OptionWithWorkspaceName(workspaceName string) func(s *Scanner) {
+	return func(s *Scanner) {
+		s.workspaceName = workspaceName
+	}
+}

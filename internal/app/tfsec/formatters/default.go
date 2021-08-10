@@ -15,6 +15,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 
 	"github.com/liamg/clinch/terminal"
+	"github.com/liamg/gifwrap/pkg/ascii"
 	"github.com/liamg/tml"
 )
 
@@ -32,19 +33,27 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 	showSuccessOutput := true
 	includePassedChecks := false
 
-	for _, option := range options {
-		if option == IncludePassed {
-			includePassedChecks = true
-		}
+	var showGif bool
 
-		if option == ConciseOutput {
+	for _, option := range options {
+		switch option {
+		case IncludePassed:
+			includePassedChecks = true
+		case ConciseOutput:
 			showStatistics = false
 			showSuccessOutput = false
-			break
+		case PassingGif:
+			showGif = true
 		}
 	}
 
 	if len(results) == 0 || len(results) == countPassedResults(results) {
+		if showGif {
+			if renderer, err := ascii.FromURL("https://media.giphy.com/media/kyLYXonQYYfwYDIeZl/source.gif"); err == nil {
+				renderer.SetFill(true)
+				renderer.PlayOnce()
+			}
+		}
 		if showStatistics {
 			_ = tml.Printf("\n")
 			printStatistics()
@@ -86,8 +95,11 @@ func printResult(res result.Result, i int, includePassedChecks bool) {
   <blue>%s</blue>
 
 
-`, res.RuleID, severity, res.Description, res.Range.String())
+`, res.RuleID, severity, res.Description, res.Range().String())
 	highlightCode(res)
+	if res.LegacyRuleID != "" {
+		_ = tml.Printf("  <white>Legacy ID:  </white><blue>%s</blue>\n", res.LegacyRuleID)
+	}
 	if res.Impact != "" {
 		_ = tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", res.Impact)
 	}
@@ -126,7 +138,6 @@ func printStatistics() {
 		metrics.BlocksEvaluated,
 		metrics.ModuleLoadCount,
 		metrics.ModuleBlocksLoaded,
-		metrics.IgnoredChecks,
 	} {
 		_ = tml.Printf("  <blue>%-20s</blue> %d\n", name, counts[name])
 	}
@@ -141,33 +152,34 @@ func printStatistics() {
 		count := metrics.CountSeverity(sev)
 		_ = tml.Printf("  <blue>%-20s</blue> %d\n", strings.ToLower(string(sev)), count)
 	}
+	_ = tml.Printf("  <blue>%-20s</blue> %d\n", "ignored", counts[metrics.IgnoredChecks])
 }
 
 // highlight the lines of code which caused a problem, if available
 func highlightCode(result result.Result) {
 
-	data, err := ioutil.ReadFile(result.Range.Filename)
+	data, err := ioutil.ReadFile(result.Range().Filename)
 	if err != nil {
 		return
 	}
 
 	lines := append([]string{""}, strings.Split(string(data), "\n")...)
 
-	start := result.Range.StartLine - 3
+	start := result.Range().StartLine - 3
 	if start <= 0 {
 		start = 1
 	}
-	end := result.Range.EndLine + 3
+	end := result.Range().EndLine + 3
 	if end >= len(lines) {
 		end = len(lines) - 1
 	}
 
 	for lineNo := start; lineNo <= end; lineNo++ {
 		_ = tml.Printf("  <blue>% 6d</blue> | ", lineNo)
-		if lineNo >= result.Range.StartLine && lineNo <= result.Range.EndLine {
+		if lineNo >= result.Range().StartLine && lineNo <= result.Range().EndLine {
 			if result.Passed() {
 				_ = tml.Printf("<bold><green>%s</green></bold>", lines[lineNo])
-			} else if lineNo == result.Range.StartLine && result.RangeAnnotation != "" {
+			} else if lineNo == result.Range().StartLine && result.RangeAnnotation != "" {
 				_ = tml.Printf("<bold><red>%s</red>    <blue>%s</blue></bold>", lines[lineNo], result.RangeAnnotation)
 			} else {
 				_ = tml.Printf("<bold><red>%s</red></bold>", lines[lineNo])

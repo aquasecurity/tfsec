@@ -1,8 +1,7 @@
 package sqs
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -14,34 +13,31 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/zclconf/go-cty/cty"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS015",
+		LegacyID:  "AWS015",
 		Service:   "sqs",
 		ShortCode: "enable-queue-encryption",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "Unencrypted SQS queue.",
-			Impact:       "The SQS queue messages could be read if compromised",
-			Resolution:   "Turn on SQS Queue encryption",
-			Explanation:  `
+			Summary:    "Unencrypted SQS queue.",
+			Impact:     "The SQS queue messages could be read if compromised",
+			Resolution: "Turn on SQS Queue encryption",
+			Explanation: `
 Queues should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific queues.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "aws_sqs_queue" "bad_example" {
 	# no key specified
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_sqs_queue" "good_example" {
 	kms_master_key_id = "/blah"
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue#server-side-encryption-sse",
 				"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html",
@@ -54,20 +50,14 @@ resource "aws_sqs_queue" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
-			if kmsKeyIDAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+			if kmsKeyIDAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())
 
-			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName())).
-						WithRange(kmsKeyIDAttr.Range()).
-						WithAttributeAnnotation(kmsKeyIDAttr),
-				)
+			} else if kmsKeyIDAttr.IsEmpty() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an unencrypted SQS queue.", resourceBlock.FullName()).
+					WithAttribute(kmsKeyIDAttr)
 			}
 
 		},

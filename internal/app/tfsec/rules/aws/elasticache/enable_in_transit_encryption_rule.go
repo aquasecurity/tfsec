@@ -1,8 +1,7 @@
 package elasticache
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -29,22 +28,22 @@ func init() {
 			Explanation: `
 Traffic flowing between Elasticache replication nodes should be encrypted to ensure sensitive data is kept private.
 `,
-			BadExample: `
+			BadExample: []string{`
 resource "aws_elasticache_replication_group" "bad_example" {
         replication_group_id = "foo"
         replication_group_description = "my foo cluster"
 
         transit_encryption_enabled = false
 }
-`,
-			GoodExample: `
+`},
+			GoodExample: []string{`
 resource "aws_elasticache_replication_group" "good_example" {
         replication_group_id = "foo"
         replication_group_description = "my foo cluster"
 
         transit_encryption_enabled = true
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_replication_group#transit_encryption_enabled",
 				"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/in-transit-encryption.html",
@@ -57,19 +56,13 @@ resource "aws_elasticache_replication_group" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
 
 			encryptionAttr := resourceBlock.GetAttribute("transit_encryption_enabled")
-			if encryptionAttr == nil {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (missing transit_encryption_enabled attribute).", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+			if encryptionAttr.IsNil() {
+				set.AddResult().
+					WithDescription("Resource '%s' defines an unencrypted Elasticache Replication Group (missing transit_encryption_enabled attribute).", resourceBlock.FullName())
 			} else if !encryptionAttr.IsTrue() {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines an unencrypted Elasticache Replication Group (transit_encryption_enabled set to false).", resourceBlock.FullName())).
-						WithRange(encryptionAttr.Range()).
-						WithAttributeAnnotation(encryptionAttr),
-				)
+				set.AddResult().
+					WithDescription("Resource '%s' defines an unencrypted Elasticache Replication Group (transit_encryption_enabled set to false).", resourceBlock.FullName()).
+					WithAttribute(encryptionAttr)
 
 			}
 

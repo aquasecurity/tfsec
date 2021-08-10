@@ -1,4 +1,5 @@
 IMAGE := tfsec/tfsec
+SHELL := /bin/bash
 
 .PHONY: image
 image:
@@ -6,7 +7,8 @@ image:
 
 .PHONY: test
 test:
-	go test -mod=vendor ./...
+	which gotestsum || (pushd /tmp && go install gotest.tools/gotestsum@latest && popd)
+	gotestsum -- --mod=vendor -race ./...
 
 .PHONY: build
 build:
@@ -34,9 +36,13 @@ lint-pr-checks:
 
 .PHONY: tagger
 tagger:
-	@git pull origin master
-	@git tag -a ${TAG} -m ${TAG}
-	@git push --tags
+	@git checkout master
+	@git fetch --tags
+	@echo "the most recent tag was `git describe --tags --abbrev=0`"
+	@echo ""
+	read -p "Tag number: " TAG; \
+	 git tag -a "$${TAG}" -m "$${TAG}"; \
+	 git push origin "$${TAG}"
 
 .PHONY: cyclo
 cyclo:
@@ -50,7 +56,7 @@ vet:
 .PHONY: typos
 typos:
 	which codespell || pip install codespell
-	codespell -S vendor,funcs,.terraform --ignore-words .codespellignore -f
+	codespell -S vendor,funcs,.terraform,.git --ignore-words .codespellignore -f
 
 .PHONY: quality
 quality: cyclo vet
@@ -64,6 +70,17 @@ fix-typos:
 clone-image:
 	./scripts/clone-images.sh
 
-.PHONY: end-to-end
-end-to-end:
-	go run ./cmd/tfsec -s -p --force-all-dirs ./example
+.PHONY: sanity
+sanity: test
+	go run ./cmd/tfsec -s -p --force-all-dirs ./example > /dev/null
+
+.PHONY: pr-lint
+pr-lint: 
+	go run ./cmd/tfsec-pr-lint
+
+.PHONY: pr-ready
+pr-ready: quality sanity pr-lint typos
+
+.PHONY: bench
+bench:
+	go test -run ^$$ -bench . ./...

@@ -1,59 +1,54 @@
 package s3
 
+// generator-locked
 import (
+	"strings"
 	"testing"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_AWSBlockPublicAclS3(t *testing.T) {
+func Test_AWSBlockPublicAclS3_FailureExamples(t *testing.T) {
 	expectedCode := "aws-s3-block-public-acls"
 
-	var tests = []struct {
-		name                  string
-		source                string
-		mustIncludeResultCode string
-		mustExcludeResultCode string
-	}{
-		{
-			name: "Rule fails when block_public_acls not set, defaults to false",
-			source: `
-resource "aws_s3_bucket_public_access_block" "bad_example" {
-	bucket = aws_s3_bucket.example.id
-}
-`,
-			mustIncludeResultCode: expectedCode,
-		},
-		{
-			name: "Rule fails when block_public_acls set but false",
-			source: `
-resource "aws_s3_bucket_public_access_block" "bad_example" {
-	bucket = aws_s3_bucket.example.id
-  
-	block_public_acls = false
-}
-`,
-			mustIncludeResultCode: expectedCode,
-		},
-		{
-			name: "Rule passes when block_public_acls set to true",
-			source: `
-resource "aws_s3_bucket_public_access_block" "good_example" {
-	bucket = aws_s3_bucket.example.id
-  
-	block_public_acls = true
-}
-`,
-			mustExcludeResultCode: expectedCode,
-		},
+	check, err := scanner.GetRuleById(expectedCode)
+	if err != nil {
+		t.FailNow()
 	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-
-			results := testutil.ScanHCL(test.source, t)
-			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
-		})
+	for i, badExample := range check.Documentation.BadExample {
+		t.Logf("Running bad example for '%s' #%d", expectedCode, i+1)
+		if strings.TrimSpace(badExample) == "" {
+			t.Fatalf("bad example code not provided for %s", check.ID())
+		}
+		defer func() {
+			if err := recover(); err != nil {
+				t.Fatalf("Scan (bad) failed: %s", err)
+			}
+		}()
+		results := testutil.ScanHCL(badExample, t)
+		testutil.AssertCheckCode(t, check.ID(), "", results)
 	}
+}
 
+func Test_AWSBlockPublicAclS3_SuccessExamples(t *testing.T) {
+	expectedCode := "aws-s3-block-public-acls"
+
+	check, err := scanner.GetRuleById(expectedCode)
+	if err != nil {
+		t.FailNow()
+	}
+	for i, example := range check.Documentation.GoodExample {
+		t.Logf("Running good example for '%s' #%d", expectedCode, i+1)
+		if strings.TrimSpace(example) == "" {
+			t.Fatalf("good example code not provided for %s", check.ID())
+		}
+		defer func() {
+			if err := recover(); err != nil {
+				t.Fatalf("Scan (good) failed: %s", err)
+			}
+		}()
+		results := testutil.ScanHCL(example, t)
+		testutil.AssertCheckCode(t, "", check.ID(), results)
+	}
 }

@@ -1,5 +1,6 @@
 package sns
 
+// generator-locked
 import (
 	"testing"
 

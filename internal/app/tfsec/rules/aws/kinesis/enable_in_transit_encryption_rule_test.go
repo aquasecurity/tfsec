@@ -1,5 +1,6 @@
 package kinesis
 
+// generator-locked
 import (
 	"testing"
 

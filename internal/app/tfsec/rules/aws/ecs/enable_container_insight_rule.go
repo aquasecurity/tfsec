@@ -1,8 +1,7 @@
 package ecs
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,25 +16,24 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AWS090",
+		LegacyID:  "AWS090",
 		Service:   "ecs",
 		ShortCode: "enable-container-insight",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "ECS clusters should have container insights enabled",
-			Explanation:  `
+			Summary: "ECS clusters should have container insights enabled",
+			Explanation: `
 Cloudwatch Container Insights provide more metrics and logs for container based applications and micro services.
 `,
-			Impact:       "Not all metrics and logs may be gathered for containers when Container Insights isn't enabled",
-			Resolution:   "Enable Container Insights",
-			BadExample:   `
+			Impact:     "Not all metrics and logs may be gathered for containers when Container Insights isn't enabled",
+			Resolution: "Enable Container Insights",
+			BadExample: []string{`
 resource "aws_ecs_cluster" "bad_example" {
   	name = "services-cluster"
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "aws_ecs_cluster" "good_example" {
 	name = "services-cluster"
   
@@ -44,7 +42,7 @@ resource "aws_ecs_cluster" "good_example" {
 	  value = "enabled"
 	}
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_cluster#setting",
 				"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html",
@@ -58,25 +56,19 @@ resource "aws_ecs_cluster" "good_example" {
 
 			settingsBlock := resourceBlock.GetBlocks("setting")
 			for _, setting := range settingsBlock {
-				if name := setting.GetAttribute("name"); name != nil && name.Equals("containerinsights", block.IgnoreCase) {
-					if valueAttr := setting.GetAttribute("value"); valueAttr != nil {
+				if name := setting.GetAttribute("name"); name.IsNotNil() && name.Equals("containerinsights", block.IgnoreCase) {
+					if valueAttr := setting.GetAttribute("value"); valueAttr.IsNotNil() {
 						if !valueAttr.Equals("enabled", block.IgnoreCase) {
-							set.Add(
-								result.New(resourceBlock).
-									WithDescription(fmt.Sprintf("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName())).
-									WithRange(setting.Range()).
-									WithAttributeAnnotation(valueAttr),
-							)
+							set.AddResult().
+								WithDescription("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName()).
+								WithAttribute(valueAttr)
 						}
 						return
 					}
 				}
 			}
-			set.Add(
-				result.New(resourceBlock).
-					WithDescription(fmt.Sprintf("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName())).
-					WithRange(resourceBlock.Range()),
-			)
+			set.AddResult().
+				WithDescription("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName())
 		},
 	})
 }

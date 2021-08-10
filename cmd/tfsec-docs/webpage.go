@@ -6,16 +6,22 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 const (
 	baseWebPageTemplate = `---
-title: {{$.ID}} - {{$.Documentation.Summary}}
+title: {{$.Documentation.Summary}}
+shortcode: {{$.ID}}
+legacy: {{$.LegacyID}}
 summary: {{$.Documentation.Summary}} 
 resources: {{$.RequiredLabels}} 
-permalink: /docs/{{$.Provider}}/{{$.ID}}/
+permalink: /docs/{{$.Provider}}/{{$.Service}}/{{$.ShortCode}}/
+redirect_from: 
+  - /docs/{{$.Provider}}/{{$.LegacyID}}/
 ---
+
 ### Explanation
 
 {{$.Documentation.Explanation}}
@@ -32,7 +38,7 @@ permalink: /docs/{{$.Provider}}/{{$.ID}}/
 The following example will fail the {{$.ID}} check.
 
 {% highlight terraform %}
-{{$.Documentation.BadExample}}
+{{ (index $.Documentation.BadExample 0) }}
 {% endhighlight %}
 
 {{end}}
@@ -42,7 +48,7 @@ The following example will fail the {{$.ID}} check.
 The following example will pass the {{$.ID}} check.
 
 {% highlight terraform %}
-{{$.Documentation.GoodExample}}
+{{ (index $.Documentation.GoodExample 0) }}
 {% endhighlight %}
 {{end}}
 
@@ -59,7 +65,8 @@ The following example will pass the {{$.ID}} check.
 func generateWebPages(fileContents []*FileContent) error {
 	for _, contents := range fileContents {
 		for _, check := range contents.Checks {
-			if err := generateWebPage(check); err != nil {
+			webProviderPath := fmt.Sprintf("%s/docs/%s/%s", webPath, strings.ToLower(string(check.Provider)), strings.ToLower(check.Service))
+			if err := generateWebPage(webProviderPath, check); err != nil {
 				return err
 			}
 		}
@@ -74,7 +81,6 @@ var funcMap = template.FuncMap{
 }
 
 func join(s []string) string {
-	// first arg is sep, remaining args are strings to join
 	if s == nil {
 		return ""
 	}
@@ -85,25 +91,20 @@ func formatProviderName(providerName string) string {
 	if providerName == "digitalocean" {
 		providerName = "digital ocean"
 	}
-	switch providerName {
-	case "aws":
-		return strings.ToUpper(providerName)
-	default:
-		return strings.Title(strings.ToLower(providerName))
-	}
+	return provider.Provider(providerName).DisplayName()
 }
 
-func generateWebPage(r rule.Rule) error {
-	webProviderPath := fmt.Sprintf("%s/docs/%s", webPath, strings.ToLower(string(r.Provider)))
+func generateWebPage(webProviderPath string, r rule.Rule) error {
+
 	if err := os.MkdirAll(webProviderPath, os.ModePerm); err != nil {
 		return err
 	}
-
-	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.ID())
-
+	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.ShortCode)
 	fmt.Printf("Generating page for %s at %s\n", r.ID(), filePath)
 	webTmpl := template.Must(template.New("web").Funcs(funcMap).Parse(baseWebPageTemplate))
+
 	return writeTemplate(r, filePath, webTmpl)
+
 }
 
 func writeTemplate(contents interface{}, path string, tmpl *template.Template) error {

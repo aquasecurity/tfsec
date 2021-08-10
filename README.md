@@ -97,7 +97,7 @@ If you want to run tfsec on your repository as a GitHub Action, you can use [htt
 ## Features
 
 - Checks for sensitive data inclusion across all providers
-- Checks for violations of AWS, Azure and GCP security best practice recommendations
+- Checks for violations of best practice recommendations across all major cloud providers
 - Scans modules (currently only local modules are supported)
 - Evaluates expressions as well as literal values
 - Evaluates Terraform functions e.g. `concat()`
@@ -148,6 +148,10 @@ You can set expiration date for `ignore` with `yyyy-mm-dd` format. This is a use
 #tfsec:ignore:AWS017:exp:2022-01-02
 ```
 Ignore like this will be active only till `2022-01-02`, after this date it will be deactivated.
+
+### Recent Ignore Changes
+
+As of `v0.52.0`, we fixed an issue where ignores were being incorrectly applied to entire blocks. This has made it more important that ignore comments are added to the correct line(s) in your templates. If tfsec mentions a particular line number as containing an issue you want to ignore, you should add the comment on that same line, or by itself on the line above it (or above the entire block to ignore all issues of that type in the block). If tfsec mentions an entire block as being the issue, you should add a comment on the line above the first line of the block.
 
 ## Disable checks
 

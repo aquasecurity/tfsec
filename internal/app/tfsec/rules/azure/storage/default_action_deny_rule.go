@@ -1,8 +1,7 @@
 package storage
 
+// generator-locked
 import (
-	"fmt"
-
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -17,22 +16,21 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:   "AZU012",
+		LegacyID:  "AZU012",
 		Service:   "storage",
 		ShortCode: "default-action-deny",
 		Documentation: rule.RuleDocumentation{
-			Summary:      "The default action on Storage account network rules should be set to deny",
-			Impact:       "Network rules that allow could cause data to be exposed publicly",
-			Resolution:   "Set network rules to deny",
-			Explanation:  `
+			Summary:    "The default action on Storage account network rules should be set to deny",
+			Impact:     "Network rules that allow could cause data to be exposed publicly",
+			Resolution: "Set network rules to deny",
+			Explanation: `
 The default_action for network rules should come into effect when no other rules are matched.
 
 The default action should be set to Deny.
 `,
-			BadExample:   `
+			BadExample: []string{`
 resource "azurerm_storage_account_network_rules" "bad_example" {
   
   default_action             = "Allow"
@@ -40,8 +38,8 @@ resource "azurerm_storage_account_network_rules" "bad_example" {
   virtual_network_subnet_ids = [azurerm_subnet.test.id]
   bypass                     = ["Metrics"]
 }
-`,
-			GoodExample:  `
+`},
+			GoodExample: []string{`
 resource "azurerm_storage_account_network_rules" "good_example" {
   
   default_action             = "Deny"
@@ -49,7 +47,7 @@ resource "azurerm_storage_account_network_rules" "good_example" {
   virtual_network_subnet_ids = [azurerm_subnet.test.id]
   bypass                     = ["Metrics"]
 }
-`,
+`},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account_network_rules#default_action",
 				"https://docs.microsoft.com/en-us/azure/firewall/rule-processing",
@@ -61,6 +59,8 @@ resource "azurerm_storage_account_network_rules" "good_example" {
 		DefaultSeverity: severity.Critical,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
 
+			blockName := resourceBlock.FullName()
+
 			if resourceBlock.IsResourceType("azurerm_storage_account") {
 				if resourceBlock.MissingChild("network_rules") {
 					return
@@ -69,12 +69,9 @@ resource "azurerm_storage_account_network_rules" "good_example" {
 			}
 
 			defaultAction := resourceBlock.GetAttribute("default_action")
-			if defaultAction != nil && defaultAction.Equals("Allow", block.IgnoreCase) {
-				set.Add(
-					result.New(resourceBlock).
-						WithDescription(fmt.Sprintf("Resource '%s' defines a default_action of Allow. It should be Deny.", resourceBlock.FullName())).
-						WithRange(resourceBlock.Range()),
-				)
+			if defaultAction.IsNotNil() && defaultAction.Equals("Allow", block.IgnoreCase) {
+				set.AddResult().
+					WithDescription("Resource '%s' defines a default_action of Allow. It should be Deny.", blockName)
 			}
 
 		},
