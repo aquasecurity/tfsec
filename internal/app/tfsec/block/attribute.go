@@ -12,6 +12,7 @@ type Attribute interface {
 	Name() string
 	Contains(checkValue interface{}, equalityOptions ...EqualityOption) bool
 	NotContains(checkValue interface{}, equalityOptions ...EqualityOption) bool
+	HasIntersect(checkValues ...interface{}) bool
 	StartsWith(prefix interface{}) bool
 	EndsWith(suffix interface{}) bool
 	Equals(checkValue interface{}, equalityOptions ...EqualityOption) bool
