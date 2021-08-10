@@ -41,4 +41,5 @@ type Block interface {
 	ReadLines() (lines []string, comments []string, err error)
 	IsNil() bool
 	IsNotNil() bool
+	InjectBlock(block Block, name string)
 }

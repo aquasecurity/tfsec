@@ -19,14 +19,36 @@ type HCLBlock struct {
 	moduleBlock Block
 	expanded    bool
 	cloneIndex  int
+	childBlocks []Block
 }
 
 func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) Block {
+	var children Blocks
+	switch body := hclBlock.Body.(type) {
+	case *hclsyntax.Body:
+		for _, b := range body.Blocks {
+			children = append(children, NewHCLBlock(b.AsHCLBlock(), ctx, moduleBlock))
+		}
+	default:
+		content, _, diag := hclBlock.Body.PartialContent(schema.TerraformSchema_0_12)
+		if diag == nil {
+			for _, hb := range content.Blocks {
+				children = append(children, NewHCLBlock(hb, ctx, moduleBlock))
+			}
+		}
+	}
 	return &HCLBlock{
 		evalContext: ctx,
 		hclBlock:    hclBlock,
 		moduleBlock: moduleBlock,
+		childBlocks: children,
 	}
+}
+
+func (b *HCLBlock) InjectBlock(block Block, name string) {
+	block.(*HCLBlock).hclBlock.Labels = []string{}
+	block.(*HCLBlock).hclBlock.Type = name
+	b.childBlocks = append(b.childBlocks, block)
 }
 
 func (b *HCLBlock) markCountExpanded() {
@@ -142,22 +164,6 @@ func (b *HCLBlock) GetFirstMatchingBlock(names ...string) Block {
 	return returnBlock
 }
 
-func (b *HCLBlock) getHCLBlocks() hcl.Blocks {
-	var blocks hcl.Blocks
-	switch body := b.hclBlock.Body.(type) {
-	case *hclsyntax.Body:
-		for _, b := range body.Blocks {
-			blocks = append(blocks, b.AsHCLBlock())
-		}
-	default:
-		content, _, diag := b.hclBlock.Body.PartialContent(schema.TerraformSchema_0_12)
-		if diag == nil {
-			blocks = content.Blocks
-		}
-	}
-	return blocks
-}
-
 func (b *HCLBlock) getHCLAttributes() hcl.Attributes {
 	switch body := b.hclBlock.Body.(type) {
 	case *hclsyntax.Body:
@@ -184,16 +190,9 @@ func (b *HCLBlock) GetBlock(name string) Block {
 	if b == nil || b.hclBlock == nil {
 		return returnBlock
 	}
-	for _, child := range b.getHCLBlocks() {
-		if child.Type == name {
-			return NewHCLBlock(child, b.evalContext, b.moduleBlock)
-		}
-		if child.Type == "dynamic" && len(child.Labels) == 1 && child.Labels[0] == name {
-			blocks := b.parseDynamicBlockResult(child)
-			if len(blocks) > 0 {
-				return blocks[0]
-			}
-			return returnBlock
+	for _, child := range b.childBlocks {
+		if child.Type() == name {
+			return child
 		}
 	}
 	return returnBlock
@@ -203,11 +202,7 @@ func (b *HCLBlock) AllBlocks() Blocks {
 	if b == nil || b.hclBlock == nil {
 		return nil
 	}
-	var results []Block
-	for _, child := range b.getHCLBlocks() {
-		results = append(results, NewHCLBlock(child, b.evalContext, b.moduleBlock))
-	}
-	return results
+	return b.childBlocks
 }
 
 func (b *HCLBlock) GetBlocks(name string) Blocks {
@@ -215,53 +210,11 @@ func (b *HCLBlock) GetBlocks(name string) Blocks {
 		return nil
 	}
 	var results []Block
-	for _, child := range b.getHCLBlocks() {
-		if child.Type == name {
-			results = append(results, NewHCLBlock(child, b.evalContext, b.moduleBlock))
-		}
-		if child.Type == "dynamic" && len(child.Labels) == 1 && child.Labels[0] == name {
-			dynamics := b.parseDynamicBlockResult(child)
-			results = append(results, dynamics...)
-
+	for _, child := range b.childBlocks {
+		if child.Type() == name {
+			results = append(results, child)
 		}
 	}
-	return results
-}
-
-func (b *HCLBlock) parseDynamicBlockResult(dynamic *hcl.Block) Blocks {
-
-	var results Blocks
-
-	wrapped := NewHCLBlock(dynamic, b.evalContext, b.moduleBlock)
-
-	forEach := wrapped.GetAttribute("for_each")
-	if forEach == nil {
-		return nil
-	}
-
-	contentBlock := wrapped.GetBlock("content")
-	if contentBlock == nil {
-		return nil
-	}
-
-	val := forEach.Value()
-
-	if val.IsNull() || !val.IsKnown() {
-		return nil
-	}
-
-	switch {
-	case val.Type().IsListType(), val.Type().IsSetType(), val.Type().IsMapType():
-		// all good
-	default:
-		return nil
-	}
-
-	values := forEach.Value().AsValueSlice()
-	for range values {
-		results = append(results, contentBlock)
-	}
-
 	return results
 }
 

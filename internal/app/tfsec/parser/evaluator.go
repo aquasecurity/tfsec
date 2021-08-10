@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -200,14 +201,40 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 }
 
 func (e *Evaluator) expandBlocks(blocks block.Blocks) block.Blocks {
-	return e.expandBlockCounts(e.expandBlockForEaches(blocks))
+	return e.expandDynamicBlocks(e.expandBlockForEaches(e.expandBlockCounts(blocks))...)
 }
 
-func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
+func (e *Evaluator) expandDynamicBlocks(blocks ...block.Block) block.Blocks {
+	for _, b := range blocks {
+		e.expandDynamicBlock(b)
+	}
+	return blocks
+}
+
+func (e *Evaluator) expandDynamicBlock(b block.Block) {
+	for _, sub := range b.AllBlocks() {
+		e.expandDynamicBlock(sub)
+	}
+	for _, sub := range b.AllBlocks().OfType("dynamic") {
+		blockName := sub.TypeLabel()
+		expanded := e.expandBlockForEaches([]block.Block{sub})
+		for _, ex := range expanded {
+			if content := ex.GetBlock("content"); content.IsNotNil() {
+				if strings.HasPrefix(ex.Label(), "rule") {
+					fmt.Print("blah")
+				}
+				_ = e.expandDynamicBlocks(content)
+				b.InjectBlock(content, blockName)
+			}
+		}
+	}
+}
+
+func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 	var forEachFiltered block.Blocks
 	for _, block := range blocks {
 		forEachAttr := block.GetAttribute("for_each")
-		if forEachAttr.IsNil() || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
+		if forEachAttr.IsNil() || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module" && block.Type() != "dynamic") {
 			forEachFiltered = append(forEachFiltered, block)
 			continue
 		}
@@ -223,6 +250,10 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 					"key":   key,
 					"value": val,
 				})
+				ctx.Variables[block.TypeLabel()] = cty.ObjectVal(map[string]cty.Value{
+					"key":   key,
+					"value": val,
+				})
 
 				debug.Log("Added %s from for_each", clone.Reference())
 				forEachFiltered = append(forEachFiltered, clone)
@@ -233,7 +264,7 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 	return forEachFiltered
 }
 
-func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
+func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 	var countFiltered block.Blocks
 	for _, block := range blocks {
 		countAttr := block.GetAttribute("count")
