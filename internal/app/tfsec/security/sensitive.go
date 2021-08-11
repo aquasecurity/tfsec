@@ -21,6 +21,7 @@ var sensitiveAttributes = map[string]string{}
 var StringScanner = squealer.NewStringScanner()
 
 var whitelistTokens = []string{
+	"token_type",
 	"version",
 }
 
