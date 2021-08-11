@@ -113,7 +113,7 @@ func (e *Evaluator) evaluateModules() {
 		e.SetModuleBasePath(e.projectRootPath)
 		module.Blocks, _ = moduleEvaluator.EvaluateAll()
 		// export module outputs
-		e.ctx.Root().Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
+		e.ctx.Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
 
 		evalTime.Stop()
 	}

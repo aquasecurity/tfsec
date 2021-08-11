@@ -1,7 +1,6 @@
 package block
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
@@ -77,12 +76,7 @@ func (c *Context) Set(val cty.Value, parts ...string) {
 		return
 	}
 
-	if strings.Contains(parts[0], ".") {
-		panic("whoa")
-	}
-
 	v := mergeVars(c.ctx.Variables[parts[0]], parts[1:], val)
-	fmt.Printf("Setting %s to %#v\n", parts, v)
 	c.ctx.Variables[parts[0]] = v
 }
 
