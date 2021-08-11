@@ -126,7 +126,7 @@ variable "input" {
 }
 
 output "mod_result" {
-	value = "hello"
+	value = var.input
 }
 `,
 		"module",

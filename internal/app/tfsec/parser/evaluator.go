@@ -76,7 +76,6 @@ func (e *Evaluator) evaluateStep(i int) {
 	e.ctx.Set(e.getValuesByBlockType("variable"), "var")
 	e.ctx.Set(e.getValuesByBlockType("locals"), "local")
 	e.ctx.Set(e.getValuesByBlockType("provider"), "provider")
-	e.ctx.Set(e.getValuesByBlockType("module"), "module")
 
 	resources := e.getValuesByBlockType("resource")
 	for key, resource := range resources.AsValueMap() {
@@ -109,7 +108,7 @@ func (e *Evaluator) evaluateModules() {
 		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path, module.Definition.Reference().String()})
 
 		evalTime := metrics.Start(metrics.Evaluation)
-		vars := e.ctx.Root().Get("module", module.Name).AsValueMap()
+		vars := module.Definition.Values().AsValueMap()
 		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, vars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError)
 		e.SetModuleBasePath(e.projectRootPath)
 		var err error
@@ -120,20 +119,21 @@ func (e *Evaluator) evaluateModules() {
 		// export module outputs
 		e.ctx.Root().Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
 
-		ct := e.ctx.Root().Get("module", module.Name)
-		fmt.Println(ct)
-
 		evalTime.Stop()
 	}
 }
 
 // export module outputs to a parent hclcontext
 func (e *Evaluator) ExportOutputs() cty.Value {
-	outputs := e.ctx.Get("output")
-	if outputs == cty.NilVal {
-		return cty.EmptyObjectVal
+	data := make(map[string]cty.Value)
+	for _, block := range e.blocks.OfType("output") {
+		attr := block.GetAttribute("value")
+		if attr.IsNil() {
+			continue
+		}
+		data[block.Label()] = attr.Value()
 	}
-	return outputs
+	return cty.ObjectVal(data)
 }
 
 func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
@@ -350,7 +350,7 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 		case "output":
 			val, err := e.evaluateOutput(b)
 			if err != nil {
-				panic(err)
+				continue
 			}
 			values[b.Label()] = val
 		case "locals":

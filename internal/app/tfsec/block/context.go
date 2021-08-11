@@ -75,21 +75,47 @@ func (c *Context) Set(val cty.Value, parts ...string) {
 	if len(parts) == 0 {
 		return
 	}
+
+	/*
+		{"mod_result": "ok"}
+
+		module.my-mod
+	*/
+
+	// c.ctx.Variables["module"] = mergeVars(c.ctx.Variables["module"], "my-mod", {"mod_result": "ok"})
 	c.ctx.Variables[parts[0]] = mergeVars(c.ctx.Variables[parts[0]], parts[1:], val)
 }
 
 func mergeVars(src cty.Value, parts []string, value cty.Value) cty.Value {
+
+	// src = c.ctx.Variables["module"]
+	// parts = "my-mod"
+	// value = {"mod_result": "ok"}
+
 	if len(parts) == 0 {
+		if value.Type().IsObjectType() && !value.IsNull() && value.LengthInt() > 0 && src.Type().IsObjectType() && !src.IsNull() && src.LengthInt() > 0 {
+			return mergeObjects(src, value)
+		}
 		return value
 	}
+
 	data := make(map[string]cty.Value)
 	if src.Type().IsObjectType() && !src.IsNull() && src.LengthInt() > 0 {
 		data = src.AsValueMap()
 	}
-	if len(parts) == 1 {
-		data[parts[0]] = value
-		return cty.ObjectVal(data)
-	}
-	data[parts[0]] = mergeVars(cty.ObjectVal(data), parts[1:], value)
+
+	data[parts[0]] = mergeVars(src, parts[1:], value)
+
 	return cty.ObjectVal(data)
+}
+
+func mergeObjects(a cty.Value, b cty.Value) cty.Value {
+	output := make(map[string]cty.Value)
+	for key, val := range a.AsValueMap() {
+		output[key] = val
+	}
+	for key, val := range b.AsValueMap() {
+		output[key] = val
+	}
+	return cty.ObjectVal(output)
 }

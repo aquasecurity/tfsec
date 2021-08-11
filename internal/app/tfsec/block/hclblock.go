@@ -14,12 +14,13 @@ import (
 )
 
 type HCLBlock struct {
-	hclBlock    *hcl.Block
-	context     *Context
-	moduleBlock Block
-	expanded    bool
-	cloneIndex  int
-	childBlocks []Block
+	hclBlock         *hcl.Block
+	context          *Context
+	moduleBlock      Block
+	expanded         bool
+	cloneIndex       int
+	childBlocks      []Block
+	cachedAttributes []Attribute
 }
 
 func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
@@ -232,9 +233,13 @@ func (b *HCLBlock) GetAttributes() []Attribute {
 	if b == nil || b.hclBlock == nil {
 		return nil
 	}
+	if b.cachedAttributes != nil {
+		return b.cachedAttributes
+	}
 	for _, attr := range b.getHCLAttributes() {
 		results = append(results, NewHCLAttribute(attr, b.context))
 	}
+	b.cachedAttributes = results
 	return results
 }
 
@@ -243,9 +248,9 @@ func (b *HCLBlock) GetAttribute(name string) Attribute {
 	if b == nil || b.hclBlock == nil {
 		return attr
 	}
-	for _, attr := range b.getHCLAttributes() {
-		if attr.Name == name {
-			return NewHCLAttribute(attr, b.context)
+	for _, attr := range b.GetAttributes() {
+		if attr.Name() == name {
+			return attr
 		}
 	}
 	return attr
@@ -386,25 +391,16 @@ func (b *HCLBlock) IsEmpty() bool {
 
 func (b *HCLBlock) Attributes() map[string]Attribute {
 	attributes := make(map[string]Attribute)
-	for name, attr := range b.getHCLAttributes() {
-		attributes[name] = NewHCLAttribute(attr, b.context)
+	for _, attr := range b.GetAttributes() {
+		attributes[attr.Name()] = attr
 	}
 	return attributes
 }
 
 func (b *HCLBlock) Values() cty.Value {
-
 	values := make(map[string]cty.Value)
-	for _, attribute := range b.getHCLAttributes() {
-		func() {
-			defer func() {
-				if err := recover(); err != nil {
-					return
-				}
-			}()
-			val, _ := attribute.Expr.Value(b.context.Inner())
-			values[attribute.Name] = val
-		}()
+	for _, attribute := range b.GetAttributes() {
+		values[attribute.Name()] = attribute.Value()
 	}
 	return cty.ObjectVal(values)
 }
