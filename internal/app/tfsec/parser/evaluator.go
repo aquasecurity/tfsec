@@ -111,11 +111,7 @@ func (e *Evaluator) evaluateModules() {
 		vars := module.Definition.Values().AsValueMap()
 		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, vars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError)
 		e.SetModuleBasePath(e.projectRootPath)
-		var err error
-		module.Blocks, err = moduleEvaluator.EvaluateAll()
-		if err != nil {
-			panic(err)
-		}
+		module.Blocks, _ = moduleEvaluator.EvaluateAll()
 		// export module outputs
 		e.ctx.Root().Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
 
