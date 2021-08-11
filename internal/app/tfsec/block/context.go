@@ -1,6 +1,7 @@
 package block
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/hashicorp/hcl/v2"
@@ -75,7 +76,14 @@ func (c *Context) Set(val cty.Value, parts ...string) {
 	if len(parts) == 0 {
 		return
 	}
-	c.ctx.Variables[parts[0]] = mergeVars(c.ctx.Variables[parts[0]], parts[1:], val)
+
+	if strings.Contains(parts[0], ".") {
+		panic("whoa")
+	}
+
+	v := mergeVars(c.ctx.Variables[parts[0]], parts[1:], val)
+	fmt.Printf("Setting %s to %#v\n", parts, v)
+	c.ctx.Variables[parts[0]] = v
 }
 
 func mergeVars(src cty.Value, parts []string, value cty.Value) cty.Value {
@@ -90,6 +98,7 @@ func mergeVars(src cty.Value, parts []string, value cty.Value) cty.Value {
 	data := make(map[string]cty.Value)
 	if src.Type().IsObjectType() && !src.IsNull() && src.LengthInt() > 0 {
 		data = src.AsValueMap()
+		src = cty.ObjectVal(src.AsValueMap()[parts[0]].AsValueMap())
 	}
 
 	data[parts[0]] = mergeVars(src, parts[1:], value)

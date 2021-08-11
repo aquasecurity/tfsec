@@ -476,10 +476,10 @@ func Test_Dynamic_Variables(t *testing.T) {
 resource "something" "this" {
 
 	dynamic "blah" {
-		for_each = [0]
+		for_each = ["a"]
 
 		content {
-			policy = "TLS_1_2"
+			policy = "TLS_1_0"
 		}
 	}
 }
@@ -497,4 +497,32 @@ resource "aws_api_gateway_domain_name" "outdated_security_policy" {
 	require.NoError(t, err)
 	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
 	testutil.AssertCheckCode(t, "aws-api-gateway-use-secure-tls-policy", "", results)
+}
+
+func Test_Dynamic_Variables_FalsePositive(t *testing.T) {
+	example := `
+resource "aws_s3_bucket" "bucket" {
+	x = 1
+	dynamic "blah" {
+		for_each = [0]
+
+		content {
+			policy = "TLS_1_2"
+		}
+	}
+}
+	
+resource "aws_api_gateway_domain_name" "outdated_security_policy" {
+	security_policy = aws_s3_bucket.bucket.blah.policy
+}
+`
+	fs, err := testutil.NewFilesystem()
+	require.NoError(t, err)
+	defer fs.Close()
+
+	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	require.NoError(t, err)
+	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	testutil.AssertCheckCode(t, "", "aws-api-gateway-use-secure-tls-policy", results)
 }

@@ -53,12 +53,8 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
 func (b *HCLBlock) InjectBlock(block Block, name string) {
 	block.(*HCLBlock).hclBlock.Labels = []string{}
 	block.(*HCLBlock).hclBlock.Type = name
-	targetCtx := b.context
-	if parent := targetCtx.Parent(); parent != nil {
-		targetCtx = parent
-	}
 	for attrName, attr := range block.Attributes() {
-		targetCtx.Set(attr.Value(), b.Reference().String(), name, attrName)
+		b.context.Root().SetByDot(attr.Value(), fmt.Sprintf("%s.%s.%s", b.Reference().String(), name, attrName))
 	}
 	b.childBlocks = append(b.childBlocks, block)
 }
@@ -234,7 +230,7 @@ func (b *HCLBlock) GetAttributes() []Attribute {
 		return nil
 	}
 	if b.cachedAttributes != nil {
-		return b.cachedAttributes
+		//return b.cachedAttributes
 	}
 	for _, attr := range b.getHCLAttributes() {
 		results = append(results, NewHCLAttribute(attr, b.context))

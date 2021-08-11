@@ -309,6 +309,7 @@ func (attr *HCLAttribute) Equals(checkValue interface{}, equalityOptions ...Equa
 		}
 		return attr.Value().RawEquals(checkNumber)
 	}
+
 	return false
 }
 
