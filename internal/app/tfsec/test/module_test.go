@@ -504,10 +504,10 @@ func Test_Dynamic_Variables_FalsePositive(t *testing.T) {
 resource "aws_s3_bucket" "bucket" {
 	x = 1
 	dynamic "blah" {
-		for_each = [0]
+		for_each = ["TLS_1_2"]
 
 		content {
-			policy = "TLS_1_2"
+			policy = each.value
 		}
 	}
 }
