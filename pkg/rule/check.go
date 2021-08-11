@@ -3,6 +3,7 @@ package rule
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	runtimeDebug "runtime/debug"
 	"strings"
 
@@ -49,16 +50,20 @@ func CheckRule(r *Rule, resourceBlock block.Block, ctx *hclcontext.Context, igno
 }
 
 // IsRuleRequiredForBlock returns true if the Rule should be applied to the given HCL block
-func IsRuleRequiredForBlock(rule *Rule, block block.Block) bool {
+func IsRuleRequiredForBlock(rule *Rule, b block.Block) bool {
 
 	if rule.CheckFunc == nil {
 		return false
 	}
 
+	var check_module_required bool
 	if len(rule.RequiredTypes) > 0 {
 		var found bool
 		for _, requiredType := range rule.RequiredTypes {
-			if block.Type() == requiredType {
+			if b.Type() == requiredType {
+				if requiredType == block.TypeModule.Name() {
+					check_module_required = true
+				}
 				found = true
 				break
 			}
@@ -71,7 +76,7 @@ func IsRuleRequiredForBlock(rule *Rule, block block.Block) bool {
 	if len(rule.RequiredLabels) > 0 {
 		var found bool
 		for _, requiredLabel := range rule.RequiredLabels {
-			if requiredLabel == "*" || (len(block.Labels()) > 0 && wildcardMatch(requiredLabel, block.TypeLabel())) {
+			if requiredLabel == "*" || (len(b.Labels()) > 0 && wildcardMatch(requiredLabel, b.TypeLabel())) {
 				found = true
 				break
 			}
@@ -81,7 +86,54 @@ func IsRuleRequiredForBlock(rule *Rule, block block.Block) bool {
 		}
 	}
 
+	if len(rule.RequiredSources) > 0 && check_module_required {
+		var found bool
+		if sourceAttr := b.GetAttribute("source"); sourceAttr.IsNotNil() {
+			sourcePath := sourceAttr.ValueAsStrings()[0]
+
+			// resolve module source path to path relative to cwd
+			if strings.HasPrefix(sourcePath, ".") {
+				var err error
+				sourcePath, err = cleanPathRelativeToWorkingDir(filepath.Dir(b.Range().Filename), sourcePath)
+				if err != nil {
+					_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", fmt.Sprintf("%s:%s", b.FullName(), b.Range().Filename), err)
+				}
+			}
+
+			for _, requiredSource := range rule.RequiredSources {
+				if requiredSource == "*" || wildcardMatch(requiredSource, sourcePath) {
+					found = true
+					break
+				}
+			}
+		}
+		if !found {
+			return false
+		}
+
+	}
+
 	return true
+}
+
+func cleanPathRelativeToWorkingDir(dir, path string) (string, error) {
+	absPath := filepath.Clean(filepath.Join(dir, path))
+
+	wDir, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
+	if !strings.HasSuffix(wDir, "/") {
+		wDir = filepath.Join(wDir, "/")
+	}
+
+	relPath, err := filepath.Rel(wDir, absPath)
+	if err != nil {
+		return "", err
+	}
+
+	return relPath, nil
 }
 
 func wildcardMatch(pattern string, subject string) bool {
