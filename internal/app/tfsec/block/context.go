@@ -98,7 +98,12 @@ func mergeVars(src cty.Value, parts []string, value cty.Value) cty.Value {
 	data := make(map[string]cty.Value)
 	if src.Type().IsObjectType() && !src.IsNull() && src.LengthInt() > 0 {
 		data = src.AsValueMap()
-		src = cty.ObjectVal(src.AsValueMap()[parts[0]].AsValueMap())
+		tmp, ok := src.AsValueMap()[parts[0]]
+		if !ok {
+			src = cty.ObjectVal(make(map[string]cty.Value))
+		} else {
+			src = tmp
+		}
 	}
 
 	data[parts[0]] = mergeVars(src, parts[1:], value)
@@ -112,7 +117,12 @@ func mergeObjects(a cty.Value, b cty.Value) cty.Value {
 		output[key] = val
 	}
 	for key, val := range b.AsValueMap() {
-		output[key] = val
+		old, exists := output[key]
+		if exists && val.Type().IsObjectType() && !val.IsNull() && val.LengthInt() > 0 && old.Type().IsObjectType() && !old.IsNull() && old.LengthInt() > 0 {
+			output[key] = mergeObjects(val, old)
+		} else {
+			output[key] = val
+		}
 	}
 	return cty.ObjectVal(output)
 }
