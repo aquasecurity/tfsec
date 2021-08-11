@@ -48,6 +48,19 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) B
 func (b *HCLBlock) InjectBlock(block Block, name string) {
 	block.(*HCLBlock).hclBlock.Labels = []string{}
 	block.(*HCLBlock).hclBlock.Type = name
+	targetCtx := b.evalContext
+	if parent := targetCtx.Parent(); parent != nil {
+		targetCtx = parent
+	}
+	if targetCtx.Variables == nil {
+		targetCtx.Variables = make(map[string]cty.Value)
+	}
+
+	for attrName, attr := range block.Attributes() {
+		varName := fmt.Sprintf("%s.%s.%s", b.Reference(), name, attrName)
+
+		targetCtx.Variables[varName] = attr.Value()
+	}
 	b.childBlocks = append(b.childBlocks, block)
 }
 
@@ -110,6 +123,9 @@ func (b *HCLBlock) Context() *hcl.EvalContext {
 
 func (b *HCLBlock) AttachEvalContext(ctx *hcl.EvalContext) {
 	b.evalContext = ctx
+	for _, block := range b.childBlocks {
+		block.AttachEvalContext(ctx.NewChild())
+	}
 }
 
 func (b *HCLBlock) HasModuleBlock() bool {

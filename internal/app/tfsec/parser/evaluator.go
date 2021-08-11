@@ -3,7 +3,6 @@ package parser
 import (
 	"fmt"
 	"reflect"
-	"strings"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -220,9 +219,6 @@ func (e *Evaluator) expandDynamicBlock(b block.Block) {
 		expanded := e.expandBlockForEaches([]block.Block{sub})
 		for _, ex := range expanded {
 			if content := ex.GetBlock("content"); content.IsNotNil() {
-				if strings.HasPrefix(ex.Label(), "rule") {
-					fmt.Print("blah")
-				}
 				_ = e.expandDynamicBlocks(content)
 				b.InjectBlock(content, blockName)
 			}
