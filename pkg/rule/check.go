@@ -112,7 +112,7 @@ func checkRequiredSourcesMatch(rule *Rule, b block.Block) bool {
 			var err error
 			sourcePath, err = cleanPathRelativeToWorkingDir(filepath.Dir(b.Range().Filename), sourcePath)
 			if err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", fmt.Sprintf("%s:%s", b.FullName(), b.Range().Filename), err)
+				_, _ = fmt.Fprintf(os.Stderr, "WARNING: did not path for module %s due to error(s): %s\n", fmt.Sprintf("%s:%s", b.FullName(), b.Range().Filename), err)
 			}
 		}
 
