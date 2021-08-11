@@ -23,6 +23,10 @@ type HCLBlock struct {
 }
 
 func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
+	if ctx == nil {
+		ctx = NewContext(&hcl.EvalContext{}, nil)
+	}
+
 	var children Blocks
 	switch body := hclBlock.Body.(type) {
 	case *hclsyntax.Body:

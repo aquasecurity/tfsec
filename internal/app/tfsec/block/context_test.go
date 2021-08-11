@@ -76,3 +76,33 @@ func Test_ContextVariablesPreservationByDot(t *testing.T) {
 	assert.Equal(t, "something", underlying.Variables["my"].AsValueMap()["obj"].AsValueMap()["another"].AsString())
 	assert.Equal(t, "does it work?", underlying.Variables["x"].AsString())
 }
+
+func Test_ContextSetThenImmediateGet(t *testing.T) {
+
+	underlying := &hcl.EvalContext{}
+
+	ctx := NewContext(underlying, nil)
+
+	ctx.Set(cty.ObjectVal(map[string]cty.Value{
+		"mod_result": cty.StringVal("ok"),
+	}), "module", "modulename")
+
+	val := ctx.Get("module", "modulename", "mod_result")
+	assert.Equal(t, "ok", val.AsString())
+}
+
+func Test_ContextSetThenImmediateGetWithChild(t *testing.T) {
+
+	underlying := &hcl.EvalContext{}
+
+	ctx := NewContext(underlying, nil)
+
+	childCtx := ctx.NewChild()
+
+	childCtx.Root().Set(cty.ObjectVal(map[string]cty.Value{
+		"mod_result": cty.StringVal("ok"),
+	}), "module", "modulename")
+
+	val := ctx.Get("module", "modulename", "mod_result")
+	assert.Equal(t, "ok", val.AsString())
+}

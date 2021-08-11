@@ -54,7 +54,11 @@ func (c *Context) Get(parts ...string) cty.Value {
 		if i == len(parts)-1 {
 			return src[part]
 		}
-		src = src[part].AsValueMap()
+		nextPart := src[part]
+		if nextPart == cty.NilVal {
+			return cty.NilVal
+		}
+		src = nextPart.AsValueMap()
 	}
 	return cty.NilVal
 }

@@ -117,7 +117,7 @@ module "my-mod" {
 }
 
 output "result" {
-	value = module.my-mod.result
+	value = module.my-mod.mod_result
 }
 `,
 		`
@@ -125,8 +125,8 @@ variable "input" {
 	default = "?"
 }
 
-output "result" {
-	value = var.input
+output "mod_result" {
+	value = "hello"
 }
 `,
 		"module",
@@ -152,7 +152,7 @@ output "result" {
 	require.Len(t, outputs, 2)
 	for _, output := range outputs {
 		if output.HasModuleBlock() {
-			assert.Equal(t, "module.my-mod:output.result", output.FullName())
+			assert.Equal(t, "module.my-mod:output.mod_result", output.FullName())
 		} else {
 			assert.Equal(t, "output.result", output.FullName())
 		}

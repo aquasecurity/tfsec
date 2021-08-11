@@ -76,6 +76,7 @@ func (e *Evaluator) evaluateStep(i int) {
 	e.ctx.Set(e.getValuesByBlockType("variable"), "var")
 	e.ctx.Set(e.getValuesByBlockType("locals"), "local")
 	e.ctx.Set(e.getValuesByBlockType("provider"), "provider")
+	e.ctx.Set(e.getValuesByBlockType("module"), "module")
 
 	resources := e.getValuesByBlockType("resource")
 	for key, resource := range resources.AsValueMap() {
@@ -108,33 +109,31 @@ func (e *Evaluator) evaluateModules() {
 		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path, module.Definition.Reference().String()})
 
 		evalTime := metrics.Start(metrics.Evaluation)
-		inputVars := make(map[string]cty.Value)
-		for _, attr := range module.Definition.GetAttributes() {
-			func() {
-				defer func() {
-					if err := recover(); err != nil {
-						return
-					}
-				}()
-				inputVars[attr.Name()] = attr.Value()
-			}()
-		}
-		evalTime.Stop()
-
-		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError)
+		vars := e.ctx.Root().Get("module", module.Name).AsValueMap()
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, vars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError)
 		e.SetModuleBasePath(e.projectRootPath)
-		module.Blocks, _ = moduleEvaluator.EvaluateAll()
-
-		evalTime = metrics.Start(metrics.Evaluation)
+		var err error
+		module.Blocks, err = moduleEvaluator.EvaluateAll()
+		if err != nil {
+			panic(err)
+		}
 		// export module outputs
-		e.ctx.Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
+		e.ctx.Root().Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
+
+		ct := e.ctx.Root().Get("module", module.Name)
+		fmt.Println(ct)
+
 		evalTime.Stop()
 	}
 }
 
 // export module outputs to a parent hclcontext
 func (e *Evaluator) ExportOutputs() cty.Value {
-	return e.ctx.Get("output")
+	outputs := e.ctx.Get("output")
+	if outputs == cty.NilVal {
+		return cty.EmptyObjectVal
+	}
+	return outputs
 }
 
 func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
@@ -294,21 +293,12 @@ func (e *Evaluator) copyVariables(from, to block.Block) {
 		return
 	}
 
-	e.ctx.Set(e.ctx.Get(fromBase, fromRel), fromBase, toRel)
-}
-
-func mergeBlocks(allBlocks block.Blocks, newBlocks block.Blocks) block.Blocks {
-	var merger = make(map[block.Block]bool)
-	for _, b := range allBlocks {
-		merger[b] = true
+	srcValue := e.ctx.Root().Get(fromBase, fromRel)
+	if srcValue == cty.NilVal {
+		debug.Log("error trying to copyVariable from the source of '%s.%s'", fromBase, fromRel)
+		return
 	}
-
-	for _, b := range newBlocks {
-		if _, ok := merger[b]; !ok {
-			allBlocks = append(allBlocks, b)
-		}
-	}
-	return allBlocks
+	e.ctx.Root().Set(srcValue, fromBase, toRel)
 }
 
 func (e *Evaluator) evaluateVariable(b block.Block) (cty.Value, error) {
@@ -331,25 +321,15 @@ func (e *Evaluator) evaluateVariable(b block.Block) (cty.Value, error) {
 }
 
 func (e *Evaluator) evaluateOutput(b block.Block) (cty.Value, error) {
-
-	defer func() {
-		_ = recover()
-	}()
-
 	if b.Label() == "" {
 		return cty.NilVal, fmt.Errorf("empty label - cannot resolve")
 	}
 
-	attributes := b.Attributes()
-	if attributes == nil {
+	attribute := b.GetAttribute("value")
+	if attribute.IsNil() {
 		return cty.NilVal, fmt.Errorf("cannot resolve variable with no attributes")
 	}
-
-	if def, exists := attributes["value"]; exists {
-		return def.Value(), nil
-	}
-
-	return cty.NilVal, fmt.Errorf("no value found")
+	return attribute.Value(), nil
 }
 
 // returns true if all evaluations were successful
@@ -370,7 +350,7 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 		case "output":
 			val, err := e.evaluateOutput(b)
 			if err != nil {
-				continue
+				panic(err)
 			}
 			values[b.Label()] = val
 		case "locals":
