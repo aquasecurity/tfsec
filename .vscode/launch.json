@@ -10,7 +10,7 @@
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}/cmd/tfsec/main.go",
-      "args": ["${workspaceFolder}/example/1010"]
+      "args": ["${workspaceFolder}/example"]
     },
     {
       "name": "Basic doc gen",
