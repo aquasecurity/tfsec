@@ -75,22 +75,10 @@ func (c *Context) Set(val cty.Value, parts ...string) {
 	if len(parts) == 0 {
 		return
 	}
-
-	/*
-		{"mod_result": "ok"}
-
-		module.my-mod
-	*/
-
-	// c.ctx.Variables["module"] = mergeVars(c.ctx.Variables["module"], "my-mod", {"mod_result": "ok"})
 	c.ctx.Variables[parts[0]] = mergeVars(c.ctx.Variables[parts[0]], parts[1:], val)
 }
 
 func mergeVars(src cty.Value, parts []string, value cty.Value) cty.Value {
-
-	// src = c.ctx.Variables["module"]
-	// parts = "my-mod"
-	// value = {"mod_result": "ok"}
 
 	if len(parts) == 0 {
 		if value.Type().IsObjectType() && !value.IsNull() && value.LengthInt() > 0 && src.Type().IsObjectType() && !src.IsNull() && src.LengthInt() > 0 {
