@@ -56,64 +56,75 @@ func IsRuleRequiredForBlock(rule *Rule, b block.Block) bool {
 		return false
 	}
 
-	var check_module_required bool
 	if len(rule.RequiredTypes) > 0 {
-		var found bool
-		for _, requiredType := range rule.RequiredTypes {
-			if b.Type() == requiredType {
-				if requiredType == block.TypeModule.Name() {
-					check_module_required = true
-				}
-				found = true
-				break
-			}
-		}
-		if !found {
+		if !checkRequiredTypesMatch(rule, b) {
 			return false
 		}
 	}
 
 	if len(rule.RequiredLabels) > 0 {
-		var found bool
-		for _, requiredLabel := range rule.RequiredLabels {
-			if requiredLabel == "*" || (len(b.Labels()) > 0 && wildcardMatch(requiredLabel, b.TypeLabel())) {
+		if !checkRequiredLabelsMatch(rule, b) {
+			return false
+		}
+
+	}
+
+	if len(rule.RequiredSources) > 0 && b.Type() == block.TypeModule.Name() {
+		if !checkRequiredSourcesMatch(rule, b) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func checkRequiredTypesMatch(rule *Rule, b block.Block) bool {
+	var found bool
+	for _, requiredType := range rule.RequiredTypes {
+		if b.Type() == requiredType {
+			found = true
+			break
+		}
+	}
+
+	return found
+}
+
+func checkRequiredLabelsMatch(rule *Rule, b block.Block) bool {
+	var found bool
+	for _, requiredLabel := range rule.RequiredLabels {
+		if requiredLabel == "*" || (len(b.Labels()) > 0 && wildcardMatch(requiredLabel, b.TypeLabel())) {
+			found = true
+			break
+		}
+	}
+
+	return found
+}
+
+func checkRequiredSourcesMatch(rule *Rule, b block.Block) bool {
+	var found bool
+	if sourceAttr := b.GetAttribute("source"); sourceAttr.IsNotNil() {
+		sourcePath := sourceAttr.ValueAsStrings()[0]
+
+		// resolve module source path to path relative to cwd
+		if strings.HasPrefix(sourcePath, ".") {
+			var err error
+			sourcePath, err = cleanPathRelativeToWorkingDir(filepath.Dir(b.Range().Filename), sourcePath)
+			if err != nil {
+				_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", fmt.Sprintf("%s:%s", b.FullName(), b.Range().Filename), err)
+			}
+		}
+
+		for _, requiredSource := range rule.RequiredSources {
+			if requiredSource == "*" || wildcardMatch(requiredSource, sourcePath) {
 				found = true
 				break
 			}
 		}
-		if !found {
-			return false
-		}
 	}
 
-	if len(rule.RequiredSources) > 0 && check_module_required {
-		var found bool
-		if sourceAttr := b.GetAttribute("source"); sourceAttr.IsNotNil() {
-			sourcePath := sourceAttr.ValueAsStrings()[0]
-
-			// resolve module source path to path relative to cwd
-			if strings.HasPrefix(sourcePath, ".") {
-				var err error
-				sourcePath, err = cleanPathRelativeToWorkingDir(filepath.Dir(b.Range().Filename), sourcePath)
-				if err != nil {
-					_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", fmt.Sprintf("%s:%s", b.FullName(), b.Range().Filename), err)
-				}
-			}
-
-			for _, requiredSource := range rule.RequiredSources {
-				if requiredSource == "*" || wildcardMatch(requiredSource, sourcePath) {
-					found = true
-					break
-				}
-			}
-		}
-		if !found {
-			return false
-		}
-
-	}
-
-	return true
+	return found
 }
 
 func cleanPathRelativeToWorkingDir(dir, path string) (string, error) {
