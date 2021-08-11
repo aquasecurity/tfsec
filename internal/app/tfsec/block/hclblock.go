@@ -15,14 +15,14 @@ import (
 
 type HCLBlock struct {
 	hclBlock    *hcl.Block
-	evalContext *hcl.EvalContext
+	context     *Context
 	moduleBlock Block
 	expanded    bool
 	cloneIndex  int
 	childBlocks []Block
 }
 
-func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) Block {
+func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
 	var children Blocks
 	switch body := hclBlock.Body.(type) {
 	case *hclsyntax.Body:
@@ -38,7 +38,7 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) B
 		}
 	}
 	return &HCLBlock{
-		evalContext: ctx,
+		context:     ctx,
 		hclBlock:    hclBlock,
 		moduleBlock: moduleBlock,
 		childBlocks: children,
@@ -48,18 +48,12 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *hcl.EvalContext, moduleBlock Block) B
 func (b *HCLBlock) InjectBlock(block Block, name string) {
 	block.(*HCLBlock).hclBlock.Labels = []string{}
 	block.(*HCLBlock).hclBlock.Type = name
-	targetCtx := b.evalContext
+	targetCtx := b.context
 	if parent := targetCtx.Parent(); parent != nil {
 		targetCtx = parent
 	}
-	if targetCtx.Variables == nil {
-		targetCtx.Variables = make(map[string]cty.Value)
-	}
-
 	for attrName, attr := range block.Attributes() {
-		varName := fmt.Sprintf("%s.%s.%s", b.Reference(), name, attrName)
-
-		targetCtx.Variables[varName] = attr.Value()
+		targetCtx.Set(attr.Value(), b.Reference().String(), name, attrName)
 	}
 	b.childBlocks = append(b.childBlocks, block)
 }
@@ -73,16 +67,13 @@ func (b *HCLBlock) IsCountExpanded() bool {
 }
 
 func (b *HCLBlock) Clone(index cty.Value) Block {
-	var childCtx *hcl.EvalContext
-	if b.evalContext != nil {
-		childCtx = b.evalContext.NewChild()
+	var childCtx *Context
+	if b.context != nil {
+		childCtx = b.context.NewChild()
 	} else {
-		childCtx = &hcl.EvalContext{}
+		childCtx = NewContext(&hcl.EvalContext{}, nil)
 	}
 
-	if childCtx.Variables == nil {
-		childCtx.Variables = make(map[string]cty.Value)
-	}
 	cloneHCL := *b.hclBlock
 
 	clone := NewHCLBlock(&cloneHCL, childCtx, b.moduleBlock).(*HCLBlock)
@@ -109,22 +100,20 @@ func (b *HCLBlock) Clone(index cty.Value) Block {
 		clone.hclBlock.Labels = labels
 	}
 	indexVal, _ := gocty.ToCtyValue(index, cty.Number)
-	clone.evalContext.Variables["count"] = cty.ObjectVal(map[string]cty.Value{
-		"index": indexVal,
-	})
+	clone.context.SetByDot(indexVal, "count.index")
 	clone.markCountExpanded()
 	b.cloneIndex++
 	return clone
 }
 
-func (b *HCLBlock) Context() *hcl.EvalContext {
-	return b.evalContext
+func (b *HCLBlock) Context() *Context {
+	return b.context
 }
 
-func (b *HCLBlock) AttachEvalContext(ctx *hcl.EvalContext) {
-	b.evalContext = ctx
+func (b *HCLBlock) OverrideContext(ctx *Context) {
+	b.context = ctx
 	for _, block := range b.childBlocks {
-		block.AttachEvalContext(ctx.NewChild())
+		block.OverrideContext(ctx.NewChild())
 	}
 }
 
@@ -240,7 +229,7 @@ func (b *HCLBlock) GetAttributes() []Attribute {
 		return nil
 	}
 	for _, attr := range b.getHCLAttributes() {
-		results = append(results, NewHCLAttribute(attr, b.evalContext))
+		results = append(results, NewHCLAttribute(attr, b.context))
 	}
 	return results
 }
@@ -252,7 +241,7 @@ func (b *HCLBlock) GetAttribute(name string) Attribute {
 	}
 	for _, attr := range b.getHCLAttributes() {
 		if attr.Name == name {
-			return NewHCLAttribute(attr, b.evalContext)
+			return NewHCLAttribute(attr, b.context)
 		}
 	}
 	return attr
@@ -394,7 +383,7 @@ func (b *HCLBlock) IsEmpty() bool {
 func (b *HCLBlock) Attributes() map[string]Attribute {
 	attributes := make(map[string]Attribute)
 	for name, attr := range b.getHCLAttributes() {
-		attributes[name] = NewHCLAttribute(attr, b.evalContext)
+		attributes[name] = NewHCLAttribute(attr, b.context)
 	}
 	return attributes
 }
@@ -409,7 +398,7 @@ func (b *HCLBlock) Values() cty.Value {
 					return
 				}
 			}()
-			val, _ := attribute.Expr.Value(b.evalContext)
+			val, _ := attribute.Expr.Value(b.context.Inner())
 			values[attribute.Name] = val
 		}()
 	}

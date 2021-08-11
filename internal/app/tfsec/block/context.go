@@ -1,6 +1,8 @@
 package block
 
 import (
+	"strings"
+
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -43,41 +45,47 @@ func (c *Context) Root() *Context {
 	return root
 }
 
-func (c *Context) SetByDot(path string, val cty.Value) {
-
+func (c *Context) Get(parts ...string) cty.Value {
+	if len(parts) == 0 {
+		return cty.NilVal
+	}
+	src := c.ctx.Variables
+	for i, part := range parts {
+		if i == len(parts)-1 {
+			return src[part]
+		}
+		src = src[part].AsValueMap()
+	}
+	return cty.NilVal
 }
 
-type stackItem struct {
-	object map[string]cty.Value
-	name   string
+func (c *Context) GetByDot(path string) cty.Value {
+	return c.Get(strings.Split(path, ".")...)
+}
+
+func (c *Context) SetByDot(val cty.Value, path string) {
+	c.Set(val, strings.Split(path, ".")...)
 }
 
 func (c *Context) Set(val cty.Value, parts ...string) {
-
-	object := c.ctx.Variables
-	var stack []stackItem
-	stack = append(stack, stackItem{object: object})
-
-	for i, part := range parts {
-		if i == len(parts)-1 {
-			object[part] = val
-			break
-		}
-		sub, ok := object[part]
-		if !ok {
-			data := make(map[string]cty.Value, 1)
-			data["_"] = cty.NilVal
-			object[part] = cty.ObjectVal(data)
-			sub = object[part]
-		}
-		object = sub.AsValueMap()
-		stack = append([]stackItem{{object: object, name: part}}, stack...)
+	if len(parts) == 0 {
+		return
 	}
+	c.ctx.Variables[parts[0]] = mergeVars(c.ctx.Variables[parts[0]], parts[1:], val)
+}
 
-	for _, item := range stack {
-
+func mergeVars(src cty.Value, parts []string, value cty.Value) cty.Value {
+	if len(parts) == 0 {
+		return value
 	}
-
-	c.ctx.Variables[parts[0]] = nil
-
+	data := make(map[string]cty.Value)
+	if src.Type().IsObjectType() && !src.IsNull() && src.LengthInt() > 0 {
+		data = src.AsValueMap()
+	}
+	if len(parts) == 1 {
+		data[parts[0]] = value
+		return cty.ObjectVal(data)
+	}
+	data[parts[0]] = mergeVars(cty.ObjectVal(data), parts[1:], value)
+	return cty.ObjectVal(data)
 }

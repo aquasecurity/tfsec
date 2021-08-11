@@ -23,7 +23,7 @@ type visitedModule struct {
 }
 
 type Evaluator struct {
-	ctx             *hcl.EvalContext
+	ctx             *block.Context
 	blocks          block.Blocks
 	modules         []*ModuleInfo
 	visitedModules  []*visitedModule
@@ -44,13 +44,12 @@ func NewEvaluator(
 	stopOnHCLError bool,
 ) *Evaluator {
 
-	ctx := &hcl.EvalContext{
-		Variables: make(map[string]cty.Value),
+	ctx := block.NewContext(&hcl.EvalContext{
 		Functions: Functions(modulePath),
-	}
+	}, nil)
 
 	for _, b := range blocks {
-		b.AttachEvalContext(ctx.NewChild())
+		b.OverrideContext(ctx.NewChild())
 	}
 
 	return &Evaluator{
@@ -74,17 +73,17 @@ func (e *Evaluator) evaluateStep(i int) {
 	evalTime := metrics.Start(metrics.Evaluation)
 	debug.Log("Starting iteration %d of context evaluation...", i+1)
 
-	e.ctx.Variables["var"] = e.getValuesByBlockType("variable")
-	e.ctx.Variables["local"] = e.getValuesByBlockType("locals")
-	e.ctx.Variables["provider"] = e.getValuesByBlockType("provider")
+	e.ctx.Set(e.getValuesByBlockType("variable"), "var")
+	e.ctx.Set(e.getValuesByBlockType("locals"), "local")
+	e.ctx.Set(e.getValuesByBlockType("provider"), "provider")
 
 	resources := e.getValuesByBlockType("resource")
 	for key, resource := range resources.AsValueMap() {
-		e.ctx.Variables[key] = resource
+		e.ctx.Set(resource, key)
 	}
 
-	e.ctx.Variables["data"] = e.getValuesByBlockType("data")
-	e.ctx.Variables["output"] = e.getValuesByBlockType("output")
+	e.ctx.Set(e.getValuesByBlockType("data"), "data")
+	e.ctx.Set(e.getValuesByBlockType("output"), "output")
 
 	evalTime.Stop()
 
@@ -128,23 +127,14 @@ func (e *Evaluator) evaluateModules() {
 
 		evalTime = metrics.Start(metrics.Evaluation)
 		// export module outputs
-		moduleMapRaw := e.ctx.Variables["module"]
-		if moduleMapRaw == cty.NilVal {
-			moduleMapRaw = cty.ObjectVal(make(map[string]cty.Value))
-		}
-		moduleMap := moduleMapRaw.AsValueMap()
-		if moduleMap == nil {
-			moduleMap = make(map[string]cty.Value)
-		}
-		moduleMap[module.Name] = moduleEvaluator.ExportOutputs()
-		e.ctx.Variables["module"] = cty.ObjectVal(moduleMap)
+		e.ctx.Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
 		evalTime.Stop()
 	}
 }
 
 // export module outputs to a parent hclcontext
 func (e *Evaluator) ExportOutputs() cty.Value {
-	return e.ctx.Variables["output"]
+	return e.ctx.Get("output")
 }
 
 func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
@@ -156,14 +146,14 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 		e.evaluateStep(i)
 
 		// if ctx matches the last evaluation, we can bail, nothing left to resolve
-		if reflect.DeepEqual(lastContext.Variables, e.ctx.Variables) {
+		if reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
 			break
 		}
 
-		if len(e.ctx.Variables) != len(lastContext.Variables) {
-			lastContext.Variables = make(map[string]cty.Value, len(e.ctx.Variables))
+		if len(e.ctx.Inner().Variables) != len(lastContext.Variables) {
+			lastContext.Variables = make(map[string]cty.Value, len(e.ctx.Inner().Variables))
 		}
-		for k, v := range e.ctx.Variables {
+		for k, v := range e.ctx.Inner().Variables {
 			lastContext.Variables[k] = v
 		}
 	}
@@ -179,14 +169,14 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 		e.evaluateStep(i)
 
 		// if ctx matches the last evaluation, we can bail, nothing left to resolve
-		if reflect.DeepEqual(lastContext.Variables, e.ctx.Variables) {
+		if reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
 			break
 		}
 
-		if len(e.ctx.Variables) != len(lastContext.Variables) {
-			lastContext.Variables = make(map[string]cty.Value, len(e.ctx.Variables))
+		if len(e.ctx.Inner().Variables) != len(lastContext.Variables) {
+			lastContext.Variables = make(map[string]cty.Value, len(e.ctx.Inner().Variables))
 		}
-		for k, v := range e.ctx.Variables {
+		for k, v := range e.ctx.Inner().Variables {
 			lastContext.Variables[k] = v
 		}
 	}
@@ -242,14 +232,11 @@ func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 
 				e.copyVariables(block, clone)
 
-				ctx.Variables["each"] = cty.ObjectVal(map[string]cty.Value{
-					"key":   key,
-					"value": val,
-				})
-				ctx.Variables[block.TypeLabel()] = cty.ObjectVal(map[string]cty.Value{
-					"key":   key,
-					"value": val,
-				})
+				ctx.SetByDot(key, "each.key")
+				ctx.SetByDot(val, "each.value")
+
+				ctx.Set(key, block.TypeLabel(), "key")
+				ctx.Set(val, block.TypeLabel(), "value")
 
 				debug.Log("Added %s from for_each", clone.Reference())
 				forEachFiltered = append(forEachFiltered, clone)
@@ -307,26 +294,7 @@ func (e *Evaluator) copyVariables(from, to block.Block) {
 		return
 	}
 
-	topLevelMap := e.ctx.Variables[fromBase] // s3_buckets
-	if topLevelMap.Type() == cty.NilType {
-		topLevelMap = cty.EmptyObjectVal
-	}
-	topLevelVars := topLevelMap.AsValueMap()
-	if topLevelVars == nil {
-		topLevelVars = map[string]cty.Value{}
-	}
-
-	relativeMap := topLevelVars[fromRel]
-	if relativeMap.Type() == cty.NilType {
-		relativeMap = cty.EmptyObjectVal
-	}
-	relativeVars := relativeMap.AsValueMap()
-	if relativeVars == nil {
-		relativeVars = map[string]cty.Value{}
-	}
-	// put back
-	topLevelVars[toRel] = cty.ObjectVal(relativeVars)
-	e.ctx.Variables[fromBase] = cty.ObjectVal(topLevelVars)
+	e.ctx.Set(e.ctx.Get(fromBase, fromRel), fromBase, toRel)
 }
 
 func mergeBlocks(allBlocks block.Blocks, newBlocks block.Blocks) block.Blocks {
@@ -442,7 +410,5 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 }
 
 func (e *Evaluator) SetWorkspace(workspaceName string) {
-
-	ctyWorkspaceName := cty.StringVal(workspaceName)
-	e.ctx.Variables["terraform"] = cty.ObjectVal(map[string]cty.Value{"workspace": ctyWorkspaceName})
+	e.ctx.SetByDot(cty.StringVal(workspaceName), "terraform.workspace")
 }

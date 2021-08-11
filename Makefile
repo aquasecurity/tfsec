@@ -8,7 +8,7 @@ image:
 .PHONY: test
 test:
 	which gotestsum || (pushd /tmp && go install gotest.tools/gotestsum@latest && popd)
-	gotestsum -- --mod=vendor -race ./...
+	gotestsum -- --mod=vendor -bench=^$$ -race ./...
 
 .PHONY: build
 build:
