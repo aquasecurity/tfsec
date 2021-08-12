@@ -83,7 +83,7 @@ func (c *Context) Set(val cty.Value, parts ...string) {
 func mergeVars(src cty.Value, parts []string, value cty.Value) cty.Value {
 
 	if len(parts) == 0 {
-		if value.Type().IsObjectType() && !value.IsNull() && value.LengthInt() > 0 && src.Type().IsObjectType() && !src.IsNull() && src.LengthInt() > 0 {
+		if value.IsKnown() && value.Type().IsObjectType() && !value.IsNull() && value.LengthInt() > 0 && src.IsKnown() && src.Type().IsObjectType() && !src.IsNull() && src.LengthInt() > 0 {
 			return mergeObjects(src, value)
 		}
 		return value
@@ -107,12 +107,13 @@ func mergeVars(src cty.Value, parts []string, value cty.Value) cty.Value {
 
 func mergeObjects(a cty.Value, b cty.Value) cty.Value {
 	output := make(map[string]cty.Value)
+
 	for key, val := range a.AsValueMap() {
 		output[key] = val
 	}
 	for key, val := range b.AsValueMap() {
 		old, exists := output[key]
-		if exists && val.Type().IsObjectType() && !val.IsNull() && val.LengthInt() > 0 && old.Type().IsObjectType() && !old.IsNull() && old.LengthInt() > 0 {
+		if exists && val.IsKnown() && val.Type().IsObjectType() && !val.IsNull() && val.LengthInt() > 0 && old.IsKnown() && old.Type().IsObjectType() && !old.IsNull() && old.LengthInt() > 0 {
 			output[key] = mergeObjects(val, old)
 		} else {
 			output[key] = val
