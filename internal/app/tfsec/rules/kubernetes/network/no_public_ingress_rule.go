@@ -170,7 +170,7 @@ resource "kubernetes_network_policy" "good_example" {
 
 			for _, from := range ingressBlock.GetBlocks("from") {
 				if cidrAttr := from.GetBlock("ip_block").GetAttribute("cidr"); cidrAttr.IsString() {
-					if cidr.IsOpen(cidrAttr) {
+					if cidr.IsAttributeOpen(cidrAttr) {
 						set.AddResult().
 							WithDescription("Resource '%s' allows ingress traffic from the internet", resourceBlock.FullName()).
 							WithAttribute(cidrAttr)

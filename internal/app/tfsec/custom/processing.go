@@ -70,6 +70,13 @@ var matchFunctions = map[CheckAction]func(block.Block, *MatchSpec) bool{
 		}
 		return attribute.Equals(spec.MatchValue)
 	},
+	NotEqual: func(block block.Block, spec *MatchSpec) bool {
+		attribute := block.GetAttribute(spec.Name)
+		if attribute.IsNil() {
+			return spec.IgnoreUndefined
+		}
+		return attribute.NotEqual(spec.MatchValue)
+	},
 	LessThan: func(block block.Block, spec *MatchSpec) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
@@ -156,6 +163,15 @@ func evalMatchSpec(b block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool
 	}
 	var evalResult bool
 
+	if spec.PreConditions != nil {
+		for _, preCondition := range spec.PreConditions {
+			if !evalMatchSpec(b, &preCondition, ctx) {
+				// precondition not met
+				return true
+			}
+		}
+	}
+
 	switch spec.Action {
 	case InModule:
 		return b.InModule()
@@ -200,12 +216,15 @@ func processOrPredicate(spec *MatchSpec, b block.Block, ctx *hclcontext.Context)
 }
 
 func processAndPredicate(spec *MatchSpec, b block.Block, ctx *hclcontext.Context) bool {
+	set := make(map[bool]bool)
+
 	for _, childSpec := range spec.PredicateMatchSpec {
-		if !evalMatchSpec(b, &childSpec, ctx) {
-			return false
-		}
+		result := evalMatchSpec(b, &childSpec, ctx)
+		set[result] = true
+
 	}
-	return true
+
+	return len(set) == 1 && set[true] == true
 }
 
 func processSubMatches(spec *MatchSpec, b block.Block, evalResult bool) bool {

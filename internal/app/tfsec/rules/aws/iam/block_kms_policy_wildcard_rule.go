@@ -235,7 +235,7 @@ data "aws_iam_policy_document" "kms_policy" {
 						continue
 					}
 
-					if statementBlock.HasChild("actions") && statementBlock.GetAttribute("actions").Contains("kms:*") {
+					if statementBlock.HasChild("actions") && statementBlock.GetAttribute("actions").HasIntersect("kms:*", "kms:Decrypt") {
 						if resources := statementBlock.GetAttribute("resources"); resources.IsNotNil() {
 							resources.Each(func(key, value cty.Value) {
 								if value.Type() == cty.String && strings.Contains(value.AsString(), ("*")) {

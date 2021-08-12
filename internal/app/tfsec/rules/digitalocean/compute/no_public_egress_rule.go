@@ -67,7 +67,7 @@ resource "digitalocean_firewall" "good_example" {
 					continue
 				}
 				destinationAddressesAttr := inboundRuleBlock.GetAttribute("destination_addresses")
-				if cidr.IsOpen(destinationAddressesAttr) {
+				if cidr.IsAttributeOpen(destinationAddressesAttr) {
 					set.AddResult().
 						WithDescription("Resource '%s' defines a fully open outbound_rule.", resourceBlock.FullName()).
 						WithAttribute(destinationAddressesAttr)

@@ -17,6 +17,7 @@ var ValidCheckActions = []CheckAction{
 	Contains,
 	NotContains,
 	Equals,
+	NotEqual,
 	LessThan,
 	LessThanOrEqualTo,
 	GreaterThan,
@@ -25,11 +26,11 @@ var ValidCheckActions = []CheckAction{
 	RequiresPresence,
 	IsAny,
 	IsNone,
+	HasTag,
+	OfType,
 	And,
 	Or,
 	Not,
-	HasTag,
-	OfType,
 }
 
 // InModule checks that the block is part of a module
@@ -58,6 +59,9 @@ const NotContains CheckAction = "notContains"
 
 // Equals checks that the named child attribute has a value equal to the check value
 const Equals CheckAction = "equals"
+
+// NotEqual checks that the named child attribute does not have a value equal to the check value
+const NotEqual CheckAction = "notEqual"
 
 // RegexMatches checks that the named attribute has a value that matches the regex
 const RegexMatches CheckAction = "regexMatches"
@@ -103,6 +107,7 @@ type MatchSpec struct {
 	Name               string      `json:"name,omitempty" yaml:"name,omitempty"`
 	MatchValue         interface{} `json:"value,omitempty" yaml:"value,omitempty"`
 	Action             CheckAction `json:"action,omitempty" yaml:"action,omitempty"`
+	PreConditions      []MatchSpec `json:"preconditions,omitempty" yaml:"preconditions,omitempty"`
 	PredicateMatchSpec []MatchSpec `json:"predicateMatchSpec,omitempty" yaml:"predicateMatchSpec,omitempty"`
 	SubMatch           *MatchSpec  `json:"subMatch,omitempty" yaml:"subMatch,omitempty"`
 	IgnoreUndefined    bool        `json:"ignoreUndefined,omitempty" yaml:"ignoreUndefined,omitempty"`
