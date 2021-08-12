@@ -116,16 +116,17 @@ type MatchSpec struct {
 
 //Check specifies the check definition represented in json/yaml
 type Check struct {
-	Code           string            `json:"code" yaml:"code"`
-	Description    string            `json:"description" yaml:"description"`
-	RequiredTypes  []string          `json:"requiredTypes" yaml:"requiredTypes"`
-	RequiredLabels []string          `json:"requiredLabels" yaml:"requiredLabels"`
-	Severity       severity.Severity `json:"severity" yaml:"severity"`
-	ErrorMessage   string            `json:"errorMessage,omitempty" yaml:"errorMessage,omitempty"`
-	MatchSpec      *MatchSpec        `json:"matchSpec" yaml:"matchSpec"`
-	RelatedLinks   []string          `json:"relatedLinks,omitempty" yaml:"relatedLinks,omitempty"`
-	Impact         string            `json:"impact,omitempty" yaml:"impact,omitempty"`
-	Resolution     string            `json:"resolution,omitempty" yaml:"resolution,omitempty"`
+	Code            string            `json:"code" yaml:"code"`
+	Description     string            `json:"description" yaml:"description"`
+	RequiredTypes   []string          `json:"requiredTypes" yaml:"requiredTypes"`
+	RequiredLabels  []string          `json:"requiredLabels" yaml:"requiredLabels"`
+	RequiredSources []string          `json:"requiredSources" yaml:"requiredSources,omitempty"`
+	Severity        severity.Severity `json:"severity" yaml:"severity"`
+	ErrorMessage    string            `json:"errorMessage,omitempty" yaml:"errorMessage,omitempty"`
+	MatchSpec       *MatchSpec        `json:"matchSpec" yaml:"matchSpec"`
+	RelatedLinks    []string          `json:"relatedLinks,omitempty" yaml:"relatedLinks,omitempty"`
+	Impact          string            `json:"impact,omitempty" yaml:"impact,omitempty"`
+	Resolution      string            `json:"resolution,omitempty" yaml:"resolution,omitempty"`
 }
 
 func (action *CheckAction) isValid() bool {
