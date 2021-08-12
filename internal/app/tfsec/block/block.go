@@ -1,13 +1,12 @@
 package block
 
 import (
-	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 )
 
 type Block interface {
 	Attributes() map[string]Attribute
-	AttachEvalContext(ctx *hcl.EvalContext)
+	OverrideContext(ctx *Context)
 	HasModuleBlock() bool
 	GetModuleBlock() (Block, error)
 	Type() string
@@ -37,8 +36,9 @@ type Block interface {
 	IsResourceType(resourceType string) bool
 	IsEmpty() bool
 	Values() cty.Value
-	Context() *hcl.EvalContext
+	Context() *Context
 	ReadLines() (lines []string, comments []string, err error)
 	IsNil() bool
 	IsNotNil() bool
+	InjectBlock(block Block, name string)
 }

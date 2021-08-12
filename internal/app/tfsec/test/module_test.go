@@ -470,3 +470,59 @@ module "something" {
 	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
 	testutil.AssertCheckCode(t, "aws-iam-no-policy-wildcards", "", results)
 }
+
+func Test_Dynamic_Variables(t *testing.T) {
+	example := `
+resource "something" "this" {
+
+	dynamic "blah" {
+		for_each = ["a"]
+
+		content {
+			policy = "TLS_1_0"
+		}
+	}
+}
+	
+resource "aws_api_gateway_domain_name" "outdated_security_policy" {
+	security_policy = something.this.blah.policy
+}
+`
+	fs, err := testutil.NewFilesystem()
+	require.NoError(t, err)
+	defer fs.Close()
+
+	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	require.NoError(t, err)
+	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	testutil.AssertCheckCode(t, "aws-api-gateway-use-secure-tls-policy", "", results)
+}
+
+func Test_Dynamic_Variables_FalsePositive(t *testing.T) {
+	example := `
+resource "aws_s3_bucket" "bucket" {
+	x = 1
+	dynamic "blah" {
+		for_each = ["TLS_1_2"]
+
+		content {
+			policy = each.value
+		}
+	}
+}
+	
+resource "aws_api_gateway_domain_name" "outdated_security_policy" {
+	security_policy = aws_s3_bucket.bucket.blah.policy
+}
+`
+	fs, err := testutil.NewFilesystem()
+	require.NoError(t, err)
+	defer fs.Close()
+
+	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	require.NoError(t, err)
+	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	testutil.AssertCheckCode(t, "", "aws-api-gateway-use-secure-tls-policy", results)
+}
