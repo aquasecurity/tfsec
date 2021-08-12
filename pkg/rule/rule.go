@@ -24,6 +24,7 @@ type Rule struct {
 	Provider        provider.Provider
 	RequiredTypes   []string
 	RequiredLabels  []string
+	RequiredSources []string
 	DefaultSeverity severity.Severity
 	CheckFunc       func(result.Set, block.Block, *hclcontext.Context)
 }

@@ -142,6 +142,7 @@ func processFoundChecks(checks ChecksFile) {
 				Provider:        provider.CustomProvider,
 				RequiredTypes:   customCheck.RequiredTypes,
 				RequiredLabels:  customCheck.RequiredLabels,
+				RequiredSources: customCheck.RequiredSources,
 				DefaultSeverity: severity.Medium,
 				CheckFunc: func(set result.Set, rootBlock block.Block, ctx *hclcontext.Context) {
 					matchSpec := customCheck.MatchSpec
