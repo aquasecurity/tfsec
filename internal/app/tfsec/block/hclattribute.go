@@ -14,10 +14,10 @@ import (
 
 type HCLAttribute struct {
 	hclAttribute *hcl.Attribute
-	ctx          *hcl.EvalContext
+	ctx          *Context
 }
 
-func NewHCLAttribute(attr *hcl.Attribute, ctx *hcl.EvalContext) *HCLAttribute {
+func NewHCLAttribute(attr *hcl.Attribute, ctx *Context) *HCLAttribute {
 	return &HCLAttribute{
 		hclAttribute: attr,
 		ctx:          ctx,
@@ -97,7 +97,7 @@ func (attr *HCLAttribute) Value() (ctyVal cty.Value) {
 			ctyVal = cty.NilVal
 		}
 	}()
-	ctyVal, _ = attr.hclAttribute.Expr.Value(attr.ctx)
+	ctyVal, _ = attr.hclAttribute.Expr.Value(attr.ctx.Inner())
 	if !ctyVal.IsKnown() {
 		return cty.NilVal
 	}
@@ -126,7 +126,7 @@ func (attr *HCLAttribute) ValueAsStrings() []string {
 	if attr == nil {
 		return nil
 	}
-	return getStrings(attr.hclAttribute.Expr, attr.ctx)
+	return getStrings(attr.hclAttribute.Expr, attr.ctx.Inner())
 }
 
 func getStrings(expr hcl.Expression, ctx *hcl.EvalContext) []string {
@@ -309,6 +309,7 @@ func (attr *HCLAttribute) Equals(checkValue interface{}, equalityOptions ...Equa
 		}
 		return attr.Value().RawEquals(checkNumber)
 	}
+
 	return false
 }
 
@@ -610,7 +611,7 @@ func (attr *HCLAttribute) Reference() (*Reference, error) {
 			if err != nil {
 				return nil, err
 			}
-			key, _ := s.Key.Value(attr.ctx)
+			key, _ := s.Key.Value(attr.ctx.Inner())
 			collectionRef.SetKey(key)
 			return collectionRef, nil
 		default:

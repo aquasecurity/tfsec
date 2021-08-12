@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/hashicorp/hcl/v2"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 
@@ -116,6 +117,7 @@ func getModuleBlocks(b block.Block, modulePath string, blocks *block.Blocks, sto
 		return fmt.Errorf("failed to load module %s: %w", b.Label(), err)
 	}
 
+	moduleCtx := block.NewContext(&hcl.EvalContext{}, nil)
 	for _, file := range moduleFiles {
 		fileBlocks, err := LoadBlocksFromFile(file)
 		if err != nil {
@@ -129,7 +131,7 @@ func getModuleBlocks(b block.Block, modulePath string, blocks *block.Blocks, sto
 			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 		}
 		for _, fileBlock := range fileBlocks {
-			*blocks = append(*blocks, block.NewHCLBlock(fileBlock, nil, b))
+			*blocks = append(*blocks, block.NewHCLBlock(fileBlock, moduleCtx, b))
 		}
 	}
 	return nil
