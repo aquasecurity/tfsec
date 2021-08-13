@@ -57,7 +57,6 @@ resource "aws_docdb_cluster" "good_example" {
 		},
 		RequiredLabels: []string{
 			"aws_docdb_cluster",
-			"aws_docdb_cluster_instance",
 		},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
