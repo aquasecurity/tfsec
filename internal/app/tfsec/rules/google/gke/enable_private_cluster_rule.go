@@ -6,7 +6,6 @@ package gke
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -16,7 +15,7 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Provider:       provider.GoogleProvider,
+		Provider:  provider.GoogleProvider,
 		Service:   "gke",
 		ShortCode: "enable-private-cluster",
 		Documentation: rule.RuleDocumentation{
@@ -24,7 +23,7 @@ func init() {
 			Explanation: `Enabling private nodes on a cluster ensures the nodes are only available internally as they will only be assigned internal addresses.`,
 			Impact:      "Nodes may be exposed to the public internet",
 			Resolution:  "Enable private cluster",
-			BadExample: []string{  `
+			BadExample: []string{`
 resource "google_service_account" "default" {
   account_id   = "service-account-id"
   display_name = "Service Account"
@@ -62,7 +61,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   }
 }
 `},
-			GoodExample: []string{ `
+			GoodExample: []string{`
 resource "google_service_account" "default" {
   account_id   = "service-account-id"
   display_name = "Service Account"
@@ -104,14 +103,14 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#enable_private_nodes",
 			},
 		},
-		RequiredTypes:  []string{ 
+		RequiredTypes: []string{
 			"resource",
 		},
-		RequiredLabels: []string{ 
+		RequiredLabels: []string{
 			"google_container_cluster",
 		},
-		DefaultSeverity: severity.Medium, 
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context){
+		DefaultSeverity: severity.Medium,
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if enablePrivateNodesAttr := resourceBlock.GetBlock("private_cluster_config").GetAttribute("enable_private_nodes"); enablePrivateNodesAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for private_cluster_config.enable_private_nodes", resourceBlock.FullName())

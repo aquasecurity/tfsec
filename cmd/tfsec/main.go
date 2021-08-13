@@ -210,14 +210,14 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Starting parser...")
-		blocks, err := parser.New(dir, getParserOptions()...).ParseDirectory()
+		modules, err := parser.New(dir, getParserOptions()...).ParseDirectory()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
 		debug.Log("Starting scanner...")
-		results := scanner.New(getScannerOptions()...).Scan(blocks)
+		results := scanner.New(getScannerOptions()...).Scan(modules)
 		results = updateResultSeverity(results)
 		results = removeDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {

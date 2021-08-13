@@ -51,10 +51,12 @@ data "cats_cat" "the-cats-mother" {
 
 	debug.Enabled = true
 	parser := New(filepath.Dir(path), OptionStopOnHCLError())
-	blocks, err := parser.ParseDirectory()
+	modules, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	blocks := modules[0].GetBlocks()
 
 	// variable
 	variables := blocks.OfType("variable")
@@ -133,34 +135,38 @@ output "mod_result" {
 	)
 
 	parser := New(path, OptionStopOnHCLError())
-	blocks, err := parser.ParseDirectory()
+	modules, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
 	}
+	rootModule := modules[0]
+	childModule := modules[1]
 
-	modules := blocks.OfType("module")
-	require.Len(t, modules, 1)
-	module := modules[0]
-	assert.Equal(t, "module", module.Type())
-	assert.Equal(t, "module.my-mod", module.FullName())
-	inputAttr := module.GetAttribute("input")
+	moduleBlocks := rootModule.GetBlocks().OfType("module")
+	require.Len(t, moduleBlocks, 1)
+
+	assert.Equal(t, "module", moduleBlocks[0].Type())
+	assert.Equal(t, "module.my-mod", moduleBlocks[0].FullName())
+	inputAttr := moduleBlocks[0].GetAttribute("input")
 	require.NotNil(t, inputAttr)
 	require.Equal(t, cty.String, inputAttr.Value().Type())
 	assert.Equal(t, "ok", inputAttr.Value().AsString())
 
-	outputs := blocks.OfType("output")
-	require.Len(t, outputs, 2)
-	for _, output := range outputs {
-		if output.HasModuleBlock() {
-			assert.Equal(t, "module.my-mod:output.mod_result", output.FullName())
-		} else {
-			assert.Equal(t, "output.result", output.FullName())
-		}
-		valAttr := output.GetAttribute("value")
-		require.NotNil(t, valAttr)
-		require.Equal(t, cty.String, valAttr.Type())
-		assert.Equal(t, "ok", valAttr.Value().AsString())
-	}
+	rootOutputs := rootModule.GetBlocks().OfType("output")
+	require.Len(t, rootOutputs, 1)
+	assert.Equal(t, "output.result", rootOutputs[0].FullName())
+	valAttr := rootOutputs[0].GetAttribute("value")
+	require.NotNil(t, valAttr)
+	require.Equal(t, cty.String, valAttr.Type())
+	assert.Equal(t, "ok", valAttr.Value().AsString())
+
+	childOutputs := childModule.GetBlocks().OfType("output")
+	require.Len(t, childOutputs, 1)
+	assert.Equal(t, "module.my-mod:output.mod_result", childOutputs[0].FullName())
+	childValAttr := childOutputs[0].GetAttribute("value")
+	require.NotNil(t, childValAttr)
+	require.Equal(t, cty.String, childValAttr.Type())
+	assert.Equal(t, "ok", childValAttr.Value().AsString())
 
 }
 
@@ -173,7 +179,7 @@ module "my-mod" {
 }
 
 output "result" {
-	value = module.my-mod.result
+	value = module.my-mod.mod_result
 }
 `,
 		`
@@ -181,7 +187,7 @@ variable "input" {
 	default = "?"
 }
 
-output "result" {
+output "mod_result" {
 	value = var.input
 }
 `,
@@ -189,34 +195,38 @@ output "result" {
 	)
 
 	parser := New(path, OptionStopOnHCLError())
-	blocks, err := parser.ParseDirectory()
+	modules, err := parser.ParseDirectory()
 	if err != nil {
 		t.Fatal(err)
 	}
+	rootModule := modules[0]
+	childModule := modules[1]
 
-	modules := blocks.OfType("module")
-	require.Len(t, modules, 1)
-	module := modules[0]
-	assert.Equal(t, "module", module.Type())
-	assert.Equal(t, "module.my-mod", module.FullName())
-	inputAttr := module.GetAttribute("input")
+	moduleBlocks := rootModule.GetBlocks().OfType("module")
+	require.Len(t, moduleBlocks, 1)
+
+	assert.Equal(t, "module", moduleBlocks[0].Type())
+	assert.Equal(t, "module.my-mod", moduleBlocks[0].FullName())
+	inputAttr := moduleBlocks[0].GetAttribute("input")
 	require.NotNil(t, inputAttr)
 	require.Equal(t, cty.String, inputAttr.Value().Type())
 	assert.Equal(t, "ok", inputAttr.Value().AsString())
 
-	outputs := blocks.OfType("output")
-	require.Len(t, outputs, 2)
-	for _, output := range outputs {
-		if output.HasModuleBlock() {
-			assert.Equal(t, "module.my-mod:output.result", output.FullName())
-		} else {
-			assert.Equal(t, "output.result", output.FullName())
-		}
-		valAttr := output.GetAttribute("value")
-		require.NotNil(t, valAttr)
-		require.Equal(t, cty.String, valAttr.Type())
-		assert.Equal(t, "ok", valAttr.Value().AsString())
-	}
+	rootOutputs := rootModule.GetBlocks().OfType("output")
+	require.Len(t, rootOutputs, 1)
+	assert.Equal(t, "output.result", rootOutputs[0].FullName())
+	valAttr := rootOutputs[0].GetAttribute("value")
+	require.NotNil(t, valAttr)
+	require.Equal(t, cty.String, valAttr.Type())
+	assert.Equal(t, "ok", valAttr.Value().AsString())
+
+	childOutputs := childModule.GetBlocks().OfType("output")
+	require.Len(t, childOutputs, 1)
+	assert.Equal(t, "module.my-mod:output.mod_result", childOutputs[0].FullName())
+	childValAttr := childOutputs[0].GetAttribute("value")
+	require.NotNil(t, childValAttr)
+	require.Equal(t, cty.String, childValAttr.Type())
+	assert.Equal(t, "ok", childValAttr.Value().AsString())
 }
 
 func createTestFile(filename, contents string) string {

@@ -8,7 +8,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -50,9 +49,9 @@ resource "aws_alb_listener" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_lb_listener", "aws_alb_listener"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			// didn't find the referenced block, log and move on
-			if checkIfExempt(resourceBlock, ctx) {
+			if checkIfExempt(resourceBlock, module) {
 				return
 			}
 
@@ -81,11 +80,11 @@ resource "aws_alb_listener" "good_example" {
 	})
 }
 
-func checkIfExempt(resourceBlock block.Block, ctx *hclcontext.Context) bool {
+func checkIfExempt(resourceBlock block.Block, module block.Module) bool {
 	if resourceBlock.HasChild("load_balancer_arn") {
 		lbaAttr := resourceBlock.GetAttribute("load_balancer_arn")
 		if lbaAttr.IsResourceBlockReference("aws_lb") {
-			referencedBlock, err := ctx.GetReferencedBlock(lbaAttr)
+			referencedBlock, err := module.GetReferencedBlock(lbaAttr)
 			if err == nil {
 				if referencedBlock.HasChild("load_balancer_type") {
 					loadBalancerType := referencedBlock.GetAttribute("load_balancer_type")

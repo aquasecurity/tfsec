@@ -23,30 +23,39 @@ type visitedModule struct {
 }
 
 type Evaluator struct {
-	ctx             *block.Context
-	blocks          block.Blocks
-	modules         []*ModuleInfo
-	visitedModules  []*visitedModule
-	inputVars       map[string]cty.Value
-	moduleMetadata  *ModulesMetadata
-	projectRootPath string // root of the current scan
-	stopOnHCLError  bool
-	modulePath      string
+	ctx               *block.Context
+	blocks            block.Blocks
+	moduleDefinitions []*ModuleDefinition
+	visitedModules    []*visitedModule
+	inputVars         map[string]cty.Value
+	moduleMetadata    *ModulesMetadata
+	projectRootPath   string // root of the current scan
+	stopOnHCLError    bool
+	modulePath        string
+	workingDir        string
+	workspace         string
 }
 
 func NewEvaluator(
 	projectRootPath string,
 	modulePath string,
+	workingDir string,
 	blocks block.Blocks,
 	inputVars map[string]cty.Value,
 	moduleMetadata *ModulesMetadata,
 	visitedModules []*visitedModule,
 	stopOnHCLError bool,
+	workspace string,
 ) *Evaluator {
 
 	ctx := block.NewContext(&hcl.EvalContext{
 		Functions: Functions(modulePath),
 	}, nil)
+
+	ctx.SetByDot(cty.StringVal(workspace), "terraform.workspace")
+	ctx.SetByDot(cty.StringVal(projectRootPath), "path.root")
+	ctx.SetByDot(cty.StringVal(modulePath), "path.module")
+	ctx.SetByDot(cty.StringVal(workingDir), "path.cwd")
 
 	for _, b := range blocks {
 		b.OverrideContext(ctx.NewChild())
@@ -55,17 +64,15 @@ func NewEvaluator(
 	return &Evaluator{
 		modulePath:      modulePath,
 		projectRootPath: projectRootPath,
+		workingDir:      workingDir,
 		ctx:             ctx,
 		blocks:          blocks,
 		inputVars:       inputVars,
 		moduleMetadata:  moduleMetadata,
 		visitedModules:  visitedModules,
 		stopOnHCLError:  stopOnHCLError,
+		workspace:       workspace,
 	}
-}
-
-func (e *Evaluator) SetModuleBasePath(path string) {
-	e.projectRootPath = path
 }
 
 func (e *Evaluator) evaluateStep(i int) {
@@ -92,8 +99,8 @@ func (e *Evaluator) evaluateStep(i int) {
 
 func (e *Evaluator) evaluateModules() {
 
-	for _, module := range e.modules {
-		if visited := func(module *ModuleInfo) bool {
+	for _, module := range e.moduleDefinitions {
+		if visited := func(module *ModuleDefinition) bool {
 			for _, v := range e.visitedModules {
 				if v.name == module.Name && v.path == module.Path && module.Definition.Reference().String() == v.definitionReference {
 					debug.Log("Module [%s:%s:%s] has already been seen", v.name, v.path, v.definitionReference)
@@ -109,9 +116,8 @@ func (e *Evaluator) evaluateModules() {
 
 		evalTime := metrics.Start(metrics.Evaluation)
 		vars := module.Definition.Values().AsValueMap()
-		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, vars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError)
-		e.SetModuleBasePath(e.projectRootPath)
-		module.Blocks, _ = moduleEvaluator.EvaluateAll()
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, e.workingDir, module.Modules[0].GetBlocks(), vars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError, e.workspace)
+		module.Modules, _ = moduleEvaluator.EvaluateAll()
 		// export module outputs
 		e.ctx.Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
 
@@ -119,7 +125,7 @@ func (e *Evaluator) evaluateModules() {
 	}
 }
 
-// export module outputs to a parent hclcontext
+// export module outputs to a parent
 func (e *Evaluator) ExportOutputs() cty.Value {
 	data := make(map[string]cty.Value)
 	for _, block := range e.blocks.OfType("output") {
@@ -132,7 +138,7 @@ func (e *Evaluator) ExportOutputs() cty.Value {
 	return cty.ObjectVal(data)
 }
 
-func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
+func (e *Evaluator) EvaluateAll() ([]block.Module, error) {
 
 	var lastContext hcl.EvalContext
 
@@ -154,7 +160,7 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 	}
 
 	debug.Log("Loading modules...")
-	e.modules = e.loadModules(true)
+	e.moduleDefinitions = e.loadModules(true)
 
 	// expand out resources and modules via count
 	e.blocks = e.expandBlocks(e.blocks)
@@ -176,12 +182,13 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 		}
 	}
 
-	allBlocks := e.blocks
-	for _, module := range e.modules {
-		allBlocks = append(allBlocks, module.Blocks...)
+	var modules []block.Module
+	modules = append(modules, block.NewHCLModule(e.projectRootPath, e.modulePath, e.blocks))
+	for _, definition := range e.moduleDefinitions {
+		modules = append(modules, definition.Modules...)
 	}
 
-	return allBlocks, nil
+	return modules, nil
 }
 
 func (e *Evaluator) expandBlocks(blocks block.Blocks) block.Blocks {
@@ -383,8 +390,4 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 
 	return cty.ObjectVal(values)
 
-}
-
-func (e *Evaluator) SetWorkspace(workspaceName string) {
-	e.ctx.SetByDot(cty.StringVal(workspaceName), "terraform.workspace")
 }

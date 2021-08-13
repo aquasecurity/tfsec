@@ -634,15 +634,14 @@ func (attr *HCLAttribute) AllReferences() []*Reference {
 	if attr == nil {
 		return nil
 	}
-	refs := attr.referencesInTemplate()
-	if len(refs) > 0 {
-		return refs
-	}
+	var refs []*Reference
+	refs = append(refs, attr.referencesInTemplate()...)
+	refs = append(refs, attr.referencesInConditional()...)
 	ref, err := attr.Reference()
-	if err != nil {
-		return nil
+	if err == nil {
+		refs = append(refs, ref)
 	}
-	return append(refs, ref)
+	return refs
 }
 
 func (attr *HCLAttribute) referencesInTemplate() []*Reference {
@@ -657,6 +656,26 @@ func (attr *HCLAttribute) referencesInTemplate() []*Reference {
 			if err != nil {
 				continue
 			}
+			refs = append(refs, ref)
+		}
+	}
+	return refs
+}
+
+func (attr *HCLAttribute) referencesInConditional() []*Reference {
+	if attr == nil {
+		return nil
+	}
+	var refs []*Reference
+	switch t := attr.hclAttribute.Expr.(type) {
+	case *hclsyntax.ConditionalExpr:
+		if ref, err := createDotReferenceFromTraversal(t.TrueResult.Variables()...); err == nil {
+			refs = append(refs, ref)
+		}
+		if ref, err := createDotReferenceFromTraversal(t.FalseResult.Variables()...); err == nil {
+			refs = append(refs, ref)
+		}
+		if ref, err := createDotReferenceFromTraversal(t.Condition.Variables()...); err == nil {
 			refs = append(refs, ref)
 		}
 	}

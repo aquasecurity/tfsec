@@ -39,7 +39,7 @@ func New(initialPath string, options ...Option) *Parser {
 }
 
 // ParseDirectory parses all terraform files within a given directory
-func (parser *Parser) ParseDirectory() (block.Blocks, error) {
+func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 
 	debug.Log("Finding Terraform subdirectories...")
 	t := metrics.Start(metrics.DiskIO)
@@ -101,14 +101,13 @@ func (parser *Parser) ParseDirectory() (block.Blocks, error) {
 	t.Stop()
 
 	debug.Log("Evaluating expressions...")
-	evaluator := NewEvaluator(tfPath, tfPath, blocks, inputVars, modulesMetadata, nil, parser.stopOnHCLError)
-	evaluator.SetWorkspace(parser.workspaceName)
-	evaluatedBlocks, err := evaluator.EvaluateAll()
+	workingDir, _ := os.Getwd()
+	evaluator := NewEvaluator(tfPath, tfPath, workingDir, blocks, inputVars, modulesMetadata, nil, parser.stopOnHCLError, parser.workspaceName)
+	modules, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err
 	}
-	metrics.Add(metrics.BlocksEvaluated, len(evaluatedBlocks))
-	return evaluatedBlocks, nil
+	return modules, nil
 
 }
 

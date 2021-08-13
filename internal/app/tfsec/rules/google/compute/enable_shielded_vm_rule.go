@@ -6,7 +6,6 @@ package compute
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -135,7 +134,7 @@ resource "google_compute_instance" "bad_example" {
 			"google_compute_instance",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if enableVtpmAttr := resourceBlock.GetBlock("shielded_instance_config").GetAttribute("enable_vtpm"); enableVtpmAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' has shielded_instance_config.enable_vtpm set to false", resourceBlock.FullName()).

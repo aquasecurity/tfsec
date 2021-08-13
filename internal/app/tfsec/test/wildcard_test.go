@@ -9,8 +9,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -66,7 +64,7 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 			RequiredTypes:   []string{"resource"},
 			RequiredLabels:  []string{test.pattern},
 			DefaultSeverity: severity.High,
-			CheckFunc: func(set result.Set, rootBlock block.Block, ctx *hclcontext.Context) {
+			CheckFunc: func(set result.Set, rootBlock block.Block, module block.Module) {
 				set.AddResult().
 					WithDescription("Custom check failed for resource %s.", rootBlock.FullName())
 			},

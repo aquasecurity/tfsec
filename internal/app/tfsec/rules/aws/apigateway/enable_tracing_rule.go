@@ -7,7 +7,6 @@ package apigateway
 // generator-locked
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -52,7 +51,7 @@ resource "aws_api_gateway_stage" "good_example" {
 			"aws_api_gateway_stage",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if xrayTracingEnabledAttr := resourceBlock.GetAttribute("xray_tracing_enabled"); xrayTracingEnabledAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for xray_tracing_enabled", resourceBlock.FullName())

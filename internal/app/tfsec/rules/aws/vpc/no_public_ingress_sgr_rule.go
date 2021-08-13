@@ -8,7 +8,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -50,7 +49,7 @@ resource "aws_security_group_rule" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_security_group_rule"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			typeAttr := resourceBlock.GetAttribute("type")
 			if typeAttr.IsNil() || !typeAttr.IsString() || typeAttr.NotEqual("ingress") {

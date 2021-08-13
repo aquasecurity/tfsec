@@ -7,8 +7,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -49,7 +47,7 @@ resource "aws_sns_topic" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_sns_topic"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr.IsNil() {
@@ -65,7 +63,7 @@ resource "aws_sns_topic" "good_example" {
 
 			if kmsKeyIDAttr.IsDataBlockReference() {
 
-				kmsData, err := ctx.GetReferencedBlock(kmsKeyIDAttr)
+				kmsData, err := module.GetReferencedBlock(kmsKeyIDAttr)
 				if err != nil {
 					return
 				}

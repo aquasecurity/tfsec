@@ -7,7 +7,6 @@ package documentdb
 // generator-locked
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -60,7 +59,7 @@ resource "aws_docdb_cluster" "good_example" {
 			"aws_docdb_cluster",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if enabledCloudwatchLogsExportsAttr := resourceBlock.GetAttribute("enabled_cloudwatch_logs_exports"); enabledCloudwatchLogsExportsAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for enabled_cloudwatch_logs_exports", resourceBlock.FullName())

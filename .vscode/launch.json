@@ -1,9 +1,6 @@
 {
   "version": "0.2.0",
   "configurations": [
-
-
-
     {
       "name": "Basic tfsec",
       "type": "go",
@@ -70,6 +67,14 @@
         "--workspace",
         "somethingelse"
       ]
-    }
+    },
+    {
+      "name": "tfsec s3 module",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/tfsec/main.go",
+      "args": ["${workspaceFolder}/example/1010"]
+    },
   ]
 }
