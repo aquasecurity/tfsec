@@ -7,8 +7,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -49,7 +47,7 @@ resource "aws_kms_key" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_kms_key"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			keyUsageAttr := resourceBlock.GetAttribute("key_usage")
 
 			if keyUsageAttr.IsNotNil() && keyUsageAttr.Equals("SIGN_VERIFY") {

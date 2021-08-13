@@ -7,8 +7,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -57,7 +55,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_elasticsearch_domain"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, context *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, context block.Module) {
 
 			endpointBlock := resourceBlock.GetBlock("domain_endpoint_options")
 			if endpointBlock.IsNil() {

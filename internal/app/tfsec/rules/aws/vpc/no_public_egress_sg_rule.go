@@ -8,7 +8,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -51,7 +50,7 @@ resource "aws_security_group" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_security_group"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			for _, directionBlock := range resourceBlock.GetBlocks("egress") {
 				if cidrBlocksAttr := directionBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr.IsNotNil() {

@@ -6,7 +6,6 @@ package neptune
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -16,7 +15,7 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Provider:       provider.AWSProvider,
+		Provider:  provider.AWSProvider,
 		Service:   "neptune",
 		ShortCode: "enable-storage-encryption",
 		Documentation: rule.RuleDocumentation{
@@ -24,7 +23,7 @@ func init() {
 			Explanation: `Encryption of Neptune storage ensures that if their is compromise of the disks, the data is still protected.`,
 			Impact:      "Unencrypted sensitive data is vulnerable to compromise.",
 			Resolution:  "Enable encryption of Neptune storage",
-			BadExample: []string{  `
+			BadExample: []string{`
 resource "aws_neptune_cluster" "bad_example" {
   cluster_identifier                  = "neptune-cluster-demo"
   engine                              = "neptune"
@@ -36,7 +35,7 @@ resource "aws_neptune_cluster" "bad_example" {
   storage_encrypted = false
 }
 `},
-			GoodExample: []string{ `
+			GoodExample: []string{`
 resource "aws_neptune_cluster" "good_example" {
   cluster_identifier                  = "neptune-cluster-demo"
   engine                              = "neptune"
@@ -52,14 +51,14 @@ resource "aws_neptune_cluster" "good_example" {
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/neptune_cluster#storage_encrypted",
 			},
 		},
-		RequiredTypes:  []string{ 
+		RequiredTypes: []string{
 			"resource",
 		},
-		RequiredLabels: []string{ 
+		RequiredLabels: []string{
 			"aws_neptune_cluster",
 		},
-		DefaultSeverity: severity.High, 
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context){
+		DefaultSeverity: severity.High,
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if storageEncryptedAttr := resourceBlock.GetAttribute("storage_encrypted"); storageEncryptedAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for storage_encrypted", resourceBlock.FullName())

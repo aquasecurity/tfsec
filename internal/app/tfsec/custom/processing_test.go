@@ -191,7 +191,7 @@ resource "aws_ami" "example" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			block := CreateBlocksFromSource(test.source)[0]
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
 			result := evalMatchSpec(block, &test.predicateMatchSpec, nil)
 			assert.Equal(t, result, test.expected, "`Or` match function evaluating incorrectly.")
 		})
@@ -238,8 +238,8 @@ resource "aws_ami" "example" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := CreateBlocksFromSource(test.source)[0]
-			result := evalMatchSpec(blocks, &test.predicateMatchSpec, nil)
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.predicateMatchSpec, nil)
 			assert.Equal(t, result, test.expected, "`And` match function evaluating incorrectly.")
 		})
 	}
@@ -288,8 +288,8 @@ resource "aws_ami" "example" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := CreateBlocksFromSource(test.source)[0]
-			result := evalMatchSpec(blocks, &test.predicateMatchSpec, nil)
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.predicateMatchSpec, nil)
 			assert.Equal(t, result, test.expected, "Nested match functions evaluating incorrectly.")
 		})
 	}
@@ -315,8 +315,8 @@ resource "aws_ami" "example" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := CreateBlocksFromSource(test.source)[0]
-			result := evalMatchSpec(blocks, &test.matchSpec, nil)
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.matchSpec, nil)
 			assert.Equal(t, result, test.expected, "Not match functions evaluating incorrectly.")
 		})
 	}
@@ -365,8 +365,8 @@ resource "aws_ami" "testing" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			blocks := CreateBlocksFromSource(test.source)[0]
-			result := evalMatchSpec(blocks, &test.matchSpec, nil)
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.matchSpec, nil)
 			assert.Equal(t, result, test.expected, "precondition functions evaluating incorrectly.")
 		})
 	}
@@ -396,13 +396,13 @@ func scanTerraform(t *testing.T, mainTf string) []result.Result {
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.
 // TODO: Extract into a testing utility package once the amount of duplication justifies introducing an extra package.
-func CreateBlocksFromSource(source string) []block.Block {
+func ParseFromSource(source string) []block.Module {
 	path := createTestFile("test.tf", source)
-	blocks, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
+	modules, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {
 		panic(err)
 	}
-	return blocks
+	return modules
 }
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.

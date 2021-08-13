@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
@@ -41,7 +40,7 @@ resource "problem" "x" {
 	RequiredTypes:   []string{"resource"},
 	RequiredLabels:  []string{"problem"},
 	DefaultSeverity: severity.High,
-	CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+	CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 		if resourceBlock.GetAttribute("bad").IsTrue() {
 			set.AddResult().
 				WithDescription("example problem")

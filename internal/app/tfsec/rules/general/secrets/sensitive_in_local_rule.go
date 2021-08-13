@@ -5,7 +5,6 @@ import (
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
 	"github.com/aquasecurity/tfsec/pkg/provider"
@@ -54,7 +53,7 @@ resource "evil_corp" "good_example" {
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"locals"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if security.IsSensitiveAttribute(attribute.Name()) {

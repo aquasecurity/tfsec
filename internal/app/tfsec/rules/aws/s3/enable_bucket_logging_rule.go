@@ -7,8 +7,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -49,7 +47,7 @@ resource "aws_s3_bucket" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_s3_bucket"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("logging") {
 				if resourceBlock.GetAttribute("acl").IsNotNil() && resourceBlock.GetAttribute("acl").Equals("log-delivery-write") {

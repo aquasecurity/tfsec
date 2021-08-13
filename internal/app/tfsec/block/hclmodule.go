@@ -1,24 +1,30 @@
-package hclcontext
+package block
 
 import (
 	"fmt"
 	"strings"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-type Context struct {
-	blocks block.Blocks
+type HCLModule struct {
+	blocks     Blocks
+	rootPath   string
+	modulePath string
 }
 
-func New(blocks block.Blocks) *Context {
-	return &Context{
-		blocks: blocks,
+func NewHCLModule(rootPath string, modulePath string, blocks Blocks) Module {
+	return &HCLModule{
+		blocks:     blocks,
+		rootPath:   rootPath,
+		modulePath: modulePath,
 	}
 }
 
-func (c *Context) getBlocksByType(blockType string, label string) block.Blocks {
-	var results block.Blocks
+func (c *HCLModule) GetBlocks() Blocks {
+	return c.blocks
+}
+
+func (c *HCLModule) getBlocksByType(blockType string, label string) Blocks {
+	var results Blocks
 	for _, block := range c.blocks {
 		if block.Type() == blockType && len(block.Labels()) > 0 && block.TypeLabel() == label {
 			results = append(results, block)
@@ -27,16 +33,16 @@ func (c *Context) getBlocksByType(blockType string, label string) block.Blocks {
 	return results
 }
 
-func (c *Context) GetResourcesByType(label string) block.Blocks {
+func (c *HCLModule) GetResourcesByType(label string) Blocks {
 	return c.getBlocksByType("resource", label)
 }
 
-func (c *Context) GetDatasByType(label string) block.Blocks {
+func (c *HCLModule) GetDatasByType(label string) Blocks {
 	return c.getBlocksByType("data", label)
 }
 
-func (c *Context) GetProviderBlocksByProvider(providerName string, alias string) block.Blocks {
-	var results block.Blocks
+func (c *HCLModule) GetProviderBlocksByProvider(providerName string, alias string) Blocks {
+	var results Blocks
 	for _, block := range c.blocks {
 		if block.Type() == "provider" && len(block.Labels()) > 0 && block.TypeLabel() == providerName {
 			if alias != "" {
@@ -52,7 +58,7 @@ func (c *Context) GetProviderBlocksByProvider(providerName string, alias string)
 	return results
 }
 
-func (c *Context) GetReferencedBlock(referringAttr block.Attribute) (block.Block, error) {
+func (c *HCLModule) GetReferencedBlock(referringAttr Attribute) (Block, error) {
 	for _, ref := range referringAttr.AllReferences() {
 		for _, block := range c.blocks {
 			if ref.RefersTo(block) {
@@ -63,13 +69,13 @@ func (c *Context) GetReferencedBlock(referringAttr block.Attribute) (block.Block
 	return nil, fmt.Errorf("no referenced block found in '%s'", referringAttr.Name())
 }
 
-func (c *Context) GetReferencingResources(originalBlock block.Block, referencingLabel string, referencingAttributeName string) (block.Blocks, error) {
+func (c *HCLModule) GetReferencingResources(originalBlock Block, referencingLabel string, referencingAttributeName string) (Blocks, error) {
 	return c.getReferencingBlocks(originalBlock, "resource", referencingLabel, referencingAttributeName)
 }
 
-func (c *Context) getReferencingBlocks(originalBlock block.Block, referencingType string, referencingLabel string, referencingAttributeName string) (block.Blocks, error) {
+func (c *HCLModule) getReferencingBlocks(originalBlock Block, referencingType string, referencingLabel string, referencingAttributeName string) (Blocks, error) {
 	blocks := c.getBlocksByType(referencingType, referencingLabel)
-	var results block.Blocks
+	var results Blocks
 	for _, block := range blocks {
 		attr := block.GetAttribute(referencingAttributeName)
 		if attr == nil {

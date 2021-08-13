@@ -12,13 +12,12 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/result"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
 // CheckRule the provided HCL block against the rule
-func CheckRule(r *Rule, resourceBlock block.Block, ctx *hclcontext.Context, ignoreErrors bool) result.Set {
+func CheckRule(r *Rule, resourceBlock block.Block, module block.Module, ignoreErrors bool) result.Set {
 	if ignoreErrors {
 		defer func() {
 			if err := recover(); err != nil {
@@ -45,7 +44,7 @@ func CheckRule(r *Rule, resourceBlock block.Block, ctx *hclcontext.Context, igno
 		WithRuleProvider(r.Provider).
 		WithLinks(links)
 
-	r.CheckFunc(resultSet, resourceBlock, ctx)
+	r.CheckFunc(resultSet, resourceBlock, module)
 	return resultSet
 }
 

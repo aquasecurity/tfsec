@@ -3,7 +3,6 @@ package secrets
 // generator-locked
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
 	"github.com/aquasecurity/tfsec/pkg/provider"
@@ -57,7 +56,7 @@ EOF
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"resource", "provider", "module", "locals", "variable"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			attributes := resourceBlock.GetAttributes()
 

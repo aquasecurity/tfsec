@@ -135,9 +135,7 @@ func printStatistics() {
 	for _, name := range []metrics.Count{
 		metrics.FilesLoaded,
 		metrics.BlocksLoaded,
-		metrics.BlocksEvaluated,
 		metrics.ModuleLoadCount,
-		metrics.ModuleBlocksLoaded,
 	} {
 		_ = tml.Printf("  <blue>%-20s</blue> %d\n", name, counts[name])
 	}

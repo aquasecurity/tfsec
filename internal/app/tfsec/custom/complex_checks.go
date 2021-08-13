@@ -4,10 +4,9 @@ import (
 	"fmt"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 )
 
-func checkTags(block block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
+func checkTags(block block.Block, spec *MatchSpec, module block.Module) bool {
 	expectedTag := fmt.Sprintf("%v", spec.MatchValue)
 
 	if block.HasChild("tags") {
@@ -25,7 +24,7 @@ func checkTags(block block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool
 		}
 	}
 
-	awsProviders := ctx.GetProviderBlocksByProvider("aws", alias)
+	awsProviders := module.GetProviderBlocksByProvider("aws", alias)
 	for _, providerBlock := range awsProviders {
 		if providerBlock.HasChild("default_tags") {
 			defaultTags := providerBlock.GetBlock("default_tags")

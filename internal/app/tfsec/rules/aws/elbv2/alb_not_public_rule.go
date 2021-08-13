@@ -7,8 +7,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -48,7 +46,7 @@ resource "aws_alb" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_alb", "aws_elb", "aws_lb"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if resourceBlock.HasChild("load_balancer_type") && resourceBlock.GetAttribute("load_balancer_type").Equals("gateway") {
 				return
 			}

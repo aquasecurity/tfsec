@@ -38,12 +38,10 @@ func (t *Timer) Stop() {
 type Count string
 
 const (
-	ModuleLoadCount    Count = "modules"
-	BlocksLoaded       Count = "blocks"
-	ModuleBlocksLoaded Count = "module blocks"
-	BlocksEvaluated    Count = "evaluated blocks"
-	FilesLoaded        Count = "files loaded"
-	IgnoredChecks      Count = "ignored checks"
+	ModuleLoadCount Count = "modules"
+	BlocksLoaded    Count = "blocks"
+	FilesLoaded     Count = "files loaded"
+	IgnoredChecks   Count = "ignored checks"
 )
 
 var counts = map[Count]int{}

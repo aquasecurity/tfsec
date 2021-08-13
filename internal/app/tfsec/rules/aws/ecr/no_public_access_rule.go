@@ -10,7 +10,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/iam"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
@@ -116,7 +115,7 @@ EOF
 			"aws_ecr_repository_policy",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			policyAttr := resourceBlock.GetAttribute("policy")
 			if policyAttr.IsNil() || !policyAttr.IsString() {

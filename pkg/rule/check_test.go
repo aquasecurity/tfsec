@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/stretchr/testify/assert"
@@ -33,7 +32,7 @@ func TestRequiredSourcesMatch(t *testing.T) {
 			rule: Rule{
 				RequiredTypes:  []string{"data"},
 				RequiredLabels: []string{"custom_module"},
-				CheckFunc:      func(result.Set, block.Block, *hclcontext.Context) {},
+				CheckFunc:      func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "module",
 			source: `
@@ -48,7 +47,7 @@ module "custom_module" {
 			rule: Rule{
 				RequiredTypes:  []string{"module"},
 				RequiredLabels: []string{"dont_match"},
-				CheckFunc:      func(result.Set, block.Block, *hclcontext.Context) {},
+				CheckFunc:      func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "module",
 			source: `
@@ -63,7 +62,7 @@ module "custom_module" {
 			rule: Rule{
 				RequiredTypes:  []string{"module"},
 				RequiredLabels: []string{"*"},
-				CheckFunc:      func(result.Set, block.Block, *hclcontext.Context) {},
+				CheckFunc:      func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "module",
 			source: `
@@ -79,7 +78,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"path_doesnt_match"},
-				CheckFunc:       func(result.Set, block.Block, *hclcontext.Context) {},
+				CheckFunc:       func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "module",
 			source: `
@@ -95,7 +94,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"github.com/hashicorp/example"},
-				CheckFunc:       func(result.Set, block.Block, *hclcontext.Context) {},
+				CheckFunc:       func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "module",
 			source: `
@@ -111,7 +110,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"*two/three"},
-				CheckFunc:       func(result.Set, block.Block, *hclcontext.Context) {},
+				CheckFunc:       func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "one/two/three",
 			source: `
@@ -127,7 +126,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"one/two/three"},
-				CheckFunc:       func(result.Set, block.Block, *hclcontext.Context) {},
+				CheckFunc:       func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "one/two/three",
 			source: `
@@ -140,21 +139,21 @@ module "custom_module" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			block, testDir := createBlocksFromSourceWithModule(test.source, test.modulePath, moduleSource)
+			modules, testDir := parseSourceWithModule(test.source, test.modulePath, moduleSource)
 			os.Chdir(testDir) // change directory for relative path tests to work
-			result := IsRuleRequiredForBlock(&test.rule, block[0])
+			result := IsRuleRequiredForBlock(&test.rule, modules[0].GetBlocks()[0])
 			assert.Equal(t, test.expected, result, "`IsRuleRequiredForBlock` match function evaluating incorrectly for requiredSources test.")
 		})
 	}
 }
 
-func createBlocksFromSourceWithModule(contents string, moduleSubDir string, moduleContents string) ([]block.Block, string) {
+func parseSourceWithModule(contents string, moduleSubDir string, moduleContents string) ([]block.Module, string) {
 	dir := createTestFileWithModuleSubDir(contents, moduleSubDir, moduleContents)
-	blocks, err := parser.New(dir, parser.OptionStopOnHCLError()).ParseDirectory()
+	modules, err := parser.New(dir, parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {
 		panic(err)
 	}
-	return blocks, dir
+	return modules, dir
 }
 
 func createTestFileWithModuleSubDir(contents string, moduleSubDir string, moduleContents string) string {

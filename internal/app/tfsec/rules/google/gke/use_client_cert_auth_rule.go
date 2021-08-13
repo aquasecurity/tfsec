@@ -6,7 +6,6 @@ package gke
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -16,7 +15,7 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Provider:       provider.GoogleProvider,
+		Provider:  provider.GoogleProvider,
 		Service:   "gke",
 		ShortCode: "use-client-cert-auth",
 		Documentation: rule.RuleDocumentation{
@@ -24,7 +23,7 @@ func init() {
 			Explanation: `Client certificates are the most secure and recommended method of authentication.`,
 			Impact:      "Less secure authentication method in use",
 			Resolution:  "Use client certificates for authentication",
-			BadExample: []string{  `
+			BadExample: []string{`
 resource "google_service_account" "default" {
   account_id   = "service-account-id"
   display_name = "Service Account"
@@ -64,7 +63,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   }
 }
 `},
-			GoodExample: []string{ `
+			GoodExample: []string{`
 resource "google_service_account" "default" {
   account_id   = "service-account-id"
   display_name = "Service Account"
@@ -108,14 +107,14 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#issue_client_certificate",
 			},
 		},
-		RequiredTypes:  []string{ 
+		RequiredTypes: []string{
 			"resource",
 		},
-		RequiredLabels: []string{ 
+		RequiredLabels: []string{
 			"google_container_cluster",
 		},
-		DefaultSeverity: severity.High, 
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context){
+		DefaultSeverity: severity.High,
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if issueClientCertificateAttr := resourceBlock.GetBlock("master_auth").GetBlock("client_certificate_config").GetAttribute("issue_client_certificate"); issueClientCertificateAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for master_auth.client_certificate_config.issue_client_certificate", resourceBlock.FullName())

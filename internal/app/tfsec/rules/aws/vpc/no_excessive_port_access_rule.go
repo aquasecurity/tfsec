@@ -7,8 +7,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -55,7 +53,7 @@ resource "aws_network_acl_rule" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_network_acl_rule"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			egressAttr := resourceBlock.GetAttribute("egress")
 			actionAttr := resourceBlock.GetAttribute("rule_action")

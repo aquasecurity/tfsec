@@ -7,8 +7,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -47,7 +45,7 @@ resource "aws_api_gateway_domain_name" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_api_gateway_domain_name"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			securityPolicyAttr := resourceBlock.GetAttribute("security_policy")
 			if securityPolicyAttr.IsNil() {

@@ -6,7 +6,6 @@ package dns
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -81,7 +80,7 @@ output "foo_dns_ds_record" {
 			"google_dns_keys",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if algorithmAttr := resourceBlock.GetBlock("zone_signing_keys").GetAttribute("algorithm"); algorithmAttr.Equals("rsasha1") {
 				set.AddResult().
 					WithDescription("Data '%s' has zone_signing_keys.algorithm set to rsasha1", resourceBlock.FullName()).

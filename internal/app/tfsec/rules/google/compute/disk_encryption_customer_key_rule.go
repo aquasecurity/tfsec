@@ -6,7 +6,6 @@ package compute
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -16,7 +15,7 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Provider:       provider.GoogleProvider,
+		Provider:  provider.GoogleProvider,
 		Service:   "compute",
 		ShortCode: "disk-encryption-customer-key",
 		Documentation: rule.RuleDocumentation{
@@ -24,7 +23,7 @@ func init() {
 			Explanation: `Using unmanaged keys makes rotation and general management difficult.`,
 			Impact:      "Using unmanaged keys does not allow for proper management",
 			Resolution:  "Use managed keys ",
-			BadExample: []string{  `
+			BadExample: []string{`
 resource "google_compute_disk" "bad_example" {
   name  = "test-disk"
   type  = "pd-ssd"
@@ -36,7 +35,7 @@ resource "google_compute_disk" "bad_example" {
   physical_block_size_bytes = 4096
 }
 `},
-			GoodExample: []string{ `
+			GoodExample: []string{`
 resource "google_compute_disk" "good_example" {
   name  = "test-disk"
   type  = "pd-ssd"
@@ -55,14 +54,14 @@ resource "google_compute_disk" "good_example" {
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk#kms_key_self_link",
 			},
 		},
-		RequiredTypes:  []string{ 
+		RequiredTypes: []string{
 			"resource",
 		},
-		RequiredLabels: []string{ 
+		RequiredLabels: []string{
 			"google_compute_disk",
 		},
-		DefaultSeverity: severity.Low, 
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context){
+		DefaultSeverity: severity.Low,
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if kmsKeySelfLinkAttr := resourceBlock.GetBlock("disk_encryption_key").GetAttribute("kms_key_self_link"); kmsKeySelfLinkAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for disk_encryption_key.kms_key_self_link", resourceBlock.FullName())
