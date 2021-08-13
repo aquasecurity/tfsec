@@ -125,7 +125,7 @@ func (e *Evaluator) evaluateModules() {
 	}
 }
 
-// export module outputs to a parent hclcontext
+// export module outputs to a parent
 func (e *Evaluator) ExportOutputs() cty.Value {
 	data := make(map[string]cty.Value)
 	for _, block := range e.blocks.OfType("output") {

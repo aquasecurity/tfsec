@@ -93,7 +93,7 @@ resource "aws_gibson" "my-gibson" {
         
         	// the actual logic for your check
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, block block.Block, module block.Module) {
 			// TODO: add check logic here
 		},
 	})
@@ -106,16 +106,12 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
 ...
 
         DefaultSeverity: severity.Warning,
-CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
-
-            if attr := block.GetAttribute("hackable"); attr != nil && attr.Value().Type() == cty.Bool {
-                if attr.Value().True() {
-                    set.Add().
-                        						WithDescription("The Gibson '%s' is configured to be hackable.", block.Name()).
-						WithAttribute(attr).
-						,
-					)
-                }
+		CheckFunc: func(set result.Set, block block.Block, module block.Module) {
+            if attr := block.GetAttribute("hackable"); attr.IsTrue() {
+				set.AddResult().
+					WithDescription("The Gibson '%s' is configured to be hackable.", block.Name()).
+					WithAttribute(attr),
+				)
             }
         },
 ...
