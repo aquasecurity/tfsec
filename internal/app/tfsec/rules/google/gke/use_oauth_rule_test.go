@@ -9,7 +9,7 @@ import (
 )
 
 func Test_GoogleUseClientCertAuth_FailureExamples(t *testing.T) {
-	expectedCode := "google-gke-use-client-cert-auth"
+	expectedCode := "google-gke-use-oauth"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_GoogleUseClientCertAuth_FailureExamples(t *testing.T) {
 }
 
 func Test_GoogleUseClientCertAuth_SuccessExamples(t *testing.T) {
-	expectedCode := "google-gke-use-client-cert-auth"
+	expectedCode := "google-gke-use-oauth"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

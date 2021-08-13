@@ -17,53 +17,13 @@ func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		Provider:  provider.GoogleProvider,
 		Service:   "gke",
-		ShortCode: "use-client-cert-auth",
+		ShortCode: "use-oauth",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "Clusters should use client certificates for authentication",
 			Explanation: `Client certificates are the most secure and recommended method of authentication.`,
 			Impact:      "Less secure authentication method in use",
 			Resolution:  "Use client certificates for authentication",
 			BadExample: []string{`
-resource "google_service_account" "default" {
-  account_id   = "service-account-id"
-  display_name = "Service Account"
-}
-
-resource "google_container_cluster" "bad_example" {
-  name     = "my-gke-cluster"
-  location = "us-central1"
-
-  # We can't create a cluster with no node pool defined, but we want to only use
-  # separately managed node pools. So we create the smallest possible default
-  # node pool and immediately delete it.
-  remove_default_node_pool = true
-  initial_node_count       = 1
-  master_auth {
-    client_certificate_config {
-      issue_client_certificate = false
-    }
-  }
-}
-
-resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name       = "my-node-pool"
-  location   = "us-central1"
-  cluster    = google_container_cluster.primary.name
-  node_count = 1
-
-  node_config {
-    preemptible  = true
-    machine_type = "e2-medium"
-
-    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = google_service_account.default.email
-    oauth_scopes    = [
-      "https://www.googleapis.com/auth/cloud-platform"
-    ]
-  }
-}
-`},
-			GoodExample: []string{`
 resource "google_service_account" "default" {
   account_id   = "service-account-id"
   display_name = "Service Account"
@@ -103,8 +63,44 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   }
 }
 `},
+			GoodExample: []string{`
+resource "google_service_account" "default" {
+  account_id   = "service-account-id"
+  display_name = "Service Account"
+}
+
+resource "google_container_cluster" "good_example" {
+  name     = "my-gke-cluster"
+  location = "us-central1"
+
+  # We can't create a cluster with no node pool defined, but we want to only use
+  # separately managed node pools. So we create the smallest possible default
+  # node pool and immediately delete it.
+  remove_default_node_pool = true
+  initial_node_count       = 1
+}
+
+resource "google_container_node_pool" "primary_preemptible_nodes" {
+  name       = "my-node-pool"
+  location   = "us-central1"
+  cluster    = google_container_cluster.primary.name
+  node_count = 1
+
+  node_config {
+    preemptible  = true
+    machine_type = "e2-medium"
+
+    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
+    service_account = google_service_account.default.email
+    oauth_scopes    = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+  }
+}
+`},
 			Links: []string{
-				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#issue_client_certificate",
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#master_auth",
+				"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#restrict_authn_methods",
 			},
 		},
 		RequiredTypes: []string{
@@ -115,13 +111,19 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 		},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
-			if issueClientCertificateAttr := resourceBlock.GetBlock("master_auth").GetBlock("client_certificate_config").GetAttribute("issue_client_certificate"); issueClientCertificateAttr.IsNil() { // alert on use of default value
+			masterAuthBlock := resourceBlock.GetBlock("master_auth")
+			if masterAuthBlock.IsNil() {
+				return
+			}
+			if issueClientCertificateAttr := masterAuthBlock.GetBlock("client_certificate_config").GetAttribute("issue_client_certificate"); issueClientCertificateAttr.IsTrue() {
 				set.AddResult().
-					WithDescription("Resource '%s' uses default value for master_auth.client_certificate_config.issue_client_certificate", resourceBlock.FullName())
-			} else if issueClientCertificateAttr.IsFalse() {
-				set.AddResult().
-					WithDescription("Resource '%s' does not have master_auth.client_certificate_config.issue_client_certificate set to true", resourceBlock.FullName()).
+					WithDescription("Resource '%s' uses client certificates which are no longer recommended", resourceBlock.FullName()).
 					WithAttribute(issueClientCertificateAttr)
+			}
+			if usernameAttr := masterAuthBlock.GetAttribute("username"); usernameAttr.IsString() {
+				set.AddResult().
+					WithDescription("Resource '%s' uses basic auth which is not recommended", resourceBlock.FullName()).
+					WithAttribute(usernameAttr)
 			}
 		},
 	})
