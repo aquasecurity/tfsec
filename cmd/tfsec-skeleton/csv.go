@@ -32,12 +32,12 @@ func generateFromCSV(path string) ([]*Input, error) {
 	for i, record := range rawCSVdata {
 
 		// not ready
-		if record[0] != "1" {
+		if record[0] != "1" && record[0] != "TRUE" {
 			continue
 		}
 
 		// already done
-		if record[1] == "1" {
+		if record[1] == "1" || record[1] == "TRUE" {
 			continue
 		}
 

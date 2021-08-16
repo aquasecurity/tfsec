@@ -24,6 +24,7 @@ type Attribute interface {
 	IsTrue() bool
 	IsFalse() bool
 	IsEmpty() bool
+	IsNotEmpty() bool
 	IsNil() bool
 	IsNotNil() bool
 	MapValue(mapKey string) cty.Value
