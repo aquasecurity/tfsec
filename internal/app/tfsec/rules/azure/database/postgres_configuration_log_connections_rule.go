@@ -18,7 +18,7 @@ func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		Provider:  provider.AzureProvider,
 		Service:   "database",
-		ShortCode: "postgres-configration-log-connections",
+		ShortCode: "postgres-configuration-log-connections",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "Ensure server parameter 'log_connections' is set to 'ON' for PostgreSQL Database Server",
 			Explanation: `Postgresql can generate logs for successful connections to improve visibility for audit and configuration issue resolution.`,

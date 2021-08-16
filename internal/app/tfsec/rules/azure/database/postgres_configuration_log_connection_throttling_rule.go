@@ -18,12 +18,12 @@ func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		Provider:  provider.AzureProvider,
 		Service:   "database",
-		ShortCode: "postgres-configration-log-checkpoints",
+		ShortCode: "postgres-configuration-log-connection-throttling",
 		Documentation: rule.RuleDocumentation{
-			Summary:     "Ensure server parameter 'log_checkpoints' is set to 'ON' for PostgreSQL Database Server",
-			Explanation: `Postgresql can generate logs for checkpoints to improve visibility for audit and configuration issue resolution.`,
-			Impact:      "No error and query logs generated on checkpoint",
-			Resolution:  "Enable checkpoint logging",
+			Summary:     "Ensure server parameter 'connection_throttling' is set to 'ON' for PostgreSQL Database Server",
+			Explanation: `Postgresql can generate logs for connection throttling to improve visibility for audit and configuration issue resolution.`,
+			Impact:      "No log information to help diagnosing connection contention issues",
+			Resolution:  "Enable connection throttling logging",
 			BadExample: []string{`
 resource "azurerm_resource_group" "example" {
   name     = "example-resources"
@@ -63,13 +63,13 @@ resource "azurerm_postgresql_server" "example" {
 }
 
 resource "azurerm_postgresql_configuration" "example" {
-  name                = "log_checkpoints"
-  resource_group_name = azurerm_resource_group.example.name
-  server_name         = azurerm_postgresql_server.example.name
-  value               = "on"
-}
-
-`},
+	name                = "connection_throttling"
+	resource_group_name = azurerm_resource_group.example.name
+	server_name         = azurerm_postgresql_server.example.name
+	value               = "on"
+  }
+  
+  `},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_configuration",
 				"https://docs.microsoft.com/en-us/azure/postgresql/concepts-server-logs#configure-logging",
@@ -88,14 +88,14 @@ resource "azurerm_postgresql_configuration" "example" {
 				debug.Log("error occurred trying to get the referencing block for %s", resourceBlock.FullName())
 			}
 			for _, refBlock := range referencingBlocks {
-				if nameAttr := refBlock.GetAttribute("name"); nameAttr.IsNotNil() && nameAttr.Equals("log_checkpoints") {
+				if nameAttr := refBlock.GetAttribute("name"); nameAttr.IsNotNil() && nameAttr.Equals("connection_throttling") {
 					if valAttr := refBlock.GetAttribute("value"); valAttr.IsNotNil() && valAttr.Equals("on", block.IgnoreCase) {
 						return
 					}
 				}
 			}
 			set.AddResult().
-				WithDescription("Resource '%s' does not have a corresponding log configuration enabling 'log_checkpoints'", resourceBlock.FullName())
+				WithDescription("Resource '%s' does not have a corresponding log configuration enabling 'connection_throttling'", resourceBlock.FullName())
 		},
 	})
 }
