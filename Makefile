@@ -47,7 +47,7 @@ tagger:
 .PHONY: cyclo
 cyclo:
 	which gocyclo || go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
-	gocyclo -over 15 -ignore 'vendor/|funcs/' .
+	gocyclo -over 15 -ignore 'vendor/|funcs|cmd/tfsec-skeleton' .
 
 .PHONY: vet
 vet:

@@ -450,6 +450,10 @@ func (attr *HCLAttribute) IsEmpty() bool {
 	return true
 }
 
+func (attr *HCLAttribute) IsNotEmpty() bool {
+	return !attr.IsEmpty()
+}
+
 func (attr *HCLAttribute) isNullAttributeEmpty() bool {
 	if attr == nil {
 		return false
