@@ -8,8 +8,8 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_AzurePostgresConfigrationLogCheckpoints_FailureExamples(t *testing.T) {
-	expectedCode := "azure-database-postgres-configration-log-checkpoints"
+func Test_AzurePostgresConfigurationLogCheckpoints_FailureExamples(t *testing.T) {
+	expectedCode := "azure-database-postgres-configuration-log-checkpoints"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -30,8 +30,8 @@ func Test_AzurePostgresConfigrationLogCheckpoints_FailureExamples(t *testing.T) 
 	}
 }
 
-func Test_AzurePostgresConfigrationLogCheckpoints_SuccessExamples(t *testing.T) {
-	expectedCode := "azure-database-postgres-configration-log-checkpoints"
+func Test_AzurePostgresConfigurationLogCheckpoints_SuccessExamples(t *testing.T) {
+	expectedCode := "azure-database-postgres-configuration-log-checkpoints"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
