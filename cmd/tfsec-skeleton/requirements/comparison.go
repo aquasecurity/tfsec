@@ -18,8 +18,8 @@ const (
 	ComparisonNotDefined         Comparison = "notdefined"
 	ComparisonIsEmpty            Comparison = "empty"
 	ComparisonNotEmpty           Comparison = "notempty"
-	ComparisonIsTrue             Comparison = "istrue"
-	ComparisonIsFalse            Comparison = "isfalse"
+	ComparisonIsTrue             Comparison = "true"
+	ComparisonIsFalse            Comparison = "false"
 )
 
 func (c Comparison) Reverse() Comparison {
