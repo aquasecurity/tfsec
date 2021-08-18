@@ -8,7 +8,7 @@ import (
 )
 
 func Test_AWSMissingDescriptionForSecurityGroup(t *testing.T) {
-	expectedCode := "aws-redshift-add-decription-to-security-group"
+	expectedCode := "aws-redshift-add-description-to-security-group"
 
 	var tests = []struct {
 		name                  string
