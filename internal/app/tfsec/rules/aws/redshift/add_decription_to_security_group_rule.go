@@ -17,7 +17,7 @@ import (
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		Service:   "redshift",
-		ShortCode: "add-decription-to-security-group",
+		ShortCode: "add-description-to-security-group",
 		Documentation: rule.RuleDocumentation{
 			Summary:    "Missing description for security group/security group rule.",
 			Impact:     "Descriptions provide context for the firewall rule reasons",
