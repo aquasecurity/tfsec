@@ -47,7 +47,7 @@ resource "aws_security_group" "good_example_sg" {
 }
 `},
 			Links: []string{
-				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group",
+				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group#resource-aws_security_group",
 				"https://github.com/hashicorp/terraform/issues/11011#issuecomment-283076580",
 			},
 		},
