@@ -3,6 +3,7 @@ package scanner
 import (
 	"sort"
 
+	"github.com/aquasecurity/tfsec/pkg/defsec/infra"
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
@@ -22,6 +23,7 @@ type Scanner struct {
 	excludedRuleIDs   []string
 	ignoreCheckErrors bool
 	workspaceName     string
+	infra             *infra.Context
 }
 
 // New creates a new Scanner
@@ -72,7 +74,7 @@ func (scanner *Scanner) scanModule(module block.Module, rules []rule.Rule) []res
 		for _, r := range rules {
 			if rule.IsRuleRequiredForBlock(&r, checkBlock) {
 				debug.Log("Running rule for %s on %s (%s)...", r.ID(), checkBlock.Reference(), checkBlock.Range().Filename)
-				ruleResults := rule.CheckRule(&r, checkBlock, module, scanner.ignoreCheckErrors)
+				ruleResults := rule.CheckRule(&r, scanner.infra, checkBlock, module, scanner.ignoreCheckErrors)
 				if scanner.includePassed && ruleResults.All() == nil {
 					res := result.New(checkBlock).
 						WithLegacyRuleID(r.LegacyID).

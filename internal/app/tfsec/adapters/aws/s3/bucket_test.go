@@ -17,12 +17,8 @@ resource "aws_s3_bucket" "bucket1" {
 `
 	modules := testutil.CreateModulesFromSource(source, ".tf", t)
 
-	adapter := Adapter{
-		modules: modules,
-	}
+	s3 := Adapt(modules)
 
-	buckets := adapter.GetBuckets()
-
-	assert.Equal(t, 1, len(buckets))
+	assert.Equal(t, 1, len(s3.Buckets))
 
 }

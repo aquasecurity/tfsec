@@ -7,8 +7,7 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-
+	infra "github.com/aquasecurity/tfsec/pkg/defsec/context"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -54,33 +53,10 @@ resource "aws_s3_bucket" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_s3_bucket"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, context block.Module) {
-
-			if resourceBlock.MissingChild("server_side_encryption_configuration") {
-				set.AddResult().
-					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing server_side_encryption_configuration block).", resourceBlock.FullName())
-				return
+		CheckInfrastructure: func(set result.Set, infra *infra.Context) {
+			for _, bucket := range infra.AWS.S3.Buckets {
+				bucket.CheckEncryptionIsEnabled(set)
 			}
-			encryptionBlock := resourceBlock.GetBlock("server_side_encryption_configuration")
-			if encryptionBlock.MissingChild("rule") {
-				set.AddResult().
-					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing rule block).", resourceBlock.FullName())
-				return
-			}
-
-			ruleBlock := encryptionBlock.GetBlock("rule")
-			if ruleBlock.MissingChild("apply_server_side_encryption_by_default") {
-				set.AddResult().
-					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing apply_server_side_encryption_by_default block).", resourceBlock.FullName()).WithBlock(ruleBlock)
-				return
-			}
-
-			applyBlock := ruleBlock.GetBlock("apply_server_side_encryption_by_default")
-			if sseAttr := applyBlock.GetAttribute("sse_algorithm"); sseAttr.IsNil() {
-				set.AddResult().
-					WithDescription("Resource '%s' defines an unencrypted S3 bucket (missing sse_algorithm attribute).", resourceBlock.FullName()).WithBlock(applyBlock)
-			}
-
 		},
 	})
 }

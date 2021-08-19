@@ -216,8 +216,11 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		infra := adapter.Adapt(modules)
+
 		debug.Log("Starting scanner...")
-		results := scanner.New(getScannerOptions()...).Scan(modules)
+		scannerOptions := append(getScannerOptions(), scanner.OptionWithInfrastructure(infra))
+		results := scanner.New(scannerOptions...).Scan(modules)
 		results = updateResultSeverity(results)
 		results = removeDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {

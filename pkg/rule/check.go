@@ -7,6 +7,7 @@ import (
 	runtimeDebug "runtime/debug"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/pkg/defsec/infra"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -17,7 +18,7 @@ import (
 )
 
 // CheckRule the provided HCL block against the rule
-func CheckRule(r *Rule, resourceBlock block.Block, module block.Module, ignoreErrors bool) result.Set {
+func CheckRule(r *Rule, context *infra.Context, resourceBlock block.Block, module block.Module, ignoreErrors bool) result.Set {
 	if ignoreErrors {
 		defer func() {
 			if err := recover(); err != nil {
@@ -44,7 +45,19 @@ func CheckRule(r *Rule, resourceBlock block.Block, module block.Module, ignoreEr
 		WithRuleProvider(r.Provider).
 		WithLinks(links)
 
-	r.CheckFunc(resultSet, resourceBlock, module)
+		// TODO: interfaces pls
+	if r.CheckTerraform == nil && r.CheckInfrastructure == nil {
+		debug.Log("Check %s implements no check functions - cannot run", r.ID())
+	}
+
+	if r.CheckTerraform != nil {
+		r.CheckTerraform(resultSet, resourceBlock, module)
+	}
+
+	if r.CheckInfrastructure != nil {
+		r.CheckInfrastructure(resultSet, context)
+	}
+
 	return resultSet
 }
 

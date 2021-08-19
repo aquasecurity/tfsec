@@ -140,9 +140,9 @@ func (b *HCLBlock) Labels() []string {
 	return b.hclBlock.Labels
 }
 
-func (b *HCLBlock) Range() Range {
+func (b *HCLBlock) Range() HCLRange {
 	if b == nil || b.hclBlock == nil {
-		return Range{}
+		return HCLRange{}
 	}
 	var r hcl.Range
 	switch body := b.hclBlock.Body.(type) {
@@ -152,7 +152,7 @@ func (b *HCLBlock) Range() Range {
 		r = b.hclBlock.DefRange
 		r.End = b.hclBlock.Body.MissingItemRange().End
 	}
-	return Range{
+	return HCLRange{
 		Filename:  r.Filename,
 		StartLine: r.Start.Line,
 		EndLine:   r.End.Line,

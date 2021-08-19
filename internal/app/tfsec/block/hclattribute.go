@@ -104,11 +104,11 @@ func (attr *HCLAttribute) Value() (ctyVal cty.Value) {
 	return ctyVal
 }
 
-func (attr *HCLAttribute) Range() Range {
+func (attr *HCLAttribute) Range() HCLRange {
 	if attr == nil {
-		return Range{}
+		return HCLRange{}
 	}
-	return Range{
+	return HCLRange{
 		Filename:  attr.hclAttribute.Range.Filename,
 		StartLine: attr.hclAttribute.Range.Start.Line,
 		EndLine:   attr.hclAttribute.Range.End.Line,

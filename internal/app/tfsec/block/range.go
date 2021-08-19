@@ -4,24 +4,41 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+
+	"github.com/aquasecurity/tfsec/pkg/defsec/definition"
 )
 
-// Range describes an area of code, including the filename it is present in and the lin numbers the code occupies
-type Range struct {
+// HCLRange describes an area of code, including the filename it is present in and the lin numbers the code occupies
+type HCLRange struct {
 	Filename  string `json:"filename"`
 	StartLine int    `json:"start_line"`
 	EndLine   int    `json:"end_line"`
 }
 
-// String creates a human-readable summary of the range
-func (r Range) String() string {
+func (h HCLRange) Overlaps(a definition.Range) bool {
+	panic("not implemented") // TODO: Implement
+}
+
+func (r HCLRange) GetFilename() string {
+	return r.Filename
+}
+
+func (r HCLRange) GetStartLine() int {
+	return r.StartLine
+}
+
+func (r HCLRange) GetEndLine() int {
+	return r.EndLine
+}
+
+func (r HCLRange) String() string {
 	if r.StartLine != r.EndLine {
 		return fmt.Sprintf("%s:%d-%d", r.Filename, r.StartLine, r.EndLine)
 	}
 	return fmt.Sprintf("%s:%d", r.Filename, r.StartLine)
 }
 
-func (r Range) ReadLines(includeCommentsAfterLines bool) (lines []string, comments []string, err error) {
+func (r HCLRange) ReadLines(includeCommentsAfterLines bool) (lines []string, comments []string, err error) {
 	data, err := ioutil.ReadFile(r.Filename)
 	if err != nil {
 		return nil, nil, err
@@ -66,7 +83,7 @@ func (r Range) ReadLines(includeCommentsAfterLines bool) (lines []string, commen
 	return lines, comments, nil
 }
 
-func (r Range) readInlineComments(allLines []string) []string {
+func (r HCLRange) readInlineComments(allLines []string) []string {
 	var comments []string
 	for commentStart := r.StartLine; commentStart <= r.EndLine; commentStart++ {
 		line := strings.TrimSpace(allLines[commentStart])

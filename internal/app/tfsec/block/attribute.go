@@ -8,7 +8,7 @@ type Attribute interface {
 	IsLiteral() bool
 	Type() cty.Type
 	Value() cty.Value
-	Range() Range
+	Range() HCLRange
 	Name() string
 	Contains(checkValue interface{}, equalityOptions ...EqualityOption) bool
 	NotContains(checkValue interface{}, equalityOptions ...EqualityOption) bool

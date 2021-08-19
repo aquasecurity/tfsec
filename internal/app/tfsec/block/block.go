@@ -11,7 +11,7 @@ type Block interface {
 	GetModuleBlock() (Block, error)
 	Type() string
 	Labels() []string
-	Range() Range
+	Range() HCLRange
 	GetFirstMatchingBlock(names ...string) Block
 	GetBlock(name string) Block
 	AllBlocks() Blocks

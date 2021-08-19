@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/pkg/defsec/infra"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
@@ -19,13 +20,14 @@ type Rule struct {
 	Service   string // EC2
 	ShortCode string // ebs-volume-encrypted
 
-	Documentation   RuleDocumentation
-	Provider        provider.Provider
-	RequiredTypes   []string
-	RequiredLabels  []string
-	RequiredSources []string
-	DefaultSeverity severity.Severity
-	CheckFunc       func(result.Set, block.Block, block.Module)
+	Documentation       RuleDocumentation
+	Provider            provider.Provider
+	RequiredTypes       []string
+	RequiredLabels      []string
+	RequiredSources     []string
+	DefaultSeverity     severity.Severity
+	CheckTerraform      func(result.Set, block.Block, block.Module)
+	CheckInfrastructure func(result.Set, *infra.Context)
 }
 
 func (r Rule) ID() string {

@@ -7,6 +7,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/pkg/defsec/definition"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 )
@@ -25,7 +26,7 @@ type Result struct {
 	RangeAnnotation string            `json:"-"`
 	Severity        severity.Severity `json:"severity"`
 	Status          Status            `json:"status"`
-	Location        block.Range       `json:"location"`
+	Location        definition.Range  `json:"location"`
 	blocks          block.Blocks
 	attribute       block.Attribute
 }
@@ -59,7 +60,7 @@ func (r *Result) IsOnAttribute() bool {
 	return r.attribute != nil
 }
 
-func (r *Result) Range() block.Range {
+func (r *Result) Range() definition.Range {
 	if r.attribute != nil {
 		return r.attribute.Range()
 	}
