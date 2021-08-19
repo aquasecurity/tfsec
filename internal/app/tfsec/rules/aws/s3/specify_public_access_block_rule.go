@@ -49,7 +49,7 @@ resource "aws_s3_bucket_public_access_block" "example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_s3_bucket"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			blocks, err := module.GetReferencingResources(resourceBlock, "aws_s3_bucket_public_access_block", "bucket")
 			if err != nil || len(blocks) == 0 {

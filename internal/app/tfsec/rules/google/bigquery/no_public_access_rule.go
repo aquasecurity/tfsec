@@ -85,7 +85,7 @@ resource "google_service_account" "bqowner" {
 			"google_bigquery_dataset",
 		},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if specialGroupAttr := resourceBlock.GetBlock("access").GetAttribute("special_group"); specialGroupAttr.Equals("allAuthenticatedUsers") {
 				set.AddResult().
 					WithDescription("Resource '%s' has access.special_group set to allAuthenticatedUsers", resourceBlock.FullName()).

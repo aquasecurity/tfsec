@@ -76,7 +76,7 @@ resource "aws_mq_broker" "good_example" {
 			"aws_mq_broker",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if publiclyAccessibleAttr := resourceBlock.GetAttribute("publicly_accessible"); publiclyAccessibleAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for publicly_accessible", resourceBlock.FullName())

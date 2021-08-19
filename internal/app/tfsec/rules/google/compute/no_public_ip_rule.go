@@ -86,7 +86,7 @@ resource "google_compute_instance" "good_example" {
 			"google_compute_instance",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if accessConfigBlock := resourceBlock.GetBlock("network_interface").GetBlock("access_config"); !accessConfigBlock.IsNil() {
 				set.AddResult().
 					WithDescription("Resource '%s' sets access_config", resourceBlock.FullName()).

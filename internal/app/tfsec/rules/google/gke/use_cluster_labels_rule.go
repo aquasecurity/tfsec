@@ -107,7 +107,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 			"google_container_cluster",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if resourceLabelsAttr := resourceBlock.GetAttribute("resource_labels"); resourceLabelsAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' does not use resource_labels", resourceBlock.FullName())

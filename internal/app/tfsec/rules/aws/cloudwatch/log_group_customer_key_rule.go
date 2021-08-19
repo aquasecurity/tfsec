@@ -48,7 +48,7 @@ resource "aws_cloudwatch_log_group" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_cloudwatch_log_group"},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.AddResult().

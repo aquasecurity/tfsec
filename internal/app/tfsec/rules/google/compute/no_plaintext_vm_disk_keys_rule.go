@@ -125,7 +125,7 @@ resource "google_compute_instance" "good_example" {
 			"google_compute_instance",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if diskEncryptionKeyRawAttr := resourceBlock.GetBlock("boot_disk").GetAttribute("disk_encryption_key_raw"); diskEncryptionKeyRawAttr.IsResolvable() {
 				set.AddResult().
 					WithDescription("Resource '%s' sets boot_disk.disk_encryption_key_raw", resourceBlock.FullName()).

@@ -54,7 +54,7 @@ resource "azurerm_app_service" "good_example" {
 			"azurerm_app_service",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			if resourceBlock.MissingChild("site_config") {
 				return
 			}

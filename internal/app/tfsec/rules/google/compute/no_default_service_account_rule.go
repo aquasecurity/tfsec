@@ -105,7 +105,7 @@ resource "google_compute_instance" "default" {
 			"google_compute_instance",
 		},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if emailAttr := resourceBlock.GetBlock("service_account").GetAttribute("email"); emailAttr.IsNil() || emailAttr.EndsWith("-compute@developer.gserviceaccount.com") {
 				set.AddResult().
 					WithDescription("Resource '%s' uses the default service account.", resourceBlock).

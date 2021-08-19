@@ -57,7 +57,7 @@ resource "aws_ecr_repository" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecr_repository"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			imageTagMutabilityAttr := resourceBlock.GetAttribute("image_tag_mutability")
 			if imageTagMutabilityAttr.IsNil() {

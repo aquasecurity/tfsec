@@ -46,7 +46,7 @@ resource "aws_security_group" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_db_security_group", "aws_redshift_security_group", "aws_elasticache_security_group"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			set.AddResult().
 				WithDescription("Resource '%s' uses EC2 Classic. Use a VPC instead.", resourceBlock.FullName())
 		},

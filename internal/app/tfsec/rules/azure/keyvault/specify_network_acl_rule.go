@@ -60,7 +60,7 @@ resource "azurerm_key_vault" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_key_vault"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			defaultActionAttr := resourceBlock.GetNestedAttribute("network_acls.default_action")
 			if defaultActionAttr.IsNil() {

@@ -49,7 +49,7 @@ resource "google_compute_project_metadata" "default" {
 			"google_compute_project_metadata",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			metadataAttr := resourceBlock.GetAttribute("metadata")
 			val := metadataAttr.MapValue("enable-oslogin")
 			if val.Type() == cty.NilType {

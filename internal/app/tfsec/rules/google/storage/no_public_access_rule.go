@@ -50,7 +50,7 @@ resource "google_storage_bucket_iam_binding" "binding" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_storage_bucket_iam_binding", "google_storage_bucket_iam_member"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr.IsString() {
 				if googleIAMMemberIsExternal(memberAttr.Value().AsString()) {

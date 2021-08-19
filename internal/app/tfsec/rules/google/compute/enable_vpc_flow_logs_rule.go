@@ -70,7 +70,7 @@ resource "google_compute_network" "custom-test" {
 			"google_compute_subnetwork",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if enableFlowLogsAttr := resourceBlock.GetAttribute("enable_flow_logs"); enableFlowLogsAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for enable_flow_logs", resourceBlock.FullName())

@@ -54,7 +54,7 @@ resource "aws_lambda_permission" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_lambda_permission"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.HasChild("principal") {
 				if resourceBlock.GetAttribute("principal").EndsWith("amazonaws.com") {

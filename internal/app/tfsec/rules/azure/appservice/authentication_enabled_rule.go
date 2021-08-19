@@ -54,7 +54,7 @@ resource "azurerm_app_service" "good_example" {
 			"azurerm_app_service",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			if enabledAttr := resourceBlock.GetBlock("auth_settings").GetAttribute("enabled"); enabledAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for auth_settings.enabled", resourceBlock.FullName())

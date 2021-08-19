@@ -59,7 +59,7 @@ resource "aws_docdb_cluster" "good_example" {
 			"aws_docdb_cluster",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if enabledCloudwatchLogsExportsAttr := resourceBlock.GetAttribute("enabled_cloudwatch_logs_exports"); enabledCloudwatchLogsExportsAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for enabled_cloudwatch_logs_exports", resourceBlock.FullName())

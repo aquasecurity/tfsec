@@ -159,7 +159,7 @@ resource "kubernetes_network_policy" "good_example" {
 			"kubernetes_network_policy",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			ingressBlock := resourceBlock.GetBlock("spec").GetBlock("ingress")
 			if ingressBlock.IsNil() || len(ingressBlock.GetBlocks("from")) == 0 {
 				set.AddResult().

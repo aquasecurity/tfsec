@@ -10,6 +10,7 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/stretchr/testify/assert"
@@ -20,7 +21,10 @@ import (
 
 func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) []result.Result {
 	modules := CreateModulesFromSource(source, ".tf", t)
-	scanner := scanner.New(scanner.OptionIgnoreCheckErrors(false))
+
+	context := adapter.Adapt(modules)
+
+	scanner := scanner.New(scanner.OptionIgnoreCheckErrors(false), scanner.OptionWithInfrastructure(context))
 	for _, opt := range additionalOptions {
 		opt(scanner)
 	}
@@ -126,4 +130,3 @@ func validateCodes(includeCode, excludeCode string) bool {
 	}
 	return true
 }
-

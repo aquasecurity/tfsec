@@ -79,7 +79,7 @@ resource "evil_corp" "good_example" {
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"resource", "provider", "module"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			attributes := resourceBlock.GetAttributes()
 

@@ -60,7 +60,7 @@ resource "evil_corp" "virtual_machine" {
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"variable"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if len(resourceBlock.Labels()) == 0 || !security.IsSensitiveAttribute(resourceBlock.TypeLabel()) {
 				return

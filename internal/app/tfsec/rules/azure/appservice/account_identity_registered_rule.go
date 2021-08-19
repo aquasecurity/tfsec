@@ -55,7 +55,7 @@ resource "azurerm_app_service" "good_example" {
 			"azurerm_app_service",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			if identityAttr := resourceBlock.GetBlock("identity"); identityAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' does not set identity", resourceBlock.FullName())

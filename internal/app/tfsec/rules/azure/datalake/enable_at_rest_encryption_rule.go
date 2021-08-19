@@ -43,7 +43,7 @@ resource "azurerm_data_lake_store" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_data_lake_store"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("encryption_state") {
 				return

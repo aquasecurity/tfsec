@@ -55,7 +55,7 @@ resource "azurerm_storage_account_network_rules" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_storage_account", "azurerm_storage_account_network_rules"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			blockName := resourceBlock.FullName()
 

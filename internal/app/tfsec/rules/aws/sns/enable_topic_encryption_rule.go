@@ -47,7 +47,7 @@ resource "aws_sns_topic" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_sns_topic"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr.IsNil() {

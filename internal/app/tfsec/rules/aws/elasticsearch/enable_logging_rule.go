@@ -56,7 +56,7 @@ resource "aws_elasticsearch_domain" "example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_elasticsearch_domain"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			logPublishingOptions := resourceBlock.GetBlocks("log_publishing_options")
 

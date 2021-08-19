@@ -68,7 +68,7 @@ resource "google_kms_crypto_key" "example-key" {
 			"google_kms_crypto_key",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			rotationAttr := resourceBlock.GetAttribute("rotation_period")
 			if rotationAttr.IsNil() || (rotationAttr.IsResolvable() && rotationAttr.IsEmpty()) {
 				set.AddResult().

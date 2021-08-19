@@ -55,7 +55,7 @@ resource "azurerm_network_security_rule" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_network_security_rule"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			directionAttr := resourceBlock.GetAttribute("direction")
 			if directionAttr.IsNil() || directionAttr.Type() != cty.String || strings.ToUpper(directionAttr.Value().AsString()) != "OUTBOUND" {

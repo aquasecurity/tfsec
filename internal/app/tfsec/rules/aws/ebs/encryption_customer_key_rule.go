@@ -62,7 +62,7 @@ resource "aws_ebs_volume" "example" {
 			"aws_ebs_volume",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.AddResult().

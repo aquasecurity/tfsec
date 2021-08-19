@@ -58,7 +58,7 @@ resource "aws_network_acl_rule" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_network_acl_rule"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			egressAttr := resourceBlock.GetAttribute("egress")
 			actionAttr := resourceBlock.GetAttribute("rule_action")

@@ -49,7 +49,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_kubernetes_cluster", "role_based_access_control"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("role_based_access_control") {
 				set.AddResult().

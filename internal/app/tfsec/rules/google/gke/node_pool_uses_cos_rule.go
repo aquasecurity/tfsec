@@ -104,7 +104,7 @@ resource "google_container_node_pool" "good_example" {
 			"google_container_node_pool",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if imageTypeAttr := resourceBlock.GetBlock("node_config").GetAttribute("image_type"); imageTypeAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for node_config.image_type", resourceBlock.FullName())

@@ -45,7 +45,7 @@ resource "google_compute_disk" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_compute_disk"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("disk_encryption_key") {
 				return

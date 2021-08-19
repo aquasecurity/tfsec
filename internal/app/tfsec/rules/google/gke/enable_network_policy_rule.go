@@ -110,7 +110,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 			"google_container_cluster",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if enabledAttr := resourceBlock.GetBlock("network_policy").GetAttribute("enabled"); enabledAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for network_policy.enabled", resourceBlock.FullName())

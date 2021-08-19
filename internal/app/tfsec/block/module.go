@@ -9,3 +9,14 @@ type Module interface {
 	GetReferencedBlock(referringAttr Attribute) (Block, error)
 	GetReferencingResources(originalBlock Block, referencingLabel string, referencingAttributeName string) (Blocks, error)
 }
+
+type Modules []Module
+
+func (m Modules) GetBlocksByTypeLabel(typeLabel string) Blocks {
+	var blocks Blocks
+	for _, module := range m {
+		blocks = append(blocks, module.GetBlockByTypeLabel(typeLabel)...)
+	}
+
+	return blocks
+}

@@ -61,7 +61,7 @@ resource "google_compute_disk" "good_example" {
 			"google_compute_disk",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if rawKeyAttr := resourceBlock.GetBlock("disk_encryption_key").GetAttribute("raw_key"); rawKeyAttr.IsResolvable() {
 				set.AddResult().
 					WithDescription("Resource '%s' sets disk_encryption_key.raw_key", resourceBlock.FullName()).

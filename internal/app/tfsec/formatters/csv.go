@@ -21,9 +21,9 @@ func FormatCSV(w io.Writer, results []result.Result, _ string, _ ...FormatterOpt
 			link = res.Links[0]
 		}
 		records = append(records, []string{
-			res.Range().Filename,
-			strconv.Itoa(res.Range().StartLine),
-			strconv.Itoa(res.Range().EndLine),
+			res.Range().GetFilename(),
+			strconv.Itoa(res.Range().GetStartLine()),
+			strconv.Itoa(res.Range().GetEndLine()),
 			res.RuleID,
 			string(res.Severity),
 			res.Description,

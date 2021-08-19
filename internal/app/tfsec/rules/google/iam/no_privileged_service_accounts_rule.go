@@ -58,7 +58,7 @@ resource "google_project_iam_member" "project" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_project_iam_member"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			// is this a sensitive role?
 			roleAttr := resourceBlock.GetAttribute("role")

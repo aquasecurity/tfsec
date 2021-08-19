@@ -49,7 +49,7 @@ resource "aws_alb_listener" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_lb_listener", "aws_alb_listener"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			// didn't find the referenced block, log and move on
 			if checkIfExempt(resourceBlock, module) {
 				return

@@ -49,7 +49,7 @@ resource "google_compute_ssl_policy" "good_example" {
 			"google_compute_ssl_policy",
 		},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if minTlsVersionAttr := resourceBlock.GetAttribute("min_tls_version"); minTlsVersionAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for min_tls_version", resourceBlock.FullName())

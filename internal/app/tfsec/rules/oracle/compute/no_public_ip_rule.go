@@ -49,7 +49,7 @@ resource "opc_compute_ip_address_reservation" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"opc_compute_ip_address_reservation"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if attr := resourceBlock.GetAttribute("ip_address_pool"); attr.Equals("public-ippool") {
 				set.AddResult().
 					WithDescription("Resource '%s' is using an IP from a public IP pool", resourceBlock.FullName()).

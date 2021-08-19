@@ -65,7 +65,7 @@ resource "azurerm_app_service" "good_example" {
 			"azurerm_app_service",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			if http2EnabledAttr := resourceBlock.GetBlock("site_config").GetAttribute("http2_enabled"); http2EnabledAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for site_config.http2_enabled", resourceBlock.FullName())

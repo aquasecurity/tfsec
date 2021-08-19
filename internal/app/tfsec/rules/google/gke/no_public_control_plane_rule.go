@@ -118,7 +118,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 			"google_container_cluster",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			config := resourceBlock.GetAttribute("master_authorized_networks_config")
 			if config.IsNil() {
 				return

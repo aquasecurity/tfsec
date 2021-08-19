@@ -50,7 +50,7 @@ resource "aws_ecs_cluster" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecs_cluster"},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			settingsBlock := resourceBlock.GetBlocks("setting")
 			for _, setting := range settingsBlock {

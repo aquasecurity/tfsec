@@ -53,7 +53,7 @@ resource "evil_corp" "good_example" {
 		Provider:        provider.GeneralProvider,
 		RequiredTypes:   []string{"locals"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if security.IsSensitiveAttribute(attribute.Name()) {

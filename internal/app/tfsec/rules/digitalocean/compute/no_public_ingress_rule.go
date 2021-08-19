@@ -58,7 +58,7 @@ resource "digitalocean_firewall" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"digitalocean_firewall"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			inboundBlocks := resourceBlock.GetBlocks("inbound_rule")
 

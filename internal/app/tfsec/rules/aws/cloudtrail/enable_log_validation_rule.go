@@ -66,7 +66,7 @@ resource "aws_cloudtrail" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_cloudtrail"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if resourceBlock.MissingChild("enable_log_file_validation") {
 				set.AddResult().
 					WithDescription("Resource '%s' does not enable log file validation.", resourceBlock.FullName())

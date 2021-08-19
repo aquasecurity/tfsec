@@ -107,7 +107,7 @@ data "aws_iam_policy_document" "s3_policy" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_iam_policy", "aws_iam_user_policy", "aws_iam_group_policy", "aws_iam_role_policy"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			policyAttr := resourceBlock.GetAttribute("policy")
 			if policyAttr.IsNil() {
 				return

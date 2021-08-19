@@ -61,6 +61,10 @@ func (r *Result) IsOnAttribute() bool {
 }
 
 func (r *Result) Range() definition.Range {
+	if r.Location != nil {
+		return r.Location
+	}
+
 	if r.attribute != nil {
 		return r.attribute.Range()
 	}

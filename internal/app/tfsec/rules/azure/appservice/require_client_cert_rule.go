@@ -61,7 +61,7 @@ resource "azurerm_app_service" "good_example" {
 			"azurerm_app_service",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			if clientCertEnabledAttr := resourceBlock.GetAttribute("client_cert_enabled"); clientCertEnabledAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for client_cert_enabled", resourceBlock.FullName())

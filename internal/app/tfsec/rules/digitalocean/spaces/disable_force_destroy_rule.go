@@ -43,7 +43,7 @@ resource "digitalocean_spaces_bucket" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"digitalocean_spaces_bucket"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if resourceBlock.HasChild("force_destroy") {
 				forceDestroyAttr := resourceBlock.GetAttribute("force_destroy")
 				if forceDestroyAttr.IsTrue() {

@@ -55,7 +55,9 @@ func CheckRule(r *Rule, context *infra.Context, resourceBlock block.Block, modul
 	}
 
 	if r.CheckInfrastructure != nil {
-		r.CheckInfrastructure(resultSet, context)
+		if result := r.CheckInfrastructure(context); result != nil {
+			resultSet.Add(result)
+		}
 	}
 
 	return resultSet
@@ -64,7 +66,11 @@ func CheckRule(r *Rule, context *infra.Context, resourceBlock block.Block, modul
 // IsRuleRequiredForBlock returns true if the Rule should be applied to the given HCL block
 func IsRuleRequiredForBlock(rule *Rule, b block.Block) bool {
 
-	if rule.CheckFunc == nil {
+	if rule.CheckInfrastructure != nil {
+		return true
+	}
+
+	if rule.CheckTerraform == nil {
 		return false
 	}
 

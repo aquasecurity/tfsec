@@ -75,7 +75,7 @@ resource "aws_launch_configuration" "as_conf" {
 			"aws_launch_configuration",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			// TODO: code goes here
 
 			if resourceBlock.MissingChild("user_data") && resourceBlock.MissingChild("user_data_base64") {

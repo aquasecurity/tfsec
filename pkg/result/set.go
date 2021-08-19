@@ -6,6 +6,7 @@ import (
 )
 
 type Set interface {
+	Add(result *Result)
 	AddResult() *Result
 	WithRuleID(id string) Set
 	WithLegacyRuleID(id string) Set
@@ -33,6 +34,19 @@ type resultSet struct {
 	impact        string
 	resolution    string
 	links         []string
+}
+
+func (s *resultSet) Add(r *Result) {
+
+	r.WithRuleID(s.ruleID).
+		WithLegacyRuleID(s.legacyID).
+		WithRuleSummary(s.ruleSummary).
+		WithImpact(s.impact).
+		WithResolution(s.resolution).
+		WithRuleProvider(s.ruleProvider).
+		WithLinks(s.links)
+
+	s.results = append(s.results, r)
 }
 
 func (s *resultSet) AddResult() *Result {

@@ -53,7 +53,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_elasticsearch_domain"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, context block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, context block.Module) {
 
 			encryptionBlock := resourceBlock.GetBlock("node_to_node_encryption")
 			if encryptionBlock.IsNil() {

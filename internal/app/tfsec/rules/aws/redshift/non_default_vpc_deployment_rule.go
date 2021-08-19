@@ -59,7 +59,7 @@ resource "aws_redshift_cluster" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_redshift_cluster"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if resourceBlock.MissingChild("cluster_subnet_group_name") {
 				set.AddResult().
 					WithDescription("Resource '%s' is being deployed outside of a VPC", resourceBlock.FullName())

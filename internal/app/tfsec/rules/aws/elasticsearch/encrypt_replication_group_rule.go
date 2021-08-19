@@ -51,7 +51,7 @@ resource "aws_elasticache_replication_group" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_elasticache_replication_group"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, context block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, context block.Module) {
 
 			encryptionAttr := resourceBlock.GetAttribute("at_rest_encryption_enabled")
 			if encryptionAttr.IsNil() {

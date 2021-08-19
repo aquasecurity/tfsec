@@ -48,7 +48,7 @@ resource "aws_efs_file_system" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_efs_file_system"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			efsEnabledAttr := resourceBlock.GetAttribute("encrypted")
 

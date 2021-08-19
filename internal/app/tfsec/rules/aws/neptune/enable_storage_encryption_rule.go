@@ -58,7 +58,7 @@ resource "aws_neptune_cluster" "good_example" {
 			"aws_neptune_cluster",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if storageEncryptedAttr := resourceBlock.GetAttribute("storage_encrypted"); storageEncryptedAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for storage_encrypted", resourceBlock.FullName())

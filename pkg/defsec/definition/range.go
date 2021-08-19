@@ -5,4 +5,5 @@ type Range interface {
 	GetStartLine() int
 	GetEndLine() int
 	Overlaps(a Range) bool
+	String() string
 }

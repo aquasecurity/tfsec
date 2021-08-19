@@ -49,7 +49,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_kubernetes_cluster"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingNestedChild("addon_profile.oms_agent") {
 				set.AddResult().

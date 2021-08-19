@@ -115,7 +115,7 @@ EOF
 			"aws_ecr_repository_policy",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			policyAttr := resourceBlock.GetAttribute("policy")
 			if policyAttr.IsNil() || !policyAttr.IsString() {

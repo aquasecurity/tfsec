@@ -57,7 +57,7 @@ resource "openstack_fw_rule_v1" "rule_1" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"openstack_fw_rule_v1"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.GetAttribute("enabled").IsFalse() {
 				return

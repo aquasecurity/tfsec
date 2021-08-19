@@ -56,7 +56,7 @@ resource "digitalocean_spaces_bucket" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"digitalocean_spaces_bucket"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("versioning") {
 				set.AddResult().WithDescription("Resource '%s' does not have versioning block specified", resourceBlock.FullName())

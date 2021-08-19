@@ -87,7 +87,7 @@ resource "aws_athena_workgroup" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_athena_database", "aws_athena_workgroup"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			blockName := resourceBlock.FullName()
 			if strings.EqualFold(resourceBlock.TypeLabel(), "aws_athena_workgroup") {

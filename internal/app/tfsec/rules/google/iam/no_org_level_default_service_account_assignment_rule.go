@@ -68,7 +68,7 @@ resource "google_organization_iam_member" "org-123" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_organization_iam_binding", "google_organization_iam_member"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr.IsNotNil() {
 				if memberAttr.IsString() {

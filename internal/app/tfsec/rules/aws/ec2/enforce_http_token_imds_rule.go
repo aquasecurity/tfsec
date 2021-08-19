@@ -52,7 +52,7 @@ resource "aws_instance" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_instance"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			metaDataOptions := resourceBlock.GetBlock("metadata_options")
 			if metaDataOptions.IsNil() {

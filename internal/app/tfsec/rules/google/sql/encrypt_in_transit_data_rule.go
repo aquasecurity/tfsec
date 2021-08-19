@@ -70,7 +70,7 @@ resource "google_sql_database_instance" "postgres" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_sql_database_instance"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			settingsBlock := resourceBlock.GetBlock("settings")
 			if settingsBlock.IsNil() {

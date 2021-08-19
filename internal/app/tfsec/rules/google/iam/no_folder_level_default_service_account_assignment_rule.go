@@ -68,7 +68,7 @@ resource "google_folder_iam_member" "folder-123" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_folder_iam_binding", "google_folder_iam_member"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr.IsNotNil() {
 				if memberAttr.IsString() {

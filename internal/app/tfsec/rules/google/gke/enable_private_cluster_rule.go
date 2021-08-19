@@ -110,7 +110,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 			"google_container_cluster",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if enablePrivateNodesAttr := resourceBlock.GetBlock("private_cluster_config").GetAttribute("enable_private_nodes"); enablePrivateNodesAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for private_cluster_config.enable_private_nodes", resourceBlock.FullName())

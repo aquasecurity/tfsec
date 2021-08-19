@@ -72,7 +72,7 @@ resource "azurerm_role_definition" "example" {
 			"azurerm_role_definition",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			if permissionBlock := resourceBlock.GetBlock("permissions"); permissionBlock.IsNotNil() {
 				if actionsAttr := permissionBlock.GetAttribute("actions"); actionsAttr.IsNotNil() && actionsAttr.Contains("*") {
 					// need more information

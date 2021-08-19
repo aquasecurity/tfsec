@@ -69,7 +69,7 @@ resource "aws_eks_cluster" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_eks_cluster"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			controlPlaneLogging := []string{"api", "audit", "authenticator", "controllerManager", "scheduler"}
 

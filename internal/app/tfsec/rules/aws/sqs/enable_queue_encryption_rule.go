@@ -45,7 +45,7 @@ resource "aws_sqs_queue" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_sqs_queue"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, context block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, context block.Module) {
 
 			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
 			if kmsKeyIDAttr.IsNil() {

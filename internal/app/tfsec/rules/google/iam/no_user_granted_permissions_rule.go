@@ -91,7 +91,7 @@ resource "google_storage_bucket_iam_member" "good_example" {
 			"google_iam_policy",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			var members []cty.Value
 			var attribute block.Attribute

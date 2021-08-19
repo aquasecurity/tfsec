@@ -55,7 +55,7 @@ resource "aws_msk_cluster" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_msk_cluster"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, context block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, context block.Module) {
 
 			defaultBehaviorBlock := resourceBlock.GetBlock("encryption_info")
 			if defaultBehaviorBlock.IsNil() {

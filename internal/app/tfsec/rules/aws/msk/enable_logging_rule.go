@@ -166,7 +166,7 @@ resource "aws_msk_cluster" "example" {
 			"aws_msk_cluster",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if cwLogAttr := resourceBlock.GetNestedAttribute("logging_info.broker_logs.cloudwatch_logs.enabled"); cwLogAttr.IsNotNil() && cwLogAttr.IsTrue() {
 				return

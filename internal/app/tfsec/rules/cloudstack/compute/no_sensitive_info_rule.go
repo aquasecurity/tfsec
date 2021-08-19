@@ -80,7 +80,7 @@ resource "cloudstack_instance" "web" {
 			"cloudstack_instance",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			customDataAttr := resourceBlock.GetAttribute("user_data")
 

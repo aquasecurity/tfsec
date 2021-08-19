@@ -65,7 +65,7 @@ resource "digitalocean_loadbalancer" "bad_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"digitalocean_loadbalancer"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("forwarding_rule") {
 				return

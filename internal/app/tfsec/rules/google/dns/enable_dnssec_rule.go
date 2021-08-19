@@ -68,7 +68,7 @@ resource "random_id" "rnd" {
 			"google_dns_managed_zone",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if stateAttr := resourceBlock.GetBlock("dnssec_config").GetAttribute("state"); stateAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for dnssec_config.state", resourceBlock.FullName())

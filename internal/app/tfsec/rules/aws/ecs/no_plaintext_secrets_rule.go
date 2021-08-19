@@ -79,7 +79,7 @@ EOF
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecs_task_definition"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if definitionsAttr := resourceBlock.GetAttribute("container_definitions"); definitionsAttr.IsNotNil() && definitionsAttr.Type() == cty.String {
 				rawJSON := strings.TrimSpace(definitionsAttr.Value().AsString())

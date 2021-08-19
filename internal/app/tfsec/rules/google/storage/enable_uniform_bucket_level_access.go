@@ -75,7 +75,7 @@ resource "google_storage_bucket" "static-site" {
 			"google_storage_bucket",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if attr := resourceBlock.GetAttribute("uniform_bucket_level_access"); attr.IsNil() {
 				set.AddResult().

@@ -52,7 +52,7 @@ resource "google_project_iam_binding" "project-123" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_project_iam_binding", "google_project_iam_member"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			roleAttr := resourceBlock.GetAttribute("role")
 			if !roleAttr.IsString() {

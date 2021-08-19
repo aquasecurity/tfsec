@@ -125,7 +125,7 @@ resource "google_compute_instance" "default" {
 			"google_compute_instance",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			metadataAttr := resourceBlock.GetAttribute("metadata")
 			val := metadataAttr.MapValue("serial-port-enable")
 			if val.Type() == cty.Bool && val.True() {

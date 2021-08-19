@@ -59,7 +59,7 @@ resource "azure_storage_container" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azure_storage_container"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("properties") {
 				return

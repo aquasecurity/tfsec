@@ -62,7 +62,7 @@ resource "azurerm_mssql_server_security_alert_policy" "good_example" {
 			"azurerm_mssql_server_security_alert_policy",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			if emailAddressesAttr := resourceBlock.GetAttribute("email_addresses"); emailAddressesAttr.IsNil() || emailAddressesAttr.IsEmpty() {
 				set.AddResult().
 					WithDescription("Resource '%s' does not specified emails_addresses for alerts", resourceBlock.FullName())

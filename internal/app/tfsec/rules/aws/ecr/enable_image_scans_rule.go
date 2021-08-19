@@ -55,7 +55,7 @@ resource "aws_ecr_repository" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_ecr_repository"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, context block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, context block.Module) {
 
 			if resourceBlock.MissingChild("image_scanning_configuration") {
 				set.AddResult().

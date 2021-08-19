@@ -50,7 +50,7 @@ resource "google_project" "good_example" {
 			"google_project",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if autoCreateNetworkAttr := resourceBlock.GetAttribute("auto_create_network"); autoCreateNetworkAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for auto_create_network", resourceBlock.FullName())

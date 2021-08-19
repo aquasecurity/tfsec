@@ -52,7 +52,7 @@ resource "google_sql_database_instance" "db" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_sql_database_instance"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			// we only need to check this for SQLSERVER, not mysql/postgres
 			if !resourceBlock.GetAttribute("database_version").StartsWith("SQLSERVER") {

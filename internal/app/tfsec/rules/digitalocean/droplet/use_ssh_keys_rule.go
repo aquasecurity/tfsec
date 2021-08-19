@@ -52,7 +52,7 @@ resource "digitalocean_droplet" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"digitalocean_droplet"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("ssh_keys") {
 				set.AddResult().

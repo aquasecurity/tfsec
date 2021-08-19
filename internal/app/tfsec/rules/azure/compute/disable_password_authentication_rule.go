@@ -95,7 +95,7 @@ resource "azurerm_virtual_machine" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_linux_virtual_machine", "azurerm_virtual_machine"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			workingBlock := resourceBlock
 			if resourceBlock.TypeLabel() == "azurerm_virtual_machine" {

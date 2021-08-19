@@ -47,7 +47,7 @@ resource "google_compute_firewall" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_compute_firewall"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if destinationRanges := resourceBlock.GetAttribute("destination_ranges"); destinationRanges.IsNotNil() {
 

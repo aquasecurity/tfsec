@@ -54,7 +54,7 @@ resource "google_container_node_pool" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_container_cluster", "google_container_node_pool"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingNestedChild("node_config.workload_metadata_config.node_metadata") {
 				return

@@ -63,7 +63,7 @@ resource "azurerm_sql_firewall_rule" "good_example" {
 			"azurerm_mariadb_firewall_rule",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("start_ip_address") || resourceBlock.MissingChild("end_ip_address") {
 				return

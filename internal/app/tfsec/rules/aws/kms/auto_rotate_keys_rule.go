@@ -47,7 +47,7 @@ resource "aws_kms_key" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_kms_key"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			keyUsageAttr := resourceBlock.GetAttribute("key_usage")
 
 			if keyUsageAttr.IsNotNil() && keyUsageAttr.Equals("SIGN_VERIFY") {

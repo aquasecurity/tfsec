@@ -106,7 +106,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 			"google_container_cluster",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if loggingServiceAttr := resourceBlock.GetAttribute("logging_service"); loggingServiceAttr.NotEqual("logging.googleapis.com/kubernetes") {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have logging_service set to logging.googleapis.com/kubernetes", resourceBlock.FullName()).

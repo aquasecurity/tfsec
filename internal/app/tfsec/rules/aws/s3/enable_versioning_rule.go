@@ -2,12 +2,10 @@ package s3
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/defsec/rules/aws/s3"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
@@ -46,23 +44,10 @@ resource "aws_s3_bucket" "good_example" {
 				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html",
 			},
 		},
-		Provider:        provider.AWSProvider,
-		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"aws_s3_bucket"},
-		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
-
-			if resourceBlock.MissingChild("versioning") {
-				set.AddResult().
-					WithDescription("Resource '%s' does not have versioning enabled", resourceBlock.FullName())
-				return
-			}
-
-			versioningBlock := resourceBlock.GetBlock("versioning")
-			if versioningBlock.HasChild("enabled") && versioningBlock.GetAttribute("enabled").IsFalse() {
-				set.AddResult().
-					WithDescription("Resource '%s' has versioning block but is disabled", resourceBlock.FullName()).WithBlock(versioningBlock)
-			}
-		},
+		Provider:            provider.AWSProvider,
+		RequiredTypes:       []string{"resource"},
+		RequiredLabels:      []string{"aws_s3_bucket"},
+		DefaultSeverity:     severity.Medium,
+		CheckInfrastructure: s3.CheckVersioningIsEnabled,
 	})
 }

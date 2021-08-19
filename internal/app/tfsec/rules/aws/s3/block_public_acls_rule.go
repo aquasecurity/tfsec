@@ -53,7 +53,7 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_s3_bucket_public_access_block"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if resourceBlock.MissingChild("block_public_acls") {
 				set.AddResult().
 					WithDescription("Resource '%s' does not specify block_public_acls, defaults to false", resourceBlock.FullName())

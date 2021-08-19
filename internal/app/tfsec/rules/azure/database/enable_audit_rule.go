@@ -64,7 +64,7 @@ resource "azurerm_sql_server" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_sql_server", "azurerm_mssql_server"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			if resourceBlock.HasChild("extended_auditing_policy") {
 				return

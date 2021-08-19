@@ -61,7 +61,7 @@ resource "aws_api_gateway_method_settings" "good_example" {
 			"aws_api_gateway_method_settings",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if cacheDataEncryptedAttr := resourceBlock.GetBlock("settings").GetAttribute("cache_data_encrypted"); cacheDataEncryptedAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for settings.cache_data_encrypted", resourceBlock.FullName())

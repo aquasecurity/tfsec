@@ -48,7 +48,7 @@ resource "aws_rds_cluster" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_rds_cluster"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
 			storageEncryptedattr := resourceBlock.GetAttribute("storage_encrypted")

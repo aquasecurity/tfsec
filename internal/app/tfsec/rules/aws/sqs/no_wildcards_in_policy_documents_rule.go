@@ -74,7 +74,7 @@ POLICY
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_sqs_queue_policy"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("policy") || !resourceBlock.GetAttribute("policy").IsString() {
 				return

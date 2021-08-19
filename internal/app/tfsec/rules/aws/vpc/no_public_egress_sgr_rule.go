@@ -48,7 +48,7 @@ resource "aws_security_group_rule" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_security_group_rule"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			typeAttr := resourceBlock.GetAttribute("type")
 			if typeAttr.IsNil() || !typeAttr.IsString() || typeAttr.NotEqual("egress") {

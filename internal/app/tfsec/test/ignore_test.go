@@ -90,7 +90,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		ShortCode:       "abc123",
 		RequiredLabels:  []string{"bad"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			set.AddResult().
 				WithDescription("example problem")
 		},
@@ -105,7 +105,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		ShortCode:       "def456",
 		RequiredLabels:  []string{"bad"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			set.AddResult().
 				WithDescription("example problem")
 		},

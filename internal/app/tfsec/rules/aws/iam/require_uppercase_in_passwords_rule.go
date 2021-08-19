@@ -51,7 +51,7 @@ resource "aws_iam_account_password_policy" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_iam_account_password_policy"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if attr := resourceBlock.GetAttribute("require_uppercase_characters"); attr.IsNil() {
 				set.AddResult().
 					WithDescription("Resource '%s' does not require an uppercase character in the password.", resourceBlock.FullName())

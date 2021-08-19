@@ -50,7 +50,7 @@ resource "aws_secretsmanager_secret" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_secretsmanager_secret"},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.AddResult().

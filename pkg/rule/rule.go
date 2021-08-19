@@ -27,7 +27,7 @@ type Rule struct {
 	RequiredSources     []string
 	DefaultSeverity     severity.Severity
 	CheckTerraform      func(result.Set, block.Block, block.Module)
-	CheckInfrastructure func(result.Set, *infra.Context)
+	CheckInfrastructure func(*infra.Context) *result.Result
 }
 
 func (r Rule) ID() string {

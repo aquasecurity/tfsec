@@ -82,7 +82,7 @@ resource "azurerm_postgresql_configuration" "example" {
 			"azurerm_postgresql_server",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			referencingBlocks, err := module.GetReferencingResources(resourceBlock, "azurerm_postgresql_configuration", "server_name")
 			if err != nil {
 				debug.Log("error occurred trying to get the referencing block for %s", resourceBlock.FullName())

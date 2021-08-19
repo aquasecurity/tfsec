@@ -47,7 +47,7 @@ provider "aws" {
 		RequiredTypes:   []string{"provider"},
 		RequiredLabels:  []string{"aws"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if accessKeyAttribute := resourceBlock.GetAttribute("access_key"); accessKeyAttribute.IsNotNil() && accessKeyAttribute.Type() == cty.String {
 				set.AddResult().

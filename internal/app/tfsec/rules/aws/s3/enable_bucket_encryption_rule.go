@@ -2,12 +2,11 @@ package s3
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/defsec/rules/aws/s3"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	infra "github.com/aquasecurity/tfsec/pkg/defsec/context"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -49,14 +48,10 @@ resource "aws_s3_bucket" "good_example" {
 				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html",
 			},
 		},
-		Provider:        provider.AWSProvider,
-		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"aws_s3_bucket"},
-		DefaultSeverity: severity.High,
-		CheckInfrastructure: func(set result.Set, infra *infra.Context) {
-			for _, bucket := range infra.AWS.S3.Buckets {
-				bucket.CheckEncryptionIsEnabled(set)
-			}
-		},
+		Provider:            provider.AWSProvider,
+		RequiredTypes:       []string{"resource"},
+		RequiredLabels:      []string{"aws_s3_bucket"},
+		DefaultSeverity:     severity.High,
+		CheckInfrastructure: s3.CheckEncryptionIsEnabled,
 	})
 }

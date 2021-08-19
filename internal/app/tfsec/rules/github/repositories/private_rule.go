@@ -64,7 +64,7 @@ resource "github_repository" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"github_repository"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			privateAttribute := resourceBlock.GetAttribute("private")
 			visibilityAttribute := resourceBlock.GetAttribute("visibility")

@@ -47,7 +47,7 @@ resource "azurerm_managed_disk" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_managed_disk"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			encryptionSettingsBlock := resourceBlock.GetBlock("encryption_settings")
 			if encryptionSettingsBlock.IsNil() {
 				return // encryption is by default now, so this is fine

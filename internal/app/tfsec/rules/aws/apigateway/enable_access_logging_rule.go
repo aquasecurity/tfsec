@@ -69,7 +69,7 @@ resource "aws_api_gateway_stage" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_apigatewayv2_stage", "aws_api_gateway_stage"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("access_log_settings") {
 				set.AddResult().

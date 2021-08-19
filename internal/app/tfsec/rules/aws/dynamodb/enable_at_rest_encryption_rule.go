@@ -66,7 +66,7 @@ resource "aws_dax_cluster" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_dax_cluster"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if resourceBlock.MissingChild("server_side_encryption") {
 				set.AddResult().
 					WithDescription("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", resourceBlock.FullName())

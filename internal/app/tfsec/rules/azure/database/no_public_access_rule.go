@@ -51,7 +51,7 @@ resource "azurerm_postgresql_server" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_mariadb_server", "azurerm_mssql_server", "azurerm_mysql_server", "azurerm_postgresql_server"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if resourceBlock.MissingChild("public_network_access_enabled") {
 				set.AddResult().

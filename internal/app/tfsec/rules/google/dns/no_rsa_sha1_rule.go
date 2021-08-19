@@ -80,7 +80,7 @@ output "foo_dns_ds_record" {
 			"google_dns_keys",
 		},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if algorithmAttr := resourceBlock.GetBlock("zone_signing_keys").GetAttribute("algorithm"); algorithmAttr.Equals("rsasha1") {
 				set.AddResult().
 					WithDescription("Data '%s' has zone_signing_keys.algorithm set to rsasha1", resourceBlock.FullName()).

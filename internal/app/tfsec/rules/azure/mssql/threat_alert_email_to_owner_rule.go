@@ -58,7 +58,7 @@ resource "azurerm_mssql_server_security_alert_policy" "good_example" {
 			"azurerm_mssql_server_security_alert_policy",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			if emailAccountAdminsAttr := resourceBlock.GetAttribute("email_account_admins"); emailAccountAdminsAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for email_account_admins", resourceBlock.FullName())

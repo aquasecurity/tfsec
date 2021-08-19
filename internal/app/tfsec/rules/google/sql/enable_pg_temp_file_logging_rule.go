@@ -54,7 +54,7 @@ resource "google_sql_database_instance" "db" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_sql_database_instance"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			dbVersionAttr := resourceBlock.GetAttribute("database_version")
 			if dbVersionAttr.IsNotNil() && dbVersionAttr.IsString() && !strings.HasPrefix(dbVersionAttr.Value().AsString(), "POSTGRES") {

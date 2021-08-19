@@ -80,7 +80,7 @@ resource "aws_mq_broker" "good_example" {
 			"aws_mq_broker",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if generalAttr := resourceBlock.GetBlock("logs").GetAttribute("general"); generalAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for logs.general", resourceBlock.FullName())

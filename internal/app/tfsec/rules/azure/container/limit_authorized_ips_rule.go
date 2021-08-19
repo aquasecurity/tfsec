@@ -47,7 +47,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"azurerm_kubernetes_cluster"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 
 			if (resourceBlock.MissingChild("api_server_authorized_ip_ranges") ||
 				resourceBlock.GetAttribute("api_server_authorized_ip_ranges").IsEmpty()) &&

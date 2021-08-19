@@ -67,7 +67,7 @@ resource "aws_api_gateway_method" "good_example" {
 			"aws_api_gateway_method",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			if authorizationAttr := resourceBlock.GetAttribute("authorization"); authorizationAttr.IsNotNil() && authorizationAttr.Equals("NONE") {
 				if verbAttr := resourceBlock.GetAttribute("http_method"); verbAttr.IsNotNil() && verbAttr.Equals("OPTION", block.IgnoreCase) {
 					return

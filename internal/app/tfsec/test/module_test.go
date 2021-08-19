@@ -40,7 +40,7 @@ resource "problem" "x" {
 	RequiredTypes:   []string{"resource"},
 	RequiredLabels:  []string{"problem"},
 	DefaultSeverity: severity.High,
-	CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+	CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 		if resourceBlock.GetAttribute("bad").IsTrue() {
 			set.AddResult().
 				WithDescription("example problem")

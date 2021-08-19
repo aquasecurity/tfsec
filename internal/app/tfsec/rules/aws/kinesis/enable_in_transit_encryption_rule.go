@@ -50,7 +50,7 @@ resource "aws_kinesis_stream" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_kinesis_stream"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, context block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, context block.Module) {
 
 			encryptionTypeAttr := resourceBlock.GetAttribute("encryption_type")
 			if encryptionTypeAttr.IsNil() {

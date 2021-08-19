@@ -74,7 +74,7 @@ resource "google_compute_instance" "bad_example" {
 			"google_compute_instance",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if canIpForwardAttr := resourceBlock.GetAttribute("can_ip_forward"); canIpForwardAttr.IsTrue() {
 				set.AddResult().
 					WithDescription("Resource '%s' has can_ip_forward set to true", resourceBlock.FullName()).

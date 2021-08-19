@@ -51,7 +51,7 @@ resource "aws_iam_account_password_policy" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_iam_account_password_policy"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if attr := resourceBlock.GetAttribute("minimum_password_length"); attr.IsNil() {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have a minimum password length set.", resourceBlock.FullName())

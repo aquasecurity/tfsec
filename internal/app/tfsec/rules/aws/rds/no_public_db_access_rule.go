@@ -44,7 +44,7 @@ resource "aws_db_instance" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_db_instance", "aws_dms_replication_instance", "aws_rds_cluster_instance", "aws_redshift_cluster"},
 		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			publicAttr := resourceBlock.GetAttribute("publicly_accessible")
 			if publicAttr.IsTrue() {
 				set.AddResult().

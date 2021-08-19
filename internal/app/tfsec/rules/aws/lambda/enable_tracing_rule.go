@@ -123,7 +123,7 @@ resource "aws_lambda_function" "good_example" {
 			"aws_lambda_function",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if modeAttr := resourceBlock.GetBlock("tracing_config").GetAttribute("mode"); modeAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for tracing_config.mode", resourceBlock.FullName())

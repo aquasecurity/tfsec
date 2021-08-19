@@ -61,7 +61,7 @@ resource "google_compute_disk" "good_example" {
 			"google_compute_disk",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if kmsKeySelfLinkAttr := resourceBlock.GetBlock("disk_encryption_key").GetAttribute("kms_key_self_link"); kmsKeySelfLinkAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for disk_encryption_key.kms_key_self_link", resourceBlock.FullName())

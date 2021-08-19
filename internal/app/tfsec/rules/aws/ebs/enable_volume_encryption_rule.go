@@ -57,7 +57,7 @@ resource "aws_ebs_volume" "good_example" {
 			"aws_ebs_volume",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if encryptedAttr := resourceBlock.GetAttribute("encrypted"); encryptedAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for encrypted", resourceBlock.FullName())

@@ -142,7 +142,7 @@ func processFoundChecks(checks ChecksFile) {
 				RequiredLabels:  customCheck.RequiredLabels,
 				RequiredSources: customCheck.RequiredSources,
 				DefaultSeverity: severity.Medium,
-				CheckFunc: func(set result.Set, rootBlock block.Block, module block.Module) {
+				CheckTerraform: func(set result.Set, rootBlock block.Block, module block.Module) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, module) {
 						set.AddResult().
