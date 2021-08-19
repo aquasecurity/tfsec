@@ -18,10 +18,8 @@ type Set interface {
 	All() []*Result
 }
 
-func NewSet(resourceBlock block.Block) *resultSet {
-	return &resultSet{
-		resourceBlock: resourceBlock,
-	}
+func NewSet() *resultSet {
+	return &resultSet{}
 }
 
 type resultSet struct {

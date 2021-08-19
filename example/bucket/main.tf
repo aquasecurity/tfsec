@@ -2,6 +2,8 @@ resource "aws_s3_bucket" "unversioned_bucket" {
 
   name = "bad example"
 
+  acl = "log-delivery-write"
+
   versioning {
     enabled = false
   }
@@ -39,8 +41,33 @@ resource "aws_s3_bucket" "with_logging_bucket" {
 
   server_side_encryption_configuration {
     rule {
+	
     }
   }
+}
+
+resource "aws_s3_bucket" "website" {
+  name = "bad example"
+
+  acl = "website"
+
+  versioning {
+     enabled = true
+  }
+
+  logging {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = aws_kms_key.mykey.arn
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
+
 }
 
 

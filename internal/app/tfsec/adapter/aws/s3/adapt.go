@@ -20,11 +20,15 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 			buckets = append(buckets, s3.Bucket{
 				Metadata: definition.NewMetadata(block.Range()).WithReference(block.FullName()),
 				Versioning: s3.Versioning{
-					Enabled: AttributeToBoolValue(block.GetNestedAttribute("versioning.enabled"), block, false),
+					Enabled: isVersioned(block),
 				},
-				Encryption: s3.BucketEncryption{
+				Encryption: s3.Encryption{
 					Enabled: isEncrypted(block),
 				},
+				Logging: s3.Logging{
+					Enabled: hasLogging(block),
+				},
+				ACL: getACL(block),
 			})
 		}(b)
 	}
@@ -32,16 +36,27 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 	return buckets
 }
 
+func getACL(b block.Block) definition.StringValue {
+	if aclAttr := b.GetAttribute("acl"); aclAttr.IsString() {
+		return definition.StringValue{
+			Metadata: definition.NewMetadata(aclAttr.Range()),
+			Value:    aclAttr.Value().AsString(),
+		}
+	}
+	return definition.StringValue{
+		Metadata: definition.NewMetadata(b.Range()),
+		Value:    "private",
+	}
+}
+
 func isEncrypted(b block.Block) definition.BoolValue {
 	encryptionBlock := b.GetBlock("server_side_encryption_configuration")
-
 	if encryptionBlock.IsNil() {
 		return definition.BoolValue{
 			Metadata: definition.NewMetadata(b.Range()),
 			Value:    false,
 		}
 	}
-
 	ruleBlock := encryptionBlock.GetBlock("rule")
 	if ruleBlock.IsNil() {
 		return definition.BoolValue{
@@ -50,13 +65,11 @@ func isEncrypted(b block.Block) definition.BoolValue {
 		}
 
 	}
-
 	if defaultBlock := ruleBlock.GetBlock("apply_server_side_encryption_by_default"); defaultBlock.IsNil() {
 		return definition.BoolValue{
 			Metadata: definition.NewMetadata(ruleBlock.Range()),
 			Value:    false,
 		}
-
 	} else {
 		return definition.BoolValue{
 			Metadata: definition.NewMetadata(defaultBlock.Range()),
@@ -64,7 +77,44 @@ func isEncrypted(b block.Block) definition.BoolValue {
 		}
 
 	}
+}
 
+func hasLogging(b block.Block) definition.BoolValue {
+	if loggingBlock := b.GetBlock("logging"); loggingBlock.IsNotNil() {
+		if enabledAttr := loggingBlock.GetAttribute("enabled"); enabledAttr.IsNotNil() {
+			return definition.BoolValue{
+				Metadata: definition.NewMetadata(enabledAttr.Range()),
+				Value:    enabledAttr.IsTrue(),
+			}
+		}
+		return definition.BoolValue{
+			Metadata: definition.NewMetadata(loggingBlock.Range()),
+			Value:    false,
+		}
+	}
+	return definition.BoolValue{
+		Metadata: definition.NewMetadata(b.Range()),
+		Value:    false,
+	}
+}
+
+func isVersioned(b block.Block) definition.BoolValue {
+	if versioningBlock := b.GetBlock("versioning"); versioningBlock.IsNotNil() {
+		if enabledAttr := versioningBlock.GetAttribute("enabled"); enabledAttr.IsNotNil() {
+			return definition.BoolValue{
+				Metadata: definition.NewMetadata(enabledAttr.Range()),
+				Value:    enabledAttr.IsTrue(),
+			}
+		}
+		return definition.BoolValue{
+			Metadata: definition.NewMetadata(versioningBlock.Range()),
+			Value:    false,
+		}
+	}
+	return definition.BoolValue{
+		Metadata: definition.NewMetadata(b.Range()),
+		Value:    false,
+	}
 }
 
 func AttributeToBoolValue(attribute block.Attribute, block block.Block, defaultValue bool) definition.BoolValue {

@@ -19,7 +19,6 @@ func NewHCLModule(rootPath string, modulePath string, blocks Blocks) Module {
 	for _, b := range blocks {
 		if b.NameLabel() != "" {
 			blockMap[b.TypeLabel()] = append(blockMap[b.TypeLabel()], b)
-
 		}
 	}
 

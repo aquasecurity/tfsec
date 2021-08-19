@@ -2,12 +2,10 @@ package s3
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/defsec/rules/aws/s3"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
@@ -43,19 +41,10 @@ resource "aws_s3_bucket" "good_example" {
 				"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html",
 			},
 		},
-		Provider:        provider.AWSProvider,
-		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"aws_s3_bucket"},
-		DefaultSeverity: severity.Medium,
-		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
-
-			if resourceBlock.MissingChild("logging") {
-				if resourceBlock.GetAttribute("acl").IsNotNil() && resourceBlock.GetAttribute("acl").Equals("log-delivery-write") {
-					return
-				}
-				set.AddResult().
-					WithDescription("Resource '%s' does not have logging enabled.", resourceBlock.FullName())
-			}
-		},
+		Provider:            provider.AWSProvider,
+		RequiredTypes:       []string{"resource"},
+		RequiredLabels:      []string{"aws_s3_bucket"},
+		DefaultSeverity:     severity.Medium,
+		CheckInfrastructure: s3.CheckLoggingIsEnabled,
 	})
 }

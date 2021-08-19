@@ -2,12 +2,10 @@ package s3
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/tfsec/pkg/defsec/rules/aws/s3"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
@@ -45,24 +43,10 @@ resource "aws_s3_bucket" "good_example" {
 				"https://aws.amazon.com/premiumsupport/knowledge-center/secure-s3-resources/",
 			},
 		},
-		Provider:        provider.AWSProvider,
-		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"aws_s3_bucket"},
-		DefaultSeverity: severity.Critical,
-		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
-			if resourceBlock.MissingChild("acl") {
-				return
-			}
-
-			aclAttr := resourceBlock.GetAttribute("acl")
-			if aclAttr.IsAny("public-read", "public-read-write", "website") {
-				set.AddResult().
-					WithDescription("Resource '%s' has an ACL which allows public access.", resourceBlock.FullName()).
-					WithAttribute(aclAttr)
-			} else if aclAttr.Equals("authenticated-read") {
-				set.AddResult().
-					WithDescription("Resource '%s' has an ACL which allows access to any authenticated AWS user, not just users within the target account.", resourceBlock.FullName())
-			}
-		},
+		Provider:            provider.AWSProvider,
+		RequiredTypes:       []string{"resource"},
+		RequiredLabels:      []string{"aws_s3_bucket"},
+		DefaultSeverity:     severity.Critical,
+		CheckInfrastructure: s3.CheckForPublicACL,
 	})
 }

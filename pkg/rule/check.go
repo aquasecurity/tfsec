@@ -18,7 +18,7 @@ import (
 )
 
 // CheckRule the provided HCL block against the rule
-func CheckRule(r *Rule, context *infra.Context, resourceBlock block.Block, module block.Module, ignoreErrors bool) result.Set {
+func CheckRule(r *Rule, context *infra.Context, ignoreErrors bool) result.Set {
 	if ignoreErrors {
 		defer func() {
 			if err := recover(); err != nil {
@@ -36,7 +36,7 @@ func CheckRule(r *Rule, context *infra.Context, resourceBlock block.Block, modul
 
 	links = append(links, r.Documentation.Links...)
 
-	resultSet := result.NewSet(resourceBlock).
+	resultSet := result.NewSet().
 		WithRuleID(r.ID()).
 		WithLegacyRuleID(r.LegacyID).
 		WithRuleSummary(r.Documentation.Summary).
@@ -50,12 +50,8 @@ func CheckRule(r *Rule, context *infra.Context, resourceBlock block.Block, modul
 		debug.Log("Check %s implements no check functions - cannot run", r.ID())
 	}
 
-	if r.CheckTerraform != nil {
-		r.CheckTerraform(resultSet, resourceBlock, module)
-	}
-
 	if r.CheckInfrastructure != nil {
-		if result := r.CheckInfrastructure(context); result != nil {
+		for _, result := range r.CheckInfrastructure(context) {
 			resultSet.Add(result)
 		}
 	}

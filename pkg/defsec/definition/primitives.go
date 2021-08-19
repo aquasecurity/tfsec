@@ -17,3 +17,11 @@ func (b *BoolValue) IsTrue() bool {
 func (b *BoolValue) IsFalse() bool {
 	return !b.Value
 }
+
+func (s *StringValue) EqualTo(value string) bool {
+	return s.Value == value
+}
+
+func (s *StringValue) NotEqualTo(value string) bool {
+	return s.Value != value
+}

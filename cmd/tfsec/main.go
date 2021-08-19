@@ -220,7 +220,7 @@ var rootCmd = &cobra.Command{
 		infra := adapter.Adapt(modules)
 		debug.Log("Starting scanner...")
 		scannerOptions := append(getScannerOptions(), scanner.OptionWithInfrastructure(infra))
-		results := scanner.New(scannerOptions...).Scan(modules)
+		results := scanner.New(scannerOptions...).Scan()
 		results = updateResultSeverity(results)
 		//results = removeDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {

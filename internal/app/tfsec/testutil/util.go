@@ -28,12 +28,13 @@ func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) [
 	for _, opt := range additionalOptions {
 		opt(scanner)
 	}
-	return scanner.Scan(modules)
+	return scanner.Scan()
 }
 
 func ScanJSON(source string, t *testing.T) []result.Result {
-	blocks := CreateModulesFromSource(source, ".tf.json", t)
-	return scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	modules := CreateModulesFromSource(source, ".tf.json", t)
+	context := adapter.Adapt(modules)
+	return scanner.New(scanner.OptionIgnoreCheckErrors(false), scanner.OptionWithInfrastructure(context)).Scan()
 }
 
 func CreateModulesFromSource(source string, ext string, t *testing.T) []block.Module {
