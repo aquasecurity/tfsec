@@ -2,6 +2,7 @@ package block
 
 type Module interface {
 	GetBlocks() Blocks
+	GetBlockByTypeLabel(typeLabel string) Blocks
 	GetResourcesByType(label string) Blocks
 	GetDatasByType(label string) Blocks
 	GetProviderBlocksByProvider(providerName string, alias string) Blocks

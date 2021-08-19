@@ -34,11 +34,11 @@ func ScanJSON(source string, t *testing.T) []result.Result {
 
 func CreateModulesFromSource(source string, ext string, t *testing.T) []block.Module {
 	path := CreateTestFile("test"+ext, source)
-	blocks, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
+	modules, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {
 		t.Fatalf("parse error: %s", err)
 	}
-	return blocks
+	return modules
 }
 
 func CreateTestFile(filename, contents string) string {
@@ -126,3 +126,4 @@ func validateCodes(includeCode, excludeCode string) bool {
 	}
 	return true
 }
+

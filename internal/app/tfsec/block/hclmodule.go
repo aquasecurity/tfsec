@@ -7,13 +7,25 @@ import (
 
 type HCLModule struct {
 	blocks     Blocks
+	blockMap   map[string]Blocks
 	rootPath   string
 	modulePath string
 }
 
 func NewHCLModule(rootPath string, modulePath string, blocks Blocks) Module {
+
+	blockMap := make(map[string]Blocks)
+
+	for _, b := range blocks {
+		if b.NameLabel() != "" {
+			blockMap[b.TypeLabel()] = append(blockMap[b.TypeLabel()], b)
+
+		}
+	}
+
 	return &HCLModule{
 		blocks:     blocks,
+		blockMap:   blockMap,
 		rootPath:   rootPath,
 		modulePath: modulePath,
 	}
@@ -23,10 +35,14 @@ func (c *HCLModule) GetBlocks() Blocks {
 	return c.blocks
 }
 
+func (h *HCLModule) GetBlockByTypeLabel(typeLabel string) Blocks {
+	return h.blockMap[typeLabel]
+}
+
 func (c *HCLModule) getBlocksByType(blockType string, label string) Blocks {
 	var results Blocks
-	for _, block := range c.blocks {
-		if block.Type() == blockType && len(block.Labels()) > 0 && block.TypeLabel() == label {
+	for _, block := range c.blockMap[label] {
+		if block.Type() == blockType {
 			results = append(results, block)
 		}
 	}
