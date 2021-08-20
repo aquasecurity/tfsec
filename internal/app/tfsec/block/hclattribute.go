@@ -575,7 +575,7 @@ func (attr *HCLAttribute) IsDataBlockReference() bool {
 
 func createDotReferenceFromTraversal(traversals ...hcl.Traversal) (*Reference, error) {
 	var refParts []string
-
+	var key cty.Value
 	for _, x := range traversals {
 		for _, p := range x {
 			switch part := p.(type) {
@@ -584,27 +584,18 @@ func createDotReferenceFromTraversal(traversals ...hcl.Traversal) (*Reference, e
 			case hcl.TraverseAttr:
 				refParts = append(refParts, part.Name)
 			case hcl.TraverseIndex:
-				refParts[len(refParts)-1] = fmt.Sprintf("%s[%s]", refParts[len(refParts)-1], getIndexValue(part))
+				key = part.Key
 			}
 		}
 	}
-	return newReference(refParts)
-}
-
-func getIndexValue(part hcl.TraverseIndex) string {
-	switch part.Key.Type() {
-	case cty.String:
-		return fmt.Sprintf("%q", part.Key.AsString())
-	case cty.Number:
-		var intVal int
-		if err := gocty.FromCtyValue(part.Key, &intVal); err != nil {
-			debug.Log("could not unpack the int, returning 0")
-			return "0"
-		}
-		return fmt.Sprintf("%d", intVal)
-	default:
-		return "0"
+	ref, err := newReference(refParts)
+	if err != nil {
+		return nil, err
 	}
+	if !key.IsNull() {
+		ref.SetKey(key)
+	}
+	return ref, nil
 }
 
 func (attr *HCLAttribute) Reference() (*Reference, error) {

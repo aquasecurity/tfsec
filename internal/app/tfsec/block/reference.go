@@ -2,6 +2,7 @@ package block
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/defsec/definition"
@@ -51,7 +52,12 @@ func newReference(parts []string) (*Reference, error) {
 	if strings.Contains(ref.nameLabel, "[") {
 		bits := strings.Split(ref.nameLabel, "[")
 		ref.nameLabel = bits[0]
-		ref.key = cty.StringVal(bits[1][:strings.Index(bits[1], "]")])
+		keyRaw := strings.ReplaceAll(bits[1][:strings.Index(bits[1], "]")], "\"", "")
+		if i, err := strconv.Atoi(keyRaw); err == nil {
+			ref.key = cty.NumberIntVal(int64(i))
+		} else {
+			ref.key = cty.StringVal(keyRaw)
+		}
 	}
 
 	if len(parts) > 3 {

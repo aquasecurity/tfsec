@@ -239,7 +239,15 @@ func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 		if !forEachAttr.Value().IsNull() && forEachAttr.Value().IsKnown() && forEachAttr.IsIterable() {
 			var clones []cty.Value
 			forEachAttr.Each(func(key cty.Value, val cty.Value) {
-				clone := block.Clone(val)
+
+				index := key
+
+				switch val.Type() {
+				case cty.String, cty.Number:
+					index = val
+				}
+
+				clone := block.Clone(index)
 
 				ctx := clone.Context()
 
@@ -254,9 +262,7 @@ func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 				debug.Log("Added %s from for_each", clone.Reference())
 				forEachFiltered = append(forEachFiltered, clone)
 
-				fmt.Println("CLONE: " + clone.Reference().NameLabel() + clone.Reference().Key())
-
-				clones = append(clones, cty.StringVal(clone.Reference().Key()))
+				clones = append(clones, clone.Reference().RawKey())
 				e.ctx.SetByDot(clone.Values(), clone.Reference().String())
 			})
 			if len(clones) == 0 {

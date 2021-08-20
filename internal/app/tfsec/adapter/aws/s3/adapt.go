@@ -1,6 +1,8 @@
 package s3
 
 import (
+	"strings"
+
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/pkg/defsec/aws/s3"
 	"github.com/aquasecurity/tfsec/pkg/defsec/definition"
@@ -72,7 +74,7 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 					break
 				}
 				for _, ref := range references {
-					if ref.RefersTo(bucket.Reference) {
+					if ref.RefersTo(bucket.Reference) || (strings.HasPrefix(bucket.Reference.String(), ref.String()) && buckets[i].PublicAccessBlock == nil) {
 						pba.Bucket = &bucket
 						buckets[i].PublicAccessBlock = &pba
 						break
