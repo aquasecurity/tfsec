@@ -14,13 +14,13 @@ import (
 )
 
 type HCLBlock struct {
-	hclBlock         *hcl.Block
-	context          *Context
-	moduleBlock      Block
-	expanded         bool
-	cloneIndex       int
-	childBlocks      []Block
-	cachedAttributes []Attribute
+	hclBlock    *hcl.Block
+	context     *Context
+	moduleBlock Block
+	expanded    bool
+	cloneIndex  int
+	childBlocks []Block
+	attributes  []Attribute
 }
 
 func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
@@ -42,12 +42,19 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
 			}
 		}
 	}
-	return &HCLBlock{
+
+	b := HCLBlock{
 		context:     ctx,
 		hclBlock:    hclBlock,
 		moduleBlock: moduleBlock,
 		childBlocks: children,
 	}
+
+	for _, attr := range b.createAttributes() {
+		b.attributes = append(b.attributes, NewHCLAttribute(attr, ctx))
+	}
+
+	return &b
 }
 
 func (b *HCLBlock) InjectBlock(block Block, name string) {
@@ -98,6 +105,7 @@ func (b *HCLBlock) Clone(index cty.Value) Block {
 		} else {
 			labels[position] = fmt.Sprintf("%s[%d]", clone.hclBlock.Labels[position], b.cloneIndex)
 		}
+		fmt.Printf("LABELS: %s\n", labels)
 		clone.hclBlock.Labels = labels
 	}
 	indexVal, _ := gocty.ToCtyValue(index, cty.Number)
@@ -115,6 +123,9 @@ func (b *HCLBlock) OverrideContext(ctx *Context) {
 	b.context = ctx
 	for _, block := range b.childBlocks {
 		block.OverrideContext(ctx.NewChild())
+	}
+	for _, attr := range b.attributes {
+		attr.(*HCLAttribute).ctx = ctx
 	}
 }
 
@@ -170,7 +181,7 @@ func (b *HCLBlock) GetFirstMatchingBlock(names ...string) Block {
 	return returnBlock
 }
 
-func (b *HCLBlock) getHCLAttributes() hcl.Attributes {
+func (b *HCLBlock) createAttributes() hcl.Attributes {
 	switch body := b.hclBlock.Body.(type) {
 	case *hclsyntax.Body:
 		attributes := make(hcl.Attributes)
@@ -225,18 +236,10 @@ func (b *HCLBlock) GetBlocks(name string) Blocks {
 }
 
 func (b *HCLBlock) GetAttributes() []Attribute {
-	var results []Attribute
-	if b == nil || b.hclBlock == nil {
+	if b == nil {
 		return nil
 	}
-	if b.cachedAttributes != nil {
-		//return b.cachedAttributes
-	}
-	for _, attr := range b.getHCLAttributes() {
-		results = append(results, NewHCLAttribute(attr, b, b.context))
-	}
-	b.cachedAttributes = results
-	return results
+	return b.attributes
 }
 
 func (b *HCLBlock) GetAttribute(name string) Attribute {
@@ -244,7 +247,7 @@ func (b *HCLBlock) GetAttribute(name string) Attribute {
 	if b == nil || b.hclBlock == nil {
 		return attr
 	}
-	for _, attr := range b.GetAttributes() {
+	for _, attr := range b.attributes {
 		if attr.Name() == name {
 			return attr
 		}

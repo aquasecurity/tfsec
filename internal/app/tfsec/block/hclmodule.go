@@ -87,7 +87,7 @@ func (c *HCLModule) GetReferencedBlock(referringAttr Attribute, parentBlock Bloc
 				return block, nil
 			}
 			kref := *ref
-			kref.SetKeyRaw(parentBlock.Reference().Key())
+			kref.SetKey(parentBlock.Reference().RawKey())
 			fmt.Printf("%#v\n", parentBlock.Reference().String())
 			if kref.RefersTo(block.Reference()) {
 				return block, nil

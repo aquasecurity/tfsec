@@ -13,7 +13,7 @@ type Reference struct {
 	typeLabel string
 	nameLabel string
 	remainder []string
-	key       string
+	key       cty.Value
 }
 
 func newReference(parts []string) (*Reference, error) {
@@ -51,7 +51,7 @@ func newReference(parts []string) (*Reference, error) {
 	if strings.Contains(ref.nameLabel, "[") {
 		bits := strings.Split(ref.nameLabel, "[")
 		ref.nameLabel = bits[0]
-		ref.key = "[" + bits[1]
+		ref.key = cty.StringVal(bits[1][:strings.Index(bits[1], "]")])
 	}
 
 	if len(parts) > 3 {
@@ -87,9 +87,7 @@ func (r *Reference) String() string {
 		}
 	}
 
-	if r.key != "" {
-		base += r.key
-	}
+	base += r.KeyBracketed()
 
 	for _, rem := range r.remainder {
 		base += "." + rem
@@ -101,7 +99,7 @@ func (r *Reference) String() string {
 func (r *Reference) RefersTo(a definition.Reference) bool {
 	other := a.(*Reference)
 
-	fmt.Printf("%s -- %s\n", r, a)
+	fmt.Println(r.String() + " ~~ " + other.String())
 
 	if r.BlockType() != other.BlockType() {
 		return false
@@ -118,21 +116,34 @@ func (r *Reference) RefersTo(a definition.Reference) bool {
 	return true
 }
 
-func (r *Reference) SetKeyRaw(key string) {
+func (r *Reference) SetKey(key cty.Value) {
 	r.key = key
 }
-
-func (r *Reference) SetKey(key cty.Value) {
-	switch key.Type() {
+func (r *Reference) KeyBracketed() string {
+	switch r.key.Type() {
 	case cty.Number:
-		f := key.AsBigFloat()
+		f := r.key.AsBigFloat()
 		f64, _ := f.Float64()
-		r.key = fmt.Sprintf("[%d]", int(f64))
+		return fmt.Sprintf("[%d]", int(f64))
 	case cty.String:
-		r.key = fmt.Sprintf("[%q]", key.AsString())
+		return fmt.Sprintf("[%q]", r.key.AsString())
+	default:
+		return ""
 	}
+}
+func (r *Reference) RawKey() cty.Value {
+	return r.key
 }
 
 func (r *Reference) Key() string {
-	return r.key
+	switch r.key.Type() {
+	case cty.Number:
+		f := r.key.AsBigFloat()
+		f64, _ := f.Float64()
+		return fmt.Sprintf("%d", int(f64))
+	case cty.String:
+		return fmt.Sprintf("%s", r.key.AsString())
+	default:
+		return ""
+	}
 }

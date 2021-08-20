@@ -19,14 +19,12 @@ type HCLAttribute struct {
 	forEachRefs  []*Reference
 }
 
-func NewHCLAttribute(attr *hcl.Attribute, block Block, ctx *Context) *HCLAttribute {
+func NewHCLAttribute(attr *hcl.Attribute, ctx *Context) *HCLAttribute {
 	a := &HCLAttribute{
 		hclAttribute: attr,
 		ctx:          ctx,
 	}
-	if attr.Name == "each" && block != nil {
-		a.forEachRefs = block.GetAttribute("for_each").AllReferences()
-	}
+
 	return a
 }
 
@@ -640,16 +638,23 @@ func (attr *HCLAttribute) Reference() (*Reference, error) {
 	}
 }
 
-func (attr *HCLAttribute) AllReferences() []*Reference {
+func (attr *HCLAttribute) AllReferences(blocks ...Block) []*Reference {
 	if attr == nil {
 		return nil
 	}
-	refs := attr.forEachRefs
+	var refs []*Reference
 	refs = append(refs, attr.referencesInTemplate()...)
 	refs = append(refs, attr.referencesInConditional()...)
 	ref, err := attr.Reference()
 	if err == nil {
 		refs = append(refs, ref)
+	}
+	for _, block := range blocks {
+		for _, ref := range refs {
+			if ref.TypeLabel() == "each" && block.HasChild("for_each") {
+				refs = append(refs, block.GetAttribute("for_each").AllReferences()...)
+			}
+		}
 	}
 	return refs
 }

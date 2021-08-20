@@ -35,7 +35,7 @@ type Attribute interface {
 	GreaterThanOrEqualTo(checkValue interface{}) bool
 	IsDataBlockReference() bool
 	Reference() (*Reference, error)
-	AllReferences() []*Reference
+	AllReferences(blocks ...Block) []*Reference
 	IsResourceBlockReference(resourceType string) bool
 	References(r definition.Reference) bool
 	IsResolvable() bool

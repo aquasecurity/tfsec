@@ -50,6 +50,7 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 	for _, module := range modules {
 		blocks := module.GetBlocksByTypeLabel("aws_s3_bucket_public_access_block")
 		for _, b := range blocks {
+
 			pba := s3.PublicAccessBlock{
 				Metadata: definition.NewMetadata(b.Range()).WithReference(b.Reference()),
 			}
@@ -62,7 +63,7 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 				bucketName = bucketAttr.Value().AsString()
 			}
 
-			references := bucketAttr.AllReferences()
+			references := bucketAttr.AllReferences(b)
 
 			for i, bucket := range buckets {
 				if bucketName != "" && bucket.Name.Value == bucketName && buckets[i].PublicAccessBlock == nil {

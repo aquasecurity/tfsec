@@ -147,7 +147,7 @@ func (e *Evaluator) EvaluateAll() ([]block.Module, error) {
 		e.evaluateStep(i)
 
 		// if ctx matches the last evaluation, we can bail, nothing left to resolve
-		if reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
+		if i > 0 && reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
 			break
 		}
 
@@ -164,13 +164,14 @@ func (e *Evaluator) EvaluateAll() ([]block.Module, error) {
 
 	// expand out resources and modules via count
 	e.blocks = e.expandBlocks(e.blocks)
+	e.blocks = e.expandBlocks(e.blocks)
 
 	for i := 0; i < maxContextIterations; i++ {
 
 		e.evaluateStep(i)
 
 		// if ctx matches the last evaluation, we can bail, nothing left to resolve
-		if reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
+		if i > 0 && reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
 			break
 		}
 
@@ -220,15 +221,25 @@ func (e *Evaluator) expandDynamicBlock(b block.Block) {
 
 func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 	var forEachFiltered block.Blocks
+
 	for _, block := range blocks {
+
+		fmt.Println(block.Reference().String())
+
 		forEachAttr := block.GetAttribute("for_each")
+
+		if forEachAttr.Value().IsNull() || !forEachAttr.Value().IsKnown() {
+			continue
+		}
+
 		if forEachAttr.IsNil() || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module" && block.Type() != "dynamic") {
 			forEachFiltered = append(forEachFiltered, block)
 			continue
 		}
 		if !forEachAttr.Value().IsNull() && forEachAttr.Value().IsKnown() && forEachAttr.IsIterable() {
+			var clones []cty.Value
 			forEachAttr.Each(func(key cty.Value, val cty.Value) {
-				clone := block.Clone(key)
+				clone := block.Clone(val)
 
 				ctx := clone.Context()
 
@@ -242,7 +253,17 @@ func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 
 				debug.Log("Added %s from for_each", clone.Reference())
 				forEachFiltered = append(forEachFiltered, clone)
+
+				fmt.Println("CLONE: " + clone.Reference().NameLabel() + clone.Reference().Key())
+
+				clones = append(clones, cty.StringVal(clone.Reference().Key()))
+				e.ctx.SetByDot(clone.Values(), clone.Reference().String())
 			})
+			if len(clones) == 0 {
+				e.ctx.SetByDot(cty.EmptyTupleVal, block.Reference().String())
+			} else {
+				e.ctx.SetByDot(cty.ListVal(clones), block.Reference().String())
+			}
 		}
 	}
 
@@ -265,13 +286,21 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 			}
 		}
 
+		var clones []cty.Value
 		for i := 0; i < count; i++ {
 			c, _ := gocty.ToCtyValue(i, cty.Number)
 			clone := block.Clone(c)
+			clones = append(clones, clone.Values())
 			block.TypeLabel()
 			debug.Log("Added %s from count var", clone.Reference())
 			countFiltered = append(countFiltered, clone)
 		}
+		if len(clones) == 0 {
+			e.ctx.SetByDot(cty.EmptyTupleVal, block.Reference().String())
+		} else {
+			e.ctx.SetByDot(cty.ListVal(clones), block.Reference().String())
+		}
+
 	}
 
 	return countFiltered
