@@ -2,7 +2,7 @@ package definition
 
 type Metadata struct {
 	Range     Range
-	Reference string
+	Reference Reference
 }
 
 func NewMetadata(r Range) *Metadata {
@@ -11,7 +11,7 @@ func NewMetadata(r Range) *Metadata {
 	}
 }
 
-func (m *Metadata) WithReference(reference string) *Metadata {
+func (m *Metadata) WithReference(reference Reference) *Metadata {
 	m.Reference = reference
 	return m
 }

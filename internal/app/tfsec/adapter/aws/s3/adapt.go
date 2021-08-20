@@ -23,7 +23,7 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 		func(block block.Block) {
 			s3b := s3.Bucket{
 				Name:     getName(block),
-				Metadata: definition.NewMetadata(block.Range()).WithReference(block.FullName()),
+				Metadata: definition.NewMetadata(block.Range()).WithReference(block.Reference()),
 				Versioning: s3.Versioning{
 					Enabled: isVersioned(block),
 				},
@@ -47,33 +47,47 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.PublicAccessBlock {
 	var publicAccessBlocks []s3.PublicAccessBlock
 
-	blocks := modules.GetBlocksByTypeLabel("aws_s3_bucket_public_access_block")
-	for _, b := range blocks {
-		pba := s3.PublicAccessBlock{}
-
-		var bucketName string
-
-		bucketAttr := b.GetAttribute("bucket")
-
-		if bucketAttr.IsString() {
-			bucketName = bucketAttr.Value().AsString()
-		}
-
-		for i, bucket := range buckets {
-			if bucket.Name.Value == bucketName {
-				pba.Bucket = &bucket
-				buckets[i].PublicAccessBlock = &pba
+	for _, module := range modules {
+		blocks := module.GetBlocksByTypeLabel("aws_s3_bucket_public_access_block")
+		for _, b := range blocks {
+			pba := s3.PublicAccessBlock{
+				Metadata: definition.NewMetadata(b.Range()).WithReference(b.Reference()),
 			}
-		}
 
-		publicAccessBlocks = append(publicAccessBlocks, pba)
+			var bucketName string
+
+			bucketAttr := b.GetAttribute("bucket")
+
+			if bucketAttr.IsString() {
+				bucketName = bucketAttr.Value().AsString()
+			}
+
+			references := bucketAttr.AllReferences()
+
+			for i, bucket := range buckets {
+				if bucketName != "" && bucket.Name.Value == bucketName && buckets[i].PublicAccessBlock == nil {
+					pba.Bucket = &bucket
+					buckets[i].PublicAccessBlock = &pba
+					break
+				}
+				for _, ref := range references {
+					if ref.RefersTo(bucket.Reference) {
+						pba.Bucket = &bucket
+						buckets[i].PublicAccessBlock = &pba
+						break
+					}
+				}
+			}
+
+			publicAccessBlocks = append(publicAccessBlocks, pba)
+		}
 	}
 
 	return publicAccessBlocks
 }
 
 func getName(b block.Block) definition.StringValue {
-	if nameAttr := b.GetAttribute("name"); nameAttr.IsString() {
+	if nameAttr := b.GetAttribute("bucket"); nameAttr.IsString() {
 		return definition.StringValue{
 			Metadata: definition.NewMetadata(nameAttr.Range()),
 			Value:    nameAttr.Value().AsString(),

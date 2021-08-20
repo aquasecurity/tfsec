@@ -83,7 +83,7 @@ resource "google_project_iam_member" "project" {
 			}
 
 			// the service account may be populated via a templated reference that we don't have, so we need to check references
-			if serviceAccountBlock, err := module.GetReferencedBlock(memberAttr); err != nil {
+			if serviceAccountBlock, err := module.GetReferencedBlock(memberAttr, resourceBlock); err != nil {
 				return
 			} else if serviceAccountBlock.IsNotNil() && serviceAccountBlock.TypeLabel() == "google_service_account" {
 				set.AddResult().

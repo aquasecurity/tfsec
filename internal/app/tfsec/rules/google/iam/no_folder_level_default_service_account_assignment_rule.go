@@ -81,7 +81,7 @@ resource "google_folder_iam_member" "folder-123" {
 					computeServiceAccounts := module.GetDatasByType("google_compute_default_service_account")
 					serviceAccounts := append(computeServiceAccounts, module.GetResourcesByType("google_app_engine_default_service_account")...)
 					for _, serviceAccount := range serviceAccounts {
-						if memberAttr.ReferencesBlock(serviceAccount) {
+						if memberAttr.References(serviceAccount.Reference()) {
 							set.AddResult().
 								WithAttribute(memberAttr).
 								WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
@@ -101,7 +101,7 @@ resource "google_folder_iam_member" "folder-123" {
 				computeServiceAccounts := module.GetDatasByType("google_compute_default_service_account")
 				serviceAccounts := append(computeServiceAccounts, module.GetResourcesByType("google_app_engine_default_service_account")...)
 				for _, serviceAccount := range serviceAccounts {
-					if membersAttr.ReferencesBlock(serviceAccount) {
+					if membersAttr.References(serviceAccount.Reference()) {
 						set.AddResult().
 							WithAttribute(membersAttr).
 							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())

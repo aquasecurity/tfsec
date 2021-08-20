@@ -63,7 +63,7 @@ resource "aws_sns_topic" "good_example" {
 
 			if kmsKeyIDAttr.IsDataBlockReference() {
 
-				kmsData, err := module.GetReferencedBlock(kmsKeyIDAttr)
+				kmsData, err := module.GetReferencedBlock(kmsKeyIDAttr, resourceBlock)
 				if err != nil {
 					return
 				}

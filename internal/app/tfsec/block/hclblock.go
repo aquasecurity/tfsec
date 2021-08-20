@@ -233,7 +233,7 @@ func (b *HCLBlock) GetAttributes() []Attribute {
 		//return b.cachedAttributes
 	}
 	for _, attr := range b.getHCLAttributes() {
-		results = append(results, NewHCLAttribute(attr, b.context))
+		results = append(results, NewHCLAttribute(attr, b, b.context))
 	}
 	b.cachedAttributes = results
 	return results

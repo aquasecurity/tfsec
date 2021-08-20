@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/pkg/defsec/definition"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -97,20 +98,28 @@ func (r *Reference) String() string {
 	return base
 }
 
-func (r *Reference) RefersTo(b Block) bool {
-	if r.BlockType() != b.Reference().BlockType() {
+func (r *Reference) RefersTo(a definition.Reference) bool {
+	other := a.(*Reference)
+
+	fmt.Printf("%s -- %s\n", r, a)
+
+	if r.BlockType() != other.BlockType() {
 		return false
 	}
-	if r.TypeLabel() != b.Reference().TypeLabel() {
+	if r.TypeLabel() != other.TypeLabel() {
 		return false
 	}
-	if r.NameLabel() != b.Reference().NameLabel() {
+	if r.NameLabel() != other.NameLabel() {
 		return false
 	}
-	if r.Key() != "" && r.Key() != b.Reference().Key() {
+	if (r.Key() != "" || other.Key() != "") && r.Key() != other.Key() {
 		return false
 	}
 	return true
+}
+
+func (r *Reference) SetKeyRaw(key string) {
+	r.key = key
 }
 
 func (r *Reference) SetKey(key cty.Value) {

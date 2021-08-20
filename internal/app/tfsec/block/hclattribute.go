@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/aquasecurity/tfsec/pkg/defsec/definition"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/zclconf/go-cty/cty"
@@ -15,13 +16,18 @@ import (
 type HCLAttribute struct {
 	hclAttribute *hcl.Attribute
 	ctx          *Context
+	forEachRefs  []*Reference
 }
 
-func NewHCLAttribute(attr *hcl.Attribute, ctx *Context) *HCLAttribute {
-	return &HCLAttribute{
+func NewHCLAttribute(attr *hcl.Attribute, block Block, ctx *Context) *HCLAttribute {
+	a := &HCLAttribute{
 		hclAttribute: attr,
 		ctx:          ctx,
 	}
+	if attr.Name == "each" && block != nil {
+		a.forEachRefs = block.GetAttribute("for_each").AllReferences()
+	}
+	return a
 }
 
 func (attr *HCLAttribute) IsLiteral() bool {
@@ -638,7 +644,7 @@ func (attr *HCLAttribute) AllReferences() []*Reference {
 	if attr == nil {
 		return nil
 	}
-	var refs []*Reference
+	refs := attr.forEachRefs
 	refs = append(refs, attr.referencesInTemplate()...)
 	refs = append(refs, attr.referencesInConditional()...)
 	ref, err := attr.Reference()
@@ -698,12 +704,12 @@ func (attr *HCLAttribute) IsResourceBlockReference(resourceType string) bool {
 	return false
 }
 
-func (attr *HCLAttribute) ReferencesBlock(b Block) bool {
+func (attr *HCLAttribute) References(r definition.Reference) bool {
 	if attr == nil {
 		return false
 	}
 	for _, ref := range attr.AllReferences() {
-		if ref.RefersTo(b) {
+		if ref.RefersTo(r) {
 			return true
 		}
 	}

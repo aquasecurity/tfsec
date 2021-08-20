@@ -1,6 +1,7 @@
 package block
 
 import (
+	"github.com/aquasecurity/tfsec/pkg/defsec/definition"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -36,7 +37,7 @@ type Attribute interface {
 	Reference() (*Reference, error)
 	AllReferences() []*Reference
 	IsResourceBlockReference(resourceType string) bool
-	ReferencesBlock(b Block) bool
+	References(r definition.Reference) bool
 	IsResolvable() bool
 	IsNotResolvable() bool
 	IsString() bool

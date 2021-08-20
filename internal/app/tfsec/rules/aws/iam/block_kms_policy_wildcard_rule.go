@@ -216,7 +216,7 @@ data "aws_iam_policy_document" "kms_policy" {
 				return
 			}
 
-			policyDocumentBlock, err := module.GetReferencedBlock(policyAttr)
+			policyDocumentBlock, err := module.GetReferencedBlock(policyAttr, resourceBlock)
 			if err != nil {
 				return
 			}

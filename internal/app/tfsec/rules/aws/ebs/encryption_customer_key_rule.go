@@ -72,7 +72,7 @@ resource "aws_ebs_volume" "example" {
 
 			kmsKeyAttr := resourceBlock.GetAttribute("kms_key_id")
 			if kmsKeyAttr.IsDataBlockReference() {
-				kmsData, err := module.GetReferencedBlock(kmsKeyAttr)
+				kmsData, err := module.GetReferencedBlock(kmsKeyAttr, resourceBlock)
 				if err != nil {
 					return
 				}

@@ -84,7 +84,7 @@ func checkIfExempt(resourceBlock block.Block, module block.Module) bool {
 	if resourceBlock.HasChild("load_balancer_arn") {
 		lbaAttr := resourceBlock.GetAttribute("load_balancer_arn")
 		if lbaAttr.IsResourceBlockReference("aws_lb") {
-			referencedBlock, err := module.GetReferencedBlock(lbaAttr)
+			referencedBlock, err := module.GetReferencedBlock(lbaAttr, resourceBlock)
 			if err == nil {
 				if referencedBlock.HasChild("load_balancer_type") {
 					loadBalancerType := referencedBlock.GetAttribute("load_balancer_type")
