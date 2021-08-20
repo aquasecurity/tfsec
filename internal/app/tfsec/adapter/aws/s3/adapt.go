@@ -7,8 +7,12 @@ import (
 )
 
 func Adapt(modules []block.Module) s3.S3 {
+	buckets := getBuckets(modules)
+	publicAccessBlocks := getPublicAccessBlocks(modules, buckets)
+
 	return s3.S3{
-		Buckets: getBuckets(modules),
+		Buckets:            buckets,
+		PublicAccessBlocks: publicAccessBlocks,
 	}
 }
 
@@ -17,7 +21,8 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 	blocks := modules.GetBlocksByTypeLabel("aws_s3_bucket")
 	for _, b := range blocks {
 		func(block block.Block) {
-			buckets = append(buckets, s3.Bucket{
+			s3b := s3.Bucket{
+				Name:     getName(block),
 				Metadata: definition.NewMetadata(block.Range()).WithReference(block.FullName()),
 				Versioning: s3.Versioning{
 					Enabled: isVersioned(block),
@@ -29,11 +34,56 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 					Enabled: hasLogging(block),
 				},
 				ACL: getACL(block),
-			})
+			}
+
+			buckets = append(buckets, s3b)
+
 		}(b)
 	}
 
 	return buckets
+}
+
+func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.PublicAccessBlock {
+	var publicAccessBlocks []s3.PublicAccessBlock
+
+	blocks := modules.GetBlocksByTypeLabel("aws_s3_bucket_public_access_block")
+	for _, b := range blocks {
+		pba := s3.PublicAccessBlock{}
+
+		var bucketName string
+
+		bucketAttr := b.GetAttribute("bucket")
+
+		if bucketAttr.IsString() {
+			bucketName = bucketAttr.Value().AsString()
+		}
+
+		for i, bucket := range buckets {
+			if bucket.Name.Value == bucketName {
+				pba.Bucket = &bucket
+				buckets[i].PublicAccessBlock = &pba
+			}
+		}
+
+		publicAccessBlocks = append(publicAccessBlocks, pba)
+	}
+
+	return publicAccessBlocks
+}
+
+func getName(b block.Block) definition.StringValue {
+	if nameAttr := b.GetAttribute("name"); nameAttr.IsString() {
+		return definition.StringValue{
+			Metadata: definition.NewMetadata(nameAttr.Range()),
+			Value:    nameAttr.Value().AsString(),
+		}
+	}
+	return definition.StringValue{
+		Metadata: definition.NewMetadata(b.Range()),
+		Value:    "",
+	}
+
 }
 
 func getACL(b block.Block) definition.StringValue {

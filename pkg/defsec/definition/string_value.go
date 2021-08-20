@@ -2,6 +2,7 @@ package definition
 
 import "strings"
 
+type StringCheckFunc func(string, string) bool
 type StringEqualityOption int
 
 const (
@@ -33,7 +34,7 @@ func (s *StringValue) Contains(value string, equalityOptions ...StringEqualityOp
 	return s.executePredicate(value, strings.Contains, equalityOptions...)
 }
 
-func (s *StringValue) executePredicate(value string, fn func(string, string) bool, equalityOptions ...StringEqualityOption) bool {
+func (s *StringValue) executePredicate(value string, fn StringCheckFunc, equalityOptions ...StringEqualityOption) bool {
 	subjectString := s.Value
 	searchString := value
 

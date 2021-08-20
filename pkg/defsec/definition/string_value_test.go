@@ -6,6 +6,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func Test_StringValueEqualTo(t *testing.T) {
+	testCases := []struct {
+		desc       string
+		input      string
+		check     string
+		ignoreCase bool
+		expected   bool
+	}{
+		{
+			desc:       "return truw when string is equal",
+			input:      "something",
+			check:     "",
+			expected:   false,
+		},
+	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+
+		})
+	}
+}
+
 func Test_StringValueStartsWith(t *testing.T) {
 	testCases := []struct {
 		desc       string
