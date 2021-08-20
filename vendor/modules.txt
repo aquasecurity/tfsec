@@ -1,4 +1,5 @@
 # github.com/ProtonMail/go-crypto v0.0.0-20210428141323-04723f9f07d7
+## explicit; go 1.13
 github.com/ProtonMail/go-crypto/bitcurves
 github.com/ProtonMail/go-crypto/brainpool
 github.com/ProtonMail/go-crypto/eax
@@ -16,6 +17,7 @@ github.com/ProtonMail/go-crypto/openpgp/internal/encoding
 github.com/ProtonMail/go-crypto/openpgp/packet
 github.com/ProtonMail/go-crypto/openpgp/s2k
 # github.com/acomagu/bufpipe v1.0.3
+## explicit; go 1.12
 github.com/acomagu/bufpipe
 # github.com/agext/levenshtein v1.2.2
 ## explicit
@@ -24,13 +26,16 @@ github.com/agext/levenshtein
 ## explicit
 github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
+## explicit; go 1.16
 github.com/apparentlymart/go-textseg/v13/textseg
 # github.com/bmatcuk/doublestar v1.3.4
-## explicit
+## explicit; go 1.12
 github.com/bmatcuk/doublestar
 # github.com/davecgh/go-spew v1.1.1
+## explicit
 github.com/davecgh/go-spew/spew
 # github.com/emirpasic/gods v1.12.0
+## explicit
 github.com/emirpasic/gods/containers
 github.com/emirpasic/gods/lists
 github.com/emirpasic/gods/lists/arraylist
@@ -38,8 +43,10 @@ github.com/emirpasic/gods/trees
 github.com/emirpasic/gods/trees/binaryheap
 github.com/emirpasic/gods/utils
 # github.com/gdamore/encoding v1.0.0
+## explicit; go 1.9
 github.com/gdamore/encoding
 # github.com/gdamore/tcell/v2 v2.2.0
+## explicit; go 1.12
 github.com/gdamore/tcell/v2
 github.com/gdamore/tcell/v2/terminfo
 github.com/gdamore/tcell/v2/terminfo/a/aixterm
@@ -79,11 +86,13 @@ github.com/gdamore/tcell/v2/terminfo/x/xterm
 github.com/gdamore/tcell/v2/terminfo/x/xterm_kitty
 github.com/gdamore/tcell/v2/terminfo/x/xterm_termite
 # github.com/go-git/gcfg v1.5.0
+## explicit
 github.com/go-git/gcfg
 github.com/go-git/gcfg/scanner
 github.com/go-git/gcfg/token
 github.com/go-git/gcfg/types
 # github.com/go-git/go-billy/v5 v5.3.1
+## explicit; go 1.13
 github.com/go-git/go-billy/v5
 github.com/go-git/go-billy/v5/helper/chroot
 github.com/go-git/go-billy/v5/helper/polyfill
@@ -91,6 +100,7 @@ github.com/go-git/go-billy/v5/memfs
 github.com/go-git/go-billy/v5/osfs
 github.com/go-git/go-billy/v5/util
 # github.com/go-git/go-git/v5 v5.4.2
+## explicit; go 1.13
 github.com/go-git/go-git/v5/config
 github.com/go-git/go-git/v5/internal/url
 github.com/go-git/go-git/v5/plumbing
@@ -109,7 +119,7 @@ github.com/go-git/go-git/v5/utils/merkletrie
 github.com/go-git/go-git/v5/utils/merkletrie/internal/frame
 github.com/go-git/go-git/v5/utils/merkletrie/noder
 # github.com/google/go-cmp v0.5.6
-## explicit
+## explicit; go 1.8
 github.com/google/go-cmp/cmp
 github.com/google/go-cmp/cmp/internal/diff
 github.com/google/go-cmp/cmp/internal/flags
@@ -125,7 +135,7 @@ github.com/hashicorp/go-uuid
 ## explicit
 github.com/hashicorp/go-version
 # github.com/hashicorp/hcl/v2 v2.10.1
-## explicit
+## explicit; go 1.12
 github.com/hashicorp/hcl/v2
 github.com/hashicorp/hcl/v2/ext/customdecode
 github.com/hashicorp/hcl/v2/ext/tryfunc
@@ -138,25 +148,28 @@ github.com/inconshreveable/go-update
 github.com/inconshreveable/go-update/internal/binarydist
 github.com/inconshreveable/go-update/internal/osext
 # github.com/inconshreveable/mousetrap v1.0.0
+## explicit
 github.com/inconshreveable/mousetrap
 # github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99
+## explicit
 github.com/jbenet/go-context/io
 # github.com/kylelemons/godebug v1.1.0
-## explicit
+## explicit; go 1.11
 # github.com/liamg/clinch v1.5.6
-## explicit
+## explicit; go 1.13
 github.com/liamg/clinch/prompt
 github.com/liamg/clinch/terminal
 # github.com/liamg/gifwrap v0.0.6
-## explicit
+## explicit; go 1.16
 github.com/liamg/gifwrap/pkg/ascii
 # github.com/liamg/tml v0.4.0
-## explicit
+## explicit; go 1.12
 github.com/liamg/tml
 # github.com/lucasb-eyer/go-colorful v1.0.3
+## explicit; go 1.12
 github.com/lucasb-eyer/go-colorful
 # github.com/mattn/go-runewidth v0.0.12
-## explicit
+## explicit; go 1.9
 github.com/mattn/go-runewidth
 # github.com/mitchellh/go-homedir v1.1.0
 ## explicit
@@ -165,41 +178,46 @@ github.com/mitchellh/go-homedir
 ## explicit
 github.com/mitchellh/go-wordwrap
 # github.com/olekukonko/tablewriter v0.0.5
-## explicit
+## explicit; go 1.12
 github.com/olekukonko/tablewriter
 # github.com/owenrumney/go-sarif v1.0.11
-## explicit
+## explicit; go 1.16
 github.com/owenrumney/go-sarif/sarif
 # github.com/owenrumney/squealer v0.2.28
-## explicit
+## explicit; go 1.16
 github.com/owenrumney/squealer/internal/app/squealer/match
 github.com/owenrumney/squealer/internal/app/squealer/mertics
 github.com/owenrumney/squealer/pkg/config
 github.com/owenrumney/squealer/pkg/result
 github.com/owenrumney/squealer/pkg/squealer
 # github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942
+## explicit
 github.com/pkg/term
 github.com/pkg/term/termios
 # github.com/pmezard/go-difflib v1.0.0
+## explicit
 github.com/pmezard/go-difflib/difflib
 # github.com/rivo/uniseg v0.2.0
-## explicit
+## explicit; go 1.12
 github.com/rivo/uniseg
 # github.com/sergi/go-diff v1.1.0
+## explicit; go 1.12
 github.com/sergi/go-diff/diffmatchpatch
 # github.com/sirupsen/logrus v1.8.1
+## explicit; go 1.13
 github.com/sirupsen/logrus
 # github.com/spf13/cobra v1.2.1
-## explicit
+## explicit; go 1.14
 github.com/spf13/cobra
 # github.com/spf13/pflag v1.0.5
+## explicit; go 1.12
 github.com/spf13/pflag
 # github.com/stretchr/testify v1.7.0
-## explicit
+## explicit; go 1.13
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
 # github.com/zclconf/go-cty v1.9.0
-## explicit
+## explicit; go 1.12
 github.com/zclconf/go-cty/cty
 github.com/zclconf/go-cty/cty/convert
 github.com/zclconf/go-cty/cty/function
@@ -211,7 +229,7 @@ github.com/zclconf/go-cty/cty/set
 ## explicit
 github.com/zclconf/go-cty-yaml
 # golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
-## explicit
+## explicit; go 1.11
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
 golang.org/x/crypto/cast5
@@ -225,18 +243,20 @@ golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/terminal
 # golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
+## explicit; go 1.11
 golang.org/x/net/context
 # golang.org/x/sys v0.0.0-20210616094352-59db8d763f22
-## explicit
+## explicit; go 1.17
 golang.org/x/sys/cpu
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 # golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf
+## explicit; go 1.11
 golang.org/x/term
 # golang.org/x/text v0.3.7
-## explicit
+## explicit; go 1.17
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
 golang.org/x/text/encoding/ianaindex
@@ -252,9 +272,11 @@ golang.org/x/text/runes
 golang.org/x/text/transform
 golang.org/x/text/unicode/norm
 # gopkg.in/warnings.v0 v0.1.2
+## explicit
 gopkg.in/warnings.v0
 # gopkg.in/yaml.v2 v2.4.0
-## explicit
+## explicit; go 1.15
 gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+## explicit
 gopkg.in/yaml.v3
