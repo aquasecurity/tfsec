@@ -19,12 +19,16 @@ import (
 	"github.com/liamg/tml"
 )
 
-var severityFormat = map[severity.Severity]string{
-	severity.Low:      tml.Sprintf("<white>%s</white>", severity.Low),
-	severity.Medium:   tml.Sprintf("<yellow>%s</yellow>", severity.Medium),
-	severity.High:     tml.Sprintf("<red>%s</red>", severity.High),
-	severity.Critical: tml.Sprintf("<bold><red>%s</red></bold>", severity.Critical),
-	"":                tml.Sprintf("<white>UNKNOWN</white>"),
+var severityFormat map[severity.Severity]string
+
+func formatSeveritiesMap() {
+	severityFormat = make(map[severity.Severity]string)
+
+	severityFormat[severity.Low] = tml.Sprintf("<white>%s</white>", severity.Low)
+	severityFormat[severity.Medium] = tml.Sprintf("<yellow>%s</yellow>", severity.Medium)
+	severityFormat[severity.High] = tml.Sprintf("<red>%s</red>", severity.High)
+	severityFormat[severity.Critical] = tml.Sprintf("<bold><red>%s</red></bold>", severity.Critical)
+	severityFormat[""] = tml.Sprintf("<white>UNKNOWN</white>")
 }
 
 func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...FormatterOption) error {
@@ -46,6 +50,8 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 			showGif = true
 		}
 	}
+
+	formatSeveritiesMap()
 
 	if len(results) == 0 || len(results) == countPassedResults(results) {
 		if showGif {
