@@ -19,15 +19,16 @@ import (
 	"github.com/liamg/tml"
 )
 
-var severityFormat = map[severity.Severity]string{
-	severity.Low:      tml.Sprintf("<white>%s</white>", severity.Low),
-	severity.Medium:   tml.Sprintf("<yellow>%s</yellow>", severity.Medium),
-	severity.High:     tml.Sprintf("<red>%s</red>", severity.High),
-	severity.Critical: tml.Sprintf("<bold><red>%s</red></bold>", severity.Critical),
-	"":                tml.Sprintf("<white>UNKNOWN</white>"),
-}
+var severityFormat map[severity.Severity]string
 
 func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...FormatterOption) error {
+	severityFormat = map[severity.Severity]string{
+		severity.Low:      tml.Sprintf("<white>%s</white>", severity.Low),
+		severity.Medium:   tml.Sprintf("<yellow>%s</yellow>", severity.Medium),
+		severity.High:     tml.Sprintf("<red>%s</red>", severity.High),
+		severity.Critical: tml.Sprintf("<bold><red>%s</red></bold>", severity.Critical),
+		"":                tml.Sprintf("<white>UNKNOWN</white>"),
+	}
 
 	showStatistics := true
 	showSuccessOutput := true
