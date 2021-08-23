@@ -129,7 +129,7 @@ func processFoundChecks(checks ChecksFile) {
 		func(customCheck Check) {
 			debug.Log("Loading check: %s\n", customCheck.Code)
 			scanner.RegisterCheckRule(rule.Rule{
-				RuleDef: rules.RuleDef{
+				DefSecCheck: rules.RuleDef{
 					Id:         "",
 					ShortCode:  customCheck.Code,
 					Summary:    customCheck.Description,

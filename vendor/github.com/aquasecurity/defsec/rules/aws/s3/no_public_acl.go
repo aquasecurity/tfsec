@@ -12,9 +12,10 @@ import (
 
 var CheckForPublicACL = rules.RuleDef{
 
-	Provider: provider.AWSProvider,
-	Service:  "s3",
-	Summary:  "S3 Bucket does not have logging enabled.",
+	Provider:  provider.AWSProvider,
+	Service:   "s3",
+	ShortCode: "no-public-access-with-acl",
+	Summary:   "S3 Bucket does not have logging enabled.",
 	Explanation: `
 Buckets should have logging enabled so that access can be audited. 
 `,

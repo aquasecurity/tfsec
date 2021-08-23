@@ -30,8 +30,8 @@ func CheckRule(r *Rule, context *infra.Context, ignoreErrors bool) result.Set {
 
 	var links []string
 
-	if r.Provider != provider.CustomProvider {
-		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s#%s/%s", r.Provider, r.Service, r.ShortCode, r.Provider, r.Service))
+	if r.DefSecCheck.Provider != provider.CustomProvider {
+		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s#%s/%s", r.DefSecCheck.Provider, r.DefSecCheck.Service, r.DefSecCheck.ShortCode, r.DefSecCheck.Provider, r.DefSecCheck.Service))
 	}
 
 	links = append(links, r.Links...)
@@ -39,19 +39,20 @@ func CheckRule(r *Rule, context *infra.Context, ignoreErrors bool) result.Set {
 	resultSet := result.NewSet().
 		WithRuleID(r.ID()).
 		WithLegacyRuleID(r.LegacyID).
-		WithRuleSummary(r.Summary).
-		WithImpact(r.Impact).
-		WithResolution(r.Resolution).
-		WithRuleProvider(r.Provider).
+		WithRuleSummary(r.DefSecCheck.Summary).
+		WithImpact(r.DefSecCheck.Impact).
+		WithResolution(r.DefSecCheck.Resolution).
+		WithRuleProvider(r.DefSecCheck.Provider).
 		WithLinks(links)
 
 		// TODO: interfaces pls
-	if r.CheckTerraform == nil && r.CheckFunc == nil {
+	if r.CheckTerraform == nil && r.DefSecCheck.CheckFunc == nil {
 		debug.Log("Check %s implements no check functions - cannot run", r.ID())
 	}
-
-	if r.CheckFunc != nil {
-		for _, result := range r.CheckFunc(context) {
+	fmt.Println("shall i run the check")
+	if r.DefSecCheck.CheckFunc != nil {
+		fmt.Println("Running the check")
+		for _, result := range r.DefSecCheck.CheckFunc(context) {
 			resultSet.Add(result)
 		}
 	}
@@ -62,7 +63,7 @@ func CheckRule(r *Rule, context *infra.Context, ignoreErrors bool) result.Set {
 // IsRuleRequiredForBlock returns true if the Rule should be applied to the given HCL block
 func IsRuleRequiredForBlock(rule *Rule, b block.Block) bool {
 
-	if rule.CheckFunc != nil {
+	if rule.DefSecCheck.CheckFunc != nil {
 		return true
 	}
 

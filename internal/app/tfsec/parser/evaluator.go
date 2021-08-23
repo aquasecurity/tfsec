@@ -226,10 +226,6 @@ func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 
 		forEachAttr := block.GetAttribute("for_each")
 
-		if forEachAttr.Value().IsNull() || !forEachAttr.Value().IsKnown() {
-			continue
-		}
-
 		if forEachAttr.IsNil() || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module" && block.Type() != "dynamic") {
 			forEachFiltered = append(forEachFiltered, block)
 			continue

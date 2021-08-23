@@ -14,6 +14,7 @@ var CheckVersioningIsEnabled = rules.RuleDef{
 
 	Provider:   provider.AWSProvider,
 	Service:    "s3",
+	ShortCode:  "enable-versioning",
 	Summary:    "S3 Data should be versioned",
 	Impact:     "Deleted or modified data would not be recoverable",
 	Resolution: "Enable versioning to protect against accidental/malicious removal or modification",

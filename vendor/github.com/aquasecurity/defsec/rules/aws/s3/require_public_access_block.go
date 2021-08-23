@@ -12,9 +12,10 @@ import (
 
 var CheckBucketsHavePublicAccessBlocks = rules.RuleDef{
 
-	Provider: provider.AWSProvider,
-	Service:  "s3",
-	Summary:  "S3 buckets should each define an aws_s3_bucket_public_access_block",
+	Provider:  provider.AWSProvider,
+	Service:   "s3",
+	ShortCode: "specify-public-access-block",
+	Summary:   "S3 buckets should each define an aws_s3_bucket_public_access_block",
 	Explanation: `
 The "block public access" settings in S3 override individual policies that apply to a given bucket, meaning that all public access can be controlled in one central definition for that bucket. It is therefore good practice to define these settings for each bucket in order to clearly define the public access that can be allowed for it.
 `,

@@ -14,13 +14,13 @@ var registeredRules []rule.Rule
 
 // RegisterCheckRule registers a new Rule which should be run on future scans
 func RegisterCheckRule(rule rule.Rule) {
-	if rule.ShortCode == "" {
+	if rule.DefSecCheck.ShortCode == "" {
 		panic("rule short code was not set")
 	}
-	if rule.Service == "" {
+	if rule.DefSecCheck.Service == "" {
 		panic("rule service was not set")
 	}
-	if rule.Provider == "" {
+	if rule.DefSecCheck.Provider == "" {
 		panic("rule provider was not set")
 	}
 	rulesLock.Lock()
@@ -60,7 +60,7 @@ func GetRuleById(ID string) (*rule.Rule, error) {
 			return &r, nil
 		}
 	}
-	return nil, fmt.Errorf("could not find rule with legacyID '%s'", ID)
+	return nil, fmt.Errorf("could not find rule with ID '%s'", ID)
 }
 
 func GetRuleByLegacyID(legacyID string) (*rule.Rule, error) {

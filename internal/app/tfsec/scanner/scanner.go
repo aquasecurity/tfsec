@@ -70,7 +70,7 @@ func (scanner *Scanner) scanAll() []result.Result {
 		if ruleResults != nil {
 			for _, ruleResult := range ruleResults.All() {
 				if ruleResult.Severity == severity.None {
-					ruleResult.Severity = r.Severity
+					ruleResult.Severity = r.DefSecCheck.Severity
 
 				}
 				if !scanner.includeIgnored && (ruleResult.IsIgnored(scanner.workspaceName) || checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.excludedRuleIDs)) {

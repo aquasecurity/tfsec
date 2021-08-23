@@ -1,23 +1,24 @@
 package network
-// 
+
+//
 // // generator-locked
 // import (
 // 	"strings"
-// 
+//
 // 	"github.com/aquasecurity/defsec/result"
 // 	"github.com/aquasecurity/defsec/severity"
-// 
+//
 // 	"github.com/aquasecurity/defsec/provider"
-// 
+//
 // 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
-// 
+//
 // 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-// 
+//
 // 	"github.com/aquasecurity/tfsec/pkg/rule"
-// 
+//
 // 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 // )
-// 
+//
 // func init() {
 // 	scanner.RegisterCheckRule(rule.Rule{
 // 		LegacyID:  "AZU001",
@@ -29,7 +30,7 @@ package network
 // 			Resolution: "Set a more restrictive cidr range",
 // 			Explanation: `
 // Network security rules should not use very broad subnets.
-// 
+//
 // Where possible, segments should be broken into smaller subnets.
 // `,
 // 			BadExample: []string{`
@@ -54,12 +55,12 @@ package network
 // 		RequiredLabels:  []string{"azurerm_network_security_rule"},
 // 		DefaultSeverity: severity.Critical,
 // 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
-// 
+//
 // 			directionAttr := resourceBlock.GetAttribute("direction")
 // 			if directionAttr.NotEqual("INBOUND", block.IgnoreCase) {
 // 				return
 // 			}
-// 
+//
 // 			if prefixAttr := resourceBlock.GetAttribute("source_address_prefix"); prefixAttr.IsString() {
 // 				if cidr.IsAttributeOpen(prefixAttr) {
 // 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.Equals("ALLOW", block.IgnoreCase) {
@@ -69,7 +70,7 @@ package network
 // 					}
 // 				}
 // 			}
-// 
+//
 // 			if prefixesAttr := resourceBlock.GetAttribute("source_address_prefixes"); !prefixesAttr.IsEmpty() {
 // 				if cidr.IsAttributeOpen(prefixesAttr) {
 // 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.Equals("ALLOW", block.IgnoreCase) {
@@ -79,7 +80,7 @@ package network
 // 					}
 // 				}
 // 			}
-// 
+//
 // 		},
 // 	})
 // }
