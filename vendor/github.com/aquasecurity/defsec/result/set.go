@@ -1,8 +1,7 @@
 package result
 
 import (
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 )
 
 type Set interface {
@@ -23,15 +22,14 @@ func NewSet() *resultSet {
 }
 
 type resultSet struct {
-	resourceBlock block.Block
-	results       []*Result
-	ruleID        string
-	legacyID      string
-	ruleSummary   string
-	ruleProvider  provider.Provider
-	impact        string
-	resolution    string
-	links         []string
+	results      []*Result
+	ruleID       string
+	legacyID     string
+	ruleSummary  string
+	ruleProvider provider.Provider
+	impact       string
+	resolution   string
+	links        []string
 }
 
 func (s *resultSet) Add(r *Result) {
@@ -48,7 +46,7 @@ func (s *resultSet) Add(r *Result) {
 }
 
 func (s *resultSet) AddResult() *Result {
-	result := New(s.resourceBlock).
+	result := New().
 		WithRuleID(s.ruleID).
 		WithLegacyRuleID(s.legacyID).
 		WithRuleSummary(s.ruleSummary).

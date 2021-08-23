@@ -1,7 +1,7 @@
 package block
 
 import (
-	"github.com/aquasecurity/tfsec/pkg/defsec/definition"
+	"github.com/aquasecurity/defsec/definition"
 	"github.com/zclconf/go-cty/cty"
 )
 

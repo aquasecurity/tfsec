@@ -2,10 +2,10 @@ package iam
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -60,7 +60,7 @@ resource "google_project_iam_binding" "project-123" {
 			}
 			if roleAttr.IsAny("roles/iam.serviceAccountUser", "roles/iam.serviceAccountTokenCreator") {
 				set.AddResult().
-					WithAttribute(roleAttr).
+					WithAttribute("").
 					WithDescription("Resource '%s' grants service account access to a user at project level.", resourceBlock.FullName())
 			}
 

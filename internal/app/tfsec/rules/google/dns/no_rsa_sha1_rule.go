@@ -5,12 +5,12 @@ package dns
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -84,12 +84,12 @@ output "foo_dns_ds_record" {
 			if algorithmAttr := resourceBlock.GetBlock("zone_signing_keys").GetAttribute("algorithm"); algorithmAttr.Equals("rsasha1") {
 				set.AddResult().
 					WithDescription("Data '%s' has zone_signing_keys.algorithm set to rsasha1", resourceBlock.FullName()).
-					WithAttribute(algorithmAttr)
+					WithAttribute("")
 			}
 			if algorithmAttr := resourceBlock.GetBlock("key_signing_keys").GetAttribute("algorithm"); algorithmAttr.Equals("rsasha1") {
 				set.AddResult().
 					WithDescription("Data '%s' has key_signing_keys.algorithm set to rsasha1", resourceBlock.FullName()).
-					WithAttribute(algorithmAttr)
+					WithAttribute("")
 			}
 		},
 	})

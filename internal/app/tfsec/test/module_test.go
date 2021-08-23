@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 	"github.com/stretchr/testify/require"
 
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 var badRule = rule.Rule{

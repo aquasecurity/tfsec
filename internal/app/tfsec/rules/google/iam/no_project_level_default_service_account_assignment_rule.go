@@ -4,10 +4,10 @@ package iam
 import (
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -77,7 +77,7 @@ resource "google_project_iam_member" "project-123" {
 				if memberAttr.IsString() {
 					if isMemberDefaultServiceAccount(memberAttr.Value().AsString()) {
 						set.AddResult().
-							WithAttribute(memberAttr).
+							WithAttribute("").
 							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 					}
 				} else {
@@ -86,7 +86,7 @@ resource "google_project_iam_member" "project-123" {
 					for _, serviceAccount := range serviceAccounts {
 						if memberAttr.References(serviceAccount.Reference()) {
 							set.AddResult().
-								WithAttribute(memberAttr).
+								WithAttribute("").
 								WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 						}
 					}
@@ -97,7 +97,7 @@ resource "google_project_iam_member" "project-123" {
 				for _, member := range membersAttr.ValueAsStrings() {
 					if isMemberDefaultServiceAccount(member) {
 						set.AddResult().
-							WithAttribute(membersAttr).
+							WithAttribute("").
 							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 					}
 				}
@@ -106,7 +106,7 @@ resource "google_project_iam_member" "project-123" {
 				for _, serviceAccount := range serviceAccounts {
 					if membersAttr.References(serviceAccount.Reference()) {
 						set.AddResult().
-							WithAttribute(membersAttr).
+							WithAttribute("").
 							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 					}
 				}

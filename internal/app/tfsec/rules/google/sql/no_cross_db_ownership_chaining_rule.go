@@ -2,10 +2,10 @@ package sql
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -71,7 +71,7 @@ resource "google_sql_database_instance" "db" {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.Equals("on") {
 						set.AddResult().
 							WithDescription("Resource '%s' has cross-database ownership chaining explicitly enabled", resourceBlock.FullName()).
-							WithAttribute(valueAttr)
+							WithAttribute("")
 					}
 					// otherwise it's off, awesome
 					return
@@ -81,7 +81,7 @@ resource "google_sql_database_instance" "db" {
 			// we didn't find the flag so it must be on by default
 			set.AddResult().
 				WithDescription("Resource '%s' has cross-database ownership chaining enabled by default", resourceBlock.FullName()).
-				WithBlock(settingsBlock)
+				WithBlock("")
 
 		},
 	})

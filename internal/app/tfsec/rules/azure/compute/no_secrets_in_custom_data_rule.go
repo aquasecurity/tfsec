@@ -4,11 +4,11 @@ package compute
 import (
 	"encoding/base64"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/owenrumney/squealer/pkg/squealer"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 
@@ -65,7 +65,7 @@ EOF
 					if checkStringForSensitive(str) {
 						set.AddResult().
 							WithDescription("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName()).
-							WithAttribute(customDataAttr)
+							WithAttribute("")
 					}
 				}
 			} else if customDataAttr.IsResolvable() && customDataAttr.IsString() {
@@ -77,7 +77,7 @@ EOF
 				if checkStringForSensitive(string(encoded)) {
 					set.AddResult().
 						WithDescription("Resource '%s' has custom_data with sensitive data.", resourceBlock.FullName()).
-						WithAttribute(customDataAttr)
+						WithAttribute("")
 				}
 
 			}

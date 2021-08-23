@@ -5,12 +5,12 @@ package appservice
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -68,7 +68,7 @@ resource "azurerm_app_service" "good_example" {
 			} else if clientCertEnabledAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' has attribute client_cert_enabled that is false", resourceBlock.FullName()).
-					WithAttribute(clientCertEnabledAttr)
+					WithAttribute("")
 			}
 		},
 	})

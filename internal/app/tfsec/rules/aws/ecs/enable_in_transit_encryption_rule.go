@@ -2,10 +2,10 @@ package ecs
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -97,7 +97,7 @@ resource "aws_ecs_task_definition" "good_example" {
 				if transitAttr.Equals("disabled", block.IgnoreCase) {
 					set.AddResult().
 						WithDescription("Resource '%s' has efs configuration with transit encryption explicitly disabled", resourceBlock.FullName()).
-						WithAttribute(transitAttr)
+						WithAttribute("")
 				}
 			}
 

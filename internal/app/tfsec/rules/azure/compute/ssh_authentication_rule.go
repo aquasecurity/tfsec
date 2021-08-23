@@ -2,10 +2,10 @@ package compute
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -51,14 +51,14 @@ resource "azurerm_virtual_machine" "good_example" {
 
 			if linuxConfigBlock := resourceBlock.GetBlock("os_profile_linux_config"); linuxConfigBlock.IsNotNil() {
 				if linuxConfigBlock.MissingChild("disable_password_authentication") {
-					set.AddResult().WithDescription("Resource '%s' missing required attribute in os_profile_linux_config", resourceBlock.FullName()).WithBlock(linuxConfigBlock)
+					set.AddResult().WithDescription("Resource '%s' missing required attribute in os_profile_linux_config", resourceBlock.FullName()).WithBlock("")
 				}
 
 				passwordAuthDisabledAttr := linuxConfigBlock.GetAttribute("disable_password_authentication")
 				if passwordAuthDisabledAttr.IsNotNil() && passwordAuthDisabledAttr.IsFalse() {
 					set.AddResult().
 						WithDescription("Resource '%s' has password authentication enabled. Use SSH keys instead.", resourceBlock.FullName()).
-						WithAttribute(passwordAuthDisabledAttr)
+						WithAttribute("")
 				}
 			}
 

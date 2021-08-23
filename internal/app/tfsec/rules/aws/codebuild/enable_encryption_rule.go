@@ -2,10 +2,10 @@ package codebuild
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -112,11 +112,11 @@ resource "aws_codebuild_project" "codebuild" {
 					if artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
 						set.AddResult().
 							WithDescription("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName()).
-							WithAttribute(artifactTypeAttr)
+							WithAttribute("")
 					} else {
 						set.AddResult().
 							WithDescription("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName()).
-							WithAttribute(encryptionDisabledAttr)
+							WithAttribute("")
 					}
 				}
 			}

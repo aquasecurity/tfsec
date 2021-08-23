@@ -2,10 +2,10 @@ package container
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -61,7 +61,7 @@ resource "azurerm_kubernetes_cluster" "good_example" {
 			if enabledAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' AKS logging to Azure Monitoring is not configured (oms_agent disabled).", resourceBlock.FullName()).
-					WithAttribute(enabledAttr)
+					WithAttribute("")
 			}
 		},
 	})

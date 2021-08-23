@@ -5,13 +5,13 @@ package network
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -173,7 +173,7 @@ resource "kubernetes_network_policy" "good_example" {
 					if cidr.IsAttributeOpen(cidrAttr) {
 						set.AddResult().
 							WithDescription("Resource '%s' allows egress traffic to the internet", resourceBlock.FullName()).
-							WithAttribute(cidrAttr)
+							WithAttribute("")
 					}
 				}
 			}

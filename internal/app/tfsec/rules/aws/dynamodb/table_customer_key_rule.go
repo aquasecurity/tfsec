@@ -2,10 +2,10 @@ package dynamodb
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -101,7 +101,7 @@ resource "aws_dynamodb_table" "good_example" {
 			if enabledAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName()).
-					WithBlock(sseBlock)
+					WithBlock("")
 			}
 
 			if sseBlock.HasChild("kms_key_arn") {
@@ -109,7 +109,7 @@ resource "aws_dynamodb_table" "good_example" {
 				if keyIdAttr.Equals("alias/aws/dynamodb") {
 					set.AddResult().
 						WithDescription("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName()).
-						WithAttribute(keyIdAttr)
+						WithAttribute("")
 				}
 			}
 

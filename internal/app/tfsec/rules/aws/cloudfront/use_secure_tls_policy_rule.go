@@ -2,10 +2,10 @@ package cloudfront
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -64,14 +64,14 @@ resource "aws_cloudfront_distribution" "good_example" {
 			if minVersionAttr.IsNil() {
 				set.AddResult().
 					WithDescription("Resource '%s' defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", resourceBlock.FullName()).
-					WithBlock(viewerCertificateBlock)
+					WithBlock("")
 				return
 			}
 
 			if minVersionAttr.NotEqual("TLSv1.2_2021") {
 				set.AddResult().
 					WithDescription("Resource '%s' defines outdated SSL/TLS policies (not using TLSv1.2_2021)", resourceBlock.FullName()).
-					WithAttribute(minVersionAttr)
+					WithAttribute("")
 			}
 		},
 	})

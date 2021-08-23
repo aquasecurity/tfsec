@@ -1,7 +1,7 @@
 package aws
 
 import (
-	"github.com/aquasecurity/tfsec/pkg/defsec/aws/s3"
+	"github.com/aquasecurity/defsec/provider/aws/s3"
 )
 
 type AWS struct {

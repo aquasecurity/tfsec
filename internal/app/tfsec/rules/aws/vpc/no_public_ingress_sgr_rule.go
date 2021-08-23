@@ -2,10 +2,10 @@ package vpc
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 
@@ -60,7 +60,7 @@ resource "aws_security_group_rule" "good_example" {
 				if cidr.IsAttributeOpen(cidrBlocksAttr) {
 					set.AddResult().
 						WithDescription("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName()).
-						WithAttribute(cidrBlocksAttr)
+						WithAttribute("")
 				}
 			}
 
@@ -68,7 +68,7 @@ resource "aws_security_group_rule" "good_example" {
 				if cidr.IsAttributeOpen(ipv6CidrBlocksAttr) {
 					set.AddResult().
 						WithDescription("Resource '%s' defines a fully open ingress security group rule.", resourceBlock.FullName()).
-						WithAttribute(ipv6CidrBlocksAttr)
+						WithAttribute("")
 				}
 
 			}

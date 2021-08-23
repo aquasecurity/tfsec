@@ -2,12 +2,12 @@ package compute
 
 // generator-locked
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -60,7 +60,7 @@ resource "google_compute_disk" "good_example" {
 			if rawKeyAttr.IsString() {
 				set.AddResult().
 					WithDescription("Resource '%s' specifies an encryption key in raw format.", resourceBlock.FullName()).
-					WithAttribute(rawKeyAttr)
+					WithAttribute("")
 			}
 
 		},

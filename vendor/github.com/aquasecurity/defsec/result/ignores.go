@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strings"
 	"time"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
 func (res *Result) IsIgnored(workspace string) bool {
@@ -30,49 +28,49 @@ func (res *Result) IsIgnored(workspace string) bool {
 
 func (res *Result) Annotations() []Annotation {
 	var annotations []Annotation
-	for _, block := range res.Blocks() {
-		_, comments, err := block.ReadLines()
-		if err != nil {
-			continue
-		}
-		for _, comment := range comments {
-			annotations = append(annotations, findAnnotations(comment)...)
-		}
-		annotations = append(annotations, traverseModuleTreeForAnnotations(block)...)
-	}
+	// for _, block := range res.Blocks() {
+	// 	_, comments, err := block.ReadLines()
+	// 	if err != nil {
+	// 		continue
+	// 	}
+	// 	for _, comment := range comments {
+	// 		annotations = append(annotations, findAnnotations(comment)...)
+	// 	}
+	// 	// annotations = append(annotations, traverseModuleTreeForAnnotations(block)...)
+	// }
 
-	if res.attribute != nil {
-		_, comments, err := res.attribute.Range().ReadLines(true)
-		if err == nil {
-			for _, comment := range comments {
-				annotations = append(annotations, findAnnotations(comment)...)
-			}
-		}
-	}
+	// if res.attribute != nil {
+	// 	_, comments, err := res.attribute.Range().ReadLines(true)
+	// 	if err == nil {
+	// 		for _, comment := range comments {
+	// 			annotations = append(annotations, findAnnotations(comment)...)
+	// 		}
+	// 	}
+	// }
 
 	return annotations
 }
 
-func traverseModuleTreeForAnnotations(b block.Block) (annotations []Annotation) {
+// func traverseModuleTreeForAnnotations(b block.Block) (annotations []Annotation) {
 
-	if b.HasModuleBlock() {
-		moduleBlock, err := b.GetModuleBlock()
-		if err != nil {
-			return
-		}
-		_, comments, err := moduleBlock.ReadLines()
-		if err != nil {
-			return
-		}
-		for _, comment := range comments {
-			annotations = append(annotations, findAnnotations(comment)...)
-		}
+// 	if b.HasModuleBlock() {
+// 		moduleBlock, err := b.GetModuleBlock()
+// 		if err != nil {
+// 			return
+// 		}
+// 		_, comments, err := moduleBlock.ReadLines()
+// 		if err != nil {
+// 			return
+// 		}
+// 		for _, comment := range comments {
+// 			annotations = append(annotations, findAnnotations(comment)...)
+// 		}
 
-		annotations = append(annotations, traverseModuleTreeForAnnotations(moduleBlock)...)
-	}
+// 		annotations = append(annotations, traverseModuleTreeForAnnotations(moduleBlock)...)
+// 	}
 
-	return
-}
+// 	return
+// }
 
 type Annotation struct {
 	IgnoreRuleID string

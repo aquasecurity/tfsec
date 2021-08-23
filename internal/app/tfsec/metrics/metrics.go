@@ -3,7 +3,7 @@ package metrics
 import (
 	"time"
 
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/severity"
 )
 
 var recordedTimes []*Timer

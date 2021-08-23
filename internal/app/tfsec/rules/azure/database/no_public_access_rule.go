@@ -2,10 +2,10 @@ package database
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -63,7 +63,7 @@ resource "azurerm_postgresql_server" "good_example" {
 			if publicAccessAttr.IsTrue() {
 				set.AddResult().
 					WithDescription("Resource '%s' has public access explicitly enabled", resourceBlock.FullName()).
-					WithAttribute(publicAccessAttr)
+					WithAttribute("")
 			}
 		},
 	})

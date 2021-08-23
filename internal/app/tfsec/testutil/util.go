@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/defsec/result"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"

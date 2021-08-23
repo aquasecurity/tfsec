@@ -35,7 +35,7 @@ resource "made_up_resource" "bad_example" {
 			} else if enabledAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have settings.encryption.enabled set to true", resourceBlock.FullName()).
-					WithAttribute(enabledAttr)
+					WithAttribute("")
 			}`, requirement.GenerateRuleCode())
 
 }
@@ -65,7 +65,7 @@ resource "made_up_resource" "bad_example" {
 			} else if luckyNumberAttr.Equals(13) {
 				set.AddResult().
 					WithDescription("Resource '%s' has settings.lucky_number set to 13", resourceBlock.FullName()).
-					WithAttribute(luckyNumberAttr)
+					WithAttribute("")
 			}`, requirement.GenerateRuleCode())
 
 }

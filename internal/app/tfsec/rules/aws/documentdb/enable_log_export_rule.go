@@ -6,12 +6,12 @@ package documentdb
 
 // generator-locked
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -66,7 +66,7 @@ resource "aws_docdb_cluster" "good_example" {
 			} else if enabledCloudwatchLogsExportsAttr.IsNotAny("audit", "profiler") {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have enabled_cloudwatch_logs_exports set to one of [audit profiler]", resourceBlock.FullName()).
-					WithAttribute(enabledCloudwatchLogsExportsAttr)
+					WithAttribute("")
 			}
 		},
 	})

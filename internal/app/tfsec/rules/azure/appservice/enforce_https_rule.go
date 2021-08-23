@@ -2,10 +2,10 @@ package appservice
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -70,7 +70,7 @@ resource "azurerm_function_app" "good_example" {
 			if httpsOnlyAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' should have https_only set to true, the default is false.", resourceBlock.FullName()).
-					WithAttribute(httpsOnlyAttr)
+					WithAttribute("")
 			}
 		},
 	})

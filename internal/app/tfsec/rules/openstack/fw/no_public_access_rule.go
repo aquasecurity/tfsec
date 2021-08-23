@@ -4,10 +4,10 @@ package fw
 import (
 	"fmt"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 
@@ -72,21 +72,21 @@ resource "openstack_fw_rule_v1" "rule_1" {
 					WithDescription(
 						fmt.Sprintf("Resource '%s' defines a firewall rule with no restriction on destination IP", resourceBlock),
 					).
-					WithAttribute(destinationIP)
+					WithAttribute("")
 			} else if cidr.IsAttributeOpen(destinationIP) {
 				set.AddResult().
 					WithDescription("Resource '%s' defines a firewall rule with a public destination CIDR", resourceBlock).
-					WithAttribute(destinationIP)
+					WithAttribute("")
 			}
 
 			if sourceIP := resourceBlock.GetAttribute("source_ip_address"); sourceIP.IsNil() || sourceIP.Equals("") {
 				set.AddResult().
 					WithDescription("Resource '%s' defines a firewall rule with no restriction on source IP", resourceBlock).
-					WithAttribute(sourceIP)
+					WithAttribute("")
 			} else if cidr.IsAttributeOpen(sourceIP) {
 				set.AddResult().
 					WithDescription("Resource '%s' defines a firewall rule with a public source CIDR", resourceBlock).
-					WithAttribute(sourceIP)
+					WithAttribute("")
 			}
 		},
 	})

@@ -3,9 +3,9 @@ package s3
 import (
 	"strings"
 
+	"github.com/aquasecurity/defsec/definition"
+	"github.com/aquasecurity/defsec/provider/aws/s3"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/defsec/aws/s3"
-	"github.com/aquasecurity/tfsec/pkg/defsec/definition"
 )
 
 func Adapt(modules []block.Module) s3.S3 {

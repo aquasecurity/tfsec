@@ -2,10 +2,10 @@ package eks
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 
@@ -76,12 +76,12 @@ resource "aws_eks_cluster" "good_example" {
 			if publicAccessCidrsAttr.IsNil() {
 				set.AddResult().
 					WithDescription("Resource '%s' uses the default public access cidr of 0.0.0.0/0", resourceBlock.FullName()).
-					WithBlock(vpcConfig)
+					WithBlock("")
 
 			} else if cidr.IsAttributeOpen(publicAccessCidrsAttr) {
 				set.AddResult().
 					WithDescription("Resource '%s' has public access cidr explicitly set to wide open", resourceBlock.FullName()).
-					WithAttribute(publicAccessCidrsAttr)
+					WithAttribute("")
 			}
 		},
 	})

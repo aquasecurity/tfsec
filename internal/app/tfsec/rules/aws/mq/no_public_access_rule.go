@@ -5,12 +5,12 @@ package mq
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -83,7 +83,7 @@ resource "aws_mq_broker" "good_example" {
 			} else if publiclyAccessibleAttr.IsTrue() {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have publicly_accessible set to false", resourceBlock.FullName()).
-					WithAttribute(publiclyAccessibleAttr)
+					WithAttribute("")
 			}
 		},
 	})

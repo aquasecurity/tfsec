@@ -4,10 +4,10 @@ package kinesis
 import (
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -59,7 +59,7 @@ resource "aws_kinesis_stream" "good_example" {
 			} else if encryptionTypeAttr.Type() == cty.String && strings.ToUpper(encryptionTypeAttr.Value().AsString()) != "KMS" {
 				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted Kinesis Stream.", resourceBlock.FullName()).
-					WithAttribute(encryptionTypeAttr)
+					WithAttribute("")
 			} else {
 				keyIDAttr := resourceBlock.GetAttribute("kms_key_id")
 				if keyIDAttr.IsNil() || keyIDAttr.IsEmpty() || keyIDAttr.Equals("alias/aws/kinesis") {

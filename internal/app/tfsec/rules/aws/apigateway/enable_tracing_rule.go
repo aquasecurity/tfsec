@@ -6,12 +6,12 @@ package apigateway
 
 // generator-locked
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -58,7 +58,7 @@ resource "aws_api_gateway_stage" "good_example" {
 			} else if xrayTracingEnabledAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have xray_tracing_enabled set to true", resourceBlock.FullName()).
-					WithAttribute(xrayTracingEnabledAttr)
+					WithAttribute("")
 			}
 		},
 	})

@@ -2,10 +2,10 @@ package elasticsearch
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -72,7 +72,7 @@ resource "aws_elasticsearch_domain" "good_example" {
 			if tlsPolicyAttr.Equals("Policy-Min-TLS-1-0-2019-07") {
 				set.AddResult().
 					WithDescription("Resource '%s' defines an Elasticsearch domain with an outdated TLS policy (set to Policy-Min-TLS-1-0-2019-07).", resourceBlock.FullName()).
-					WithAttribute(tlsPolicyAttr)
+					WithAttribute("")
 			}
 
 		},

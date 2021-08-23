@@ -224,8 +224,6 @@ func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 
 	for _, block := range blocks {
 
-		fmt.Println(block.Reference().String())
-
 		forEachAttr := block.GetAttribute("for_each")
 
 		if forEachAttr.Value().IsNull() || !forEachAttr.Value().IsKnown() {

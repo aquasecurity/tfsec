@@ -5,12 +5,12 @@ package appservice
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -62,7 +62,7 @@ resource "azurerm_app_service" "good_example" {
 			if minTlsVersionAttr := resourceBlock.GetBlock("site_config").GetAttribute("min_tls_version"); minTlsVersionAttr.IsNotNil() && minTlsVersionAttr.NotEqual("1.2") {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have site_config.min_tls_version set to 1.2", resourceBlock.FullName()).
-					WithAttribute(minTlsVersionAttr)
+					WithAttribute("")
 			}
 		},
 	})

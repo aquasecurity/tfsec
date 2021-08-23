@@ -110,7 +110,7 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
             if attr := block.GetAttribute("hackable"); attr.IsTrue() {
 				set.AddResult().
 					WithDescription("The Gibson '%s' is configured to be hackable.", block.Name()).
-					WithAttribute(attr),
+					WithAttribute(""),
 				)
             }
         },

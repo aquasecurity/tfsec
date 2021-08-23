@@ -5,12 +5,12 @@ package gke
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -117,7 +117,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 			} else if enablePrivateNodesAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have private_cluster_config.enable_private_nodes set to true", resourceBlock.FullName()).
-					WithAttribute(enablePrivateNodesAttr)
+					WithAttribute("")
 			}
 		},
 	})

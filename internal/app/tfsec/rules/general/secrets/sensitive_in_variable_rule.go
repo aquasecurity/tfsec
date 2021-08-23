@@ -4,10 +4,10 @@ package secrets
 import (
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -70,7 +70,7 @@ resource "evil_corp" "virtual_machine" {
 				if attribute.Name() == "default" {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {
 						set.AddResult().WithDescription("Variable '%s' includes a potentially sensitive default value.", resourceBlock.FullName()).
-							WithAttribute(attribute)
+							WithAttribute("")
 					}
 				}
 			}

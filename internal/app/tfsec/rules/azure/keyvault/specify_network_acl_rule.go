@@ -2,10 +2,10 @@ package keyvault
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -72,7 +72,7 @@ resource "azurerm_key_vault" "good_example" {
 			if !defaultActionAttr.Equals("Deny") {
 				set.AddResult().
 					WithDescription("Resource '%s' specifies does not specify a network acl block.", resourceBlock.FullName()).
-					WithAttribute(defaultActionAttr)
+					WithAttribute("")
 			}
 
 		},

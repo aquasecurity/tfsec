@@ -2,10 +2,10 @@ package network
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -107,7 +107,7 @@ resource "azurerm_network_security_group" "example" {
 						sourceAddrAttr := securityRule.GetAttribute("source_address_prefix")
 						if sourceAddrAttr.IsAny("*", "0.0.0.0", "/0", "internet", "any") {
 							set.AddResult().
-								WithDescription("Resource '%s' has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", resourceBlock.FullName()).WithAttribute(sourceAddrAttr)
+								WithDescription("Resource '%s' has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", resourceBlock.FullName()).WithAttribute("")
 						}
 					}
 				}

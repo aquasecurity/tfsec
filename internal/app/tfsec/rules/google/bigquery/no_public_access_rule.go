@@ -5,12 +5,12 @@ package bigquery
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -89,7 +89,7 @@ resource "google_service_account" "bqowner" {
 			if specialGroupAttr := resourceBlock.GetBlock("access").GetAttribute("special_group"); specialGroupAttr.Equals("allAuthenticatedUsers") {
 				set.AddResult().
 					WithDescription("Resource '%s' has access.special_group set to allAuthenticatedUsers", resourceBlock.FullName()).
-					WithAttribute(specialGroupAttr)
+					WithAttribute("")
 			}
 		},
 	})

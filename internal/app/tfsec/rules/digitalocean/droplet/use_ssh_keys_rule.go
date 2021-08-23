@@ -2,12 +2,12 @@ package droplet
 
 // generator-locked
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -63,7 +63,7 @@ resource "digitalocean_droplet" "good_example" {
 			if sshKeysAttr.IsEmpty() {
 				set.AddResult().
 					WithDescription("Resource '%s' has ssh_key specified but is empty.", resourceBlock.FullName()).
-					WithAttribute(sshKeysAttr)
+					WithAttribute("")
 			}
 		},
 	})

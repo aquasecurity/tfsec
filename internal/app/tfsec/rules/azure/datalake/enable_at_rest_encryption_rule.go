@@ -2,10 +2,10 @@ package datalake
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -52,7 +52,7 @@ resource "azurerm_data_lake_store" "good_example" {
 			encryptionStateAttr := resourceBlock.GetAttribute("encryption_state")
 			if encryptionStateAttr.Equals("Disabled") {
 				set.AddResult().
-					WithDescription("Resource '%s' defines an unencrypted data lake store.", resourceBlock.FullName()).WithAttribute(encryptionStateAttr)
+					WithDescription("Resource '%s' defines an unencrypted data lake store.", resourceBlock.FullName()).WithAttribute("")
 			}
 
 		},

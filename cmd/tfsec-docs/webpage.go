@@ -6,7 +6,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 

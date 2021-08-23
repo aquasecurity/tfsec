@@ -2,10 +2,10 @@ package monitor
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -74,7 +74,7 @@ resource "azurerm_monitor_log_profile" "good_example" {
 				if !categoriesAttr.Contains(category) {
 					set.AddResult().
 						WithDescription("Resource '%s' is missing '%s' category", resourceBlock.FullName(), category).
-						WithAttribute(categoriesAttr)
+						WithAttribute("")
 				}
 			}
 

@@ -2,10 +2,10 @@ package s3
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -65,7 +65,7 @@ resource "aws_s3_bucket_public_access_block" "good_example" {
 			if ignorePublicAclsAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' sets ignore_public_acls explicitly to false", resourceBlock.FullName()).
-					WithAttribute(ignorePublicAclsAttr)
+					WithAttribute("")
 			}
 		},
 	})

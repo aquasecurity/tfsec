@@ -5,12 +5,12 @@ package compute
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -138,12 +138,12 @@ resource "google_compute_instance" "bad_example" {
 			if enableVtpmAttr := resourceBlock.GetBlock("shielded_instance_config").GetAttribute("enable_vtpm"); enableVtpmAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' has shielded_instance_config.enable_vtpm set to false", resourceBlock.FullName()).
-					WithAttribute(enableVtpmAttr)
+					WithAttribute("")
 			}
 			if enableIMAttr := resourceBlock.GetBlock("shielded_instance_config").GetAttribute("enable_integrity_monitoring"); enableIMAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' has shielded_instance_config.enable_integrity_monitoring set to false", resourceBlock.FullName()).
-					WithAttribute(enableIMAttr)
+					WithAttribute("")
 			}
 		},
 	})

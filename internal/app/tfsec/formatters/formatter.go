@@ -3,7 +3,7 @@ package formatters
 import (
 	"io"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/defsec/result"
 )
 
 type FormatterOption int

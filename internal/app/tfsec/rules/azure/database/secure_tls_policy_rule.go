@@ -2,10 +2,10 @@ package database
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -99,7 +99,7 @@ resource "azurerm_postgresql_server" "good_example" {
 			if tlsMinimumAttr.NotEqual(requiredValue) {
 				set.AddResult().
 					WithDescription("Resource '%s' has a value %s that is not %s", resourceBlock.FullName(), attribute, requiredValue).
-					WithAttribute(tlsMinimumAttr)
+					WithAttribute("")
 			}
 		},
 	})

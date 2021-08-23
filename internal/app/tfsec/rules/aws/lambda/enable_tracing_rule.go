@@ -6,12 +6,12 @@ package lambda
 
 // generator-locked
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -130,7 +130,7 @@ resource "aws_lambda_function" "good_example" {
 			} else if modeAttr.IsEmpty() {
 				set.AddResult().
 					WithDescription("Resource '%s' has tracing_config.mode set to ", resourceBlock.FullName()).
-					WithAttribute(modeAttr)
+					WithAttribute("")
 			}
 		},
 	})

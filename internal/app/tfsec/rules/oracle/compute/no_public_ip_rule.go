@@ -2,10 +2,10 @@ package compute
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -53,7 +53,7 @@ resource "opc_compute_ip_address_reservation" "good_example" {
 			if attr := resourceBlock.GetAttribute("ip_address_pool"); attr.Equals("public-ippool") {
 				set.AddResult().
 					WithDescription("Resource '%s' is using an IP from a public IP pool", resourceBlock.FullName()).
-					WithAttribute(attr)
+					WithAttribute("")
 			}
 		},
 	})

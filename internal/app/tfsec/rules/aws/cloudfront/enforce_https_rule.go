@@ -2,10 +2,10 @@ package cloudfront
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -64,13 +64,13 @@ resource "aws_cloudfront_distribution" "good_example" {
 			if protocolPolicyAttr.IsNil() {
 				set.AddResult().
 					WithDescription("Resource '%s' defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", resourceBlock.FullName()).
-					WithBlock(defaultBehaviorBlock)
+					WithBlock("")
 				return
 			}
 			if protocolPolicyAttr.Equals("allow-all") {
 				set.AddResult().
 					WithDescription("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", resourceBlock.FullName()).
-					WithAttribute(protocolPolicyAttr)
+					WithAttribute("")
 				return
 			}
 
@@ -83,7 +83,7 @@ resource "aws_cloudfront_distribution" "good_example" {
 				} else if orderedProtocolPolicyAttr.Equals("allow-all") {
 					set.AddResult().
 						WithDescription("Resource '%s' defines a CloudFront distribution that allows unencrypted communications.", resourceBlock.FullName()).
-						WithAttribute(orderedProtocolPolicyAttr)
+						WithAttribute("")
 				}
 			}
 

@@ -2,10 +2,10 @@ package storage
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -76,7 +76,7 @@ resource "azurerm_storage_account" "good_example" {
 			queueProps := resourceBlock.GetBlock("queue_properties")
 			if queueProps.MissingChild("logging") {
 				set.AddResult().
-					WithDescription("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", resourceBlock.FullName()).WithBlock(queueProps)
+					WithDescription("Resource '%s' defines a Queue Services storage account without Storage Analytics logging.", resourceBlock.FullName()).WithBlock("")
 			}
 
 		},

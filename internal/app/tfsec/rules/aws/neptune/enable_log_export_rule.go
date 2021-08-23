@@ -6,12 +6,12 @@ package neptune
 
 // generator-locked
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -66,7 +66,7 @@ resource "aws_neptune_cluster" "good_example" {
 			} else if enableCloudwatchLogsExportsAttr.NotContains("audit") {
 				set.AddResult().
 					WithDescription("Resource '%s' should have audit in enable_cloudwatch_logs_exports", resourceBlock.FullName()).
-					WithAttribute(enableCloudwatchLogsExportsAttr)
+					WithAttribute("")
 			}
 		},
 	})

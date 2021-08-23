@@ -5,12 +5,12 @@ package mssql
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -63,7 +63,7 @@ resource "azurerm_mssql_server_security_alert_policy" "good_example" {
 			if disabledAlertsAttr := resourceBlock.GetAttribute("disabled_alerts"); disabledAlertsAttr.IsNotEmpty() {
 				set.AddResult().
 					WithDescription("Resource '%s' has attribute disabled_alerts that is not empty", resourceBlock.FullName()).
-					WithAttribute(disabledAlertsAttr)
+					WithAttribute("")
 			}
 		},
 	})

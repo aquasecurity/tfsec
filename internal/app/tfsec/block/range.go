@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/defsec/definition"
+	"github.com/aquasecurity/defsec/definition"
 )
 
 // HCLRange describes an area of code, including the filename it is present in and the lin numbers the code occupies

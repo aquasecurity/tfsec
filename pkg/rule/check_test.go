@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/aquasecurity/defsec/result"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/stretchr/testify/assert"
 )
 

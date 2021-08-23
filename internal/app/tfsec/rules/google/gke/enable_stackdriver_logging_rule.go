@@ -5,12 +5,12 @@ package gke
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -110,7 +110,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 			if loggingServiceAttr := resourceBlock.GetAttribute("logging_service"); loggingServiceAttr.NotEqual("logging.googleapis.com/kubernetes") {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have logging_service set to logging.googleapis.com/kubernetes", resourceBlock.FullName()).
-					WithAttribute(loggingServiceAttr)
+					WithAttribute("")
 			}
 		},
 	})

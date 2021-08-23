@@ -5,12 +5,12 @@ package compute
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -129,7 +129,7 @@ resource "google_compute_instance" "good_example" {
 			if diskEncryptionKeyRawAttr := resourceBlock.GetBlock("boot_disk").GetAttribute("disk_encryption_key_raw"); diskEncryptionKeyRawAttr.IsResolvable() {
 				set.AddResult().
 					WithDescription("Resource '%s' sets boot_disk.disk_encryption_key_raw", resourceBlock.FullName()).
-					WithAttribute(diskEncryptionKeyRawAttr)
+					WithAttribute("")
 			}
 		},
 	})

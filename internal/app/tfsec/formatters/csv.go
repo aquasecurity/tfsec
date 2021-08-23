@@ -6,7 +6,7 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/defsec/result"
 )
 
 func FormatCSV(w io.Writer, results []result.Result, _ string, _ ...FormatterOption) error {

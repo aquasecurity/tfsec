@@ -2,10 +2,10 @@ package ec2
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -74,7 +74,7 @@ resource "aws_instance" "good_example" {
 				if httpTokensAttr.NotEqual("required") {
 					set.AddResult().
 						WithDescription("Resource '%s' `metadata_options` `http_tokens` attribute - should be set to `required` to make Instance Metadata Service more secure.", resourceBlock.FullName()).
-						WithAttribute(httpTokensAttr)
+						WithAttribute("")
 				}
 			}
 

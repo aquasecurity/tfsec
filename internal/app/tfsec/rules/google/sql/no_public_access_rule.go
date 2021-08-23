@@ -2,10 +2,10 @@ package sql
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 
@@ -88,7 +88,7 @@ resource "google_sql_database_instance" "postgres" {
 			if ipv4Attr.IsTrue() {
 				set.AddResult().
 					WithDescription("Resource '%s' has a public ipv4 address explicitly assigned", resourceBlock.FullName()).
-					WithAttribute(ipv4Attr)
+					WithAttribute("")
 				return
 			}
 
@@ -96,7 +96,7 @@ resource "google_sql_database_instance" "postgres" {
 				if cidrAttr := authorizedNetworkBlock.GetAttribute("value"); cidr.IsAttributeOpen(cidrAttr) {
 					set.AddResult().
 						WithDescription("Resource '%s' authorizes access from the public internet", resourceBlock.FullName()).
-						WithAttribute(cidrAttr)
+						WithAttribute("")
 				}
 			}
 

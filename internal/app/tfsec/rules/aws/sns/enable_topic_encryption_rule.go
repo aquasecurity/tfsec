@@ -2,10 +2,10 @@ package sns
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -57,7 +57,7 @@ resource "aws_sns_topic" "good_example" {
 			} else if kmsKeyIDAttr.Type() == cty.String && kmsKeyIDAttr.Value().AsString() == "" {
 				set.AddResult().
 					WithDescription("Resource '%s' defines an unencrypted SNS topic.", resourceBlock.FullName()).
-					WithAttribute(kmsKeyIDAttr)
+					WithAttribute("")
 				return
 			}
 
@@ -72,7 +72,7 @@ resource "aws_sns_topic" "good_example" {
 				if keyIdAttr.IsNotNil() && keyIdAttr.Equals("alias/aws/sns") {
 					set.AddResult().
 						WithDescription("Resource '%s' explicitly uses the default CMK", resourceBlock.FullName()).
-						WithAttribute(kmsKeyIDAttr)
+						WithAttribute("")
 				}
 
 			}

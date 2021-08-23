@@ -1,6 +1,6 @@
 package scanner
 
-import "github.com/aquasecurity/tfsec/pkg/defsec/infra"
+import "github.com/aquasecurity/defsec/infra"
 
 type Option func(s *Scanner)
 

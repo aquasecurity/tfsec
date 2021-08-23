@@ -5,13 +5,13 @@ package gke
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -147,7 +147,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 					if cidr.IsOpen(cidrBlock.AsString()) {
 						set.AddResult().
 							WithDescription("Resource '%s' defines a cluster with an internet exposed control plane.", resourceBlock).
-							WithAttribute(config)
+							WithAttribute("")
 					}
 				}
 			})

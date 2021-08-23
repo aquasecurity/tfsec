@@ -2,10 +2,10 @@ package keyvault
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -64,7 +64,7 @@ resource "azurerm_key_vault" "good_example" {
 			purgeProtectionAttr := resourceBlock.GetAttribute("purge_protection_enabled")
 			if purgeProtectionAttr.IsFalse() {
 				set.AddResult().
-					WithDescription("Resource '%s' should have purge protection enabled.", resourceBlock.FullName()).WithAttribute(purgeProtectionAttr)
+					WithDescription("Resource '%s' should have purge protection enabled.", resourceBlock.FullName()).WithAttribute("")
 				return
 			}
 

@@ -2,12 +2,12 @@ package spaces
 
 // generator-locked
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -68,7 +68,7 @@ resource "digitalocean_spaces_bucket" "good_example" {
 
 			if enabledAttr.IsNil() || enabledAttr.IsFalse() {
 				set.AddResult().WithDescription("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName()).
-					WithAttribute(enabledAttr)
+					WithAttribute("")
 			}
 
 		},

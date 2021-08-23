@@ -3,9 +3,9 @@ package scanner
 import (
 	"sort"
 
-	"github.com/aquasecurity/tfsec/pkg/defsec/infra"
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/infra"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 

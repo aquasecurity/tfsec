@@ -2,10 +2,10 @@ package sql
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -69,7 +69,7 @@ resource "google_sql_database_instance" "db" {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.NotEqual("-1") {
 						set.AddResult().
 							WithDescription("Resource '%s' causes database query statements to be logged", resourceBlock.FullName()).
-							WithAttribute(valueAttr)
+							WithAttribute("")
 					}
 				}
 			}

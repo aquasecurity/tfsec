@@ -4,10 +4,10 @@ package iam
 import (
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -78,7 +78,7 @@ resource "google_project_iam_member" "project" {
 				if memberAttr.StartsWith("serviceAccount:") {
 					set.AddResult().
 						WithDescription("Resource '%s' provides privileged access to a service account", resourceBlock).
-						WithAttribute(roleAttr)
+						WithAttribute("")
 				}
 			}
 
@@ -88,7 +88,7 @@ resource "google_project_iam_member" "project" {
 			} else if serviceAccountBlock.IsNotNil() && serviceAccountBlock.TypeLabel() == "google_service_account" {
 				set.AddResult().
 					WithDescription("Resource '%s' provides privileged access to service account at %s", resourceBlock, serviceAccountBlock.FullName()).
-					WithAttribute(roleAttr)
+					WithAttribute("")
 			}
 		},
 	})

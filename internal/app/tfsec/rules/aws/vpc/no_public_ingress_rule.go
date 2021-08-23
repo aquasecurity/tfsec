@@ -2,10 +2,10 @@ package vpc
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 
@@ -93,7 +93,7 @@ resource "aws_network_acl_rule" "good_example" {
 					} else {
 						set.AddResult().
 							WithDescription("Resource '%s' defines a Network ACL rule that allows specific ingress ports from anywhere.", resourceBlock.FullName()).
-							WithAttribute(ipv6CidrBlockAttr)
+							WithAttribute("")
 					}
 				}
 

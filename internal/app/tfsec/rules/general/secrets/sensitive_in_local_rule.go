@@ -4,13 +4,13 @@ package secrets
 import (
 	"github.com/zclconf/go-cty/cty"
 
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -59,7 +59,7 @@ resource "evil_corp" "good_example" {
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {
 						set.AddResult().WithDescription("Local '%s' includes a potentially sensitive value which is defined within the project.", resourceBlock.FullName()).
-							WithAttribute(attribute)
+							WithAttribute("")
 					}
 				}
 			}

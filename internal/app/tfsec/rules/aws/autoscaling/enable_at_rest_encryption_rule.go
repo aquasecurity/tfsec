@@ -2,10 +2,10 @@ package autoscaling
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -84,6 +84,6 @@ func checkDeviceEncryption(deviceBlock block.Block, encryptionByDefault bool, se
 	} else if encryptedAttr.IsFalse() {
 		set.AddResult().
 			WithDescription("Resource '%s' uses an unencrypted root EBS block device.", resourceBlock.FullName()).
-			WithAttribute(encryptedAttr)
+			WithAttribute("")
 	}
 }

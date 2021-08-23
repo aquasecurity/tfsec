@@ -2,10 +2,10 @@ package misc
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -52,11 +52,11 @@ provider "aws" {
 			if accessKeyAttribute := resourceBlock.GetAttribute("access_key"); accessKeyAttribute.IsNotNil() && accessKeyAttribute.Type() == cty.String {
 				set.AddResult().
 					WithDescription("Provider '%s' has an access key specified.", resourceBlock.FullName()).
-					WithAttribute(accessKeyAttribute)
+					WithAttribute("")
 			} else if secretKeyAttribute := resourceBlock.GetAttribute("secret_key"); secretKeyAttribute.IsNotNil() && secretKeyAttribute.Type() == cty.String {
 				set.AddResult().
 					WithDescription("Provider '%s' has a secret key specified.", resourceBlock.FullName()).
-					WithAttribute(secretKeyAttribute)
+					WithAttribute("")
 			}
 
 		},

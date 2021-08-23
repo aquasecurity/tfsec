@@ -5,12 +5,12 @@ package compute
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -109,8 +109,8 @@ resource "google_compute_instance" "default" {
 			if emailAttr := resourceBlock.GetBlock("service_account").GetAttribute("email"); emailAttr.IsNil() || emailAttr.EndsWith("-compute@developer.gserviceaccount.com") {
 				set.AddResult().
 					WithDescription("Resource '%s' uses the default service account.", resourceBlock).
-					WithBlock(resourceBlock.GetBlock("service_account")).
-					WithAttribute(emailAttr)
+					WithBlock("").
+					WithAttribute("")
 			}
 		},
 	})

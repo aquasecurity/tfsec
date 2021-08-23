@@ -2,10 +2,10 @@ package dynamodb
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -81,14 +81,14 @@ resource "aws_dynamodb_table" "good_example" {
 			if pointBlock.MissingChild("enabled") {
 				set.AddResult().
 					WithDescription("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName()).
-					WithBlock(pointBlock)
+					WithBlock("")
 				return
 			}
 			enabledAttr := pointBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName()).
-					WithAttribute(enabledAttr)
+					WithAttribute("")
 			}
 
 		},

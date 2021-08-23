@@ -2,10 +2,10 @@ package repositories
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -79,7 +79,7 @@ resource "github_repository" "good_example" {
 				if visibilityAttribute.Equals("public") {
 					set.AddResult().
 						WithDescription("Resource '%s' has visibility set to public - visibility should be set to `private` or `internal` to make repository private", resourceBlock.FullName()).
-						WithAttribute(visibilityAttribute)
+						WithAttribute("")
 				}
 				// stop here as visibility parameter trumps the private one
 				// see https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository

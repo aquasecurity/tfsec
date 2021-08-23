@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
+	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/tfsec/cmd/tfsec-skeleton/requirements"
-	"github.com/aquasecurity/tfsec/pkg/provider"
 )
 
 type Input struct {

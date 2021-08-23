@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/defsec/result"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -239,8 +239,8 @@ data "aws_iam_policy_document" "kms_policy" {
 								if value.Type() == cty.String && strings.Contains(value.AsString(), ("*")) {
 									set.AddResult().
 										WithDescription("Resource '%s' a policy with KMS actions for all KMS keys.", policyDocumentBlock.FullName()).
-										WithBlock(policyDocumentBlock).
-										WithAttribute(resources)
+										WithBlock("").
+										WithAttribute("")
 								}
 							})
 
@@ -269,7 +269,7 @@ func checkAWS097PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 				if strings.Contains(resource, "*") {
 					set.AddResult().
 						WithDescription("Resource '%s' a policy with KMS actions for all KMS keys.", resourceBlock.FullName()).
-						WithAttribute(policyAttr)
+						WithAttribute("")
 					return
 				}
 			}

@@ -2,10 +2,10 @@ package storage
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -69,7 +69,7 @@ resource "azure_storage_container" "good_example" {
 				value := properties.MapValue("publicAccess")
 				if value == cty.StringVal("blob") || value == cty.StringVal("container") {
 					set.AddResult().
-						WithDescription("Resource '%s' defines publicAccess as '%s', should be 'off .", resourceBlock.FullName(), value).WithAttribute(properties)
+						WithDescription("Resource '%s' defines publicAccess as '%s', should be 'off .", resourceBlock.FullName(), value).WithAttribute("")
 				}
 			}
 		},

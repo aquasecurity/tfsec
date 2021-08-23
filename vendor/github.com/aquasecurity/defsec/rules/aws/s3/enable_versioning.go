@@ -3,8 +3,8 @@ package s3
 import (
 	"fmt"
 
-	"github.com/aquasecurity/tfsec/pkg/defsec/infra"
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/defsec/infra"
+	"github.com/aquasecurity/defsec/result"
 )
 
 func CheckVersioningIsEnabled(context *infra.Context) []*result.Result {

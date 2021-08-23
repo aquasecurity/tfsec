@@ -2,10 +2,10 @@ package rds
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -101,7 +101,7 @@ resource "aws_rds_cluster" "good_example" {
 			if retentionAttr.LessThanOrEqualTo(1) {
 				set.AddResult().
 					WithDescription("Resource '%s' has backup retention period set to a low value", resourceBlock.FullName()).
-					WithAttribute(retentionAttr)
+					WithAttribute("")
 			}
 
 		},

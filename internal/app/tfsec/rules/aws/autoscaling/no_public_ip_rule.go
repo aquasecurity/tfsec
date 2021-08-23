@@ -2,10 +2,10 @@ package autoscaling
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -56,7 +56,7 @@ resource "aws_launch_configuration" "good_example" {
 			if publicAttr.IsTrue() {
 				set.AddResult().
 					WithDescription("Resource '%s' has a public IP address associated.", resourceBlock.FullName()).
-					WithAttribute(publicAttr)
+					WithAttribute("")
 			}
 		},
 	})

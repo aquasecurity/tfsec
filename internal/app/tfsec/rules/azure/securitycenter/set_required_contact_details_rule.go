@@ -2,10 +2,10 @@ package securitycenter
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -64,7 +64,7 @@ resource "azurerm_security_center_contact" "good_example" {
 			if phoneAttr.IsEmpty() {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have a phone number set for the security contact", resourceBlock.FullName()).
-					WithAttribute(phoneAttr)
+					WithAttribute("")
 			}
 		},
 	})

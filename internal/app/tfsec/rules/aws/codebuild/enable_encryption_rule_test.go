@@ -7,7 +7,7 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/severity"
 
 	"github.com/stretchr/testify/assert"
 )

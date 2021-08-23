@@ -2,10 +2,10 @@ package sql
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -89,7 +89,7 @@ resource "google_sql_database_instance" "postgres" {
 					WithDescription("Resource '%s' does not require SSL for all connections", resourceBlock.FullName())
 			} else if requireSSLAttr.IsFalse() {
 				set.AddResult().
-					WithAttribute(requireSSLAttr).
+					WithAttribute("").
 					WithDescription("Resource '%s' explicitly does not require SSL for all connections", resourceBlock.FullName())
 			}
 

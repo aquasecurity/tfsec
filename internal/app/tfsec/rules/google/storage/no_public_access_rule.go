@@ -2,10 +2,10 @@ package storage
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -55,7 +55,7 @@ resource "google_storage_bucket_iam_binding" "binding" {
 			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr.IsString() {
 				if googleIAMMemberIsExternal(memberAttr.Value().AsString()) {
 					set.AddResult().WithDescription("Resource '%s' allows public access via member attribute.", resourceBlock.FullName()).
-						WithAttribute(memberAttr)
+						WithAttribute("")
 				}
 			}
 
@@ -63,7 +63,7 @@ resource "google_storage_bucket_iam_binding" "binding" {
 				for _, member := range membersAttr.ValueAsStrings() {
 					if googleIAMMemberIsExternal(member) {
 						set.AddResult().WithDescription("Resource '%s' allows public access via members attribute.", resourceBlock.FullName()).
-							WithAttribute(membersAttr)
+							WithAttribute("")
 					}
 				}
 			}

@@ -2,10 +2,10 @@ package msk
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -67,22 +67,22 @@ resource "aws_msk_cluster" "good_example" {
 			encryptionInTransit := defaultBehaviorBlock.GetBlock("encryption_in_transit")
 			if encryptionInTransit.IsNil() {
 				set.AddResult().
-					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_in_transit block).", resourceBlock.FullName()).WithBlock(defaultBehaviorBlock)
+					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing encryption_in_transit block).", resourceBlock.FullName()).WithBlock("")
 				return
 			}
 
 			clientBrokerAttr := encryptionInTransit.GetAttribute("client_broker")
 			if clientBrokerAttr.IsNil() {
 				set.AddResult().
-					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing client_broker block).", resourceBlock.FullName()).WithBlock(encryptionInTransit)
+					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing client_broker block).", resourceBlock.FullName()).WithBlock("")
 			} else if clientBrokerAttr.Value().AsString() == "PLAINTEXT" {
 				set.AddResult().
 					WithDescription("Resource '%s' defines a MSK cluster that only allows plaintext data in transit.", resourceBlock.FullName()).
-					WithAttribute(clientBrokerAttr)
+					WithAttribute("")
 			} else if clientBrokerAttr.Value().AsString() == "TLS_PLAINTEXT" {
 				set.AddResult().
 					WithDescription("Resource '%s' defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit.", resourceBlock.FullName()).
-					WithAttribute(clientBrokerAttr)
+					WithAttribute("")
 			}
 		},
 	})

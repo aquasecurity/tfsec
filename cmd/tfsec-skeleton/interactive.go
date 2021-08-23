@@ -8,9 +8,9 @@ import (
 	"path"
 	"strings"
 
+	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/tfsec/cmd/tfsec-skeleton/examples"
 	"github.com/aquasecurity/tfsec/cmd/tfsec-skeleton/requirements"
-	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/liamg/clinch/prompt"
 )
 

@@ -2,11 +2,11 @@ package secrets
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -93,7 +93,7 @@ resource "evil_corp" "good_example" {
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.IsResolvable() && attribute.Type() == cty.String && !attribute.Equals("") {
 						set.AddResult().WithDescription("Block '%s' includes a potentially sensitive attribute which is defined within the project.", resourceBlock.FullName()).
-							WithAttribute(attribute)
+							WithAttribute("")
 					}
 
 				}

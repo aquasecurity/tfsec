@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 
@@ -101,7 +101,7 @@ EOF
 					for _, env := range definition.EnvVars {
 						if security.IsSensitiveAttribute(env.Name) && env.Value != "" {
 							set.AddResult().WithDescription("Resource '%s' includes a potentially sensitive environment variable '%s' in the container definition.", resourceBlock.FullName(), env.Name).
-								WithAttribute(definitionsAttr)
+								WithAttribute("")
 						}
 					}
 				}

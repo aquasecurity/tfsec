@@ -5,12 +5,12 @@ package compute
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -78,7 +78,7 @@ resource "google_compute_instance" "bad_example" {
 			if canIpForwardAttr := resourceBlock.GetAttribute("can_ip_forward"); canIpForwardAttr.IsTrue() {
 				set.AddResult().
 					WithDescription("Resource '%s' has can_ip_forward set to true", resourceBlock.FullName()).
-					WithAttribute(canIpForwardAttr)
+					WithAttribute("")
 			}
 		},
 	})

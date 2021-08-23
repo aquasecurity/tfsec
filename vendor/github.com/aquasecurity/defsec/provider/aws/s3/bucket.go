@@ -1,6 +1,6 @@
 package s3
 
-import "github.com/aquasecurity/tfsec/pkg/defsec/definition"
+import "github.com/aquasecurity/defsec/definition"
 
 type Bucket struct {
 	*definition.Metadata

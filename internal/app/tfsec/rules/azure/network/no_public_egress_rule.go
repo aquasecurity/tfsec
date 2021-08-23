@@ -4,10 +4,10 @@ package network
 import (
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 
@@ -67,7 +67,7 @@ resource "azurerm_network_security_rule" "good_example" {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.IsNotNil() && strings.ToUpper(accessAttr.Value().AsString()) == "ALLOW" {
 						set.AddResult().
 							WithDescription("Resource '%s' defines a fully open %s network security group rule.", resourceBlock.FullName(), strings.ToLower(directionAttr.Value().AsString())).
-							WithAttribute(prefixAttr)
+							WithAttribute("")
 					}
 				}
 			}
@@ -77,7 +77,7 @@ resource "azurerm_network_security_rule" "good_example" {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.IsNotNil() && strings.ToUpper(accessAttr.Value().AsString()) == "ALLOW" {
 						set.AddResult().
 							WithDescription("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName()).
-							WithAttribute(prefixesAttr)
+							WithAttribute("")
 					}
 				}
 			}

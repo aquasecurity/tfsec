@@ -214,7 +214,7 @@ func (a *attributeBase) GenerateRuleCode() string {
 	code += fmt.Sprintf(`%s.%s {
 				set.AddResult().
 					WithDescription("%s", resourceBlock.FullName()).
-					WithAttribute(%s)
+					WithAttribute("")
 			}`, attrVarName, buildComparisonForValue(a.value, a.comparison.Reverse()), messageTemplate, attrVarName)
 
 	return code

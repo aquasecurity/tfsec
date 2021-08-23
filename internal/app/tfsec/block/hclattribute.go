@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/aquasecurity/defsec/definition"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/pkg/defsec/definition"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/zclconf/go-cty/cty"

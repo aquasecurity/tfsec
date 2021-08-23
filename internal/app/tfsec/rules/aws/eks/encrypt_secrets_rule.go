@@ -2,10 +2,10 @@ package eks
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -73,7 +73,7 @@ resource "aws_eks_cluster" "good_example" {
 			if encryptionConfigBlock.MissingChild("resources") {
 				set.AddResult().
 					WithDescription("Resource '%s' has encryptionConfigBlock block with no resourcesAttr attribute specified", resourceBlock.FullName()).
-					WithBlock(encryptionConfigBlock)
+					WithBlock("")
 				return
 			}
 
@@ -81,7 +81,7 @@ resource "aws_eks_cluster" "good_example" {
 			if !resourcesAttr.Contains("secrets") {
 				set.AddResult().
 					WithDescription("Resource '%s' does not include secrets in encrypted resources", resourceBlock.FullName()).
-					WithAttribute(resourcesAttr)
+					WithAttribute("")
 			}
 
 			if encryptionConfigBlock.MissingChild("provider") {
@@ -101,7 +101,7 @@ resource "aws_eks_cluster" "good_example" {
 			if keyArnAttr.IsEmpty() {
 				set.AddResult().
 					WithDescription("Resource '%s' has encryptionConfigBlock block with provider block specified but key_arn is empty", resourceBlock.FullName()).
-					WithAttribute(keyArnAttr)
+					WithAttribute("")
 			}
 
 		},

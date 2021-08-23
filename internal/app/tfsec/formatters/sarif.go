@@ -4,9 +4,9 @@ import (
 	"io"
 	"path/filepath"
 
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/defsec/result"
 
 	"github.com/owenrumney/go-sarif/sarif"
 )

@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
+	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/tfsec/cmd/tfsec-skeleton/examples"
 	"github.com/aquasecurity/tfsec/cmd/tfsec-skeleton/requirements"
-	"github.com/aquasecurity/tfsec/pkg/provider"
 )
 
 func generateFromCSV(path string) ([]*Input, error) {

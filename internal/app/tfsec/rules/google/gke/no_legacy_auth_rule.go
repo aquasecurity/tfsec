@@ -5,12 +5,12 @@ package gke
 // Before making changes, consider updating the generator.
 
 import (
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 func init() {
@@ -118,12 +118,12 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 			if issueClientCertificateAttr := masterAuthBlock.GetBlock("client_certificate_config").GetAttribute("issue_client_certificate"); issueClientCertificateAttr.IsTrue() {
 				set.AddResult().
 					WithDescription("Resource '%s' uses client certificates which are no longer recommended", resourceBlock.FullName()).
-					WithAttribute(issueClientCertificateAttr)
+					WithAttribute("")
 			}
 			if usernameAttr := masterAuthBlock.GetAttribute("username"); usernameAttr.IsString() {
 				set.AddResult().
 					WithDescription("Resource '%s' uses basic auth which is not recommended", resourceBlock.FullName()).
-					WithAttribute(usernameAttr)
+					WithAttribute("")
 			}
 		},
 	})

@@ -2,10 +2,10 @@ package dynamodb
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -77,13 +77,13 @@ resource "aws_dax_cluster" "good_example" {
 			if sseBlock.MissingChild("enabled") {
 				set.AddResult().
 					WithDescription("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", resourceBlock.FullName()).
-					WithBlock(sseBlock)
+					WithBlock("")
 			}
 
 			if sseEnabledAttr := sseBlock.GetAttribute("enabled"); sseEnabledAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("DAX cluster '%s' has disabled server side encryption", resourceBlock.FullName()).
-					WithAttribute(sseEnabledAttr)
+					WithAttribute("")
 			}
 
 		},

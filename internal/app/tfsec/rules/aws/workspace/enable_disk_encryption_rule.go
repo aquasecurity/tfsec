@@ -2,10 +2,10 @@ package workspace
 
 // generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -77,7 +77,7 @@ resource "aws_workspaces_workspace" "good_example" {
 				if rootVolEncAttr.IsNotNil() && rootVolEncAttr.IsFalse() {
 					set.AddResult().
 						WithDescription("Resource '%s' has the root volume encryption set to false", resourceBlock.FullName()).
-						WithAttribute(rootVolEncAttr)
+						WithAttribute("")
 				}
 			}
 
@@ -91,7 +91,7 @@ resource "aws_workspaces_workspace" "good_example" {
 			if userVolEncAttr.IsNotNil() && userVolEncAttr.IsFalse() {
 				set.AddResult().
 					WithDescription("Resource '%s' has the user volume encryption set to false", resourceBlock.FullName()).
-					WithAttribute(userVolEncAttr)
+					WithAttribute("")
 			}
 
 		},
