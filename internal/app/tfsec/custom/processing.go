@@ -3,7 +3,6 @@ package custom
 import (
 	"fmt"
 
-	"github.com/aquasecurity/defsec/infra"
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
 
@@ -130,7 +129,7 @@ func processFoundChecks(checks ChecksFile) {
 			debug.Log("Loading check: %s\n", customCheck.Code)
 			scanner.RegisterCheckRule(rule.Rule{
 				DefSecCheck: rules.RuleDef{
-					Id:         "",
+					Service:    "custom",
 					ShortCode:  customCheck.Code,
 					Summary:    customCheck.Description,
 					Impact:     customCheck.Impact,
@@ -138,7 +137,6 @@ func processFoundChecks(checks ChecksFile) {
 					Provider:   provider.CustomProvider,
 					Links:      customCheck.RelatedLinks,
 					Severity:   customCheck.Severity,
-					CheckFunc:  func(*infra.Context) []*result.Result { panic("not implemented") },
 				},
 				LegacyID:        customCheck.Code,
 				RequiredTypes:   customCheck.RequiredTypes,

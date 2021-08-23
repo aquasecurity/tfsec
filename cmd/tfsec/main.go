@@ -12,7 +12,6 @@ import (
 
 	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/config"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/updater"
 
@@ -217,12 +216,10 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		infra := adapter.Adapt(modules)
 		debug.Log("Starting scanner...")
-		scannerOptions := append(getScannerOptions(), scanner.OptionWithInfrastructure(infra))
-		results := scanner.New(scannerOptions...).Scan()
+		results := scanner.New().Scan(modules)
 		results = updateResultSeverity(results)
-		//results = removeDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
+		results = removeDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {
 			var filteredResult []result.Result
 			for _, result := range results {
@@ -320,14 +317,8 @@ func getDetailedExitCode(results []result.Result) int {
 }
 
 func removeDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, excludeDownloaded bool) []result.Result {
-	reduction := make(map[string]result.Result)
-
-	for _, res := range results {
-		reduction[res.HashCode()] = res
-	}
-
 	var returnVal []result.Result
-	for _, res := range reduction {
+	for _, res := range results {
 		if excludeDownloaded && strings.Contains(res.Range().GetFilename(), fmt.Sprintf("%c.terraform", os.PathSeparator)) {
 			continue
 		}

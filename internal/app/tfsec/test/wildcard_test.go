@@ -7,6 +7,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 
 	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
@@ -55,15 +56,15 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 		code := fmt.Sprintf("wild%d", i)
 
 		rule := rule.Rule{
-			Service:   "service",
-			ShortCode: code,
-			Documentation: rule.RuleDocumentation{
-				Summary: "blah",
+			DefSecCheck: rules.RuleDef{
+				Service:   "service",
+				ShortCode: code,
+				Summary:   "blah",
+				Provider:  "custom",
+				Severity:  severity.High,
 			},
-			Provider:        "custom",
-			RequiredTypes:   []string{"resource"},
-			RequiredLabels:  []string{test.pattern},
-			DefaultSeverity: severity.High,
+			RequiredTypes:  []string{"resource"},
+			RequiredLabels: []string{test.pattern},
 			CheckTerraform: func(set result.Set, rootBlock block.Block, module block.Module) {
 				set.AddResult().
 					WithDescription("Custom check failed for resource %s.", rootBlock.FullName())

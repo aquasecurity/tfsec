@@ -3,15 +3,11 @@ package scanner
 import (
 	"sort"
 
-	"github.com/aquasecurity/defsec/infra"
 	"github.com/aquasecurity/defsec/result"
-	"github.com/aquasecurity/defsec/severity"
-
-	"github.com/aquasecurity/tfsec/pkg/rule"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
-
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 )
 
 // Scanner scans HCL blocks by running all registered rules against them
@@ -21,7 +17,6 @@ type Scanner struct {
 	excludedRuleIDs   []string
 	ignoreCheckErrors bool
 	workspaceName     string
-	infra             *infra.Context
 }
 
 // New creates a new Scanner
@@ -45,10 +40,63 @@ func checkInList(id string, legacyID string, list []string) bool {
 	return false
 }
 
-func (scanner *Scanner) Scan() []result.Result {
-	checkTime := metrics.Start(metrics.Check)
-	defer checkTime.Stop()
-	results := scanner.scanAll()
+func (scanner *Scanner) Scan(modules []block.Module) []result.Result {
+
+	adaptationTime := metrics.Start(metrics.Adaptation)
+	infra := adapter.Adapt(modules)
+	adaptationTime.Stop()
+
+	var results []result.Result
+
+	// run defsec checks
+	infraCheckTime := metrics.Start(metrics.InfraChecks)
+	for _, r := range GetRegisteredRules() {
+		func() {
+			if scanner.ignoreCheckErrors {
+				defer r.RecoverFromCheckPanic()
+			}
+			infraResults := r.CheckAgainstContext(infra)
+			results = append(results, infraResults.All()...)
+		}()
+	}
+	infraCheckTime.Stop()
+
+	// run internal checks
+	hclCheckTime := metrics.Start(metrics.HCLChecks)
+	for _, module := range modules {
+		for _, b := range module.GetBlocks() {
+			for _, r := range GetRegisteredRules() {
+				func() {
+					if scanner.ignoreCheckErrors {
+						defer r.RecoverFromCheckPanic()
+					}
+					internalResults := r.CheckAgainstBlock(b, module)
+					results = append(results, internalResults.All()...)
+				}()
+			}
+		}
+	}
+	hclCheckTime.Stop()
+
+	filtered := scanner.filterResults(results)
+	scanner.sortResults(filtered)
+	return filtered
+}
+
+func (scanner *Scanner) filterResults(results []result.Result) []result.Result {
+	var filtered []result.Result
+	for _, result := range results {
+		if !scanner.includeIgnored && (result.IsIgnored(scanner.workspaceName) || checkInList(result.RuleID, result.LegacyRuleID, scanner.excludedRuleIDs)) {
+			metrics.Add(metrics.IgnoredChecks, 1)
+			debug.Log("Ignoring '%s'", result.RuleID)
+		} else {
+			filtered = append(filtered, result)
+		}
+	}
+	return filtered
+}
+
+func (scanner *Scanner) sortResults(results []result.Result) {
 	sort.Slice(results, func(i, j int) bool {
 		switch {
 		case results[i].RuleID < results[j].RuleID:
@@ -59,29 +107,4 @@ func (scanner *Scanner) Scan() []result.Result {
 			return results[i].HashCode() > results[j].HashCode()
 		}
 	})
-	return results
-}
-
-func (scanner *Scanner) scanAll() []result.Result {
-	var results []result.Result
-	rules := GetRegisteredRules()
-	for _, r := range rules {
-		ruleResults := rule.CheckRule(&r, scanner.infra, scanner.ignoreCheckErrors)
-		if ruleResults != nil {
-			for _, ruleResult := range ruleResults.All() {
-				if ruleResult.Severity == severity.None {
-					ruleResult.Severity = r.DefSecCheck.Severity
-
-				}
-				if !scanner.includeIgnored && (ruleResult.IsIgnored(scanner.workspaceName) || checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.excludedRuleIDs)) {
-					// rule was ignored
-					metrics.Add(metrics.IgnoredChecks, 1)
-					debug.Log("Ignoring '%s'", ruleResult.RuleID)
-				} else {
-					results = append(results, *ruleResult)
-				}
-			}
-		}
-	}
-	return results
 }

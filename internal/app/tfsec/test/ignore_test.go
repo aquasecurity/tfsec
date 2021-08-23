@@ -9,6 +9,7 @@ import (
 
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
@@ -84,12 +85,14 @@ resource "aws_security_group_rule" "my-rule" {
 func Test_IgnoreSpecific(t *testing.T) {
 
 	r1 := rule.Rule{
-		LegacyID:        "ABC123",
-		Provider:        provider.AWSProvider,
-		Service:         "service",
-		ShortCode:       "abc123",
-		RequiredLabels:  []string{"bad"},
-		DefaultSeverity: severity.High,
+		LegacyID: "ABC123",
+		DefSecCheck: rules.RuleDef{
+			Provider:  provider.AWSProvider,
+			Service:   "service",
+			ShortCode: "abc123",
+			Severity:  severity.High,
+		},
+		RequiredLabels: []string{"bad"},
 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			set.AddResult().
 				WithDescription("example problem")
@@ -99,12 +102,14 @@ func Test_IgnoreSpecific(t *testing.T) {
 	defer scanner.DeregisterCheckRule(r1)
 
 	r2 := rule.Rule{
-		LegacyID:        "DEF456",
-		Provider:        provider.AWSProvider,
-		Service:         "service",
-		ShortCode:       "def456",
-		RequiredLabels:  []string{"bad"},
-		DefaultSeverity: severity.High,
+		LegacyID: "DEF456",
+		DefSecCheck: rules.RuleDef{
+			Provider:  provider.AWSProvider,
+			Service:   "service",
+			ShortCode: "def456",
+			Severity:  severity.High,
+		},
+		RequiredLabels: []string{"bad"},
 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			set.AddResult().
 				WithDescription("example problem")
@@ -223,7 +228,7 @@ resource "aws_security_group_rule" "my-rule" {
 
 func TestBlockLevelIgnoresForAllRules(t *testing.T) {
 	for _, check := range scanner.GetRegisteredRules() {
-		for _, badExample := range check.Documentation.BadExample {
+		for _, badExample := range check.BadExample {
 
 			if strings.TrimSpace(badExample) == "" {
 				continue
@@ -244,10 +249,8 @@ func TestBlockLevelIgnoresForAllRules(t *testing.T) {
 						if result.RuleID != check.ID() {
 							continue
 						}
-						for _, block := range result.Blocks() {
-							if block.Range().StartLine-1 == i {
-								lines = append(lines, fmt.Sprintf("# tfsec:ignore:%s", check.ID()))
-							}
+						if result.Range().GetStartLine()-1 == i {
+							lines = append(lines, fmt.Sprintf("# tfsec:ignore:%s", check.ID()))
 						}
 					}
 					lines = append(lines, badLine)
@@ -259,76 +262,6 @@ func TestBlockLevelIgnoresForAllRules(t *testing.T) {
 
 			})
 
-		}
-	}
-}
-
-func TestInlineIgnoresForAllRules(t *testing.T) {
-	for _, check := range scanner.GetRegisteredRules() {
-		for _, badExample := range check.Documentation.BadExample {
-
-			if strings.TrimSpace(badExample) == "" {
-				continue
-			}
-
-			results := testutil.ScanHCL(badExample, t)
-			badLines := strings.Split(badExample, "\n")
-
-			testCases := []struct {
-				pre  string
-				post string
-			}{
-				{pre: "#", post: ""},
-				{pre: "# ", post: ""},
-				{pre: "//", post: ""},
-				{pre: "// ", post: ""},
-				{pre: "/* ", post: "*/"},
-				{pre: "/*", post: "*/"},
-				{pre: " #", post: ""},
-				{pre: " //", post: ""},
-				{pre: " /* ", post: "*/"},
-			}
-			for _, testCase := range testCases {
-				t.Run(fmt.Sprintf("Test attribute-level ignore for %s (pre=[%s] post=[%s])", check.ID(), testCase.pre, testCase.post), func(t *testing.T) {
-					var required bool
-					for _, result := range results {
-						if result.IsOnAttribute() {
-							required = true
-							break
-						}
-					}
-					if !required {
-						return
-					}
-					defer func() {
-						if err := recover(); err != nil {
-							t.Fatalf("Scan (bad) failed: %s", err)
-						}
-					}()
-					var lines []string
-					for i, badLine := range badLines {
-						for _, result := range results {
-							if result.RuleID != check.ID() {
-								continue
-							}
-							if result.Range().StartLine-1 == i {
-								if !result.IsOnAttribute() || strings.Contains(badLine, "<<") {
-									lines = append(lines, fmt.Sprintf("%stfsec:ignore:%s%s", testCase.pre, check.ID(), testCase.post))
-								} else {
-									badLine = fmt.Sprintf("%s%s", badLine, fmt.Sprintf("%s tfsec:ignore:%s %s", testCase.pre, check.ID(), testCase.post))
-								}
-							}
-						}
-						lines = append(lines, badLine)
-					}
-					withIgnores := strings.Join(lines, "\n")
-
-					t.Log(withIgnores)
-
-					results := testutil.ScanHCL(withIgnores, t)
-					testutil.AssertCheckCode(t, "", check.ID(), results, "Ignore rule was not effective")
-				})
-			}
 		}
 	}
 }

@@ -1,7 +1,5 @@
 package scanner
 
-import "github.com/aquasecurity/defsec/infra"
-
 type Option func(s *Scanner)
 
 func OptionIncludePassed() func(s *Scanner) {
@@ -31,11 +29,5 @@ func OptionIgnoreCheckErrors(ignore bool) func(s *Scanner) {
 func OptionWithWorkspaceName(workspaceName string) func(s *Scanner) {
 	return func(s *Scanner) {
 		s.workspaceName = workspaceName
-	}
-}
-
-func OptionWithInfrastructure(infra *infra.Context) func(s *Scanner) {
-	return func(s *Scanner) {
-		s.infra = infra
 	}
 }

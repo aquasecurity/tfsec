@@ -125,7 +125,9 @@ func printStatistics() {
 		metrics.DiskIO,
 		metrics.HCLParse,
 		metrics.Evaluation,
-		metrics.Check,
+		metrics.InfraChecks,
+		metrics.HCLChecks,
+		metrics.Adaptation,
 	} {
 		_ = tml.Printf("  <blue>%-20s</blue> %s\n", operation, times[operation].String())
 	}

@@ -3,6 +3,7 @@ package scanner
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 	"sort"
 	"sync"
 
@@ -15,13 +16,14 @@ var registeredRules []rule.Rule
 // RegisterCheckRule registers a new Rule which should be run on future scans
 func RegisterCheckRule(rule rule.Rule) {
 	if rule.DefSecCheck.ShortCode == "" {
-		panic("rule short code was not set")
+		panic("rule short code was not set: " + string(debug.Stack()))
 	}
 	if rule.DefSecCheck.Service == "" {
-		panic("rule service was not set")
+		panic("rule service was not set: " + string(debug.Stack()))
+
 	}
 	if rule.DefSecCheck.Provider == "" {
-		panic("rule provider was not set")
+		panic("rule provider was not set: " + string(debug.Stack()))
 	}
 	rulesLock.Lock()
 	defer rulesLock.Unlock()

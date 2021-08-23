@@ -105,7 +105,6 @@ func (b *HCLBlock) Clone(index cty.Value) Block {
 		} else {
 			labels[position] = fmt.Sprintf("%s[%d]", clone.hclBlock.Labels[position], b.cloneIndex)
 		}
-		fmt.Printf("LABELS: %s\n", labels)
 		clone.hclBlock.Labels = labels
 	}
 	indexVal, _ := gocty.ToCtyValue(index, cty.Number)

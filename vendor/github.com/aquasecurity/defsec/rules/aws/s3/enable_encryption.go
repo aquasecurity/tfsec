@@ -28,6 +28,7 @@ S3 Buckets should be encrypted with customer managed KMS keys and not default AW
 
 	Severity: severity.High,
 	CheckFunc: func(context *infra.Context) []*result.Result {
+
 		var results []*result.Result
 		for _, bucket := range context.AWS.S3.Buckets {
 			if bucket.Encryption.Enabled.IsFalse() {
@@ -37,9 +38,6 @@ S3 Buckets should be encrypted with customer managed KMS keys and not default AW
 				})
 			}
 		}
-
-		fmt.Printf("There are %d results\n", len(results))
-
 		return results
 	},
 }

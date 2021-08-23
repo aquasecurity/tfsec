@@ -4,5 +4,9 @@ import "github.com/aquasecurity/defsec/definition"
 
 type PublicAccessBlock struct {
 	*definition.Metadata
-	Bucket *Bucket
+	Bucket                *Bucket
+	BlockPublicACLs       definition.BoolValue
+	BlockPublicPolicy     definition.BoolValue
+	IgnorePublicACLs      definition.BoolValue
+	RestrictPublicBuckets definition.BoolValue
 }

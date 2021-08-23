@@ -8,6 +8,7 @@ import (
 
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
@@ -16,30 +17,30 @@ import (
 )
 
 var badRule = rule.Rule{
-	LegacyID:  "EXA001",
-	Provider:  provider.AWSProvider,
-	Service:   "service",
-	ShortCode: "abc",
-	Documentation: rule.RuleDocumentation{
+	LegacyID: "EXA001",
+	DefSecCheck: rules.RuleDef{
+		Provider:    provider.AWSProvider,
+		Service:     "service",
+		ShortCode:   "abc",
 		Summary:     "A stupid example check for a test.",
 		Impact:      "You will look stupid",
 		Resolution:  "Don't do stupid stuff",
 		Explanation: "Bad should not be set.",
-		BadExample: []string{`
+		Severity:    severity.High,
+	},
+	BadExample: []string{`
 resource "problem" "x" {
 bad = "1"
 }
 `},
-		GoodExample: []string{`
+	GoodExample: []string{`
 resource "problem" "x" {
 
 }
 `},
-		Links: nil,
-	},
-	RequiredTypes:   []string{"resource"},
-	RequiredLabels:  []string{"problem"},
-	DefaultSeverity: severity.High,
+	Links:          nil,
+	RequiredTypes:  []string{"resource"},
+	RequiredLabels: []string{"problem"},
 	CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 		if resourceBlock.GetAttribute("bad").IsTrue() {
 			set.AddResult().

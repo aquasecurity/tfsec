@@ -32,7 +32,7 @@ func TestRequiredSourcesMatch(t *testing.T) {
 			rule: Rule{
 				RequiredTypes:  []string{"data"},
 				RequiredLabels: []string{"custom_module"},
-				CheckFunc:      func(result.Set, block.Block, block.Module) {},
+				CheckTerraform: func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "module",
 			source: `
@@ -47,7 +47,7 @@ module "custom_module" {
 			rule: Rule{
 				RequiredTypes:  []string{"module"},
 				RequiredLabels: []string{"dont_match"},
-				CheckFunc:      func(result.Set, block.Block, block.Module) {},
+				CheckTerraform: func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "module",
 			source: `
@@ -62,7 +62,7 @@ module "custom_module" {
 			rule: Rule{
 				RequiredTypes:  []string{"module"},
 				RequiredLabels: []string{"*"},
-				CheckFunc:      func(result.Set, block.Block, block.Module) {},
+				CheckTerraform: func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "module",
 			source: `
@@ -78,7 +78,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"path_doesnt_match"},
-				CheckFunc:       func(result.Set, block.Block, block.Module) {},
+				CheckTerraform:  func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "module",
 			source: `
@@ -94,7 +94,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"github.com/hashicorp/example"},
-				CheckFunc:       func(result.Set, block.Block, block.Module) {},
+				CheckTerraform:  func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "module",
 			source: `
@@ -110,7 +110,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"*two/three"},
-				CheckFunc:       func(result.Set, block.Block, block.Module) {},
+				CheckTerraform:  func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "one/two/three",
 			source: `
@@ -126,7 +126,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"one/two/three"},
-				CheckFunc:       func(result.Set, block.Block, block.Module) {},
+				CheckTerraform:  func(result.Set, block.Block, block.Module) {},
 			},
 			modulePath: "one/two/three",
 			source: `
@@ -141,7 +141,7 @@ module "custom_module" {
 		t.Run(test.name, func(t *testing.T) {
 			modules, testDir := parseSourceWithModule(test.source, test.modulePath, moduleSource)
 			os.Chdir(testDir) // change directory for relative path tests to work
-			result := IsRuleRequiredForBlock(&test.rule, modules[0].GetBlocks()[0])
+			result := test.rule.isRuleRequiredForBlock(modules[0].GetBlocks()[0])
 			assert.Equal(t, test.expected, result, "`IsRuleRequiredForBlock` match function evaluating incorrectly for requiredSources test.")
 		})
 	}

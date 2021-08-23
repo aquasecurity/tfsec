@@ -9,83 +9,87 @@ import (
 
 	"github.com/aquasecurity/defsec/infra"
 	"github.com/aquasecurity/defsec/provider"
-
 	"github.com/aquasecurity/defsec/result"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 )
 
-// CheckRule the provided HCL block against the rule
-func CheckRule(r *Rule, context *infra.Context, ignoreErrors bool) result.Set {
-	if ignoreErrors {
-		defer func() {
-			if err := recover(); err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", r.ID(), err)
-				debug.Log("Stack trace for failed %s r:\n%s\n\n", r.ID(), string(runtimeDebug.Stack()))
-			}
-		}()
-	}
-
+func (r *Rule) createResultSet() result.Set {
 	var links []string
-
 	if r.DefSecCheck.Provider != provider.CustomProvider {
-		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s#%s/%s", r.DefSecCheck.Provider, r.DefSecCheck.Service, r.DefSecCheck.ShortCode, r.DefSecCheck.Provider, r.DefSecCheck.Service))
+		links = append(links, fmt.Sprintf(
+			"https://tfsec.dev/docs/%s/%s/%s#%s/%s",
+			r.DefSecCheck.Provider,
+			r.DefSecCheck.Service,
+			r.DefSecCheck.ShortCode,
+			r.DefSecCheck.Provider,
+			r.DefSecCheck.Service,
+		))
 	}
-
-	links = append(links, r.Links...)
-
-	resultSet := result.NewSet().
+	return result.NewSet().
 		WithRuleID(r.ID()).
 		WithLegacyRuleID(r.LegacyID).
 		WithRuleSummary(r.DefSecCheck.Summary).
 		WithImpact(r.DefSecCheck.Impact).
 		WithResolution(r.DefSecCheck.Resolution).
 		WithRuleProvider(r.DefSecCheck.Provider).
-		WithLinks(links)
+		WithSeverity(r.DefSecCheck.Severity).
+		WithLinks(append(links, r.Links...))
 
-		// TODO: interfaces pls
-	if r.CheckTerraform == nil && r.DefSecCheck.CheckFunc == nil {
-		debug.Log("Check %s implements no check functions - cannot run", r.ID())
-	}
-	fmt.Println("shall i run the check")
-	if r.DefSecCheck.CheckFunc != nil {
-		fmt.Println("Running the check")
-		for _, result := range r.DefSecCheck.CheckFunc(context) {
-			resultSet.Add(result)
-		}
+}
+
+func (r *Rule) CheckAgainstContext(context *infra.Context) result.Set {
+
+	set := r.createResultSet()
+
+	if r.DefSecCheck.CheckFunc == nil {
+		return set
 	}
 
-	return resultSet
+	for _, result := range r.DefSecCheck.CheckFunc(context) {
+		set.Add(result)
+	}
+
+	return set
+
+}
+
+func (r *Rule) RecoverFromCheckPanic() {
+	if err := recover(); err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", r.ID(), err)
+		debug.Log("Stack trace for failed %s r:\n%s\n\n", r.ID(), string(runtimeDebug.Stack()))
+	}
+}
+
+func (r *Rule) CheckAgainstBlock(b block.Block, m block.Module) result.Set {
+	set := r.createResultSet()
+	if r.CheckTerraform == nil {
+		return set
+	}
+	if r.isRuleRequiredForBlock(b) {
+		r.CheckTerraform(set, b, m)
+	}
+	return set
 }
 
 // IsRuleRequiredForBlock returns true if the Rule should be applied to the given HCL block
-func IsRuleRequiredForBlock(rule *Rule, b block.Block) bool {
+func (r *Rule) isRuleRequiredForBlock(b block.Block) bool {
 
-	if rule.DefSecCheck.CheckFunc != nil {
-		return true
-	}
-
-	if rule.CheckTerraform == nil {
-		return false
-	}
-
-	if len(rule.RequiredTypes) > 0 {
-		if !checkRequiredTypesMatch(rule, b) {
+	if len(r.RequiredTypes) > 0 {
+		if !r.checkRequiredTypesMatch(b) {
 			return false
 		}
 	}
 
-	if len(rule.RequiredLabels) > 0 {
-		if !checkRequiredLabelsMatch(rule, b) {
+	if len(r.RequiredLabels) > 0 {
+		if !r.checkRequiredLabelsMatch(b) {
 			return false
 		}
 
 	}
 
-	if len(rule.RequiredSources) > 0 && b.Type() == block.TypeModule.Name() {
-		if !checkRequiredSourcesMatch(rule, b) {
+	if len(r.RequiredSources) > 0 && b.Type() == block.TypeModule.Name() {
+		if !r.checkRequiredSourcesMatch(b) {
 			return false
 		}
 	}
@@ -93,9 +97,9 @@ func IsRuleRequiredForBlock(rule *Rule, b block.Block) bool {
 	return true
 }
 
-func checkRequiredTypesMatch(rule *Rule, b block.Block) bool {
+func (r *Rule) checkRequiredTypesMatch(b block.Block) bool {
 	var found bool
-	for _, requiredType := range rule.RequiredTypes {
+	for _, requiredType := range r.RequiredTypes {
 		if b.Type() == requiredType {
 			found = true
 			break
@@ -105,9 +109,9 @@ func checkRequiredTypesMatch(rule *Rule, b block.Block) bool {
 	return found
 }
 
-func checkRequiredLabelsMatch(rule *Rule, b block.Block) bool {
+func (r *Rule) checkRequiredLabelsMatch(b block.Block) bool {
 	var found bool
-	for _, requiredLabel := range rule.RequiredLabels {
+	for _, requiredLabel := range r.RequiredLabels {
 		if requiredLabel == "*" || (len(b.Labels()) > 0 && wildcardMatch(requiredLabel, b.TypeLabel())) {
 			found = true
 			break
@@ -117,7 +121,7 @@ func checkRequiredLabelsMatch(rule *Rule, b block.Block) bool {
 	return found
 }
 
-func checkRequiredSourcesMatch(rule *Rule, b block.Block) bool {
+func (r *Rule) checkRequiredSourcesMatch(b block.Block) bool {
 	var found bool
 	if sourceAttr := b.GetAttribute("source"); sourceAttr.IsNotNil() {
 		sourcePath := sourceAttr.ValueAsStrings()[0]
@@ -127,11 +131,11 @@ func checkRequiredSourcesMatch(rule *Rule, b block.Block) bool {
 			var err error
 			sourcePath, err = cleanPathRelativeToWorkingDir(filepath.Dir(b.Range().Filename), sourcePath)
 			if err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "WARNING: did not path for module %s due to error(s): %s\n", fmt.Sprintf("%s:%s", b.FullName(), b.Range().Filename), err)
+				_, _ = fmt.Fprintf(os.Stderr, "WARNING: did not clean path for module %s due to error(s): %s\n", fmt.Sprintf("%s:%s", b.FullName(), b.Range().Filename), err)
 			}
 		}
 
-		for _, requiredSource := range rule.RequiredSources {
+		for _, requiredSource := range r.RequiredSources {
 			if requiredSource == "*" || wildcardMatch(requiredSource, sourcePath) {
 				found = true
 				break

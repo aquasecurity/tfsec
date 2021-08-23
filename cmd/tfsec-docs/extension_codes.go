@@ -29,12 +29,12 @@ func generateExtensionCodeFile(registeredChecks []*FileContent) error {
 			blocks = append(blocks, checkBlock{
 				Code:        check.ID(),
 				LegacyCode:  check.LegacyID,
-				Service:     check.Service,
-				Provider:    string(check.Provider),
-				Description: check.Documentation.Summary,
-				Impact:      check.Documentation.Impact,
-				Resolution:  check.Documentation.Resolution,
-				DocUrl:      fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s/", check.Provider, check.Service, check.ShortCode),
+				Service:     check.DefSecCheck.Service,
+				Provider:    string(check.DefSecCheck.Provider),
+				Description: check.DefSecCheck.Summary,
+				Impact:      check.DefSecCheck.Impact,
+				Resolution:  check.DefSecCheck.Resolution,
+				DocUrl:      fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s/", check.DefSecCheck.Provider, check.DefSecCheck.Service, check.DefSecCheck.ShortCode),
 			})
 
 		}

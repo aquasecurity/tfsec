@@ -36,6 +36,6 @@ func createBadBlocks(fs *testutil.FileSystem) {
 		`)
 
 	for _, rule := range scanner.GetRegisteredRules() {
-		_ = fs.WriteTextFile(fmt.Sprintf("/modules/problem/%s.tf", rule.ID()), rule.Documentation.BadExample[0])
+		_ = fs.WriteTextFile(fmt.Sprintf("/modules/problem/%s.tf", rule.ID()), rule.BadExample[0])
 	}
 }

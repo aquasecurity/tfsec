@@ -105,8 +105,6 @@ func (r *Reference) String() string {
 func (r *Reference) RefersTo(a definition.Reference) bool {
 	other := a.(*Reference)
 
-	fmt.Println(r.String() + " ~~ " + other.String())
-
 	if r.BlockType() != other.BlockType() {
 		return false
 	}

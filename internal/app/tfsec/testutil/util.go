@@ -10,7 +10,6 @@ import (
 
 	"github.com/aquasecurity/defsec/result"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/stretchr/testify/assert"
@@ -21,20 +20,16 @@ import (
 
 func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) []result.Result {
 	modules := CreateModulesFromSource(source, ".tf", t)
-
-	context := adapter.Adapt(modules)
-
-	scanner := scanner.New(scanner.OptionIgnoreCheckErrors(false), scanner.OptionWithInfrastructure(context))
+	scanner := scanner.New(scanner.OptionIgnoreCheckErrors(false))
 	for _, opt := range additionalOptions {
 		opt(scanner)
 	}
-	return scanner.Scan()
+	return scanner.Scan(modules)
 }
 
 func ScanJSON(source string, t *testing.T) []result.Result {
 	modules := CreateModulesFromSource(source, ".tf.json", t)
-	context := adapter.Adapt(modules)
-	return scanner.New(scanner.OptionIgnoreCheckErrors(false), scanner.OptionWithInfrastructure(context)).Scan()
+	return scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(modules)
 }
 
 func CreateModulesFromSource(source string, ext string, t *testing.T) []block.Module {
