@@ -46,4 +46,5 @@ type Attribute interface {
 	ValueAsStrings() []string
 	IsIterable() bool
 	Each(f func(key cty.Value, val cty.Value))
+	AsStringValue() definition.StringValue
 }

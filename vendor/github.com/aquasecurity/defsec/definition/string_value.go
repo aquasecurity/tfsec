@@ -48,3 +48,10 @@ func (s *StringValue) executePredicate(value string, fn StringCheckFunc, equalit
 
 	return fn(subjectString, searchString)
 }
+
+func EmptyStringValue(r Range) StringValue {
+	return StringValue{
+		Metadata: NewMetadata(r),
+	}
+
+}

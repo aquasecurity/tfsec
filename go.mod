@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/apparentlymart/go-cidr v1.1.0
-	github.com/aquasecurity/defsec v0.0.2-0.20210823151247-f11999b0619b
+	github.com/aquasecurity/defsec v0.0.2-0.20210823175038-f4b6148c3ee0
 	github.com/bmatcuk/doublestar v1.3.4
 	github.com/google/go-cmp v0.5.6
 	github.com/google/uuid v1.3.0

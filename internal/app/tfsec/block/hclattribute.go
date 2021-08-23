@@ -748,3 +748,13 @@ func (attr *HCLAttribute) HasIntersect(checkValues ...interface{}) bool {
 	return false
 
 }
+
+func (attr *HCLAttribute) AsStringValue() definition.StringValue {
+	if attr.IsString() {
+		return definition.StringValue{
+			Metadata: definition.NewMetadata(attr.Range()),
+			Value:    attr.Value().AsString(),
+		}
+	}
+	return definition.EmptyStringValue(attr.Range())
+}
