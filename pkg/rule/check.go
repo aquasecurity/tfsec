@@ -34,24 +34,24 @@ func CheckRule(r *Rule, context *infra.Context, ignoreErrors bool) result.Set {
 		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s#%s/%s", r.Provider, r.Service, r.ShortCode, r.Provider, r.Service))
 	}
 
-	links = append(links, r.Documentation.Links...)
+	links = append(links, r.Links...)
 
 	resultSet := result.NewSet().
 		WithRuleID(r.ID()).
 		WithLegacyRuleID(r.LegacyID).
-		WithRuleSummary(r.Documentation.Summary).
-		WithImpact(r.Documentation.Impact).
-		WithResolution(r.Documentation.Resolution).
+		WithRuleSummary(r.Summary).
+		WithImpact(r.Impact).
+		WithResolution(r.Resolution).
 		WithRuleProvider(r.Provider).
 		WithLinks(links)
 
 		// TODO: interfaces pls
-	if r.CheckTerraform == nil && r.CheckInfrastructure == nil {
+	if r.CheckTerraform == nil && r.CheckFunc == nil {
 		debug.Log("Check %s implements no check functions - cannot run", r.ID())
 	}
 
-	if r.CheckInfrastructure != nil {
-		for _, result := range r.CheckInfrastructure(context) {
+	if r.CheckFunc != nil {
+		for _, result := range r.CheckFunc(context) {
 			resultSet.Add(result)
 		}
 	}
@@ -62,7 +62,7 @@ func CheckRule(r *Rule, context *infra.Context, ignoreErrors bool) result.Set {
 // IsRuleRequiredForBlock returns true if the Rule should be applied to the given HCL block
 func IsRuleRequiredForBlock(rule *Rule, b block.Block) bool {
 
-	if rule.CheckInfrastructure != nil {
+	if rule.CheckFunc != nil {
 		return true
 	}
 

@@ -43,4 +43,3 @@ resource "aws_s3_bucket" "with_logging_bucket" {
   }
 }
 
-resource "aws_instance" 

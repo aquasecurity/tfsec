@@ -3,8 +3,9 @@ package custom
 import (
 	"fmt"
 
+	"github.com/aquasecurity/defsec/infra"
 	"github.com/aquasecurity/defsec/provider"
-	"github.com/aquasecurity/defsec/severity"
+	"github.com/aquasecurity/defsec/rules"
 
 	"github.com/aquasecurity/defsec/result"
 
@@ -128,26 +129,26 @@ func processFoundChecks(checks ChecksFile) {
 		func(customCheck Check) {
 			debug.Log("Loading check: %s\n", customCheck.Code)
 			scanner.RegisterCheckRule(rule.Rule{
-				LegacyID:  customCheck.Code,
-				Service:   "custom",
-				ShortCode: customCheck.Code,
-				Documentation: rule.RuleDocumentation{
+				RuleDef: rules.RuleDef{
+					Id:         "",
+					ShortCode:  customCheck.Code,
 					Summary:    customCheck.Description,
-					Links:      customCheck.RelatedLinks,
 					Impact:     customCheck.Impact,
 					Resolution: customCheck.Resolution,
+					Provider:   provider.CustomProvider,
+					Links:      customCheck.RelatedLinks,
+					Severity:   customCheck.Severity,
+					CheckFunc:  func(*infra.Context) []*result.Result { panic("not implemented") },
 				},
-				Provider:        provider.CustomProvider,
+				LegacyID:        customCheck.Code,
 				RequiredTypes:   customCheck.RequiredTypes,
 				RequiredLabels:  customCheck.RequiredLabels,
 				RequiredSources: customCheck.RequiredSources,
-				DefaultSeverity: severity.Medium,
 				CheckTerraform: func(set result.Set, rootBlock block.Block, module block.Module) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, module) {
 						set.AddResult().
-							WithDescription("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage).
-							WithSeverity(customCheck.Severity)
+							WithDescription("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage)
 					}
 				},
 			})
