@@ -16,8 +16,14 @@ type Ignore struct {
 
 type Ignores []Ignore
 
-func (i Ignores) Covering(r definition.Range, ids ...string) *Ignore {
+func (i Ignores) Covering(r definition.Range, workspace string, ids ...string) *Ignore {
 	for _, ignore := range i {
+		if ignore.Expiry != nil && time.Now().After(*ignore.Expiry) {
+			continue
+		}
+		if ignore.Workspace != "" && ignore.Workspace != workspace {
+			continue
+		}
 		idMatch := ignore.RuleID == "*" || len(ids) == 0
 		if !idMatch {
 			for _, id := range ids {

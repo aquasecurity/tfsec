@@ -74,6 +74,7 @@ func (scanner *Scanner) Scan(modules []block.Module) []*result.Result {
 					for _, result := range internalResults.All() {
 						if !scanner.includeIgnored && module.Ignores().Covering(
 							result.Range(),
+							scanner.workspaceName,
 							result.RuleID,
 							result.LegacyRuleID,
 						) != nil {

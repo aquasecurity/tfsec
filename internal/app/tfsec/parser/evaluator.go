@@ -124,7 +124,7 @@ func (e *Evaluator) evaluateModules() {
 		vars := module.Definition.Values().AsValueMap()
 
 		moduleIgnores := module.Modules[0].Ignores()
-		if ignore := e.ignores.Covering(module.Definition.Range()); ignore != nil {
+		if ignore := e.ignores.Covering(module.Definition.Range(), e.workspace); ignore != nil {
 			moduleIgnore := *ignore
 			moduleIgnore.ModuleKey = module.Definition.FullName()
 			moduleIgnores = append(moduleIgnores, moduleIgnore)
