@@ -8,7 +8,7 @@ import (
 )
 
 func Test_AWSMissingDescriptionForSecurityGroup(t *testing.T) {
-	expectedCode := "aws-vpc-add-decription-to-security-group"
+	expectedCode := "aws-vpc-add-description-to-security-group"
 
 	var tests = []struct {
 		name                  string
