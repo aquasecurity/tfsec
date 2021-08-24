@@ -61,9 +61,12 @@ func (scanner *Scanner) Scan(modules []block.Module) []*result.Result {
 	}
 	infraCheckTime.Stop()
 
+	var ignores block.Ignores
+
 	// run internal checks
 	hclCheckTime := metrics.Start(metrics.HCLChecks)
 	for _, module := range modules {
+		ignores = append(ignores, module.Ignores()...)
 		for _, b := range module.GetBlocks() {
 			for _, r := range GetRegisteredRules() {
 				func() {
@@ -71,26 +74,29 @@ func (scanner *Scanner) Scan(modules []block.Module) []*result.Result {
 						defer r.RecoverFromCheckPanic()
 					}
 					internalResults := r.CheckAgainstBlock(b, module)
-					for _, result := range internalResults.All() {
-						if !scanner.includeIgnored && module.Ignores().Covering(
-							result.Range(),
-							scanner.workspaceName,
-							result.RuleID,
-							result.LegacyRuleID,
-						) != nil {
-							metrics.Add(metrics.IgnoredChecks, 1)
-							debug.Log("Ignoring '%s'", result.RuleID)
-							continue
-						}
-						results = append(results, result)
-					}
+					results = append(results, internalResults.All()...)
 				}()
 			}
 		}
 	}
 	hclCheckTime.Stop()
 
-	filtered := scanner.filterResults(results)
+	var resultsAfterIgnores []*result.Result
+	for _, result := range results {
+		if !scanner.includeIgnored && ignores.Covering(
+			result.Range(),
+			scanner.workspaceName,
+			result.RuleID,
+			result.LegacyRuleID,
+		) != nil {
+			metrics.Add(metrics.IgnoredChecks, 1)
+			debug.Log("Ignoring '%s'", result.RuleID)
+			continue
+		}
+		resultsAfterIgnores = append(resultsAfterIgnores, result)
+	}
+
+	filtered := scanner.filterResults(resultsAfterIgnores)
 	scanner.sortResults(filtered)
 	return filtered
 }

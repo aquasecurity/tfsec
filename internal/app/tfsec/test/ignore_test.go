@@ -194,7 +194,7 @@ func Test_IgnoreAboveResourceBlockWithExpDateAndMultipleIgnoresIfDateNotBreached
 	defer scanner.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
-# tfsec:ignore:ABC123:exp:2221-01-02 tfsec:ignore:AWS018
+# tfsec:ignore:ABC123:exp:2221-01-02
 resource "bad" "my-rule" {
 	
 }
@@ -207,7 +207,7 @@ func Test_IgnoreIgnoreWithExpiryAndWorkspaceAndWorkspaceSupplied(t *testing.T) {
 	defer scanner.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
-# tfsec:ignore:ABC123:exp:2221-01-02 #tfsec:ignore:AWS018:ws:testworkspace
+# tfsec:ignore:ABC123:exp:2221-01-02:ws:testworkspace
 resource "bad" "my-rule" {
 }
 `, t, scanner.OptionWithWorkspaceName("testworkspace"))
