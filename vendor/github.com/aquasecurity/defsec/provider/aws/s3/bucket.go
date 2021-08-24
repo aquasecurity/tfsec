@@ -26,7 +26,8 @@ type BucketPolicy struct {
 }
 
 type Logging struct {
-	Enabled definition.BoolValue
+	Enabled      definition.BoolValue
+	TargetBucket definition.StringValue
 }
 
 type Versioning struct {

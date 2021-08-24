@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/aquasecurity/defsec/result"
@@ -71,7 +72,18 @@ func (scanner *Scanner) Scan(modules []block.Module) []result.Result {
 						defer r.RecoverFromCheckPanic()
 					}
 					internalResults := r.CheckAgainstBlock(b, module)
-					results = append(results, internalResults.All()...)
+					for _, result := range internalResults.All() {
+						fmt.Printf("%#v\n", result)
+						if !scanner.includeIgnored && module.Ignores().Covering(
+							[]string{result.RuleID, result.LegacyRuleID},
+							result.Range(),
+						) != nil {
+							metrics.Add(metrics.IgnoredChecks, 1)
+							debug.Log("Ignoring '%s'", result.RuleID)
+							continue
+						}
+						results = append(results, result)
+					}
 				}()
 			}
 		}
@@ -86,7 +98,7 @@ func (scanner *Scanner) Scan(modules []block.Module) []result.Result {
 func (scanner *Scanner) filterResults(results []result.Result) []result.Result {
 	var filtered []result.Result
 	for _, result := range results {
-		if !scanner.includeIgnored && (result.IsIgnored(scanner.workspaceName) || checkInList(result.RuleID, result.LegacyRuleID, scanner.excludedRuleIDs)) {
+		if !scanner.includeIgnored && checkInList(result.RuleID, result.LegacyRuleID, scanner.excludedRuleIDs) {
 			metrics.Add(metrics.IgnoredChecks, 1)
 			debug.Log("Ignoring '%s'", result.RuleID)
 		} else {

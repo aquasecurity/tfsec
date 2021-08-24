@@ -7,8 +7,6 @@ import (
 type Block interface {
 	Attributes() map[string]Attribute
 	OverrideContext(ctx *Context)
-	HasModuleBlock() bool
-	GetModuleBlock() (Block, error)
 	Type() string
 	Labels() []string
 	Range() HCLRange

@@ -6,13 +6,15 @@ import (
 )
 
 type HCLModule struct {
+	name       string
 	blocks     Blocks
 	blockMap   map[string]Blocks
 	rootPath   string
 	modulePath string
+	ignores    Ignores
 }
 
-func NewHCLModule(rootPath string, modulePath string, blocks Blocks) Module {
+func NewHCLModule(rootPath string, modulePath string, blocks Blocks, ignores Ignores) Module {
 
 	blockMap := make(map[string]Blocks)
 
@@ -24,10 +26,15 @@ func NewHCLModule(rootPath string, modulePath string, blocks Blocks) Module {
 
 	return &HCLModule{
 		blocks:     blocks,
+		ignores:    ignores,
 		blockMap:   blockMap,
 		rootPath:   rootPath,
 		modulePath: modulePath,
 	}
+}
+
+func (c *HCLModule) Ignores() Ignores {
+	return c.ignores
 }
 
 func (c *HCLModule) GetBlocks() Blocks {

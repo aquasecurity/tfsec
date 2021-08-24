@@ -11,6 +11,7 @@ import (
 // HCLRange describes an area of code, including the filename it is present in and the lin numbers the code occupies
 type HCLRange struct {
 	Filename  string `json:"filename"`
+	Module    string `json:"module"`
 	StartLine int    `json:"start_line"`
 	EndLine   int    `json:"end_line"`
 }
@@ -21,6 +22,10 @@ func (h HCLRange) Overlaps(a definition.Range) bool {
 
 func (r HCLRange) GetFilename() string {
 	return r.Filename
+}
+
+func (r HCLRange) GetModule() string {
+	return r.Module
 }
 
 func (r HCLRange) GetStartLine() int {

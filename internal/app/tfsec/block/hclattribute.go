@@ -15,14 +15,16 @@ import (
 
 type HCLAttribute struct {
 	hclAttribute *hcl.Attribute
+	module       string
 	ctx          *Context
 	forEachRefs  []*Reference
 }
 
-func NewHCLAttribute(attr *hcl.Attribute, ctx *Context) *HCLAttribute {
+func NewHCLAttribute(attr *hcl.Attribute, ctx *Context, module string) *HCLAttribute {
 	a := &HCLAttribute{
 		hclAttribute: attr,
 		ctx:          ctx,
+		module:       module,
 	}
 
 	return a
@@ -114,6 +116,7 @@ func (attr *HCLAttribute) Range() HCLRange {
 	}
 	return HCLRange{
 		Filename:  attr.hclAttribute.Range.Filename,
+		Module:    attr.module,
 		StartLine: attr.hclAttribute.Range.Start.Line,
 		EndLine:   attr.hclAttribute.Range.End.Line,
 	}

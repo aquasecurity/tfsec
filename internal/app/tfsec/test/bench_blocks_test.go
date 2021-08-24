@@ -28,7 +28,7 @@ func BenchmarkBlockParsing(b *testing.B) {
 		}
 
 		for _, m := range modules {
-			block.NewHCLModule(fs.RealPath("/project"), "", m.GetBlocks())
+			block.NewHCLModule(fs.RealPath("/project"), "", m.GetBlocks(), nil)
 		}
 
 	}

@@ -16,11 +16,16 @@ import (
 
 var knownFiles = make(map[string]struct{})
 
+type File struct {
+	file *hcl.File
+	path string
+}
+
 func CountFiles() int {
 	return len(knownFiles)
 }
 
-func LoadDirectory(fullPath string, stopOnHCLError bool) ([]*hcl.File, error) {
+func LoadDirectory(fullPath string, stopOnHCLError bool) ([]File, error) {
 
 	t := metrics.Start(metrics.DiskIO)
 	defer t.Stop()
@@ -61,9 +66,12 @@ func LoadDirectory(fullPath string, stopOnHCLError bool) ([]*hcl.File, error) {
 		knownFiles[path] = struct{}{}
 	}
 
-	var files []*hcl.File
-	for _, file := range hclParser.Files() {
-		files = append(files, file)
+	var files []File
+	for path, file := range hclParser.Files() {
+		files = append(files, File{
+			file: file,
+			path: path,
+		})
 	}
 
 	return files, nil

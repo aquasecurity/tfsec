@@ -18,13 +18,14 @@ github.com/ProtonMail/go-crypto/openpgp/s2k
 # github.com/acomagu/bufpipe v1.0.3
 github.com/acomagu/bufpipe
 # github.com/agext/levenshtein v1.2.2
+## explicit
 github.com/agext/levenshtein
 # github.com/apparentlymart/go-cidr v1.1.0
 ## explicit
 github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
 github.com/apparentlymart/go-textseg/v13/textseg
-# github.com/aquasecurity/defsec v0.0.2-0.20210823175038-f4b6148c3ee0
+# github.com/aquasecurity/defsec v0.0.2-0.20210824080611-ffa12cd35699
 ## explicit
 github.com/aquasecurity/defsec/definition
 github.com/aquasecurity/defsec/infra
@@ -153,6 +154,8 @@ github.com/inconshreveable/go-update/internal/osext
 github.com/inconshreveable/mousetrap
 # github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99
 github.com/jbenet/go-context/io
+# github.com/kylelemons/godebug v1.1.0
+## explicit
 # github.com/liamg/clinch v1.5.6
 ## explicit
 github.com/liamg/clinch/terminal
@@ -165,11 +168,13 @@ github.com/liamg/tml
 # github.com/lucasb-eyer/go-colorful v1.0.3
 github.com/lucasb-eyer/go-colorful
 # github.com/mattn/go-runewidth v0.0.12
+## explicit
 github.com/mattn/go-runewidth
 # github.com/mitchellh/go-homedir v1.1.0
 ## explicit
 github.com/mitchellh/go-homedir
 # github.com/mitchellh/go-wordwrap v1.0.0
+## explicit
 github.com/mitchellh/go-wordwrap
 # github.com/olekukonko/tablewriter v0.0.5
 ## explicit
@@ -187,6 +192,7 @@ github.com/owenrumney/squealer/pkg/squealer
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
 # github.com/rivo/uniseg v0.2.0
+## explicit
 github.com/rivo/uniseg
 # github.com/sergi/go-diff v1.1.0
 github.com/sergi/go-diff/diffmatchpatch
@@ -230,6 +236,7 @@ golang.org/x/crypto/ssh/terminal
 # golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
 golang.org/x/net/context
 # golang.org/x/sys v0.0.0-20210616094352-59db8d763f22
+## explicit
 golang.org/x/sys/cpu
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/plan9

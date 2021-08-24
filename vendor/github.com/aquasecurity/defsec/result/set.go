@@ -16,7 +16,7 @@ type Set interface {
 	WithResolution(resolution string) Set
 	WithLinks(links []string) Set
 	WithSeverity(severity.Severity) Set
-	All() []*Result
+	All() []Result
 }
 
 func NewSet() *resultSet {
@@ -24,7 +24,7 @@ func NewSet() *resultSet {
 }
 
 type resultSet struct {
-	results      []*Result
+	results      []Result
 	ruleID       string
 	legacyID     string
 	ruleSummary  string
@@ -36,6 +36,10 @@ type resultSet struct {
 }
 
 func (s *resultSet) Add(r *Result) {
+
+	if r == nil {
+		return
+	}
 
 	r.WithRuleID(s.ruleID).
 		WithLegacyRuleID(s.legacyID).
@@ -49,7 +53,7 @@ func (s *resultSet) Add(r *Result) {
 		r.WithSeverity(s.severity)
 	}
 
-	s.results = append(s.results, r)
+	s.results = append(s.results, *r)
 }
 
 func (s *resultSet) WithSeverity(severity severity.Severity) Set {
@@ -66,11 +70,11 @@ func (s *resultSet) AddResult() *Result {
 		WithResolution(s.resolution).
 		WithRuleProvider(s.ruleProvider).
 		WithLinks(s.links)
-	s.results = append(s.results, result)
+	s.results = append(s.results, *result)
 	return result
 }
 
-func (s *resultSet) All() []*Result {
+func (s *resultSet) All() []Result {
 	return s.results
 }
 

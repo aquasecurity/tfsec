@@ -50,6 +50,7 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 	t.Stop()
 
 	var blocks block.Blocks
+	var ignores block.Ignores
 
 	for _, dir := range subdirectories {
 		debug.Log("Beginning parse for directory '%s'...", dir)
@@ -59,7 +60,7 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 		}
 
 		for _, file := range files {
-			fileBlocks, err := LoadBlocksFromFile(file)
+			fileBlocks, fileIgnores, err := LoadBlocksFromFile(file)
 			if err != nil {
 				if parser.stopOnHCLError {
 					return nil, err
@@ -73,6 +74,7 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 			for _, fileBlock := range fileBlocks {
 				blocks = append(blocks, block.NewHCLBlock(fileBlock, nil, nil))
 			}
+			ignores = append(ignores, fileIgnores...)
 		}
 	}
 
@@ -102,7 +104,7 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 
 	debug.Log("Evaluating expressions...")
 	workingDir, _ := os.Getwd()
-	evaluator := NewEvaluator(tfPath, tfPath, workingDir, blocks, inputVars, modulesMetadata, nil, parser.stopOnHCLError, parser.workspaceName)
+	evaluator := NewEvaluator(tfPath, tfPath, workingDir, "root", blocks, inputVars, modulesMetadata, nil, parser.stopOnHCLError, parser.workspaceName, ignores)
 	modules, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err

@@ -50,8 +50,9 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
 		childBlocks: children,
 	}
 
+	module := b.Range().Module
 	for _, attr := range b.createAttributes() {
-		b.attributes = append(b.attributes, NewHCLAttribute(attr, ctx))
+		b.attributes = append(b.attributes, NewHCLAttribute(attr, ctx, module))
 	}
 
 	return &b
@@ -128,20 +129,6 @@ func (b *HCLBlock) OverrideContext(ctx *Context) {
 	}
 }
 
-func (b *HCLBlock) HasModuleBlock() bool {
-	if b == nil {
-		return false
-	}
-	return b.moduleBlock != nil
-}
-
-func (b *HCLBlock) GetModuleBlock() (Block, error) {
-	if b.HasModuleBlock() {
-		return b.moduleBlock, nil
-	}
-	return nil, fmt.Errorf("the block does not have an associated module block")
-}
-
 func (b *HCLBlock) Type() string {
 	return b.hclBlock.Type
 }
@@ -162,8 +149,13 @@ func (b *HCLBlock) Range() HCLRange {
 		r = b.hclBlock.DefRange
 		r.End = b.hclBlock.Body.MissingItemRange().End
 	}
+	moduleName := "root"
+	if b.moduleBlock != nil {
+		moduleName = b.moduleBlock.FullName()
+	}
 	return HCLRange{
 		Filename:  r.Filename,
+		Module:    moduleName,
 		StartLine: r.Start.Line,
 		EndLine:   r.End.Line,
 	}

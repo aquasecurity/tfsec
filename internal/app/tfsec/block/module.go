@@ -2,6 +2,7 @@ package block
 
 type Module interface {
 	GetBlocks() Blocks
+	Ignores() Ignores
 	GetBlocksByTypeLabel(typeLabel string) Blocks
 	GetResourcesByType(label string) Blocks
 	GetDatasByType(label string) Blocks

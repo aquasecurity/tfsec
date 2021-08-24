@@ -32,20 +32,24 @@ type Evaluator struct {
 	projectRootPath   string // root of the current scan
 	stopOnHCLError    bool
 	modulePath        string
+	moduleName        string
 	workingDir        string
 	workspace         string
+	ignores           block.Ignores
 }
 
 func NewEvaluator(
 	projectRootPath string,
 	modulePath string,
 	workingDir string,
+	moduleName string,
 	blocks block.Blocks,
 	inputVars map[string]cty.Value,
 	moduleMetadata *ModulesMetadata,
 	visitedModules []*visitedModule,
 	stopOnHCLError bool,
 	workspace string,
+	ignores []block.Ignore,
 ) *Evaluator {
 
 	ctx := block.NewContext(&hcl.EvalContext{
@@ -63,6 +67,7 @@ func NewEvaluator(
 
 	return &Evaluator{
 		modulePath:      modulePath,
+		moduleName:      moduleName,
 		projectRootPath: projectRootPath,
 		workingDir:      workingDir,
 		ctx:             ctx,
@@ -72,6 +77,7 @@ func NewEvaluator(
 		visitedModules:  visitedModules,
 		stopOnHCLError:  stopOnHCLError,
 		workspace:       workspace,
+		ignores:         ignores,
 	}
 }
 
@@ -116,7 +122,15 @@ func (e *Evaluator) evaluateModules() {
 
 		evalTime := metrics.Start(metrics.Evaluation)
 		vars := module.Definition.Values().AsValueMap()
-		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, e.workingDir, module.Modules[0].GetBlocks(), vars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError, e.workspace)
+
+		moduleIgnores := module.Modules[0].Ignores()
+		if ignore := e.ignores.Covering(nil, module.Definition.Range()); ignore != nil {
+			moduleIgnore := *ignore
+			moduleIgnore.ModuleWide = module.Definition.FullName()
+			moduleIgnores = append(moduleIgnores, moduleIgnore)
+		}
+
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, e.workingDir, module.Definition.FullName(), module.Modules[0].GetBlocks(), vars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError, e.workspace, moduleIgnores)
 		module.Modules, _ = moduleEvaluator.EvaluateAll()
 		// export module outputs
 		e.ctx.Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
@@ -184,7 +198,7 @@ func (e *Evaluator) EvaluateAll() ([]block.Module, error) {
 	}
 
 	var modules []block.Module
-	modules = append(modules, block.NewHCLModule(e.projectRootPath, e.modulePath, e.blocks))
+	modules = append(modules, block.NewHCLModule(e.projectRootPath, e.modulePath, e.blocks, e.ignores))
 	for _, definition := range e.moduleDefinitions {
 		modules = append(modules, definition.Modules...)
 	}
