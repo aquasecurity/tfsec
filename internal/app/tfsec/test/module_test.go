@@ -382,95 +382,6 @@ resource "problem" "uhoh" {
 
 }
 
-func Test_UniqueDataBlocksWhenRaceInLoad(t *testing.T) {
-	fs, err := testutil.NewFilesystem()
-	require.NoError(t, err)
-	defer fs.Close()
-
-	require.NoError(t, fs.WriteTextFile("project/main.tf", `
-module "something" {
-  	source = "../modules/iam"
-} 
-`))
-	require.NoError(t, fs.WriteTextFile("/modules/iam/main2.tf", `
-	resource "aws_iam_role_policy" "test_policy" {
-		name = "test_policy"
-		role = aws_iam_role.test_role.id
-	
-		policy = data.aws_iam_policy_document.s3_policy.json
-	}
-	
-	resource "aws_iam_role" "test_role" {
-		name = "test_role"
-		assume_role_policy = jsonencode({
-			Version = "2012-10-17"
-			Statement = [
-			{
-				Action = "sts:AssumeRole"
-				Effect = "Allow"
-				Sid    = ""
-				Principal = {
-				Service = "s3.amazonaws.com"
-				}
-			},
-			]
-		})
-	}
-	
-	data "aws_iam_policy_document" "s3_policy" {
-	  statement {
-		principals {
-		  type        = "AWS"
-		  identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
-		}
-		actions   = ["s3:*"]
-		resources = ["*"]
-	  }
-	}
-`))
-	require.NoError(t, fs.WriteTextFile("/modules/iam/main1.tf", `
-	resource "aws_iam_role_policy" "test_policy2" {
-		name = "test_policy"
-		role = aws_iam_role.test_role.id
-	
-		policy = data.aws_iam_policy_document.s3_policy.json
-	}
-	
-	resource "aws_iam_role" "test_role2" {
-		name = "test_role"
-		assume_role_policy = jsonencode({
-			Version = "2012-10-17"
-			Statement = [
-			{
-				Action = "sts:AssumeRole"
-				Effect = "Allow"
-				Sid    = ""
-				Principal = {
-				Service = "s3.amazonaws.com"
-				}
-			},
-			]
-		})
-	}
-	
-	data "aws_iam_policy_document" "s3_policy2" {
-	  statement {
-		principals {
-		  type        = "AWS"
-		  identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
-		}
-		actions   = ["s3:nope"]
-		resources = ["nopeSSS"]
-	  }
-	}
-`))
-
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
-	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
-	testutil.AssertCheckCode(t, "aws-iam-no-policy-wildcards", "", results)
-}
-
 func Test_Dynamic_Variables(t *testing.T) {
 	example := `
 resource "something" "this" {
@@ -479,13 +390,13 @@ resource "something" "this" {
 		for_each = ["a"]
 
 		content {
-			policy = "TLS_1_0"
+			ok = true
 		}
 	}
 }
 	
-resource "aws_api_gateway_domain_name" "outdated_security_policy" {
-	security_policy = something.this.blah.policy
+resource "bad" "thing" {
+	secure = something.this.blah.ok
 }
 `
 	fs, err := testutil.NewFilesystem()
@@ -493,27 +404,50 @@ resource "aws_api_gateway_domain_name" "outdated_security_policy" {
 	defer fs.Close()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+
+	r1 := rule.Rule{
+		LegacyID: "ABC123",
+		DefSecCheck: rules.RuleDef{
+			Provider:  provider.AWSProvider,
+			Service:   "service",
+			ShortCode: "abc123",
+			Severity:  severity.High,
+		},
+		RequiredLabels: []string{"bad"},
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+			if resourceBlock.GetAttribute("secure").IsTrue() {
+				return
+			}
+			r := resourceBlock.Range()
+			set.AddResult().
+				WithDescription("example problem").
+				WithRange(r)
+		},
+	}
+	scanner.RegisterCheckRule(r1)
+	defer scanner.DeregisterCheckRule(r1)
+
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
-	testutil.AssertCheckCode(t, "aws-api-gateway-use-secure-tls-policy", "", results)
+	testutil.AssertCheckCode(t, r1.ID(), "", results)
 }
 
 func Test_Dynamic_Variables_FalsePositive(t *testing.T) {
 	example := `
-resource "aws_s3_bucket" "bucket" {
+resource "something" "else" {
 	x = 1
 	dynamic "blah" {
-		for_each = ["TLS_1_2"]
+		for_each = [true]
 
 		content {
-			policy = each.value
+			ok = each.value
 		}
 	}
 }
 	
-resource "aws_api_gateway_domain_name" "outdated_security_policy" {
-	security_policy = aws_s3_bucket.bucket.blah.policy
+resource "bad" "thing" {
+	secure = something.else.blah.ok
 }
 `
 	fs, err := testutil.NewFilesystem()
@@ -521,8 +455,31 @@ resource "aws_api_gateway_domain_name" "outdated_security_policy" {
 	defer fs.Close()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+
+	r1 := rule.Rule{
+		LegacyID: "ABC123",
+		DefSecCheck: rules.RuleDef{
+			Provider:  provider.AWSProvider,
+			Service:   "service",
+			ShortCode: "abc123",
+			Severity:  severity.High,
+		},
+		RequiredLabels: []string{"bad"},
+		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+			if resourceBlock.GetAttribute("secure").IsTrue() {
+				return
+			}
+			r := resourceBlock.Range()
+			set.AddResult().
+				WithDescription("example problem").
+				WithRange(r)
+		},
+	}
+	scanner.RegisterCheckRule(r1)
+	defer scanner.DeregisterCheckRule(r1)
+
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
-	testutil.AssertCheckCode(t, "", "aws-api-gateway-use-secure-tls-policy", results)
+	testutil.AssertCheckCode(t, "", r1.ID(), results)
 }
