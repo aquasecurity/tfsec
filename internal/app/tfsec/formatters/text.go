@@ -9,7 +9,7 @@ import (
 	"github.com/aquasecurity/defsec/result"
 )
 
-func FormatText(writer io.Writer, results []result.Result, _ string, options ...FormatterOption) error {
+func FormatText(writer io.Writer, results []*result.Result, _ string, options ...FormatterOption) error {
 
 	if len(results) == 0 || len(results) == countPassedResults(results) {
 		fmt.Fprint(writer, "\nNo problems detected!\n")
@@ -47,7 +47,7 @@ func FormatText(writer io.Writer, results []result.Result, _ string, options ...
   %s
 
 `, res.RuleID, sev, res.Description, res.Range().String())
-		outputCode(res, writer)
+		outputCode(*res, writer)
 		fmt.Fprintf(writer, "  %s\n\n", link)
 	}
 

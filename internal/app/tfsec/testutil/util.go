@@ -18,7 +18,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) []result.Result {
+func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) []*result.Result {
 	modules := CreateModulesFromSource(source, ".tf", t)
 	scanner := scanner.New(scanner.OptionIgnoreCheckErrors(false))
 	for _, opt := range additionalOptions {
@@ -27,7 +27,7 @@ func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) [
 	return scanner.Scan(modules)
 }
 
-func ScanJSON(source string, t *testing.T) []result.Result {
+func ScanJSON(source string, t *testing.T) []*result.Result {
 	modules := CreateModulesFromSource(source, ".tf.json", t)
 	return scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(modules)
 }
@@ -53,7 +53,7 @@ func CreateTestFile(filename, contents string) string {
 	return path
 }
 
-func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, results []result.Result, messages ...string) {
+func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, results []*result.Result, messages ...string) {
 	var foundInclude bool
 	var foundExclude bool
 

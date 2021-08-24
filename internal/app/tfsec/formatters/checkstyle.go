@@ -26,7 +26,7 @@ type checkstyleOutput struct {
 	Files   []checkstyleFile `xml:"file"`
 }
 
-func FormatCheckStyle(w io.Writer, results []result.Result, _ string, _ ...FormatterOption) error {
+func FormatCheckStyle(w io.Writer, results []*result.Result, _ string, _ ...FormatterOption) error {
 
 	output := checkstyleOutput{}
 

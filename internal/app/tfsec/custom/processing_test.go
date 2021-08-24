@@ -381,7 +381,7 @@ func givenCheck(jsonContent string) {
 	processFoundChecks(checksfile)
 }
 
-func scanTerraform(t *testing.T, mainTf string) []result.Result {
+func scanTerraform(t *testing.T, mainTf string) []*result.Result {
 	dirName, err := ioutil.TempDir("", "tfsec-testing-")
 	assert.NoError(t, err)
 

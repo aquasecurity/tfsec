@@ -7,19 +7,16 @@ import (
 )
 
 type Ignore struct {
-	ModuleWide string // whether the ignore applies to the whole module
-	Range      HCLRange
-	RuleID     string
-	Expiry     *time.Time
-	Workspace  string
+	ModuleKey string //  whether the ignore applies to the whole module
+	Range     HCLRange
+	RuleID    string
+	Expiry    *time.Time
+	Workspace string
 }
 
 type Ignores []Ignore
 
-func (i Ignores) Covering(ids []string, r definition.Range) *Ignore {
-	if r == nil {
-		panic(999)
-	}
+func (i Ignores) Covering(r definition.Range, ids ...string) *Ignore {
 	for _, ignore := range i {
 		idMatch := ignore.RuleID == "*" || len(ids) == 0
 		if !idMatch {
@@ -33,7 +30,7 @@ func (i Ignores) Covering(ids []string, r definition.Range) *Ignore {
 		if !idMatch {
 			continue
 		}
-		if ignore.ModuleWide != "" && ignore.ModuleWide == r.GetModule() {
+		if ignore.ModuleKey != "" && ignore.ModuleKey == r.GetModule() {
 			return &ignore
 		}
 		if ignore.Range.Filename != r.GetFilename() {

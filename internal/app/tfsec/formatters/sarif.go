@@ -11,7 +11,7 @@ import (
 	"github.com/owenrumney/go-sarif/sarif"
 )
 
-func FormatSarif(w io.Writer, results []result.Result, baseDir string, _ ...FormatterOption) error {
+func FormatSarif(w io.Writer, results []*result.Result, baseDir string, _ ...FormatterOption) error {
 	report, err := sarif.New(sarif.Version210)
 	if err != nil {
 		return err

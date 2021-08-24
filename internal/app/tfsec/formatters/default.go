@@ -27,7 +27,7 @@ var severityFormat = map[severity.Severity]string{
 	"":                tml.Sprintf("<white>UNKNOWN</white>"),
 }
 
-func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...FormatterOption) error {
+func FormatDefault(_ io.Writer, results []*result.Result, _ string, options ...FormatterOption) error {
 
 	showStatistics := true
 	showSuccessOutput := true
@@ -66,7 +66,7 @@ func FormatDefault(_ io.Writer, results []result.Result, _ string, options ...Fo
 
 	fmt.Println("")
 	for i, res := range results {
-		printResult(res, i, includePassedChecks)
+		printResult(*res, i, includePassedChecks)
 	}
 
 	if showStatistics {
@@ -194,7 +194,7 @@ func highlightCode(result result.Result) {
 	fmt.Println("")
 }
 
-func countPassedResults(results []result.Result) int {
+func countPassedResults(results []*result.Result) int {
 	passed := 0
 
 	for _, res := range results {

@@ -39,7 +39,7 @@ type JUnitFailure struct {
 	Contents string `xml:",chardata"`
 }
 
-func FormatJUnit(w io.Writer, results []result.Result, _ string, options ...FormatterOption) error {
+func FormatJUnit(w io.Writer, results []*result.Result, _ string, options ...FormatterOption) error {
 
 	output := JUnitTestSuite{
 		Name:     "tfsec",
@@ -53,7 +53,7 @@ func FormatJUnit(w io.Writer, results []result.Result, _ string, options ...Form
 				Classname: result.Range().GetFilename(),
 				Name:      fmt.Sprintf("[%s][%s] - %s", result.RuleID, result.Severity, result.Description),
 				Time:      "0",
-				Failure:   buildFailure(result),
+				Failure:   buildFailure(*result),
 			},
 		)
 	}

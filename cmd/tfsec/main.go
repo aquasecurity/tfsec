@@ -221,7 +221,7 @@ var rootCmd = &cobra.Command{
 		results = updateResultSeverity(results)
 		results = removeDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {
-			var filteredResult []result.Result
+			var filteredResult []*result.Result
 			for _, result := range results {
 				for _, ruleID := range filterResultsList {
 					if result.RuleID == ruleID {
@@ -239,7 +239,7 @@ var rootCmd = &cobra.Command{
 		if runStatistics {
 			statistics := scanner.Statistics{}
 			for _, result := range results {
-				statistics = scanner.AddStatisticsCount(statistics, result)
+				statistics = scanner.AddStatisticsCount(statistics, *result)
 			}
 			statistics.PrintStatisticsTable()
 			return nil
@@ -299,7 +299,7 @@ func getParserOptions() []parser.Option {
 	return opts
 }
 
-func getDetailedExitCode(results []result.Result) int {
+func getDetailedExitCode(results []*result.Result) int {
 	// If there are no failed rules, then produce a success exit code (0).
 	if len(results) == 0 || len(results) == countPassedResults(results) {
 		return 0
@@ -316,8 +316,8 @@ func getDetailedExitCode(results []result.Result) int {
 	return 1
 }
 
-func removeDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, excludeDownloaded bool) []result.Result {
-	var returnVal []result.Result
+func removeDuplicatesAndUnwanted(results []*result.Result, ignoreWarnings bool, excludeDownloaded bool) []*result.Result {
+	var returnVal []*result.Result
 	for _, res := range results {
 		if excludeDownloaded && strings.Contains(res.Range().GetFilename(), fmt.Sprintf("%c.terraform", os.PathSeparator)) {
 			continue
@@ -388,7 +388,7 @@ func mergeWithoutDuplicates(left, right []string) []string {
 	return results
 }
 
-func allInfo(results []result.Result) bool {
+func allInfo(results []*result.Result) bool {
 	for _, res := range results {
 		if res.Severity != severity.Low && res.Status != result.Passed && res.Status != result.Ignored {
 			return false
@@ -397,14 +397,14 @@ func allInfo(results []result.Result) bool {
 	return true
 }
 
-func updateResultSeverity(results []result.Result) []result.Result {
+func updateResultSeverity(results []*result.Result) []*result.Result {
 	overrides := tfsecConfig.SeverityOverrides
 
 	if len(overrides) == 0 {
 		return results
 	}
 
-	var overriddenResults []result.Result
+	var overriddenResults []*result.Result
 	for _, res := range results {
 		for code, sev := range overrides {
 			if res.RuleID == code || res.LegacyRuleID == code {
@@ -443,7 +443,7 @@ func loadConfigFile(configFilePath string) (*config.Config, error) {
 	return config.LoadConfig(configFilePath)
 }
 
-func countPassedResults(results []result.Result) int {
+func countPassedResults(results []*result.Result) int {
 	passed := 0
 
 	for _, res := range results {

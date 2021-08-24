@@ -94,9 +94,10 @@ func Test_IgnoreSpecific(t *testing.T) {
 		},
 		RequiredLabels: []string{"bad"},
 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+			r := resourceBlock.Range()
 			set.AddResult().
 				WithDescription("example problem").
-				WithRange(resourceBlock.Range())
+				WithRange(r)
 		},
 	}
 	scanner.RegisterCheckRule(r1)
