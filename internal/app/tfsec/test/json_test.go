@@ -55,7 +55,7 @@ func TestScanningJSON(t *testing.T) {
 					}
 				}
 			}`,
-			mustIncludeResultCode: "aws-vpc-add-decription-to-security-group",
+			mustIncludeResultCode: "aws-vpc-add-description-to-security-group",
 		},
 		{
 			name: "check valid resources are picked up in tf json configs",
