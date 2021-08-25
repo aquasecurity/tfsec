@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/aquasecurity/defsec/definition"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -102,7 +102,7 @@ func (r *Reference) String() string {
 	return base
 }
 
-func (r *Reference) RefersTo(a definition.Reference) bool {
+func (r *Reference) RefersTo(a types.Reference) bool {
 	other := a.(*Reference)
 
 	if r.BlockType() != other.BlockType() {

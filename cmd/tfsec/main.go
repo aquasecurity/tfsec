@@ -8,7 +8,7 @@ import (
 
 	"strings"
 
-	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/rules"
 
 	"github.com/aquasecurity/defsec/severity"
 
@@ -221,7 +221,7 @@ var rootCmd = &cobra.Command{
 		results = updateResultSeverity(results)
 		results = removeDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {
-			var filteredResult []*result.Result
+			var filteredResult []rules.Result
 			for _, result := range results {
 				for _, ruleID := range filterResultsList {
 					if result.RuleID == ruleID {

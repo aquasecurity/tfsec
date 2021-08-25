@@ -1,7 +1,7 @@
 package block
 
 import (
-	"github.com/aquasecurity/defsec/definition"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -37,7 +37,7 @@ type Attribute interface {
 	Reference() (*Reference, error)
 	AllReferences(blocks ...Block) []*Reference
 	IsResourceBlockReference(resourceType string) bool
-	References(r definition.Reference) bool
+	References(r types.Reference) bool
 	IsResolvable() bool
 	IsNotResolvable() bool
 	IsString() bool
@@ -46,5 +46,5 @@ type Attribute interface {
 	ValueAsStrings() []string
 	IsIterable() bool
 	Each(f func(key cty.Value, val cty.Value))
-	AsStringValue() definition.StringValue
+	AsStringValue() types.StringValue
 }

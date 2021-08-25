@@ -3,8 +3,8 @@ package s3
 import (
 	"strings"
 
-	"github.com/aquasecurity/defsec/definition"
 	"github.com/aquasecurity/defsec/provider/aws/s3"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
@@ -16,7 +16,7 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 		for _, b := range blocks {
 
 			pba := s3.PublicAccessBlock{
-				Metadata:              definition.NewMetadata(b.Range()).WithReference(b.Reference()),
+				Metadata:              types.NewMetadata(b.Range()).WithReference(b.Reference()),
 				BlockPublicACLs:       isAttrTrue(b, "block_public_acls"),
 				BlockPublicPolicy:     isAttrTrue(b, "block_public_policy"),
 				IgnorePublicACLs:      isAttrTrue(b, "ignore_public_acls"),
@@ -55,16 +55,16 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 	return publicAccessBlocks
 }
 
-func isAttrTrue(block block.Block, attrName string) definition.BoolValue {
+func isAttrTrue(block block.Block, attrName string) types.BoolValue {
 	attr := block.GetAttribute(attrName)
 	if attr.IsNil() {
-		return definition.BoolValue{
+		return types.BoolValue{
 			Value:    false,
-			Metadata: definition.NewMetadata(block.Range()),
+			Metadata: types.NewMetadata(block.Range()),
 		}
 	}
-	return definition.BoolValue{
+	return types.BoolValue{
 		Value:    attr.IsTrue(),
-		Metadata: definition.NewMetadata(attr.Range()),
+		Metadata: types.NewMetadata(attr.Range()),
 	}
 }

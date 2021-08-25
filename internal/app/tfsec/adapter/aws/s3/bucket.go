@@ -1,8 +1,8 @@
 package s3
 
 import (
-	"github.com/aquasecurity/defsec/definition"
 	"github.com/aquasecurity/defsec/provider/aws/s3"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
@@ -13,7 +13,7 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 		func(block block.Block) {
 			s3b := s3.Bucket{
 				Name:     getName(block),
-				Metadata: definition.NewMetadata(block.Range()).WithReference(block.Reference()),
+				Metadata: types.NewMetadata(block.Range()).WithReference(block.Reference()),
 				Versioning: s3.Versioning{
 					Enabled: isVersioned(block),
 				},
@@ -34,112 +34,112 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 	return buckets
 }
 
-func getName(b block.Block) definition.StringValue {
+func getName(b block.Block) types.StringValue {
 	if nameAttr := b.GetAttribute("bucket"); nameAttr.IsString() {
-		return definition.StringValue{
-			Metadata: definition.NewMetadata(nameAttr.Range()),
+		return types.StringValue{
+			Metadata: types.NewMetadata(nameAttr.Range()),
 			Value:    nameAttr.Value().AsString(),
 		}
 	}
-	return definition.StringValue{
-		Metadata: definition.NewMetadata(b.Range()),
+	return types.StringValue{
+		Metadata: types.NewMetadata(b.Range()),
 		Value:    "",
 	}
 
 }
 
-func getACL(b block.Block) definition.StringValue {
+func getACL(b block.Block) types.StringValue {
 	if aclAttr := b.GetAttribute("acl"); aclAttr.IsString() {
-		return definition.StringValue{
-			Metadata: definition.NewMetadata(aclAttr.Range()),
+		return types.StringValue{
+			Metadata: types.NewMetadata(aclAttr.Range()),
 			Value:    aclAttr.Value().AsString(),
 		}
 	}
-	return definition.StringValue{
-		Metadata: definition.NewMetadata(b.Range()),
+	return types.StringValue{
+		Metadata: types.NewMetadata(b.Range()),
 		Value:    "private",
 	}
 }
 
-func isEncrypted(b block.Block) definition.BoolValue {
+func isEncrypted(b block.Block) types.BoolValue {
 	encryptionBlock := b.GetBlock("server_side_encryption_configuration")
 	if encryptionBlock.IsNil() {
-		return definition.BoolValue{
-			Metadata: definition.NewMetadata(b.Range()),
+		return types.BoolValue{
+			Metadata: types.NewMetadata(b.Range()),
 			Value:    false,
 		}
 	}
 	ruleBlock := encryptionBlock.GetBlock("rule")
 	if ruleBlock.IsNil() {
-		return definition.BoolValue{
-			Metadata: definition.NewMetadata(encryptionBlock.Range()),
+		return types.BoolValue{
+			Metadata: types.NewMetadata(encryptionBlock.Range()),
 			Value:    false,
 		}
 
 	}
 	if defaultBlock := ruleBlock.GetBlock("apply_server_side_encryption_by_default"); defaultBlock.IsNil() {
-		return definition.BoolValue{
-			Metadata: definition.NewMetadata(ruleBlock.Range()),
+		return types.BoolValue{
+			Metadata: types.NewMetadata(ruleBlock.Range()),
 			Value:    false,
 		}
 	} else {
-		return definition.BoolValue{
-			Metadata: definition.NewMetadata(defaultBlock.Range()),
+		return types.BoolValue{
+			Metadata: types.NewMetadata(defaultBlock.Range()),
 			Value:    true,
 		}
 
 	}
 }
 
-func hasLogging(b block.Block) definition.BoolValue {
+func hasLogging(b block.Block) types.BoolValue {
 	if loggingBlock := b.GetBlock("logging"); loggingBlock.IsNotNil() {
 		if targetAttr := loggingBlock.GetAttribute("target_bucket"); targetAttr.IsNotNil() {
-			return definition.BoolValue{
-				Metadata: definition.NewMetadata(targetAttr.Range()),
+			return types.BoolValue{
+				Metadata: types.NewMetadata(targetAttr.Range()),
 				Value:    targetAttr.IsNotEmpty(),
 			}
 		}
-		return definition.BoolValue{
-			Metadata: definition.NewMetadata(loggingBlock.Range()),
+		return types.BoolValue{
+			Metadata: types.NewMetadata(loggingBlock.Range()),
 			Value:    false,
 		}
 	}
-	return definition.BoolValue{
-		Metadata: definition.NewMetadata(b.Range()),
+	return types.BoolValue{
+		Metadata: types.NewMetadata(b.Range()),
 		Value:    false,
 	}
 }
 
-func isVersioned(b block.Block) definition.BoolValue {
+func isVersioned(b block.Block) types.BoolValue {
 	if versioningBlock := b.GetBlock("versioning"); versioningBlock.IsNotNil() {
 		if enabledAttr := versioningBlock.GetAttribute("enabled"); enabledAttr.IsNotNil() {
-			return definition.BoolValue{
-				Metadata: definition.NewMetadata(enabledAttr.Range()),
+			return types.BoolValue{
+				Metadata: types.NewMetadata(enabledAttr.Range()),
 				Value:    enabledAttr.IsTrue(),
 			}
 		}
-		return definition.BoolValue{
-			Metadata: definition.NewMetadata(versioningBlock.Range()),
+		return types.BoolValue{
+			Metadata: types.NewMetadata(versioningBlock.Range()),
 			Value:    true,
 		}
 	}
-	return definition.BoolValue{
-		Metadata: definition.NewMetadata(b.Range()),
+	return types.BoolValue{
+		Metadata: types.NewMetadata(b.Range()),
 		Value:    false,
 	}
 }
 
-func AttributeToBoolValue(attribute block.Attribute, block block.Block, defaultValue bool) definition.BoolValue {
+func AttributeToBoolValue(attribute block.Attribute, block block.Block, defaultValue bool) types.BoolValue {
 
 	if attribute.IsNil() {
-		return definition.BoolValue{
-			Metadata: definition.NewMetadata(block.Range()),
+		return types.BoolValue{
+			Metadata: types.NewMetadata(block.Range()),
 			Value:    defaultValue,
 		}
 	}
 
-	return definition.BoolValue{
-		Metadata: definition.NewMetadata(attribute.Range()),
+	return types.BoolValue{
+		Metadata: types.NewMetadata(attribute.Range()),
 		Value:    attribute.IsTrue(),
 	}
 

@@ -3,7 +3,7 @@ package block
 import (
 	"time"
 
-	"github.com/aquasecurity/defsec/definition"
+	"github.com/aquasecurity/defsec/types"
 )
 
 type Ignore struct {
@@ -16,7 +16,7 @@ type Ignore struct {
 
 type Ignores []Ignore
 
-func (i Ignores) Covering(r definition.Range, workspace string, ids ...string) *Ignore {
+func (i Ignores) Covering(r types.Range, workspace string, ids ...string) *Ignore {
 	for _, ignore := range i {
 		if ignore.Expiry != nil && time.Now().After(*ignore.Expiry) {
 			continue

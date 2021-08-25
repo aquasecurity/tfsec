@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/aquasecurity/defsec/definition"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
@@ -703,7 +703,7 @@ func (attr *HCLAttribute) IsResourceBlockReference(resourceType string) bool {
 	return false
 }
 
-func (attr *HCLAttribute) References(r definition.Reference) bool {
+func (attr *HCLAttribute) References(r types.Reference) bool {
 	if attr == nil {
 		return false
 	}
@@ -752,12 +752,12 @@ func (attr *HCLAttribute) HasIntersect(checkValues ...interface{}) bool {
 
 }
 
-func (attr *HCLAttribute) AsStringValue() definition.StringValue {
+func (attr *HCLAttribute) AsStringValue() types.StringValue {
 	if attr.IsString() {
-		return definition.StringValue{
-			Metadata: definition.NewMetadata(attr.Range()),
+		return types.StringValue{
+			Metadata: types.NewMetadata(attr.Range()),
 			Value:    attr.Value().AsString(),
 		}
 	}
-	return definition.EmptyStringValue(attr.Range())
+	return types.EmptyStringValue(attr.Range())
 }
