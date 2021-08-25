@@ -154,7 +154,7 @@ variable "things" {
 		t.Run(test.name, func(t *testing.T) {
 			r1 := rule.Rule{
 				LegacyID: "ABC123",
-				DefSecCheck: rules.RuleDef{
+				Base: rules.Rule{
 					Provider:  provider.AWSProvider,
 					Service:   "service",
 					ShortCode: "abc123",

@@ -56,7 +56,7 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 		code := fmt.Sprintf("wild%d", i)
 
 		rule := rule.Rule{
-			DefSecCheck: rules.RuleDef{
+			Base: rules.Rule{
 				Service:   "service",
 				ShortCode: code,
 				Summary:   "blah",
@@ -65,7 +65,7 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 			},
 			RequiredTypes:  []string{"resource"},
 			RequiredLabels: []string{test.pattern},
-			CheckTerraform: func(resourceBlock block.Block, _ block.Module) types.Results {
+			CheckTerraform: func(resourceBlock block.Block, _ block.Module) rules.Results {
 				set.AddResult().
 					WithDescription("Custom check failed for resource %s.", rootBlock.FullName())
 			},

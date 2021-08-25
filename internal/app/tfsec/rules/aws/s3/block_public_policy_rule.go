@@ -32,6 +32,6 @@ func init() {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block#block_public_policy",
 		},
-		DefSecCheck: s3.CheckPublicPoliciesAreBlocked,
+		Base: s3.CheckPublicPoliciesAreBlocked,
 	})
 }

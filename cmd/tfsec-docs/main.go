@@ -60,7 +60,7 @@ func getSortedFileContents() []*FileContent {
 	checkMap := make(map[string][]rule.Rule)
 
 	for _, r := range rules {
-		provider := string(r.DefSecCheck.Provider)
+		provider := string(r.Base.Rule().Provider)
 		checkMap[provider] = append(checkMap[provider], r)
 	}
 

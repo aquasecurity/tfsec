@@ -224,7 +224,7 @@ var rootCmd = &cobra.Command{
 			var filteredResult []rules.Result
 			for _, result := range results {
 				for _, ruleID := range filterResultsList {
-					if result.RuleID == ruleID {
+					if result.Rule().LongID() == ruleID {
 						filteredResult = append(filteredResult, result)
 					}
 				}
@@ -233,13 +233,13 @@ var rootCmd = &cobra.Command{
 		}
 
 		for _, result := range results {
-			metrics.AddResult(result.Severity)
+			metrics.AddResult(result.Rule().Severity)
 		}
 
 		if runStatistics {
 			statistics := scanner.Statistics{}
 			for _, result := range results {
-				statistics = scanner.AddStatisticsCount(statistics, *result)
+				statistics = scanner.AddStatisticsCount(statistics, result)
 			}
 			statistics.PrintStatisticsTable()
 			return nil
@@ -299,7 +299,7 @@ func getParserOptions() []parser.Option {
 	return opts
 }
 
-func getDetailedExitCode(results []*result.Result) int {
+func getDetailedExitCode(results rules.Results) int {
 	// If there are no failed rules, then produce a success exit code (0).
 	if len(results) == 0 || len(results) == countPassedResults(results) {
 		return 0
@@ -316,18 +316,18 @@ func getDetailedExitCode(results []*result.Result) int {
 	return 1
 }
 
-func removeDuplicatesAndUnwanted(results []*result.Result, ignoreWarnings bool, excludeDownloaded bool) []*result.Result {
-	var returnVal []*result.Result
+func removeDuplicatesAndUnwanted(results rules.Results, ignoreWarnings bool, excludeDownloaded bool) rules.Results {
+	var returnVal rules.Results
 	for _, res := range results {
-		if excludeDownloaded && strings.Contains(res.Range().GetFilename(), fmt.Sprintf("%c.terraform", os.PathSeparator)) {
+		if excludeDownloaded && strings.Contains(res.Metadata().Range().GetFilename(), fmt.Sprintf("%c.terraform", os.PathSeparator)) {
 			continue
 		}
 
-		if ignoreWarnings && res.Severity == severity.Medium {
+		if ignoreWarnings && res.Rule().Severity == severity.Medium {
 			continue
 		}
 
-		if ignoreInfo && res.Severity == severity.Low {
+		if ignoreInfo && res.Rule().Severity == severity.Low {
 			continue
 		}
 
@@ -388,26 +388,26 @@ func mergeWithoutDuplicates(left, right []string) []string {
 	return results
 }
 
-func allInfo(results []*result.Result) bool {
+func allInfo(results []rules.Result) bool {
 	for _, res := range results {
-		if res.Severity != severity.Low && res.Status != result.Passed && res.Status != result.Ignored {
+		if res.Rule().Severity != severity.Low && res.Status() != rules.StatusPassed {
 			return false
 		}
 	}
 	return true
 }
 
-func updateResultSeverity(results []*result.Result) []*result.Result {
+func updateResultSeverity(results []rules.Result) []rules.Result {
 	overrides := tfsecConfig.SeverityOverrides
 
 	if len(overrides) == 0 {
 		return results
 	}
 
-	var overriddenResults []*result.Result
+	var overriddenResults []rules.Result
 	for _, res := range results {
 		for code, sev := range overrides {
-			if res.RuleID == code || res.LegacyRuleID == code {
+			if res.Rule().LongID() == code || res.LegacyRuleID == code {
 				res.WithSeverity(severity.Severity(sev))
 			}
 		}
@@ -443,14 +443,15 @@ func loadConfigFile(configFilePath string) (*config.Config, error) {
 	return config.LoadConfig(configFilePath)
 }
 
-func countPassedResults(results []*result.Result) int {
+func countPassedResults(results []rules.Result) int {
 	passed := 0
 
-	for _, res := range results {
-		if res.Status == result.Passed {
-			passed++
-		}
-	}
+	//for _, res := range results {
+	// TODO
+	//if res.Status == result.Passed {
+	//	passed++
+	//}
+	//}
 
 	return passed
 }

@@ -25,14 +25,14 @@ import (
 
 var exampleRule = rule.Rule{
 	LegacyID: "ABC123",
-	DefSecCheck: rules.RuleDef{
+	Base: rules.Rule{
 		Provider:  provider.AWSProvider,
 		Service:   "service",
 		ShortCode: "abc123",
 		Severity:  severity.High,
 	},
 	RequiredLabels: []string{"bad"},
-	CheckTerraform: func(set types.Results, resourceBlock block.Block, _ block.Module) {
+	CheckTerraform: func(set rules.Results, resourceBlock block.Block, _ block.Module) {
 		attr := resourceBlock.GetAttribute("secure")
 		if attr.IsNil() {
 			set.AddResult().
@@ -113,14 +113,14 @@ func Test_IgnoreSpecific(t *testing.T) {
 
 	r2 := rule.Rule{
 		LegacyID: "DEF456",
-		DefSecCheck: rules.RuleDef{
+		Base: rules.Rule{
 			Provider:  provider.AWSProvider,
 			Service:   "service",
 			ShortCode: "def456",
 			Severity:  severity.High,
 		},
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results types.Results){
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results){
 			results.Add(
 				WithDescription("example problem").
 				WithRange(resourceBlock.Range().

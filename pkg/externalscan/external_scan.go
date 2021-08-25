@@ -37,7 +37,7 @@ func (t *ExternalScanner) AddPath(path string) error {
 	return nil
 }
 
-func (t *ExternalScanner) Scan() ([]types.Result, error) {
+func (t *ExternalScanner) Scan() ([]rules.Result, error) {
 
 	projectModules := make(map[string][]block.Module)
 
@@ -54,7 +54,7 @@ func (t *ExternalScanner) Scan() ([]types.Result, error) {
 		projectModules[dir] = modules
 	}
 
-	var results []types.Result
+	var results []rules.Result
 	internal := scanner.New(t.internalOptions...)
 	for _, modules := range projectModules {
 		projectResults := internal.Scan(modules)

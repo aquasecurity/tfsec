@@ -43,7 +43,7 @@ func (statistics Statistics) PrintStatisticsTable() {
 	table.Render()
 }
 
-func AddStatisticsCount(StatisticsSlice Statistics, result types.Result) Statistics {
+func AddStatisticsCount(StatisticsSlice Statistics, result rules.Result) Statistics {
 	for i, statistics := range StatisticsSlice {
 		if statistics.RuleID == result.RuleID {
 			StatisticsSlice[i].Count += 1

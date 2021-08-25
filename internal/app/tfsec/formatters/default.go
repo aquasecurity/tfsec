@@ -6,8 +6,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/aquasecurity/defsec/types"
-
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
@@ -27,7 +26,7 @@ var severityFormat = map[severity.Severity]string{
 	"":                tml.Sprintf("<white>UNKNOWN</white>"),
 }
 
-func FormatDefault(_ io.Writer, results []types.Result, _ string, options ...FormatterOption) error {
+func FormatDefault(_ io.Writer, results rules.Results, _ string, options ...FormatterOption) error {
 
 	showStatistics := true
 	showSuccessOutput := true
@@ -66,7 +65,7 @@ func FormatDefault(_ io.Writer, results []types.Result, _ string, options ...For
 
 	fmt.Println("")
 	for i, res := range results {
-		printResult(*res, i, includePassedChecks)
+		printResult(res, i, includePassedChecks)
 	}
 
 	if showStatistics {
@@ -79,38 +78,39 @@ func FormatDefault(_ io.Writer, results []types.Result, _ string, options ...For
 
 }
 
-func printResult(res types.Result, i int, includePassedChecks bool) {
+func printResult(res rules.Result, i int, includePassedChecks bool) {
 	resultHeader := fmt.Sprintf("  <underline>Result %d</underline>\n", i+1)
 	var severity string
-	// TODO: show passed
-	//if includePassedChecks && res.Status == result.Passed {
-	//terminal.PrintSuccessf(resultHeader)
-	//severity = tml.Sprintf("<green>PASSED</green>")
-	//} else {
-	terminal.PrintErrorf(resultHeader)
-	severity = severityFormat[res.Severity]
-	//}
+	if includePassedChecks && res.Status() == rules.StatusPassed {
+		terminal.PrintSuccessf(resultHeader)
+		severity = tml.Sprintf("<green>PASSED</green>")
+	} else {
+		terminal.PrintErrorf(resultHeader)
+		severity = severityFormat[res.Rule().Severity]
+	}
 
 	_ = tml.Printf(`
   <blue>[</blue>%s<blue>]</blue><blue>[</blue>%s<blue>]</blue> %s
   <blue>%s</blue>
 
 
-`, res.RuleID, severity, res.Description, res.Range().String())
+`, res.Rule().LongID(), severity, res.Description(), res.Metadata().Range().String())
 	highlightCode(res)
-	if res.LegacyRuleID != "" {
-		_ = tml.Printf("  <white>Legacy ID:  </white><blue>%s</blue>\n", res.LegacyRuleID)
+
+	// TODO
+	//if res.LegacyRuleID != "" {
+	_ = tml.Printf("  <white>Legacy ID:  </white><blue>%s</blue>\n", "TODO") //res.LegacyRuleID)
+	//}
+	if res.Rule().Impact != "" {
+		_ = tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", res.Rule().Impact)
 	}
-	if res.Impact != "" {
-		_ = tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", res.Impact)
+	if res.Rule().Resolution != "" {
+		_ = tml.Printf("  <white>Resolution: </white><blue>%s</blue>\n", res.Rule().Resolution)
 	}
-	if res.Resolution != "" {
-		_ = tml.Printf("  <white>Resolution: </white><blue>%s</blue>\n", res.Resolution)
-	}
-	if len(res.Links) > 0 {
+	if len(res.Rule().Links) > 0 {
 		_ = tml.Printf("\n  <white>More Info:</white>")
 	}
-	for _, link := range res.Links {
+	for _, link := range res.Rule().Links {
 		_ = tml.Printf("\n  <blue>- %s </blue>", link)
 	}
 	fmt.Printf("\n\n")
@@ -157,31 +157,31 @@ func printStatistics() {
 }
 
 // highlight the lines of code which caused a problem, if available
-func highlightCode(result result.Result) {
+func highlightCode(result rules.Result) {
 
-	data, err := ioutil.ReadFile(result.Range().GetFilename())
+	data, err := ioutil.ReadFile(result.Metadata().Range().GetFilename())
 	if err != nil {
 		return
 	}
 
 	lines := append([]string{""}, strings.Split(string(data), "\n")...)
 
-	start := result.Range().GetStartLine() - 3
+	start := result.Metadata().Range().GetStartLine() - 3
 	if start <= 0 {
 		start = 1
 	}
-	end := result.Range().GetEndLine() + 3
+	end := result.Metadata().Range().GetEndLine() + 3
 	if end >= len(lines) {
 		end = len(lines) - 1
 	}
 
 	for lineNo := start; lineNo <= end; lineNo++ {
 		_ = tml.Printf("  <blue>% 6d</blue> | ", lineNo)
-		if lineNo >= result.Range().GetStartLine() && lineNo <= result.Range().GetEndLine() {
-			if result.Passed() {
+		if lineNo >= result.Metadata().Range().GetStartLine() && lineNo <= result.Metadata().Range().GetEndLine() {
+			if result.Status() == rules.StatusPassed {
 				_ = tml.Printf("<bold><green>%s</green></bold>", lines[lineNo])
-			} else if lineNo == result.Range().GetStartLine() && result.RangeAnnotation != "" {
-				_ = tml.Printf("<bold><red>%s</red>    <blue>%s</blue></bold>", lines[lineNo], result.RangeAnnotation)
+			} else if lineNo == result.Metadata().Range().GetStartLine() && result.Annotation() != "" {
+				_ = tml.Printf("<bold><red>%s</red>    <blue>%s</blue></bold>", lines[lineNo], result.Annotation())
 			} else {
 				_ = tml.Printf("<bold><red>%s</red></bold>", lines[lineNo])
 			}
@@ -195,11 +195,11 @@ func highlightCode(result result.Result) {
 	fmt.Println("")
 }
 
-func countPassedResults(results []*result.Result) int {
+func countPassedResults(results rules.Results) int {
 	passed := 0
 
 	for _, res := range results {
-		if res.Passed() {
+		if res.Status() == rules.StatusPassed {
 			passed++
 		}
 	}

@@ -30,6 +30,6 @@ func init() {
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
 		},
-		DefSecCheck: s3.CheckPublicACLsAreBlocked,
+		Base: s3.CheckPublicACLsAreBlocked,
 	})
 }

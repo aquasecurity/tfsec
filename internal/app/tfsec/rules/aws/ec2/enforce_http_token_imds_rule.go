@@ -30,6 +30,6 @@ func init() {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#metadata-options",
 		},
-		DefSecCheck: ec2.CheckIMDSAccessRequiresToken,
+		Base: ec2.CheckIMDSAccessRequiresToken,
 	})
 }

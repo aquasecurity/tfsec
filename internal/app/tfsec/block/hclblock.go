@@ -50,9 +50,9 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
 		childBlocks: children,
 	}
 
-	module := b.Range().Module
+	module := b.Range().module
 	for _, attr := range b.createAttributes() {
-		b.attributes = append(b.attributes, NewHCLAttribute(attr, ctx, module))
+		b.attributes = append(b.attributes, NewHCLAttribute(attr, ctx, module, b.Reference()))
 	}
 
 	return &b
@@ -153,12 +153,12 @@ func (b *HCLBlock) Range() HCLRange {
 	if b.moduleBlock != nil {
 		moduleName = b.moduleBlock.FullName()
 	}
-	return HCLRange{
-		Filename:  r.Filename,
-		Module:    moduleName,
-		StartLine: r.Start.Line,
-		EndLine:   r.End.Line,
-	}
+	return NewRange(
+		r.Filename,
+		r.Start.Line,
+		r.End.Line,
+		moduleName,
+	)
 }
 
 func (b *HCLBlock) GetFirstMatchingBlock(names ...string) Block {
@@ -280,10 +280,6 @@ func (b *HCLBlock) Reference() *Reference {
 	return ref
 }
 
-func (b *HCLBlock) ReadLines() (lines []string, comments []string, err error) {
-	return b.Range().ReadLines(false)
-}
-
 // LocalName is the name relative to the current module
 func (b *HCLBlock) LocalName() string {
 	return b.Reference().String()
@@ -304,9 +300,9 @@ func (b *HCLBlock) FullName() string {
 
 func (b *HCLBlock) UniqueName() string {
 	if b.moduleBlock != nil {
-		return fmt.Sprintf("%s:%s:%s", b.FullName(), b.Range().Filename, b.moduleBlock.UniqueName())
+		return fmt.Sprintf("%s:%s:%s", b.FullName(), b.Range().GetFilename(), b.moduleBlock.UniqueName())
 	}
-	return fmt.Sprintf("%s:%s", b.FullName(), b.Range().Filename)
+	return fmt.Sprintf("%s:%s", b.FullName(), b.Range().GetFilename())
 }
 
 func (b *HCLBlock) TypeLabel() string {

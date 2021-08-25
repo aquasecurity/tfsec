@@ -17,6 +17,9 @@ type Ignore struct {
 type Ignores []Ignore
 
 func (i Ignores) Covering(r types.Range, workspace string, ids ...string) *Ignore {
+
+	rng := r.(HCLRange)
+
 	for _, ignore := range i {
 		if ignore.Expiry != nil && time.Now().After(*ignore.Expiry) {
 			continue
@@ -36,13 +39,13 @@ func (i Ignores) Covering(r types.Range, workspace string, ids ...string) *Ignor
 		if !idMatch {
 			continue
 		}
-		if ignore.ModuleKey != "" && ignore.ModuleKey == r.GetModule() {
+		if ignore.ModuleKey != "" && ignore.ModuleKey == rng.GetModule() {
 			return &ignore
 		}
-		if ignore.Range.Filename != r.GetFilename() {
+		if ignore.Range.GetFilename() != r.GetFilename() {
 			continue
 		}
-		if r.GetStartLine() == ignore.Range.StartLine+1 || r.GetStartLine() == ignore.Range.StartLine {
+		if r.GetStartLine() == ignore.Range.GetStartLine()+1 || r.GetStartLine() == ignore.Range.GetStartLine() {
 			return &ignore
 		}
 	}

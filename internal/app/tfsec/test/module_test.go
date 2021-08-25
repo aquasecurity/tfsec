@@ -18,7 +18,7 @@ import (
 
 var badRule = rule.Rule{
 	LegacyID: "EXA001",
-	DefSecCheck: rules.RuleDef{
+	Base: rules.Rule{
 		Provider:    provider.AWSProvider,
 		Service:     "service",
 		ShortCode:   "abc",
@@ -41,7 +41,7 @@ resource "problem" "x" {
 	Links:          nil,
 	RequiredTypes:  []string{"resource"},
 	RequiredLabels: []string{"problem"},
-	CheckTerraform: func(resourceBlock block.Block, _ block.Module) types.Results {
+	CheckTerraform: func(resourceBlock block.Block, _ block.Module) rules.Results {
 		if resourceBlock.GetAttribute("bad").IsTrue() {
 			set.AddResult().
 				WithDescription("example problem")
@@ -407,14 +407,14 @@ resource "bad" "thing" {
 
 	r1 := rule.Rule{
 		LegacyID: "ABC123",
-		DefSecCheck: rules.RuleDef{
+		Base: rules.Rule{
 			Provider:  provider.AWSProvider,
 			Service:   "service",
 			ShortCode: "abc123",
 			Severity:  severity.High,
 		},
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) types.Results {
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) rules.Results {
 			if resourceBlock.GetAttribute("secure").IsTrue() {
 				return
 			}
@@ -458,14 +458,14 @@ resource "bad" "thing" {
 
 	r1 := rule.Rule{
 		LegacyID: "ABC123",
-		DefSecCheck: rules.RuleDef{
+		Base: rules.Rule{
 			Provider:  provider.AWSProvider,
 			Service:   "service",
 			ShortCode: "abc123",
 			Severity:  severity.High,
 		},
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) types.Results {
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) rules.Results {
 			if resourceBlock.GetAttribute("secure").IsTrue() {
 				return
 			}

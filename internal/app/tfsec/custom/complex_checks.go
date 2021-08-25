@@ -18,7 +18,7 @@ func checkTags(block block.Block, spec *MatchSpec, module block.Module) bool {
 
 	var alias string
 	if block.HasChild("provider") {
-		aliasRef, err := block.GetAttribute("provider").Reference()
+		aliasRef, err := block.GetAttribute("provider").SingleReference()
 		if err == nil {
 			alias = aliasRef.String()
 		}

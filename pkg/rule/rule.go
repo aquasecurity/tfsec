@@ -2,7 +2,6 @@ package rule
 
 import (
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/defsec/types"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
@@ -10,8 +9,8 @@ import (
 // Rule is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.
 // "resource", and the labels to run on e.g. "aws_s3_bucket".
 type Rule struct {
-	DefSecCheck rules.RuleDef
-	LegacyID    string
+	Base     rules.RegisteredRule
+	LegacyID string
 
 	// BadExample (hcl) contains Terraform code which would cause the check to fail
 	BadExample []string
@@ -25,9 +24,9 @@ type Rule struct {
 	RequiredTypes   []string
 	RequiredLabels  []string
 	RequiredSources []string
-	CheckTerraform  func(block.Block, block.Module) types.Results
+	CheckTerraform  func(block.Block, block.Module) rules.Results
 }
 
 func (r Rule) ID() string {
-	return r.DefSecCheck.ID()
+	return r.Base.Rule().LongID()
 }

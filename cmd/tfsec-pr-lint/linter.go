@@ -15,19 +15,19 @@ type linter struct {
 
 func (l *linter) lint(check rule.Rule) {
 	// crashout immediately if there is a check with no id
-	if check.DefSecCheck.ShortCode == "" {
+	if check.Base.Rule().ShortCode == "" {
 		fmt.Printf("%s: Found a check with no short code\n", check.ID())
 		os.Exit(1)
 	}
-	if check.DefSecCheck.Service == "" {
+	if check.Base.Rule().Service == "" {
 		fmt.Printf("%s: Found a check with no service\n", check.ID())
 		os.Exit(1)
 	}
-	if check.DefSecCheck.Provider == "" {
+	if check.Base.Rule().Provider == "" {
 		fmt.Printf("%s: Found a check with no provider\n", check.ID())
 		os.Exit(1)
 	}
-	if len(check.DefSecCheck.Links) == 0 {
+	if len(check.Base.Rule().Links) == 0 {
 		fmt.Printf("%s: Found check with no links\n", check.ID())
 		os.Exit(1)
 	}
@@ -51,19 +51,19 @@ func (l *linter) checkDocumentation(check rule.Rule) bool {
 		errorFound = true
 	}
 
-	if err := l.verifyPart(string(check.DefSecCheck.Summary), "Summary"); err != nil {
+	if err := l.verifyPart(string(check.Base.Rule().Summary), "Summary"); err != nil {
 		fmt.Printf("%s: %s\n", check.ID(), err.Error())
 		errorFound = true
 	}
-	if err := l.verifyPart(check.DefSecCheck.Impact, "Impact"); err != nil {
+	if err := l.verifyPart(check.Base.Rule().Impact, "Impact"); err != nil {
 		fmt.Printf("%s: %s\n", check.ID(), err.Error())
 		errorFound = true
 	}
-	if err := l.verifyPart(check.DefSecCheck.Resolution, "Resolution"); err != nil {
+	if err := l.verifyPart(check.Base.Rule().Resolution, "Resolution"); err != nil {
 		fmt.Printf("%s: %s\n", check.ID(), err.Error())
 		errorFound = true
 	}
-	if err := l.verifyPart(check.DefSecCheck.Explanation, "Explanation"); err != nil {
+	if err := l.verifyPart(check.Base.Rule().Explanation, "Explanation"); err != nil {
 		fmt.Printf("%s: %s\n", check.ID(), err.Error())
 		errorFound = true
 	}
@@ -80,7 +80,7 @@ func (l *linter) checkDocumentation(check rule.Rule) bool {
 		}
 	}
 
-	if len(check.DefSecCheck.Links) == 0 {
+	if len(check.Base.Rule().Links) == 0 {
 		fmt.Printf("%s: Has no links configure\n", check.ID())
 		errorFound = true
 	}

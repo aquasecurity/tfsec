@@ -33,6 +33,6 @@ func init() {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#enable-default-server-side-encryption",
 		},
-		DefSecCheck: s3.CheckEncryptionIsEnabled,
+		Base: s3.CheckEncryptionIsEnabled,
 	})
 }

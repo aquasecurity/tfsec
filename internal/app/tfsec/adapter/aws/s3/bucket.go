@@ -13,7 +13,7 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 		func(block block.Block) {
 			s3b := s3.Bucket{
 				Name:     getName(block),
-				Metadata: types.NewMetadata(block.Range()).WithReference(block.Reference()),
+				Metadata: types.NewMetadata(block.Range(), block.Reference()),
 				Versioning: s3.Versioning{
 					Enabled: isVersioned(block),
 				},
@@ -36,111 +36,71 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 
 func getName(b block.Block) types.StringValue {
 	if nameAttr := b.GetAttribute("bucket"); nameAttr.IsString() {
-		return types.StringValue{
-			Metadata: types.NewMetadata(nameAttr.Range()),
-			Value:    nameAttr.Value().AsString(),
-		}
+		return nameAttr.AsStringValue(true)
 	}
-	return types.StringValue{
-		Metadata: types.NewMetadata(b.Range()),
-		Value:    "",
-	}
-
+	return types.StringDefault(
+		"",
+		b.Range(),
+		b.Reference(),
+	)
 }
 
 func getACL(b block.Block) types.StringValue {
 	if aclAttr := b.GetAttribute("acl"); aclAttr.IsString() {
-		return types.StringValue{
-			Metadata: types.NewMetadata(aclAttr.Range()),
-			Value:    aclAttr.Value().AsString(),
-		}
+		return aclAttr.AsStringValue(true)
 	}
-	return types.StringValue{
-		Metadata: types.NewMetadata(b.Range()),
-		Value:    "private",
-	}
+	return types.StringDefault(
+		"",
+		b.Range(),
+		b.Reference(),
+	)
 }
 
 func isEncrypted(b block.Block) types.BoolValue {
+
 	encryptionBlock := b.GetBlock("server_side_encryption_configuration")
 	if encryptionBlock.IsNil() {
-		return types.BoolValue{
-			Metadata: types.NewMetadata(b.Range()),
-			Value:    false,
-		}
+		return types.BoolDefault(false, b.Range(), b.Reference())
 	}
 	ruleBlock := encryptionBlock.GetBlock("rule")
 	if ruleBlock.IsNil() {
-		return types.BoolValue{
-			Metadata: types.NewMetadata(encryptionBlock.Range()),
-			Value:    false,
-		}
-
+		return types.BoolDefault(false, encryptionBlock.Range(), encryptionBlock.Reference())
 	}
-	if defaultBlock := ruleBlock.GetBlock("apply_server_side_encryption_by_default"); defaultBlock.IsNil() {
-		return types.BoolValue{
-			Metadata: types.NewMetadata(ruleBlock.Range()),
-			Value:    false,
-		}
-	} else {
-		return types.BoolValue{
-			Metadata: types.NewMetadata(defaultBlock.Range()),
-			Value:    true,
-		}
-
+	defaultBlock := ruleBlock.GetBlock("apply_server_side_encryption_by_default")
+	if defaultBlock.IsNil() {
+		return types.BoolDefault(false, defaultBlock.Range(), defaultBlock.Reference())
 	}
+	return types.Bool(
+		true,
+		defaultBlock.Range(),
+		defaultBlock.Reference(),
+	)
 }
 
 func hasLogging(b block.Block) types.BoolValue {
 	if loggingBlock := b.GetBlock("logging"); loggingBlock.IsNotNil() {
 		if targetAttr := loggingBlock.GetAttribute("target_bucket"); targetAttr.IsNotNil() {
-			return types.BoolValue{
-				Metadata: types.NewMetadata(targetAttr.Range()),
-				Value:    targetAttr.IsNotEmpty(),
-			}
+			return types.Bool(true, targetAttr.Range(), targetAttr.Reference())
 		}
-		return types.BoolValue{
-			Metadata: types.NewMetadata(loggingBlock.Range()),
-			Value:    false,
-		}
+		return types.BoolDefault(false, loggingBlock.Range(), loggingBlock.Reference())
 	}
-	return types.BoolValue{
-		Metadata: types.NewMetadata(b.Range()),
-		Value:    false,
-	}
+	return types.BoolDefault(false, b.Range(), b.Reference())
 }
 
 func isVersioned(b block.Block) types.BoolValue {
 	if versioningBlock := b.GetBlock("versioning"); versioningBlock.IsNotNil() {
 		if enabledAttr := versioningBlock.GetAttribute("enabled"); enabledAttr.IsNotNil() {
-			return types.BoolValue{
-				Metadata: types.NewMetadata(enabledAttr.Range()),
-				Value:    enabledAttr.IsTrue(),
-			}
+			return enabledAttr.AsBoolValue(true)
 		}
-		return types.BoolValue{
-			Metadata: types.NewMetadata(versioningBlock.Range()),
-			Value:    true,
-		}
+		return types.BoolDefault(
+			true,
+			versioningBlock.Range(),
+			versioningBlock.Reference(),
+		)
 	}
-	return types.BoolValue{
-		Metadata: types.NewMetadata(b.Range()),
-		Value:    false,
-	}
-}
-
-func AttributeToBoolValue(attribute block.Attribute, block block.Block, defaultValue bool) types.BoolValue {
-
-	if attribute.IsNil() {
-		return types.BoolValue{
-			Metadata: types.NewMetadata(block.Range()),
-			Value:    defaultValue,
-		}
-	}
-
-	return types.BoolValue{
-		Metadata: types.NewMetadata(attribute.Range()),
-		Value:    attribute.IsTrue(),
-	}
-
+	return types.BoolDefault(
+		false,
+		b.Range(),
+		b.Reference(),
+	)
 }

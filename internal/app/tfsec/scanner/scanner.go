@@ -3,7 +3,7 @@ package scanner
 import (
 	"sort"
 
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
@@ -40,13 +40,13 @@ func checkInList(id string, legacyID string, list []string) bool {
 	return false
 }
 
-func (scanner *Scanner) Scan(modules []block.Module) []types.Result {
+func (scanner *Scanner) Scan(modules []block.Module) rules.Results {
 
 	adaptationTime := metrics.Start(metrics.Adaptation)
 	infra := adapter.Adapt(modules)
 	adaptationTime.Stop()
 
-	var results []types.Result
+	var results []rules.Result
 
 	// run defsec checks
 	infraCheckTime := metrics.Start(metrics.InfraChecks)
@@ -81,7 +81,7 @@ func (scanner *Scanner) Scan(modules []block.Module) []types.Result {
 	}
 	hclCheckTime.Stop()
 
-	var resultsAfterIgnores []types.Result
+	var resultsAfterIgnores []rules.Result
 	for _, result := range results {
 		if !scanner.includeIgnored && ignores.Covering(
 			result.Range(),
@@ -101,8 +101,8 @@ func (scanner *Scanner) Scan(modules []block.Module) []types.Result {
 	return filtered
 }
 
-func (scanner *Scanner) filterResults(results []types.Result) []types.Result {
-	var filtered []types.Result
+func (scanner *Scanner) filterResults(results []rules.Result) []rules.Result {
+	var filtered []rules.Result
 	for _, result := range results {
 		if !scanner.includeIgnored && checkInList(result.RuleID, result.LegacyRuleID, scanner.excludedRuleIDs) {
 			metrics.Add(metrics.IgnoredChecks, 1)
@@ -114,7 +114,7 @@ func (scanner *Scanner) filterResults(results []types.Result) []types.Result {
 	return filtered
 }
 
-func (scanner *Scanner) sortResults(results []types.Result) {
+func (scanner *Scanner) sortResults(results []rules.Result) {
 	sort.Slice(results, func(i, j int) bool {
 		switch {
 		case results[i].RuleID < results[j].RuleID:

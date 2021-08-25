@@ -18,16 +18,58 @@ type HCLAttribute struct {
 	module       string
 	ctx          *Context
 	forEachRefs  []*Reference
+	ref          *Reference
 }
 
-func NewHCLAttribute(attr *hcl.Attribute, ctx *Context, module string) *HCLAttribute {
-	a := &HCLAttribute{
+func NewHCLAttribute(attr *hcl.Attribute, ctx *Context, module string, parentRef *Reference) *HCLAttribute {
+	return &HCLAttribute{
 		hclAttribute: attr,
 		ctx:          ctx,
 		module:       module,
+		ref:          extendReference(parentRef, attr.Name),
 	}
+}
 
-	return a
+func (attr *HCLAttribute) AsStringValue(explicit bool) types.StringValue {
+	f := types.String
+	if explicit {
+		f = types.StringDefault
+	}
+	return f(
+		attr.Value().AsString(),
+		attr.Range(),
+		attr.Reference(),
+	)
+}
+
+func (attr *HCLAttribute) AsBoolValue(explicit bool) types.BoolValue {
+	f := types.Bool
+	if explicit {
+		f = types.BoolDefault
+	}
+	return f(
+		attr.IsTrue(),
+		attr.Range(),
+		attr.Reference(),
+	)
+}
+
+func (attr *HCLAttribute) AsIntValue(explicit bool) types.IntValue {
+	f := types.Int
+	if explicit {
+		f = types.IntDefault
+	}
+	big := attr.Value().AsBigFloat()
+	flt, _ := big.Float64()
+	return f(
+		int(flt),
+		attr.Range(),
+		attr.Reference(),
+	)
+}
+
+func (attr *HCLAttribute) Reference() *Reference {
+	return attr.ref
 }
 
 func (attr *HCLAttribute) IsLiteral() bool {
@@ -114,12 +156,12 @@ func (attr *HCLAttribute) Range() HCLRange {
 	if attr == nil {
 		return HCLRange{}
 	}
-	return HCLRange{
-		Filename:  attr.hclAttribute.Range.Filename,
-		Module:    attr.module,
-		StartLine: attr.hclAttribute.Range.Start.Line,
-		EndLine:   attr.hclAttribute.Range.End.Line,
-	}
+	return NewRange(
+		attr.hclAttribute.Range.Filename,
+		attr.hclAttribute.Range.Start.Line,
+		attr.hclAttribute.Range.End.Line,
+		attr.module,
+	)
 }
 
 func (attr *HCLAttribute) Name() string {
@@ -601,7 +643,7 @@ func createDotReferenceFromTraversal(traversals ...hcl.Traversal) (*Reference, e
 	return ref, nil
 }
 
-func (attr *HCLAttribute) Reference() (*Reference, error) {
+func (attr *HCLAttribute) SingleReference() (*Reference, error) {
 	if attr == nil {
 		return nil, fmt.Errorf("attribute is nil")
 	}
@@ -639,7 +681,7 @@ func (attr *HCLAttribute) AllReferences(blocks ...Block) []*Reference {
 	var refs []*Reference
 	refs = append(refs, attr.referencesInTemplate()...)
 	refs = append(refs, attr.referencesInConditional()...)
-	ref, err := attr.Reference()
+	ref, err := attr.SingleReference()
 	if err == nil {
 		refs = append(refs, ref)
 	}
@@ -750,14 +792,4 @@ func (attr *HCLAttribute) HasIntersect(checkValues ...interface{}) bool {
 	}
 	return false
 
-}
-
-func (attr *HCLAttribute) AsStringValue() types.StringValue {
-	if attr.IsString() {
-		return types.StringValue{
-			Metadata: types.NewMetadata(attr.Range()),
-			Value:    attr.Value().AsString(),
-		}
-	}
-	return types.EmptyStringValue(attr.Range())
 }

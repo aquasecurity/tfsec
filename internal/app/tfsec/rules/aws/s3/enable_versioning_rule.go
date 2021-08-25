@@ -28,6 +28,6 @@ resource "aws_s3_bucket" "good_example" {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#versioning",
 		},
-		DefSecCheck: s3.CheckVersioningIsEnabled,
+		Base: s3.CheckVersioningIsEnabled,
 	})
 }

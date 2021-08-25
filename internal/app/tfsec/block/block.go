@@ -35,7 +35,6 @@ type Block interface {
 	IsEmpty() bool
 	Values() cty.Value
 	Context() *Context
-	ReadLines() (lines []string, comments []string, err error)
 	IsNil() bool
 	IsNotNil() bool
 	InjectBlock(block Block, name string)

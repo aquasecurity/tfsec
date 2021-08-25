@@ -23,7 +23,7 @@ func getInstances(modules block.Modules) []ec2.Instance {
 		userData := getUserData(b)
 
 		instances = append(instances, ec2.Instance{
-			Metadata:        types.NewMetadata(b.Range()).WithReference(b.Reference()),
+			Metadata:        types.NewMetadata(b.Range(), b.Reference()),
 			MetadataOptions: metadataOptions,
 			UserData:        userData,
 		})
@@ -33,37 +33,40 @@ func getInstances(modules block.Modules) []ec2.Instance {
 }
 
 func getUserData(b block.Block) types.StringValue {
-
-	if userDataAttr := b.GetAttribute("user_data"); userDataAttr.IsNotNil() {
-		return userDataAttr.AsStringValue()
+	if userDataAttr := b.GetAttribute("user_data"); userDataAttr.IsNotNil() && userDataAttr.IsString() {
+		return userDataAttr.AsStringValue(true)
 	}
-	return types.EmptyStringValue(b.Range())
+	return types.StringDefault(
+		"",
+		b.Range(),
+		b.Reference(),
+	)
 }
 
 func getMetadataOptions(b block.Block) ec2.MetadataOptions {
 
 	if metadataOptions := b.GetBlock("metadata_options"); metadataOptions.IsNotNil() {
 		metaOpts := ec2.MetadataOptions{
-			Metadata: types.NewMetadata(metadataOptions.Range()),
+			Metadata: types.NewMetadata(metadataOptions.Range(), metadataOptions.Reference()),
 		}
 
 		if httpTokens := metadataOptions.GetAttribute("http_tokens"); httpTokens.IsNotNil() {
-			metaOpts.HttpTokens = httpTokens.AsStringValue()
+			metaOpts.HttpTokens = httpTokens.AsStringValue(true)
 		} else {
-			metaOpts.HttpTokens = types.EmptyStringValue(metadataOptions.Range())
+			metaOpts.HttpTokens = types.StringDefault("", metadataOptions.Range(), metadataOptions.Reference())
 		}
 
 		if httpEndpoint := metadataOptions.GetAttribute("http_endpoint"); httpEndpoint.IsNotNil() {
-			metaOpts.HttpEndpoint = httpEndpoint.AsStringValue()
+			metaOpts.HttpEndpoint = httpEndpoint.AsStringValue(true)
 		} else {
-			metaOpts.HttpEndpoint = types.EmptyStringValue(metadataOptions.Range())
+			metaOpts.HttpEndpoint = types.StringDefault("", metadataOptions.Range(), metadataOptions.Reference())
 		}
 		return metaOpts
 	}
 
 	return ec2.MetadataOptions{
-		Metadata:     types.NewMetadata(b.Range()),
-		HttpTokens:   types.EmptyStringValue(b.Range()),
-		HttpEndpoint: types.EmptyStringValue(b.Range()),
+		Metadata:     types.NewMetadata(b.Range(), b.Reference()),
+		HttpTokens:   types.StringDefault("", b.Range(), b.Reference()),
+		HttpEndpoint: types.StringDefault("", b.Range(), b.Reference()),
 	}
 }

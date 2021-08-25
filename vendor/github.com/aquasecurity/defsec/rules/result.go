@@ -7,11 +7,23 @@ import (
 	"github.com/aquasecurity/defsec/types"
 )
 
+type Status uint8
+
+const (
+	StatusFailed Status = iota
+	StatusPassed
+)
+
 type Result struct {
 	rule        Rule
 	description string
 	annotation  string
-	metadata    types.Metadata
+	status      Status
+	metadata    *types.Metadata
+}
+
+func (r Result) Status() Status {
+	return r.status
 }
 
 func (r Result) Rule() Rule {
@@ -26,8 +38,12 @@ func (r Result) Annotation() string {
 	return r.annotation
 }
 
-func (r Result) Metadata() types.Metadata {
+func (r Result) Metadata() *types.Metadata {
 	return r.metadata
+}
+
+func (r Result) Reference() types.Reference {
+	return r.metadata.Reference()
 }
 
 type Results []Result
@@ -40,7 +56,7 @@ func (r *Results) Add(description string, metadata *types.Metadata, annotation .
 	*r = append(*r,
 		Result{
 			description: description,
-			metadata:    *metadata,
+			metadata:    metadata,
 			annotation:  annotationStr,
 		},
 	)

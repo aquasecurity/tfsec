@@ -10,6 +10,9 @@ type RegisteredRule struct {
 }
 
 func (r RegisteredRule) Evaluate(s *state.State) Results {
+	if r.checkFunc == nil {
+		return nil
+	}
 	results := r.checkFunc(s)
 	for i := range results {
 		results[i].rule = r.rule

@@ -99,7 +99,7 @@ func getServices(checks []rule.Rule, provider string) []service {
 	mappings := make(map[string][]string)
 
 	for _, check := range checks {
-		mappings[check.DefSecCheck.Service] = append(mappings[check.DefSecCheck.Service], fmt.Sprintf("%s/%s/%s", check.DefSecCheck.Provider, check.DefSecCheck.Service, check.DefSecCheck.ShortCode))
+		mappings[check.Base.Rule().Service] = append(mappings[check.Base.Rule().Service], fmt.Sprintf("%s/%s/%s", check.Base.Rule().Provider, check.Base.Rule().Service, check.Base.Rule().ShortCode))
 	}
 
 	for k, mapping := range mappings {

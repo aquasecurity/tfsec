@@ -15,14 +15,14 @@ var registeredRules []rule.Rule
 
 // RegisterCheckRule registers a new Rule which should be run on future scans
 func RegisterCheckRule(rule rule.Rule) {
-	if rule.DefSecCheck.ShortCode == "" {
+	if rule.Base.ShortCode == "" {
 		panic("rule short code was not set: " + string(debug.Stack()))
 	}
-	if rule.DefSecCheck.Service == "" {
+	if rule.Base.Service == "" {
 		panic("rule service was not set: " + string(debug.Stack()))
 
 	}
-	if rule.DefSecCheck.Provider == "" {
+	if rule.Base.Provider == "" {
 		panic("rule provider was not set: " + string(debug.Stack()))
 	}
 	rulesLock.Lock()

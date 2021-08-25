@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/defsec/rules"
 )
 
 // see https://github.com/windyroad/JUnit-Schema/blob/master/JUnit.xsd
@@ -39,7 +39,7 @@ type JUnitFailure struct {
 	Contents string `xml:",chardata"`
 }
 
-func FormatJUnit(w io.Writer, results []types.Result, _ string, options ...FormatterOption) error {
+func FormatJUnit(w io.Writer, results rules.Results, _ string, options ...FormatterOption) error {
 
 	output := JUnitTestSuite{
 		Name:     "tfsec",
@@ -50,10 +50,10 @@ func FormatJUnit(w io.Writer, results []types.Result, _ string, options ...Forma
 	for _, result := range results {
 		output.TestCases = append(output.TestCases,
 			JUnitTestCase{
-				Classname: result.Range().GetFilename(),
-				Name:      fmt.Sprintf("[%s][%s] - %s", result.RuleID, result.Severity, result.Description),
+				Classname: result.Metadata().Range().GetFilename(),
+				Name:      fmt.Sprintf("[%s][%s] - %s", result.Rule().LongID(), result.Rule().Severity, result.Description),
 				Time:      "0",
-				Failure:   buildFailure(*result),
+				Failure:   buildFailure(result),
 			},
 		)
 	}
@@ -69,20 +69,20 @@ func FormatJUnit(w io.Writer, results []types.Result, _ string, options ...Forma
 }
 
 // highlight the lines of code which caused a problem, if available
-func highlightCodeJunit(result types.Result) string {
+func highlightCodeJunit(result rules.Result) string {
 
-	data, err := ioutil.ReadFile(result.Range().GetFilename())
+	data, err := ioutil.ReadFile(result.Metadata().Range().GetFilename())
 	if err != nil {
 		return ""
 	}
 
 	lines := append([]string{""}, strings.Split(string(data), "\n")...)
 
-	start := result.Range().GetStartLine() - 3
+	start := result.Metadata().Range().GetStartLine() - 3
 	if start <= 0 {
 		start = 1
 	}
-	end := result.Range().GetEndLine() + 3
+	end := result.Metadata().Range().GetEndLine() + 3
 	if end >= len(lines) {
 		end = len(lines) - 1
 	}
@@ -91,9 +91,9 @@ func highlightCodeJunit(result types.Result) string {
 
 	for lineNo := start; lineNo <= end; lineNo++ {
 		output += fmt.Sprintf("  % 6d | ", lineNo)
-		if lineNo >= result.Range().GetStartLine() && lineNo <= result.Range().GetEndLine() {
-			if lineNo == result.Range().GetStartLine() && result.RangeAnnotation != "" {
-				output += fmt.Sprintf("%s    %s\n", lines[lineNo], result.RangeAnnotation)
+		if lineNo >= result.Metadata().Range().GetStartLine() && lineNo <= result.Metadata().Range().GetEndLine() {
+			if lineNo == result.Metadata().Range().GetStartLine() && result.Annotation() != "" {
+				output += fmt.Sprintf("%s    %s\n", lines[lineNo], result.Annotation())
 			} else {
 				output += fmt.Sprintf("%s\n", lines[lineNo])
 			}
@@ -105,20 +105,20 @@ func highlightCodeJunit(result types.Result) string {
 	return output
 }
 
-func buildFailure(res types.Result) *JUnitFailure {
-	if res.Passed() {
+func buildFailure(res rules.Result) *JUnitFailure {
+	if res.Status() == rules.StatusPassed {
 		return nil
 	}
 
 	var link string
-	if len(res.Links) > 0 {
-		link = res.Links[0]
+	if len(res.Rule().Links) > 0 {
+		link = res.Rule().Links[0]
 	}
 
 	return &JUnitFailure{
-		Message: res.Description,
+		Message: res.Description(),
 		Contents: fmt.Sprintf("%s\n%s\n%s",
-			res.Range().String(),
+			res.Metadata().Range().String(),
 			highlightCodeJunit(res),
 			link,
 		),

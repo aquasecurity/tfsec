@@ -34,7 +34,8 @@ type Attribute interface {
 	GreaterThan(checkValue interface{}) bool
 	GreaterThanOrEqualTo(checkValue interface{}) bool
 	IsDataBlockReference() bool
-	Reference() (*Reference, error)
+	Reference() *Reference
+	SingleReference() (*Reference, error)
 	AllReferences(blocks ...Block) []*Reference
 	IsResourceBlockReference(resourceType string) bool
 	References(r types.Reference) bool
@@ -46,5 +47,7 @@ type Attribute interface {
 	ValueAsStrings() []string
 	IsIterable() bool
 	Each(f func(key cty.Value, val cty.Value))
-	AsStringValue() types.StringValue
+	AsStringValue(explicit bool) types.StringValue
+	AsBoolValue(explicit bool) types.BoolValue
+	AsIntValue(explicit bool) types.IntValue
 }

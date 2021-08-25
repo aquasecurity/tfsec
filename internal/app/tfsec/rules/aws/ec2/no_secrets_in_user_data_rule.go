@@ -42,6 +42,6 @@ func init() {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#user_data",
 		},
-		DefSecCheck: ec2.CheckNoSecretsInUserData,
+		Base: ec2.CheckNoSecretsInUserData,
 	})
 }

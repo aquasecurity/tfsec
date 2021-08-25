@@ -6,10 +6,10 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/defsec/rules"
 )
 
-func FormatCSV(w io.Writer, results []types.Result, _ string, _ ...FormatterOption) error {
+func FormatCSV(w io.Writer, results rules.Results, _ string, _ ...FormatterOption) error {
 
 	records := [][]string{
 		{"file", "start_line", "end_line", "rule_id", "severity", "description", "link", "passed"},
@@ -17,18 +17,18 @@ func FormatCSV(w io.Writer, results []types.Result, _ string, _ ...FormatterOpti
 
 	for _, res := range results {
 		var link string
-		if len(res.Links) > 0 {
-			link = res.Links[0]
+		if len(res.Rule().Links) > 0 {
+			link = res.Rule().Links[0]
 		}
 		records = append(records, []string{
-			res.Range().GetFilename(),
-			strconv.Itoa(res.Range().GetStartLine()),
-			strconv.Itoa(res.Range().GetEndLine()),
-			res.RuleID,
-			string(res.Severity),
-			res.Description,
+			res.Metadata().Range().GetFilename(),
+			strconv.Itoa(res.Metadata().Range().GetStartLine()),
+			strconv.Itoa(res.Metadata().Range().GetEndLine()),
+			res.Rule().LongID(),
+			string(res.Rule().Severity),
+			res.Description(),
 			link,
-			false, //strconv.FormatBool(res.Status == result.Passed), // TODO
+			strconv.FormatBool(res.Status() == rules.StatusPassed), // TODO
 		})
 	}
 

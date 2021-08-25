@@ -12,10 +12,10 @@ import (
 
 const (
 	baseWebPageTemplate = `---
-title: {{$.DefSecCheck.Summary}}
+title: {{$.Base.Summary}}
 shortcode: {{$.ID}}
 legacy: {{$.LegacyID}}
-summary: {{$.DefSecCheck.Summary}} 
+summary: {{$.Base.Summary}} 
 resources: {{$.RequiredLabels}} 
 permalink: /docs/{{$.Provider}}/{{$.Service}}/{{$.ShortCode}}/
 redirect_from: 
@@ -24,13 +24,13 @@ redirect_from:
 
 ### Explanation
 
-{{$.DefSecCheck.Explanation}}
+{{$.Base.Explanation}}
 
 ### Possible Impact
-{{$.DefSecCheck.Impact}}
+{{$.Base.Impact}}
 
 ### Suggested Resolution
-{{$.DefSecCheck.Resolution}}
+{{$.Base.Resolution}}
 
 {{if $.BadExample }}
 ### Insecure Example
@@ -58,10 +58,10 @@ The following example will pass the {{$.ID}} check.
 {{range $link := $.Links}}
 - [{{.}}]({{.}}){:target="_blank" rel="nofollow noreferrer noopener"}
 {{end}}
-{{if $.DefSecCheck.Links}}
+{{if $.Base.Links}}
 ### General Links
 
-{{range $link := $.DefSecCheck.Links}}
+{{range $link := $.Base.Links}}
 - [{{.}}]({{.}}){:target="_blank" rel="nofollow noreferrer noopener"}
 {{end}}
 
@@ -72,7 +72,7 @@ The following example will pass the {{$.ID}} check.
 func generateWebPages(fileContents []*FileContent) error {
 	for _, contents := range fileContents {
 		for _, check := range contents.Checks {
-			webProviderPath := fmt.Sprintf("%s/docs/%s/%s", webPath, strings.ToLower(string(check.DefSecCheck.Provider)), strings.ToLower(check.DefSecCheck.Service))
+			webProviderPath := fmt.Sprintf("%s/docs/%s/%s", webPath, strings.ToLower(string(check.Base.Rule().Provider)), strings.ToLower(check.Base.Rule().Service))
 			if err := generateWebPage(webProviderPath, check); err != nil {
 				return err
 			}
@@ -106,7 +106,7 @@ func generateWebPage(webProviderPath string, r rule.Rule) error {
 	if err := os.MkdirAll(webProviderPath, os.ModePerm); err != nil {
 		return err
 	}
-	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.DefSecCheck.ShortCode)
+	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.Base.Rule().ShortCode)
 	fmt.Printf("Generating page for %s at %s\n", r.ID(), filePath)
 	webTmpl := template.Must(template.New("web").Funcs(funcMap).Parse(baseWebPageTemplate))
 

@@ -17,6 +17,16 @@ type Reference struct {
 	key       cty.Value
 }
 
+func extendReference(ref *Reference, name string) *Reference {
+	child := *ref
+	child.remainder = make([]string, len(ref.remainder))
+	if len(ref.remainder) > 0 {
+		copy(child.remainder, ref.remainder)
+	}
+	child.remainder = append(child.remainder, name)
+	return &child
+}
+
 func newReference(parts []string) (*Reference, error) {
 
 	var ref Reference

@@ -68,14 +68,14 @@ func TestScanningJSON(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			r1 := rule.Rule{
 				LegacyID: "ABC123",
-				DefSecCheck: rules.RuleDef{
+				Base: rules.Rule{
 					Provider:  provider.AWSProvider,
 					Service:   "service",
 					ShortCode: "abc123",
 					Severity:  severity.High,
 				},
 				RequiredLabels: []string{"bad"},
-				CheckTerraform: func(resourceBlock block.Block, _ block.Module) types.Results {
+				CheckTerraform: func(resourceBlock block.Block, _ block.Module) rules.Results {
 					if resourceBlock.GetAttribute("secure").IsTrue() {
 						return
 					}

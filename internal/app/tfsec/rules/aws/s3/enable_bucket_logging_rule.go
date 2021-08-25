@@ -28,6 +28,6 @@ resource "aws_s3_bucket" "good_example" {
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket",
 			"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html",
 		},
-		DefSecCheck: s3.CheckLoggingIsEnabled,
+		Base: s3.CheckLoggingIsEnabled,
 	})
 }

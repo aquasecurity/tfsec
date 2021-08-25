@@ -16,7 +16,7 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 		for _, b := range blocks {
 
 			pba := s3.PublicAccessBlock{
-				Metadata:              types.NewMetadata(b.Range()).WithReference(b.Reference()),
+				Metadata:              types.NewMetadata(b.Range(), b.Reference()),
 				BlockPublicACLs:       isAttrTrue(b, "block_public_acls"),
 				BlockPublicPolicy:     isAttrTrue(b, "block_public_policy"),
 				IgnorePublicACLs:      isAttrTrue(b, "ignore_public_acls"),
@@ -34,13 +34,13 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 			references := bucketAttr.AllReferences(b)
 
 			for i, bucket := range buckets {
-				if bucketName != "" && bucket.Name.Value == bucketName && buckets[i].PublicAccessBlock == nil {
+				if bucketName != "" && bucket.Name.EqualTo(bucketName) && buckets[i].PublicAccessBlock == nil {
 					pba.Bucket = &bucket
 					buckets[i].PublicAccessBlock = &pba
 					break
 				}
 				for _, ref := range references {
-					if ref.RefersTo(bucket.Reference) || (strings.HasPrefix(bucket.Reference.String(), ref.String()) && buckets[i].PublicAccessBlock == nil) {
+					if ref.RefersTo(bucket.Reference()) || (strings.HasPrefix(bucket.Reference().String(), ref.String()) && buckets[i].PublicAccessBlock == nil) {
 						pba.Bucket = &bucket
 						buckets[i].PublicAccessBlock = &pba
 						break
@@ -58,13 +58,7 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 func isAttrTrue(block block.Block, attrName string) types.BoolValue {
 	attr := block.GetAttribute(attrName)
 	if attr.IsNil() {
-		return types.BoolValue{
-			Value:    false,
-			Metadata: types.NewMetadata(block.Range()),
-		}
+		return types.BoolDefault(false, block.Range(), block.Reference())
 	}
-	return types.BoolValue{
-		Value:    attr.IsTrue(),
-		Metadata: types.NewMetadata(attr.Range()),
-	}
+	return attr.AsBoolValue(true)
 }

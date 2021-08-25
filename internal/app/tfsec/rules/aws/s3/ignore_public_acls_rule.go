@@ -33,6 +33,6 @@ func init() {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block#ignore_public_acls",
 		},
-		DefSecCheck: s3.CheckPublicACLsAreIgnored,
+		Base: s3.CheckPublicACLsAreIgnored,
 	})
 }

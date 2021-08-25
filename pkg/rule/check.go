@@ -14,39 +14,39 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 )
 
-func (r *Rule) createResultSet() types.Results {
+func (r *Rule) createResultSet() rules.Results {
 	var links []string
-	if r.DefSecCheck.Provider != provider.CustomProvider {
+	if r.Base.Provider != provider.CustomProvider {
 		links = append(links, fmt.Sprintf(
 			"https://tfsec.dev/docs/%s/%s/%s#%s/%s",
-			r.DefSecCheck.Provider,
-			r.DefSecCheck.Service,
-			r.DefSecCheck.ShortCode,
-			r.DefSecCheck.Provider,
-			r.DefSecCheck.Service,
+			r.Base.Provider,
+			r.Base.Service,
+			r.Base.ShortCode,
+			r.Base.Provider,
+			r.Base.Service,
 		))
 	}
 	return result.NewSet().
 		WithRuleID(r.ID()).
 		WithLegacyRuleID(r.LegacyID).
-		WithRuleSummary(r.DefSecCheck.Summary).
-		WithImpact(r.DefSecCheck.Impact).
-		WithResolution(r.DefSecCheck.Resolution).
-		WithRuleProvider(r.DefSecCheck.Provider).
-		WithSeverity(r.DefSecCheck.Severity).
+		WithRuleSummary(r.Base.Summary).
+		WithImpact(r.Base.Impact).
+		WithResolution(r.Base.Resolution).
+		WithRuleProvider(r.Base.Provider).
+		WithSeverity(r.Base.Severity).
 		WithLinks(append(links, r.Links...))
 
 }
 
-func (r *Rule) CheckAgainstContext(context *state.State) types.Results {
+func (r *Rule) CheckAgainstContext(context *state.State) rules.Results {
 
 	set := r.createResultSet()
 
-	if r.DefSecCheck.CheckFunc == nil {
+	if r.Base.CheckFunc == nil {
 		return set
 	}
 
-	for _, result := range r.DefSecCheck.CheckFunc(context) {
+	for _, result := range r.Base.CheckFunc(context) {
 		set.Add(result)
 	}
 
@@ -61,7 +61,7 @@ func (r *Rule) RecoverFromCheckPanic() {
 	}
 }
 
-func (r *Rule) CheckAgainstBlock(b block.Block, m block.Module) types.Results {
+func (r *Rule) CheckAgainstBlock(b block.Block, m block.Module) rules.Results {
 	set := r.createResultSet()
 	if r.CheckTerraform == nil {
 		return set

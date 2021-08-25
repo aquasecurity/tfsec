@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"io"
 
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/defsec/rules"
 )
 
 type checkstyleResult struct {
@@ -26,7 +26,7 @@ type checkstyleOutput struct {
 	Files   []checkstyleFile `xml:"file"`
 }
 
-func FormatCheckStyle(w io.Writer, results []types.Result, _ string, _ ...FormatterOption) error {
+func FormatCheckStyle(w io.Writer, results rules.Results, _ string, _ ...FormatterOption) error {
 
 	output := checkstyleOutput{}
 
@@ -37,20 +37,20 @@ func FormatCheckStyle(w io.Writer, results []types.Result, _ string, _ ...Format
 		//	continue
 		//}
 		var link string
-		if len(res.Links) > 0 {
-			link = res.Links[0]
+		if len(res.Rule().Links) > 0 {
+			link = res.Rule().Links[0]
 		}
 		fileResults := append(
-			files[res.Range().GetFilename()],
+			files[res.Metadata().Range().GetFilename()],
 			checkstyleResult{
-				Rule:     res.RuleID,
-				Line:     res.Range().GetStartLine(),
-				Severity: string(res.Severity),
-				Message:  res.Description,
+				Rule:     res.Rule().LongID(),
+				Line:     res.Metadata().Range().GetStartLine(),
+				Severity: string(res.Rule().Severity),
+				Message:  res.Description(),
 				Link:     link,
 			},
 		)
-		files[res.Range().GetFilename()] = fileResults
+		files[res.Metadata().Range().GetFilename()] = fileResults
 	}
 
 	for name, fileResults := range files {
