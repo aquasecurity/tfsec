@@ -17,7 +17,7 @@
 | aws-sqs-enable-queue-encryption | aws | sqs | Unencrypted SQS queue. |
 | aws-sns-enable-topic-encryption | aws | sns | Unencrypted SNS topic. |
 | aws-s3-enable-bucket-encryption | aws | s3 | Unencrypted S3 bucket. |
-| aws-vpc-add-decription-to-security-group | aws | vpc | Missing description for security group/security group rule. |
+| aws-vpc-add-description-to-security-group | aws | vpc | Missing description for security group/security group rule. |
 | aws-kms-auto-rotate-keys | aws | kms | A KMS key is not configured to auto-rotate. |
 | aws-cloudfront-enforce-https | aws | cloudfront | CloudFront distribution allows unencrypted (HTTP) communications. |
 | aws-cloudfront-use-secure-tls-policy | aws | cloudfront | CloudFront distribution uses outdated SSL/TLS protocols. |
