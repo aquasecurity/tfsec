@@ -1,8 +1,8 @@
 package rule
 
 import (
-	"github.com/aquasecurity/defsec/result"
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/types"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
@@ -25,7 +25,7 @@ type Rule struct {
 	RequiredTypes   []string
 	RequiredLabels  []string
 	RequiredSources []string
-	CheckTerraform  func(result.Set, block.Block, block.Module)
+	CheckTerraform  func(block.Block, block.Module) types.Results
 }
 
 func (r Rule) ID() string {

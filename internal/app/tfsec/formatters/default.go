@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/types"
 
 	"github.com/aquasecurity/defsec/severity"
 
@@ -27,7 +27,7 @@ var severityFormat = map[severity.Severity]string{
 	"":                tml.Sprintf("<white>UNKNOWN</white>"),
 }
 
-func FormatDefault(_ io.Writer, results []*result.Result, _ string, options ...FormatterOption) error {
+func FormatDefault(_ io.Writer, results []types.Result, _ string, options ...FormatterOption) error {
 
 	showStatistics := true
 	showSuccessOutput := true
@@ -79,16 +79,17 @@ func FormatDefault(_ io.Writer, results []*result.Result, _ string, options ...F
 
 }
 
-func printResult(res result.Result, i int, includePassedChecks bool) {
+func printResult(res types.Result, i int, includePassedChecks bool) {
 	resultHeader := fmt.Sprintf("  <underline>Result %d</underline>\n", i+1)
 	var severity string
-	if includePassedChecks && res.Status == result.Passed {
-		terminal.PrintSuccessf(resultHeader)
-		severity = tml.Sprintf("<green>PASSED</green>")
-	} else {
-		terminal.PrintErrorf(resultHeader)
-		severity = severityFormat[res.Severity]
-	}
+	// TODO: show passed
+	//if includePassedChecks && res.Status == result.Passed {
+	//terminal.PrintSuccessf(resultHeader)
+	//severity = tml.Sprintf("<green>PASSED</green>")
+	//} else {
+	terminal.PrintErrorf(resultHeader)
+	severity = severityFormat[res.Severity]
+	//}
 
 	_ = tml.Printf(`
   <blue>[</blue>%s<blue>]</blue><blue>[</blue>%s<blue>]</blue> %s

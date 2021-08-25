@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/types"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
@@ -381,7 +381,7 @@ func givenCheck(jsonContent string) {
 	processFoundChecks(checksfile)
 }
 
-func scanTerraform(t *testing.T, mainTf string) []*result.Result {
+func scanTerraform(t *testing.T, mainTf string) []types.Result {
 	dirName, err := ioutil.TempDir("", "tfsec-testing-")
 	assert.NoError(t, err)
 

@@ -7,14 +7,14 @@ import (
 	runtimeDebug "runtime/debug"
 	"strings"
 
-	"github.com/aquasecurity/defsec/infra"
 	"github.com/aquasecurity/defsec/provider"
-	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/state"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 )
 
-func (r *Rule) createResultSet() result.Set {
+func (r *Rule) createResultSet() types.Results {
 	var links []string
 	if r.DefSecCheck.Provider != provider.CustomProvider {
 		links = append(links, fmt.Sprintf(
@@ -38,7 +38,7 @@ func (r *Rule) createResultSet() result.Set {
 
 }
 
-func (r *Rule) CheckAgainstContext(context *infra.Context) result.Set {
+func (r *Rule) CheckAgainstContext(context *state.State) types.Results {
 
 	set := r.createResultSet()
 
@@ -61,7 +61,7 @@ func (r *Rule) RecoverFromCheckPanic() {
 	}
 }
 
-func (r *Rule) CheckAgainstBlock(b block.Block, m block.Module) result.Set {
+func (r *Rule) CheckAgainstBlock(b block.Block, m block.Module) types.Results {
 	set := r.createResultSet()
 	if r.CheckTerraform == nil {
 		return set

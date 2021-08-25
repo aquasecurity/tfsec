@@ -8,9 +8,9 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 
 	"github.com/aquasecurity/defsec/provider"
-	"github.com/aquasecurity/defsec/result"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
+	"github.com/aquasecurity/defsec/types"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -32,7 +32,7 @@ var exampleRule = rule.Rule{
 		Severity:  severity.High,
 	},
 	RequiredLabels: []string{"bad"},
-	CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+	CheckTerraform: func(set types.Results, resourceBlock block.Block, _ block.Module) {
 		attr := resourceBlock.GetAttribute("secure")
 		if attr.IsNil() {
 			set.AddResult().
@@ -120,10 +120,11 @@ func Test_IgnoreSpecific(t *testing.T) {
 			Severity:  severity.High,
 		},
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
-			set.AddResult().
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results types.Results){
+			results.Add(
 				WithDescription("example problem").
-				WithRange(resourceBlock.Range())
+				WithRange(resourceBlock.Range().
+			)
 		},
 	}
 	scanner.RegisterCheckRule(r2)

@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/aquasecurity/defsec/provider"
-	"github.com/aquasecurity/defsec/result"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -41,7 +41,7 @@ resource "problem" "x" {
 	Links:          nil,
 	RequiredTypes:  []string{"resource"},
 	RequiredLabels: []string{"problem"},
-	CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+	CheckTerraform: func(resourceBlock block.Block, _ block.Module) types.Results {
 		if resourceBlock.GetAttribute("bad").IsTrue() {
 			set.AddResult().
 				WithDescription("example problem")
@@ -414,7 +414,7 @@ resource "bad" "thing" {
 			Severity:  severity.High,
 		},
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) types.Results {
 			if resourceBlock.GetAttribute("secure").IsTrue() {
 				return
 			}
@@ -465,7 +465,7 @@ resource "bad" "thing" {
 			Severity:  severity.High,
 		},
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) types.Results {
 			if resourceBlock.GetAttribute("secure").IsTrue() {
 				return
 			}

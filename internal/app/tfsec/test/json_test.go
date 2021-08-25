@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/defsec/provider"
-	"github.com/aquasecurity/defsec/result"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
@@ -75,7 +75,7 @@ func TestScanningJSON(t *testing.T) {
 					Severity:  severity.High,
 				},
 				RequiredLabels: []string{"bad"},
-				CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+				CheckTerraform: func(resourceBlock block.Block, _ block.Module) types.Results {
 					if resourceBlock.GetAttribute("secure").IsTrue() {
 						return
 					}

@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/types"
 )
 
 // see https://github.com/windyroad/JUnit-Schema/blob/master/JUnit.xsd
@@ -39,7 +39,7 @@ type JUnitFailure struct {
 	Contents string `xml:",chardata"`
 }
 
-func FormatJUnit(w io.Writer, results []*result.Result, _ string, options ...FormatterOption) error {
+func FormatJUnit(w io.Writer, results []types.Result, _ string, options ...FormatterOption) error {
 
 	output := JUnitTestSuite{
 		Name:     "tfsec",
@@ -69,7 +69,7 @@ func FormatJUnit(w io.Writer, results []*result.Result, _ string, options ...For
 }
 
 // highlight the lines of code which caused a problem, if available
-func highlightCodeJunit(result result.Result) string {
+func highlightCodeJunit(result types.Result) string {
 
 	data, err := ioutil.ReadFile(result.Range().GetFilename())
 	if err != nil {
@@ -105,7 +105,7 @@ func highlightCodeJunit(result result.Result) string {
 	return output
 }
 
-func buildFailure(res result.Result) *JUnitFailure {
+func buildFailure(res types.Result) *JUnitFailure {
 	if res.Passed() {
 		return nil
 	}

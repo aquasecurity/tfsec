@@ -1,21 +1,21 @@
 package s3
 
-import "github.com/aquasecurity/defsec/definition"
+import "github.com/aquasecurity/defsec/types"
 
 type Bucket struct {
-	*definition.Metadata
-	Name              definition.StringValue
+	*types.Metadata
+	Name              types.StringValue
 	PublicAccessBlock *PublicAccessBlock
 	BucketPolicy      BucketPolicy
 	Encryption        Encryption
 	Versioning        Versioning
 	Logging           Logging
-	ACL               definition.StringValue
+	ACL               types.StringValue
 }
 
 func (b *Bucket) HasPublicExposureACL() bool {
 	for _, publicACL := range []string{"public-read", "public-read-write", "website", "authenticated-read"} {
-		if b.ACL.Value == publicACL {
+		if b.ACL.EqualTo(publicACL) {
 			return true
 		}
 	}
@@ -26,16 +26,16 @@ type BucketPolicy struct {
 }
 
 type Logging struct {
-	Enabled      definition.BoolValue
-	TargetBucket definition.StringValue
+	Enabled      types.BoolValue
+	TargetBucket types.StringValue
 }
 
 type Versioning struct {
-	Enabled definition.BoolValue
+	Enabled types.BoolValue
 }
 
 type Encryption struct {
-	Enabled   definition.BoolValue
-	Algorithm definition.StringValue
-	KMSKeyId  definition.StringValue
+	Enabled   types.BoolValue
+	Algorithm types.StringValue
+	KMSKeyId  types.StringValue
 }

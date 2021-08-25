@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"io"
 
-	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/types"
 )
 
 type checkstyleResult struct {
@@ -26,16 +26,16 @@ type checkstyleOutput struct {
 	Files   []checkstyleFile `xml:"file"`
 }
 
-func FormatCheckStyle(w io.Writer, results []*result.Result, _ string, _ ...FormatterOption) error {
+func FormatCheckStyle(w io.Writer, results []types.Result, _ string, _ ...FormatterOption) error {
 
 	output := checkstyleOutput{}
 
 	files := make(map[string][]checkstyleResult)
 
 	for _, res := range results {
-		if res.Status == result.Passed {
-			continue
-		}
+		//if res.Status == result.Passed { // TODO
+		//	continue
+		//}
 		var link string
 		if len(res.Links) > 0 {
 			link = res.Links[0]

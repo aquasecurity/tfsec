@@ -1,12 +1,12 @@
 package s3
 
-import "github.com/aquasecurity/defsec/definition"
+import "github.com/aquasecurity/defsec/types"
 
 type PublicAccessBlock struct {
-	*definition.Metadata
+	*types.Metadata
 	Bucket                *Bucket
-	BlockPublicACLs       definition.BoolValue
-	BlockPublicPolicy     definition.BoolValue
-	IgnorePublicACLs      definition.BoolValue
-	RestrictPublicBuckets definition.BoolValue
+	BlockPublicACLs       types.BoolValue
+	BlockPublicPolicy     types.BoolValue
+	IgnorePublicACLs      types.BoolValue
+	RestrictPublicBuckets types.BoolValue
 }

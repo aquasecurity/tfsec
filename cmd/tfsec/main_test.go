@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/types"
 
 	"github.com/aquasecurity/defsec/severity"
 
@@ -12,7 +12,7 @@ import (
 
 func Test_IfIgnoreWarningsSetShouldRemoveWarningScanResults(t *testing.T) {
 	expectedResultsAfterFiltering := 1
-	twoScanResultsWithOneWarning := []*result.Result{
+	twoScanResultsWithOneWarning := []types.Result{
 		{
 			RuleID:   "1",
 			Severity: severity.High,
@@ -29,7 +29,7 @@ func Test_IfIgnoreWarningsSetShouldRemoveWarningScanResults(t *testing.T) {
 
 func Test_IfIgnoreWarningsIsNotSetThenWarningShouldBeInScanResults(t *testing.T) {
 	expectedResultsAfterFiltering := 2
-	twoScanResultsWithOneWarning := []*result.Result{
+	twoScanResultsWithOneWarning := []types.Result{
 		{
 			RuleID:   "1",
 			Severity: severity.High,

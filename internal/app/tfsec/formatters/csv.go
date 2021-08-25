@@ -6,10 +6,10 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/types"
 )
 
-func FormatCSV(w io.Writer, results []*result.Result, _ string, _ ...FormatterOption) error {
+func FormatCSV(w io.Writer, results []types.Result, _ string, _ ...FormatterOption) error {
 
 	records := [][]string{
 		{"file", "start_line", "end_line", "rule_id", "severity", "description", "link", "passed"},
@@ -28,7 +28,7 @@ func FormatCSV(w io.Writer, results []*result.Result, _ string, _ ...FormatterOp
 			string(res.Severity),
 			res.Description,
 			link,
-			strconv.FormatBool(res.Status == result.Passed),
+			false, //strconv.FormatBool(res.Status == result.Passed), // TODO
 		})
 	}
 

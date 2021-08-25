@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/types"
 
 	"github.com/olekukonko/tablewriter"
 )
@@ -43,7 +43,7 @@ func (statistics Statistics) PrintStatisticsTable() {
 	table.Render()
 }
 
-func AddStatisticsCount(StatisticsSlice Statistics, result result.Result) Statistics {
+func AddStatisticsCount(StatisticsSlice Statistics, result types.Result) Statistics {
 	for i, statistics := range StatisticsSlice {
 		if statistics.RuleID == result.RuleID {
 			StatisticsSlice[i].Count += 1

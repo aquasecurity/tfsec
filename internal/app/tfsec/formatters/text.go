@@ -6,10 +6,10 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/types"
 )
 
-func FormatText(writer io.Writer, results []*result.Result, _ string, options ...FormatterOption) error {
+func FormatText(writer io.Writer, results []types.Result, _ string, options ...FormatterOption) error {
 
 	if len(results) == 0 || len(results) == countPassedResults(results) {
 		fmt.Fprint(writer, "\nNo problems detected!\n")
@@ -56,7 +56,7 @@ func FormatText(writer io.Writer, results []*result.Result, _ string, options ..
 }
 
 // output the lines of code which caused a problem, if available
-func outputCode(result result.Result, writer io.Writer) {
+func outputCode(result types.Result, writer io.Writer) {
 	data, err := ioutil.ReadFile(result.Range().GetFilename())
 	if err != nil {
 		return

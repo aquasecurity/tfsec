@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
 
-	"github.com/aquasecurity/defsec/result"
+	"github.com/aquasecurity/defsec/types"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -142,11 +142,14 @@ func processFoundChecks(checks ChecksFile) {
 				RequiredTypes:   customCheck.RequiredTypes,
 				RequiredLabels:  customCheck.RequiredLabels,
 				RequiredSources: customCheck.RequiredSources,
-				CheckTerraform: func(set result.Set, rootBlock block.Block, module block.Module) {
+				CheckTerraform: func(rootBlock block.Block, module block.Module) (results types.Results) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, module) {
-						set.AddResult().
-							WithDescription("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage)
+						results.Add(
+							fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage),
+							rootBlock.Range,
+							rootBlock.Reference,
+						)
 					}
 				},
 			})

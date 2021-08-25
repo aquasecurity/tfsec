@@ -1,20 +1,20 @@
 package ec2
 
 import (
-	"github.com/aquasecurity/defsec/definition"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/owenrumney/squealer/pkg/squealer"
 )
 
 type Instance struct {
-	*definition.Metadata
+	*types.Metadata
 	MetadataOptions MetadataOptions
-	UserData        definition.StringValue
+	UserData        types.StringValue
 }
 
 type MetadataOptions struct {
-	*definition.Metadata
-	HttpTokens   definition.StringValue
-	HttpEndpoint definition.StringValue
+	*types.Metadata
+	HttpTokens   types.StringValue
+	HttpEndpoint types.StringValue
 }
 
 func (i *Instance) RequiresIMDSToken() bool {
@@ -27,5 +27,5 @@ func (i *Instance) HasHTTPEndpointDisabled() bool {
 
 func (i *Instance) HasSensitiveInformationInUserData() bool {
 	scanner := squealer.NewStringScanner()
-	return scanner.Scan(i.UserData.Value).TransgressionFound
+	return scanner.Scan(i.UserData.Value()).TransgressionFound
 }
