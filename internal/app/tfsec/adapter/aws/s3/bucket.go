@@ -8,12 +8,12 @@ import (
 
 func getBuckets(modules block.Modules) []s3.Bucket {
 	var buckets []s3.Bucket
-	blocks := modules.GetBlocksByTypeLabel("aws_s3_bucket")
+	blocks := modules.GetResourcesByType("aws_s3_bucket")
 	for _, b := range blocks {
 		func(block block.Block) {
 			s3b := s3.Bucket{
 				Name:     getName(block),
-				Metadata: types.NewMetadata(block.Range(), block.Reference()),
+				Metadata: block.Metadata(),
 				Versioning: s3.Versioning{
 					Enabled: isVersioned(block),
 				},
@@ -40,8 +40,7 @@ func getName(b block.Block) types.StringValue {
 	}
 	return types.StringDefault(
 		"",
-		b.Range(),
-		b.Reference(),
+		b.Metadata(),
 	)
 }
 
@@ -51,40 +50,41 @@ func getACL(b block.Block) types.StringValue {
 	}
 	return types.StringDefault(
 		"",
-		b.Range(),
-		b.Reference(),
+		b.Metadata(),
 	)
 }
 
 func isEncrypted(b block.Block) types.BoolValue {
-
 	encryptionBlock := b.GetBlock("server_side_encryption_configuration")
 	if encryptionBlock.IsNil() {
-		return types.BoolDefault(false, b.Range(), b.Reference())
+		return types.BoolDefault(false, b.Metadata())
 	}
 	ruleBlock := encryptionBlock.GetBlock("rule")
 	if ruleBlock.IsNil() {
-		return types.BoolDefault(false, encryptionBlock.Range(), encryptionBlock.Reference())
+		return types.BoolDefault(false, encryptionBlock.Metadata())
 	}
 	defaultBlock := ruleBlock.GetBlock("apply_server_side_encryption_by_default")
 	if defaultBlock.IsNil() {
-		return types.BoolDefault(false, defaultBlock.Range(), defaultBlock.Reference())
+		return types.BoolDefault(false, ruleBlock.Metadata())
+	}
+	sseAlgorithm := defaultBlock.GetAttribute("sse_algorithm")
+	if sseAlgorithm.IsNil() {
+		return types.BoolDefault(false, defaultBlock.Metadata())
 	}
 	return types.Bool(
 		true,
-		defaultBlock.Range(),
-		defaultBlock.Reference(),
+		sseAlgorithm.Metadata(),
 	)
 }
 
 func hasLogging(b block.Block) types.BoolValue {
 	if loggingBlock := b.GetBlock("logging"); loggingBlock.IsNotNil() {
-		if targetAttr := loggingBlock.GetAttribute("target_bucket"); targetAttr.IsNotNil() {
-			return types.Bool(true, targetAttr.Range(), targetAttr.Reference())
+		if targetAttr := loggingBlock.GetAttribute("target_bucket"); targetAttr.IsNotNil() && targetAttr.IsNotEmpty() {
+			return types.Bool(true, targetAttr.Metadata())
 		}
-		return types.BoolDefault(false, loggingBlock.Range(), loggingBlock.Reference())
+		return types.BoolDefault(false, loggingBlock.Metadata())
 	}
-	return types.BoolDefault(false, b.Range(), b.Reference())
+	return types.BoolDefault(false, b.Metadata())
 }
 
 func isVersioned(b block.Block) types.BoolValue {
@@ -94,13 +94,11 @@ func isVersioned(b block.Block) types.BoolValue {
 		}
 		return types.BoolDefault(
 			true,
-			versioningBlock.Range(),
-			versioningBlock.Reference(),
+			versioningBlock.Metadata(),
 		)
 	}
 	return types.BoolDefault(
 		false,
-		b.Range(),
-		b.Reference(),
+		b.Metadata(),
 	)
 }

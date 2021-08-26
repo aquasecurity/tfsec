@@ -41,8 +41,7 @@ func (attr *HCLAttribute) AsStringValue(explicit bool) types.StringValue {
 	}
 	return f(
 		attr.Value().AsString(),
-		attr.Range(),
-		attr.Reference(),
+		attr.Metadata(),
 	)
 }
 
@@ -53,8 +52,7 @@ func (attr *HCLAttribute) AsBoolValue(explicit bool) types.BoolValue {
 	}
 	return f(
 		attr.IsTrue(),
-		attr.Range(),
-		attr.Reference(),
+		attr.Metadata(),
 	)
 }
 
@@ -67,8 +65,7 @@ func (attr *HCLAttribute) AsIntValue(explicit bool) types.IntValue {
 	flt, _ := big.Float64()
 	return f(
 		int(flt),
-		attr.Range(),
-		attr.Reference(),
+		attr.Metadata(),
 	)
 }
 

@@ -15,7 +15,7 @@ func Adapt(modules []block.Module) ec2.EC2 {
 func getInstances(modules block.Modules) []ec2.Instance {
 	var instances []ec2.Instance
 
-	blocks := modules.GetBlocksByTypeLabel("aws_instance")
+	blocks := modules.GetResourcesByType("aws_instance")
 
 	for _, b := range blocks {
 
@@ -23,7 +23,7 @@ func getInstances(modules block.Modules) []ec2.Instance {
 		userData := getUserData(b)
 
 		instances = append(instances, ec2.Instance{
-			Metadata:        types.NewMetadata(b.Range(), b.Reference()),
+			Metadata:        b.Metadata(),
 			MetadataOptions: metadataOptions,
 			UserData:        userData,
 		})
@@ -38,8 +38,7 @@ func getUserData(b block.Block) types.StringValue {
 	}
 	return types.StringDefault(
 		"",
-		b.Range(),
-		b.Reference(),
+		b.Metadata(),
 	)
 }
 
@@ -47,26 +46,26 @@ func getMetadataOptions(b block.Block) ec2.MetadataOptions {
 
 	if metadataOptions := b.GetBlock("metadata_options"); metadataOptions.IsNotNil() {
 		metaOpts := ec2.MetadataOptions{
-			Metadata: types.NewMetadata(metadataOptions.Range(), metadataOptions.Reference()),
+			Metadata: metadataOptions.Metadata(),
 		}
 
 		if httpTokens := metadataOptions.GetAttribute("http_tokens"); httpTokens.IsNotNil() {
 			metaOpts.HttpTokens = httpTokens.AsStringValue(true)
 		} else {
-			metaOpts.HttpTokens = types.StringDefault("", metadataOptions.Range(), metadataOptions.Reference())
+			metaOpts.HttpTokens = types.StringDefault("", metadataOptions.Metadata())
 		}
 
 		if httpEndpoint := metadataOptions.GetAttribute("http_endpoint"); httpEndpoint.IsNotNil() {
 			metaOpts.HttpEndpoint = httpEndpoint.AsStringValue(true)
 		} else {
-			metaOpts.HttpEndpoint = types.StringDefault("", metadataOptions.Range(), metadataOptions.Reference())
+			metaOpts.HttpEndpoint = types.StringDefault("", metadataOptions.Metadata())
 		}
 		return metaOpts
 	}
 
 	return ec2.MetadataOptions{
-		Metadata:     types.NewMetadata(b.Range(), b.Reference()),
-		HttpTokens:   types.StringDefault("", b.Range(), b.Reference()),
-		HttpEndpoint: types.StringDefault("", b.Range(), b.Reference()),
+		Metadata:     b.Metadata(),
+		HttpTokens:   types.StringDefault("", b.Metadata()),
+		HttpEndpoint: types.StringDefault("", b.Metadata()),
 	}
 }

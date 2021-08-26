@@ -10,21 +10,21 @@ type intValue struct {
 	value    int
 }
 
-func Int(value int, r Range, ref Reference) IntValue {
+func Int(value int, m *Metadata) IntValue {
 	return &intValue{
 		value:    value,
-		metadata: NewMetadata(r, ref),
+		metadata: m,
 	}
 }
 
-func IntDefault(value int, r Range, ref Reference) IntValue {
-	b := Int(value, r, ref)
+func IntDefault(value int, m *Metadata) IntValue {
+	b := Int(value, m)
 	b.Metadata().isDefault = true
 	return b
 }
 
-func IntExplicit(value int, r Range, ref Reference) IntValue {
-	b := Int(value, r, ref)
+func IntExplicit(value int, m *Metadata) IntValue {
+	b := Int(value, m)
 	b.Metadata().isExplicit = true
 	return b
 }
