@@ -17,6 +17,6 @@ func main() {
 
 	results, _ := scanner.Scan()
 	for _, result := range results {
-		fmt.Printf("%s: %s\n", result.Rule().LongID(), result.Description())
+		fmt.Printf("%s: %s\n", result.RuleID, result.Description)
 	}
 }

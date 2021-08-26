@@ -36,7 +36,7 @@ func (t *ExternalScanner) AddPath(path string) error {
 	return nil
 }
 
-func (t *ExternalScanner) Scan() (rules.Results, error) {
+func (t *ExternalScanner) Scan() ([]rules.FlatResult, error) {
 
 	projectModules := make(map[string][]block.Module)
 
@@ -60,7 +60,7 @@ func (t *ExternalScanner) Scan() (rules.Results, error) {
 		results = append(results, projectResults...)
 	}
 
-	return results, nil
+	return results.Flatten(), nil
 }
 
 func findTFRootModules(paths []string) ([]string, error) {
