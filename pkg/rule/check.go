@@ -14,8 +14,13 @@ import (
 )
 
 func (r *Rule) CheckAgainstContext(s *state.State) rules.Results {
-	return r.Base.Evaluate(s)
-
+	results := r.Base.Evaluate(s)
+	if len(results) > 0 {
+		base := r.Base.Rule()
+		base.Links = append(r.Links, base.Links...)
+		results.SetRule(base)
+	}
+	return results
 }
 
 func (r *Rule) RecoverFromCheckPanic() {
@@ -33,7 +38,11 @@ func (r *Rule) CheckAgainstBlock(b block.Block, m block.Module) rules.Results {
 		return nil
 	}
 	results := r.CheckTerraform(b, m)
-	results.SetRule(r.Base.Rule())
+	if len(results) > 0 {
+		base := r.Base.Rule()
+		base.Links = append(r.Links, base.Links...)
+		results.SetRule(base)
+	}
 	return results
 }
 
