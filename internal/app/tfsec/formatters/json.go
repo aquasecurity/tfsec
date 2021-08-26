@@ -8,13 +8,11 @@ import (
 )
 
 type JSONOutput struct {
-	Results rules.Results `json:"results"`
+	Results []rules.FlatResult `json:"results"`
 }
 
-// TODO: add json annotations to defsec structs
 func FormatJSON(w io.Writer, results rules.Results, _ string, options ...FormatterOption) error {
 	jsonWriter := json.NewEncoder(w)
 	jsonWriter.SetIndent("", "\t")
-
-	return jsonWriter.Encode(JSONOutput{results})
+	return jsonWriter.Encode(JSONOutput{results.Flatten()})
 }

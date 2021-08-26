@@ -21,6 +21,9 @@ func (r RegisteredRule) Evaluate(s *state.State) Results {
 }
 
 func Register(rule Rule, f CheckFunc) RegisteredRule {
+	if rule.ID == "" {
+		panic("no id")
+	}
 	return RegisteredRule{
 		rule:      rule,
 		checkFunc: f,
