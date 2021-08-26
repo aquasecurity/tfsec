@@ -68,7 +68,7 @@ func init() {
 
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if attribute.Name() == "default" {
-					if attribute.Type() == cty.String && attribute.IsResolvable() {
+					if attribute.Type() == cty.String && attribute.IsResolvable() && attribute.IsNotEmpty() {
 						results.Add(
 							"Variable includes a potentially sensitive default value.",
 							attribute.Metadata(),
