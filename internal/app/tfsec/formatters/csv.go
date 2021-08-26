@@ -28,7 +28,7 @@ func FormatCSV(w io.Writer, results rules.Results, _ string, _ ...FormatterOptio
 			string(res.Rule().Severity),
 			res.Description(),
 			link,
-			strconv.FormatBool(res.Status() == rules.StatusPassed), // TODO
+			strconv.FormatBool(res.Status() == rules.StatusPassed),
 		})
 	}
 

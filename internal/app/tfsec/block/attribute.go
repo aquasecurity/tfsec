@@ -50,4 +50,5 @@ type Attribute interface {
 	AsStringValue(explicit bool) types.StringValue
 	AsBoolValue(explicit bool) types.BoolValue
 	AsIntValue(explicit bool) types.IntValue
+	Metadata() *types.Metadata
 }

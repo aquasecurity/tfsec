@@ -13,19 +13,19 @@ func TestExampleCode(t *testing.T) {
 	for _, rule := range scanner.GetRegisteredRules() {
 
 		t.Run(fmt.Sprintf("Rule explanation for %s", rule.ID()), func(t *testing.T) {
-			if strings.TrimSpace(rule.Base.Explanation) == "" {
+			if strings.TrimSpace(rule.Base.Rule().Explanation) == "" {
 				t.Fatalf("No explanation found for %s", rule.ID())
 			}
 		})
 
 		t.Run(fmt.Sprintf("Rule impact for %s", rule.ID()), func(t *testing.T) {
-			if strings.TrimSpace(rule.Base.Impact) == "" {
+			if strings.TrimSpace(rule.Base.Rule().Impact) == "" {
 				t.Fatalf("No impact found for %s", rule.ID())
 			}
 		})
 
 		t.Run(fmt.Sprintf("Rule resolution for %s", rule.ID()), func(t *testing.T) {
-			if strings.TrimSpace(rule.Base.Resolution) == "" {
+			if strings.TrimSpace(rule.Base.Rule().Resolution) == "" {
 				t.Fatalf("No resolution found for %s", rule.ID())
 			}
 		})

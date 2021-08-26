@@ -51,7 +51,7 @@ func FormatJUnit(w io.Writer, results rules.Results, _ string, options ...Format
 		output.TestCases = append(output.TestCases,
 			JUnitTestCase{
 				Classname: result.Metadata().Range().GetFilename(),
-				Name:      fmt.Sprintf("[%s][%s] - %s", result.Rule().LongID(), result.Rule().Severity, result.Description),
+				Name:      fmt.Sprintf("[%s][%s] - %s", result.Rule().LongID(), result.Rule().Severity, result.Description()),
 				Time:      "0",
 				Failure:   buildFailure(result),
 			},

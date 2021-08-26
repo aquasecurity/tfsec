@@ -62,6 +62,12 @@ func (r *Results) Add(description string, metadata *types.Metadata, annotation .
 	)
 }
 
+func (r *Results) SetRule(rule Rule) {
+	for i := range *r {
+		(*r)[i].rule = rule
+	}
+}
+
 func rawToString(raw interface{}) string {
 	if raw == nil {
 		return ""

@@ -1,6 +1,7 @@
 package block
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/aquasecurity/defsec/types"
@@ -21,6 +22,9 @@ func (i Ignores) Covering(r types.Range, workspace string, ids ...string) *Ignor
 	rng := r.(HCLRange)
 
 	for _, ignore := range i {
+
+		fmt.Printf("Ignoring? %s: %s ~= %s\n", ids, r, ignore.Range)
+
 		if ignore.Expiry != nil && time.Now().After(*ignore.Expiry) {
 			continue
 		}

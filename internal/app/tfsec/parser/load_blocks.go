@@ -12,11 +12,11 @@ import (
 	"github.com/hashicorp/hcl/v2"
 )
 
-func LoadBlocksFromFile(file File) (hcl.Blocks, []block.Ignore, error) {
+func LoadBlocksFromFile(file File, moduleName string) (hcl.Blocks, []block.Ignore, error) {
 
 	var ignores []block.Ignore
 	for _, ignore := range parseIgnores(file.file.Bytes) {
-		ignore.Range = block.NewRange(file.path, 0, 0, "")
+		ignore.Range = block.NewRange(file.path, ignore.Range.GetStartLine(), ignore.Range.GetEndLine(), moduleName)
 		ignores = append(ignores, ignore)
 	}
 
@@ -41,7 +41,7 @@ func parseIgnores(data []byte) []block.Ignore {
 		line = strings.TrimSpace(line)
 		lineIgnores := parseIgnoresFromLine(line)
 		for _, lineIgnore := range lineIgnores {
-			lineIgnore.Range = block.NewRange(lineIgnore.Range.GetFilename(), i+1, i+1, "")
+			lineIgnore.Range = block.NewRange("", i+1, i+1, "")
 			ignores = append(ignores, lineIgnore)
 		}
 	}

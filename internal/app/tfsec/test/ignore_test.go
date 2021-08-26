@@ -10,7 +10,6 @@ import (
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
-	"github.com/aquasecurity/defsec/types"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -25,25 +24,22 @@ import (
 
 var exampleRule = rule.Rule{
 	LegacyID: "ABC123",
-	Base: rules.Rule{
+	Base: rules.Register(rules.Rule{
 		Provider:  provider.AWSProvider,
 		Service:   "service",
 		ShortCode: "abc123",
 		Severity:  severity.High,
-	},
+	}, nil),
 	RequiredLabels: []string{"bad"},
-	CheckTerraform: func(set rules.Results, resourceBlock block.Block, _ block.Module) {
+	CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 		attr := resourceBlock.GetAttribute("secure")
 		if attr.IsNil() {
-			set.AddResult().
-				WithDescription("example problem").
-				WithRange(resourceBlock.Range())
+			results.Add("example problem", resourceBlock.Metadata())
 		}
 		if attr.IsFalse() {
-			set.AddResult().
-				WithDescription("example problem").
-				WithRange(attr.Range())
+			results.Add("example problem", attr.Metadata())
 		}
+		return
 	},
 }
 
@@ -113,18 +109,19 @@ func Test_IgnoreSpecific(t *testing.T) {
 
 	r2 := rule.Rule{
 		LegacyID: "DEF456",
-		Base: rules.Rule{
+		Base: rules.Register(rules.Rule{
 			Provider:  provider.AWSProvider,
 			Service:   "service",
 			ShortCode: "def456",
 			Severity:  severity.High,
-		},
+		}, nil),
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results){
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			results.Add(
-				WithDescription("example problem").
-				WithRange(resourceBlock.Range().
+				"example problem",
+				resourceBlock.Metadata(),
 			)
+			return
 		},
 	}
 	scanner.RegisterCheckRule(r2)
@@ -137,8 +134,8 @@ func Test_IgnoreSpecific(t *testing.T) {
 	resource "bad" "my-bad" {} 
 `, t)
 	require.Len(t, results, 2)
-	assert.Equal(t, results[0].RuleID, "aws-service-def456")
-	assert.Equal(t, results[1].LegacyRuleID, "DEF456")
+	assert.Equal(t, results[0].Rule().LongID(), "aws-service-def456")
+	assert.Equal(t, scanner.FindLegacyID(results[1].Rule().LongID()), "DEF456")
 
 }
 
@@ -261,10 +258,10 @@ func TestBlockLevelIgnoresForAllRules(t *testing.T) {
 				var lines []string
 				for i, badLine := range badLines {
 					for _, result := range results {
-						if result.RuleID != check.ID() {
+						if result.Rule().LongID() != check.ID() {
 							continue
 						}
-						if result.Range().GetStartLine()-1 == i {
+						if result.Metadata().Range().GetStartLine()-1 == i {
 							lines = append(lines, fmt.Sprintf("# tfsec:ignore:%s", check.ID()))
 						}
 					}

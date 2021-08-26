@@ -94,7 +94,7 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 		modulePath = filepath.Join(e.modulePath, source)
 	}
 
-	blocks, ignores, err := getModuleBlocks(b, modulePath, stopOnHCLError)
+	blocks, ignores, err := getModuleBlocks(b, modulePath, e.moduleName, stopOnHCLError)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 	}, nil
 }
 
-func getModuleBlocks(b block.Block, modulePath string, stopOnHCLError bool) (block.Blocks, []block.Ignore, error) {
+func getModuleBlocks(b block.Block, modulePath string, moduleName string, stopOnHCLError bool) (block.Blocks, []block.Ignore, error) {
 	moduleFiles, err := LoadDirectory(modulePath, stopOnHCLError)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to load module %s: %w", b.Label(), err)
@@ -120,7 +120,7 @@ func getModuleBlocks(b block.Block, modulePath string, stopOnHCLError bool) (blo
 
 	moduleCtx := block.NewContext(&hcl.EvalContext{}, nil)
 	for _, file := range moduleFiles {
-		fileBlocks, fileIgnores, err := LoadBlocksFromFile(file)
+		fileBlocks, fileIgnores, err := LoadBlocksFromFile(file, moduleName)
 		if err != nil {
 			if stopOnHCLError {
 				return nil, nil, err

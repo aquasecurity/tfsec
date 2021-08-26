@@ -30,6 +30,10 @@ func NewHCLAttribute(attr *hcl.Attribute, ctx *Context, module string, parentRef
 	}
 }
 
+func (a *HCLAttribute) Metadata() *types.Metadata {
+	return types.NewMetadata(a.Range(), a.Reference())
+}
+
 func (attr *HCLAttribute) AsStringValue(explicit bool) types.StringValue {
 	f := types.String
 	if explicit {

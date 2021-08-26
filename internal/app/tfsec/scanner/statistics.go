@@ -6,8 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/aquasecurity/defsec/types"
-
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/olekukonko/tablewriter"
 )
 
@@ -45,14 +44,15 @@ func (statistics Statistics) PrintStatisticsTable() {
 
 func AddStatisticsCount(StatisticsSlice Statistics, result rules.Result) Statistics {
 	for i, statistics := range StatisticsSlice {
-		if statistics.RuleID == result.RuleID {
+		if statistics.RuleID == result.Rule().LongID() {
 			StatisticsSlice[i].Count += 1
 			return StatisticsSlice
 		}
 	}
-	StatisticsSlice = append(StatisticsSlice, StatisticsItem{RuleID: result.RuleID,
-		RuleDescription: result.RuleSummary,
-		Links:           result.Links,
+	StatisticsSlice = append(StatisticsSlice, StatisticsItem{
+		RuleID:          result.Rule().LongID(),
+		RuleDescription: result.Rule().Summary,
+		Links:           result.Rule().Links,
 		Count:           1,
 	})
 

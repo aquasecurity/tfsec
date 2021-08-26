@@ -7,8 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/aquasecurity/defsec/types"
-
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
@@ -37,7 +36,7 @@ func (t *ExternalScanner) AddPath(path string) error {
 	return nil
 }
 
-func (t *ExternalScanner) Scan() ([]rules.Result, error) {
+func (t *ExternalScanner) Scan() (rules.Results, error) {
 
 	projectModules := make(map[string][]block.Module)
 
@@ -54,7 +53,7 @@ func (t *ExternalScanner) Scan() ([]rules.Result, error) {
 		projectModules[dir] = modules
 	}
 
-	var results []rules.Result
+	var results rules.Results
 	internal := scanner.New(t.internalOptions...)
 	for _, modules := range projectModules {
 		projectResults := internal.Scan(modules)

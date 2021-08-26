@@ -40,13 +40,22 @@ func checkInList(id string, legacyID string, list []string) bool {
 	return false
 }
 
+func FindLegacyID(longID string) string {
+	for _, rule := range GetRegisteredRules() {
+		if rule.ID() == longID {
+			return rule.LegacyID
+		}
+	}
+	return ""
+}
+
 func (scanner *Scanner) Scan(modules []block.Module) rules.Results {
 
 	adaptationTime := metrics.Start(metrics.Adaptation)
 	infra := adapter.Adapt(modules)
 	adaptationTime.Stop()
 
-	var results []rules.Result
+	var results rules.Results
 
 	// run defsec checks
 	infraCheckTime := metrics.Start(metrics.InfraChecks)
@@ -56,7 +65,7 @@ func (scanner *Scanner) Scan(modules []block.Module) rules.Results {
 				defer r.RecoverFromCheckPanic()
 			}
 			infraResults := r.CheckAgainstContext(infra)
-			results = append(results, infraResults.All()...)
+			results = append(results, infraResults...)
 		}()
 	}
 	infraCheckTime.Stop()
@@ -74,7 +83,7 @@ func (scanner *Scanner) Scan(modules []block.Module) rules.Results {
 						defer r.RecoverFromCheckPanic()
 					}
 					internalResults := r.CheckAgainstBlock(b, module)
-					results = append(results, internalResults.All()...)
+					results = append(results, internalResults...)
 				}()
 			}
 		}
@@ -84,13 +93,13 @@ func (scanner *Scanner) Scan(modules []block.Module) rules.Results {
 	var resultsAfterIgnores []rules.Result
 	for _, result := range results {
 		if !scanner.includeIgnored && ignores.Covering(
-			result.Range(),
+			result.Metadata().Range(),
 			scanner.workspaceName,
-			result.RuleID,
-			result.LegacyRuleID,
+			result.Rule().LongID(),
+			FindLegacyID(result.Rule().LongID()),
 		) != nil {
 			metrics.Add(metrics.IgnoredChecks, 1)
-			debug.Log("Ignoring '%s'", result.RuleID)
+			debug.Log("Ignoring '%s'", result.Rule().LongID())
 			continue
 		}
 		resultsAfterIgnores = append(resultsAfterIgnores, result)
@@ -104,9 +113,9 @@ func (scanner *Scanner) Scan(modules []block.Module) rules.Results {
 func (scanner *Scanner) filterResults(results []rules.Result) []rules.Result {
 	var filtered []rules.Result
 	for _, result := range results {
-		if !scanner.includeIgnored && checkInList(result.RuleID, result.LegacyRuleID, scanner.excludedRuleIDs) {
+		if !scanner.includeIgnored && checkInList(result.Rule().LongID(), FindLegacyID(result.Rule().LongID()), scanner.excludedRuleIDs) {
 			metrics.Add(metrics.IgnoredChecks, 1)
-			debug.Log("Ignoring '%s'", result.RuleID)
+			debug.Log("Ignoring '%s'", result.Rule().LongID())
 		} else {
 			filtered = append(filtered, result)
 		}
@@ -117,12 +126,12 @@ func (scanner *Scanner) filterResults(results []rules.Result) []rules.Result {
 func (scanner *Scanner) sortResults(results []rules.Result) {
 	sort.Slice(results, func(i, j int) bool {
 		switch {
-		case results[i].RuleID < results[j].RuleID:
+		case results[i].Rule().LongID() < results[j].Rule().LongID():
 			return true
-		case results[i].RuleID > results[j].RuleID:
+		case results[i].Rule().LongID() > results[j].Rule().LongID():
 			return false
 		default:
-			return results[i].HashCode() > results[j].HashCode()
+			return results[i].Metadata().Range().String() > results[j].Metadata().Range().String()
 		}
 	})
 }

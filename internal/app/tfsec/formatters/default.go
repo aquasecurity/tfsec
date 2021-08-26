@@ -10,6 +10,7 @@ import (
 	"github.com/aquasecurity/defsec/severity"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 
@@ -97,10 +98,9 @@ func printResult(res rules.Result, i int, includePassedChecks bool) {
 `, res.Rule().LongID(), severity, res.Description(), res.Metadata().Range().String())
 	highlightCode(res)
 
-	// TODO
-	//if res.LegacyRuleID != "" {
-	_ = tml.Printf("  <white>Legacy ID:  </white><blue>%s</blue>\n", "TODO") //res.LegacyRuleID)
-	//}
+	if longID := scanner.FindLegacyID(res.Rule().LongID()); longID != "" {
+		_ = tml.Printf("  <white>Legacy ID:  </white><blue>%s</blue>\n", longID)
+	}
 	if res.Rule().Impact != "" {
 		_ = tml.Printf("  <white>Impact:     </white><blue>%s</blue>\n", res.Rule().Impact)
 	}

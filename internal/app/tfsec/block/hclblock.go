@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/schema"
 	"github.com/hashicorp/hcl/v2"
@@ -56,6 +57,10 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
 	}
 
 	return &b
+}
+
+func (b *HCLBlock) Metadata() *types.Metadata {
+	return types.NewMetadata(b.Range(), b.Reference())
 }
 
 func (b *HCLBlock) InjectBlock(block Block, name string) {

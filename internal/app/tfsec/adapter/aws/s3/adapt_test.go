@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_PubcliAccessBlock(t *testing.T) {
+func Test_PublicAccessBlock(t *testing.T) {
 	testCases := []struct {
 		desc                       string
 		source                     string
@@ -57,7 +57,7 @@ resource "aws_s3_bucket_public_access_block" "example_access_block"{
 			assert.NotNil(t, bucket.PublicAccessBlock)
 
 			pubAccess := s3Ctx.PublicAccessBlocks[0]
-			assert.Equal(t, bucket.Name.Value, pubAccess.Bucket.Name.Value)
+			assert.Equal(t, bucket.Name.Value(), pubAccess.Bucket.Name.Value())
 
 			assert.NotNil(t, pubAccess.Bucket)
 

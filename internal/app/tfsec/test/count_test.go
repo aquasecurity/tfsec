@@ -154,21 +154,25 @@ variable "things" {
 		t.Run(test.name, func(t *testing.T) {
 			r1 := rule.Rule{
 				LegacyID: "ABC123",
-				Base: rules.Rule{
-					Provider:  provider.AWSProvider,
-					Service:   "service",
-					ShortCode: "abc123",
-					Severity:  severity.High,
-				},
+				Base: rules.Register(
+					rules.Rule{
+						Provider:  provider.AWSProvider,
+						Service:   "service",
+						ShortCode: "abc123",
+						Severity:  severity.High,
+					},
+					nil,
+				),
 				RequiredLabels: []string{"bad"},
-				CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+				CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 					if resourceBlock.GetAttribute("secure").IsTrue() {
 						return
 					}
-					r := resourceBlock.Range()
-					set.AddResult().
-						WithDescription("example problem").
-						WithRange(r)
+					results.Add(
+						"example problem",
+						types.NewMetadata(resourceBlock.Range(), resourceBlock.Reference()),
+					)
+					return
 				},
 			}
 			scanner.RegisterCheckRule(r1)

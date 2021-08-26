@@ -7,7 +7,7 @@ import (
 // HCLRange describes an area of code, including the filename it is present in and the lin numbers the code occupies
 type HCLRange struct {
 	base   types.Range
-	module string `json:"module"`
+	module string
 }
 
 func NewRange(f string, startLine int, endLine int, module string) HCLRange {

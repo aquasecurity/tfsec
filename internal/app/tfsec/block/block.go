@@ -1,6 +1,7 @@
 package block
 
 import (
+	"github.com/aquasecurity/defsec/types"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -38,4 +39,5 @@ type Block interface {
 	IsNil() bool
 	IsNotNil() bool
 	InjectBlock(block Block, name string)
+	Metadata() *types.Metadata
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
-	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
@@ -68,21 +67,19 @@ func TestScanningJSON(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			r1 := rule.Rule{
 				LegacyID: "ABC123",
-				Base: rules.Rule{
+				Base: rules.Register(rules.Rule{
 					Provider:  provider.AWSProvider,
 					Service:   "service",
 					ShortCode: "abc123",
 					Severity:  severity.High,
-				},
+				}, nil),
 				RequiredLabels: []string{"bad"},
-				CheckTerraform: func(resourceBlock block.Block, _ block.Module) rules.Results {
+				CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 					if resourceBlock.GetAttribute("secure").IsTrue() {
 						return
 					}
-					r := resourceBlock.Range()
-					set.AddResult().
-						WithDescription("example problem").
-						WithRange(r)
+					results.Add("something", resourceBlock.Metadata())
+					return
 				},
 			}
 			scanner.RegisterCheckRule(r1)

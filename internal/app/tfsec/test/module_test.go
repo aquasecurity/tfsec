@@ -9,7 +9,6 @@ import (
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
-	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -18,7 +17,7 @@ import (
 
 var badRule = rule.Rule{
 	LegacyID: "EXA001",
-	Base: rules.Rule{
+	Base: rules.Register(rules.Rule{
 		Provider:    provider.AWSProvider,
 		Service:     "service",
 		ShortCode:   "abc",
@@ -27,7 +26,7 @@ var badRule = rule.Rule{
 		Resolution:  "Don't do stupid stuff",
 		Explanation: "Bad should not be set.",
 		Severity:    severity.High,
-	},
+	}, nil),
 	BadExample: []string{`
 resource "problem" "x" {
 bad = "1"
@@ -41,11 +40,11 @@ resource "problem" "x" {
 	Links:          nil,
 	RequiredTypes:  []string{"resource"},
 	RequiredLabels: []string{"problem"},
-	CheckTerraform: func(resourceBlock block.Block, _ block.Module) rules.Results {
-		if resourceBlock.GetAttribute("bad").IsTrue() {
-			set.AddResult().
-				WithDescription("example problem")
+	CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+		if attr := resourceBlock.GetAttribute("bad"); attr.IsTrue() {
+			results.Add("bad", attr.Metadata())
 		}
+		return
 	},
 }
 
@@ -407,21 +406,19 @@ resource "bad" "thing" {
 
 	r1 := rule.Rule{
 		LegacyID: "ABC123",
-		Base: rules.Rule{
+		Base: rules.Register(rules.Rule{
 			Provider:  provider.AWSProvider,
 			Service:   "service",
 			ShortCode: "abc123",
 			Severity:  severity.High,
-		},
+		}, nil),
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) rules.Results {
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if resourceBlock.GetAttribute("secure").IsTrue() {
 				return
 			}
-			r := resourceBlock.Range()
-			set.AddResult().
-				WithDescription("example problem").
-				WithRange(r)
+			results.Add("example problem", resourceBlock.Metadata())
+			return
 		},
 	}
 	scanner.RegisterCheckRule(r1)
@@ -458,21 +455,19 @@ resource "bad" "thing" {
 
 	r1 := rule.Rule{
 		LegacyID: "ABC123",
-		Base: rules.Rule{
+		Base: rules.Register(rules.Rule{
 			Provider:  provider.AWSProvider,
 			Service:   "service",
 			ShortCode: "abc123",
 			Severity:  severity.High,
-		},
+		}, nil),
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) rules.Results {
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if resourceBlock.GetAttribute("secure").IsTrue() {
 				return
 			}
-			r := resourceBlock.Range()
-			set.AddResult().
-				WithDescription("example problem").
-				WithRange(r)
+			results.Add("example problem", resourceBlock.Metadata())
+			return
 		},
 	}
 	scanner.RegisterCheckRule(r1)

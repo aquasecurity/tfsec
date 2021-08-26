@@ -8,8 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/aquasecurity/defsec/types"
-
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/stretchr/testify/assert"
@@ -18,7 +17,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) []rules.Result {
+func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) rules.Results {
 	modules := CreateModulesFromSource(source, ".tf", t)
 	scanner := scanner.New(scanner.OptionIgnoreCheckErrors(false))
 	for _, opt := range additionalOptions {
@@ -27,7 +26,7 @@ func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) [
 	return scanner.Scan(modules)
 }
 
-func ScanJSON(source string, t *testing.T) []rules.Result {
+func ScanJSON(source string, t *testing.T) rules.Results {
 	modules := CreateModulesFromSource(source, ".tf.json", t)
 	return scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(modules)
 }
@@ -65,11 +64,11 @@ func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 	}
 
 	for _, res := range results {
-		if res.RuleID == excludeCode {
+		if res.Rule().LongID() == excludeCode {
 			foundExclude = true
-			excludeText = res.Description
+			excludeText = res.Description()
 		}
-		if res.RuleID == includeCode {
+		if res.Rule().LongID() == includeCode {
 			foundInclude = true
 		}
 	}

@@ -33,9 +33,9 @@ func FormatCheckStyle(w io.Writer, results rules.Results, _ string, _ ...Formatt
 	files := make(map[string][]checkstyleResult)
 
 	for _, res := range results {
-		//if res.Status == result.Passed { // TODO
-		//	continue
-		//}
+		if res.Status() == rules.StatusPassed {
+			continue
+		}
 		var link string
 		if len(res.Rule().Links) > 0 {
 			link = res.Rule().Links[0]

@@ -7,50 +7,14 @@ import (
 	runtimeDebug "runtime/debug"
 	"strings"
 
-	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/state"
-	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 )
 
-func (r *Rule) createResultSet() rules.Results {
-	var links []string
-	if r.Base.Provider != provider.CustomProvider {
-		links = append(links, fmt.Sprintf(
-			"https://tfsec.dev/docs/%s/%s/%s#%s/%s",
-			r.Base.Provider,
-			r.Base.Service,
-			r.Base.ShortCode,
-			r.Base.Provider,
-			r.Base.Service,
-		))
-	}
-	return result.NewSet().
-		WithRuleID(r.ID()).
-		WithLegacyRuleID(r.LegacyID).
-		WithRuleSummary(r.Base.Summary).
-		WithImpact(r.Base.Impact).
-		WithResolution(r.Base.Resolution).
-		WithRuleProvider(r.Base.Provider).
-		WithSeverity(r.Base.Severity).
-		WithLinks(append(links, r.Links...))
-
-}
-
-func (r *Rule) CheckAgainstContext(context *state.State) rules.Results {
-
-	set := r.createResultSet()
-
-	if r.Base.CheckFunc == nil {
-		return set
-	}
-
-	for _, result := range r.Base.CheckFunc(context) {
-		set.Add(result)
-	}
-
-	return set
+func (r *Rule) CheckAgainstContext(s *state.State) rules.Results {
+	return r.Base.Evaluate(s)
 
 }
 
@@ -62,14 +26,15 @@ func (r *Rule) RecoverFromCheckPanic() {
 }
 
 func (r *Rule) CheckAgainstBlock(b block.Block, m block.Module) rules.Results {
-	set := r.createResultSet()
 	if r.CheckTerraform == nil {
-		return set
+		return nil
 	}
-	if r.isRuleRequiredForBlock(b) {
-		r.CheckTerraform(set, b, m)
+	if !r.isRuleRequiredForBlock(b) {
+		return nil
 	}
-	return set
+	results := r.CheckTerraform(b, m)
+	results.SetRule(r.Base.Rule())
+	return results
 }
 
 // IsRuleRequiredForBlock returns true if the Rule should be applied to the given HCL block
@@ -129,9 +94,9 @@ func (r *Rule) checkRequiredSourcesMatch(b block.Block) bool {
 		// resolve module source path to path relative to cwd
 		if strings.HasPrefix(sourcePath, ".") {
 			var err error
-			sourcePath, err = cleanPathRelativeToWorkingDir(filepath.Dir(b.Range().Filename), sourcePath)
+			sourcePath, err = cleanPathRelativeToWorkingDir(filepath.Dir(b.Range().GetFilename()), sourcePath)
 			if err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "WARNING: did not clean path for module %s due to error(s): %s\n", fmt.Sprintf("%s:%s", b.FullName(), b.Range().Filename), err)
+				_, _ = fmt.Fprintf(os.Stderr, "WARNING: did not clean path for module %s due to error(s): %s\n", fmt.Sprintf("%s:%s", b.FullName(), b.Range().GetFilename()), err)
 			}
 		}
 

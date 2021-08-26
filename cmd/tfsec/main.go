@@ -407,8 +407,12 @@ func updateResultSeverity(results []rules.Result) []rules.Result {
 	var overriddenResults []rules.Result
 	for _, res := range results {
 		for code, sev := range overrides {
-			if res.Rule().LongID() == code || res.LegacyRuleID == code {
-				res.WithSeverity(severity.Severity(sev))
+			if res.Rule().LongID() == code || scanner.FindLegacyID(res.Rule().LongID()) == code {
+				overrides := rules.Results([]rules.Result{res})
+				override := res.Rule()
+				override.Severity = severity.Severity(sev)
+				overrides.SetRule(override)
+				res = overrides[0]
 			}
 		}
 		overriddenResults = append(overriddenResults, res)
@@ -446,12 +450,11 @@ func loadConfigFile(configFilePath string) (*config.Config, error) {
 func countPassedResults(results []rules.Result) int {
 	passed := 0
 
-	//for _, res := range results {
-	// TODO
-	//if res.Status == result.Passed {
-	//	passed++
-	//}
-	//}
+	for _, res := range results {
+		if res.Status() == rules.StatusPassed {
+			passed++
+		}
+	}
 
 	return passed
 }

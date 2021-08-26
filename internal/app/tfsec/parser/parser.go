@@ -60,7 +60,7 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 		}
 
 		for _, file := range files {
-			fileBlocks, fileIgnores, err := LoadBlocksFromFile(file)
+			fileBlocks, fileIgnores, err := LoadBlocksFromFile(file, "root")
 			if err != nil {
 				if parser.stopOnHCLError {
 					return nil, err

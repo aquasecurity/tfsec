@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	"github.com/stretchr/testify/assert"
@@ -32,7 +32,9 @@ func TestRequiredSourcesMatch(t *testing.T) {
 			rule: Rule{
 				RequiredTypes:  []string{"data"},
 				RequiredLabels: []string{"custom_module"},
-				CheckTerraform: func(block.Block, block.Module) rules.Results {},
+				CheckTerraform: func(block.Block, block.Module) rules.Results {
+					return nil
+				},
 			},
 			modulePath: "module",
 			source: `
@@ -47,7 +49,9 @@ module "custom_module" {
 			rule: Rule{
 				RequiredTypes:  []string{"module"},
 				RequiredLabels: []string{"dont_match"},
-				CheckTerraform: func(block.Block, block.Module) rules.Results {},
+				CheckTerraform: func(block.Block, block.Module) rules.Results {
+					return nil
+				},
 			},
 			modulePath: "module",
 			source: `
@@ -62,7 +66,9 @@ module "custom_module" {
 			rule: Rule{
 				RequiredTypes:  []string{"module"},
 				RequiredLabels: []string{"*"},
-				CheckTerraform: func(block.Block, block.Module) rules.Results {},
+				CheckTerraform: func(block.Block, block.Module) rules.Results {
+					return nil
+				},
 			},
 			modulePath: "module",
 			source: `
@@ -78,7 +84,9 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"path_doesnt_match"},
-				CheckTerraform:  func(block.Block, block.Module) rules.Results {},
+				CheckTerraform: func(block.Block, block.Module) rules.Results {
+					return nil
+				},
 			},
 			modulePath: "module",
 			source: `
@@ -94,7 +102,9 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"github.com/hashicorp/example"},
-				CheckTerraform:  func(block.Block, block.Module) rules.Results {},
+				CheckTerraform: func(block.Block, block.Module) rules.Results {
+					return nil
+				},
 			},
 			modulePath: "module",
 			source: `
@@ -110,7 +120,9 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"*two/three"},
-				CheckTerraform:  func(block.Block, block.Module) rules.Results {},
+				CheckTerraform: func(block.Block, block.Module) rules.Results {
+					return nil
+				},
 			},
 			modulePath: "one/two/three",
 			source: `
@@ -126,7 +138,9 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"one/two/three"},
-				CheckTerraform:  func(block.Block, block.Module) rules.Results {},
+				CheckTerraform: func(block.Block, block.Module) rules.Results {
+					return nil
+				},
 			},
 			modulePath: "one/two/three",
 			source: `
