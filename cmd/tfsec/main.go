@@ -57,8 +57,10 @@ var ignoreHCLErrors bool
 var stopOnCheckError bool
 var workspace string
 var passingGif bool
+var singleThreadedMode bool
 
 func init() {
+	rootCmd.Flags().BoolVar(&singleThreadedMode, "single-thread", singleThreadedMode, "Run checks using a single thread")
 	rootCmd.Flags().BoolVar(&ignoreHCLErrors, "ignore-hcl-errors", ignoreHCLErrors, "Stop and report an error if an HCL parse error is encountered")
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
@@ -217,7 +219,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Starting scanner...")
-		results := scanner.New().Scan(modules)
+		results := scanner.New(getScannerOptions()...).Scan(modules)
 		results = updateResultSeverity(results)
 		results = removeExcludedResults(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {
@@ -361,7 +363,7 @@ func getScannerOptions() []scanner.Option {
 	if workspace != "" {
 		options = append(options, scanner.OptionWithWorkspaceName(workspace))
 	}
-
+	options = append(options, scanner.OptionWithSingleThread(singleThreadedMode))
 	options = append(options, scanner.OptionIgnoreCheckErrors(!stopOnCheckError))
 
 	var allExcludedRuleIDs []string

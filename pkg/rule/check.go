@@ -13,7 +13,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 )
 
-func (r *Rule) CheckAgainstContext(s *state.State) rules.Results {
+func (r *Rule) CheckAgainstState(s *state.State) rules.Results {
 	results := r.Base.Evaluate(s)
 	if len(results) > 0 {
 		base := r.Base.Rule()

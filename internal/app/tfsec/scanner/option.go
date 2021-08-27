@@ -26,6 +26,12 @@ func OptionIgnoreCheckErrors(ignore bool) func(s *Scanner) {
 	}
 }
 
+func OptionWithSingleThread(single bool) func(s *Scanner) {
+	return func(s *Scanner) {
+		s.useSingleThread = single
+	}
+}
+
 func OptionWithWorkspaceName(workspaceName string) func(s *Scanner) {
 	return func(s *Scanner) {
 		s.workspaceName = workspaceName

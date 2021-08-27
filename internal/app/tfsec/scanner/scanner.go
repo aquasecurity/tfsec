@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"runtime"
 	"sort"
 
 	"github.com/aquasecurity/defsec/rules"
@@ -17,6 +18,7 @@ type Scanner struct {
 	excludedRuleIDs   []string
 	ignoreCheckErrors bool
 	workspaceName     string
+	useSingleThread   bool
 }
 
 // New creates a new Scanner
@@ -55,54 +57,40 @@ func (scanner *Scanner) Scan(modules []block.Module) rules.Results {
 	infra := adapter.Adapt(modules)
 	adaptationTime.Stop()
 
-	var results rules.Results
-
-	// run defsec checks
-	infraCheckTime := metrics.Start(metrics.InfraChecks)
-	for _, r := range GetRegisteredRules() {
-		func() {
-			if scanner.ignoreCheckErrors {
-				defer r.RecoverFromCheckPanic()
-			}
-			infraResults := r.CheckAgainstContext(infra)
-			results = append(results, infraResults...)
-		}()
+	threads := runtime.NumCPU()
+	if threads > 1 {
+		threads = threads - 1
 	}
-	infraCheckTime.Stop()
-
-	var ignores block.Ignores
-
-	// run internal checks
-	hclCheckTime := metrics.Start(metrics.HCLChecks)
-	for _, module := range modules {
-		ignores = append(ignores, module.Ignores()...)
-		for _, b := range module.GetBlocks() {
-			for _, r := range GetRegisteredRules() {
-				func() {
-					if scanner.ignoreCheckErrors {
-						defer r.RecoverFromCheckPanic()
-					}
-					internalResults := r.CheckAgainstBlock(b, module)
-					results = append(results, internalResults...)
-				}()
-			}
-		}
+	if scanner.useSingleThread {
+		threads = 1
 	}
-	hclCheckTime.Stop()
+
+	checkTime := metrics.Start(metrics.Checking)
+	results := NewPool(threads, GetRegisteredRules(), modules, infra, scanner.ignoreCheckErrors).Run()
+	checkTime.Stop()
 
 	var resultsAfterIgnores []rules.Result
-	for _, result := range results {
-		if !scanner.includeIgnored && ignores.Covering(
-			result.Metadata().Range(),
-			scanner.workspaceName,
-			result.Rule().LongID(),
-			FindLegacyID(result.Rule().LongID()),
-		) != nil {
-			metrics.Add(metrics.IgnoredChecks, 1)
-			debug.Log("Ignoring '%s'", result.Rule().LongID())
-			continue
+	if !scanner.includeIgnored {
+		var ignores block.Ignores
+		for _, module := range modules {
+			ignores = append(ignores, module.Ignores()...)
 		}
-		resultsAfterIgnores = append(resultsAfterIgnores, result)
+
+		for _, result := range results {
+			if !scanner.includeIgnored && ignores.Covering(
+				result.Metadata().Range(),
+				scanner.workspaceName,
+				result.Rule().LongID(),
+				FindLegacyID(result.Rule().LongID()),
+			) != nil {
+				metrics.Add(metrics.IgnoredChecks, 1)
+				debug.Log("Ignoring '%s'", result.Rule().LongID())
+				continue
+			}
+			resultsAfterIgnores = append(resultsAfterIgnores, result)
+		}
+	} else {
+		resultsAfterIgnores = results
 	}
 
 	filtered := scanner.filterResults(resultsAfterIgnores)
