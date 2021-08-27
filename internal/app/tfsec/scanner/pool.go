@@ -112,13 +112,14 @@ type Worker struct {
 }
 
 func NewWorker(incoming <-chan Job) *Worker {
-	return &Worker{
+	w := &Worker{
 		incoming: incoming,
 	}
+	w.mu.Lock()
+	return w
 }
 
 func (w *Worker) Start() {
-	w.mu.Lock()
 	defer w.mu.Unlock()
 	w.results = nil
 	for job := range w.incoming {
