@@ -392,7 +392,6 @@ func getScannerOptions() []scanner.Option {
 
 func mergeWithoutDuplicates(left, right []string) []string {
 	all := append(left, right...)
-	fmt.Printf("all: %v %d \n", all, len(right))
 	var set = map[string]bool{}
 	for _, x := range all {
 		set[x] = true
