@@ -39,6 +39,7 @@ var format string
 var softFail = false
 var filterResults string
 var excludedRuleIDs string
+var includedRuleIDs string
 var tfvarsPaths []string
 var outputFlag string
 var customCheckDir string
@@ -66,6 +67,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&runUpdate, "update", runUpdate, "Update to latest version")
 	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit, sarif")
 	rootCmd.Flags().StringVarP(&excludedRuleIDs, "exclude", "e", excludedRuleIDs, "Provide comma-separated list of rule IDs to exclude from run.")
+	rootCmd.Flags().StringVarP(&includedRuleIDs, "include", "i", includedRuleIDs, "Provide comma-separated list of specific rules to include in the from run.")
 	rootCmd.Flags().StringVar(&filterResults, "filter-results", filterResults, "Filter results to return specific checks only (supports comma-delimited input).")
 	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
 	rootCmd.Flags().StringSliceVar(&tfvarsPaths, "tfvars-file", tfvarsPaths, "Path to .tfvars file, can be used multiple times and evaluated in order of specification")
@@ -376,7 +378,15 @@ func getScannerOptions() []scanner.Option {
 	}
 	allExcludedRuleIDs = mergeWithoutDuplicates(allExcludedRuleIDs, tfsecConfig.ExcludedChecks)
 
-	options = append(options, scanner.OptionExcludeRules(allExcludedRuleIDs))
+	var allIncludedRuleIDs []string
+	if len(includedRuleIDs) > 0 {
+		for _, include := range strings.Split(includedRuleIDs, ",") {
+			allIncludedRuleIDs = append(allIncludedRuleIDs, strings.TrimSpace(include))
+		}
+	}
+	allIncludedRuleIDs = mergeWithoutDuplicates(allIncludedRuleIDs, tfsecConfig.IncludedChecks)
+
+	options = append(options, scanner.OptionIncludeRules(allIncludedRuleIDs))
 	return options
 }
 
