@@ -219,7 +219,7 @@ var rootCmd = &cobra.Command{
 		debug.Log("Starting scanner...")
 		results := scanner.New().Scan(modules)
 		results = updateResultSeverity(results)
-		results = removeDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
+		results = removeExcludedResults(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {
 			var filteredResult []rules.Result
 			for _, result := range results {
@@ -316,7 +316,7 @@ func getDetailedExitCode(results rules.Results) int {
 	return 1
 }
 
-func removeDuplicatesAndUnwanted(results rules.Results, ignoreWarnings bool, excludeDownloaded bool) rules.Results {
+func removeExcludedResults(results rules.Results, ignoreWarnings bool, excludeDownloaded bool) rules.Results {
 	var returnVal rules.Results
 	for _, res := range results {
 		if excludeDownloaded && strings.Contains(res.Metadata().Range().GetFilename(), fmt.Sprintf("%c.terraform", os.PathSeparator)) {
