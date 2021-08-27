@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math"
-	"os"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -14,26 +13,31 @@ type linter struct {
 }
 
 func (l *linter) lint(check rule.Rule) {
+
+	var errorFound bool
+
 	// crashout immediately if there is a check with no id
 	if check.Base.Rule().ShortCode == "" {
 		fmt.Printf("%s: Found a check with no short code\n", check.ID())
-		os.Exit(1)
+		errorFound = true
 	}
 	if check.Base.Rule().Service == "" {
 		fmt.Printf("%s: Found a check with no service\n", check.ID())
-		os.Exit(1)
+		errorFound = true
 	}
 	if check.Base.Rule().Provider == "" {
 		fmt.Printf("%s: Found a check with no provider\n", check.ID())
-		os.Exit(1)
+		errorFound = true
 	}
-	if len(check.Base.Rule().Links) == 0 {
-		fmt.Printf("%s: Found check with no links\n", check.ID())
-		os.Exit(1)
+	if len(check.Links) == 0 {
+		fmt.Printf("%s: Found check with no terraform-specific links\n", check.ID())
+		errorFound = true
+		return
 	}
 
-	errorFound := l.checkDocumentation(check)
-	if len(check.RequiredTypes) == 0 {
+	errorFound = errorFound || l.checkDocumentation(check)
+
+	if check.CheckTerraform != nil && len(check.RequiredTypes) == 0 {
 		fmt.Printf("%s: missing required types\n", check.ID())
 		errorFound = true
 	}
@@ -80,10 +84,6 @@ func (l *linter) checkDocumentation(check rule.Rule) bool {
 		}
 	}
 
-	if len(check.Base.Rule().Links) == 0 {
-		fmt.Printf("%s: Has no links configure\n", check.ID())
-		errorFound = true
-	}
 	return errorFound
 }
 

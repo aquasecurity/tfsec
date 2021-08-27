@@ -27,12 +27,12 @@ func init() {
  
  *NOTE: It is also recommended to store your Terraform state in an encrypted form.*
  `,
-			Links: []string{
-				"https://www.terraform.io/docs/state/sensitive-data.html",
-			},
 			Provider: provider.GeneralProvider,
 			Severity: severity.Critical,
 		}, nil),
+		Links: []string{
+			"https://www.terraform.io/docs/state/sensitive-data.html",
+		},
 		RequiredTypes: []string{"locals"},
 		BadExample: []string{`
  locals {
@@ -58,7 +58,7 @@ func init() {
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {
 						results.Add(
-							"Local has a name which indicates it may be sensitive, and contains a value which is defiend inside the project.",
+							"Local has a name which indicates it may be sensitive, and contains a value which is defined inside the project.",
 							attribute.Metadata(),
 							attribute.Value().AsString(),
 						)

@@ -17,6 +17,9 @@ var CheckInstancesDoNotHavePublicIPs = rules.Register(
 		Resolution:  "Remove public IP",
 		Explanation: `Instances should not be publicly exposed to the internet`,
 		Severity:    severity.High,
+		Links: []string{
+			"https://cloud.google.com/compute/docs/ip-addresses#externaladdresses",
+		},
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.Compute.Instances {

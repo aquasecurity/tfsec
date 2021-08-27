@@ -57,12 +57,12 @@ func init() {
  
  *NOTE: It is also recommended to store your Terraform state in an encrypted form.*
  `,
-			Links: []string{
-				"https://www.terraform.io/docs/state/sensitive-data.html",
-			},
 			Provider: provider.GeneralProvider,
 			Severity: severity.Critical,
 		}, nil),
+		Links: []string{
+			"https://www.terraform.io/docs/state/sensitive-data.html",
+		},
 		RequiredTypes: []string{"resource", "provider", "module"},
 		BadExample: []string{`
  resource "evil_corp" "bad_example" {
