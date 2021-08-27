@@ -71,7 +71,7 @@ func (e *Evaluator) loadModules(stopOnHCLError bool) []*ModuleDefinition {
 	if len(loadErrors) > 0 {
 		_, _ = fmt.Fprintf(os.Stderr, "WARNING: Did you forget to 'terraform init'? The following modules failed to load:\n")
 		for _, err := range loadErrors {
-			_, _ = fmt.Fprintf(os.Stderr, " - %s (%s)\n", err.source, err.err)
+			_, _ = fmt.Fprintf(os.Stderr, " - %s\n", err.source)
 		}
 	}
 
