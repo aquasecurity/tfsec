@@ -23,21 +23,21 @@ func (b *bytesValue) Metadata() *Metadata {
 	return b.metadata
 }
 
-func Bytes(value []byte, r Range, ref Reference) BytesValue {
+func Bytes(value []byte, m *Metadata) BytesValue {
 	return &bytesValue{
 		value:    value,
-		metadata: NewMetadata(r, ref),
+		metadata: m,
 	}
 }
 
-func BytesDefault(value []byte, r Range, ref Reference) BytesValue {
-	b := Bytes(value, r, ref)
+func BytesDefault(value []byte, m *Metadata) BytesValue {
+	b := Bytes(value, m)
 	b.Metadata().isDefault = true
 	return b
 }
 
-func BytesExplicit(value []byte, r Range, ref Reference) BytesValue {
-	b := Bytes(value, r, ref)
+func BytesExplicit(value []byte, m *Metadata) BytesValue {
+	b := Bytes(value, m)
 	b.Metadata().isExplicit = true
 	return b
 }

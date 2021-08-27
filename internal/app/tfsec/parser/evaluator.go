@@ -270,13 +270,13 @@ func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 				debug.Log("Added %s from for_each", clone.Reference())
 				forEachFiltered = append(forEachFiltered, clone)
 
-				clones = append(clones, clone.Reference().RawKey())
+				clones = append(clones, clone.Values())
 				e.ctx.SetByDot(clone.Values(), clone.Reference().String())
 			})
 			if len(clones) == 0 {
 				e.ctx.SetByDot(cty.EmptyTupleVal, block.Reference().String())
 			} else {
-				e.ctx.SetByDot(cty.ListVal(clones), block.Reference().String())
+				e.ctx.SetByDot(cty.TupleVal(clones), block.Reference().String())
 			}
 		}
 	}
@@ -308,11 +308,12 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 			block.TypeLabel()
 			debug.Log("Added %s from count var", clone.Reference())
 			countFiltered = append(countFiltered, clone)
+			e.ctx.SetByDot(clone.Values(), clone.Reference().String())
 		}
 		if len(clones) == 0 {
 			e.ctx.SetByDot(cty.EmptyTupleVal, block.Reference().String())
 		} else {
-			e.ctx.SetByDot(cty.ListVal(clones), block.Reference().String())
+			e.ctx.SetByDot(cty.TupleVal(clones), block.Reference().String())
 		}
 
 	}

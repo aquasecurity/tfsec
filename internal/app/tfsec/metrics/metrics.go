@@ -16,7 +16,7 @@ const (
 	Evaluation  Operation = "evaluating values"
 	InfraChecks Operation = "checking infra"
 	HCLChecks   Operation = "checking HCL"
-	Adaptation  Operation = "common adaptation"
+	Adaptation  Operation = "defsec adaptation"
 )
 
 type Timer struct {

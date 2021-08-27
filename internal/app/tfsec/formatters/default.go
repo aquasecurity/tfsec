@@ -9,6 +9,7 @@ import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 
@@ -93,11 +94,11 @@ func printResult(res rules.Result, i int, includePassedChecks bool) {
 	}
 
 	_ = tml.Printf(`
-  <blue>[</blue>%s<blue>]</blue><blue>[</blue>%s<blue>]</blue> %s
+<blue>[</blue>%s<blue>]</blue><blue>[</blue>%s<blue>]</blue> <yellow>%s</yellow>: %s
   <blue>%s</blue>
 
 
-`, res.Rule().LongID(), severity, res.Description(), res.Metadata().Range().String())
+`, res.Rule().LongID(), severity, res.Reference().(*block.Reference).HumanReadable(), res.Description(), res.Metadata().Range().String())
 	highlightCode(res)
 
 	if longID := scanner.FindLegacyID(res.Rule().LongID()); longID != "" {

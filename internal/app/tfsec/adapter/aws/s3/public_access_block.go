@@ -12,11 +12,11 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 	var publicAccessBlocks []s3.PublicAccessBlock
 
 	for _, module := range modules {
-		blocks := module.GetBlocksByTypeLabel("aws_s3_bucket_public_access_block")
+		blocks := module.GetResourcesByType("aws_s3_bucket_public_access_block")
 		for _, b := range blocks {
 
 			pba := s3.PublicAccessBlock{
-				Metadata:              types.NewMetadata(b.Range(), b.Reference()),
+				Metadata:              b.Metadata(),
 				BlockPublicACLs:       isAttrTrue(b, "block_public_acls"),
 				BlockPublicPolicy:     isAttrTrue(b, "block_public_policy"),
 				IgnorePublicACLs:      isAttrTrue(b, "ignore_public_acls"),
@@ -58,7 +58,7 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 func isAttrTrue(block block.Block, attrName string) types.BoolValue {
 	attr := block.GetAttribute(attrName)
 	if attr.IsNil() {
-		return types.BoolDefault(false, block.Range(), block.Reference())
+		return types.BoolDefault(false, block.Metadata())
 	}
 	return attr.AsBoolValue(true)
 }

@@ -127,6 +127,7 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 			if parser.stopOnFirstTf {
 				return results, nil
 			}
+			break
 		}
 	}
 

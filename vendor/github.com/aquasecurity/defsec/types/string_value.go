@@ -8,20 +8,20 @@ const (
 	IgnoreCase StringEqualityOption = iota
 )
 
-func String(str string, r Range, ref Reference) StringValue {
+func String(str string, m *Metadata) StringValue {
 	return &stringValue{
 		value:    str,
-		metadata: NewMetadata(r, ref),
+		metadata: m,
 	}
 }
-func StringDefault(value string, r Range, ref Reference) StringValue {
-	b := String(value, r, ref)
+func StringDefault(value string, m *Metadata) StringValue {
+	b := String(value, m)
 	b.Metadata().isDefault = true
 	return b
 }
 
-func StringExplicit(value string, r Range, ref Reference) StringValue {
-	b := String(value, r, ref)
+func StringExplicit(value string, m *Metadata) StringValue {
+	b := String(value, m)
 	b.Metadata().isExplicit = true
 	return b
 }

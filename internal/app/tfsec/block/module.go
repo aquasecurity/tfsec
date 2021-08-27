@@ -13,10 +13,10 @@ type Module interface {
 
 type Modules []Module
 
-func (m Modules) GetBlocksByTypeLabel(typeLabel string) Blocks {
+func (m Modules) GetResourcesByType(typeLabel string) Blocks {
 	var blocks Blocks
 	for _, module := range m {
-		blocks = append(blocks, module.GetBlocksByTypeLabel(typeLabel)...)
+		blocks = append(blocks, module.GetResourcesByType(typeLabel)...)
 	}
 
 	return blocks

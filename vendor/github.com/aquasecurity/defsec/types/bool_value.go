@@ -12,21 +12,21 @@ type boolValue struct {
 	value    bool
 }
 
-func Bool(value bool, r Range, ref Reference) BoolValue {
+func Bool(value bool, metadata *Metadata) BoolValue {
 	return &boolValue{
 		value:    value,
-		metadata: NewMetadata(r, ref),
+		metadata: metadata,
 	}
 }
 
-func BoolDefault(value bool, r Range, ref Reference) BoolValue {
-	b := Bool(value, r, ref)
+func BoolDefault(value bool, metadata *Metadata) BoolValue {
+	b := Bool(value, metadata)
 	b.Metadata().isDefault = true
 	return b
 }
 
-func BoolExplicit(value bool, r Range, ref Reference) BoolValue {
-	b := Bool(value, r, ref)
+func BoolExplicit(value bool, metadata *Metadata) BoolValue {
+	b := Bool(value, metadata)
 	b.Metadata().isExplicit = true
 	return b
 }

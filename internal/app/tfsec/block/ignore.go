@@ -1,7 +1,6 @@
 package block
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/aquasecurity/defsec/types"
@@ -17,41 +16,44 @@ type Ignore struct {
 
 type Ignores []Ignore
 
-func (i Ignores) Covering(r types.Range, workspace string, ids ...string) *Ignore {
-
-	rng := r.(HCLRange)
-
-	for _, ignore := range i {
-
-		fmt.Printf("Ignoring? %s: %s ~= %s\n", ids, r, ignore.Range)
-
-		if ignore.Expiry != nil && time.Now().After(*ignore.Expiry) {
-			continue
-		}
-		if ignore.Workspace != "" && ignore.Workspace != workspace {
-			continue
-		}
-		idMatch := ignore.RuleID == "*" || len(ids) == 0
-		if !idMatch {
-			for _, id := range ids {
-				if id == ignore.RuleID {
-					idMatch = true
-					break
-				}
-			}
-		}
-		if !idMatch {
-			continue
-		}
-		if ignore.ModuleKey != "" && ignore.ModuleKey == rng.GetModule() {
-			return &ignore
-		}
-		if ignore.Range.GetFilename() != r.GetFilename() {
-			continue
-		}
-		if r.GetStartLine() == ignore.Range.GetStartLine()+1 || r.GetStartLine() == ignore.Range.GetStartLine() {
+func (ignores Ignores) Covering(r types.Range, workspace string, ids ...string) *Ignore {
+	for _, ignore := range ignores {
+		if ignore.Covering(r, workspace, ids...) {
 			return &ignore
 		}
 	}
 	return nil
+}
+
+func (ignore Ignore) Covering(r types.Range, workspace string, ids ...string) bool {
+	if ignore.Expiry != nil && time.Now().After(*ignore.Expiry) {
+		return false
+	}
+	if ignore.Workspace != "" && ignore.Workspace != workspace {
+		return false
+	}
+	idMatch := ignore.RuleID == "*" || len(ids) == 0
+	if !idMatch {
+		for _, id := range ids {
+			if id == ignore.RuleID {
+				idMatch = true
+				break
+			}
+		}
+	}
+	if !idMatch {
+		return false
+	}
+	rng := r.(HCLRange)
+	if ignore.ModuleKey != "" && ignore.ModuleKey == rng.GetModule() {
+		return true
+	}
+	if ignore.Range.GetFilename() != r.GetFilename() {
+		return false
+	}
+	if r.GetStartLine() == ignore.Range.GetStartLine()+1 || r.GetStartLine() == ignore.Range.GetStartLine() {
+		return true
+	}
+	return false
+
 }

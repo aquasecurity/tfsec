@@ -41,8 +41,7 @@ func (attr *HCLAttribute) AsStringValue(explicit bool) types.StringValue {
 	}
 	return f(
 		attr.Value().AsString(),
-		attr.Range(),
-		attr.Reference(),
+		attr.Metadata(),
 	)
 }
 
@@ -53,8 +52,7 @@ func (attr *HCLAttribute) AsBoolValue(explicit bool) types.BoolValue {
 	}
 	return f(
 		attr.IsTrue(),
-		attr.Range(),
-		attr.Reference(),
+		attr.Metadata(),
 	)
 }
 
@@ -67,8 +65,7 @@ func (attr *HCLAttribute) AsIntValue(explicit bool) types.IntValue {
 	flt, _ := big.Float64()
 	return f(
 		int(flt),
-		attr.Range(),
-		attr.Reference(),
+		attr.Metadata(),
 	)
 }
 
@@ -622,7 +619,7 @@ func (attr *HCLAttribute) IsDataBlockReference() bool {
 	return false
 }
 
-func createDotReferenceFromTraversal(traversals ...hcl.Traversal) (*Reference, error) {
+func createDotReferenceFromTraversal(parentRef string, traversals ...hcl.Traversal) (*Reference, error) {
 	var refParts []string
 	var key cty.Value
 	for _, x := range traversals {
@@ -637,7 +634,7 @@ func createDotReferenceFromTraversal(traversals ...hcl.Traversal) (*Reference, e
 			}
 		}
 	}
-	ref, err := newReference(refParts)
+	ref, err := newReference(refParts, parentRef)
 	if err != nil {
 		return nil, err
 	}
@@ -651,11 +648,12 @@ func (attr *HCLAttribute) SingleReference() (*Reference, error) {
 	if attr == nil {
 		return nil, fmt.Errorf("attribute is nil")
 	}
+
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.RelativeTraversalExpr:
 		switch s := t.Source.(type) {
 		case *hclsyntax.IndexExpr:
-			collectionRef, err := createDotReferenceFromTraversal(s.Collection.Variables()...)
+			collectionRef, err := createDotReferenceFromTraversal(attr.module, s.Collection.Variables()...)
 			if err != nil {
 				return nil, err
 			}
@@ -663,10 +661,10 @@ func (attr *HCLAttribute) SingleReference() (*Reference, error) {
 			collectionRef.SetKey(key)
 			return collectionRef, nil
 		default:
-			return createDotReferenceFromTraversal(t.Source.Variables()...)
+			return createDotReferenceFromTraversal(attr.module, t.Source.Variables()...)
 		}
 	case *hclsyntax.ScopeTraversalExpr:
-		return createDotReferenceFromTraversal(t.Traversal)
+		return createDotReferenceFromTraversal(attr.module, t.Traversal)
 	case *hclsyntax.TemplateExpr:
 		refs := attr.referencesInTemplate()
 		if len(refs) == 0 {
@@ -707,7 +705,7 @@ func (attr *HCLAttribute) referencesInTemplate() []*Reference {
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.TemplateExpr:
 		for _, part := range t.Parts {
-			ref, err := createDotReferenceFromTraversal(part.Variables()...)
+			ref, err := createDotReferenceFromTraversal(attr.module, part.Variables()...)
 			if err != nil {
 				continue
 			}
@@ -724,13 +722,13 @@ func (attr *HCLAttribute) referencesInConditional() []*Reference {
 	var refs []*Reference
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.ConditionalExpr:
-		if ref, err := createDotReferenceFromTraversal(t.TrueResult.Variables()...); err == nil {
+		if ref, err := createDotReferenceFromTraversal(attr.module, t.TrueResult.Variables()...); err == nil {
 			refs = append(refs, ref)
 		}
-		if ref, err := createDotReferenceFromTraversal(t.FalseResult.Variables()...); err == nil {
+		if ref, err := createDotReferenceFromTraversal(attr.module, t.FalseResult.Variables()...); err == nil {
 			refs = append(refs, ref)
 		}
-		if ref, err := createDotReferenceFromTraversal(t.Condition.Variables()...); err == nil {
+		if ref, err := createDotReferenceFromTraversal(attr.module, t.Condition.Variables()...); err == nil {
 			refs = append(refs, ref)
 		}
 	}

@@ -29,7 +29,7 @@ func init() {
  }
  `},
 		Links: []string{
-			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block#bucket",
 		},
 		Base: s3.CheckBucketsHavePublicAccessBlocks,
 	})
