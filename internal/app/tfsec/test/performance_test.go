@@ -6,11 +6,11 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil/filesystem"
 )
 
 func BenchmarkCalculate(b *testing.B) {
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	if err != nil {
 		panic(err)
 	}
@@ -28,7 +28,7 @@ func BenchmarkCalculate(b *testing.B) {
 	}
 }
 
-func createBadBlocks(fs *testutil.FileSystem) {
+func createBadBlocks(fs *filesystem.FileSystem) {
 	_ = fs.WriteTextFile("/project/main.tf", `
 		module "something" {
 			source = "../modules/problem"

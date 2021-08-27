@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil/filesystem"
 	"github.com/stretchr/testify/require"
 
 	"github.com/aquasecurity/defsec/provider"
@@ -53,7 +54,7 @@ func Test_ProblemInModuleInSiblingDir(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -80,7 +81,7 @@ func Test_ProblemInModuleInSubdirectory(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -107,7 +108,7 @@ func Test_ProblemInModuleInParentDir(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -134,7 +135,7 @@ func Test_ProblemInModuleReuse(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -170,7 +171,7 @@ func Test_ProblemInNestedModule(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -207,7 +208,7 @@ func Test_ProblemInReusedNestedModule(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -261,7 +262,7 @@ func Test_ProblemInInitialisedModule(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -294,7 +295,7 @@ func Test_ProblemInReusedInitialisedModule(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -331,7 +332,7 @@ func Test_ProblemInDuplicateModuleNameAndPath(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -398,7 +399,7 @@ resource "bad" "thing" {
 	secure = something.this.blah.ok
 }
 `
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -447,7 +448,7 @@ resource "bad" "thing" {
 	secure = something.else.blah.ok
 }
 `
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 

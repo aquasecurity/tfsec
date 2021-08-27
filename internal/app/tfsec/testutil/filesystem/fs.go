@@ -1,17 +1,29 @@
-package testutil
+package filesystem
 
 import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
+	"strings"
 )
 
 type FileSystem struct {
 	root string
 }
 
-func NewFilesystem() (*FileSystem, error) {
-	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
+func New() (*FileSystem, error) {
+
+	tempDir := os.TempDir()
+	if runtime.GOOS == "darwin" {
+		// osx tmpdir path is a symlink to /private/var/... which messes with tests
+		osxTmpDir := os.TempDir()
+		if strings.HasPrefix(osxTmpDir, "/var") {
+			tempDir = filepath.Join("/private/", osxTmpDir)
+		}
+	}
+
+	dir, err := ioutil.TempDir(tempDir, "tfsec")
 	if err != nil {
 		return nil, err
 	}

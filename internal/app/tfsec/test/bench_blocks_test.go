@@ -5,14 +5,12 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil/filesystem"
 )
 
 func BenchmarkBlockParsing(b *testing.B) {
 
-	//var blocks []block.Block
-
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	if err != nil {
 		panic(err)
 	}

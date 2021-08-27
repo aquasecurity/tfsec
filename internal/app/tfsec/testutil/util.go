@@ -2,14 +2,13 @@ package testutil
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil/filesystem"
 
 	"github.com/stretchr/testify/assert"
 
@@ -32,24 +31,20 @@ func ScanJSON(source string, t *testing.T) rules.Results {
 }
 
 func CreateModulesFromSource(source string, ext string, t *testing.T) []block.Module {
-	path := CreateTestFile("test"+ext, source)
+	fs, err := filesystem.New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer fs.Close()
+	if err := fs.WriteTextFile("test"+ext, source); err != nil {
+		t.Fatal(err)
+	}
+	path := fs.RealPath("test" + ext)
 	modules, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {
 		t.Fatalf("parse error: %s", err)
 	}
 	return modules
-}
-
-func CreateTestFile(filename, contents string) string {
-	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
-	if err != nil {
-		panic(err)
-	}
-	path := filepath.Join(dir, filename)
-	if err := ioutil.WriteFile(path, []byte(contents), 0755); err != nil {
-		panic(err)
-	}
-	return path
 }
 
 func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, results []rules.Result, messages ...string) {
@@ -81,34 +76,6 @@ func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 	if t.Failed() {
 		t.Log(strings.ReplaceAll(t.Name(), "_", " "))
 	}
-}
-
-func CreateTestFileWithModule(contents string, moduleContents string) string {
-	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
-	if err != nil {
-		panic(err)
-	}
-
-	rootPath := filepath.Join(dir, "main")
-	modulePath := filepath.Join(dir, "module")
-
-	if err := os.Mkdir(rootPath, 0755); err != nil {
-		panic(err)
-	}
-
-	if err := os.Mkdir(modulePath, 0755); err != nil {
-		panic(err)
-	}
-
-	if err := ioutil.WriteFile(filepath.Join(rootPath, "main.tf"), []byte(contents), 0755); err != nil {
-		panic(err)
-	}
-
-	if err := ioutil.WriteFile(filepath.Join(modulePath, "main.tf"), []byte(moduleContents), 0755); err != nil {
-		panic(err)
-	}
-
-	return rootPath
 }
 
 func validateCodes(includeCode, excludeCode string) bool {
