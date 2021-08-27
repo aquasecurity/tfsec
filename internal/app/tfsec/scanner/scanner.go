@@ -18,6 +18,7 @@ type Scanner struct {
 	excludedRuleIDs   []string
 	ignoreCheckErrors bool
 	workspaceName     string
+	useSingleThread   bool
 }
 
 // New creates a new Scanner
@@ -56,13 +57,16 @@ func (scanner *Scanner) Scan(modules []block.Module) rules.Results {
 	infra := adapter.Adapt(modules)
 	adaptationTime.Stop()
 
-	cpus := runtime.NumCPU()
-	if cpus > 1 {
-		cpus = cpus - 1
+	threads := runtime.NumCPU()
+	if threads > 1 {
+		threads = threads - 1
+	}
+	if scanner.useSingleThread {
+		threads = 1
 	}
 
 	checkTime := metrics.Start(metrics.Checking)
-	results := NewPool(cpus, GetRegisteredRules(), modules, infra, scanner.ignoreCheckErrors).Run()
+	results := NewPool(threads, GetRegisteredRules(), modules, infra, scanner.ignoreCheckErrors).Run()
 	checkTime.Stop()
 
 	var resultsAfterIgnores []rules.Result
