@@ -3,7 +3,7 @@
 
 
 
-#tfsec:ignore:AWS052:ws:testworkspace:exp:2022-02-02
+#tfsec:ignore:AWS052:ws:testworkspace:exp:2022-02-02 
 module "db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~> 2.0"

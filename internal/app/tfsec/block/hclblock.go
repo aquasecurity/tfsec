@@ -281,7 +281,11 @@ func (b *HCLBlock) Reference() *Reference {
 		parts = append(parts, b.Type())
 	}
 	parts = append(parts, b.Labels()...)
-	ref, _ := newReference(parts)
+	var parent string
+	if b.moduleBlock != nil {
+		parent = b.moduleBlock.FullName()
+	}
+	ref, _ := newReference(parts, parent)
 	return ref
 }
 

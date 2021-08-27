@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/agext/levenshtein v1.2.2 // indirect
 	github.com/apparentlymart/go-cidr v1.1.0
-	github.com/aquasecurity/defsec v0.0.2-0.20210827081733-909d1fac980e
+	github.com/aquasecurity/defsec v0.0.2-0.20210827085845-412f23f8be7c
 	github.com/bmatcuk/doublestar v1.3.4
 	github.com/google/go-cmp v0.5.6
 	github.com/google/uuid v1.3.0

@@ -15,6 +15,7 @@ type Reference struct {
 	nameLabel string
 	remainder []string
 	key       cty.Value
+	parent    string
 }
 
 func extendReference(ref *Reference, name string) *Reference {
@@ -27,7 +28,7 @@ func extendReference(ref *Reference, name string) *Reference {
 	return &child
 }
 
-func newReference(parts []string) (*Reference, error) {
+func newReference(parts []string, parentKey string) (*Reference, error) {
 
 	var ref Reference
 
@@ -74,6 +75,10 @@ func newReference(parts []string) (*Reference, error) {
 		ref.remainder = parts[3:]
 	}
 
+	if parentKey != "root" {
+		ref.parent = parentKey
+	}
+
 	return &ref, nil
 }
 
@@ -89,9 +94,19 @@ func (r *Reference) NameLabel() string {
 	return r.nameLabel
 }
 
+func (r *Reference) HumanReadable() string {
+	if r.parent == "" {
+		return r.String()
+	}
+	return fmt.Sprintf("%s:%s", r.parent, r.String())
+}
+
 func (r *Reference) String() string {
 
-	base := fmt.Sprintf("%s.%s", r.typeLabel, r.nameLabel)
+	base := r.typeLabel
+	if r.nameLabel != "" {
+		base = fmt.Sprintf("%s.%s", base, r.nameLabel)
+	}
 
 	if !r.blockType.removeTypeInReference {
 		base = r.blockType.Name()
