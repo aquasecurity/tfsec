@@ -11,12 +11,11 @@ var recordedTimes []*Timer
 type Operation string
 
 const (
-	DiskIO      Operation = "disk i/o"
-	HCLParse    Operation = "parsing HCL"
-	Evaluation  Operation = "evaluating values"
-	InfraChecks Operation = "checking infra"
-	HCLChecks   Operation = "checking HCL"
-	Adaptation  Operation = "defsec adaptation"
+	DiskIO     Operation = "disk i/o"
+	HCLParse   Operation = "parsing HCL"
+	Evaluation Operation = "evaluating values"
+	Checking   Operation = "running checks"
+	Adaptation Operation = "defsec adaptation"
 )
 
 type Timer struct {

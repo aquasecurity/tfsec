@@ -14,7 +14,7 @@ func BenchmarkCalculate(b *testing.B) {
 	if err != nil {
 		panic(err)
 	}
-	defer fs.Close()
+	//defer fs.Close()
 
 	createBadBlocks(fs)
 
