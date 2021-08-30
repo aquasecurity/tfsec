@@ -378,6 +378,8 @@ func getScannerOptions() []scanner.Option {
 	}
 	allExcludedRuleIDs = mergeWithoutDuplicates(allExcludedRuleIDs, tfsecConfig.ExcludedChecks)
 
+        options = append(options, scanner.OptionExcludeRules(allExcludedRuleIDs))
+
 	var allIncludedRuleIDs []string
 	if len(includedRuleIDs) > 0 {
 		for _, include := range strings.Split(includedRuleIDs, ",") {
