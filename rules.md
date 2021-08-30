@@ -117,6 +117,7 @@
 | azure-keyvault-ensure-key-expiry | azure | keyvault | Ensure that the expiration date is set on all keys |
 | azure-synapse-virtual-network-enabled | azure | synapse | Synapse Workspace should have managed virtual network enabled, the default is disabled. |
 | azure-appservice-enforce-https | azure | appservice | Ensure the Function App can only be accessed via HTTPS. The default is false. |
+| azure-functionapp-authentication-enabled | functionapp | Ensure the Function App has authentication enabled. The default is false. |
 | digitalocean-compute-no-public-ingress | digitalocean | compute | The firewall has an inbound rule with open access |
 | digitalocean-compute-no-public-egress | digitalocean | compute | The firewall has an outbound rule with open access |
 | digitalocean-droplet-use-ssh-keys | digitalocean | droplet | SSH Keys are the preferred way to connect to your droplet, no keys are supplied |
