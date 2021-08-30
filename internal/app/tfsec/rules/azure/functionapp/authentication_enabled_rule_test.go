@@ -8,7 +8,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_AzureFunctionAppAuthenticationEnabled_FailureExamples(t *testing.T) {
+func Test_AzureAuthenticationEnabled_FailureExamples(t *testing.T) {
 	expectedCode := "azure-functionapp-authentication-enabled"
 
 	rule, err := scanner.GetRuleById(expectedCode)
