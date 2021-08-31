@@ -52,19 +52,21 @@ resource "azurerm_app_service" "good_example" {
 		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			if resourceBlock.MissingChild("logs") {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have logs enabled", resourceBlock.FullName())
 				return
 			}
 
 			logProps := resourceBlock.GetBlock("logs")
 			if logProps.MissingChild("failed_request_tracing_enabled") {
 				set.AddResult().
-					WithDescription("Resource '%s' does not have failed_request_tracing_enabled block", resourceBlock.FullName()).WithBlock(logProps)
+					WithDescription("Resource '%s' does not have logs.failed_request_tracing_enabled block", resourceBlock.FullName()).WithBlock(logProps)
 				return
 			}
 			failedTracing := logProps.GetAttribute("failed_request_tracing_enabled")
 			if failedTracing.IsFalse() {
 				set.AddResult().
-					WithDescription("Resource '%s' does not have failed_request_tracing_enabled set to true", resourceBlock.FullName()).
+					WithDescription("Resource '%s' does not have logs.failed_request_tracing_enabled set to true", resourceBlock.FullName()).
 					WithAttribute(failedTracing)
 			}
 		},

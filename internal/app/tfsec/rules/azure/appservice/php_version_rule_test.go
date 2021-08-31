@@ -1,4 +1,4 @@
-package storage
+package appservice
 
 import (
 	"strings"
@@ -8,8 +8,8 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_AzureStorageForCriticalDataAreNotEncryptedWithCustomerManagedKey_FailureExamples(t *testing.T) {
-	expectedCode := "azure-storage-encrypted-customer-managed-key"
+func Test_AzurePhpVersion_FailureExamples(t *testing.T) {
+	expectedCode := "azure-appservice-php-version"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -30,8 +30,8 @@ func Test_AzureStorageForCriticalDataAreNotEncryptedWithCustomerManagedKey_Failu
 	}
 }
 
-func Test_AzureStorageForCriticalDataAreNotEncryptedWithCustomerManagedKey_SuccessExamples(t *testing.T) {
-	expectedCode := "azure-storage-encrypted-customer-managed-key"
+func Test_AzurePhpVersion_SuccessExamples(t *testing.T) {
+	expectedCode := "azure-appservice-php-version"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

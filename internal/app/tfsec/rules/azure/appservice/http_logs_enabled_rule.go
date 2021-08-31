@@ -33,7 +33,6 @@ resource "azurerm_app_service" "good_example" {
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
   app_service_plan_id = azurerm_app_service_plan.example.id
-
   logs {
     http_logs {
       retention_in_days = 4
@@ -54,15 +53,18 @@ resource "azurerm_app_service" "good_example" {
 		},
 		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+
 			if resourceBlock.MissingChild("logs") {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have logs enabled", resourceBlock.FullName())
 				return
 			}
 			logProps := resourceBlock.GetBlock("logs")
 			if logProps.MissingChild("http_logs") {
 				set.AddResult().
-					WithDescription("Resource '%s' does not have http_logs enabled", resourceBlock.FullName()).WithBlock(logProps)
-				return
+					WithDescription("Resource '%s' does not have logs.http_logs enabled", resourceBlock.FullName()).WithBlock(logProps)
 			}
+
 		},
 	})
 }
