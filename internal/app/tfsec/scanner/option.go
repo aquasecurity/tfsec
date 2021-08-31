@@ -20,6 +20,12 @@ func OptionExcludeRules(ruleIDs []string) func(s *Scanner) {
 	}
 }
 
+func OptionIncludeRules(ruleIDs []string) func(s *Scanner) {
+	return func(s *Scanner) {
+		s.includedRuleIDs = ruleIDs
+	}
+}
+
 func OptionIgnoreCheckErrors(ignore bool) func(s *Scanner) {
 	return func(s *Scanner) {
 		s.ignoreCheckErrors = ignore
