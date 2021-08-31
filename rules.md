@@ -17,7 +17,7 @@
 | aws-sqs-enable-queue-encryption | aws | sqs | Unencrypted SQS queue. |
 | aws-sns-enable-topic-encryption | aws | sns | Unencrypted SNS topic. |
 | aws-s3-enable-bucket-encryption | aws | s3 | Unencrypted S3 bucket. |
-| aws-vpc-add-decription-to-security-group | aws | vpc | Missing description for security group/security group rule. |
+| aws-vpc-add-description-to-security-group | aws | vpc | Missing description for security group/security group rule. |
 | aws-kms-auto-rotate-keys | aws | kms | A KMS key is not configured to auto-rotate. |
 | aws-cloudfront-enforce-https | aws | cloudfront | CloudFront distribution allows unencrypted (HTTP) communications. |
 | aws-cloudfront-use-secure-tls-policy | aws | cloudfront | CloudFront distribution uses outdated SSL/TLS protocols. |
@@ -117,6 +117,7 @@
 | azure-keyvault-ensure-key-expiry | azure | keyvault | Ensure that the expiration date is set on all keys |
 | azure-synapse-virtual-network-enabled | azure | synapse | Synapse Workspace should have managed virtual network enabled, the default is disabled. |
 | azure-appservice-enforce-https | azure | appservice | Ensure the Function App can only be accessed via HTTPS. The default is false. |
+| azure-functionapp-authentication-enabled | functionapp | Ensure the Function App has authentication enabled. The default is false. |
 | digitalocean-compute-no-public-ingress | digitalocean | compute | The firewall has an inbound rule with open access |
 | digitalocean-compute-no-public-egress | digitalocean | compute | The firewall has an outbound rule with open access |
 | digitalocean-droplet-use-ssh-keys | digitalocean | droplet | SSH Keys are the preferred way to connect to your droplet, no keys are supplied |
