@@ -13,7 +13,7 @@ func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		Provider:  provider.AzureProvider,
 		Service:   "appservice",
-		ShortCode: "failed-http-logs-enabled",
+		ShortCode: "http-logs-enabled",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "App service does not enable HTTP logging",
 			Explanation: `Raw HTTP request data in the W3C extended log file format. Each log message includes data such as the HTTP method, resource URI, client IP, client port, user agent, response code, and so on.`,

@@ -73,7 +73,7 @@ resource "azurerm_app_service" "good_example" {
 
 			dotNetFramework := siteConfig.GetAttribute("dotnet_framework_version")
 
-			if dotNetFramework.LessThan("v5.0") || dotNetFramework.IsNil() {
+			if dotNetFramework.NotEqual("v5.0") || dotNetFramework.IsNil() {
 				set.AddResult().
 					WithDescription("Resource '%s' is configured with incorrect values", resourceBlock.FullName()).
 					WithAttribute(dotNetFramework)
