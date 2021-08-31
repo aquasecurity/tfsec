@@ -68,10 +68,9 @@ resource "azurerm_storage_account_customer_managed_key" "ok_cmk" {
 		},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
-			// azurerm_storage_account_customer_managed_key is not a part of a resource block, so we need to find a way to determine a root level block
+			isAccountCMKEnabled := module.GetResourcesByType("azurerm_storage_account_customer_managed_key")
 
-			isAccountCMKEnabled := resourceBlock.GetBlock("azurerm_storage_account_customer_managed_key")
-			if isAccountCMKEnabled.IsNil() {
+			if len(isAccountCMKEnabled) > 0 {
 				set.AddResult().
 					WithDescription("Resource '%s' is missing `azurerm_storage_account_customer_managed_key` block", resourceBlock.FullName())
 				return
