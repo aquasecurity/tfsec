@@ -63,7 +63,6 @@ resource "azurerm_app_service" "good_example" {
 		},
 		RequiredLabels: []string{
 			"azurerm_app_service",
-			"azurerm_function_app",
 		},
 		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
