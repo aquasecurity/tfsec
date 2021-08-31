@@ -20,6 +20,7 @@ type Scanner struct {
 	includePassed     bool
 	includeIgnored    bool
 	excludedRuleIDs   []string
+	includedRuleIDs   []string
 	ignoreCheckErrors bool
 	workspaceName     string
 }
@@ -88,13 +89,15 @@ func (scanner *Scanner) scanModule(module block.Module, rules []rule.Rule) []res
 						if ruleResult.Severity == severity.None {
 							ruleResult.Severity = r.DefaultSeverity
 						}
-						if !scanner.includeIgnored && (ruleResult.IsIgnored(scanner.workspaceName) || checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.excludedRuleIDs)) {
-							// rule was ignored
-							metrics.Add(metrics.IgnoredChecks, 1)
-							debug.Log("Ignoring '%s'", ruleResult.RuleID)
-						} else {
-							results = append(results, *ruleResult)
+						if len(scanner.includedRuleIDs) == 0 || len(scanner.includedRuleIDs) > 0 && checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.includedRuleIDs) {
+							if !scanner.includeIgnored && (ruleResult.IsIgnored(scanner.workspaceName) || checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.excludedRuleIDs)) {
+								// rule was ignored
+								metrics.Add(metrics.IgnoredChecks, 1)
+								debug.Log("Ignoring '%s'", ruleResult.RuleID)
+							} else {
+								results = append(results, *ruleResult)
 
+							}
 						}
 					}
 				}
