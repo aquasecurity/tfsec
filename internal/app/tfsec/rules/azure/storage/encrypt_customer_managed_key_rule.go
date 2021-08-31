@@ -73,7 +73,6 @@ resource "azurerm_storage_account_customer_managed_key" "ok_cmk" {
 			if len(isAccountCMKEnabled) > 0 {
 				set.AddResult().
 					WithDescription("Resource '%s' is missing `azurerm_storage_account_customer_managed_key` block", resourceBlock.FullName())
-				return
 			}
 
 		},

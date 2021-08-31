@@ -45,7 +45,7 @@ resource "azurerm_app_service" "good_example" {
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
   app_service_plan_id = azurerm_app_service_plan.example.id
-  
+
   site_config {
 	dotnet_framework_version = "v5.0"
   }
@@ -64,7 +64,8 @@ resource "azurerm_app_service" "good_example" {
 		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
 			if resourceBlock.MissingChild("site_config") {
-				return
+				set.AddResult().
+					WithDescription("Resource '%s' does not have a value for site_config block", resourceBlock.FullName())
 			}
 			siteConfig := resourceBlock.GetBlock("site_config")
 			if siteConfig.MissingChild("dotnet_framework_version") {
