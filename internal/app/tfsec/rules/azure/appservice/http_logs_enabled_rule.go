@@ -36,9 +36,9 @@ resource "azurerm_app_service" "good_example" {
 
   logs {
     http_logs {
-	  retention_in_days = 4
-	  retention_in_mb = 10
-	}
+      retention_in_days = 4
+      retention_in_mb = 10
+    }
   }
 }
 `},
