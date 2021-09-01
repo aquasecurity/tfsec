@@ -89,7 +89,7 @@ resource "google_container_node_pool" "good_example" {
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
-    image_type = "COS"
+    image_type = "COS_CONTAINERD"
   }
 }
 `},
@@ -108,7 +108,7 @@ resource "google_container_node_pool" "good_example" {
 			if imageTypeAttr := resourceBlock.GetBlock("node_config").GetAttribute("image_type"); imageTypeAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for node_config.image_type", resourceBlock.FullName())
-			} else if imageTypeAttr.NotEqual("COS") {
+			} else if imageTypeAttr.NotEqual("COS_CONTAINERD", block.IgnoreCase) {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have node_config.image_type set to COS", resourceBlock.FullName()).
 					WithAttribute(imageTypeAttr)
