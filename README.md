@@ -99,7 +99,7 @@ If you want to run tfsec on your repository as a GitHub Action, you can use [htt
 ## Ignoring Warnings
 
 You may wish to ignore some warnings. If you'd like to do so, you can
-simply add a comment containing `tfsec:ignore:<RULE>` to the offending
+simply add a comment containing `tfsec:ignore:<rule>` to the offending
 line in your templates. If the problem refers to a block of code, such
 as a multiline string, you can add the comment on the line above the
 block, by itself.
@@ -109,7 +109,7 @@ For example, to ignore an open security group rule:
 ```hcl
 resource "aws_security_group_rule" "my-rule" {
     type = "ingress"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:AWS006
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sgr
 }
 ```
 
@@ -118,7 +118,7 @@ resource "aws_security_group_rule" "my-rule" {
 ```hcl
 resource "aws_security_group_rule" "my-rule" {
     type = "ingress"
-    #tfsec:ignore:AWS006
+    #tfsec:ignore:aws-vpc-no-public-ingress-sgr
     cidr_blocks = ["0.0.0.0/0"]
 }
 ```
@@ -129,7 +129,7 @@ tfsec output for the line number of the discovered problem.
 You can ignore multiple rules by concatenating the rules on a single line:
 
 ```hcl
-#tfsec:ignore:AWS017 tfsec:ignore:AWS002
+#tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "my-bucket" {
   bucket = "foobar"
   acl    = "private"
@@ -139,7 +139,7 @@ resource "aws_s3_bucket" "my-bucket" {
 ### Expiration Date
 You can set expiration date for `ignore` with `yyyy-mm-dd` format. This is a useful feature when you want to ensure ignored issue won't be forgotten and should be revisited in the future.
 ```
-#tfsec:ignore:AWS017:exp:2022-01-02
+#tfsec:ignore:aws-s3-enable-bucket-encryption:exp:2022-01-02
 ```
 Ignore like this will be active only till `2022-01-02`, after this date it will be deactivated.
 
@@ -150,10 +150,10 @@ As of `v0.52.0`, we fixed an issue where ignores were being incorrectly applied 
 ## Disable checks
 
 You may wish to exclude some checks from running. If you'd like to do so, you can
-simply add new argument `-e CHECK1,CHECK2,etc` to your cmd command
+simply add new argument `-e check1,check2,etc` to your cmd command
 
 ```bash
-tfsec . -e GEN001,GCP001,GCP002
+tfsec . -e general-secrets-sensitive-in-variable,google-compute-disk-encryption-customer-keys
 ```
 
 ## Including values from .tfvars
