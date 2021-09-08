@@ -40,6 +40,7 @@ resource "azurerm_app_service" "good_example" {
 }
 `},
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service#failed_request_tracing_enabled",
 				"https://docs.microsoft.com/en-us/azure/app-service/troubleshoot-diagnostic-logs",
 			},
 		},

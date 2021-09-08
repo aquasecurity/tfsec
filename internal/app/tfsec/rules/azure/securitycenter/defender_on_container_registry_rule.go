@@ -36,6 +36,7 @@ resource "azurerm_security_center_subscription_pricing" "good_example" {
 }
 `},
 			Links: []string{
+				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/security_center_subscription_pricing#resource_type",
 				"https://docs.microsoft.com/en-us/azure/security-center/defender-for-container-registries-introduction",
 			},
 		},
