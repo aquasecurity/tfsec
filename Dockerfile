@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.14
 
 USER nobody
 # work somewhere where we can write
