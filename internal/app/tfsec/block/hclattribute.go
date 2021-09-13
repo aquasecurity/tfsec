@@ -362,6 +362,16 @@ func (attr *HCLAttribute) IsAny(options ...interface{}) bool {
 			}
 		}
 	}
+	if attr.IsIterable() {
+		attrVals := attr.Value().AsValueSlice()
+		for _, option := range options {
+			for _, attrVal := range attrVals {
+				if attrVal.Type() == cty.String && attrVal.AsString() == option {
+					return true
+				}
+			}
+		}
+	}
 	return false
 }
 
