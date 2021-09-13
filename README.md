@@ -174,11 +174,8 @@ there are also checks which are provider agnostic.
 
 ## Running in CI
 
-tfsec is designed for running in a CI pipeline. For this reason it will
-exit with a non-zero exit code if a potential problem is detected.
-You may wish to run tfsec as part of your build without coloured
-output. You can do this using `--no-colour` (or `--no-color` for our
-American friends).
+tfsec is designed for running in a CI pipeline. You may wish to run tfsec as part of your build without coloured
+output. You can do this using `--no-colour` (or `--no-color` for our American friends).
 
 ## Output options
 
