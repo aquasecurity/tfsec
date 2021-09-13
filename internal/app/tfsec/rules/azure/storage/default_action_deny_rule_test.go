@@ -30,6 +30,21 @@ resource "azurerm_storage_account_network_rules" "test" {
 			mustIncludeResultCode: expectedCode,
 		},
 		{
+			name: "check default action when not provided causes failure",
+			source: 		`
+resource "azurerm_storage_account" "test" {
+  name                      = "test"
+  resource_group_name       = azurerm_resource_group.test
+  location                  = azurerm_resource_group.test
+  account_tier              = "Standard"
+  account_replication_type  = "LRS"
+  enable_https_traffic_only = true
+  min_tls_version           = "TLS1_2"
+}
+`,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
 			name: "check default action of allow causes a failure, regardless of casing",
 			source: `
 resource "azurerm_storage_account_network_rules" "test" {
@@ -73,6 +88,29 @@ resource "azurerm_storage_account" "example" {
 resource "azurerm_storage_account_network_rules" "test" {
   
   default_action             = "Deny"
+  ip_rules                   = ["127.0.0.1"]
+  virtual_network_subnet_ids = [azurerm_subnet.test.id]
+  bypass                     = ["Metrics"]
+}
+`,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check no error when the default action is set to deny on a network_rules block, regardless of case",
+			source: `
+resource "azurerm_storage_account" "test" {
+  name                      = "test"
+  resource_group_name       = azurerm_resource_group.test
+  location                  = azurerm_resource_group.test
+  account_tier              = "Standard"
+  account_replication_type  = "LRS"
+  enable_https_traffic_only = true
+  min_tls_version           = "TLS1_2"
+}
+
+resource "azurerm_storage_account_network_rules" "test" {
+  
+  default_action             = "deny"
   ip_rules                   = ["127.0.0.1"]
   virtual_network_subnet_ids = [azurerm_subnet.test.id]
   bypass                     = ["Metrics"]
