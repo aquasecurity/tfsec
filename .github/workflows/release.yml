@@ -54,8 +54,8 @@ jobs:
         username: ${{ secrets.TFSEC_DOCKERHUB_USER }}
         password: ${{ secrets.TFSEC_DOCKERHUB_TOKEN }}
 
-    - name: Tfsec image building
-      run: make clone-image
+    - name: Tfsec image building for docker tfsec
+      run: make clone-image-tfsec
 
 
   # temporary hack to copy over the aquasec images to github packages
@@ -64,7 +64,7 @@ jobs:
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
-        password: ${{ secrets.GH_PAT }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Tfsec image building
-      run: make clone-image
+    - name: Tfsec image building for github
+      run: make clone-image-github
