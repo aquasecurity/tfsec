@@ -12,6 +12,9 @@ function clone_image() {
     docker tag aquasec/$IMAGE tfsec/$IMAGE
     echo "pushing tfsec/${IMAGE}"
     docker push tfsec/$IMAGE
+    docker tag aquasec/$IMAGE aquasecurity/$IMAGE
+    echo "pushing aquasecurity/${IMAGE}"
+    docker push ghcr.io/aquasecurity/$IMAGE
 }
 
 RESULTS=$(docker image list --format {{.Repository}}:{{.Tag}} | grep aquasec/tfsec | awk -F/ '{print $2}')
