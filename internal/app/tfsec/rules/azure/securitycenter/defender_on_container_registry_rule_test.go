@@ -30,7 +30,7 @@ func Test_AzureDefenderOnContainer_FailureExamples(t *testing.T) {
 	}
 }
 
-func Test_AzureDefenderOnContaienr_SuccessExamples(t *testing.T) {
+func Test_AzureDefenderOnContainer_SuccessExamples(t *testing.T) {
 	expectedCode := "azure-security-center-defender-on-container"
 
 	rule, err := scanner.GetRuleById(expectedCode)
