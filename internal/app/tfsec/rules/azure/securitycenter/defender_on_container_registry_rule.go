@@ -16,7 +16,7 @@ import (
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		Service:   "security-center",
-		ShortCode: "defender-on-container",
+		ShortCode: "defender-on-container-registry",
 		Documentation: rule.RuleDocumentation{
 			Summary: "Ensure Azure Defender is set to On for container registries",
 			Explanation: `Azure Defender is a cloud workload protection service that utilizes and agent-based deployment to analyze signals from Azure network fabric and the service control plane, to detect threats across all Azure resources. It can also analyze non-Azure resources, utilizing Azure Arc, including those on-premises and in both AWS and GCP (once they've been onboarded).

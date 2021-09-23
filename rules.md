@@ -118,6 +118,14 @@
 | azure-synapse-virtual-network-enabled | azure | synapse | Synapse Workspace should have managed virtual network enabled, the default is disabled. |
 | azure-appservice-enforce-https | azure | appservice | Ensure the Function App can only be accessed via HTTPS. The default is false. |
 | azure-functionapp-authentication-enabled | functionapp | Ensure the Function App has authentication enabled. The default is false. |
+| azure-securitycenter-defender-on-appservices | securitycenter | Ensure Defender is enabled for AppServices. |
+| azure-securitycenter-defender-on-container-registry | securitycenter | Ensure Defender is enabled for ContainerRegistry. |
+| azure-securitycenter-defender-on-keyvault | securitycenter | Ensure Defender is enabled for KeyVault. |
+| azure-securitycenter-defender-on-kubernetes | securitycenter | Ensure Defender is enabled for Kubernetes. |
+| azure-securitycenter-defender-on-servers | securitycenter | Ensure Defender is enabled for VirtualMachines. |
+| azure-securitycenter-defender-on-sql-servers | securitycenter | Ensure Defender is enabled for SqlServers. |
+| azure-securitycenter-defender-on-sql-servers-vms | securitycenter | Ensure Defender is enabled for SqlServersVirtualMachines. |
+| azure-securitycenter-defender-on-storage | securitycenter | Ensure Defender is enabled for StorageAccounts. |
 | digitalocean-compute-no-public-ingress | digitalocean | compute | The firewall has an inbound rule with open access |
 | digitalocean-compute-no-public-egress | digitalocean | compute | The firewall has an outbound rule with open access |
 | digitalocean-droplet-use-ssh-keys | digitalocean | droplet | SSH Keys are the preferred way to connect to your droplet, no keys are supplied |

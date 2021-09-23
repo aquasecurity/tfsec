@@ -8,8 +8,8 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_AzureDefenderOnContainer_FailureExamples(t *testing.T) {
-	expectedCode := "azure-security-center-defender-on-container"
+func Test_AzureDefenderOnContainerRegistry_FailureExamples(t *testing.T) {
+	expectedCode := "azure-security-center-defender-on-container-registry"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -30,8 +30,8 @@ func Test_AzureDefenderOnContainer_FailureExamples(t *testing.T) {
 	}
 }
 
-func Test_AzureDefenderOnContainer_SuccessExamples(t *testing.T) {
-	expectedCode := "azure-security-center-defender-on-container"
+func Test_AzureDefenderOnContainerRegistry_SuccessExamples(t *testing.T) {
+	expectedCode := "azure-security-center-defender-on-container-registry"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
