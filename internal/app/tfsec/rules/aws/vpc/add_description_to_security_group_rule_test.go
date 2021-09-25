@@ -48,6 +48,92 @@ resource "aws_security_group_rule" "my-rule" {
 }`,
 			mustExcludeResultCode: expectedCode,
 		},
+		{
+			name: "ingress block entry with no description has error",
+			source: `
+			resource "aws_security_group" "bad_example" {
+				name        = "http"
+				description = "some description"
+			  
+				ingress  {
+					description = "ingress block description"
+					from_port   = 80
+					to_port     = 80
+					protocol    = "tcp"
+					cidr_blocks = [aws_vpc.main.cidr_block]
+				  }
+
+				ingress  {
+					  from_port   = 80
+					  to_port     = 80
+					  protocol    = "tcp"
+					  cidr_blocks = [aws_vpc.main.cidr_block]
+					}
+			  }
+			  `,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "ingress block entry with description has no error",
+			source: `
+			resource "aws_security_group" "bad_example" {
+				name        = "http"
+				description = "some description"
+			  
+				ingress  {
+					  description = "ingress block description"
+					  from_port   = 80
+					  to_port     = 80
+					  protocol    = "tcp"
+					  cidr_blocks = [aws_vpc.main.cidr_block]
+					}
+			  }
+			  `,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "egress block entry with no description has error",
+			source: `
+			resource "aws_security_group" "bad_example" {
+				name        = "http"
+				description = "some description"
+			  
+				egress  {
+					description = "ingress block description"
+					from_port   = 80
+					to_port     = 80
+					protocol    = "tcp"
+					cidr_blocks = [aws_vpc.main.cidr_block]
+				  }
+
+				  egress  {
+					  from_port   = 80
+					  to_port     = 80
+					  protocol    = "tcp"
+					  cidr_blocks = [aws_vpc.main.cidr_block]
+					}
+			  }
+			  `,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "egress block entry with description has no error",
+			source: `
+			resource "aws_security_group" "bad_example" {
+				name        = "http"
+				description = "some description"
+			  
+				egress  {
+					  description = "ingress block description"
+					  from_port   = 80
+					  to_port     = 80
+					  protocol    = "tcp"
+					  cidr_blocks = [aws_vpc.main.cidr_block]
+					}
+			  }
+			  `,
+			mustExcludeResultCode: expectedCode,
+		},
 	}
 
 	for _, test := range tests {
