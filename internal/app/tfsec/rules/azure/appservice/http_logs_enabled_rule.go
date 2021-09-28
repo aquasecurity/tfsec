@@ -35,9 +35,11 @@ resource "azurerm_app_service" "good_example" {
   app_service_plan_id = azurerm_app_service_plan.example.id
   logs {
     http_logs {
-      retention_in_days = 4
-      retention_in_mb = 10
-    }
+	  file_system {
+		retention_in_days = 4
+		retention_in_mb  = 25
+	  }
+	}
   }
 }
 `},
@@ -64,8 +66,12 @@ resource "azurerm_app_service" "good_example" {
 			if logProps.MissingChild("http_logs") {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have logs.http_logs enabled", resourceBlock.FullName()).WithBlock(logProps)
+				return
 			}
-
+			if logProps.MissingNestedChild("http_logs.file_system") {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have logs.http_logs.file_system enabled", resourceBlock.FullName()).WithBlock(logProps)
+			}
 		},
 	})
 }
