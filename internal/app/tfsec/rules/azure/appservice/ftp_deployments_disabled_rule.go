@@ -29,11 +29,14 @@ resource "azurerm_app_service" "bad_example" {
 `},
 			GoodExample: []string{`
 resource "azurerm_app_service" "good_example" {
-  name                = "example-app-service"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-  app_service_plan_id = azurerm_app_service_plan.example.id
-  ftps_state = "Disabled"
+	name                = "example-app-service"
+	location            = azurerm_resource_group.example.location
+	resource_group_name = azurerm_resource_group.example.name
+	app_service_plan_id = azurerm_app_service_plan.example.id
+
+	site_config {
+		ftps_state = "Disabled"
+	}
 }
 `},
 			Links: []string{
@@ -49,20 +52,22 @@ resource "azurerm_app_service" "good_example" {
 		},
 		DefaultSeverity: severity.Medium,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+			if resourceBlock.MissingChild("site_config") {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have a value for site_config block", resourceBlock.FullName())
+				return
+			}
+			siteConfig := resourceBlock.GetBlock("site_config")
+			if siteConfig.MissingChild("ftps_state") {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have a value for site_config.ftps_state", resourceBlock.FullName())
+				return
+			}
+			ftpsState := siteConfig.GetAttribute("ftps_state")
 
-			if ftpsState := resourceBlock.GetAttribute("ftps_state"); ftpsState.IsNil() {
+			if ftpsState.NotEqual("Disabled") {
 				set.AddResult().
-					WithDescription("Resource '%s' uses default value for ftps_state.", resourceBlock.FullName())
-				return
-			} else if ftpsState.IsAny("FtpsOnly", "AllAllowed") {
-				set.AddResult().
-					WithDescription("Resource '%s' has an ftps state which enables FTP/FTPS.", resourceBlock.FullName()).
-					WithAttribute(ftpsState)
-			} else if ftpsState.Equals("Disabled") {
-				return
-			} else {
-				set.AddResult().
-					WithDescription("Resource '%s' has a value for ftps_state that is not one of the possible values.", resourceBlock.FullName()).
+					WithDescription("Resource '%s' is configured with ftps enabled", resourceBlock.FullName()).
 					WithAttribute(ftpsState)
 			}
 
