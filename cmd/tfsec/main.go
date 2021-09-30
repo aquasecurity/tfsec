@@ -8,28 +8,28 @@ import (
 
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/IntelligentDX-LLC/tfsec/pkg/result"
 
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/IntelligentDX-LLC/tfsec/pkg/severity"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/config"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/updater"
+	"github.com/IntelligentDX-LLC/tfsec/internal/app/tfsec/config"
+	"github.com/IntelligentDX-LLC/tfsec/internal/app/tfsec/updater"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
+	"github.com/IntelligentDX-LLC/tfsec/internal/app/tfsec/custom"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/IntelligentDX-LLC/tfsec/internal/app/tfsec/debug"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/formatters"
+	"github.com/IntelligentDX-LLC/tfsec/internal/app/tfsec/formatters"
 
-	"github.com/liamg/tml"
+	"github.com/IntelligentDX-LLC/tml"
 
-	"github.com/spf13/cobra"
+	"github.com/IntelligentDX-LLC/cobra"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/version"
+	"github.com/IntelligentDX-LLC/tfsec/internal/app/tfsec/metrics"
+	"github.com/IntelligentDX-LLC/tfsec/internal/app/tfsec/parser"
+	_ "github.com/IntelligentDX-LLC/tfsec/internal/app/tfsec/rules"
+	"github.com/IntelligentDX-LLC/tfsec/internal/app/tfsec/scanner"
+	"github.com/IntelligentDX-LLC/tfsec/version"
 )
 
 var showVersion = false
@@ -378,7 +378,7 @@ func getScannerOptions() []scanner.Option {
 	}
 	allExcludedRuleIDs = mergeWithoutDuplicates(allExcludedRuleIDs, tfsecConfig.ExcludedChecks)
 
-        options = append(options, scanner.OptionExcludeRules(allExcludedRuleIDs))
+	options = append(options, scanner.OptionExcludeRules(allExcludedRuleIDs))
 
 	var allIncludedRuleIDs []string
 	if len(includedRuleIDs) > 0 {
