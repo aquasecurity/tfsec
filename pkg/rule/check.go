@@ -7,17 +7,16 @@ import (
 	runtimeDebug "runtime/debug"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
 // CheckRule the provided HCL block against the rule
-func CheckRule(r *Rule, resourceBlock block.Block, module block.Module, ignoreErrors bool) result.Set {
+func CheckRule(r *Rule, resourceBlock block.Block, module block.Module, ignoreErrors bool) (resultSet result.Set) {
 	if ignoreErrors {
 		defer func() {
 			if err := recover(); err != nil {
@@ -28,14 +27,13 @@ func CheckRule(r *Rule, resourceBlock block.Block, module block.Module, ignoreEr
 	}
 
 	var links []string
-
 	if r.Provider != provider.CustomProvider {
 		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s#%s/%s", r.Provider, r.Service, r.ShortCode, r.Provider, r.Service))
 	}
 
 	links = append(links, r.Documentation.Links...)
 
-	resultSet := result.NewSet(resourceBlock).
+	resultSet = result.NewSet(resourceBlock).
 		WithRuleID(r.ID()).
 		WithLegacyRuleID(r.LegacyID).
 		WithRuleSummary(r.Documentation.Summary).

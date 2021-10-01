@@ -370,7 +370,9 @@ func getScannerOptions() []scanner.Option {
 		options = append(options, scanner.OptionWithWorkspaceName(workspace))
 	}
 
-	options = append(options, scanner.OptionIgnoreCheckErrors(!stopOnCheckError))
+	if stopOnCheckError {
+		options = append(options, scanner.OptionStopOnErrors())
+	}
 
 	var allExcludedRuleIDs []string
 	for _, exclude := range strings.Split(excludedRuleIDs, ",") {
