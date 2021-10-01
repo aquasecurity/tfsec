@@ -29,14 +29,14 @@ resource "azurerm_app_service" "bad_example" {
 `},
 			GoodExample: []string{`
 resource "azurerm_app_service" "good_example" {
-  name                = "example-app-service"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-  app_service_plan_id = azurerm_app_service_plan.example.id
+	name                = "example-app-service"
+	location            = azurerm_resource_group.example.location
+	resource_group_name = azurerm_resource_group.example.name
+	app_service_plan_id = azurerm_app_service_plan.example.id
 
-  site_config {
-    ftps_state = "Disabled"
-  }
+	site_config {
+		ftps_state = "Disabled"
+	}
 }
 `},
 			Links: []string{
@@ -64,15 +64,20 @@ resource "azurerm_app_service" "good_example" {
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for site_config.ftps_state.", resourceBlock.FullName())
 				return
-			} else if ftpsState.IsAny("FtpsOnly", "AllAllowed") {
+			}
+			siteConfig := resourceBlock.GetBlock("site_config")
+			if siteConfig.MissingChild("ftps_state") {
 				set.AddResult().
 					WithDescription("Resource '%s' has an site_config.ftps_state which enables FTP/FTPS.", resourceBlock.FullName()).
 					WithAttribute(ftpsState)
 			} else if ftpsState.Equals("Disabled") {
 				return
-			} else {
+			}
+			ftpsState := siteConfig.GetAttribute("ftps_state")
+
+			if ftpsState.NotEqual("Disabled") {
 				set.AddResult().
-					WithDescription("Resource '%s' has a value for site_config.ftps_state that is not one of the possible values.", resourceBlock.FullName()).
+					WithDescription("Resource '%s' is configured with ftps enabled", resourceBlock.FullName()).
 					WithAttribute(ftpsState)
 			}
 

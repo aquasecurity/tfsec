@@ -28,18 +28,34 @@ resource "azurerm_app_service" "bad_example" {
 }
 `},
 			GoodExample: []string{`
-resource "azurerm_app_service" "good_example" {
+resource "azurerm_app_service" "good_example_one" {
   name                = "example-app-service"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
   app_service_plan_id = azurerm_app_service_plan.example.id
   logs {
     http_logs {
-      retention_in_days = 4
-      retention_in_mb = 10
-    }
+	  file_system {
+		retention_in_days = 4
+		retention_in_mb  = 25
+	  }
+	}
   }
-}
+}`,
+				`resource "azurerm_app_service" "good_example_two" {
+	name                = "example-app-service"
+	location            = azurerm_resource_group.example.location
+	resource_group_name = azurerm_resource_group.example.name
+	app_service_plan_id = azurerm_app_service_plan.example.id
+	logs {
+	  http_logs {
+		azure_blob_storage {
+		  level = "Information"
+		  sas_url  = "https://someblob.file.core.windows.net/?sv=ABC"
+		}
+	  }
+	}
+  }
 `},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service#http_logs",
@@ -64,8 +80,12 @@ resource "azurerm_app_service" "good_example" {
 			if logProps.MissingChild("http_logs") {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have logs.http_logs enabled", resourceBlock.FullName()).WithBlock(logProps)
+				return
 			}
-
+			if logProps.MissingNestedChild("http_logs.file_system") && logProps.MissingNestedChild("http_logs.azure_blob_storage") {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have logs.http_logs.file_system or logs.http_logs.azure_blob_storage configured", resourceBlock.FullName()).WithBlock(logProps)
+			}
 		},
 	})
 }
