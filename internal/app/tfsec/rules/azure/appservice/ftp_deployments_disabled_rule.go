@@ -62,8 +62,7 @@ resource "azurerm_app_service" "good_example" {
 			siteConfig := resourceBlock.GetBlock("site_config")
 			if siteConfig.MissingChild("ftps_state") {
 				set.AddResult().
-					WithDescription("Resource '%s' has an site_config.ftps_state which enables FTP/FTPS.", resourceBlock.FullName()).
-					WithAttribute(ftpsState)
+					WithDescription("Resource '%s' has an site_config.ftps_state which enables FTP/FTPS.", resourceBlock.FullName())
 			} 
 			ftpsState := siteConfig.GetAttribute("ftps_state")
 			if ftpsState.NotEqual("Disabled") {
