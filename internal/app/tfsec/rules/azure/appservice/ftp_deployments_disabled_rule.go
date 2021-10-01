@@ -70,11 +70,8 @@ resource "azurerm_app_service" "good_example" {
 				set.AddResult().
 					WithDescription("Resource '%s' has an site_config.ftps_state which enables FTP/FTPS.", resourceBlock.FullName()).
 					WithAttribute(ftpsState)
-			} else if ftpsState.Equals("Disabled") {
-				return
-			}
+			} 
 			ftpsState := siteConfig.GetAttribute("ftps_state")
-
 			if ftpsState.NotEqual("Disabled") {
 				set.AddResult().
 					WithDescription("Resource '%s' is configured with ftps enabled", resourceBlock.FullName()).
