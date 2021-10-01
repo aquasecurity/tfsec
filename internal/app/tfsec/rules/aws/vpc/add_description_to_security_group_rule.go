@@ -33,12 +33,11 @@ resource "aws_security_group" "bad_example" {
   name        = "http"
 
   ingress {
-    description = "HTTP from VPC"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
-  }
+		from_port   = 80
+		to_port     = 80
+		protocol    = "tcp"
+		cidr_blocks = [aws_vpc.main.cidr_block]
+	  }
 }
 `},
 			GoodExample: []string{`
@@ -47,12 +46,12 @@ resource "aws_security_group" "good_example" {
   description = "Allow inbound HTTP traffic"
 
   ingress {
-    description = "HTTP from VPC"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
-  }
+		description = "HTTP from VPC"
+		from_port   = 80
+		to_port     = 80
+		protocol    = "tcp"
+		cidr_blocks = [aws_vpc.main.cidr_block]
+  	}
 }
 `},
 			Links: []string{
@@ -78,6 +77,22 @@ resource "aws_security_group" "good_example" {
 					WithDescription("Resource '%s' should include a non-empty description for auditing purposes.", resourceBlock.FullName()).
 					WithAttribute(descriptionAttr)
 			}
+
+			checkBlockForDescription("ingress", set, resourceBlock)
+			checkBlockForDescription("egress", set, resourceBlock)
+
 		},
 	})
+}
+
+func checkBlockForDescription(direction string, set result.Set, resourceBlock block.Block) {
+	blocks := resourceBlock.GetBlocks(direction)
+	for _, b := range blocks {
+		descriptionBlock := b.GetAttribute("description")
+		if descriptionBlock.IsNil() || descriptionBlock.IsEmpty() {
+			set.AddResult().
+				WithDescription("Resource '%s' has %s without description.", resourceBlock.FullName(), direction).
+				WithBlock(b)
+		}
+	}
 }
