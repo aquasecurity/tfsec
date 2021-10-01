@@ -16,13 +16,13 @@ import (
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		Service:   "security-center",
-		ShortCode: "defender-on-container-registry",
+		ShortCode: "defender-on-kubernetes",
 		Documentation: rule.RuleDocumentation{
-			Summary: "Ensure Azure Defender is set to On for container registries",
+			Summary: "Ensure Azure Defender is set to On for Kubernetes",
 			Explanation: `Azure Defender is a cloud workload protection service that utilizes and agent-based deployment to analyze signals from Azure network fabric and the service control plane, to detect threats across all Azure resources. It can also analyze non-Azure resources, utilizing Azure Arc, including those on-premises and in both AWS and GCP (once they've been onboarded).
-			Azure Defender for container registries includes a vulnerability scanner to scan the images in Azure Resource Manager-based Azure Container Registry registries and provide deeper visibility image vulnerabilities.`,
+			Azure Defender for Kubernetes provides cluster-level threat protection by monitoring your AKS-managed services through the logs retrieved by Azure Kubernetes Service (AKS).`,
 			Impact:     "Not enabling defender for container registries could lead to compromised account",
-			Resolution: "Enable ContainerRegistry in Azure Defender",
+			Resolution: "Enable KubernetesService in Azure Defender",
 			BadExample: []string{`
 resource "azurerm_security_center_subscription_pricing" "bad_example" {
   tier          = "Free"
@@ -32,12 +32,12 @@ resource "azurerm_security_center_subscription_pricing" "bad_example" {
 			GoodExample: []string{`
 resource "azurerm_security_center_subscription_pricing" "good_example" {
   tier          = "Standard"
-  resource_type = "VirtualMachines,ContainerRegistry"
+  resource_type = "VirtualMachines,KubernetesService"
 }
 `},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/security_center_subscription_pricing#resource_type",
-				"https://docs.microsoft.com/en-us/azure/security-center/defender-for-container-registries-introduction",
+				"https://docs.microsoft.com/en-us/azure/security-center/defender-for-kubernetes-introduction",
 			},
 		},
 		Provider:        provider.AzureProvider,
@@ -51,9 +51,9 @@ resource "azurerm_security_center_subscription_pricing" "good_example" {
 			}
 
 			resourceTypeAttr := resourceBlock.GetAttribute("resource_type")
-			if !resourceTypeAttr.Contains("ContainerRegistry", block.IgnoreCase) {
+			if !resourceTypeAttr.Contains("KubernetesService", block.IgnoreCase) {
 				set.AddResult().
-					WithDescription("Resource '%s' does not contain ContainerRegistry", resourceBlock.FullName()).
+					WithDescription("Resource '%s' does not contain KubernetesService", resourceBlock.FullName()).
 					WithAttribute(resourceTypeAttr)
 			}
 		},
