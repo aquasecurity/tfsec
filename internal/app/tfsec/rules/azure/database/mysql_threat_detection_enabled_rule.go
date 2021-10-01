@@ -38,7 +38,7 @@ resource "azurerm_mysql_server" "bad_example" {
 `},
 			GoodExample: []string{`
 resource "azurerm_mysql_server" "good_example" {
-  name                = "bad_example"
+  name                = "good_example"
 
   public_network_access_enabled    = false
   ssl_enforcement_enabled          = false
