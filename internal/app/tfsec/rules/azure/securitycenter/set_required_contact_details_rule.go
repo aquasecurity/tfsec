@@ -41,6 +41,15 @@ resource "azurerm_security_center_contact" "bad_example" {
 	alert_notifications = true
 	alerts_to_admins    = true
   }
+`,
+				`
+resource "azurerm_security_center_contact" "bad_example" {
+email = ""
+phone = ""
+
+alert_notifications = true
+alerts_to_admins    = true
+}
 `},
 			GoodExample: []string{`
 resource "azurerm_security_center_contact" "good_example" {
@@ -79,6 +88,12 @@ resource "azurerm_security_center_contact" "good_example" {
 
 			phoneAttr := resourceBlock.GetAttribute("phone")
 			emailAttr := resourceBlock.GetAttribute("email")
+
+			if phoneAttr.IsEmpty() && emailAttr.IsEmpty() {
+				set.AddResult().
+					WithDescription("Resource '%s' does not have a phone number or email set for the security contact", resourceBlock.FullName())
+				return
+			}
 
 			if phoneAttr.IsEmpty() {
 				set.AddResult().
