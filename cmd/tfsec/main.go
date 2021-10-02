@@ -262,7 +262,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		// If all failed rules are of LOW severity, then produce a success
-		// exit code (0).
+		// exit code (0)
 		if allInfo(results) {
 			return nil
 		}
@@ -298,6 +298,10 @@ func getParserOptions() []parser.Option {
 		opts = append(opts, parser.OptionWithWorkspaceName(workspace))
 	}
 
+	if excludeDownloaded {
+		opts = append(opts, parser.OptionSkipDownloaded())
+	}
+
 	return opts
 }
 
@@ -327,10 +331,6 @@ func removeDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, e
 
 	var returnVal []result.Result
 	for _, res := range reduction {
-		if excludeDownloaded && strings.Contains(res.Range().Filename, fmt.Sprintf("%c.terraform", os.PathSeparator)) {
-			continue
-		}
-
 		if ignoreWarnings && res.Severity == severity.Medium {
 			continue
 		}
@@ -380,7 +380,7 @@ func getScannerOptions() []scanner.Option {
 	}
 	allExcludedRuleIDs = mergeWithoutDuplicates(allExcludedRuleIDs, tfsecConfig.ExcludedChecks)
 
-        options = append(options, scanner.OptionExcludeRules(allExcludedRuleIDs))
+	options = append(options, scanner.OptionExcludeRules(allExcludedRuleIDs))
 
 	var allIncludedRuleIDs []string
 	if len(includedRuleIDs) > 0 {
