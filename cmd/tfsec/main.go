@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -65,7 +66,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
 	rootCmd.Flags().BoolVar(&runUpdate, "update", runUpdate, "Update to latest version")
-	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit, sarif")
+	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format(s) comma separated: default, json, csv, checkstyle, junit, sarif")
 	rootCmd.Flags().StringVarP(&excludedRuleIDs, "exclude", "e", excludedRuleIDs, "Provide comma-separated list of rule IDs to exclude from run.")
 	rootCmd.Flags().StringVarP(&includedRuleIDs, "include", "i", includedRuleIDs, "Provide comma-separated list of specific rules to include in the from run.")
 	rootCmd.Flags().StringVar(&filterResults, "filter-results", filterResults, "Filter results to return specific checks only (supports comma-delimited input).")
@@ -94,6 +95,12 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+type formatterInfo struct {
+	formatter  *formatters.Formatter
+	outputFile *os.File
+	format     string
 }
 
 var rootCmd = &cobra.Command{
@@ -129,7 +136,7 @@ var rootCmd = &cobra.Command{
 		var dir string
 		var err error
 		var filterResultsList []string
-		var outputFile *os.File
+		var outputFiles []formatterInfo
 
 		if ignoreWarnings || ignoreInfo {
 			fmt.Fprint(os.Stderr, "WARNING: The --ignore-info and --ignore-warnings flags are deprecated and will soon be removed.\n")
@@ -190,21 +197,61 @@ var rootCmd = &cobra.Command{
 			if format == "" {
 				format = "text"
 			}
-			f, err := os.OpenFile(filepath.Clean(outputFlag), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
+
+			formats := strings.Split(format, ",")
+			multipleFormats := false
+
+			if len(formats) > 1 {
+				outputFlag = strings.Split(outputFlag, ".")[0]
+				multipleFormats = true
+			}
+
+			for _, formatType := range formats {
+				var (
+					f          *os.File
+					err        error
+					outputPath string
+				)
+
+				if multipleFormats {
+					outputPath = filepath.Clean(outputFlag + "." + defaultExtensionForFormatter(formatType))
+				} else {
+					outputPath = filepath.Clean(outputFlag)
+				}
+
+				f, err = os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
+
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				outputFiles = append(outputFiles, formatterInfo{
+					outputFile: f,
+					format:     formatType,
+				})
+			}
+
+			defer func() {
+				for _, file := range outputFiles {
+					_ = file.outputFile.Close()
+				}
+			}()
+		} else {
+			outputFiles = append(outputFiles, formatterInfo{
+				outputFile: os.Stdout,
+				format:     "default",
+			})
+		}
+
+		for i, fileFormat := range outputFiles {
+			formatter, err := getFormatter(fileFormat.format)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			defer func() { _ = f.Close() }()
-			outputFile = f
-		} else {
-			outputFile = os.Stdout
-		}
 
-		formatter, err := getFormatter()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			outputFiles[i].formatter = &formatter
 		}
 
 		if len(tfvarsPaths) == 0 && unusedTfvarsPresent(dir) {
@@ -247,8 +294,17 @@ var rootCmd = &cobra.Command{
 			return nil
 		}
 
-		if err := formatter(outputFile, results, dir, getFormatterOptions()...); err != nil {
-			return err
+		for _, formatInfo := range outputFiles {
+			formatter := formatInfo.formatter
+
+			if formatter == nil {
+				fmt.Printf("%+v", formatter)
+				return errors.New(fmt.Sprintf("Could not access formatter for file format '%s'", formatInfo.format))
+			}
+
+			if err := (*formatter)(formatInfo.outputFile, results, dir, getFormatterOptions()...); err != nil {
+				return err
+			}
 		}
 
 		// Soft fail always takes precedence. If set, only execution errors
@@ -437,8 +493,8 @@ func updateResultSeverity(results []result.Result) []result.Result {
 	return overriddenResults
 }
 
-func getFormatter() (formatters.Formatter, error) {
-	switch strings.ToLower(format) {
+func getFormatter(fileFormat string) (formatters.Formatter, error) {
+	switch strings.ToLower(fileFormat) {
 	case "", "default":
 		return formatters.FormatDefault, nil
 	case "json":
@@ -454,7 +510,16 @@ func getFormatter() (formatters.Formatter, error) {
 	case "sarif":
 		return formatters.FormatSarif, nil
 	default:
-		return nil, fmt.Errorf("invalid format specified: '%s'", format)
+		return nil, fmt.Errorf("invalid format specified: '%s'", fileFormat)
+	}
+}
+
+func defaultExtensionForFormatter(fileFormat string) string {
+	switch strings.ToLower(fileFormat) {
+	case "text":
+		return "txt"
+	default:
+		return fileFormat
 	}
 }
 
