@@ -7,8 +7,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -47,7 +45,7 @@ resource "aws_api_gateway_domain_name" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_api_gateway_domain_name"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			securityPolicyAttr := resourceBlock.GetAttribute("security_policy")
 			if securityPolicyAttr.IsNil() {
@@ -55,6 +53,7 @@ resource "aws_api_gateway_domain_name" "good_example" {
 					WithDescription("Resource '%s' should include security_policy (defaults to outdated SSL/TLS policy).", resourceBlock.FullName())
 				return
 			}
+
 			if securityPolicyAttr.NotEqual("TLS_1_2") {
 				set.AddResult().
 					WithDescription("Resource '%s' defines outdated SSL/TLS policies (not using TLS_1_2).", resourceBlock.FullName()).

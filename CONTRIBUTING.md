@@ -2,7 +2,7 @@
 
 Thank you for considering contributing to tfsec! 
 
-We've documented the process of adding a new check below. If you have any other specific questions/problems that are preventing you from raising a PR, please get in touch with us! You can [find us on Slack](https://join.slack.com/t/tfsec/shared_invite/zt-i0vo9rp2-tEizIaT1dS4Eu2hVIsvwDg) - or simply [raise an issue](https://github.com/aquasecurity/tfsec/issues/new) and we'll do our best to help you out.
+We've documented the process of adding a new check below. If you have any other specific questions/problems that are preventing you from raising a PR, please get in touch with us! You can [find us on Slack](https://join.slack.com/t/tfsec/shared_invite/zt-o6c7mgoj-eJ1sLDv595sKiP5OPoHJww) - or simply [raise an issue](https://github.com/aquasecurity/tfsec/issues/new) and we'll do our best to help you out.
 
 ## Adding a New Check
 
@@ -93,7 +93,7 @@ resource "aws_gibson" "my-gibson" {
         
         	// the actual logic for your check
 		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, block block.Block, module block.Module) {
 			// TODO: add check logic here
 		},
 	})
@@ -106,16 +106,12 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
 ...
 
         DefaultSeverity: severity.Warning,
-CheckFunc: func(set result.Set, block *parser.Block, _ *hclcontext.Context) {
-
-            if attr := block.GetAttribute("hackable"); attr != nil && attr.Value().Type() == cty.Bool {
-                if attr.Value().True() {
-                    set.Add().
-                        						WithDescription("The Gibson '%s' is configured to be hackable.", block.Name()).
-						WithAttribute(attr).
-						,
-					)
-                }
+		CheckFunc: func(set result.Set, block block.Block, module block.Module) {
+            if attr := block.GetAttribute("hackable"); attr.IsTrue() {
+				set.AddResult().
+					WithDescription("The Gibson '%s' is configured to be hackable.", block.Name()).
+					WithAttribute(attr),
+				)
             }
         },
 ...

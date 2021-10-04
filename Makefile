@@ -8,7 +8,7 @@ image:
 .PHONY: test
 test:
 	which gotestsum || (pushd /tmp && go install gotest.tools/gotestsum@latest && popd)
-	gotestsum -- --mod=vendor -race ./...
+	gotestsum -- --mod=vendor -bench=^$$ -race ./...
 
 .PHONY: build
 build:
@@ -47,7 +47,7 @@ tagger:
 .PHONY: cyclo
 cyclo:
 	which gocyclo || go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
-	gocyclo -over 15 -ignore 'vendor/|funcs/' .
+	gocyclo -over 15 -ignore 'vendor/|funcs|cmd/tfsec-skeleton' .
 
 .PHONY: vet
 vet:
@@ -66,9 +66,13 @@ fix-typos:
 	which codespell || pip install codespell
 	codespell -S vendor,funcs,.terraform --ignore-words .codespellignore -f -w -i1
 
-.PHONY: clone-image
-clone-image:
-	./scripts/clone-images.sh
+.PHONY: clone-image-github
+clone-image-github:
+	./scripts/clone-images.sh ghcr.io/aquasecurity
+
+.PHONY: clone-image-tfsec
+clone-image-tfsec:
+	./scripts/clone-images.sh tfsec
 
 .PHONY: sanity
 sanity: test

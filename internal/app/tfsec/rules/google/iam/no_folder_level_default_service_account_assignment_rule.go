@@ -6,8 +6,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -70,7 +68,7 @@ resource "google_folder_iam_member" "folder-123" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"google_folder_iam_binding", "google_folder_iam_member"},
 		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			if memberAttr := resourceBlock.GetAttribute("member"); memberAttr.IsNotNil() {
 				if memberAttr.IsString() {
@@ -80,8 +78,8 @@ resource "google_folder_iam_member" "folder-123" {
 							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 					}
 				} else {
-					computeServiceAccounts := ctx.GetDatasByType("google_compute_default_service_account")
-					serviceAccounts := append(computeServiceAccounts, ctx.GetResourcesByType("google_app_engine_default_service_account")...)
+					computeServiceAccounts := module.GetDatasByType("google_compute_default_service_account")
+					serviceAccounts := append(computeServiceAccounts, module.GetResourcesByType("google_app_engine_default_service_account")...)
 					for _, serviceAccount := range serviceAccounts {
 						if memberAttr.ReferencesBlock(serviceAccount) {
 							set.AddResult().
@@ -100,8 +98,8 @@ resource "google_folder_iam_member" "folder-123" {
 							WithDescription("Resource '%s' assigns a role to a default service account.", resourceBlock.FullName())
 					}
 				}
-				computeServiceAccounts := ctx.GetDatasByType("google_compute_default_service_account")
-				serviceAccounts := append(computeServiceAccounts, ctx.GetResourcesByType("google_app_engine_default_service_account")...)
+				computeServiceAccounts := module.GetDatasByType("google_compute_default_service_account")
+				serviceAccounts := append(computeServiceAccounts, module.GetResourcesByType("google_app_engine_default_service_account")...)
 				for _, serviceAccount := range serviceAccounts {
 					if membersAttr.ReferencesBlock(serviceAccount) {
 						set.AddResult().

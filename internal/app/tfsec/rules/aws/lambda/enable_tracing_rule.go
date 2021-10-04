@@ -7,7 +7,6 @@ package lambda
 // generator-locked
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -23,7 +22,7 @@ func init() {
 		Documentation: rule.RuleDocumentation{
 			Summary:     "Lambda functions should have X-Ray tracing enabled",
 			Explanation: `X-Ray tracing enables end-to-end debugging and analysis of all function activity. This will allow for identifying bottlenecks, slow downs and timeouts.`,
-			Impact:      "WIthout full tracing enabled it is difficult to trace the flow of logs",
+			Impact:      "Without full tracing enabled, it is difficult to trace the flow of logs",
 			Resolution:  "Enable tracing",
 			BadExample: []string{`
 resource "aws_iam_role" "iam_for_lambda" {
@@ -124,7 +123,7 @@ resource "aws_lambda_function" "good_example" {
 			"aws_lambda_function",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if modeAttr := resourceBlock.GetBlock("tracing_config").GetAttribute("mode"); modeAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for tracing_config.mode", resourceBlock.FullName())

@@ -6,7 +6,6 @@ package mq
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -16,7 +15,7 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Provider:       provider.AWSProvider,
+		Provider:  provider.AWSProvider,
 		Service:   "mq",
 		ShortCode: "enable-general-logging",
 		Documentation: rule.RuleDocumentation{
@@ -24,7 +23,7 @@ func init() {
 			Explanation: `Logging should be enabled to allow tracing of issues and activity to be investigated more fully. Logs provide additional information and context which is often invalauble during investigation`,
 			Impact:      "Without logging it is difficult to trace issues",
 			Resolution:  "Enable general logging",
-			BadExample: []string{  `
+			BadExample: []string{`
 resource "aws_mq_broker" "bad_example" {
   broker_name = "example"
 
@@ -47,7 +46,7 @@ resource "aws_mq_broker" "bad_example" {
   }
 }
 `},
-			GoodExample: []string{ `
+			GoodExample: []string{`
 resource "aws_mq_broker" "good_example" {
   broker_name = "example"
 
@@ -74,14 +73,14 @@ resource "aws_mq_broker" "good_example" {
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/mq_broker#general",
 			},
 		},
-		RequiredTypes:  []string{ 
+		RequiredTypes: []string{
 			"resource",
 		},
-		RequiredLabels: []string{ 
+		RequiredLabels: []string{
 			"aws_mq_broker",
 		},
-		DefaultSeverity: severity.Low, 
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context){
+		DefaultSeverity: severity.Low,
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if generalAttr := resourceBlock.GetBlock("logs").GetAttribute("general"); generalAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for logs.general", resourceBlock.FullName())

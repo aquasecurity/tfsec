@@ -23,50 +23,56 @@ type visitedModule struct {
 }
 
 type Evaluator struct {
-	ctx             *hcl.EvalContext
-	blocks          block.Blocks
-	modules         []*ModuleInfo
-	visitedModules  []*visitedModule
-	inputVars       map[string]cty.Value
-	moduleMetadata  *ModulesMetadata
-	projectRootPath string // root of the current scan
-	stopOnHCLError  bool
-	modulePath      string
+	ctx               *block.Context
+	blocks            block.Blocks
+	moduleDefinitions []*ModuleDefinition
+	visitedModules    []*visitedModule
+	inputVars         map[string]cty.Value
+	moduleMetadata    *ModulesMetadata
+	projectRootPath   string // root of the current scan
+	stopOnHCLError    bool
+	modulePath        string
+	workingDir        string
+	workspace         string
 }
 
 func NewEvaluator(
 	projectRootPath string,
 	modulePath string,
+	workingDir string,
 	blocks block.Blocks,
 	inputVars map[string]cty.Value,
 	moduleMetadata *ModulesMetadata,
 	visitedModules []*visitedModule,
 	stopOnHCLError bool,
+	workspace string,
 ) *Evaluator {
 
-	ctx := &hcl.EvalContext{
-		Variables: make(map[string]cty.Value),
+	ctx := block.NewContext(&hcl.EvalContext{
 		Functions: Functions(modulePath),
-	}
+	}, nil)
+
+	ctx.SetByDot(cty.StringVal(workspace), "terraform.workspace")
+	ctx.SetByDot(cty.StringVal(projectRootPath), "path.root")
+	ctx.SetByDot(cty.StringVal(modulePath), "path.module")
+	ctx.SetByDot(cty.StringVal(workingDir), "path.cwd")
 
 	for _, b := range blocks {
-		b.AttachEvalContext(ctx.NewChild())
+		b.OverrideContext(ctx.NewChild())
 	}
 
 	return &Evaluator{
 		modulePath:      modulePath,
 		projectRootPath: projectRootPath,
+		workingDir:      workingDir,
 		ctx:             ctx,
 		blocks:          blocks,
 		inputVars:       inputVars,
 		moduleMetadata:  moduleMetadata,
 		visitedModules:  visitedModules,
 		stopOnHCLError:  stopOnHCLError,
+		workspace:       workspace,
 	}
-}
-
-func (e *Evaluator) SetModuleBasePath(path string) {
-	e.projectRootPath = path
 }
 
 func (e *Evaluator) evaluateStep(i int) {
@@ -74,17 +80,17 @@ func (e *Evaluator) evaluateStep(i int) {
 	evalTime := metrics.Start(metrics.Evaluation)
 	debug.Log("Starting iteration %d of context evaluation...", i+1)
 
-	e.ctx.Variables["var"] = e.getValuesByBlockType("variable")
-	e.ctx.Variables["local"] = e.getValuesByBlockType("locals")
-	e.ctx.Variables["provider"] = e.getValuesByBlockType("provider")
+	e.ctx.Set(e.getValuesByBlockType("variable"), "var")
+	e.ctx.Set(e.getValuesByBlockType("locals"), "local")
+	e.ctx.Set(e.getValuesByBlockType("provider"), "provider")
 
 	resources := e.getValuesByBlockType("resource")
 	for key, resource := range resources.AsValueMap() {
-		e.ctx.Variables[key] = resource
+		e.ctx.Set(resource, key)
 	}
 
-	e.ctx.Variables["data"] = e.getValuesByBlockType("data")
-	e.ctx.Variables["output"] = e.getValuesByBlockType("output")
+	e.ctx.Set(e.getValuesByBlockType("data"), "data")
+	e.ctx.Set(e.getValuesByBlockType("output"), "output")
 
 	evalTime.Stop()
 
@@ -93,8 +99,8 @@ func (e *Evaluator) evaluateStep(i int) {
 
 func (e *Evaluator) evaluateModules() {
 
-	for _, module := range e.modules {
-		if visited := func(module *ModuleInfo) bool {
+	for _, module := range e.moduleDefinitions {
+		if visited := func(module *ModuleDefinition) bool {
 			for _, v := range e.visitedModules {
 				if v.name == module.Name && v.path == module.Path && module.Definition.Reference().String() == v.definitionReference {
 					debug.Log("Module [%s:%s:%s] has already been seen", v.name, v.path, v.definitionReference)
@@ -109,45 +115,30 @@ func (e *Evaluator) evaluateModules() {
 		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path, module.Definition.Reference().String()})
 
 		evalTime := metrics.Start(metrics.Evaluation)
-		inputVars := make(map[string]cty.Value)
-		for _, attr := range module.Definition.GetAttributes() {
-			func() {
-				defer func() {
-					if err := recover(); err != nil {
-						return
-					}
-				}()
-				inputVars[attr.Name()] = attr.Value()
-			}()
-		}
-		evalTime.Stop()
-
-		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, module.Blocks, inputVars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError)
-		e.SetModuleBasePath(e.projectRootPath)
-		module.Blocks, _ = moduleEvaluator.EvaluateAll()
-
-		evalTime = metrics.Start(metrics.Evaluation)
+		vars := module.Definition.Values().AsValueMap()
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, e.workingDir, module.Modules[0].GetBlocks(), vars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError, e.workspace)
+		module.Modules, _ = moduleEvaluator.EvaluateAll()
 		// export module outputs
-		moduleMapRaw := e.ctx.Variables["module"]
-		if moduleMapRaw == cty.NilVal {
-			moduleMapRaw = cty.ObjectVal(make(map[string]cty.Value))
-		}
-		moduleMap := moduleMapRaw.AsValueMap()
-		if moduleMap == nil {
-			moduleMap = make(map[string]cty.Value)
-		}
-		moduleMap[module.Name] = moduleEvaluator.ExportOutputs()
-		e.ctx.Variables["module"] = cty.ObjectVal(moduleMap)
+		e.ctx.Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
+
 		evalTime.Stop()
 	}
 }
 
-// export module outputs to a parent hclcontext
+// export module outputs to a parent
 func (e *Evaluator) ExportOutputs() cty.Value {
-	return e.ctx.Variables["output"]
+	data := make(map[string]cty.Value)
+	for _, block := range e.blocks.OfType("output") {
+		attr := block.GetAttribute("value")
+		if attr.IsNil() {
+			continue
+		}
+		data[block.Label()] = attr.Value()
+	}
+	return cty.ObjectVal(data)
 }
 
-func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
+func (e *Evaluator) EvaluateAll() ([]block.Module, error) {
 
 	var lastContext hcl.EvalContext
 
@@ -156,20 +147,20 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 		e.evaluateStep(i)
 
 		// if ctx matches the last evaluation, we can bail, nothing left to resolve
-		if reflect.DeepEqual(lastContext.Variables, e.ctx.Variables) {
+		if reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
 			break
 		}
 
-		if len(e.ctx.Variables) != len(lastContext.Variables) {
-			lastContext.Variables = make(map[string]cty.Value, len(e.ctx.Variables))
+		if len(e.ctx.Inner().Variables) != len(lastContext.Variables) {
+			lastContext.Variables = make(map[string]cty.Value, len(e.ctx.Inner().Variables))
 		}
-		for k, v := range e.ctx.Variables {
+		for k, v := range e.ctx.Inner().Variables {
 			lastContext.Variables[k] = v
 		}
 	}
 
 	debug.Log("Loading modules...")
-	e.modules = e.loadModules(true)
+	e.moduleDefinitions = e.loadModules(true)
 
 	// expand out resources and modules via count
 	e.blocks = e.expandBlocks(e.blocks)
@@ -179,35 +170,59 @@ func (e *Evaluator) EvaluateAll() (block.Blocks, error) {
 		e.evaluateStep(i)
 
 		// if ctx matches the last evaluation, we can bail, nothing left to resolve
-		if reflect.DeepEqual(lastContext.Variables, e.ctx.Variables) {
+		if reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
 			break
 		}
 
-		if len(e.ctx.Variables) != len(lastContext.Variables) {
-			lastContext.Variables = make(map[string]cty.Value, len(e.ctx.Variables))
+		if len(e.ctx.Inner().Variables) != len(lastContext.Variables) {
+			lastContext.Variables = make(map[string]cty.Value, len(e.ctx.Inner().Variables))
 		}
-		for k, v := range e.ctx.Variables {
+		for k, v := range e.ctx.Inner().Variables {
 			lastContext.Variables[k] = v
 		}
 	}
 
-	allBlocks := e.blocks
-	for _, module := range e.modules {
-		allBlocks = append(allBlocks, module.Blocks...)
+	var modules []block.Module
+	modules = append(modules, block.NewHCLModule(e.projectRootPath, e.modulePath, e.blocks))
+	for _, definition := range e.moduleDefinitions {
+		modules = append(modules, definition.Modules...)
 	}
 
-	return allBlocks, nil
+	return modules, nil
 }
 
 func (e *Evaluator) expandBlocks(blocks block.Blocks) block.Blocks {
-	return e.expandBlockCounts(e.expandBlockForEaches(blocks))
+	return e.expandDynamicBlocks(e.expandBlockForEaches(e.expandBlockCounts(blocks))...)
 }
 
-func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
+func (e *Evaluator) expandDynamicBlocks(blocks ...block.Block) block.Blocks {
+	for _, b := range blocks {
+		e.expandDynamicBlock(b)
+	}
+	return blocks
+}
+
+func (e *Evaluator) expandDynamicBlock(b block.Block) {
+	for _, sub := range b.AllBlocks() {
+		e.expandDynamicBlock(sub)
+	}
+	for _, sub := range b.AllBlocks().OfType("dynamic") {
+		blockName := sub.TypeLabel()
+		expanded := e.expandBlockForEaches([]block.Block{sub})
+		for _, ex := range expanded {
+			if content := ex.GetBlock("content"); content.IsNotNil() {
+				_ = e.expandDynamicBlocks(content)
+				b.InjectBlock(content, blockName)
+			}
+		}
+	}
+}
+
+func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 	var forEachFiltered block.Blocks
 	for _, block := range blocks {
 		forEachAttr := block.GetAttribute("for_each")
-		if forEachAttr.IsNil() || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module") {
+		if forEachAttr.IsNil() || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module" && block.Type() != "dynamic") {
 			forEachFiltered = append(forEachFiltered, block)
 			continue
 		}
@@ -219,10 +234,11 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 
 				e.copyVariables(block, clone)
 
-				ctx.Variables["each"] = cty.ObjectVal(map[string]cty.Value{
-					"key":   key,
-					"value": val,
-				})
+				ctx.SetByDot(key, "each.key")
+				ctx.SetByDot(val, "each.value")
+
+				ctx.Set(key, block.TypeLabel(), "key")
+				ctx.Set(val, block.TypeLabel(), "value")
 
 				debug.Log("Added %s from for_each", clone.Reference())
 				forEachFiltered = append(forEachFiltered, clone)
@@ -233,7 +249,7 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 	return forEachFiltered
 }
 
-func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
+func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 	var countFiltered block.Blocks
 	for _, block := range blocks {
 		countAttr := block.GetAttribute("count")
@@ -280,40 +296,12 @@ func (e *Evaluator) copyVariables(from, to block.Block) {
 		return
 	}
 
-	topLevelMap := e.ctx.Variables[fromBase] // s3_buckets
-	if topLevelMap.Type() == cty.NilType {
-		topLevelMap = cty.EmptyObjectVal
+	srcValue := e.ctx.Root().Get(fromBase, fromRel)
+	if srcValue == cty.NilVal {
+		debug.Log("error trying to copyVariable from the source of '%s.%s'", fromBase, fromRel)
+		return
 	}
-	topLevelVars := topLevelMap.AsValueMap()
-	if topLevelVars == nil {
-		topLevelVars = map[string]cty.Value{}
-	}
-
-	relativeMap := topLevelVars[fromRel]
-	if relativeMap.Type() == cty.NilType {
-		relativeMap = cty.EmptyObjectVal
-	}
-	relativeVars := relativeMap.AsValueMap()
-	if relativeVars == nil {
-		relativeVars = map[string]cty.Value{}
-	}
-	// put back
-	topLevelVars[toRel] = cty.ObjectVal(relativeVars)
-	e.ctx.Variables[fromBase] = cty.ObjectVal(topLevelVars)
-}
-
-func mergeBlocks(allBlocks block.Blocks, newBlocks block.Blocks) block.Blocks {
-	var merger = make(map[block.Block]bool)
-	for _, b := range allBlocks {
-		merger[b] = true
-	}
-
-	for _, b := range newBlocks {
-		if _, ok := merger[b]; !ok {
-			allBlocks = append(allBlocks, b)
-		}
-	}
-	return allBlocks
+	e.ctx.Root().Set(srcValue, fromBase, toRel)
 }
 
 func (e *Evaluator) evaluateVariable(b block.Block) (cty.Value, error) {
@@ -336,25 +324,15 @@ func (e *Evaluator) evaluateVariable(b block.Block) (cty.Value, error) {
 }
 
 func (e *Evaluator) evaluateOutput(b block.Block) (cty.Value, error) {
-
-	defer func() {
-		_ = recover()
-	}()
-
 	if b.Label() == "" {
 		return cty.NilVal, fmt.Errorf("empty label - cannot resolve")
 	}
 
-	attributes := b.Attributes()
-	if attributes == nil {
+	attribute := b.GetAttribute("value")
+	if attribute.IsNil() {
 		return cty.NilVal, fmt.Errorf("cannot resolve variable with no attributes")
 	}
-
-	if def, exists := attributes["value"]; exists {
-		return def.Value(), nil
-	}
-
-	return cty.NilVal, fmt.Errorf("no value found")
+	return attribute.Value(), nil
 }
 
 // returns true if all evaluations were successful
@@ -412,10 +390,4 @@ func (e *Evaluator) getValuesByBlockType(blockType string) cty.Value {
 
 	return cty.ObjectVal(values)
 
-}
-
-func (e *Evaluator) SetWorkspace(workspaceName string) {
-
-	ctyWorkspaceName := cty.StringVal(workspaceName)
-	e.ctx.Variables["terraform"] = cty.ObjectVal(map[string]cty.Value{"workspace": ctyWorkspaceName})
 }

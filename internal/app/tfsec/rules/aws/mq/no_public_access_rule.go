@@ -6,7 +6,6 @@ package mq
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -16,7 +15,7 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Provider:       provider.AWSProvider,
+		Provider:  provider.AWSProvider,
 		Service:   "mq",
 		ShortCode: "no-public-access",
 		Documentation: rule.RuleDocumentation{
@@ -24,7 +23,7 @@ func init() {
 			Explanation: `Public access of the MQ broker should be disabled and only allow routes to applications that require access.`,
 			Impact:      "Publicly accessible MQ Broker may be vulnerable to compromise",
 			Resolution:  "Disable public access when not required",
-			BadExample: []string{  `
+			BadExample: []string{`
 resource "aws_mq_broker" "bad_example" {
   broker_name = "example"
 
@@ -45,7 +44,7 @@ resource "aws_mq_broker" "bad_example" {
   publicly_accessible = true
 }
 `},
-			GoodExample: []string{ `
+			GoodExample: []string{`
 resource "aws_mq_broker" "good_example" {
   broker_name = "example"
 
@@ -70,14 +69,14 @@ resource "aws_mq_broker" "good_example" {
 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/mq_broker#publicly_accessible",
 			},
 		},
-		RequiredTypes:  []string{ 
+		RequiredTypes: []string{
 			"resource",
 		},
-		RequiredLabels: []string{ 
+		RequiredLabels: []string{
 			"aws_mq_broker",
 		},
-		DefaultSeverity: severity.High, 
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context){
+		DefaultSeverity: severity.High,
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if publiclyAccessibleAttr := resourceBlock.GetAttribute("publicly_accessible"); publiclyAccessibleAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for publicly_accessible", resourceBlock.FullName())

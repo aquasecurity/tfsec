@@ -32,6 +32,6 @@ func BenchmarkCalculate(b *testing.B) {
 		if err != nil {
 			panic(err)
 		}
-		_ = scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+		_ = scanner.New().Scan(blocks)
 	}
 }

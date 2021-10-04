@@ -8,8 +8,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -142,10 +140,11 @@ func processFoundChecks(checks ChecksFile) {
 				Provider:        provider.CustomProvider,
 				RequiredTypes:   customCheck.RequiredTypes,
 				RequiredLabels:  customCheck.RequiredLabels,
+				RequiredSources: customCheck.RequiredSources,
 				DefaultSeverity: severity.Medium,
-				CheckFunc: func(set result.Set, rootBlock block.Block, ctx *hclcontext.Context) {
+				CheckFunc: func(set result.Set, rootBlock block.Block, module block.Module) {
 					matchSpec := customCheck.MatchSpec
-					if !evalMatchSpec(rootBlock, matchSpec, ctx) {
+					if !evalMatchSpec(rootBlock, matchSpec, module) {
 						set.AddResult().
 							WithDescription("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage).
 							WithSeverity(customCheck.Severity)
@@ -156,7 +155,7 @@ func processFoundChecks(checks ChecksFile) {
 	}
 }
 
-func evalMatchSpec(b block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
+func evalMatchSpec(b block.Block, spec *MatchSpec, module block.Module) bool {
 	if b.IsNil() {
 		return false
 	}
@@ -164,7 +163,7 @@ func evalMatchSpec(b block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool
 
 	if spec.PreConditions != nil {
 		for _, preCondition := range spec.PreConditions {
-			if !evalMatchSpec(b, &preCondition, ctx) {
+			if !evalMatchSpec(b, &preCondition, module) {
 				// precondition not met
 				return true
 			}
@@ -179,17 +178,17 @@ func evalMatchSpec(b block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool
 			return spec.IgnoreUnmatched
 		}
 	case HasTag:
-		return checkTags(b, spec, ctx)
+		return checkTags(b, spec, module)
 	case OfType:
 		return ofType(b, spec)
 	case RequiresPresence:
-		return resourceFound(spec, ctx)
+		return resourceFound(spec, module)
 	case Not:
-		return notifyPredicate(b, spec, ctx)
+		return notifyPredicate(b, spec, module)
 	case And:
-		return processAndPredicate(spec, b, ctx)
+		return processAndPredicate(spec, b, module)
 	case Or:
-		return processOrPredicate(spec, b, ctx)
+		return processOrPredicate(spec, b, module)
 	default:
 		evalResult = matchFunctions[spec.Action](b, spec)
 	}
@@ -201,24 +200,24 @@ func evalMatchSpec(b block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool
 	return evalResult
 }
 
-func notifyPredicate(b block.Block, spec *MatchSpec, ctx *hclcontext.Context) bool {
-	return !evalMatchSpec(b, &spec.PredicateMatchSpec[0], ctx)
+func notifyPredicate(b block.Block, spec *MatchSpec, module block.Module) bool {
+	return !evalMatchSpec(b, &spec.PredicateMatchSpec[0], module)
 }
 
-func processOrPredicate(spec *MatchSpec, b block.Block, ctx *hclcontext.Context) bool {
+func processOrPredicate(spec *MatchSpec, b block.Block, module block.Module) bool {
 	for _, childSpec := range spec.PredicateMatchSpec {
-		if evalMatchSpec(b, &childSpec, ctx) {
+		if evalMatchSpec(b, &childSpec, module) {
 			return true
 		}
 	}
 	return false
 }
 
-func processAndPredicate(spec *MatchSpec, b block.Block, ctx *hclcontext.Context) bool {
+func processAndPredicate(spec *MatchSpec, b block.Block, module block.Module) bool {
 	set := make(map[bool]bool)
 
 	for _, childSpec := range spec.PredicateMatchSpec {
-		result := evalMatchSpec(b, &childSpec, ctx)
+		result := evalMatchSpec(b, &childSpec, module)
 		set[result] = true
 
 	}
@@ -237,9 +236,9 @@ func processSubMatches(spec *MatchSpec, b block.Block, evalResult bool) bool {
 	return evalResult
 }
 
-func resourceFound(spec *MatchSpec, ctx *hclcontext.Context) bool {
+func resourceFound(spec *MatchSpec, module block.Module) bool {
 	val := fmt.Sprintf("%v", spec.Name)
-	byType := ctx.GetResourcesByType(val)
+	byType := module.GetResourcesByType(val)
 	return len(byType) > 0
 }
 

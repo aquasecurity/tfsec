@@ -7,8 +7,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -47,7 +45,7 @@ resource "aws_default_vpc" "default" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_default_vpc"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			set.AddResult().
 				WithDescription("Resource '%s' should not exist", resourceBlock.FullName())
 		},

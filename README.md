@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="500" src="./tfsec.png">
+  <img width="354" src="./tfsec.png">
 </p>
 
 [![GoReportCard](https://goreportcard.com/badge/github.com/aquasecurity/tfsec)](https://goreportcard.com/report/github.com/aquasecurity/tfsec)
@@ -75,10 +75,10 @@ There are a number of Docker options available
 
 | Image Name | Base | Comment |
 |------------|------|---------|
-|[tfsec/tfsec](https://hub.docker.com/repository/docker/tfsec/tfsec)|alpine|Normal tfsec image|
-|[tfsec/tfsec-alpine](https://hub.docker.com/repository/docker/tfsec/tfsec-alpine)|alpine|Exactly the same as tfsec/tfsec, but for those whole like to be explicit|
-|[tfsec/tfsec-ci](https://hub.docker.com/repository/docker/tfsec/tfsec-ci)|alpine|tfsec with no entrypoint - useful for CI builds where you want to override the command|
-|[tfsec/tfsec-scratch](https://hub.docker.com/repository/docker/tfsec/tfsec-scratch)|scratch|An image built on scratch - nothing frilly, just runs tfsec|
+|[tfsec/tfsec](https://hub.docker.com/r/aquasec/tfsec)|alpine|Normal tfsec image|
+|[tfsec/tfsec-alpine](https://hub.docker.com/r/aquasec/tfsec-alpine)|alpine|Exactly the same as tfsec/tfsec, but for those whole like to be explicit|
+|[tfsec/tfsec-ci](https://hub.docker.com/r/aquasec/tfsec-ci)|alpine|tfsec with no entrypoint - useful for CI builds where you want to override the command|
+|[tfsec/tfsec-scratch](https://hub.docker.com/r/aquasec/tfsec-scratch)|scratch|An image built on scratch - nothing frilly, just runs tfsec|
 
 To run:
 
@@ -105,7 +105,7 @@ If you want to run tfsec on your repository as a GitHub Action, you can use [htt
 ## Ignoring Warnings
 
 You may wish to ignore some warnings. If you'd like to do so, you can
-simply add a comment containing `tfsec:ignore:<RULE>` to the offending
+simply add a comment containing `tfsec:ignore:<rule>` to the offending
 line in your templates. If the problem refers to a block of code, such
 as a multiline string, you can add the comment on the line above the
 block, by itself.
@@ -115,7 +115,7 @@ For example, to ignore an open security group rule:
 ```hcl
 resource "aws_security_group_rule" "my-rule" {
     type = "ingress"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:AWS006
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sgr
 }
 ```
 
@@ -124,7 +124,7 @@ resource "aws_security_group_rule" "my-rule" {
 ```hcl
 resource "aws_security_group_rule" "my-rule" {
     type = "ingress"
-    #tfsec:ignore:AWS006
+    #tfsec:ignore:aws-vpc-no-public-ingress-sgr
     cidr_blocks = ["0.0.0.0/0"]
 }
 ```
@@ -135,7 +135,7 @@ tfsec output for the line number of the discovered problem.
 You can ignore multiple rules by concatenating the rules on a single line:
 
 ```hcl
-#tfsec:ignore:AWS017 tfsec:ignore:AWS002
+#tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "my-bucket" {
   bucket = "foobar"
   acl    = "private"
@@ -145,7 +145,7 @@ resource "aws_s3_bucket" "my-bucket" {
 ### Expiration Date
 You can set expiration date for `ignore` with `yyyy-mm-dd` format. This is a useful feature when you want to ensure ignored issue won't be forgotten and should be revisited in the future.
 ```
-#tfsec:ignore:AWS017:exp:2022-01-02
+#tfsec:ignore:aws-s3-enable-bucket-encryption:exp:2022-01-02
 ```
 Ignore like this will be active only till `2022-01-02`, after this date it will be deactivated.
 
@@ -156,10 +156,10 @@ As of `v0.52.0`, we fixed an issue where ignores were being incorrectly applied 
 ## Disable checks
 
 You may wish to exclude some checks from running. If you'd like to do so, you can
-simply add new argument `-e CHECK1,CHECK2,etc` to your cmd command
+simply add new argument `-e check1,check2,etc` to your cmd command
 
 ```bash
-tfsec . -e GEN001,GCP001,GCP002
+tfsec . -e general-secrets-sensitive-in-variable,google-compute-disk-encryption-customer-keys
 ```
 
 ## Including values from .tfvars
@@ -180,11 +180,8 @@ there are also checks which are provider agnostic.
 
 ## Running in CI
 
-tfsec is designed for running in a CI pipeline. For this reason it will
-exit with a non-zero exit code if a potential problem is detected.
-You may wish to run tfsec as part of your build without coloured
-output. You can do this using `--no-colour` (or `--no-color` for our
-American friends).
+tfsec is designed for running in a CI pipeline. You may wish to run tfsec as part of your build without coloured
+output. You can do this using `--no-colour` (or `--no-color` for our American friends).
 
 ## Output options
 

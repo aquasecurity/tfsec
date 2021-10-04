@@ -9,7 +9,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 )
 
 // Rule is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.
@@ -24,8 +23,9 @@ type Rule struct {
 	Provider        provider.Provider
 	RequiredTypes   []string
 	RequiredLabels  []string
+	RequiredSources []string
 	DefaultSeverity severity.Severity
-	CheckFunc       func(result.Set, block.Block, *hclcontext.Context)
+	CheckFunc       func(result.Set, block.Block, block.Module)
 }
 
 func (r Rule) ID() string {

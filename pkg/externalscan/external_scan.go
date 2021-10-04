@@ -39,7 +39,7 @@ func (t *ExternalScanner) AddPath(path string) error {
 
 func (t *ExternalScanner) Scan() ([]result.Result, error) {
 
-	projectBlocks := make(map[string]block.Blocks)
+	projectModules := make(map[string][]block.Module)
 
 	dirs, err := findTFRootModules(t.paths)
 	if err != nil {
@@ -47,21 +47,33 @@ func (t *ExternalScanner) Scan() ([]result.Result, error) {
 	}
 
 	for _, dir := range dirs {
-		blocks, err := parser.New(dir).ParseDirectory()
+		modules, err := parser.New(dir).ParseDirectory()
 		if err != nil {
 			return nil, err
 		}
-		projectBlocks[dir] = blocks
+		projectModules[dir] = modules
 	}
 
 	var results []result.Result
 	internal := scanner.New(t.internalOptions...)
-	for _, blockset := range projectBlocks {
-		projectResults := internal.Scan(blockset)
+	for _, modules := range projectModules {
+		projectResults := internal.Scan(modules)
 		results = append(results, projectResults...)
 	}
 
+	// temporary hack to convert IDs pending switch to v1 tfsec using defsec
+	results = rewriteIds(results)
 	return results, nil
+}
+
+func rewriteIds(results []result.Result) []result.Result {
+	var updatedResults []result.Result
+	for _, r := range results {
+		if avd, ok := idMap[r.RuleID]; ok {
+			updatedResults = append(updatedResults, *r.WithRuleID(avd))
+		}
+	}
+	return updatedResults
 }
 
 func findTFRootModules(paths []string) ([]string, error) {

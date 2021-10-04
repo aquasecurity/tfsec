@@ -11,8 +11,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -92,7 +90,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		ShortCode:       "abc123",
 		RequiredLabels:  []string{"bad"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			set.AddResult().
 				WithDescription("example problem")
 		},
@@ -107,7 +105,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 		ShortCode:       "def456",
 		RequiredLabels:  []string{"bad"},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			set.AddResult().
 				WithDescription("example problem")
 		},

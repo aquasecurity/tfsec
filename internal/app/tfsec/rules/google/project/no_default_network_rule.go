@@ -6,7 +6,6 @@ package project
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -16,7 +15,7 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Provider:       provider.GoogleProvider,
+		Provider:  provider.GoogleProvider,
 		Service:   "project",
 		ShortCode: "no-default-network",
 		Documentation: rule.RuleDocumentation{
@@ -24,7 +23,7 @@ func init() {
 			Explanation: `The default network which is provided for a project contains multiple insecure firewall rules which allow ingress to the project's infrastructure. Creation of this network should therefore be disabled.`,
 			Impact:      "Exposure of internal infrastructure/services to public internet",
 			Resolution:  "Disable automatic default network creation",
-			BadExample: []string{  `
+			BadExample: []string{`
 resource "google_project" "bad_example" {
   name       = "My Project"
   project_id = "your-project-id"
@@ -32,7 +31,7 @@ resource "google_project" "bad_example" {
   auto_create_network = true
 }
 `},
-			GoodExample: []string{ `
+			GoodExample: []string{`
 resource "google_project" "good_example" {
   name       = "My Project"
   project_id = "your-project-id"
@@ -44,14 +43,14 @@ resource "google_project" "good_example" {
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project#auto_create_network",
 			},
 		},
-		RequiredTypes:  []string{ 
+		RequiredTypes: []string{
 			"resource",
 		},
-		RequiredLabels: []string{ 
+		RequiredLabels: []string{
 			"google_project",
 		},
-		DefaultSeverity: severity.High, 
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context){
+		DefaultSeverity: severity.High,
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if autoCreateNetworkAttr := resourceBlock.GetAttribute("auto_create_network"); autoCreateNetworkAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for auto_create_network", resourceBlock.FullName())

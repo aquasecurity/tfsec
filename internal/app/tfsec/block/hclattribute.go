@@ -14,10 +14,10 @@ import (
 
 type HCLAttribute struct {
 	hclAttribute *hcl.Attribute
-	ctx          *hcl.EvalContext
+	ctx          *Context
 }
 
-func NewHCLAttribute(attr *hcl.Attribute, ctx *hcl.EvalContext) *HCLAttribute {
+func NewHCLAttribute(attr *hcl.Attribute, ctx *Context) *HCLAttribute {
 	return &HCLAttribute{
 		hclAttribute: attr,
 		ctx:          ctx,
@@ -97,7 +97,7 @@ func (attr *HCLAttribute) Value() (ctyVal cty.Value) {
 			ctyVal = cty.NilVal
 		}
 	}()
-	ctyVal, _ = attr.hclAttribute.Expr.Value(attr.ctx)
+	ctyVal, _ = attr.hclAttribute.Expr.Value(attr.ctx.Inner())
 	if !ctyVal.IsKnown() {
 		return cty.NilVal
 	}
@@ -126,7 +126,7 @@ func (attr *HCLAttribute) ValueAsStrings() []string {
 	if attr == nil {
 		return nil
 	}
-	return getStrings(attr.hclAttribute.Expr, attr.ctx)
+	return getStrings(attr.hclAttribute.Expr, attr.ctx.Inner())
 }
 
 func getStrings(expr hcl.Expression, ctx *hcl.EvalContext) []string {
@@ -309,6 +309,7 @@ func (attr *HCLAttribute) Equals(checkValue interface{}, equalityOptions ...Equa
 		}
 		return attr.Value().RawEquals(checkNumber)
 	}
+
 	return false
 }
 
@@ -358,6 +359,16 @@ func (attr *HCLAttribute) IsAny(options ...interface{}) bool {
 			}
 			if attr.Value().RawEquals(checkValue) {
 				return true
+			}
+		}
+	}
+	if attr.IsIterable() {
+		attrVals := attr.Value().AsValueSlice()
+		for _, option := range options {
+			for _, attrVal := range attrVals {
+				if attrVal.Type() == cty.String && attrVal.AsString() == option {
+					return true
+				}
 			}
 		}
 	}
@@ -447,6 +458,10 @@ func (attr *HCLAttribute) IsEmpty() bool {
 		return attr.isNullAttributeEmpty()
 	}
 	return true
+}
+
+func (attr *HCLAttribute) IsNotEmpty() bool {
+	return !attr.IsEmpty()
 }
 
 func (attr *HCLAttribute) isNullAttributeEmpty() bool {
@@ -610,7 +625,7 @@ func (attr *HCLAttribute) Reference() (*Reference, error) {
 			if err != nil {
 				return nil, err
 			}
-			key, _ := s.Key.Value(attr.ctx)
+			key, _ := s.Key.Value(attr.ctx.Inner())
 			collectionRef.SetKey(key)
 			return collectionRef, nil
 		default:
@@ -633,15 +648,14 @@ func (attr *HCLAttribute) AllReferences() []*Reference {
 	if attr == nil {
 		return nil
 	}
-	refs := attr.referencesInTemplate()
-	if len(refs) > 0 {
-		return refs
-	}
+	var refs []*Reference
+	refs = append(refs, attr.referencesInTemplate()...)
+	refs = append(refs, attr.referencesInConditional()...)
 	ref, err := attr.Reference()
-	if err != nil {
-		return nil
+	if err == nil {
+		refs = append(refs, ref)
 	}
-	return append(refs, ref)
+	return refs
 }
 
 func (attr *HCLAttribute) referencesInTemplate() []*Reference {
@@ -656,6 +670,26 @@ func (attr *HCLAttribute) referencesInTemplate() []*Reference {
 			if err != nil {
 				continue
 			}
+			refs = append(refs, ref)
+		}
+	}
+	return refs
+}
+
+func (attr *HCLAttribute) referencesInConditional() []*Reference {
+	if attr == nil {
+		return nil
+	}
+	var refs []*Reference
+	switch t := attr.hclAttribute.Expr.(type) {
+	case *hclsyntax.ConditionalExpr:
+		if ref, err := createDotReferenceFromTraversal(t.TrueResult.Variables()...); err == nil {
+			refs = append(refs, ref)
+		}
+		if ref, err := createDotReferenceFromTraversal(t.FalseResult.Variables()...); err == nil {
+			refs = append(refs, ref)
+		}
+		if ref, err := createDotReferenceFromTraversal(t.Condition.Variables()...); err == nil {
 			refs = append(refs, ref)
 		}
 	}

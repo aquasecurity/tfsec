@@ -6,7 +6,6 @@ package gke
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -90,7 +89,7 @@ resource "google_container_node_pool" "good_example" {
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
-    image_type = "COS"
+    image_type = "COS_CONTAINERD"
   }
 }
 `},
@@ -105,11 +104,11 @@ resource "google_container_node_pool" "good_example" {
 			"google_container_node_pool",
 		},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if imageTypeAttr := resourceBlock.GetBlock("node_config").GetAttribute("image_type"); imageTypeAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for node_config.image_type", resourceBlock.FullName())
-			} else if imageTypeAttr.NotEqual("COS") {
+			} else if imageTypeAttr.NotEqual("COS_CONTAINERD", block.IgnoreCase) {
 				set.AddResult().
 					WithDescription("Resource '%s' does not have node_config.image_type set to COS", resourceBlock.FullName()).
 					WithAttribute(imageTypeAttr)

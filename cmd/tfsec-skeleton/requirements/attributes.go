@@ -154,6 +154,14 @@ func (a *attributeBase) getMessageForComparison() string {
 		return fmt.Sprintf("Resource '%%s' does not set %s", a.dotPath)
 	case ComparisonNotDefined:
 		return fmt.Sprintf("Resource '%%s' sets %s", a.dotPath)
+	case ComparisonIsEmpty:
+		return fmt.Sprintf("Resource '%%s' has attribute %s that is not empty", a.dotPath)
+	case ComparisonNotEmpty:
+		return fmt.Sprintf("Resource '%%s' has attribute %s that is empty", a.dotPath)
+	case ComparisonIsTrue:
+		return fmt.Sprintf("Resource '%%s' has attribute %s that is false", a.dotPath)
+	case ComparisonIsFalse:
+		return fmt.Sprintf("Resource '%%s' has attribute %s that is true", a.dotPath)
 
 	default:
 		panic(fmt.Sprintf("comparison '%s' is not supported", a.comparison))

@@ -6,7 +6,6 @@ package compute
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -75,7 +74,7 @@ resource "google_compute_instance" "bad_example" {
 			"google_compute_instance",
 		},
 		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if canIpForwardAttr := resourceBlock.GetAttribute("can_ip_forward"); canIpForwardAttr.IsTrue() {
 				set.AddResult().
 					WithDescription("Resource '%s' has can_ip_forward set to true", resourceBlock.FullName()).

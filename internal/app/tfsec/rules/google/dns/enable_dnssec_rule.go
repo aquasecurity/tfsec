@@ -6,7 +6,6 @@ package dns
 
 import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/provider"
 	"github.com/aquasecurity/tfsec/pkg/result"
@@ -16,7 +15,7 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Provider:       provider.GoogleProvider,
+		Provider:  provider.GoogleProvider,
 		Service:   "dns",
 		ShortCode: "enable-dnssec",
 		Documentation: rule.RuleDocumentation{
@@ -24,7 +23,7 @@ func init() {
 			Explanation: `DNSSEC authenticates DNS responses, preventing MITM attacks and impersonation.`,
 			Impact:      "Unverified DNS responses could lead to man-in-the-middle attacks",
 			Resolution:  "Enable DNSSEC",
-			BadExample: []string{  `
+			BadExample: []string{`
 resource "google_dns_managed_zone" "bad_example" {
   name        = "example-zone"
   dns_name    = "example-${random_id.rnd.hex}.com."
@@ -41,7 +40,7 @@ resource "random_id" "rnd" {
   byte_length = 4
 }
 `},
-			GoodExample: []string{ `
+			GoodExample: []string{`
 resource "google_dns_managed_zone" "good_example" {
   name        = "example-zone"
   dns_name    = "example-${random_id.rnd.hex}.com."
@@ -62,14 +61,14 @@ resource "random_id" "rnd" {
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_managed_zone#state",
 			},
 		},
-		RequiredTypes:  []string{ 
+		RequiredTypes: []string{
 			"resource",
 		},
-		RequiredLabels: []string{ 
+		RequiredLabels: []string{
 			"google_dns_managed_zone",
 		},
-		DefaultSeverity: severity.Medium, 
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ *hclcontext.Context){
+		DefaultSeverity: severity.Medium,
+		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
 			if stateAttr := resourceBlock.GetBlock("dnssec_config").GetAttribute("state"); stateAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for dnssec_config.state", resourceBlock.FullName())

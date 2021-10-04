@@ -173,7 +173,7 @@ variable "trust-sg-rules" {
 	]
 }
 			`,
-			mustExcludeResultCode: "aws-vpc-add-decription-to-security-group",
+			mustExcludeResultCode: "aws-vpc-add-description-to-security-group",
 		},
 	}
 

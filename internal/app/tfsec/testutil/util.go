@@ -19,20 +19,20 @@ import (
 )
 
 func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) []result.Result {
-	blocks := CreateBlocksFromSource(source, ".tf", t)
-	scanner := scanner.New(scanner.OptionIgnoreCheckErrors(false))
+	modules := CreateModulesFromSource(source, ".tf", t)
+	scanner := scanner.New(scanner.OptionStopOnErrors())
 	for _, opt := range additionalOptions {
 		opt(scanner)
 	}
-	return scanner.Scan(blocks)
+	return scanner.Scan(modules)
 }
 
 func ScanJSON(source string, t *testing.T) []result.Result {
-	blocks := CreateBlocksFromSource(source, ".tf.json", t)
-	return scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	blocks := CreateModulesFromSource(source, ".tf.json", t)
+	return scanner.New(scanner.OptionStopOnErrors()).Scan(blocks)
 }
 
-func CreateBlocksFromSource(source string, ext string, t *testing.T) []block.Block {
+func CreateModulesFromSource(source string, ext string, t *testing.T) []block.Module {
 	path := CreateTestFile("test"+ext, source)
 	blocks, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {

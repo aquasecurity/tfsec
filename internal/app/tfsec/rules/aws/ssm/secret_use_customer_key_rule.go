@@ -7,8 +7,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/hclcontext"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -52,7 +50,7 @@ resource "aws_secretsmanager_secret" "good_example" {
 		RequiredTypes:   []string{"resource"},
 		RequiredLabels:  []string{"aws_secretsmanager_secret"},
 		DefaultSeverity: severity.Low,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, ctx *hclcontext.Context) {
+		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			if resourceBlock.MissingChild("kms_key_id") {
 				set.AddResult().
@@ -62,7 +60,7 @@ resource "aws_secretsmanager_secret" "good_example" {
 
 			kmsKeyAttr := resourceBlock.GetAttribute("kms_key_id")
 			if kmsKeyAttr.IsDataBlockReference() {
-				kmsData, err := ctx.GetReferencedBlock(kmsKeyAttr)
+				kmsData, err := module.GetReferencedBlock(kmsKeyAttr)
 				if err != nil {
 					return
 				}
