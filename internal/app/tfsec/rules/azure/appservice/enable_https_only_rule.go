@@ -20,7 +20,7 @@ func init() {
 		ShortCode: "enable-https-only",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "Ensure App Service can only be accessed via HTTPS. The default is false",
-			Explanation: `By default, clients can connect to App Service by using both HTTP or HTTPS. HTTPS should only be used to enforce an encrypted connection.`,
+			Explanation: `By default, clients can connect to App Service by using both HTTP or HTTPS. HTTP should be disabled enabling the HTTPS Only setting.`,
 			Impact:      "Anyone can access App Service using HTTP.",
 			Resolution:  "Enable HTTPS only",
 			BadExample: []string{`
