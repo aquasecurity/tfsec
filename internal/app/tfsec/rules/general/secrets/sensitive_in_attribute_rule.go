@@ -41,6 +41,10 @@ var sensitiveWhitelist = []struct {
 		Resource:  "google_secret_manager_secret",
 		Attribute: "secret_id",
 	},
+	{
+		Resource:  "google_service_account_key",
+		Attribute: "private_key_type",
+	},
 }
 
 func init() {
