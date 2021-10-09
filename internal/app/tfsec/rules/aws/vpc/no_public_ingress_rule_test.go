@@ -28,7 +28,8 @@ resource "aws_network_acl_rule" "my-rule" {
   cidr_block     = "0.0.0.0/0"
 }`,
 			mustIncludeResultCode: expectedCode,
-		}, {
+		},
+		{
 			name: "check aws_network_acl_rule ingress on 0.0.0.0/0 implied egress",
 			source: `
 resource "aws_network_acl_rule" "my-rule" {
@@ -39,6 +40,42 @@ resource "aws_network_acl_rule" "my-rule" {
   cidr_block     = "0.0.0.0/0"
 }`,
 			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_network_acl_rule ingress on 0.0.0.0/0 implied with all protocol",
+			source: `
+resource "aws_network_acl_rule" "my-rule" {
+  protocol       = "all"
+  from_port      = 22
+  to_port        = 22
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+}`,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_network_acl_rule ingress on 0.0.0.0/0 implied with all protocol using -1",
+			source: `
+resource "aws_network_acl_rule" "my-rule" {
+  protocol       = -1
+  from_port      = 22
+  to_port        = 22
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+}`,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_network_acl_rule ingress on 0.0.0.0/0 implied with all protocol using -1 string",
+			source: `
+resource "aws_network_acl_rule" "my-rule" {
+  protocol       = "-1"
+  from_port      = 22
+  to_port        = 22
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+}`,
+			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check variable containing 0.0.0.0/0",
