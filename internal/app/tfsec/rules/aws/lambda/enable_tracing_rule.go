@@ -22,7 +22,7 @@ func init() {
 		Documentation: rule.RuleDocumentation{
 			Summary:     "Lambda functions should have X-Ray tracing enabled",
 			Explanation: `X-Ray tracing enables end-to-end debugging and analysis of all function activity. This will allow for identifying bottlenecks, slow downs and timeouts.`,
-			Impact:      "WIthout full tracing enabled it is difficult to trace the flow of logs",
+			Impact:      "Without full tracing enabled, it is difficult to trace the flow of logs",
 			Resolution:  "Enable tracing",
 			BadExample: []string{`
 resource "aws_iam_role" "iam_for_lambda" {

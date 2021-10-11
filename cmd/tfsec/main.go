@@ -78,8 +78,8 @@ func init() {
 	rootCmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&detailedExitCode, "detailed-exit-code", detailedExitCode, "Produce more detailed exit status codes.")
-	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Include passed checks in the result output")
-	rootCmd.Flags().BoolVar(&includeIgnored, "include-ignored", includeIgnored, "Include ignored checks in the result output")
+	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Resources that pass checks are included in the result output")
+	rootCmd.Flags().BoolVar(&includeIgnored, "include-ignored", includeIgnored, "Ignore comments with have no effect and all resources will be scanned")
 	rootCmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
 	rootCmd.Flags().BoolVar(&runStatistics, "run-statistics", runStatistics, "View statistics table of current findings.")
 	rootCmd.Flags().BoolVar(&ignoreWarnings, "ignore-warnings", ignoreWarnings, "[DEPRECATED] Don't show warnings in the output.")
@@ -262,7 +262,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		// If all failed rules are of LOW severity, then produce a success
-		// exit code (0).
+		// exit code (0)
 		if allInfo(results) {
 			return nil
 		}
@@ -298,6 +298,10 @@ func getParserOptions() []parser.Option {
 		opts = append(opts, parser.OptionWithWorkspaceName(workspace))
 	}
 
+	if excludeDownloaded {
+		opts = append(opts, parser.OptionSkipDownloaded())
+	}
+
 	return opts
 }
 
@@ -327,10 +331,6 @@ func removeDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, e
 
 	var returnVal []result.Result
 	for _, res := range reduction {
-		if excludeDownloaded && strings.Contains(res.Range().Filename, fmt.Sprintf("%c.terraform", os.PathSeparator)) {
-			continue
-		}
-
 		if ignoreWarnings && res.Severity == severity.Medium {
 			continue
 		}
@@ -370,7 +370,9 @@ func getScannerOptions() []scanner.Option {
 		options = append(options, scanner.OptionWithWorkspaceName(workspace))
 	}
 
-	options = append(options, scanner.OptionIgnoreCheckErrors(!stopOnCheckError))
+	if stopOnCheckError {
+		options = append(options, scanner.OptionStopOnErrors())
+	}
 
 	var allExcludedRuleIDs []string
 	for _, exclude := range strings.Split(excludedRuleIDs, ",") {
@@ -378,7 +380,7 @@ func getScannerOptions() []scanner.Option {
 	}
 	allExcludedRuleIDs = mergeWithoutDuplicates(allExcludedRuleIDs, tfsecConfig.ExcludedChecks)
 
-        options = append(options, scanner.OptionExcludeRules(allExcludedRuleIDs))
+	options = append(options, scanner.OptionExcludeRules(allExcludedRuleIDs))
 
 	var allIncludedRuleIDs []string
 	if len(includedRuleIDs) > 0 {

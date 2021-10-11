@@ -61,7 +61,19 @@ func (t *ExternalScanner) Scan() ([]result.Result, error) {
 		results = append(results, projectResults...)
 	}
 
+	// temporary hack to convert IDs pending switch to v1 tfsec using defsec
+	results = rewriteIds(results)
 	return results, nil
+}
+
+func rewriteIds(results []result.Result) []result.Result {
+	var updatedResults []result.Result
+	for _, r := range results {
+		if avd, ok := idMap[r.RuleID]; ok {
+			updatedResults = append(updatedResults, *r.WithRuleID(avd))
+		}
+	}
+	return updatedResults
 }
 
 func findTFRootModules(paths []string) ([]string, error) {

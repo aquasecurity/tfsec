@@ -94,7 +94,8 @@ resource "google_container_node_pool" "good_example" {
 }
 `},
 			Links: []string{
-				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_node_pool#image_type",
+				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#image_type",
+				"https://cloud.google.com/kubernetes-engine/docs/concepts/node-images",
 			},
 		},
 		RequiredTypes: []string{

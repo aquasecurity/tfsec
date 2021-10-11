@@ -66,9 +66,13 @@ fix-typos:
 	which codespell || pip install codespell
 	codespell -S vendor,funcs,.terraform --ignore-words .codespellignore -f -w -i1
 
-.PHONY: clone-image
-clone-image:
-	./scripts/clone-images.sh
+.PHONY: clone-image-github
+clone-image-github:
+	./scripts/clone-images.sh ghcr.io/aquasecurity
+
+.PHONY: clone-image-tfsec
+clone-image-tfsec:
+	./scripts/clone-images.sh tfsec
 
 .PHONY: sanity
 sanity: test

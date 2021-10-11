@@ -70,7 +70,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("/project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -97,7 +97,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -124,7 +124,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -160,7 +160,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -197,7 +197,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -251,7 +251,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -285,7 +285,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -322,7 +322,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -376,7 +376,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -466,7 +466,7 @@ module "something" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, "aws-iam-no-policy-wildcards", "", results)
 }
 
@@ -494,7 +494,7 @@ resource "aws_api_gateway_domain_name" "outdated_security_policy" {
 	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, "aws-api-gateway-use-secure-tls-policy", "", results)
 }
 
@@ -522,6 +522,6 @@ resource "aws_api_gateway_domain_name" "outdated_security_policy" {
 	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New(scanner.OptionIgnoreCheckErrors(false)).Scan(blocks)
+	results := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, "", "aws-api-gateway-use-secure-tls-policy", results)
 }
