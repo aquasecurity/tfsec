@@ -37,7 +37,7 @@ resource "azurerm_app_service" "good_example" {
   resource_group_name = azurerm_resource_group.example.name
   app_service_plan_id = azurerm_app_service_plan.example.id
   site_config {
-    python_version = "3.4"
+    python_version = "3.8"
   }
 }
 `},
@@ -58,9 +58,9 @@ resource "azurerm_app_service" "good_example" {
 			}
 			// We are only running this check if the python_version tag is set, if the app service is not using python we should not count this against them
 			if resourceBlock.GetBlock("site_config").HasBlock("python_version") {
-				if pythonVersionAttr := resourceBlock.GetBlock("site_config").GetAttribute("python_version"); pythonVersionAttr.NotEqual("3.4") {
+				if pythonVersionAttr := resourceBlock.GetBlock("site_config").GetAttribute("python_version"); pythonVersionAttr.NotEqual("3.8") {
 					set.AddResult().
-						WithDescription("Resource '%s' does not have site_config.python_version set to 3.4 which is the latest version", resourceBlock.FullName()).
+						WithDescription("Resource '%s' does not have site_config.python_version set to 3.8 which is the latest version", resourceBlock.FullName()).
 						WithAttribute(pythonVersionAttr)
 				} else {
 					return
