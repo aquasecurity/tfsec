@@ -36,9 +36,9 @@ We currently use the following list of severities:
 
 ### Writing Your Check Code
 
-Run `make new-check` to create the stub
+Run `make new-check` to start a wizard that will create the new check stub.
 
-Find your new check in `internal/apps/tfsec/rules` and the associated test in `internal/app/tfsec/tests` and complete the check logic
+Find your new check and the associated test in one of the subfolders of `internal/apps/tfsec/rules` and complete the check logic
 
 Here's an example:
 
@@ -47,13 +47,13 @@ You need to tell the scanner about your check; this is done by calling an init()
 ```go
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-    
+
 		// the service eg; iam, compute, datalake
 		Service: "iam"
-        // our new check code
+		// our new check code
 		ID: "gibson-not-hackable",
-    
-        // all of our documentation data that will be available in the output and/or at https://tfsec.dev/
+
+		// all of our documentation data that will be available in the output and/or at https://tfsec.dev/
 		Documentation: rule.RuleDocumentation{
 			// A description for your check - this message will be output to a user when the check fails.
 			Summary:     "The Gibson should not be hackable",
@@ -78,20 +78,20 @@ resource "aws_gibson" "my-gibson" {
 `
 			},
 			Links: []string{ // any useful links relating to your check go here
-                "https://www.imdb.com/title/tt0113243/"
+				"https://www.imdb.com/title/tt0113243/"
 			},
 		},
-        
-        	// the provider your check targets
+
+		// the provider your check targets
 		Provider:       provider.AWSProvider,
 
-        	// which terraform blocks do you want to check - usually "resource"
+		// which terraform blocks do you want to check - usually "resource"
 		RequiredTypes:  []string{"resource"},
-        
-        	// the type of resource(s) you want to target
+
+		// the type of resource(s) you want to target
 		RequiredLabels: []string{"aws_gibson"},
-        
-        	// the actual logic for your check
+
+		// the actual logic for your check
 		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, block block.Block, module block.Module) {
 			// TODO: add check logic here
@@ -105,19 +105,20 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
 ```go
 ...
 
-        DefaultSeverity: severity.Warning,
+		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, block block.Block, module block.Module) {
-            if attr := block.GetAttribute("hackable"); attr.IsTrue() {
+			if attr := block.GetAttribute("hackable"); attr.IsTrue() {
 				set.AddResult().
 					WithDescription("The Gibson '%s' is configured to be hackable.", block.Name()).
 					WithAttribute(attr),
 				)
-            }
-        },
+			}
+		},
 ...
 ```
 
-You can see a good example of a real check file [here](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/rules/aws001.go).
+You can see a good example of a real check file [here](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/rules/aws/vpc/no_public_egress_sg_rule.go).
+This check also provides [tests](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/rules/aws/vpc/no_public_egress_sg_rule_test.go) and uses provided data checks like `cidr.IsAttributeOpen()` provided [here](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/cidr/cidr.go).
 
 ### Writing Tests
 
