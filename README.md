@@ -49,11 +49,18 @@ Alternatively, install with Go:
 go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
 ```
 
+Using newer versions of Go (1.11+) will place the tfsec binary in your go installation
+directory (`$HOME/go`).  If that has not been added to your $PATH, you will need to add that step to your `.bashrc`
+
+```bash
+export PATH=$PATH:~/go/bin
+```
+
 Please note that using `go install` will install directly from the `master` branch and version numbers will not be reported via `tfsec --version`.
 
 ### Signing
 
-The binaries on the [releases page](https://github.com/aquasecurity/tfsec/releases) are signed with the tfsec signing key `D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE` 
+The binaries on the [releases page](https://github.com/aquasecurity/tfsec/releases) are signed with the tfsec signing key `D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE`
 
 Form more information check the [signing page](SIGNING.md) for instructions on verification.
 
@@ -195,11 +202,11 @@ The alerts generated for [tfsec-example-project](https://github.com/tfsec/tfsec-
 
 ![github security alerts](codescanning.png)
 
-When you click through the alerts for the branch, you get more information about the actual issue. 
+When you click through the alerts for the branch, you get more information about the actual issue.
 
 ![github security alerts](scanningalert.png)
 
-For more information about adding security alerts, check 
+For more information about adding security alerts, check
 
 ## Support for older terraform versions
 
