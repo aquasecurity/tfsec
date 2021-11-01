@@ -15,7 +15,7 @@ type Version string
 const Version210 Version = "2.1.0"
 
 var versions = map[Version]string{
-	Version210: "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+	Version210: "https://json.schemastore.org/sarif-2.1.0-rtm.5.json",
 }
 
 // Report is the encapsulating type representing a Sarif Report

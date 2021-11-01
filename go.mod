@@ -33,7 +33,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/owenrumney/go-sarif v1.0.11
+	github.com/owenrumney/go-sarif v1.0.12
 	github.com/owenrumney/squealer v0.2.28
 	github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
