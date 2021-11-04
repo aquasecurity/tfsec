@@ -1,4 +1,4 @@
-package elasticsearch
+package elasticache
 
 // generator-locked
 import (
@@ -8,7 +8,7 @@ import (
 )
 
 func Test_AWSUnencryptedAtRestElasticacheReplicationGroup(t *testing.T) {
-	expectedCode := "aws-elastic-search-encrypt-replication-group"
+	expectedCode := "aws-elasticache-encrypt-replication-group"
 	var tests = []struct {
 		name                  string
 		source                string

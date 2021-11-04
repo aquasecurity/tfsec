@@ -1,4 +1,4 @@
-package elasticsearch
+package elasticache
 
 // generator-locked
 import (

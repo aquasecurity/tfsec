@@ -29,7 +29,7 @@
 | aws-elastic-search-enable-in-transit-encryption | aws | elastic-search | Elasticsearch domain uses plaintext traffic for node to node communication. |
 | aws-elastic-search-enforce-https | aws | elastic-search | Elasticsearch doesn't enforce HTTPS traffic. |
 | aws-elastic-search-use-secure-tls-policy | aws | elastic-search | Elasticsearch domain endpoint is using outdated TLS policy. |
-| aws-elastic-search-encrypt-replication-group | aws | elastic-search | Unencrypted Elasticache Replication Group. |
+| aws-elasticache-encrypt-replication-group | aws | elasticache | Unencrypted Elasticache Replication Group. |
 | aws-elasticache-enable-in-transit-encryption | aws | elasticache | Elasticache Replication Group uses unencrypted traffic. |
 | aws-iam-no-password-reuse | aws | iam | IAM Password policy should prevent password reuse. |
 | aws-iam-set-max-password-age | aws | iam | IAM Password policy should have expiry less than or equal to 90 days. |
