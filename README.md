@@ -46,7 +46,7 @@ You can also grab the binary for your system from the [releases page](https://gi
 Alternatively, install with Go:
 
 ```bash
-go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
+go get github.com/aquasecurity/tfsec/cmd/tfsec@latest
 ```
 
 Please note that using `go install` will install directly from the `master` branch and version numbers will not be reported via `tfsec --version`.
