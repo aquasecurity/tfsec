@@ -45,6 +45,9 @@ func New(resourceBlock block.Block) *Result {
 		blocks: []block.Block{resourceBlock},
 	}
 	result.Location = result.Range()
+	if resourceBlock != nil && resourceBlock.Reference() != nil {
+		result.Resource = resourceBlock.Reference().String()
+	}
 	return result
 }
 
