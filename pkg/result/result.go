@@ -26,6 +26,7 @@ type Result struct {
 	Severity        severity.Severity `json:"severity"`
 	Status          Status            `json:"status"`
 	Location        block.Range       `json:"location"`
+	Resource        string            `json:"resource"`
 	blocks          block.Blocks
 	attribute       block.Attribute
 }
