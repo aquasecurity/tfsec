@@ -90,7 +90,7 @@ func (scanner *Scanner) scanModule(module block.Module, rules []rule.Rule) []res
 							ruleResult.Severity = r.DefaultSeverity
 						}
 						if reference := checkBlock.Reference(); reference != nil {
-							ruleResult.Resource = checkBlock.Reference().String()
+							ruleResult.Resource = reference.String()
 						}
 						if len(scanner.includedRuleIDs) == 0 || len(scanner.includedRuleIDs) > 0 && checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.includedRuleIDs) {
 							if !scanner.includeIgnored && (ruleResult.IsIgnored(scanner.workspaceName) || checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.excludedRuleIDs)) {
