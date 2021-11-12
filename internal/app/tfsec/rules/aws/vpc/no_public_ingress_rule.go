@@ -75,7 +75,7 @@ resource "aws_network_acl_rule" "good_example" {
 			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr.IsNotNil() {
 
 				if cidr.IsAttributeOpen(cidrBlockAttr) {
-					if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
+					if protoAttr.Equals("all") || protoAttr.Equals("-1") || protoAttr.Equals(-1) {
 						return
 					} else {
 						set.AddResult().

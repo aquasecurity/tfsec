@@ -151,6 +151,19 @@ var rootCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
+
+		if dirInfo, err := os.Stat(dir); err != nil {
+			if os.IsNotExist(err) {
+				fmt.Println("The provided path does not exist, exiting")
+				os.Exit(1)
+			}
+			fmt.Println(err)
+			os.Exit(1)
+		} else if !dirInfo.IsDir() {
+			fmt.Println("The provided path is not a dir, exiting")
+			os.Exit(1)
+		}
+
 		tfsecDir := fmt.Sprintf("%s/.tfsec", dir)
 
 		if len(configFile) > 0 {

@@ -180,7 +180,7 @@ github.com/mitchellh/go-wordwrap
 # github.com/olekukonko/tablewriter v0.0.5
 ## explicit; go 1.12
 github.com/olekukonko/tablewriter
-# github.com/owenrumney/go-sarif v1.0.11
+# github.com/owenrumney/go-sarif v1.0.12
 ## explicit; go 1.16
 github.com/owenrumney/go-sarif/sarif
 # github.com/owenrumney/squealer v0.2.28
@@ -216,7 +216,7 @@ github.com/spf13/pflag
 ## explicit; go 1.13
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
-# github.com/zclconf/go-cty v1.9.1
+# github.com/zclconf/go-cty v1.10.0
 ## explicit; go 1.12
 github.com/zclconf/go-cty/cty
 github.com/zclconf/go-cty/cty/convert
