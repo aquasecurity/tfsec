@@ -33,7 +33,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/owenrumney/go-sarif v1.0.11
+	github.com/owenrumney/go-sarif v1.0.12
 	github.com/owenrumney/squealer v0.2.28
 	github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
@@ -43,7 +43,7 @@ require (
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/testify v1.7.0
-	github.com/zclconf/go-cty v1.9.1
+	github.com/zclconf/go-cty v1.10.0
 	github.com/zclconf/go-cty-yaml v1.0.2
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
