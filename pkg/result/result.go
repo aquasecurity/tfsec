@@ -26,6 +26,7 @@ type Result struct {
 	Severity        severity.Severity `json:"severity"`
 	Status          Status            `json:"status"`
 	Location        block.Range       `json:"location"`
+	Resource        string            `json:"resource"`
 	blocks          block.Blocks
 	attribute       block.Attribute
 }
@@ -44,6 +45,9 @@ func New(resourceBlock block.Block) *Result {
 		blocks: []block.Block{resourceBlock},
 	}
 	result.Location = result.Range()
+	if resourceBlock != nil && resourceBlock.Reference() != nil {
+		result.Resource = resourceBlock.Reference().String()
+	}
 	return result
 }
 
