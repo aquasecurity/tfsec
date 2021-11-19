@@ -31,6 +31,21 @@ func (s *Severity) Valid() []Severity {
 	return ValidSeverity
 }
 
+func (s Severity) AsOrdinal() int {
+	switch s {
+	case Critical:
+		return 4
+	case High:
+		return 3
+	case Medium:
+		return 2
+	case Low:
+		return 1
+	default:
+		return 0
+	}
+}
+
 func StringToSeverity(sev string) Severity {
 	s := strings.ToUpper(sev)
 	switch s {

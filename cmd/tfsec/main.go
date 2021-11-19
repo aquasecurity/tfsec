@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"sort"
 
 	"strings"
 
@@ -59,6 +60,7 @@ var ignoreHCLErrors bool
 var stopOnCheckError bool
 var workspace string
 var passingGif bool
+var sortSeverity bool
 
 func init() {
 	rootCmd.Flags().BoolVar(&ignoreHCLErrors, "ignore-hcl-errors", ignoreHCLErrors, "Stop and report an error if an HCL parse error is encountered")
@@ -88,6 +90,8 @@ func init() {
 	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
 	rootCmd.Flags().StringVarP(&workspace, "workspace", "w", workspace, "Specify a workspace for ignore limits")
 	rootCmd.Flags().BoolVar(&passingGif, "gif", passingGif, "Show a celebratory gif in the terminal if no problems are found (default formatter only)")
+	rootCmd.Flags().BoolVar(&sortSeverity, "sort-severity", sortSeverity, "Sort the results by severity from Critical to Low")
+
 }
 
 func main() {
@@ -206,12 +210,13 @@ var rootCmd = &cobra.Command{
 			filterResultsList = strings.Split(filterResults, ",")
 		}
 
+		formats := strings.Split(format, ",")
 		if outputFlag != "" {
 			if format == "" {
 				format = "text"
 			}
 
-			formats := strings.Split(format, ",")
+
 			multipleFormats := false
 
 			if len(formats) > 1 {
@@ -253,7 +258,7 @@ var rootCmd = &cobra.Command{
 		} else {
 			outputFiles = append(outputFiles, formatterInfo{
 				outputFile: os.Stdout,
-				format:     "default",
+				format:     formats[0],
 			})
 		}
 
@@ -292,6 +297,12 @@ var rootCmd = &cobra.Command{
 				}
 			}
 			results = filteredResult
+		}
+
+		if sortSeverity {
+			sort.Slice(results, func(i, j int) bool {
+				return results[i].Severity.AsOrdinal() > results[j].Severity.AsOrdinal()
+			})
 		}
 
 		for _, result := range results {
