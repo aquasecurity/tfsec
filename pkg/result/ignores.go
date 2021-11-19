@@ -22,7 +22,9 @@ func (res *Result) IsIgnored(workspace string) bool {
 			continue
 		}
 		if len(annotation.AllowedValues) > 0 {
-			return checkAllowedValueIgnores(annotation, res)
+			if checkAllowedValueIgnores(annotation, res) {
+				return true
+			}
 		} else {
 			// ignore rule matches!
 			return true
