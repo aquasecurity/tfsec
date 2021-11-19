@@ -122,11 +122,17 @@ func (attr *HCLAttribute) Name() string {
 	return attr.hclAttribute.Name
 }
 
-func (attr *HCLAttribute) ValueAsStrings() []string {
+func (attr *HCLAttribute) ValueAsStrings() (strings []string) {
 	if attr == nil {
-		return nil
+		return strings
 	}
-	return getStrings(attr.hclAttribute.Expr, attr.ctx.Inner())
+	defer func() {
+		if err := recover(); err != nil {
+			strings = nil
+		}
+	}()
+	strings = getStrings(attr.hclAttribute.Expr, attr.ctx.Inner())
+	return
 }
 
 func getStrings(expr hcl.Expression, ctx *hcl.EvalContext) []string {
