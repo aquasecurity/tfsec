@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/zclconf/go-cty/cty"
 )
 
 func (res *Result) IsIgnored(workspace string) bool {
@@ -20,11 +21,46 @@ func (res *Result) IsIgnored(workspace string) bool {
 		if annotation.Expiry != nil && time.Now().After(*annotation.Expiry) {
 			continue
 		}
+		if len(annotation.AllowedValues) > 0 {
+			return checkAllowedValueIgnores(annotation, res)
+		} else {
+			// ignore rule matches!
+			return true
+		}
 
-		// ignore rule matches!
-		return true
 	}
 	// no ignore rule found for this result
+	return false
+}
+
+func checkAllowedValueIgnores(annotation Annotation, res *Result) bool {
+	for _, allowedValue := range annotation.AllowedValues {
+		parts := strings.Split(allowedValue, "=")
+		if len(parts) != 2 {
+			continue
+		}
+		attribute := parts[0]
+		value := parts[1]
+
+		for _, b := range res.Blocks() {
+			if b.HasChild(attribute) {
+				attr := b.GetAttribute(attribute)
+				switch attr.Type() {
+				case cty.Number:
+					val64, _ := attr.Value().AsBigFloat().Float64()
+					attrValueAsString := fmt.Sprintf("%d", int(val64))
+					if attrValueAsString == value {
+						return true
+					}
+				case cty.String:
+					if attr.Value().AsString() == value {
+						return true
+					}
+				}
+
+			}
+		}
+	}
 	return false
 }
 
@@ -75,9 +111,10 @@ func traverseModuleTreeForAnnotations(b block.Block) (annotations []Annotation) 
 }
 
 type Annotation struct {
-	IgnoreRuleID string
-	Expiry       *time.Time
-	Workspace    string
+	IgnoreRuleID  string
+	Expiry        *time.Time
+	Workspace     string
+	AllowedValues []string
 }
 
 func findAnnotations(input string) []Annotation {
@@ -118,7 +155,7 @@ func newAnnotation(input string) (Annotation, error) {
 		val := segments[i+1]
 		switch key {
 		case "ignore":
-			annotation.IgnoreRuleID = val
+			extractAllowedValues(&annotation, val)
 		case "exp":
 			parsed, err := time.Parse("2006-01-02", val)
 			if err != nil {
@@ -131,4 +168,13 @@ func newAnnotation(input string) (Annotation, error) {
 	}
 
 	return annotation, nil
+}
+
+func extractAllowedValues(annotation *Annotation, val string) {
+	if !strings.HasSuffix(val, "]") && !strings.Contains(val, "[") {
+		annotation.IgnoreRuleID = val
+		return
+	}
+	annotation.IgnoreRuleID = val[:strings.Index(val, "[")]
+	annotation.AllowedValues = strings.Split(strings.Split(strings.TrimSuffix(val, "]"), "[")[1], ",")
 }
