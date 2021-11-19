@@ -76,14 +76,14 @@ There are a number of Docker options available
 | Image Name | Base | Comment |
 |------------|------|---------|
 |[aquasec/tfsec](https://hub.docker.com/r/aquasec/tfsec)|alpine|Normal tfsec image|
-|[aquasec/tfsec-alpine](https://hub.docker.com/r/aquasec/tfsec-alpine)|alpine|Exactly the same as tfsec/tfsec, but for those whole like to be explicit|
+|[aquasec/tfsec-alpine](https://hub.docker.com/r/aquasec/tfsec-alpine)|alpine|Exactly the same as aquasec/tfsec, but for those whole like to be explicit|
 |[aquasec/tfsec-ci](https://hub.docker.com/r/aquasec/tfsec-ci)|alpine|tfsec with no entrypoint - useful for CI builds where you want to override the command|
 |[aquasec/tfsec-scratch](https://hub.docker.com/r/aquasec/tfsec-scratch)|scratch|An image built on scratch - nothing frilly, just runs tfsec|
 
 To run:
 
 ```bash
-docker run --rm -it -v "$(pwd):/src" tfsec/tfsec /src
+docker run --rm -it -v "$(pwd):/src" aquasec/tfsec /src
 ```
 
 ## Use with Visual Studio Code
