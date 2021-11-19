@@ -20,9 +20,9 @@ func init() {
 		ShortCode: "node-pool-uses-cos",
 		Documentation: rule.RuleDocumentation{
 			Summary:     "Ensure Container-Optimized OS (cos) is used for Kubernetes Engine Clusters Node image",
-			Explanation: `GKE supports several OS image types but COS is the recommended OS image to use on cluster nodes for enhanced security`,
-			Impact:      "COS is the recommended OS image to use on cluster nodes",
-			Resolution:  "Use the COS image type",
+			Explanation: `GKE supports several OS image types but COS_CONTAINERD is the recommended OS image to use on cluster nodes for enhanced security`,
+			Impact:      "COS_CONTAINERD is the recommended OS image to use on cluster nodes",
+			Resolution:  "Use the COS_CONTAINERD image type",
 			BadExample: []string{`
 resource "google_service_account" "default" {
   account_id   = "service-account-id"
@@ -109,9 +109,9 @@ resource "google_container_node_pool" "good_example" {
 			if imageTypeAttr := resourceBlock.GetBlock("node_config").GetAttribute("image_type"); imageTypeAttr.IsNil() { // alert on use of default value
 				set.AddResult().
 					WithDescription("Resource '%s' uses default value for node_config.image_type", resourceBlock.FullName())
-			} else if imageTypeAttr.NotEqual("COS_CONTAINERD", block.IgnoreCase) {
+			} else if imageTypeAttr.NotEqual("COS_CONTAINERD", block.IgnoreCase) && imageTypeAttr.NotEqual("COS", block.IgnoreCase) {
 				set.AddResult().
-					WithDescription("Resource '%s' does not have node_config.image_type set to COS", resourceBlock.FullName()).
+					WithDescription("Resource '%s' does not have node_config.image_type set to COS_CONTAINERD", resourceBlock.FullName()).
 					WithAttribute(imageTypeAttr)
 			}
 		},
