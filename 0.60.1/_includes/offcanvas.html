@@ -1,0 +1,37 @@
+<div id="offcanvas" data-uk-offcanvas="flip: true; overlay: true">
+    <div class="uk-offcanvas-bar">
+
+        <a class="uk-logo uk-margin-small-bottom" href="{{ "/" | relative_url }}">{% if site.logo %}<img src="{{ site.uploads | absolute_url }}{{ site.logo }}" alt="{{ site.title }}">{% else %}{{ site.title }}{% endif %}</a>
+     
+        <button class="uk-offcanvas-close" type="button" data-uk-close></button>
+      
+        <ul class="uk-nav uk-nav-primary uk-margin-top">
+            {% for link in site.data.navigation_mobile %}
+                {% if link.url contains 'http' %}
+                    {% assign domain = '' %}
+                {% else %}
+                    {% assign domain = '' | relative_url %}
+                {% endif %}
+
+                {% if link.url == page.url %}
+                    {% assign current = ' class="uk-active"' %}
+                {% else %}
+                    {% assign current = null %}
+                {% endif %}
+
+                {% if link.button %}
+                    <li><div class="uk-navbar-item"><a class="uk-button uk-button-{{ link.button }}" href="{{ domain }}{{ link.url }}" {% if link.url contains 'http' %}target="_blank" {% endif %}>{{ link.title }}</a></div></li>
+                {% else %}
+                    <li{{ current }}><a href="{{ domain }}{{ link.url }}" {% if link.url contains 'http' %}target="_blank" {% endif %}>{{ link.title }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <div class="uk-margin-top uk-text-center">
+            <div data-uk-grid class="uk-child-width-auto uk-grid-small uk-flex-center uk-grid">
+                {% include social-networks.html %}
+            </div>
+        </div>
+
+    </div>
+</div>

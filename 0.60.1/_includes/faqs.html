@@ -1,0 +1,28 @@
+<div class="uk-section">
+    <div class="uk-container uk-container-small">
+
+        {% if include.title %}
+            <h2 class="uk-h1 uk-text-center">{{ include.title }}</h2>
+        {% endif %}
+
+        {% if include.subtitle %}
+            <p class="uk-text-center uk-text-lead">{{ include.subtitle | escape }}</p>
+        {% endif %}
+
+        {% if include.category %}
+            {% assign faqs = site.faqs | where: "categories", include.category %}
+        {% else %}
+            {% assign faqs = site.faqs %}
+        {% endif %}
+
+        <ul class="uk-margin-medium-top" data-uk-accordion{% if include.multiple %}="multiple: true"{% endif %}>
+            {% for faq in faqs %}
+                <li>
+                    <a class="uk-accordion-title uk-box-shadow-hover-small" href="#">{{ faq.title }}</a>
+                    <div class="article-content uk-accordion-content link-primary">{{ faq.content }}</div>                
+                </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+</div>

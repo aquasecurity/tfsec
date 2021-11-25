@@ -1,0 +1,24 @@
+{% if include.tag %}
+<div class="uk-section section-featured{% if include.background %} uk-section-{{include.background}}{% endif %}">
+    <div class="uk-container uk-container-small">
+
+        {% if include.title %}
+        <h2 class="uk-h1 uk-text-center">{{ include.title }}</h2>
+        {% endif %}
+
+        {% if include.subtitle %}
+            <p class="uk-text-center uk-text-lead">{{ include.subtitle | escape }}</p>
+        {% endif %}
+        
+        <ul class="uk-list uk-list-large uk-margin-medium-top">
+        {% for doc in site.docs %}
+            {% if doc.tags contains include.tag %}
+            <li><a class="uk-box-shadow-hover-small" href="{{ site.baseurl }}{{ doc.url }}">{{doc.title}}</a></li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+
+    </div>
+</div>
+{% endif %}
+

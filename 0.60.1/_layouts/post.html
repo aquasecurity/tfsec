@@ -1,0 +1,42 @@
+---
+layout: default
+---
+
+<div class="uk-section">
+    <div class="uk-container uk-container-xsmall">
+        <article class="uk-article">
+
+            <h1 class="uk-article-title">{{ page.title | escape }}</h1>
+
+            <div class="uk-article-meta uk-margin-top uk-margin-medium-bottom uk-flex uk-flex-middle">
+                {% include post-meta.html %}
+            </div>
+
+            <div class="article-content link-primary">
+                {{ content }}
+                {% if site.share.post %}
+                    {% include share.html %}
+                {% endif %}
+            </div>
+
+            <hr class="uk-margin-medium">
+
+            {% include paginate-post.html %}
+
+            {% include related-posts.html %}
+
+            {% if site.disqus.shortname %}
+                {% include disqus_comments.html %}
+            {% endif %}
+        </article>
+
+        <script>
+            // Table of contents scroll to
+            UIkit.scroll('#markdown-toc a', {
+                duration: 400,
+                offset: 120
+            });
+        </script>
+
+    </div>
+</div>

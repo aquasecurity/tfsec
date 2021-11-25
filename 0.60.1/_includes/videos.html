@@ -1,0 +1,40 @@
+{% if include.columns %}
+    {% assign columns = include.columns %}
+    {% if columns == '1' %}
+        {% assign container = ' uk-container-xsmall' %}
+    {% elsif columns == '2' %}
+        {% assign container = ' uk-container-small' %}
+    {% else %}
+        {% assign container = '' %}
+    {% endif %}
+{% else %}
+    {% assign columns = 3 %}
+    {% assign container = '' %}
+{% endif %}
+
+<div class="uk-section section-videos">
+    <div class="uk-container{{container}}">
+
+        {% if include.title %}
+            <h2 class="uk-h1 uk-text-center">{{ include.title }}</h2>
+        {% endif %}
+
+        {% if include.subtitle %}<p class="uk-text-lead uk-text-center">{{ include.subtitle | escape }}</p>{% endif %}
+
+        <div class="uk-child-width-1-{{ columns }}@m uk-grid-match uk-text-center uk-margin-medium-top" data-uk-grid data-uk-lightbox>
+        {% for item in site.data.videos %}
+            <div>
+                <div class="uk-card uk-card-default uk-box-shadow-small uk-box-shadow-hover-medium uk-card-body uk-inline border-radius-large border-xlight">
+                    <a class="uk-position-cover" href="{{ item.url }}" data-caption="{{ item.title }}"></a>
+                    <span data-uk-icon="icon: play-circle; ratio: 3.4" class=""></span>
+                    <h3 class="uk-card-title uk-margin">{{ item.title }}</h3>
+                    {% if item.desc %}
+                    <p>{{ item.desc }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+
+    </div>
+</div>

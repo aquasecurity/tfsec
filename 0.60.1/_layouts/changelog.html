@@ -1,0 +1,42 @@
+---
+layout: default
+---
+
+<div class="uk-section">
+    <div class="uk-container container-xxsmall">
+
+        <h1 class="uk-article-title">{{ page.title | escape }}</h1>
+
+        <div class="article-content">
+            {{ content }}
+        </div>
+
+        {% assign changelogs = (site.changelogs | sort: 'date') | reverse %}
+        {% for changelog in changelogs %}
+            <article class="uk-article uk-margin-medium-top">
+                <hr class="uk-margin-medium-bottom">
+                <div class="uk-position-relative">
+                    <h2>{{ changelog.title }}</h2>
+                    <div class="uk-position-center-left-out uk-position-large uk-visible@m uk-text-small uk-text-muted">
+                        {% if changelog.date %}
+                        <time datetime="{{ changelog.date | date_to_xmlschema }}" itemprop="datePublished">
+                            {% assign date_format = site.date_format | default: "%b %-d, %Y" %}
+                            {{ changelog.date | date: date_format }}
+                        </time>
+                        {% endif %}
+                    </div>
+                    <div class="uk-hidden@m uk-text-small uk-text-muted uk-margin-bottom">
+                        {% if changelog.date %}
+                        <time datetime="{{ changelog.date | date_to_xmlschema }}" itemprop="datePublished">
+                            {% assign date_format = site.date_format | default: "%b %-d, %Y" %}
+                            {{ changelog.date | date: date_format }}
+                        </time>
+                        {% endif %}
+                    </div>
+                </div> 
+                <div class="article-content">{{ changelog.content }}</div>
+            </article>
+        {% endfor %}
+
+    </div>
+</div>

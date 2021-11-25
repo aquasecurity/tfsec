@@ -1,0 +1,7 @@
+<div class="uk-section">
+    <div class="uk-container{{container}}">
+
+        {% if include.title %}
+            <h2 class="uk-h1 uk-text-center">{{ include.title }}</h2>
+        {% endif %}
+        <div class="article-content uk-accordion-content link-primary">{{ include.content }}</div>    

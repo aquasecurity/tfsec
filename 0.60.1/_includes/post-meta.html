@@ -1,0 +1,40 @@
+{% if page.author %}
+    {% assign author = site.authors[page.author] %}
+{% else %}
+    {% assign author = site.author %}
+{% endif %}
+
+{% if author.avatar %}
+    {% if author.avatar contains 'http' %}
+        {% assign domain = '' %}
+    {% else %}
+        {% assign domain = site.uploads | absolute_url %}
+    {% endif %}
+    <img class="uk-border-circle avatar" src="{{ domain }}{{ author.avatar }}" alt="{{ author.name }}">
+    {% endif %}
+
+    <div>
+        {% if page.shortcode %}
+            <span>ID:
+                {{ page.shortcode }}</span>
+            <br>
+            {% endif %}
+            {% if page.legacy %}
+                <span>Legacy ID:
+                    {{ page.legacy }}</span>
+                <br>
+                {% endif %}
+                <br>
+                    {% if author.name %}
+                        {{ site.data.translation[site.lang].written_by | default: "Written by" }}
+
+                        <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+                            <span itemprop="name">{{ author.name }}</span>
+                        </span>
+                        <br>
+                        {% endif %}
+                        <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+                            {% assign date_format = site.date_format | default: "%b %-d, %Y" %}
+                            {{ page.date | date: date_format }}
+                        </time>
+                    </div>

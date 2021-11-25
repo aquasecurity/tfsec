@@ -1,0 +1,15 @@
+# Mobile menu navigation links
+
+- title: Home
+  url: /
+
+- title: Docs
+  url: /docs/installation/
+
+- title: Blog
+  url: /blog/
+
+
+- title: Contact
+  url: /contact/
+  button: success

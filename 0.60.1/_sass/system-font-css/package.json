@@ -1,0 +1,83 @@
+{
+  "_from": "system-font-css@^2.0.1",
+  "_id": "system-font-css@2.0.2",
+  "_inBundle": false,
+  "_integrity": "sha512-zK36lpja4NIi4Po99bXReeqeDcM1sW4hTKJt5Mby/IXX6kLSwjkQ4pZThFdgb/jDwfRsBvxxVG+VekP1sTdF0w==",
+  "_location": "/system-font-css",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "system-font-css@^2.0.1",
+    "name": "system-font-css",
+    "escapedName": "system-font-css",
+    "rawSpec": "^2.0.1",
+    "saveSpec": null,
+    "fetchSpec": "^2.0.1"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/system-font-css/-/system-font-css-2.0.2.tgz",
+  "_shasum": "88c4ae30eda94bc60705cba7d66c8c822f3c47db",
+  "_spec": "system-font-css@^2.0.1",
+  "_where": "/Users/ivan/Dev/jekyll/jekyll-theme-docs",
+  "author": {
+    "name": "Jonathan Neal",
+    "email": "jonathantneal@hotmail.com",
+    "url": "http://jonathantneal.com"
+  },
+  "bugs": {
+    "url": "https://github.com/jonathantneal/system-font-css/issues"
+  },
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "Zach Leatherman",
+      "email": "zachleatherman@gmail.com",
+      "url": "https://zachleat.com/"
+    }
+  ],
+  "dependencies": {
+    "cpr": "^2.2.0"
+  },
+  "deprecated": false,
+  "description": "Use the native system font of the OS running the browser",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "homepage": "https://github.com/jonathantneal/system-font-css",
+  "keywords": [
+    "system",
+    "fonts",
+    "faces",
+    "rules",
+    "css",
+    "mac",
+    "windows",
+    "ubuntu",
+    "san",
+    "fransisco",
+    "helvetica",
+    "neue",
+    "lucida",
+    "grande",
+    "segoe",
+    "ui",
+    "microsoft",
+    "sans",
+    "serif"
+  ],
+  "license": "CC0-1.0",
+  "main": "system-font.css",
+  "name": "system-font-css",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jonathantneal/system-font-css.git"
+  },
+  "scripts": {
+    "install": "cpr system-font.css _system-font.scss -o && cpr system-font.css system-font.less -o"
+  },
+  "version": "2.0.2"
+}

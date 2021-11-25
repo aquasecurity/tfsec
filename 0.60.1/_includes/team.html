@@ -1,0 +1,45 @@
+<div class="uk-section section-team">
+    <div class="uk-container uk-container-expand">
+
+        {% if include.title %}
+            <h2 class="uk-h1 uk-text-center">{{ include.title }}</h2>
+        {% endif %}
+
+        {% if include.subtitle %}<p class="uk-text-lead uk-text-center">{{ include.subtitle | escape }}</p>{% endif %}
+
+        <div class="uk-margin-medium-top uk-grid-small uk-flex-center uk-text-center uk-margin-medium-top" data-uk-grid>
+
+        {% if include.authors %}
+            {% assign authors = include.authors | split: ", " %}
+        {% else %}
+            {% assign authors = site.authors %}
+        {% endif %}
+
+        {% for author in authors %}
+
+            {% if include.authors %}
+                {% assign item = site.authors[author] %}
+            {% else %}
+                {% assign item = author[1] %}
+            {% endif %}
+
+            <div>
+                <div class="uk-card">
+                    {% if item.avatar %}
+                        {% if item.avatar contains 'http' %}
+                            {% assign domain = '' %}
+                        {% else %}
+                            {% assign domain = site.uploads | absolute_url %}
+                        {% endif %}
+
+                        <img class="uk-border-circle" src="{{ domain }}{{ item.avatar }}" alt="{{ item.name }}">
+                    {% endif %}
+                    <h5 class="uk-margin-remove-bottom uk-margin-top">{{ item.name }}</h5>
+                    <p class="uk-article-meta uk-margin-remove-bottom uk-margin-small-top">{{ item.title }}</p>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+
+    </div>
+</div>

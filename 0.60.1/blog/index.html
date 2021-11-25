@@ -1,0 +1,56 @@
+---
+layout: default
+title: Blog
+---
+
+<div class="uk-section">
+    <div class="uk-container uk-container-xsmall">
+
+        <h1 class="uk-article-title uk-text-center">{{ page.title | escape }}</h1>
+
+        {% for post in paginator.posts %}
+        <div class="uk-card uk-card-default uk-box-shadow-small uk-box-shadow-hover-medium card-post uk-inline border-radius-medium border-xlight uk-width-1-1 uk-margin">
+            <a class="uk-position-cover" href="{{ post.url | relative_url }}"></a>
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    {% if post.author %}
+                      {% assign author = site.authors[post.author] %}
+                    {% else %}
+                      {% assign author = site.author %}
+                    {% endif %}
+
+                    {% if author.avatar %}
+                        <div class="uk-width-auto">
+                            {% if author.avatar contains 'http' %}
+                                {% assign domain = '' %}
+                            {% else %}
+                                {% assign domain = site.uploads | absolute_url %}
+                            {% endif %}
+                            <img class="uk-border-circle avatar" src="{{ domain }}{{ author.avatar }}" alt="{{ author.name }}">
+                        </div>
+                    {% endif %}
+                  
+                  
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">{{ post.title }}</h3>
+                        <p class="uk-text-meta uk-margin-remove-top"><time datetime="{{ post.date | date_to_xmlschema }}">
+                            {% assign date_format = site.date_format | default: "%b %-d, %Y" %}
+                            {{ post.date | date: date_format }}
+                        </time></p>
+                    </div>
+                </div>
+            </div>
+            <div class="uk-card-body">
+                {{ post.excerpt }}
+            </div>
+            <div class="uk-card-footer">
+                <span class="uk-button uk-button-text">{{ site.data.translation[site.lang].read_more | default: "Read more" }} &rarr;</span>
+            </div>
+
+        </div>
+        {% endfor %}
+
+        {% include paginate-blog.html %}
+
+    </div>
+</div>

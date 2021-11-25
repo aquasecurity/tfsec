@@ -1,0 +1,14 @@
+<div class="uk-position-relative uk-visible-toggle uk-light" data-uk-slideshow>
+
+    <ul class="uk-slideshow-items">
+        {% for image in site.static_files %}
+            {% if image.path contains include.folder %}
+                <li><img src="{{ image.path | absolute_url }}" data-uk-cover></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" data-uk-slidenav-previous data-uk-slideshow-item="previous"></a>
+    <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" data-uk-slidenav-next data-uk-slideshow-item="next"></a>
+
+</div>

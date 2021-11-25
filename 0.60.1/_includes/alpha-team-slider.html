@@ -1,0 +1,50 @@
+<div class="uk-section section-team">
+    <div class="uk-container uk-container-expand">
+
+        {% if include.title %}
+            <h2 class="uk-text-center">{{ include.title }}</h2>
+        {% endif %}
+
+        {% if include.subtitle %}<p class="uk-text-lead uk-text-center">{{ include.subtitle | escape }}</p>{% endif %}
+
+        <div class="uk-margin-medium-top" data-uk-slider="center: true">
+            <div class="uk-position-relative uk-visible-toggle" tabindex="-1">
+                <ul class="uk-slider-items uk-grid uk-grid-small uk-grid-match uk-flex uk-flex-center">
+                    {% for item in site.authors %}
+                        {% if include.authors %}
+                            {% if include.authors contains item.username %}
+                            {% else %}
+                                {% continue %}
+                            {% endif %}
+                        {% endif %}
+
+                        <li>
+                            <div class="uk-card uk-card-small uk-card-body uk-inline uk-border-rounded border-light uk-width-medium">
+                                <div class="uk-grid-small uk-flex-middle" data-uk-grid>
+                                    {% if item.avatar %}
+                                        {% if item.avatar contains 'http' %}
+                                            {% assign domain = '' %}
+                                        {% else %}
+                                            {% assign domain = site.uploads | absolute_url %}
+                                        {% endif %}
+
+                                        <div class="uk-width-auto">
+                                            <img class="uk-border-circle" width="40" height="40" src="{{ domain }}{{ item.avatar }}" alt="{{ item.name }}">
+                                        </div>
+                                    {% endif %}
+                                    <div class="uk-width-expand">
+                                        <h3 class="uk-card-title uk-margin-remove-bottom">{{ item.name }}</h3>
+                                        <p class="uk-text-meta uk-margin-remove-top">{{ item.title }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+                <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+            </div>        
+        </div>
+
+    </div>
+</div>

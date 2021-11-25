@@ -1,0 +1,186 @@
+<div {% if site.navbar.sticky %} data-uk-sticky="animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: uk-navbar-transparent; top: 200" {% endif %}>
+    <nav class="uk-navbar-container">
+        <div class="uk-container">
+            <div data-uk-navbar>
+                <div class="uk-navbar-left">
+                    <a class="uk-navbar-item uk-logo uk-visible@m" href="{{ "/" | relative_url }}">
+                        {% if site.logo %}
+                            <img src="{{ site.uploads | absolute_url }}{{ site.logo }}" width="144px" height="43" alt="{{ site.title | escape }}">
+                            {% else %}
+                                {{ site.title | escape }}
+                            {% endif %}
+                        </a>
+                        {% if site.data.translation[site.lang].mobile_nav_docs %}
+                            <a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas-docs" data-uk-toggle>
+                                <span data-uk-navbar-toggle-icon></span>
+                                <span class="uk-margin-small-left">{{ site.data.translation[site.lang].mobile_nav_docs }}</span>
+                            </a>
+                        {% else %}
+                            <a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas-docs" data-uk-navbar-toggle-icon data-uk-toggle></a>
+                        {% endif %}
+
+                        <ul class="uk-navbar-nav uk-visible@m">
+                            {% for link in site.data.navigation_header.left %}
+                                {% if link.url contains 'http' %}
+                                    {% assign domain = '' %}
+                                {% else %}
+                                    {% assign domain = '' | relative_url %}
+                                {% endif %}
+                                {% if link.url == page.url %}
+                                    {% assign current = ' class="uk-active"' %}
+                                {% else %}
+                                    {% assign current = null %}
+                                {% endif %}
+                                {% if link.title %}
+                                    {% if link.button %}
+                                        <li>
+                                            <div class="uk-navbar-item">
+                                                <a class="uk-button uk-button-{{ link.button }}" href="{{ domain }}{{ link.url }}" {% if link.url contains 'http' %} target="_blank" {% endif %}>{{ link.title }}</a>
+                                            </div>
+                                        </li>
+                                    {% else %}
+                                        {% if link.url %}
+                                            <li{{ current }}>
+                                                <a href="{{ domain }}{{ link.url }}" {% if link.url contains 'http' %} target="_blank" {% endif %}>{{ link.title }}</a>
+                                            </li>
+                                        {% else %}
+                                            <li>
+                                                <a href="#">{{ link.title }}</a>
+                                                {% if link.dropdown != null %}
+                                                    <div class="uk-navbar-dropdown">
+                                                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                                                            {% for child in link.dropdown %}
+                                                                {% if child.url != null %}
+                                                                    {% if child.url contains 'http' %}
+                                                                        {% assign domain = '' %}
+                                                                    {% else %}
+                                                                        {% assign domain = '' | relative_url %}
+                                                                    {% endif %}
+                                                                    {% if child.url == page.url %}
+                                                                        {% assign current = ' class="uk-active"' %}
+                                                                    {% else %}
+                                                                        {% assign current = null %}
+                                                                    {% endif %}
+                                                                    <li{{ current }}>
+                                                                        <a href="{{ domain }}{{ child.url }}">{{ child.title }}</a>
+                                                                    </li>
+                                                                {% else %}
+                                                                    <li class="uk-nav-header">{{ child.title }}</li>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="uk-navbar-center uk-hidden@m">
+                        <a class="uk-navbar-item uk-logo" href="{{ "/" | relative_url }}">
+                            {% if site.logo %}
+                                <img src="{{ site.uploads | absolute_url }}{{ site.logo }}" alt="{{ site.title | escape }}">
+                                {% else %}
+                                    {{ site.title | escape }}
+                                {% endif %}
+                            </a>
+                        </div>
+                        <div class="uk-navbar-right">
+                            {% if site.navbar.search %}
+                                {% unless page.hero %}
+                                    <div class="uk-visible@m">
+                                        <a id="search-navbar-toggle" class="uk-navbar-toggle" uk-search-icon href="#"></a>
+                                        <div class="uk-drop uk-background-default uk-border-rounded" uk-drop="mode: click; pos: left-center; offset: 0">
+                                            <form class="uk-search uk-search-navbar uk-width-1-1" onsubmit="return false;">
+                                                <input id="search-navbar" class="uk-search-input" type="search" placeholder="{{ site.data.translation[site.lang].search_placeholder | default: "Search for answers" }}" autofocus autocomplete="off"></form>
+                                                <ul id="search-navbar-results" class="uk-position-absolute uk-width-1-1 uk-list"></ul>
+                                            </div>
+                                        </div>
+                                        <script>
+                                            SimpleJekyllSearch({
+                                                searchInput: document.getElementById('search-navbar'),
+                                                resultsContainer: document.getElementById('search-navbar-results'),
+                                                noResultsText: '<li class="no-results">    {{ site.data.translation[site.lang].search_no_results | default: "No results found" }}</li>',
+                                                searchResultTemplate: '<li><a href="{url}">{title}</a></li>',
+                                                json: "{{ '/search.json' | relative_url }}"
+                                            });
+                                            searchResults("search-navbar");
+                                        </script>
+                                    {% endunless %}
+                                {% endif %}
+
+                                <ul class="uk-navbar-nav uk-visible@m">
+                                    {% for link in site.data.navigation_header.right %}
+                                        {% if link.url contains 'http' %}
+                                            {% assign domain = '' %}
+                                        {% else %}
+                                            {% assign domain = '' | relative_url %}
+                                        {% endif %}
+                                        {% if link.url == page.url %}
+                                            {% assign current = ' class="uk-active"' %}
+                                        {% else %}
+                                            {% assign current = null %}
+                                        {% endif %}
+                                        {% if link.title %}
+                                            {% if link.button %}
+                                                <li>
+                                                    <div class="uk-navbar-item">
+                                                        <a class="uk-button uk-button-{{ link.button }}" href="{{ domain }}{{ link.url }}" {% if link.url contains 'http' %} target="_blank" {% endif %}>{{ link.title }}</a>
+                                                    </div>
+                                                </li>
+                                            {% else %}
+                                                {% if link.url %}
+                                                    <li{{ current }}>
+                                                        <a href="{{ domain }}{{ link.url }}" {% if link.url contains 'http' %} target="_blank" {% endif %}>{{ link.title }}</a>
+                                                    </li>
+                                                {% else %}
+                                                    <li>
+                                                        <a href="#">{{ link.title }}</a>
+                                                        {% if link.dropdown != null %}
+                                                            <div class="uk-navbar-dropdown">
+                                                                <ul class="uk-nav uk-navbar-dropdown-nav">
+                                                                    {% for child in link.dropdown %}
+                                                                        {% if child.url != null %}
+                                                                            {% if child.url contains 'http' %}
+                                                                                {% assign domain = '' %}
+                                                                            {% else %}
+                                                                                {% assign domain = '' | relative_url %}
+                                                                            {% endif %}
+                                                                            {% if child.url == page.url %}
+                                                                                {% assign current = ' class="uk-active"' %}
+                                                                            {% else %}
+                                                                                {% assign current = null %}
+                                                                            {% endif %}
+                                                                            <li{{ current }}>
+                                                                                <a href="{{ domain }}{{ child.url }}">{{ child.title }}</a>
+                                                                            </li>
+                                                                        {% else %}
+                                                                            <li class="uk-nav-header">{{ child.title }}</li>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            </div>
+                                                        {% endif %}
+                                                    </li>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+
+                                {% if site.data.translation[site.lang].mobile_nav_site %}
+                                    <a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-toggle>
+                                        <span data-uk-navbar-toggle-icon></span>
+                                        <span class="uk-margin-small-left">{{ site.data.translation[site.lang].mobile_nav_site }}</span>
+                                    </a>
+                                {% else %}
+                                    <a class="uk-navbar-toggle uk-hidden@m" href="#offcanvas" data-uk-navbar-toggle-icon data-uk-toggle></a>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>

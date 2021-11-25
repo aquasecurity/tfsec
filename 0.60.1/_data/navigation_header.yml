@@ -1,0 +1,18 @@
+# Navbar left menu navigation links
+
+left:
+  - title: Home
+    url: /
+
+  - title: Docs
+    url: /docs/installation/
+
+  - title: Blog
+    url: /blog/
+
+
+right:
+
+  - title: Contact
+    url: /contact/
+    button: success

@@ -1,0 +1,747 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Installing tfsec on your local machine">
+      
+      
+      
+        <meta name="author" content="tfsec">
+      
+      
+        <link rel="canonical" href="https://aquasecurity.github.io/tfsec/0.60.1/_docs/installation/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
+    
+    
+      
+        <title>Installation - tfsec</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a57b2b03.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#verifying-signed-binaries" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="tfsec" class="md-header__button md-logo" aria-label="tfsec" data-md-component="logo">
+      
+  <img src="../../tfsec.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            tfsec
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Installation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/aquasecurity/tfsec" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aquasecurity/tfsec
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
+        Getting Started
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../config/" class="md-tabs__link">
+        Config
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="tfsec" class="md-nav__button md-logo" aria-label="tfsec" data-md-component="logo">
+      
+  <img src="../../tfsec.png" alt="logo">
+
+    </a>
+    tfsec
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/aquasecurity/tfsec" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aquasecurity/tfsec
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Getting Started
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Getting Started" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Getting Started
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Installation
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-signed-binaries" class="md-nav__link">
+    Verifying signed binaries
+  </a>
+  
+    <nav class="md-nav" aria-label="Verifying signed binaries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#public-key" class="md-nav__link">
+    Public Key
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps-for-verification" class="md-nav__link">
+    Steps for Verification
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-with-docker" class="md-nav__link">
+    Use with Docker
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        Usage
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Config
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Config" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom-checks/" class="md-nav__link">
+        Custom Checks
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-signed-binaries" class="md-nav__link">
+    Verifying signed binaries
+  </a>
+  
+    <nav class="md-nav" aria-label="Verifying signed binaries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#public-key" class="md-nav__link">
+    Public Key
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#steps-for-verification" class="md-nav__link">
+    Steps for Verification
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-with-docker" class="md-nav__link">
+    Use with Docker
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Installation</h1>
+                
+                <p>Install with <a href="https://brew.sh">brew/linuxbrew</a></p>
+<div class="highlight"><pre><span></span><code>brew install tfsec
+</code></pre></div>
+<p>Install with <a href="https://chocolatey.org/">Chocolatey</a></p>
+<div class="highlight"><pre><span></span><code>choco install tfsec
+</code></pre></div>
+<p>Install with <a href="https://scoop.sh/">Scoop</a></p>
+<p><div class="highlight"><pre><span></span><code>scoop install tfsec
+</code></pre></div>
+You can also grab the binary for your system from the <a href="https://github.com/aquasecurity/tfsec/releases">releases page</a>.</p>
+<p>Alternatively, install with Go:</p>
+<div class="highlight"><pre><span></span><code>go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
+</code></pre></div>
+<h3 id="verifying-signed-binaries">Verifying signed binaries</h3>
+<p>All tfsec binaries are signed with out signing key <code>D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE</code>. The steps below detail how to verify the signature of the keys.</p>
+<h4 id="public-key">Public Key</h4>
+<p>The public key for <code>signing@tfsec.dev</code> can be downloaded <a href="/assets/signing.asc">here</a></p>
+<div class="highlight"><pre><span></span><code>-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQINBGCmSy4BEAC9IxH3DeV+xeORRypRZe28YYSvDvBZdfer0apm+p1kJFsXM6ns
+dng9PThUihEt11BMtLmlQyPMQ0TsONOjqFaqNEitzNe55MSHxTYkTrnctrF3IKS4
+G35RHcHUctx9j4Cg56eRxU1cb0B/JJdh9HjZtQG9CJB0+WU/UlXOgYn/17ZScS6Q
+tq56SKd+lW5BfTzl+aYdzbrlWh1Ukla7DvydQmxY7XHgfKbLrGJVQdL91opJvXKr
+D1vxDuMpZHSm9lp6G5GXsZIA080QKcD3nSjeeRTxuABDwHD/1OS03iZQtxwjUMRw
+FYFlrcSVap20SXMLAtKRDpWGhAyzI+JUhZQMuRj22jcicEs7CKGXteFMFlgh3RU1
+K4DfQwFT436ywuDCAuu/vAhVwZmLaUlf6YIWnGBYOjHXjas/f1z7ZTe2dHxQfNg4
+xsmefH++I4qRHF+e2ggMGF2JAv8Y7T3+QDkXDiQ/kTJaFvWqoe0A5V+CmdL01giW
+AkCfqtRIEKuF7NSYsekY0HVGwxDGG/gKWfWw0bq+KxsVwk9/KDVBZIRdimqcuJm1
+PIssx5v+V4BIkYWhKNX0rIu5bi9UAXHJJuCEdzHsiWUp+UA6MBv1FNNWdPJoEwkc
+BgmryUFYr7UVb0+9NkII0rYmnwHcuFO9tErqccN+Ru2f920R40J/jH3GMQARAQAB
+tDpUZnNlYyBTaWduaW5nIChDb2RlIHNpZ25pbmcgZm9yIHRmc2VjKSA8c2lnbmlu
+Z0B0ZnNlYy5kZXY+iQJOBBMBCgA4FiEE1msiKj6kwl1dGgl/w0rO+0bsOc4FAmCm
+Sy4CGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQw0rO+0bsOc6zRA/+JZUV
+Q4ip9qGt6mMN+bkFm67218F5J/e1EKC9lbf4yuw56Jgz1+MdENUVROdqTxxXPWqX
+XaS0VD4obq/0G83dVgxuMFuW8LM+Uey6adGLn4QPoxt6Y0lRlQJmsP9aicw+rcvf
+drV34GwUPTEwbIW1AAhTi1hS+9/EsBqzMnIzL6xBsN29bHFiqQlC0bodDwVU7uYc
+tgh6D8W5FKeQkUiHJlZxGpcY7TEMmhcp26tdIWAfUFBDbwqoS/NZy3ZWJ3QLu1WQ
+72u7gD7tR4NoZwYiSGLZBp8Qz3g1a5RNdsN7U63bMhP8LWuvOYNe886DGAD4Olxa
+HkPowUJ3GVd1v7WE02Zu/72YEQB0XL2gy/QclX56gx0jXDBoyQrzdSHXYQzI3Y0Z
+W7T7ETxkvGsWEHkU+20KJKSTEWKVIQN7kKVT9RbMUvYBTex6oFnzDZvOBhbrWxjP
+4ojHHCkhTyffWZ2LKPDueFuzGLdf/F+Di2//Yc5ylYxPF2mBDp0ptUXPOFCN/5o/
+smBoDBzVU49Rnnw9qOUZ5PLs+HmPT4MMdGJKO1bD7JRA8zKtzIgNE568U5IjbOjV
+WXYhy9QFoQINjkiGBw0TQf7Yb8O0u0EnumXqYEPcyKgJaIhquduQllaoepJa27qR
+ZchuaBTiTJwaMIaz5m8MOQsVMfEgU3tDf0RbufG5Ag0EYKZLLgEQAMjL3IEmut/B
+k/FzcMGbvpf/dlIqnNDFsRLYexmhqfU7n5Nm0bWYhYArszBYfvYlZCXOsjmeRnSa
+fR85mw98ZMxR9n87NtgnNdEFnWceJ+3TkTIlcIZsGqCodWaxKW99q0w2z9MQ8Twn
+4ciioKvinw9FE2YdfnPe7gY3DfvvTWurhvssUh3YLIaGMt3KcRtEVsPOnsRNLeLD
+R9T5CGX8H47C/kBxGIPgh6xRf5yxErU7BwiS7BgSSAXwiM3IenuqgeJe4flBggTl
+7zcevsgvBrIPVemRl428fCTtBkykEobNXz/2JT/CzgCYJ27zlzdFe81ENoxR9Ieb
+KyA2EDw41xtjGiHkXsBdavQsikoXqt8PC7sFoIm/b2125fUmDafZ/DVDxLeSjglx
+izWMN1AG9CV7bEgC/f25UmiQb3V2TkM9Uo+Y5g1ZvJTM83mi2cINjQW5WTwV8fiu
+DFf2QTXY/4W0jtU5EvI7N3tH7laFBsXz32hnEGImsyBUApJK0s3FPdBjwEYtNSt9
+Fn5JFr0+48uIgvmS+CnKp+KzQ7YRWputbJWO3JFvlzMmCKXKU/ss+PkU6admTvnH
+rm+2qpGWfsmvStsqpgdbivLwujVC1ZyKnv8MkT7pq0iwlyqyAGlYoTkW1JSiCzmd
+s2kE+hqsIr+u8sd07zjoxtvLdUnF1c81ABEBAAGJAjYEGAEKACAWIQTWayIqPqTC
+XV0aCX/DSs77Ruw5zgUCYKZLLgIbDAAKCRDDSs77Ruw5znn2D/9scSun7N7UcXCD
+0WV4F0QNUU+cu6QeDkjFoolXQZeIBRgSpa1r9qfPzQqB03CF/E5kFQz6APpX9nZX
+gjCvBo2oeeSusUY3d4gkGUnhLC+rwiPaQrJFgh6pDli3A78KChADq+JzZaxcDb7m
+Li41jwmfqHdkC0c6LI9QstOcyV2n5u2/HX0tJLGw47w5eEsfhcI5xgw/adBjqpHM
+lEKTJcyJuIY++9PiNmG5algPwAa+0XrgCdLHyHXHHhoFV+5xj29iWpfPlqLLl1eT
+QqnbqpcOupcsFsASiM5zVGZHK6LYuDkk9Ey/TrqcAhxfyl8cXNpdRC7PanHtykvC
+DKa/6fXNJ3MtpQZ+Z+JjoN1PWQP3UqDYhXxizzT6TrT5N72M//bLm0hadPCt+8Wx
+CzlBBxuxlGEhdriYFUtQ/wN7cRR659qZARylfXI5j1mHBlPuIEoSCMkkz/Nj3Bxo
+iuzLVVrX0h16N7H2wclTsw2LDf2rPlTIcI5Ct41fOSyyagZhWoR05JbaY4+yfhjx
+FkM0ly4XGasTbjJpwbJKWtXwiLXNaCCzQJH1DBdh5O3lHIidqcdoi+iAcpgaJCXI
+p297ny/7PTHmTaZhdjGcBp2tAmd+J0zgsmNk3qUg5pPGKdUnCA5jjENfmTMP4ets
+nX5QmAEwF/nBYV3Du7TIvHtz91yL8A==
+=opqY
+-----END PGP PUBLIC KEY BLOCK-----
+</code></pre></div>
+<h4 id="steps-for-verification">Steps for Verification</h4>
+<ol>
+<li>
+<p>Copy the public key block into a new file, eg; /tmp/tfsec_key.txt</p>
+</li>
+<li>
+<p>Import the gpg key
+   <div class="highlight"><pre><span></span><code> gpg --import &lt; /tmp/tfsec_key.txt
+</code></pre></div></p>
+</li>
+<li>Verify that the key has been imported
+    <div class="highlight"><pre><span></span><code>gpg --list-keys signing@tfsec.dev
+</code></pre></div>
+    check the output is
+    <div class="highlight"><pre><span></span><code>pub  rsa4096 2021-05-20 [SC]       D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE
+uid  [ultimate] Tfsec Signing (Code signing for tfsec) &lt;signing@tfsec.dev&gt;
+sub  rsa4096 2021-05-20 [E]
+</code></pre></div></li>
+<li>
+<p>Download the required binary and its associated sig file</p>
+</li>
+<li>
+<p>Assuming it is <code>tfsec-linux-amd64</code> the verify command below should be run, passing in the sig file then the binary file
+   <div class="highlight"><pre><span></span><code>gpg --verify tfsec-linux-amd64.D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE.sig tfsec-linux-amd64
+</code></pre></div>
+   This should give you a similar output to that below - the key part is that it is signed and has a <code>Good signature</code>
+   <div class="highlight"><pre><span></span><code>gpg: Signature made Fri 09 Jul 2021 11:41:22 BST
+gpg:                using RSA key D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE
+gpg: Good signature from &quot;Tfsec Signing (Code signing for tfsec) &lt;signing@tfsec.dev&gt;&quot; [ultimate]
+</code></pre></div></p>
+</li>
+</ol>
+<h2 id="usage">Usage</h2>
+<p>tfsec will scan the specified directory. If no directory is specified, the current working directory will be used.</p>
+<p>The exit status will be non-zero if tfsec finds problems, otherwise the exit status will be zero.</p>
+<div class="highlight"><pre><span></span><code>tfsec .
+</code></pre></div>
+<h2 id="use-with-docker">Use with Docker</h2>
+<p>As an alternative to installing and running tfsec on your system, you may
+run tfsec in a Docker container.</p>
+<p>To run:</p>
+<div class="highlight"><pre><span></span><code>docker run --rm -it -v <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">:/src&quot;</span> aquasec/tfsec /src
+</code></pre></div>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Home
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../usage/" class="md-footer__link md-footer__link--next" aria-label="Next: Usage" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Usage
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": {"method": "mike", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>
+      
+    
+  </body>
+</html>

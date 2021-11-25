@@ -1,0 +1,17 @@
+{% if include.button_url contains 'http' %}
+    {% assign domain = '' %}
+{% else %}
+    {% assign domain = '' | relative_url %}
+{% endif %}
+
+{% if include.button_url %}
+<div class="uk-section uk-text-center{% if include.background %} uk-section-{{include.background}}{% endif %}">
+    <div class="uk-container uk-container-small">
+        <div data-uk-scrollspy="cls: uk-animation-slide-bottom-medium; repeat: true">
+            {% if include.title %}<h2 class="uk-h1 uk-margin-bottom">{{ include.title }}</h2>{% endif %}
+            {% if include.subtitle %}<p class="uk-text-lead uk-text-center">{{ include.subtitle | escape }}</p>{% endif %}
+            <a class="uk-button uk-button-primary uk-button-large uk-margin-medium-top" href="{{ domain }}{{ include.button_url }}">{{ include.button_text }}</a>
+        </div>
+    </div>
+</div>
+{% endif %}

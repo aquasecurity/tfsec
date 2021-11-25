@@ -1,0 +1,32 @@
+<div class="uk-margin-large-top">
+    <h3>{{ site.data.translation[site.lang].related_docs | default: "Related Docs" }}</h3>
+
+    {% assign maxRelated = 4 %}
+    {% assign minCommonTags =  1 %}
+    {% assign maxRelatedCounter = 0 %}
+
+    <ul class="uk-list link-secondary">
+    {% for doc in site.docs %}
+
+    {% assign sameTagCount = 0 %}
+    {% assign commonTags = '' %}
+
+    {% for tag in doc.tags %}
+        {% if doc.url != page.url %}
+            {% if page.tags contains tag %}
+                {% assign sameTagCount = sameTagCount | plus: 1 %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if sameTagCount >= minCommonTags %}
+        <li><a href="{{ site.baseurl }}{{ doc.url }}">{{ doc.title }}</a></li>
+        {% assign maxRelatedCounter = maxRelatedCounter | plus: 1 %}
+        {% if maxRelatedCounter >= maxRelated %}
+            {% break %}
+        {% endif %}
+    {% endif %}
+
+    {% endfor %}
+    </ul>
+</div>

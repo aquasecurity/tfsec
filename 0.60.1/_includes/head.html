@@ -1,0 +1,41 @@
+<head>
+    <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+                {% seo %}
+                <meta property="og:image" content="{% if site.logo contains 'http' %}{{ site.logo }}{% else %}{{ site.uploads | absolute_url }}{{ site.logo }}{% endif %}"/>
+                <link rel="stylesheet" href="{{ "/assets/css/main.css" | relative_url }}">
+                <link rel="stylesheet" href="{{ "/assets/css/syntax.css" | relative_url }}">
+                    <link rel="shortcut icon" type="image/png" href="{{ "uploads/favicon.ico" | relative_url }}">
+                        <link rel="alternate" type="application/rss+xml" title="{{ site.title | escape }}" href="{{ "/feed.xml" | relative_url }}">
+                            <script src="{{ "/assets/js/main.js" | relative_url }}"></script>
+                            {% if page.hero.search or site.navbar.search %}
+                                {% include search-js.html %}
+                            {% endif %}
+                            {% include hook-head.html %}
+                            {% if jekyll.environment == 'production' and site.google_analytics %}
+                                {% include google-analytics.html %}
+                            {% endif %}
+                            <!-- TrenDemon Code -->
+                            <script type="text/javascript" id="trd-flame-load">
+                                TRD_ACC_ID = 1810;
+                                (function (w, d) {
+                                    function go() {
+                                        var trdti = setInterval(function () {
+                                            if (document.readyState === "complete") {
+                                                var bi = document.createElement("script");
+                                                bi.type = "text/javascript";
+                                                bi.async = true;
+                                                bi.src = "https://assets.trendemon.com/tag/trends.min.js";
+                                                bi.id = "trdflame";
+                                                var s = document.getElementsByTagName("script")[0];
+                                                s.parentNode.insertBefore(bi, s);
+                                                clearInterval(trdti);
+                                            }
+                                        }, 500);
+                                    };
+                                    go();
+                                }(window, document));
+                            </script>
+                            <!-- End of TrenDemon Code -->
+                        </head>

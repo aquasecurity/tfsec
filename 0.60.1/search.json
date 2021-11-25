@@ -1,0 +1,17 @@
+---
+layout: null
+---
+[
+  {% for doc in site.docs %}
+    {
+    "title": "{{ doc.title | escape }}",
+    "category": "{{ doc.resources }}",
+    "legacy": "{{ doc.legacy }}",
+    "id": "{{ doc.shordcode }}",
+    "tags": "{{ doc.tags | join: ', ' }}",
+    "url": "{{ site.baseurl }}{{ doc.url }}",
+    "date": "{{ doc.date }}"
+  } {% unless forloop.last %},
+  {% endunless %} 
+  {% endfor %}
+]

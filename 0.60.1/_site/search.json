@@ -1,0 +1,3115 @@
+[
+  
+    {
+    "title": "API Gateway stages for V1 and V2 should have access logging enabled",
+    "category": "aws_apigatewayv2_stage aws_api_gateway_stage",
+    "legacy": "AWS061",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/api-gateway/enable-access-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "API Gateway must have cache enabled",
+    "category": "aws_api_gateway_method_settings",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/api-gateway/enable-cache-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "API Gateway must have X-Ray tracing enabled",
+    "category": "aws_api_gateway_stage",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/api-gateway/enable-tracing/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "No public access to API Gateway methods",
+    "category": "aws_api_gateway_method",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/api-gateway/no-public-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "API Gateway domain name uses outdated SSL/TLS protocols.",
+    "category": "aws_api_gateway_domain_name",
+    "legacy": "AWS025",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/api-gateway/use-secure-tls-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Athena databases and workgroup configurations are created unencrypted at rest by default, they should be encrypted",
+    "category": "aws_athena_database aws_athena_workgroup",
+    "legacy": "AWS059",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/athena/enable-at-rest-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Athena workgroups should enforce configuration to prevent client disabling encryption",
+    "category": "aws_athena_workgroup",
+    "legacy": "AWS060",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/athena/no-encryption-override/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Launch configuration with unencrypted block device.",
+    "category": "aws_launch_configuration",
+    "legacy": "AWS014",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/autoscaling/enable-at-rest-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "A resource has a public IP address.",
+    "category": "aws_launch_configuration aws_instance",
+    "legacy": "AWS012",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/autoscaling/no-public-ip/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Cloudfront distribution should have Access Logging configured",
+    "category": "aws_cloudfront_distribution",
+    "legacy": "AWS071",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/cloudfront/enable-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "CloudFront distribution does not have a WAF in front.",
+    "category": "aws_cloudfront_distribution",
+    "legacy": "AWS045",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/cloudfront/enable-waf/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "CloudFront distribution allows unencrypted (HTTP) communications.",
+    "category": "aws_cloudfront_distribution",
+    "legacy": "AWS020",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/cloudfront/enforce-https/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "CloudFront distribution uses outdated SSL/TLS protocols.",
+    "category": "aws_cloudfront_distribution",
+    "legacy": "AWS021",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/cloudfront/use-secure-tls-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Cloudtrail should be enabled in all regions regardless of where your AWS resources are generally homed",
+    "category": "aws_cloudtrail",
+    "legacy": "AWS063",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/cloudtrail/enable-all-regions/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Cloudtrail should be encrypted at rest to secure access to sensitive trail data",
+    "category": "aws_cloudtrail",
+    "legacy": "AWS065",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/cloudtrail/enable-at-rest-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Cloudtrail log validation should be enabled to prevent tampering of log data",
+    "category": "aws_cloudtrail",
+    "legacy": "AWS064",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/cloudtrail/enable-log-validation/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "CloudWatch log groups should be encrypted using CMK",
+    "category": "aws_cloudwatch_log_group",
+    "legacy": "AWS089",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/cloudwatch/log-group-customer-key/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "CodeBuild Project artifacts encryption should not be disabled",
+    "category": "aws_codebuild_project",
+    "legacy": "AWS080",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/codebuild/enable-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Config configuration aggregator should be using all regions for source",
+    "category": "aws_config_configuration_aggregator",
+    "legacy": "AWS085",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/config/aggregate-all-regions/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "DocumentDB logs export should be enabled",
+    "category": "aws_docdb_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/documentdb/enable-log-export/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "DocumentDB storage must be encrypted",
+    "category": "aws_docdb_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/documentdb/enable-storage-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "DocumentDB encryption should use Customer Managed Keys",
+    "category": "aws_docdb_cluster aws_docdb_cluster_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/documentdb/encryption-customer-key/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "DAX Cluster should always encrypt data at rest",
+    "category": "aws_dax_cluster",
+    "legacy": "AWS081",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/dynamodb/enable-at-rest-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Point in time recovery should be enabled to protect DynamoDB table",
+    "category": "aws_dynamodb_table",
+    "legacy": "AWS086",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/dynamodb/enable-recovery/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "DynamoDB tables should use at rest encryption with a Customer Managed Key",
+    "category": "aws_dynamodb_table",
+    "legacy": "AWS092",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/dynamodb/table-customer-key/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "EBS volumes must be encrypted",
+    "category": "aws_ebs_volume",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ebs/enable-volume-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "EBS volume encryption should use Customer Managed Keys",
+    "category": "aws_ebs_volume",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ebs/encryption-customer-key/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "aws_instance should activate session tokens for Instance Metadata Service.",
+    "category": "aws_instance",
+    "legacy": "AWS079",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ec2/enforce-http-token-imds/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "User data for EC2 instances must not contain sensitive AWS keys",
+    "category": "aws_instance",
+    "legacy": "AWS062",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ec2/no-secrets-in-user-data/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "ECR repository has image scans disabled.",
+    "category": "aws_ecr_repository",
+    "legacy": "AWS023",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ecr/enable-image-scans/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "ECR images tags shouldn&#39;t be mutable.",
+    "category": "aws_ecr_repository",
+    "legacy": "AWS078",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ecr/enforce-immutable-repository/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "ECR repository policy must block public access",
+    "category": "aws_ecr_repository_policy",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ecr/no-public-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "ECR Repository should use customer managed keys to allow more control",
+    "category": "aws_ecr_repository",
+    "legacy": "AWS093",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ecr/repository-customer-key/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "ECS clusters should have container insights enabled",
+    "category": "aws_ecs_cluster",
+    "legacy": "AWS090",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ecs/enable-container-insight/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "ECS Task Definitions with EFS volumes should use in-transit encryption",
+    "category": "aws_ecs_task_definition",
+    "legacy": "AWS096",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ecs/enable-in-transit-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Task definition defines sensitive environment variable(s).",
+    "category": "aws_ecs_task_definition",
+    "legacy": "AWS013",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ecs/no-plaintext-secrets/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "EFS Encryption has not been enabled",
+    "category": "aws_efs_file_system",
+    "legacy": "AWS048",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/efs/enable-at-rest-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "EKS Clusters should have cluster control plane logging turned on",
+    "category": "aws_eks_cluster",
+    "legacy": "AWS067",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/eks/enable-control-plane-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "EKS should have the encryption of secrets enabled",
+    "category": "aws_eks_cluster",
+    "legacy": "AWS066",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/eks/encrypt-secrets/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "EKS cluster should not have open CIDR range for public access",
+    "category": "aws_eks_cluster",
+    "legacy": "AWS068",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/eks/no-public-cluster-access-to-cidr/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "EKS Clusters should have the public access disabled",
+    "category": "aws_eks_cluster",
+    "legacy": "AWS069",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/eks/no-public-cluster-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Domain logging should be enabled for Elastic Search domains",
+    "category": "aws_elasticsearch_domain",
+    "legacy": "AWS057",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elastic-search/enable-domain-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Elasticsearch domain uses plaintext traffic for node to node communication.",
+    "category": "aws_elasticsearch_domain",
+    "legacy": "AWS032",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elastic-search/enable-in-transit-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "AWS ES Domain should have logging enabled",
+    "category": "aws_elasticsearch_domain",
+    "legacy": "AWS070",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elastic-search/enable-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Unencrypted Elasticache Replication Group.",
+    "category": "aws_elasticache_replication_group",
+    "legacy": "AWS035",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elastic-search/encrypt-replication-group/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Elasticsearch doesn&#39;t enforce HTTPS traffic.",
+    "category": "aws_elasticsearch_domain",
+    "legacy": "AWS033",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elastic-search/enforce-https/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Elasticsearch domain endpoint is using outdated TLS policy.",
+    "category": "aws_elasticsearch_domain",
+    "legacy": "AWS034",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elastic-search/use-secure-tls-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Elasticsearch domain isn&#39;t encrypted at rest.",
+    "category": "aws_elasticsearch_domain",
+    "legacy": "AWS031",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elastic-service/enable-domain-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Missing description for security group/security group rule.",
+    "category": "aws_elasticache_security_group",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elasticache/add-description-for-security-group/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Redis cluster should have backup retention turned on",
+    "category": "aws_elasticache_cluster",
+    "legacy": "AWS088",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elasticache/enable-backup-retention/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Elasticache Replication Group uses unencrypted traffic.",
+    "category": "aws_elasticache_replication_group",
+    "legacy": "AWS036",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elasticache/enable-in-transit-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Load balancers should drop invalid headers",
+    "category": "aws_alb aws_lb",
+    "legacy": "AWS083",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elb/drop-invalid-headers/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Load balancer is exposed to the internet.",
+    "category": "aws_alb aws_elb aws_lb",
+    "legacy": "AWS005",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elbv2/alb-not-public/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Use of plain HTTP.",
+    "category": "aws_lb_listener aws_alb_listener",
+    "legacy": "AWS004",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/elbv2/http-not-used/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "AWS Checks",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/home/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "IAM customer managed policies should not allow decryption actions on all KMS keys",
+    "category": "aws_iam_policy aws_iam_group_policy aws_iam_user_policy aws_iam_role_policy",
+    "legacy": "AWS097",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/iam/block-kms-policy-wildcard/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "IAM Password policy should prevent password reuse.",
+    "category": "aws_iam_account_password_policy",
+    "legacy": "AWS037",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/iam/no-password-reuse/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "IAM policy should avoid use of wildcards and instead apply the principle of least privilege",
+    "category": "aws_iam_policy aws_iam_user_policy aws_iam_group_policy aws_iam_role_policy",
+    "legacy": "AWS099",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/iam/no-policy-wildcards/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "IAM Password policy should have requirement for at least one lowercase character.",
+    "category": "aws_iam_account_password_policy",
+    "legacy": "AWS042",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/iam/require-lowercase-in-passwords/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "IAM Password policy should have requirement for at least one number in the password.",
+    "category": "aws_iam_account_password_policy",
+    "legacy": "AWS041",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/iam/require-numbers-in-passwords/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "IAM Password policy should have requirement for at least one symbol in the password.",
+    "category": "aws_iam_account_password_policy",
+    "legacy": "AWS040",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/iam/require-symbols-in-passwords/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "IAM Password policy should have requirement for at least one uppercase character.",
+    "category": "aws_iam_account_password_policy",
+    "legacy": "AWS043",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/iam/require-uppercase-in-passwords/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "IAM Password policy should have expiry less than or equal to 90 days.",
+    "category": "aws_iam_account_password_policy",
+    "legacy": "AWS038",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/iam/set-max-password-age/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "IAM Password policy should have minimum password length of 14 or more characters.",
+    "category": "aws_iam_account_password_policy",
+    "legacy": "AWS039",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/iam/set-minimum-password-length/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Kinesis stream is unencrypted.",
+    "category": "aws_kinesis_stream",
+    "legacy": "AWS024",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/kinesis/enable-in-transit-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "A KMS key is not configured to auto-rotate.",
+    "category": "aws_kms_key",
+    "legacy": "AWS019",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/kms/auto-rotate-keys/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Lambda functions should have X-Ray tracing enabled",
+    "category": "aws_lambda_function",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/lambda/enable-tracing/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that lambda function permission has a source arn specified",
+    "category": "aws_lambda_permission",
+    "legacy": "AWS058",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/lambda/restrict-source-arn/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure all data stored in the Launch configuration EBS is securely encrypted",
+    "category": "aws_launch_configuration",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/launch/no-sensitive-info/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "AWS provider has access credentials specified.",
+    "category": "aws",
+    "legacy": "AWS044",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/misc/no-exposing-plaintext-credentials/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "MQ Broker should have audit logging enabled",
+    "category": "aws_mq_broker",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/mq/enable-audit-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "MQ Broker should have general logging enabled",
+    "category": "aws_mq_broker",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/mq/enable-general-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure MQ Broker is not publicly exposed",
+    "category": "aws_mq_broker",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/mq/no-public-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "A MSK cluster allows unencrypted data in transit.",
+    "category": "aws_msk_cluster",
+    "legacy": "AWS022",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/msk/enable-in-transit-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure MSK Cluster logging is enabled",
+    "category": "aws_msk_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/msk/enable-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Nepture logs export should be enabled",
+    "category": "aws_neptune_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/neptune/enable-log-export/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Neptune storage must be encrypted at rest",
+    "category": "aws_neptune_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/neptune/enable-storage-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "RDS Cluster and RDS instance should have backup retention longer than default 1 day",
+    "category": "aws_rds_cluster aws_db_instance",
+    "legacy": "AWS091",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/rds/backup-retention-specified/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Encryption for RDS Performance Insights should be enabled.",
+    "category": "aws_rds_cluster_instance aws_db_instance",
+    "legacy": "AWS053",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/rds/enable-performance-insights/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "There is no encryption specified or encryption is disabled on the RDS Cluster.",
+    "category": "aws_rds_cluster",
+    "legacy": "AWS051",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/rds/encrypt-cluster-storage-data/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "RDS encryption has not been enabled at a DB Instance level.",
+    "category": "aws_db_instance",
+    "legacy": "AWS052",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/rds/encrypt-instance-storage-data/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "AWS Classic resource usage.",
+    "category": "aws_db_security_group aws_redshift_security_group aws_elasticache_security_group",
+    "legacy": "AWS003",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/rds/no-classic-resources/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "A database resource is marked as publicly accessible.",
+    "category": "aws_db_instance aws_dms_replication_instance aws_rds_cluster_instance aws_redshift_cluster",
+    "legacy": "AWS011",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/rds/no-public-db-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Missing description for security group/security group rule.",
+    "category": "aws_redshift_security_group",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/redshift/add-description-to-security-group/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Redshift clusters should use at rest encryption",
+    "category": "aws_redshift_cluster",
+    "legacy": "AWS094",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/redshift/encryption-customer-key/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Redshift cluster should be deployed into a specific VPC",
+    "category": "aws_redshift_cluster",
+    "legacy": "AWS087",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/redshift/non-default-vpc-deployment/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "S3 Access block should block public ACL",
+    "category": "aws_s3_bucket_public_access_block",
+    "legacy": "AWS074",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/s3/block-public-acls/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "S3 Access block should block public policy",
+    "category": "aws_s3_bucket_public_access_block",
+    "legacy": "AWS076",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/s3/block-public-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Unencrypted S3 bucket.",
+    "category": "aws_s3_bucket",
+    "legacy": "AWS017",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/s3/enable-bucket-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "S3 Bucket does not have logging enabled.",
+    "category": "aws_s3_bucket",
+    "legacy": "AWS002",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/s3/enable-bucket-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "S3 Data should be versioned",
+    "category": "aws_s3_bucket",
+    "legacy": "AWS077",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/s3/enable-versioning/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "S3 Access Block should Ignore Public Acl",
+    "category": "aws_s3_bucket_public_access_block",
+    "legacy": "AWS073",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/s3/ignore-public-acls/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "S3 Bucket has an ACL defined which allows public access.",
+    "category": "aws_s3_bucket",
+    "legacy": "AWS001",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/s3/no-public-access-with-acl/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "S3 Access block should restrict public bucket to limit access",
+    "category": "aws_s3_bucket_public_access_block",
+    "legacy": "AWS075",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/s3/no-public-buckets/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "S3 buckets should each define an aws_s3_bucket_public_access_block",
+    "category": "aws_s3_bucket",
+    "legacy": "AWS098",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/s3/specify-public-access-block/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Unencrypted SNS topic.",
+    "category": "aws_sns_topic",
+    "legacy": "AWS016",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/sns/enable-topic-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Unencrypted SQS queue.",
+    "category": "aws_sqs_queue",
+    "legacy": "AWS015",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/sqs/enable-queue-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "AWS SQS policy document has wildcard action statement.",
+    "category": "aws_sqs_queue_policy",
+    "legacy": "AWS047",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/sqs/no-wildcards-in-policy-documents/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Secrets Manager should use customer managed keys",
+    "category": "aws_secretsmanager_secret",
+    "legacy": "AWS095",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/ssm/secret-use-customer-key/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Missing description for security group/security group rule.",
+    "category": "aws_security_group aws_security_group_rule",
+    "legacy": "AWS018",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/vpc/add-decription-to-security-group/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Missing description for security group/security group rule.",
+    "category": "aws_security_group aws_security_group_rule",
+    "legacy": "AWS018",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/vpc/add-description-to-security-group/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensures that usage of security groups with inline rules and security group rule resources are not mixed.",
+    "category": "aws_security_group_rule",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/vpc/disallow-mixed-sgr/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "AWS best practice to not use the default VPC for workflows",
+    "category": "aws_default_vpc",
+    "legacy": "AWS082",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/vpc/no-default-vpc/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "An ingress Network ACL rule allows ALL ports.",
+    "category": "aws_network_acl_rule",
+    "legacy": "AWS050",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/vpc/no-excessive-port-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "An inline egress security group rule allows traffic to /0.",
+    "category": "aws_security_group",
+    "legacy": "AWS009",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/vpc/no-public-egress-sg/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "An egress security group rule allows traffic to /0.",
+    "category": "aws_security_group_rule",
+    "legacy": "AWS007",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/vpc/no-public-egress-sgr/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "An inline ingress security group rule allows traffic from /0.",
+    "category": "aws_security_group",
+    "legacy": "AWS008",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/vpc/no-public-ingress-sg/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "An ingress security group rule allows traffic from /0.",
+    "category": "aws_security_group_rule",
+    "legacy": "AWS006",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/vpc/no-public-ingress-sgr/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "An ingress Network ACL rule allows specific ports from /0.",
+    "category": "aws_network_acl_rule",
+    "legacy": "AWS049",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/vpc/no-public-ingress/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "An outdated SSL policy is in use by a load balancer.",
+    "category": "aws_lb_listener aws_alb_listener",
+    "legacy": "AWS010",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/vpc/use-secure-tls-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Root and user volumes on Workspaces should be encrypted",
+    "category": "aws_workspaces_workspace",
+    "legacy": "AWS084",
+    "id": "",
+    "tags": "",
+    "url": "/docs/aws/workspace/enable-disk-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Web App has registration with AD enabled",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/account-identity-registered/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "App Service authentication is activated",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/authentication-enabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "App service disables detailed error messages",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/detailed-error-messages-enabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Azure App Service Web app does not use the latest .Net Core version",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/dotnet-framework-version/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Web App uses the latest HTTP version",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/enable-http2/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure App Service can only be accessed via HTTPS. The default is false",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/enable-https-only/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure the Function App can only be accessed via HTTPS. The default is false.",
+    "category": "azurerm_function_app",
+    "legacy": "AZU028",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/enforce-https/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "App service does not enable failed request tracing",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/failed-request-tracing-enabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure FTP Deployments are disabled",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/ftp-deployments-disabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "App service does not enable HTTP logging",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/http-logs-enabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Azure App Service Web app does not use the latest PHP version",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/php-version/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Azure App Service Web app does not use the latest Python version",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/python-version/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Web App accepts incoming client certificate",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/require-client-cert/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Web App uses latest TLS version",
+    "category": "azurerm_app_service",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/appservice/use-secure-tls-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Roles limited to the required actions",
+    "category": "azurerm_role_definition",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/authorization/limit-role-actions/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Password authentication should be disabled on Azure virtual machines",
+    "category": "azurerm_linux_virtual_machine azurerm_virtual_machine",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/compute/disable-password-authentication/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Enable disk encryption on managed disk",
+    "category": "azurerm_managed_disk",
+    "legacy": "AZU003",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/compute/enable-disk-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that no sensitive credentials are exposed in VM custom_data",
+    "category": "azurerm_virtual_machine azurerm_linux_virtual_machine azurerm_windows_virtual_machine",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/compute/no-secrets-in-custom-data/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Password authentication in use instead of SSH keys.",
+    "category": "azurerm_virtual_machine",
+    "legacy": "AZU005",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/compute/ssh-authentication/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure AKS cluster has Network Policy configured",
+    "category": "azurerm_kubernetes_cluster",
+    "legacy": "AZU006",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/container/configured-network-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure AKS has an API Server Authorized IP Ranges enabled",
+    "category": "azurerm_kubernetes_cluster",
+    "legacy": "AZU008",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/container/limit-authorized-ips/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure AKS logging to Azure Monitoring is Configured",
+    "category": "azurerm_kubernetes_cluster",
+    "legacy": "AZU009",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/container/logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure RBAC is enabled on AKS clusters",
+    "category": "azurerm_kubernetes_cluster role_based_access_control",
+    "legacy": "AZU007",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/container/use-rbac-permissions/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Auditing should be enabled on Azure SQL Databases",
+    "category": "azurerm_sql_server azurerm_mssql_server",
+    "legacy": "AZU018",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/database/enable-audit/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "SSL should be enforced on database connections where applicable",
+    "category": "azurerm_mariadb_server azurerm_mysql_server azurerm_postgresql_server",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/database/enable-ssl-enforcement/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure databases are not publicly accessible",
+    "category": "azurerm_mysql_server",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/database/mysql-threat-detection-enabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure databases are not publicly accessible",
+    "category": "azurerm_mariadb_server azurerm_mssql_server azurerm_mysql_server azurerm_postgresql_server",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/database/no-public-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure database firewalls do not permit public access",
+    "category": "azurerm_sql_firewall_rule azurerm_mysql_firewall_rule azurerm_postgresql_firewall_rule azurerm_mariadb_firewall_rule",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/database/no-public-firewall-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure server parameter &#39;log_checkpoints&#39; is set to &#39;ON&#39; for PostgreSQL Database Server",
+    "category": "azurerm_postgresql_server",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/database/postgres-configuration-log-checkpoints/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure server parameter &#39;connection_throttling&#39; is set to &#39;ON&#39; for PostgreSQL Database Server",
+    "category": "azurerm_postgresql_server",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/database/postgres-configuration-log-connection-throttling/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure server parameter &#39;log_connections&#39; is set to &#39;ON&#39; for PostgreSQL Database Server",
+    "category": "azurerm_postgresql_server",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/database/postgres-configuration-log-connections/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Database auditing rentention period should be longer than 90 days",
+    "category": "azurerm_sql_server azurerm_sql_server azurerm_mssql_database_extended_auditing_policy",
+    "legacy": "AZU019",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/database/retention-period-set/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Databases should have the minimum TLS set for connections",
+    "category": "azurerm_mssql_server azurerm_mysql_server azurerm_postgresql_server",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/database/secure-tls-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Data Factory should have public access disabled, the default is enabled.",
+    "category": "azurerm_data_factory",
+    "legacy": "AZU025",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/datafactory/no-public-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Unencrypted data lake storage.",
+    "category": "azurerm_data_lake_store",
+    "legacy": "AZU004",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/datalake/enable-at-rest-encryption/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Function App authentication is activated",
+    "category": "azurerm_function_app",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/functionapp/authentication-enabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Web App uses the latest HTTP version",
+    "category": "azurerm_function_app",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/functionapp/enable-http2/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Azure Checks",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/home/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Key vault Secret should have a content type set",
+    "category": "azurerm_key_vault_secret",
+    "legacy": "AZU022",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/keyvault/content-type-for-secret/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that the expiration date is set on all keys",
+    "category": "azurerm_key_vault_key",
+    "legacy": "AZU026",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/keyvault/ensure-key-expiry/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Key Vault Secret should have an expiration date set",
+    "category": "azurerm_key_vault_secret",
+    "legacy": "AZU023",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/keyvault/ensure-secret-expiry/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Key vault should have purge protection enabled",
+    "category": "azurerm_key_vault",
+    "legacy": "AZU021",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/keyvault/no-purge/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Key vault should have the network acl block specified",
+    "category": "azurerm_key_vault",
+    "legacy": "AZU020",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/keyvault/specify-network-acl/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure the activity retention log is set to at least a year",
+    "category": "azurerm_monitor_log_profile",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/monitor/activity-log-retention-set/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure log profile captures all activities",
+    "category": "azurerm_monitor_log_profile",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/monitor/capture-all-activities/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure activitys are captured for all locations",
+    "category": "azurerm_monitor_log_profile",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/monitor/capture-all-regions/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "No threat detections are set",
+    "category": "azurerm_mssql_server_security_alert_policy",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/mssql/all-threat-alerts-enabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "At least one email address is set for threat alerts",
+    "category": "azurerm_mssql_server_security_alert_policy",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/mssql/threat-alert-email-set/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Security threat alerts go to subcription owners and co-administrators",
+    "category": "azurerm_mssql_server_security_alert_policy",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/mssql/threat-alert-email-to-owner/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "RDP access should not be accessible from the Internet, should be blocked on port 3389",
+    "category": "azurerm_network_security_group azurerm_network_security_rule",
+    "legacy": "AZU024",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/network/disable-rdp-from-internet/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "An outbound network security rule allows traffic to /0.",
+    "category": "azurerm_network_security_rule",
+    "legacy": "AZU002",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/network/no-public-egress/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "An inbound network security rule allows traffic from /0.",
+    "category": "azurerm_network_security_rule",
+    "legacy": "AZU001",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/network/no-public-ingress/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Retention policy for flow logs should be enabled and set to greater than 90 days",
+    "category": "azurerm_network_watcher_flow_log",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/network/retention-policy-set/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "SSH access should not be accessible from the Internet, should be blocked on port 22",
+    "category": "azurerm_network_security_group azurerm_network_security_rule",
+    "legacy": "AZU017",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/network/ssh-blocked-from-internet/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Send notification emails for high severity alerts",
+    "category": "azurerm_security_center_contact",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/security-center/alert-on-severe-notifications/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure Azure Defender is set to On for container registries",
+    "category": "azurerm_security_center_subscription_pricing",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/security-center/defender-on-appservices/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure Azure Defender is set to On for container registries",
+    "category": "azurerm_security_center_subscription_pricing",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/security-center/defender-on-container-registry/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure Azure Defender is set to On for key vaults",
+    "category": "azurerm_security_center_subscription_pricing",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/security-center/defender-on-keyvault/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure Azure Defender is set to On for Kubernetes",
+    "category": "azurerm_security_center_subscription_pricing",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/security-center/defender-on-kubernetes/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure Azure Defender is set to On for Servers",
+    "category": "azurerm_security_center_subscription_pricing",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/security-center/defender-on-servers/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure Azure Defender is set to On for Sql Server on Machines",
+    "category": "azurerm_security_center_subscription_pricing",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/security-center/defender-on-sql-servers-vms/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure Azure Defender is set to On for SQL Servers",
+    "category": "azurerm_security_center_subscription_pricing",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/security-center/defender-on-sql-servers/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure Azure Defender is set to On for storage accounts",
+    "category": "azurerm_security_center_subscription_pricing",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/security-center/defender-on-storage/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Enable the standard security center subscription tier",
+    "category": "azurerm_security_center_subscription_pricing",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/security-center/enable-standard-subscription/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "The required contact details should be set for security center",
+    "category": "azurerm_security_center_contact",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/security-center/set-required-contact-details/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Trusted Microsoft Services should have bypass access to Storage accounts",
+    "category": "azurerm_storage_account_network_rules azurerm_storage_account",
+    "legacy": "AZU013",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/storage/allow-microsoft-service-bypass/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure public access level for Blob Containers is set to private",
+    "category": "azurerm_storage_container",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/storage/container-activity-logs-not-public/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "The default action on Storage account network rules should be set to deny",
+    "category": "azurerm_storage_account azurerm_storage_account_network_rules",
+    "legacy": "AZU012",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/storage/default-action-deny/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Storage accounts should be configured to only accept transfers that are over secure connections",
+    "category": "azurerm_storage_account",
+    "legacy": "AZU014",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/storage/enforce-https/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Storage containers in blob storage mode should not have public access",
+    "category": "azure_storage_container",
+    "legacy": "AZU011",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/storage/no-public-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "When using Queue Services for a storage account, logging should be enabled.",
+    "category": "azurerm_storage_account",
+    "legacy": "AZU016",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/storage/queue-services-logging-enabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "The minimum TLS version for Storage Accounts should be TLS1_2",
+    "category": "azurerm_storage_account",
+    "legacy": "AZU015",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/storage/use-secure-tls-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Synapse Workspace should have managed virtual network enabled, the default is disabled.",
+    "category": "azurerm_synapse_workspace",
+    "legacy": "AZU027",
+    "id": "",
+    "tags": "",
+    "url": "/docs/azure/synapse/virtual-network-enabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "No sensitive data stored in user_data",
+    "category": "cloudstack_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/cloudstack/compute/no-sensitive-info/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Cloudstack Checks",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/cloudstack/home/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Config File",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "configuration",
+    "url": "/docs/config/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Custom Checks",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "installation, github action, code scanning, security analysis",
+    "url": "/docs/custom-checks/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "The firewall has an outbound rule with open access",
+    "category": "digitalocean_firewall",
+    "legacy": "DIG002",
+    "id": "",
+    "tags": "",
+    "url": "/docs/digitalocean/compute/no-public-egress/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "The firewall has an inbound rule with open access",
+    "category": "digitalocean_firewall",
+    "legacy": "DIG001",
+    "id": "",
+    "tags": "",
+    "url": "/docs/digitalocean/compute/no-public-ingress/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "SSH Keys are the preferred way to connect to your droplet, no keys are supplied",
+    "category": "digitalocean_droplet",
+    "legacy": "DIG003",
+    "id": "",
+    "tags": "",
+    "url": "/docs/digitalocean/droplet/use-ssh-keys/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Digital Ocean Checks",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/digitalocean/home/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "The load balancer forwarding rule is using an insecure protocol as an entrypoint",
+    "category": "digitalocean_loadbalancer",
+    "legacy": "DIG004",
+    "id": "",
+    "tags": "",
+    "url": "/docs/digitalocean/loadbalancing/enforce-https/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Spaces bucket or bucket object has public read acl set",
+    "category": "digitalocean_spaces_bucket digitalocean_spaces_bucket_object",
+    "legacy": "DIG005",
+    "id": "",
+    "tags": "",
+    "url": "/docs/digitalocean/spaces/acl-no-public-read/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Force destroy is enabled on Spaces bucket which is dangerous",
+    "category": "digitalocean_spaces_bucket",
+    "legacy": "DIG007",
+    "id": "",
+    "tags": "",
+    "url": "/docs/digitalocean/spaces/disable-force-destroy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Spaces buckets should have versioning enabled",
+    "category": "digitalocean_spaces_bucket",
+    "legacy": "DIG006",
+    "id": "",
+    "tags": "",
+    "url": "/docs/digitalocean/spaces/versioning-enabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "General Checks",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/general/home/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "The attribute has potentially sensitive data, passwords, tokens or keys in it",
+    "category": "",
+    "legacy": "GEN005",
+    "id": "",
+    "tags": "",
+    "url": "/docs/general/secrets/sensitive-in-attribute-value/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Potentially sensitive data stored in block attribute.",
+    "category": "",
+    "legacy": "GEN003",
+    "id": "",
+    "tags": "",
+    "url": "/docs/general/secrets/sensitive-in-attribute/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Potentially sensitive data stored in local value.",
+    "category": "",
+    "legacy": "GEN002",
+    "id": "",
+    "tags": "",
+    "url": "/docs/general/secrets/sensitive-in-local/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Potentially sensitive data stored in &quot;default&quot; value of variable.",
+    "category": "",
+    "legacy": "GEN001",
+    "id": "",
+    "tags": "",
+    "url": "/docs/general/secrets/sensitive-in-variable/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Github Action - Code Scanning",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "installation, github action, code scanning, security analysis",
+    "url": "/docs/github-action/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Github Checks",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/github/home/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Github repository shouldn&#39;t be public.",
+    "category": "github_repository",
+    "legacy": "GIT001",
+    "id": "",
+    "tags": "",
+    "url": "/docs/github/repositories/private/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Require signed commits should be enabled.",
+    "category": "github_branch_protection",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/github/repositories/require-signed-commits/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Github vulnerability alerts should be enabled.",
+    "category": "github_repository",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/github/repositories/vulnerability-alerts/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "BigQuery datasets should only be accessible within the organisation",
+    "category": "google_bigquery_dataset",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/bigquery/no-public-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Disks should be encrypted with Customer Supplied Encryption Keys",
+    "category": "google_compute_disk",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/disk-encryption-customer-key/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Encrypted compute disk with unmanaged keys.",
+    "category": "google_compute_disk",
+    "legacy": "GCP001",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/disk-encryption-customer-keys/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "The encryption key used to encrypt a compute disk has been specified in plaintext.",
+    "category": "google_compute_disk",
+    "legacy": "GCP013",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/disk-encryption-required/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Instances should have Shielded VM enabled",
+    "category": "google_compute_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/enable-shielded-vm/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "VPC flow logs should be enabled for all subnets",
+    "category": "google_compute_subnetwork",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/enable-vpc-flow-logs/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Instances should not use the default service account",
+    "category": "google_compute_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/no-default-service-account/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Instances should not have IP forwarding enabled",
+    "category": "google_compute_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/no-ip-forwarding/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Instances should not override the project setting for OS Login",
+    "category": "google_compute_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/no-oslogin-override/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Disk encryption keys should not be provided in plaintext",
+    "category": "google_compute_disk",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/no-plaintext-disk-keys/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "VM disk encryption keys should not be provided in plaintext",
+    "category": "google_compute_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/no-plaintext-vm-disk-keys/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Disable project-wide SSH keys for all instances",
+    "category": "google_compute_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/no-project-wide-ssh-keys/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "An outbound firewall rule allows traffic to /0.",
+    "category": "google_compute_firewall",
+    "legacy": "GCP004",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/no-public-egress/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "An inbound firewall rule allows traffic from /0.",
+    "category": "google_compute_firewall",
+    "legacy": "GCP003",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/no-public-ingress/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Instances should not have public IP addresses",
+    "category": "google_compute_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/no-public-ip/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Disable serial port connectivity for all instances",
+    "category": "google_compute_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/no-serial-port/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "OS Login should be enabled at project level",
+    "category": "google_compute_project_metadata",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/project-level-oslogin/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "SSL policies should enforce secure versions of TLS",
+    "category": "google_compute_ssl_policy",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/use-secure-tls-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "VM disks should be encrypted with Customer Supplied Encryption Keys",
+    "category": "google_compute_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/compute/vm-disk-encryption-customer-key/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Cloud DNS should use DNSSEC",
+    "category": "google_dns_managed_zone",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/dns/enable-dnssec/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Zone signing should not use RSA SHA1",
+    "category": "google_dns_keys",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/dns/no-rsa-sha1/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Kubernetes should have &#39;Automatic repair&#39; enabled",
+    "category": "google_container_node_pool",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/enable-auto-repair/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Kubernetes should have &#39;Automatic upgrade&#39; enabled",
+    "category": "google_container_node_pool",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/enable-auto-upgrade/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Clusters should have IP aliasing enabled",
+    "category": "google_container_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/enable-ip-aliasing/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Master authorized networks should be configured on GKE clusters",
+    "category": "google_container_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/enable-master-networks/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Network Policy should be enabled on GKE clusters",
+    "category": "google_container_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/enable-network-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Clusters should be set to private",
+    "category": "google_container_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/enable-private-cluster/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Stackdriver Logging should be enabled",
+    "category": "google_container_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/enable-stackdriver-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Stackdriver Monitoring should be enabled",
+    "category": "google_container_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/enable-stackdriver-monitoring/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Pod security policy enforcement not defined.",
+    "category": "google_container_cluster",
+    "legacy": "GCP009",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/enforce-pod-security-policy/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Legacy metadata endpoints enabled.",
+    "category": "google_container_cluster",
+    "legacy": "GCP007",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/metadata-endpoints-disabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Clusters should use client certificates for authentication",
+    "category": "google_container_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/no-legacy-auth/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Legacy client authentication methods utilized.",
+    "category": "google_container_cluster",
+    "legacy": "GCP008",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/no-legacy-authentication/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "GKE Control Plane should not be publicly accessible",
+    "category": "google_container_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/no-public-control-plane/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Node metadata value disables metadata concealment.",
+    "category": "google_container_cluster google_container_node_pool",
+    "legacy": "GCP006",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/node-metadata-security/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure Container-Optimized OS (cos) is used for Kubernetes Engine Clusters Node image",
+    "category": "google_container_node_pool",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/node-pool-uses-cos/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Shielded GKE nodes not enabled.",
+    "category": "google_container_cluster",
+    "legacy": "GCP010",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/node-shielding-enabled/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Clusters should be configured with Labels",
+    "category": "google_container_cluster",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/use-cluster-labels/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Legacy ABAC permissions are enabled.",
+    "category": "google_container_cluster",
+    "legacy": "GCP005",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/use-rbac-permissions/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Checks for service account defined for GKE nodes",
+    "category": "google_container_cluster google_container_node_pool",
+    "legacy": "GCP012",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/gke/use-service-account/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Google Checks",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/home/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Roles should not be assigned to default service accounts",
+    "category": "google_folder_iam_binding google_folder_iam_member",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/iam/no-folder-level-default-service-account-assignment/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Users should not be granted service account access at the folder level",
+    "category": "google_folder_iam_binding google_folder_iam_member",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/iam/no-folder-level-service-account-impersonation/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Roles should not be assigned to default service accounts",
+    "category": "google_organization_iam_binding google_organization_iam_member",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/iam/no-org-level-default-service-account-assignment/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Users should not be granted service account access at the organization level",
+    "category": "google_organization_iam_binding google_organization_iam_member",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/iam/no-org-level-service-account-impersonation/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Service accounts should not have roles assigned with excessive privileges",
+    "category": "google_project_iam_member",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/iam/no-privileged-service-accounts/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Roles should not be assigned to default service accounts",
+    "category": "google_project_iam_binding google_project_iam_member",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/iam/no-project-level-default-service-account-assignment/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Users should not be granted service account access at the project level",
+    "category": "google_project_iam_binding google_project_iam_member",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/iam/no-project-level-service-account-impersonation/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "IAM granted directly to user.",
+    "category": "google_cloud_run_service_iam_binding google_cloud_run_service_iam_member google_compute_instance_iam_binding google_compute_instance_iam_member google_compute_subnetwork_iam_binding google_compute_subnetwork_iam_member google_data_catalog_entry_group_iam_binding google_data_catalog_entry_group_iam_member google_folder_iam_member google_folder_iam_binding google_project_iam_member google_project_iam_binding google_pubsub_subscription_iam_binding google_pubsub_subscription_iam_member google_pubsub_topic_iam_binding google_pubsub_topic_iam_member google_sourcerepo_repository_iam_binding google_sourcerepo_repository_iam_member google_spanner_database_iam_binding google_spanner_database_iam_member google_spanner_instance_iam_binding google_spanner_instance_iam_member google_storage_bucket_iam_binding google_storage_bucket_iam_member google_iam_policy",
+    "legacy": "GCP011",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/iam/no-user-granted-permissions/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "KMS keys should be rotated at least every 90 days",
+    "category": "google_kms_crypto_key",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/kms/rotate-kms-keys/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Default network should not be created at project level",
+    "category": "google_project",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/project/no-default-network/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Enable automated backups to recover from data-loss",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/enable-backup/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Temporary file logging should be enabled for all temporary files.",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/enable-pg-temp-file-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "SSL connections to a SQL database instance should be enforced.",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/encrypt-in-transit-data/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Disable local_infile setting in MySQL",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/mysql-no-local-infile/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Contained database authentication should be disabled",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/no-contained-db-auth/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Cross-database ownership chaining should be disabled",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/no-cross-db-ownership-chaining/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that Cloud SQL Database Instances are not publicly exposed",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/no-public-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that logging of checkpoints is enabled.",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/pg-log-checkpoints/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that logging of connections is enabled.",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/pg-log-connections/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that logging of disconnections is enabled.",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/pg-log-disconnections/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that Postgres errors are logged",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/pg-log-errors/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that logging of lock waits is enabled.",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/pg-log-lock-waits/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that logging of long statements is disabled.",
+    "category": "google_sql_database_instance",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/sql/pg-no-min-statement-logging/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that Cloud Storage buckets have uniform bucket-level access enabled",
+    "category": "google_storage_bucket",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/storage/enable-ubla/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Ensure that Cloud Storage bucket is not anonymously or publicly accessible.",
+    "category": "google_storage_bucket_iam_binding google_storage_bucket_iam_member",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/google/storage/no-public-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Installation",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "installation, quickstart",
+    "url": "/docs/installation/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Kubernetes Checks",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/kubernetes/home/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Public egress should not be allowed via network policies",
+    "category": "kubernetes_network_policy",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/kubernetes/network/no-public-egress/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Public ingress should not be allowed via network policies",
+    "category": "kubernetes_network_policy",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/kubernetes/network/no-public-ingress/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "No plaintext password for compute instance",
+    "category": "openstack_compute_instance_v2",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/openstack/compute/no-plaintext-password/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "A firewall rule allows traffic from/to the public internet",
+    "category": "openstack_fw_rule_v1",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/openstack/fw/no-public-access/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "OpenStack Checks",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/openstack/home/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Compute instance requests an IP reservation from a public pool",
+    "category": "opc_compute_ip_address_reservation",
+    "legacy": "OCI001",
+    "id": "",
+    "tags": "",
+    "url": "/docs/oracle/compute/no-public-ip/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Oracle Checks",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "",
+    "url": "/docs/oracle/home/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Github Action - PR Commenter",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "installation, github action, PR commenting",
+    "url": "/docs/pr-commenter/",
+    "date": "2021-11-19 13:30:53 +0000"
+  } ,
+   
+  
+    {
+    "title": "Usage",
+    "category": "",
+    "legacy": "",
+    "id": "",
+    "tags": "installation, quickstart",
+    "url": "/docs/usage/",
+    "date": "2021-11-19 13:30:53 +0000"
+  }  
+  
+]

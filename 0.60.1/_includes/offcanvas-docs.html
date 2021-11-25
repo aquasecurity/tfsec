@@ -1,0 +1,47 @@
+<div id="offcanvas-docs" data-uk-offcanvas="overlay: true">
+    <div class="uk-offcanvas-bar">
+
+        <button class="uk-offcanvas-close" type="button" data-uk-close></button>
+
+        {% for section in site.data.navigation_docs %}
+            <h5>{{ section.title }}</h5>
+            <ul class="uk-nav uk-nav-default doc-nav">
+                {% for provider in section.providers %}
+                    <details {% if page.url contains provider.provider %} open {% endif %}>
+                        <summary>
+                            <h6 class="uk-nav uk-nav-default doc-nav">{{ provider.title }}</h6>
+                        </summary>
+                        {% for service in provider.services %}
+                            {% assign doc_url = service.service | prepend:"/docs/" | append:"/" %}
+                            {% assign p = site.docs | where:"url", doc_url | first %}
+
+                            <details class="uk-nav-indented" {% if page.url contains service.service %} open {% endif %}>
+                                <summary>
+                                    <li id="{{ service.service }}" class="{% if doc_url == page.url %}uk-active{% endif %}">{{ service.title }}</li>
+                                </summary>
+                                <ul class="uk-nav uk-nav-default doc-nav">
+                                    {% for doc in service.docs %}
+                                        {% assign doc_url = doc | prepend:"/docs/" | append:"/" %}
+                                        {% assign p = site.docs | where:"url", doc_url | first %}
+                                        <li class="{% if doc_url == page.url %}uk-active{% endif %}">
+                                            <a href="{{ p.url | relative_url }}#{{ service.service }}">{{ p.shortcode }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </details>
+                        {% endfor %}
+                    </details>
+                {% endfor %}
+
+                {% for doc in section.docs %}
+                    {% assign doc_url = doc | prepend:"/docs/" | append:"/" %}
+                    {% assign p = site.docs | where:"url", doc_url | first %}
+                    <li class="{% if doc_url == page.url %}uk-active{% endif %}">
+                        <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+
+    </div>
+</div>

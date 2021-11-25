@@ -1,0 +1,10 @@
+# Footer navigation links
+
+- title: Home
+  url: /
+
+- title: Blog
+  url: /blog/
+
+- title: Contact
+  url: /contact/

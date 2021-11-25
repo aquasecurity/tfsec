@@ -1,0 +1,20 @@
+# English (default)
+
+en:
+  previous:                   "Previous"
+  next:                       "Next"
+  related_docs:               "Related Docs"
+  related_posts:              "Related Posts"
+  read_more:                  "Read more"
+  written_by:                 "Written by"
+  share_twitter:              "Share on Twitter"
+  share_facebook:             "Share on Facebook"
+  search_placeholder:         "Search Checks"
+  search_no_results:          "No results found"
+  mobile_nav_docs:            "Docs"
+  mobile_nav_site:            "Menu"
+  contact_name:               "Name"
+  contact_email:              "Email"
+  contact_subject:            "Subject"
+  contact_message:            "Message"
+  contact_send:               "Send"

@@ -1,0 +1,8 @@
+<!-- Pagination links -->
+<ul class="uk-pagination uk-margin-medium-top">
+    {% if paginator.previous_page %}
+    <li><a class="hvr-back" href="{{ paginator.previous_page_path }}">&larr; {{ site.data.translation[site.lang].previous | default: "Previous" }}</a></li>
+    {% endif %} {% if paginator.next_page %}
+    <li class="uk-margin-auto-left"><a class="hvr-forward" href="{{ paginator.next_page_path }}">{{ site.data.translation[site.lang].next | default: "Next" }} &rarr;</a></li>
+    {% endif %}
+</ul>

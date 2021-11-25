@@ -1,0 +1,163 @@
+// Docs Theme Variables
+// ========================================================================
+
+// Color
+$global-color:                                #323247;
+$global-muted-color:                          #8f919e;
+$global-primary-background:                   #1904DA;
+$global-secondary-background:                 #222;
+$global-warning-background:                   #fbc418;
+$global-success-background:                   #403e56;
+$global-danger-background:                    #f0506e;
+$base-link-color:                               $global-color;
+$base-link-hover-color:                         $global-color;
+$link-muted-hover-color:                        $global-color;
+$code-background-color: $global-muted-color !default;
+$border-color: $global-success-background;
+
+// Font
+$global-font-family:                            system-ui;
+$global-xxlarge-font-size:                      2.25rem;    // H1
+$global-xlarge-font-size:                       1.6875rem;  // H2
+$global-large-font-size:                        1.375rem;   // H3
+$global-medium-font-size:                       1.125rem;   // H4
+$global-small-font-size:                        0.875rem;
+$xsmall-font-size:                              0.8125rem;
+$heading-primary-font-size:                     2.875rem;
+$heading-primary-font-size-m:                   3.75rem;
+$base-heading-font-weight:                      bold;
+$base-heading-margin-top:                       50px;
+$base-h2-line-height:                           1.4;
+$text-lead-font-size:                           1.125rem;
+$text-lead-color:                               $global-muted-color;
+
+// Borders
+$global-border:                               #e5e5e5;
+$border-light:                                #ebecee;
+$border-xlight:                               #f5f5f5;
+
+// Border radius
+$border-rounded-border-radius:                  5px;
+$border-radius-small:                           8px;
+$border-radius-medium:                          12px;
+$border-radius-large:                           16px;
+
+// Pre & Code
+$base-code-font-family:                         Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif;
+$base-code-color:                               darken($global-primary-background, 3%);
+$base-pre-font-size:                            $global-small-font-size;
+$base-pre-line-height:                          1.65;
+$base-pre-font-family:                          $base-code-font-family;
+$base-pre-color:                                $base-code-color;
+
+// Container
+$container-xxsmall:                             560px;
+
+// Box shadow
+$global-medium-box-shadow:                      0 5px 15px rgba(0,0,0,0.08);
+$global-large-box-shadow:                       0 10px 35px rgba(0,0,0,0.12);
+$global-xlarge-box-shadow:                      0 28px 50px rgba(0,0,0,0.16);
+
+// Logo
+$logo-font-size:                                1.5rem;
+$logo-color:                                    $global-color;
+$logo-hover-color:                              $global-color;
+
+// Table
+$table-divider-border:                          $border-light;
+
+// Buttons
+$button-default-color:                          $global-secondary-background;
+$button-default-hover-background:               $global-secondary-background;
+$button-default-hover-color:                  #fff;
+$button-default-active-background:              $global-secondary-background;
+$button-default-active-color:                 #fff;
+$button-default-border:                         $global-secondary-background;
+$button-default-hover-border:                   $global-secondary-background;
+$button-default-active-border:                  $global-secondary-background;
+$button-warning-background:                     $global-warning-background;
+$button-warning-hover-background:               darken($button-warning-background, 7%);
+$button-success-background:                     $global-primary-background;
+$button-success-hover-background:               darken($button-success-background, 5%);
+
+// Label
+$label-font-size:                               $xsmall-font-size;
+$label-border-radius:                           20px;
+$label-text-transform:                          unset;
+$label-padding-vertical:                        2px;
+
+// Navbar
+$navbar-background:                           #fff;
+$navbar-nav-item-color:                         $global-color;
+$navbar-nav-item-hover-color:                   $global-primary-background;
+$navbar-nav-item-active-color:                  $global-primary-background;
+$navbar-nav-item-font-size:                     0.9375rem;
+$navbar-nav-item-text-transform:                none;
+$navbar-toggle-color:                           $global-color;
+$navbar-toggle-hover-color:                     $global-primary-background;
+
+// Navbar dropdown
+$navbar-dropdown-margin:                        1px;
+$navbar-dropdown-nav-item-color:                $global-color;
+$navbar-dropdown-nav-item-hover-color:          $global-primary-background;
+$navbar-dropdown-nav-item-active-color:         $global-primary-background;
+
+// Subnav
+$subnav-item-color:                             $global-muted-color;
+$subnav-item-hover-color:                       $global-color;
+$subnav-item-active-color:                      $global-color;
+$subnav-item-text-transform:                    none;
+
+// Pagination links
+$pagination-item-color:                         $global-color;
+$pagination-item-hover-color:                   $global-color;
+
+// Article
+$article-meta-font-size: 	                    $xsmall-font-size;
+$article-meta-line-height:                      1.4;
+$article-title-line-height:                     1.4;
+$article-title-font-size:                       2.125rem;
+
+// Section
+$section-padding-vertical-m:                    60px;
+
+// Card
+$card-small-body-padding-horizontal:            25px;
+$card-small-body-padding-vertical:              25px;
+$card-body-padding-vertical-l:                  50px;
+$card-default-color:                            $global-muted-color;
+$card-default-title-color:                      $global-color;
+
+// Offcanvas
+$offcanvas-bar-color-mode:                      dark;
+$offcanvas-bar-background:                    #fff;
+$offcanvas-bar-width:                           320px;
+
+// Search
+$search-color:                                  $global-color;
+$search-placeholder-color:                    #6e747c; //$global-muted-color;
+$search-icon-color:                           #6e747c; //$global-muted-color;
+$search-default-border:                         $border-xlight;
+$search-default-background:                   #fff;
+
+// Accordion
+$accordion-item-margin-top:                     16px;
+$accordion-title-font-size:                     $global-medium-font-size;
+$accordion-title-color:                         $global-primary-background;
+$accordion-title-hover-color:                   $global-primary-background;
+$accordion-content-margin-top:                  16px;
+$accordion-icon-color:                          $global-primary-background;
+$accordion-icon-background-color:               lighten( $global-primary-background, 57% );
+$internal-accordion-open-image:                 "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline fill='none' stroke='#000' stroke-width='1.03' points='4 13 10 7 16 13' /%3E%3C/svg%3E";
+$internal-accordion-close-image:                "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline fill='none' stroke='#000' stroke-width='1.03' points='16 7 10 13 4 7' /%3E%3C/svg%3E";
+
+// Featured
+$featured-right-image:                          "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline fill='none' stroke='#000' stroke-width='1.03' points='7 4 13 10 7 16' /%3E%3C/svg%3E%0A";
+
+// Doc navigation
+$docs-sidebar-width:                            260px;
+$docs-sidebar-width-l:                          360px;
+
+// Changelog
+$timeline-border-width:                         4px;
+$timeline-dot-diameter:                         20px;

@@ -1,0 +1,8 @@
+<div class="share uk-text-center uk-margin-medium-top">
+    {% if site.share.twitter %}
+        <a class="uk-link-muted" href="https://twitter.com/intent/tweet?text={{ page.title }}&url={{ site.url }}{{ page.url }}&via={{ site.twitter }}&related={{ site.twitter }}" rel="nofollow" target="_blank" title="{{ site.data.translation[site.lang].share_twitter | default: "Share on Twitter" }}" onclick="window.open(this.href, 'twitter', 'width=550,height=235');return false;"><span data-uk-icon="icon: twitter; ratio: 1.2"></span></a>
+    {% endif %}
+    {% if site.share.facebook %}
+        <a class="uk-link-muted uk-margin-small-left" href="https://www.facebook.com/sharer/sharer.php?u={{ page.url | prepend: site.url | cgi_escape }}" rel="nofollow" target="_blank" title="{{ site.data.translation[site.lang].share_facebook | default: "Share on Facebook" }}" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;"><span data-uk-icon="icon: facebook; ratio: 1.2"></span></a>
+    {% endif %}
+</div>
