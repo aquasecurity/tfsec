@@ -34,7 +34,7 @@ func generateExtensionCodeFile(registeredChecks []*FileContent) error {
 				Description: check.Documentation.Summary,
 				Impact:      check.Documentation.Impact,
 				Resolution:  check.Documentation.Resolution,
-				DocUrl:      fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s/", check.Provider, check.Service, check.ShortCode),
+				DocUrl:      fmt.Sprintf("https://aquasecurity.github.io/tfsec/0.60.1/checks/%s/%s/%s/", check.Provider, check.Service, check.ShortCode),
 			})
 
 		}
