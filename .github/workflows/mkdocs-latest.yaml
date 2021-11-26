@@ -23,7 +23,7 @@ jobs:
           python-version: 3.x
       - name: Install dependencies
         run: |
-          pip install git+https://${MKDOCS_AQUA_BOT}@github.com/squidfunk/mkdocs-material-insiders.git
+          pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git
           pip install mike
           pip install mkdocs-macros-plugin
         env:
