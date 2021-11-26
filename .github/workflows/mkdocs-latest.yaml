@@ -26,6 +26,7 @@ jobs:
           pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git
           pip install mike
           pip install mkdocs-macros-plugin
+          pip install mkdocs-include-markdown-plugin
         env:
           GH_TOKEN: ${{ secrets.MKDOCS_AQUA_BOT }}
       - name: Configure the git user
