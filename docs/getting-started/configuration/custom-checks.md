@@ -293,7 +293,7 @@ matchSpec:
 ```
 
 ##### lessThanOrEqualTo
-The `lessThanOrEqualTo` check action passes if the checked attribute is numerical and the value is less than or equal tothe specified value.
+The `lessThanOrEqualTo` check action passes if the checked attribute is numerical and the value is less than or equal to the specified value.
 For example, if you want to ensure that the `cpu_core_count` is less than or equal to 4, you might use the following `MatchSpec`
 
 ```json
@@ -331,7 +331,7 @@ matchSpec:
 ```
 
 ##### greaterThanOrEqualTo
-The `greaterThanOrEqualTo` check action passes if the checked attribute is numerical and the value is greater than or equal tothe specified value.
+The `greaterThanOrEqualTo` check action passes if the checked attribute is numerical and the value is greater than or equal to the specified value.
 For example, if you want to ensure that the `cpu_core_count` is greater than or equal to 4, you might use the following `MatchSpec`
 
 ```json
@@ -422,7 +422,7 @@ matchSpec:
 ```
 
 ##### requiresPresence
-The `requiresPresence` checks that the resouce in `name` is also present in the Terraform code.
+The `requiresPresence` checks that the resource in `name` is also present in the Terraform code.
 
 If you wanted to ensure that `aws_vpc_flowlogs` is present if there is a `aws_vpc`, you might use the following `matchSpec`:
 

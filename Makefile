@@ -26,8 +26,8 @@ generate-codes-json:
 	@go run ./cmd/tfsec-codes
 
 .PHONY: publish-docs
-publish-docs:
-	./scripts/publish-docs.sh
+publish-docs: generate-docs
+	@python3 ./build_checks_nav.py
 
 .PHONY: new-check
 new-check:
