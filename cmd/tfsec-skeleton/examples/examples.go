@@ -71,7 +71,7 @@ func FindCode(provider string, blockType string, typeLabel string) (string, erro
 	var example []string
 	var inExample bool
 	for _, line := range strings.Split(rawMarkdown, "\n") {
-		if strings.HasPrefix(line, "```hcl") {
+		if strings.HasPrefix(line, "```terraform") {
 			inExample = true
 			continue
 		} else if strings.HasPrefix(line, "```") {

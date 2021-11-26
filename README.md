@@ -112,7 +112,7 @@ block, by itself.
 
 For example, to ignore an open security group rule:
 
-```hcl
+```terraform
 resource "aws_security_group_rule" "my-rule" {
     type = "ingress"
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sgr
@@ -121,7 +121,7 @@ resource "aws_security_group_rule" "my-rule" {
 
 ...or...
 
-```hcl
+```terraform
 resource "aws_security_group_rule" "my-rule" {
     type = "ingress"
     #tfsec:ignore:aws-vpc-no-public-ingress-sgr
@@ -134,7 +134,7 @@ tfsec output for the line number of the discovered problem.
 
 You can ignore multiple rules by concatenating the rules on a single line:
 
-```hcl
+```terraform
 #tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "my-bucket" {
   bucket = "foobar"
