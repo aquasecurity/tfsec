@@ -37,7 +37,6 @@ nav:
   - GitHub Actions:
     - GitHub Action: getting-started/configuration/github-actions/github-action.md
     - PR Commenter: getting-started/configuration/github-actions/pr-commenter.md
-  
 - Checks:
   - aws:
     - api-gateway:

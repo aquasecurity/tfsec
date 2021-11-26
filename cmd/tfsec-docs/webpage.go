@@ -59,7 +59,7 @@ The following example will pass the {{$.ID}} check.
 func generateWebPages(fileContents []*FileContent) error {
 	for _, contents := range fileContents {
 		for _, check := range contents.Checks {
-			webProviderPath := fmt.Sprintf("docs/%s/%s", strings.ToLower(string(check.Provider)), strings.ToLower(check.Service))
+			webProviderPath := fmt.Sprintf("docs/checks/%s/%s", strings.ToLower(string(check.Provider)), strings.ToLower(check.Service))
 			if err := generateWebPage(webProviderPath, check); err != nil {
 				return err
 			}
