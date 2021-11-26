@@ -1,4 +1,5 @@
 FROM squidfunk/mkdocs-material:7.3.6
 
-RUN pip install mike
-RUN pip install mkdocs-macros-plugin
+COPY requirements.txt /requirements.txt
+RUN pip install -r /requirements.txt
+
