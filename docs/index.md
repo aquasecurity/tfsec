@@ -13,7 +13,7 @@ hide:
 
 Designed to run locally and in your CI pipelines, developer-friendly output and fully documented checks mean detection and remediation can take place as quickly and efficiently as possible
 
-`tfsec` takes a developer-first approach to scanner your Terraform templates; using static analysis and deep integration with the official HCL parser it ensures thatsecurity issues can be detected before your infrastructure changes take effect.
+`tfsec` takes a developer-first approach to scanning your Terraform templates; using static analysis and deep integration with the official HCL parser it ensures thatsecurity issues can be detected before your infrastructure changes take effect.
 
 <br/>
 <br/>
