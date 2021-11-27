@@ -122,7 +122,9 @@ announce:
   slack:
     enabled: true
     message_template: ':tada: tfsec {{.Tag}} is now available!!!! :tada:'
-
     channel: '#tfsec'
-
     username: 'tfsec Town Cryer'
+
+  twitter:
+    enabled: true
+    message_template: "🎉 tfsec {{.Tag}} is available now!! See what's new here - https://github.com/aquasecurity/tfsec/releases/tag/{{.Tag}}"
