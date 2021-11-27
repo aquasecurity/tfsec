@@ -120,13 +120,9 @@ dockers:
 
 announce:
   slack:
-        enabled: true
+    enabled: true
+    message_template: ':tada: tfsec {{.Tag}} is now available!!!! :tada:'
 
-
-    message_template: 'tfsec {{.Tag}} is now available!!!!:celeberate:'
-
-    # The name of the channel that the user selected as a destination for webhook messages.
     channel: '#tfsec'
 
-    # Set your Webhook's user name.
     username: 'tfsec Town Cryer'
