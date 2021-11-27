@@ -41,6 +41,7 @@ jobs:
        args: release --rm-dist
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
     # - name: Release Docs
     #   run: make publish-docs

@@ -117,3 +117,16 @@ dockers:
     dockerfile: Dockerfile.ci
     image_templates:
     - "aquasec/tfsec-ci:{{ .Tag }}"
+
+announce:
+  slack:
+        enabled: true
+
+
+    message_template: 'tfsec {{.Tag}} is now available!!!!:celeberate:'
+
+    # The name of the channel that the user selected as a destination for webhook messages.
+    channel: '#tfsec'
+
+    # Set your Webhook's user name.
+    username: 'tfsec Town Cryer'
