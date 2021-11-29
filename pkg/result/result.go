@@ -18,6 +18,7 @@ type Result struct {
 	LegacyRuleID    string            `json:"legacy_rule_id"`
 	RuleSummary     string            `json:"rule_description"`
 	RuleProvider    provider.Provider `json:"rule_provider"`
+	RuleService     string            `json:"rule_service"`
 	Impact          string            `json:"impact"`
 	Resolution      string            `json:"resolution"`
 	Links           []string          `json:"links"`
@@ -101,6 +102,11 @@ func (r *Result) WithRuleProvider(provider provider.Provider) *Result {
 	return r
 }
 
+func (r *Result) WithRuleService(service string) *Result {
+	r.RuleService = service
+	return r
+}
+
 func (r *Result) WithImpact(impact string) *Result {
 	r.Impact = impact
 	return r
@@ -141,6 +147,11 @@ func (r *Result) WithDescription(description string, parts ...interface{}) *Resu
 
 func (r *Result) WithSeverity(sev severity.Severity) *Result {
 	r.Severity = sev
+	return r
+}
+
+func (r *Result) WithService(service string) *Result {
+	r.RuleService = service
 	return r
 }
 
