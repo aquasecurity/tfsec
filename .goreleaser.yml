@@ -126,5 +126,5 @@ announce:
     username: 'tfsec Town Cryer'
 
   twitter:
-    enabled: true
+    enabled: false
     message_template: "🎉 tfsec {{.Tag}} is available now!! See what's new here - https://github.com/aquasecurity/tfsec/releases/tag/{{.Tag}}"
