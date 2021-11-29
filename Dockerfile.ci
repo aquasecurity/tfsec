@@ -1,4 +1,4 @@
-FROM alpine:3.14
+FROM alpine:3.15.0
 # use a non-privileged user
 USER nobody
 # work somewhere where we can write
