@@ -150,11 +150,6 @@ func (r *Result) WithSeverity(sev severity.Severity) *Result {
 	return r
 }
 
-func (r *Result) WithService(service string) *Result {
-	r.RuleService = service
-	return r
-}
-
 func (r *Result) WithStatus(status Status) *Result {
 	r.Status = status
 	return r
