@@ -82,7 +82,8 @@ func (scanner *Scanner) scanModule(module block.Module, rules []rule.Rule) []res
 						WithStatus(result.Passed).
 						WithImpact(r.Documentation.Impact).
 						WithResolution(r.Documentation.Resolution).
-						WithSeverity(r.DefaultSeverity)
+						WithSeverity(r.DefaultSeverity).
+						WithService(r.Service)
 					results = append(results, *res)
 				} else if ruleResults != nil {
 					for _, ruleResult := range ruleResults.All() {

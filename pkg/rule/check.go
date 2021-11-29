@@ -40,6 +40,7 @@ func CheckRule(r *Rule, resourceBlock block.Block, module block.Module, ignoreEr
 		WithImpact(r.Documentation.Impact).
 		WithResolution(r.Documentation.Resolution).
 		WithRuleProvider(r.Provider).
+		WithRuleService(r.Service).
 		WithLinks(links)
 
 	r.CheckFunc(resultSet, resourceBlock, module)
