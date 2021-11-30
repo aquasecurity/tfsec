@@ -45,6 +45,52 @@ You can set expiration date for `ignore` with `yyyy-mm-dd` format. This is a use
 ```
 Ignore like this will be active only till `2022-01-02`, after this date it will be deactivated.
 
-### Recent Ignore Changes
+### Workspace Ignores
+Ignoring checks can be scoped to a workspace level. If you add the `ws:` declaration to your ignore it will only be honoured for that workspace.
 
-As of `v0.52.0`, we fixed an issue where ignores were being incorrectly applied to entire blocks. This has made it more important that ignore comments are added to the correct line(s) in your templates. If tfsec mentions a particular line number as containing an issue you want to ignore, you should add the comment on that same line, or by itself on the line above it (or above the entire block to ignore all issues of that type in the block). If tfsec mentions an entire block as being the issue, you should add a comment on the line above the first line of the block.
+```hcl
+# tfsec:ignore:AWS006:exp:2221-01-02 #tfsec:ignore:AWS018:ws:development
+resource "aws_security_group_rule" "my-rule" {
+    type        = "ingress"
+	
+    cidr_blocks = ["0.0.0.0/0"]
+}
+```
+
+In the example above, when tfsec is run with the `--workspace` flag set to development, this ignore will be honoured, but otherwise will be disregarded.
+
+```bash
+tfsec --workspace development .
+```
+
+### Ignoring specific values
+
+We have recently added support for ignoring based on the value that has been provided. This is particularly relevant when using `for_each` and you want to allow certain values. 
+
+```hcl
+locals {
+  rules = {
+    http = 80
+    https = 443 
+  }
+}
+
+#tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=443]
+resource "aws_security_group_rule" "this" {
+      for_each = local.rules
+      type = "ingress"
+      description     = "test"
+      from_port       = each.value 
+      to_port         = each.value
+      protocol        = "tcp"
+      cidr_blocks     = ["0.0.0.0/0"]
+
+}
+```
+
+In the example above, the `aws-vpc-no-public-ingress-sgr` check will fail for `80` but when it creates the rule for `443` the check will pass.
+
+This feature is experimental - while it works successfully, please raise issues through [GitHub Issues]
+
+[Github Issues]: https://github.com/aquasecurity/tfsec/issues
+
