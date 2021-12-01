@@ -83,6 +83,7 @@ func (scanner *Scanner) scanModule(module block.Module, rules []rule.Rule) []res
 						WithImpact(r.Documentation.Impact).
 						WithResolution(r.Documentation.Resolution).
 						WithSeverity(r.DefaultSeverity).
+						WithRuleProvider(r.Provider).
 						WithRuleService(r.Service)
 					results = append(results, *res)
 				} else if ruleResults != nil {
