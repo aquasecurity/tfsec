@@ -18,6 +18,7 @@ type Result struct {
 	LegacyRuleID    string            `json:"legacy_rule_id"`
 	RuleSummary     string            `json:"rule_description"`
 	RuleProvider    provider.Provider `json:"rule_provider"`
+	RuleService     string            `json:"rule_service"`
 	Impact          string            `json:"impact"`
 	Resolution      string            `json:"resolution"`
 	Links           []string          `json:"links"`
@@ -98,6 +99,11 @@ func (r *Result) WithRuleSummary(description string) *Result {
 
 func (r *Result) WithRuleProvider(provider provider.Provider) *Result {
 	r.RuleProvider = provider
+	return r
+}
+
+func (r *Result) WithRuleService(service string) *Result {
+	r.RuleService = service
 	return r
 }
 

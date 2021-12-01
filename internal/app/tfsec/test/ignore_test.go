@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
@@ -331,4 +332,170 @@ func TestInlineIgnoresForAllRules(t *testing.T) {
 			}
 		}
 	}
+}
+
+func Test_AllowedValue_Ignores(t *testing.T) {
+	example := `
+locals {
+  rules = {
+    http = 80
+    https = 443 
+  }
+}
+
+#tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=443]
+resource "aws_security_group_rule" "this" {
+      for_each = local.rules
+      type = "ingress"
+      description     = "test"
+      from_port       = each.value 
+      to_port         = each.value
+      protocol        = "tcp"
+      cidr_blocks     = ["0.0.0.0/0"]
+
+}
+`
+	fs, err := testutil.NewFilesystem()
+	require.NoError(t, err)
+	defer fs.Close()
+
+	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	require.NoError(t, err)
+	results := scanner.New().Scan(blocks)
+	assert.Len(t, results, 1)
+	testutil.AssertCheckCode(t, "aws-vpc-no-public-ingress-sgr", "", results)
+}
+
+func Test_AllowedValue_Ignores_In_Multiple(t *testing.T) {
+	example := `
+locals {
+  rules = {
+    http = 80
+    https = 443 
+	https2 = 443
+  }
+}
+
+#tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=443]
+resource "aws_security_group_rule" "this" {
+      for_each = local.rules
+      type = "ingress"
+      description     = "test"
+      from_port       = each.value 
+      to_port         = each.value
+      protocol        = "tcp"
+      cidr_blocks     = ["0.0.0.0/0"]
+
+}
+`
+	fs, err := testutil.NewFilesystem()
+	require.NoError(t, err)
+	defer fs.Close()
+
+	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	require.NoError(t, err)
+	results := scanner.New().Scan(blocks)
+	assert.Len(t, results, 1)
+	testutil.AssertCheckCode(t, "aws-vpc-no-public-ingress-sgr", "", results)
+}
+
+func Test_AllowedValue_Ignores_Complex(t *testing.T) {
+	example := `
+locals {
+  rules = {
+    http = 80
+    https = 443 
+  }
+}
+
+#tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=443,to_port=80]
+resource "aws_security_group_rule" "this" {
+      for_each = local.rules
+      type = "ingress"
+      description     = "test"
+      from_port       = each.value 
+      to_port         = each.value
+      protocol        = "tcp"
+      cidr_blocks     = ["0.0.0.0/0"]
+
+}
+`
+	fs, err := testutil.NewFilesystem()
+	require.NoError(t, err)
+	defer fs.Close()
+
+	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	require.NoError(t, err)
+	results := scanner.New().Scan(blocks)
+	assert.Len(t, results, 0)
+	testutil.AssertCheckCode(t, "", "aws-vpc-no-public-ingress-sgr", results)
+}
+
+func Test_AllowedValue_Ignores_With_Junk(t *testing.T) {
+	example := `
+locals {
+  rules = {
+    http = 80
+    https = 443 
+  }
+}
+
+#tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_port=abc]
+resource "aws_security_group_rule" "this" {
+      for_each = local.rules
+      type = "ingress"
+      description     = "test"
+      from_port       = each.value 
+      to_port         = each.value
+      protocol        = "tcp"
+      cidr_blocks     = ["0.0.0.0/0"]
+
+}
+`
+	fs, err := testutil.NewFilesystem()
+	require.NoError(t, err)
+	defer fs.Close()
+
+	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	require.NoError(t, err)
+	results := scanner.New().Scan(blocks)
+	assert.Len(t, results, 2)
+	testutil.AssertCheckCode(t, "aws-vpc-no-public-ingress-sgr", "", results)
+}
+
+func Test_AllowedValue_Ignores_With_More_Junk(t *testing.T) {
+	example := `
+locals {
+  rules = {
+    http = 80
+    https = 443 
+  }
+}
+
+#tfsec:ignore:aws-vpc-no-public-ingress-sgr[from_portabc]
+resource "aws_security_group_rule" "this" {
+      for_each = local.rules
+      type = "ingress"
+      description     = "test"
+      from_port       = each.value 
+      to_port         = each.value
+      protocol        = "tcp"
+      cidr_blocks     = ["0.0.0.0/0"]
+
+}
+`
+	fs, err := testutil.NewFilesystem()
+	require.NoError(t, err)
+	defer fs.Close()
+
+	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	require.NoError(t, err)
+	results := scanner.New().Scan(blocks)
+	assert.Len(t, results, 2)
+	testutil.AssertCheckCode(t, "aws-vpc-no-public-ingress-sgr", "", results)
 }

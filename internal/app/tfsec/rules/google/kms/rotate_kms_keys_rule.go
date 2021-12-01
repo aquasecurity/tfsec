@@ -56,6 +56,17 @@ resource "google_kms_crypto_key" "example-key" {
     prevent_destroy = true
   }
 }
+
+resource "google_kms_crypto_key" "example-key" {
+  name            = "crypto-key-example"
+  key_ring        = google_kms_key_ring.keyring.id
+  algorithm       = "EXTERNAL_SYMMETRIC_ENCRYPTION"
+  protectionLevel = "EXTERNAL"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
 `},
 			Links: []string{
 				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key#rotation_period",
@@ -69,6 +80,11 @@ resource "google_kms_crypto_key" "example-key" {
 		},
 		DefaultSeverity: severity.High,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+			if resourceBlock.HasBlock("algorithm") &&
+				resourceBlock.GetAttribute("algorithm").Equals("EXTERNAL_SYMMETRIC_ENCRYPTION") {
+				return
+			}
+
 			rotationAttr := resourceBlock.GetAttribute("rotation_period")
 			if rotationAttr.IsNil() || (rotationAttr.IsResolvable() && rotationAttr.IsEmpty()) {
 				set.AddResult().

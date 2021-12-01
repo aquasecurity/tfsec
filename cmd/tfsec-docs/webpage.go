@@ -12,14 +12,7 @@ import (
 
 const (
 	baseWebPageTemplate = `---
-title: {{$.Documentation.Summary}}
-shortcode: {{$.ID}}
-legacy: {{$.LegacyID}}
-summary: {{$.Documentation.Summary}} 
-resources: {{$.RequiredLabels}} 
-permalink: /docs/{{$.Provider}}/{{$.Service}}/{{$.ShortCode}}/
-redirect_from: 
-  - /docs/{{$.Provider}}/{{$.LegacyID}}/
+title: {{$.ShortCode}}
 ---
 
 ### Explanation
@@ -37,9 +30,9 @@ redirect_from:
 
 The following example will fail the {{$.ID}} check.
 
-{% highlight terraform %}
+` + "```terraform" + `
 {{ (index $.Documentation.BadExample 0) }}
-{% endhighlight %}
+` + "```" + `
 
 {{end}}
 {{if $.Documentation.GoodExample }}
@@ -47,9 +40,10 @@ The following example will fail the {{$.ID}} check.
 
 The following example will pass the {{$.ID}} check.
 
-{% highlight terraform %}
+` + "```terraform" + `
 {{ (index $.Documentation.GoodExample 0) }}
-{% endhighlight %}
+` + "```" + `
+
 {{end}}
 
 {{if $.Documentation.Links}}
@@ -65,7 +59,7 @@ The following example will pass the {{$.ID}} check.
 func generateWebPages(fileContents []*FileContent) error {
 	for _, contents := range fileContents {
 		for _, check := range contents.Checks {
-			webProviderPath := fmt.Sprintf("%s/docs/%s/%s", webPath, strings.ToLower(string(check.Provider)), strings.ToLower(check.Service))
+			webProviderPath := fmt.Sprintf("docs/checks/%s/%s", strings.ToLower(string(check.Provider)), strings.ToLower(check.Service))
 			if err := generateWebPage(webProviderPath, check); err != nil {
 				return err
 			}

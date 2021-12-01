@@ -1,5 +1,4 @@
 resource "aws_instance" "compliant" {
-
   count = terraform.workspace == "default" ? 5 : 20
 
   ami            = "ami-12345"
