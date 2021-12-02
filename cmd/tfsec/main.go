@@ -1,18 +1,16 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
-	"sort"
 
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/defsec/rules"
 
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/severity"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/config"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/updater"
@@ -21,7 +19,7 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/formatters"
+	"github.com/aquasecurity/defsec/formatters"
 
 	"github.com/liamg/tml"
 
@@ -29,7 +27,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/version"
 )
@@ -41,7 +38,6 @@ var format string
 var softFail = false
 var filterResults string
 var excludedRuleIDs string
-var includedRuleIDs string
 var tfvarsPaths []string
 var excludePaths []string
 var outputFlag string
@@ -60,17 +56,18 @@ var runStatistics bool
 var ignoreHCLErrors bool
 var stopOnCheckError bool
 var workspace string
-var sortSeverity bool
+var passingGif bool
+var singleThreadedMode bool
 
 func init() {
+	rootCmd.Flags().BoolVar(&singleThreadedMode, "single-thread", singleThreadedMode, "Run checks using a single thread")
 	rootCmd.Flags().BoolVar(&ignoreHCLErrors, "ignore-hcl-errors", ignoreHCLErrors, "Stop and report an error if an HCL parse error is encountered")
 	rootCmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
 	rootCmd.Flags().BoolVar(&runUpdate, "update", runUpdate, "Update to latest version")
-	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format(s) comma separated: default, json, csv, checkstyle, junit, sarif, gif")
+	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit, sarif")
 	rootCmd.Flags().StringVarP(&excludedRuleIDs, "exclude", "e", excludedRuleIDs, "Provide comma-separated list of rule IDs to exclude from run.")
-	rootCmd.Flags().StringVarP(&includedRuleIDs, "include", "i", includedRuleIDs, "Provide comma-separated list of specific rules to include in the from run.")
 	rootCmd.Flags().StringVar(&filterResults, "filter-results", filterResults, "Filter results to return specific checks only (supports comma-delimited input).")
 	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
 	rootCmd.Flags().StringSliceVar(&tfvarsPaths, "tfvars-file", tfvarsPaths, "Path to .tfvars file, can be used multiple times and evaluated in order of specification")
@@ -83,16 +80,15 @@ func init() {
 	rootCmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&detailedExitCode, "detailed-exit-code", detailedExitCode, "Produce more detailed exit status codes.")
-	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Resources that pass checks are included in the result output")
-	rootCmd.Flags().BoolVar(&includeIgnored, "include-ignored", includeIgnored, "Ignore comments with have no effect and all resources will be scanned")
+	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Include passed checks in the result output")
+	rootCmd.Flags().BoolVar(&includeIgnored, "include-ignored", includeIgnored, "Include ignored checks in the result output")
 	rootCmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
 	rootCmd.Flags().BoolVar(&runStatistics, "run-statistics", runStatistics, "View statistics table of current findings.")
 	rootCmd.Flags().BoolVar(&ignoreWarnings, "ignore-warnings", ignoreWarnings, "[DEPRECATED] Don't show warnings in the output.")
 	rootCmd.Flags().BoolVar(&ignoreInfo, "ignore-info", ignoreWarnings, "[DEPRECATED] Don't show info results in the output.")
 	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
 	rootCmd.Flags().StringVarP(&workspace, "workspace", "w", workspace, "Specify a workspace for ignore limits")
-	rootCmd.Flags().BoolVar(&sortSeverity, "sort-severity", sortSeverity, "Sort the results by severity from Critical to Low")
-
+	rootCmd.Flags().BoolVar(&passingGif, "gif", passingGif, "Show a celebratory gif in the terminal if no problems are found (default formatter only)")
 }
 
 func main() {
@@ -100,12 +96,6 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-}
-
-type formatterInfo struct {
-	formatter  *formatters.Formatter
-	outputFile *os.File
-	format     string
 }
 
 var rootCmd = &cobra.Command{
@@ -141,7 +131,7 @@ var rootCmd = &cobra.Command{
 		var dir string
 		var err error
 		var filterResultsList []string
-		var outputFiles []formatterInfo
+		var outputFile *os.File
 
 		if ignoreWarnings || ignoreInfo {
 			fmt.Fprint(os.Stderr, "WARNING: The --ignore-info and --ignore-warnings flags are deprecated and will soon be removed.\n")
@@ -156,19 +146,6 @@ var rootCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
-
-		if dirInfo, err := os.Stat(dir); err != nil {
-			if os.IsNotExist(err) {
-				fmt.Println("The provided path does not exist, exiting")
-				os.Exit(1)
-			}
-			fmt.Println(err)
-			os.Exit(1)
-		} else if !dirInfo.IsDir() {
-			fmt.Println("The provided path is not a dir, exiting")
-			os.Exit(1)
-		}
-
 		tfsecDir := fmt.Sprintf("%s/.tfsec", dir)
 
 		if len(configFile) > 0 {
@@ -211,7 +188,6 @@ var rootCmd = &cobra.Command{
 			filterResultsList = strings.Split(filterResults, ",")
 		}
 
-		formats := strings.Split(format, ",")
 		if outputFlag != "" {
 			if format == "" {
 				format = "text"
@@ -268,8 +244,16 @@ var rootCmd = &cobra.Command{
 				fmt.Println(err)
 				os.Exit(1)
 			}
+			defer func() { _ = f.Close() }()
+			outputFile = f
+		} else {
+			outputFile = os.Stdout
+		}
 
-			outputFiles[i].formatter = &formatter
+		formatter, err := getFormatter()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
 		}
 
 		if len(tfvarsPaths) == 0 && unusedTfvarsPresent(dir) {
@@ -284,14 +268,17 @@ var rootCmd = &cobra.Command{
 		}
 
 		debug.Log("Starting scanner...")
-		results := scanner.New(getScannerOptions()...).Scan(modules)
+		results, err := scanner.New(getScannerOptions()...).Scan(modules)
+		if err != nil {
+			return fmt.Errorf("fatal error during scan: %s", err)
+		}
 		results = updateResultSeverity(results)
-		results = removeDuplicatesAndUnwanted(results, ignoreWarnings, excludeDownloaded)
+		results = removeExcludedResults(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {
-			var filteredResult []result.Result
+			var filteredResult []rules.Result
 			for _, result := range results {
 				for _, ruleID := range filterResultsList {
-					if result.RuleID == ruleID {
+					if result.Rule().LongID() == ruleID {
 						filteredResult = append(filteredResult, result)
 					}
 				}
@@ -299,14 +286,8 @@ var rootCmd = &cobra.Command{
 			results = filteredResult
 		}
 
-		if sortSeverity {
-			sort.Slice(results, func(i, j int) bool {
-				return results[i].Severity.AsOrdinal() > results[j].Severity.AsOrdinal()
-			})
-		}
-
 		for _, result := range results {
-			metrics.AddResult(result.Severity)
+			metrics.AddResult(result.Rule().Severity)
 		}
 
 		if runStatistics {
@@ -318,17 +299,8 @@ var rootCmd = &cobra.Command{
 			return nil
 		}
 
-		for _, formatInfo := range outputFiles {
-			formatter := formatInfo.formatter
-
-			if formatter == nil {
-				fmt.Printf("%+v", formatter)
-				return errors.New(fmt.Sprintf("Could not access formatter for file format '%s'", formatInfo.format))
-			}
-
-			if err := (*formatter)(formatInfo.outputFile, results, dir, getFormatterOptions()...); err != nil {
-				return err
-			}
+		if err := formatter(outputFile, results, dir, getFormatterOptions()...); err != nil {
+			return err
 		}
 
 		// Soft fail always takes precedence. If set, only execution errors
@@ -342,7 +314,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		// If all failed rules are of LOW severity, then produce a success
-		// exit code (0)
+		// exit code (0).
 		if allInfo(results) {
 			return nil
 		}
@@ -392,14 +364,10 @@ func getParserOptions() []parser.Option {
 		opts = append(opts, parser.OptionWithWorkspaceName(workspace))
 	}
 
-	if excludeDownloaded {
-		opts = append(opts, parser.OptionSkipDownloaded())
-	}
-
 	return opts
 }
 
-func getDetailedExitCode(results []result.Result) int {
+func getDetailedExitCode(results rules.Results) int {
 	// If there are no failed rules, then produce a success exit code (0).
 	if len(results) == 0 || len(results) == countPassedResults(results) {
 		return 0
@@ -416,20 +384,18 @@ func getDetailedExitCode(results []result.Result) int {
 	return 1
 }
 
-func removeDuplicatesAndUnwanted(results []result.Result, ignoreWarnings bool, excludeDownloaded bool) []result.Result {
-	reduction := make(map[string]result.Result)
-
+func removeExcludedResults(results rules.Results, ignoreWarnings bool, excludeDownloaded bool) rules.Results {
+	var returnVal rules.Results
 	for _, res := range results {
-		reduction[res.HashCode()] = res
-	}
-
-	var returnVal []result.Result
-	for _, res := range reduction {
-		if ignoreWarnings && res.Severity == severity.Medium {
+		if excludeDownloaded && strings.Contains(res.NarrowestRange().GetFilename(), fmt.Sprintf("%c.terraform", os.PathSeparator)) {
 			continue
 		}
 
-		if ignoreInfo && res.Severity == severity.Low {
+		if ignoreWarnings && res.Rule().Severity == severity.Medium {
+			continue
+		}
+
+		if ignoreInfo && res.Rule().Severity == severity.Low {
 			continue
 		}
 
@@ -446,6 +412,9 @@ func getFormatterOptions() []formatters.FormatterOption {
 	if includePassed {
 		options = append(options, formatters.IncludePassed)
 	}
+	if passingGif {
+		options = append(options, formatters.PassingGif)
+	}
 	return options
 }
 
@@ -460,7 +429,7 @@ func getScannerOptions() []scanner.Option {
 	if workspace != "" {
 		options = append(options, scanner.OptionWithWorkspaceName(workspace))
 	}
-
+	options = append(options, scanner.OptionWithSingleThread(singleThreadedMode))
 	if stopOnCheckError {
 		options = append(options, scanner.OptionStopOnErrors())
 	}
@@ -472,16 +441,6 @@ func getScannerOptions() []scanner.Option {
 	allExcludedRuleIDs = mergeWithoutDuplicates(allExcludedRuleIDs, tfsecConfig.ExcludedChecks)
 
 	options = append(options, scanner.OptionExcludeRules(allExcludedRuleIDs))
-
-	var allIncludedRuleIDs []string
-	if len(includedRuleIDs) > 0 {
-		for _, include := range strings.Split(includedRuleIDs, ",") {
-			allIncludedRuleIDs = append(allIncludedRuleIDs, strings.TrimSpace(include))
-		}
-	}
-	allIncludedRuleIDs = mergeWithoutDuplicates(allIncludedRuleIDs, tfsecConfig.IncludedChecks)
-
-	options = append(options, scanner.OptionIncludeRules(allIncludedRuleIDs))
 	return options
 }
 
@@ -499,27 +458,31 @@ func mergeWithoutDuplicates(left, right []string) []string {
 	return results
 }
 
-func allInfo(results []result.Result) bool {
+func allInfo(results []rules.Result) bool {
 	for _, res := range results {
-		if res.Severity != severity.Low && res.Status != result.Passed && res.Status != result.Ignored {
+		if res.Rule().Severity != severity.Low && res.Status() != rules.StatusPassed {
 			return false
 		}
 	}
 	return true
 }
 
-func updateResultSeverity(results []result.Result) []result.Result {
+func updateResultSeverity(results []rules.Result) []rules.Result {
 	overrides := tfsecConfig.SeverityOverrides
 
 	if len(overrides) == 0 {
 		return results
 	}
 
-	var overriddenResults []result.Result
+	var overriddenResults []rules.Result
 	for _, res := range results {
 		for code, sev := range overrides {
-			if res.RuleID == code || res.LegacyRuleID == code {
-				res.WithSeverity(severity.Severity(sev))
+			if res.Rule().LongID() == code || scanner.FindLegacyID(res.Rule().LongID()) == code {
+				overrides := rules.Results([]rules.Result{res})
+				override := res.Rule()
+				override.Severity = severity.Severity(sev)
+				overrides.SetRule(override)
+				res = overrides[0]
 			}
 		}
 		overriddenResults = append(overriddenResults, res)
@@ -528,8 +491,8 @@ func updateResultSeverity(results []result.Result) []result.Result {
 	return overriddenResults
 }
 
-func getFormatter(fileFormat string) (formatters.Formatter, error) {
-	switch strings.ToLower(fileFormat) {
+func getFormatter() (formatters.Formatter, error) {
+	switch strings.ToLower(format) {
 	case "", "default":
 		return formatters.FormatDefault, nil
 	case "json":
@@ -544,19 +507,8 @@ func getFormatter(fileFormat string) (formatters.Formatter, error) {
 		return formatters.FormatText, nil
 	case "sarif":
 		return formatters.FormatSarif, nil
-	case "gif":
-		return formatters.FormatGif, nil
 	default:
-		return nil, fmt.Errorf("invalid format specified: '%s'", fileFormat)
-	}
-}
-
-func defaultExtensionForFormatter(fileFormat string) string {
-	switch strings.ToLower(fileFormat) {
-	case "text":
-		return "txt"
-	default:
-		return fileFormat
+		return nil, fmt.Errorf("invalid format specified: '%s'", format)
 	}
 }
 
@@ -565,11 +517,11 @@ func loadConfigFile(configFilePath string) (*config.Config, error) {
 	return config.LoadConfig(configFilePath)
 }
 
-func countPassedResults(results []result.Result) int {
+func countPassedResults(results []rules.Result) int {
 	passed := 0
 
 	for _, res := range results {
-		if res.Status == result.Passed {
+		if res.Status() == rules.StatusPassed {
 			passed++
 		}
 	}

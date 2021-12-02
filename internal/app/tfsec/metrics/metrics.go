@@ -3,7 +3,7 @@ package metrics
 import (
 	"time"
 
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/severity"
 )
 
 var recordedTimes []*Timer
@@ -14,7 +14,8 @@ const (
 	DiskIO     Operation = "disk i/o"
 	HCLParse   Operation = "parsing HCL"
 	Evaluation Operation = "evaluating values"
-	Check      Operation = "running checks"
+	Checking   Operation = "running checks"
+	Adaptation Operation = "defsec adaptation"
 )
 
 type Timer struct {

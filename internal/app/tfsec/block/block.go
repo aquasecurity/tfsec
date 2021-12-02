@@ -1,17 +1,18 @@
 package block
 
 import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/zclconf/go-cty/cty"
 )
 
 type Block interface {
+	rules.MetadataProvider
 	Attributes() map[string]Attribute
 	OverrideContext(ctx *Context)
-	HasModuleBlock() bool
-	GetModuleBlock() (Block, error)
 	Type() string
 	Labels() []string
-	Range() Range
+	Range() HCLRange
 	GetFirstMatchingBlock(names ...string) Block
 	GetBlock(name string) Block
 	AllBlocks() Blocks
@@ -37,8 +38,8 @@ type Block interface {
 	IsEmpty() bool
 	Values() cty.Value
 	Context() *Context
-	ReadLines() (lines []string, comments []string, err error)
 	IsNil() bool
 	IsNotNil() bool
 	InjectBlock(block Block, name string)
+	Metadata() types.Metadata
 }

@@ -3,6 +3,7 @@ package scanner
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 	"sort"
 	"sync"
 
@@ -14,14 +15,15 @@ var registeredRules []rule.Rule
 
 // RegisterCheckRule registers a new Rule which should be run on future scans
 func RegisterCheckRule(rule rule.Rule) {
-	if rule.ShortCode == "" {
-		panic("rule short code was not set")
+	if rule.Base.Rule().ShortCode == "" {
+		panic("rule short code was not set: " + string(debug.Stack()))
 	}
-	if rule.Service == "" {
-		panic("rule service was not set")
+	if rule.Base.Rule().Service == "" {
+		panic("rule service was not set: " + string(debug.Stack()))
+
 	}
-	if rule.Provider == "" {
-		panic("rule provider was not set")
+	if rule.Base.Rule().Provider == "" {
+		panic("rule provider was not set: " + string(debug.Stack()))
 	}
 	rulesLock.Lock()
 	defer rulesLock.Unlock()
@@ -60,7 +62,7 @@ func GetRuleById(ID string) (*rule.Rule, error) {
 			return &r, nil
 		}
 	}
-	return nil, fmt.Errorf("could not find rule with legacyID '%s'", ID)
+	return nil, fmt.Errorf("could not find rule with ID '%s'", ID)
 }
 
 func GetRuleByLegacyID(legacyID string) (*rule.Rule, error) {

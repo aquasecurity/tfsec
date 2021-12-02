@@ -44,7 +44,7 @@ func Test_ReferenceParsing(t *testing.T) {
 
 	for _, test := range cases {
 		t.Run(test.expected, func(t *testing.T) {
-			ref, err := newReference(test.input)
+			ref, err := newReference(test.input, "")
 			require.NoError(t, err)
 			assert.Equal(t, test.expected, ref.String())
 		})

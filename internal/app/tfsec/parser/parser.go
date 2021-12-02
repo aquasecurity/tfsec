@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/hashicorp/hcl/v2"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
@@ -42,14 +41,15 @@ func New(initialPath string, options ...Option) *Parser {
 	return p
 }
 
-func (parser *Parser) parseDirectoryFiles(files []*hcl.File) (block.Blocks, error) {
+func (parser *Parser) parseDirectoryFiles(files []File) (block.Blocks, block.Ignores, error) {
 	var blocks block.Blocks
+	var ignores block.Ignores
 
 	for _, file := range files {
-		fileBlocks, err := LoadBlocksFromFile(file)
+		fileBlocks, fileIgnores, err := LoadBlocksFromFile(file, "root")
 		if err != nil {
 			if parser.stopOnHCLError {
-				return nil, err
+				return nil, nil, err
 			}
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: HCL error: %s\n", err)
 			continue
@@ -60,9 +60,10 @@ func (parser *Parser) parseDirectoryFiles(files []*hcl.File) (block.Blocks, erro
 		for _, fileBlock := range fileBlocks {
 			blocks = append(blocks, block.NewHCLBlock(fileBlock, nil, nil))
 		}
+		ignores = append(ignores, fileIgnores...)
 	}
 
-	return blocks, nil
+	return blocks, ignores, nil
 }
 
 // ParseDirectory parses all terraform files within a given directory
@@ -77,6 +78,7 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 	t.Stop()
 
 	var blocks block.Blocks
+	var ignores block.Ignores
 
 	for _, dir := range subdirectories {
 		if parser.skipDownloaded && strings.Contains(dir, ".terraform") {
@@ -89,10 +91,11 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 			return nil, err
 		}
 
-		parsedBlocks, err := parser.parseDirectoryFiles(files)
+		parsedBlocks, dirIgnores, err := parser.parseDirectoryFiles(files)
 		if err != nil {
 			return nil, err
 		}
+		ignores = append(ignores, dirIgnores...)
 
 		blocks = append(blocks, parsedBlocks...)
 	}
@@ -128,7 +131,7 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 
 	debug.Log("Evaluating expressions...")
 	workingDir, _ := os.Getwd()
-	evaluator := NewEvaluator(tfPath, tfPath, workingDir, blocks, inputVars, modulesMetadata, nil, parser.stopOnHCLError, parser.workspaceName)
+	evaluator := NewEvaluator(tfPath, tfPath, workingDir, "root", blocks, inputVars, modulesMetadata, nil, parser.stopOnHCLError, parser.workspaceName, ignores)
 	modules, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err
@@ -154,6 +157,7 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 			if parser.stopOnFirstTf {
 				return results, nil
 			}
+			break
 		}
 	}
 

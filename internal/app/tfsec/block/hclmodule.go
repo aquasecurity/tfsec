@@ -6,27 +6,49 @@ import (
 )
 
 type HCLModule struct {
+	name       string
 	blocks     Blocks
+	blockMap   map[string]Blocks
 	rootPath   string
 	modulePath string
+	ignores    Ignores
 }
 
-func NewHCLModule(rootPath string, modulePath string, blocks Blocks) Module {
+func NewHCLModule(rootPath string, modulePath string, blocks Blocks, ignores Ignores) Module {
+
+	blockMap := make(map[string]Blocks)
+
+	for _, b := range blocks {
+		if b.NameLabel() != "" {
+			blockMap[b.TypeLabel()] = append(blockMap[b.TypeLabel()], b)
+		}
+	}
+
 	return &HCLModule{
 		blocks:     blocks,
+		ignores:    ignores,
+		blockMap:   blockMap,
 		rootPath:   rootPath,
 		modulePath: modulePath,
 	}
+}
+
+func (c *HCLModule) Ignores() Ignores {
+	return c.ignores
 }
 
 func (c *HCLModule) GetBlocks() Blocks {
 	return c.blocks
 }
 
+func (h *HCLModule) GetBlocksByTypeLabel(typeLabel string) Blocks {
+	return h.blockMap[typeLabel]
+}
+
 func (c *HCLModule) getBlocksByType(blockType string, label string) Blocks {
 	var results Blocks
-	for _, block := range c.blocks {
-		if block.Type() == blockType && len(block.Labels()) > 0 && block.TypeLabel() == label {
+	for _, block := range c.blockMap[label] {
+		if block.Type() == blockType {
 			results = append(results, block)
 		}
 	}
@@ -68,10 +90,22 @@ func (c *HCLModule) GetProviderBlocksByProvider(providerName string, alias strin
 	return results
 }
 
-func (c *HCLModule) GetReferencedBlock(referringAttr Attribute) (Block, error) {
+func (c *HCLModule) GetReferencedBlock(referringAttr Attribute, parentBlock Block) (Block, error) {
 	for _, ref := range referringAttr.AllReferences() {
+		if ref.TypeLabel() == "each" {
+			if forEachAttr := parentBlock.GetAttribute("for_each"); forEachAttr.IsNotNil() {
+				if b, err := c.GetReferencedBlock(forEachAttr, parentBlock); err == nil {
+					return b, nil
+				}
+			}
+		}
 		for _, block := range c.blocks {
-			if ref.RefersTo(block) {
+			if ref.RefersTo(block.Reference()) {
+				return block, nil
+			}
+			kref := *ref
+			kref.SetKey(parentBlock.Reference().RawKey())
+			if kref.RefersTo(block.Reference()) {
 				return block, nil
 			}
 		}
@@ -103,13 +137,13 @@ func (c *HCLModule) getReferencingBlocks(originalBlock Block, referencingType st
 		if attr == nil {
 			continue
 		}
-		if attr.ReferencesBlock(originalBlock) {
+		if attr.References(originalBlock.Reference()) {
 			results = append(results, block)
 		} else {
 			for _, ref := range attr.AllReferences() {
 				if ref.TypeLabel() == "each" {
 					fe := block.GetAttribute("for_each")
-					if fe.ReferencesBlock(originalBlock) {
+					if fe.References(originalBlock.Reference()) {
 						results = append(results, block)
 					}
 				}

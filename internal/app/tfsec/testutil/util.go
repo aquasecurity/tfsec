@@ -2,15 +2,13 @@ package testutil
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil/filesystem"
 
 	"github.com/stretchr/testify/assert"
 
@@ -18,42 +16,40 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
-func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) []result.Result {
+func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) rules.Results {
 	modules := CreateModulesFromSource(source, ".tf", t)
-	scanner := scanner.New(scanner.OptionStopOnErrors())
+	scanner := scanner.New()
 	for _, opt := range additionalOptions {
 		opt(scanner)
 	}
-	return scanner.Scan(modules)
+	res, _ := scanner.Scan(modules)
+	return res
 }
 
-func ScanJSON(source string, t *testing.T) []result.Result {
-	blocks := CreateModulesFromSource(source, ".tf.json", t)
-	return scanner.New(scanner.OptionStopOnErrors()).Scan(blocks)
+func ScanJSON(source string, t *testing.T) rules.Results {
+	modules := CreateModulesFromSource(source, ".tf.json", t)
+	res, _ := scanner.New().Scan(modules)
+	return res
 }
 
 func CreateModulesFromSource(source string, ext string, t *testing.T) []block.Module {
-	path := CreateTestFile("test"+ext, source)
-	blocks, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
+	fs, err := filesystem.New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer fs.Close()
+	if err := fs.WriteTextFile("test"+ext, source); err != nil {
+		t.Fatal(err)
+	}
+	path := fs.RealPath("test" + ext)
+	modules, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {
 		t.Fatalf("parse error: %s", err)
 	}
-	return blocks
+	return modules
 }
 
-func CreateTestFile(filename, contents string) string {
-	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
-	if err != nil {
-		panic(err)
-	}
-	path := filepath.Join(dir, filename)
-	if err := ioutil.WriteFile(path, []byte(contents), 0755); err != nil {
-		panic(err)
-	}
-	return path
-}
-
-func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, results []result.Result, messages ...string) {
+func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, results []rules.Result, messages ...string) {
 	var foundInclude bool
 	var foundExclude bool
 
@@ -65,11 +61,11 @@ func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 	}
 
 	for _, res := range results {
-		if res.RuleID == excludeCode {
+		if res.Rule().LongID() == excludeCode {
 			foundExclude = true
-			excludeText = res.Description
+			excludeText = res.Description()
 		}
-		if res.RuleID == includeCode {
+		if res.Rule().LongID() == includeCode {
 			foundInclude = true
 		}
 	}
@@ -82,34 +78,6 @@ func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 	if t.Failed() {
 		t.Log(strings.ReplaceAll(t.Name(), "_", " "))
 	}
-}
-
-func CreateTestFileWithModule(contents string, moduleContents string) string {
-	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
-	if err != nil {
-		panic(err)
-	}
-
-	rootPath := filepath.Join(dir, "main")
-	modulePath := filepath.Join(dir, "module")
-
-	if err := os.Mkdir(rootPath, 0755); err != nil {
-		panic(err)
-	}
-
-	if err := os.Mkdir(modulePath, 0755); err != nil {
-		panic(err)
-	}
-
-	if err := ioutil.WriteFile(filepath.Join(rootPath, "main.tf"), []byte(contents), 0755); err != nil {
-		panic(err)
-	}
-
-	if err := ioutil.WriteFile(filepath.Join(modulePath, "main.tf"), []byte(moduleContents), 0755); err != nil {
-		panic(err)
-	}
-
-	return rootPath
 }
 
 func validateCodes(includeCode, excludeCode string) bool {

@@ -4,47 +4,48 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil/filesystem"
 	"github.com/stretchr/testify/require"
 
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 )
 
 var badRule = rule.Rule{
-	LegacyID:  "EXA001",
-	Provider:  provider.AWSProvider,
-	Service:   "service",
-	ShortCode: "abc",
-	Documentation: rule.RuleDocumentation{
+	LegacyID: "EXA001",
+	Base: rules.Register(rules.Rule{
+		Provider:    provider.AWSProvider,
+		Service:     "service",
+		ShortCode:   "abc",
 		Summary:     "A stupid example check for a test.",
 		Impact:      "You will look stupid",
 		Resolution:  "Don't do stupid stuff",
 		Explanation: "Bad should not be set.",
-		BadExample: []string{`
+		Severity:    severity.High,
+	}, nil),
+	BadExample: []string{`
 resource "problem" "x" {
 bad = "1"
 }
 `},
-		GoodExample: []string{`
+	GoodExample: []string{`
 resource "problem" "x" {
 
 }
 `},
-		Links: nil,
-	},
-	RequiredTypes:   []string{"resource"},
-	RequiredLabels:  []string{"problem"},
-	DefaultSeverity: severity.High,
-	CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
-		if resourceBlock.GetAttribute("bad").IsTrue() {
-			set.AddResult().
-				WithDescription("example problem")
+	Links:          nil,
+	RequiredTypes:  []string{"resource"},
+	RequiredLabels: []string{"problem"},
+	CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+		if attr := resourceBlock.GetAttribute("bad"); attr.IsTrue() {
+			results.Add("bad", attr)
 		}
+		return
 	},
 }
 
@@ -53,7 +54,7 @@ func Test_ProblemInModuleInSiblingDir(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -70,7 +71,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("/project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
+	results, _ := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -80,7 +81,7 @@ func Test_ProblemInModuleInSubdirectory(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -97,7 +98,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
+	results, _ := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -107,7 +108,7 @@ func Test_ProblemInModuleInParentDir(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -124,7 +125,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
+	results, _ := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -134,7 +135,7 @@ func Test_ProblemInModuleReuse(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -160,7 +161,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
+	results, _ := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -170,7 +171,7 @@ func Test_ProblemInNestedModule(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -197,7 +198,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
+	results, _ := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -207,7 +208,7 @@ func Test_ProblemInReusedNestedModule(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -251,7 +252,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
+	results, _ := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -261,7 +262,7 @@ func Test_ProblemInInitialisedModule(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -285,7 +286,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
+	results, _ := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -294,7 +295,7 @@ func Test_ProblemInReusedInitialisedModule(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -322,7 +323,7 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
+	results, _ := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
 }
@@ -331,7 +332,7 @@ func Test_ProblemInDuplicateModuleNameAndPath(t *testing.T) {
 	scanner.RegisterCheckRule(badRule)
 	defer scanner.DeregisterCheckRule(badRule)
 
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
@@ -376,98 +377,9 @@ resource "problem" "uhoh" {
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
+	results, _ := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, badRule.ID(), "", results)
 
-}
-
-func Test_UniqueDataBlocksWhenRaceInLoad(t *testing.T) {
-	fs, err := testutil.NewFilesystem()
-	require.NoError(t, err)
-	defer fs.Close()
-
-	require.NoError(t, fs.WriteTextFile("project/main.tf", `
-module "something" {
-  	source = "../modules/iam"
-} 
-`))
-	require.NoError(t, fs.WriteTextFile("/modules/iam/main2.tf", `
-	resource "aws_iam_role_policy" "test_policy" {
-		name = "test_policy"
-		role = aws_iam_role.test_role.id
-	
-		policy = data.aws_iam_policy_document.s3_policy.json
-	}
-	
-	resource "aws_iam_role" "test_role" {
-		name = "test_role"
-		assume_role_policy = jsonencode({
-			Version = "2012-10-17"
-			Statement = [
-			{
-				Action = "sts:AssumeRole"
-				Effect = "Allow"
-				Sid    = ""
-				Principal = {
-				Service = "s3.amazonaws.com"
-				}
-			},
-			]
-		})
-	}
-	
-	data "aws_iam_policy_document" "s3_policy" {
-	  statement {
-		principals {
-		  type        = "AWS"
-		  identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
-		}
-		actions   = ["s3:*"]
-		resources = ["*"]
-	  }
-	}
-`))
-	require.NoError(t, fs.WriteTextFile("/modules/iam/main1.tf", `
-	resource "aws_iam_role_policy" "test_policy2" {
-		name = "test_policy"
-		role = aws_iam_role.test_role.id
-	
-		policy = data.aws_iam_policy_document.s3_policy.json
-	}
-	
-	resource "aws_iam_role" "test_role2" {
-		name = "test_role"
-		assume_role_policy = jsonencode({
-			Version = "2012-10-17"
-			Statement = [
-			{
-				Action = "sts:AssumeRole"
-				Effect = "Allow"
-				Sid    = ""
-				Principal = {
-				Service = "s3.amazonaws.com"
-				}
-			},
-			]
-		})
-	}
-	
-	data "aws_iam_policy_document" "s3_policy2" {
-	  statement {
-		principals {
-		  type        = "AWS"
-		  identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
-		}
-		actions   = ["s3:nope"]
-		resources = ["nopeSSS"]
-	  }
-	}
-`))
-
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
-	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, "aws-iam-no-policy-wildcards", "", results)
 }
 
 func Test_Dynamic_Variables(t *testing.T) {
@@ -478,50 +390,92 @@ resource "something" "this" {
 		for_each = ["a"]
 
 		content {
-			policy = "TLS_1_0"
+			ok = true
 		}
 	}
 }
 	
-resource "aws_api_gateway_domain_name" "outdated_security_policy" {
-	security_policy = something.this.blah.policy
+resource "bad" "thing" {
+	secure = something.this.blah.ok
 }
 `
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+
+	r1 := rule.Rule{
+		LegacyID: "ABC123",
+		Base: rules.Register(rules.Rule{
+			Provider:  provider.AWSProvider,
+			Service:   "service",
+			ShortCode: "abc123",
+			Severity:  severity.High,
+		}, nil),
+		RequiredLabels: []string{"bad"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+			if resourceBlock.GetAttribute("secure").IsTrue() {
+				return
+			}
+			results.Add("example problem", resourceBlock)
+			return
+		},
+	}
+	scanner.RegisterCheckRule(r1)
+	defer scanner.DeregisterCheckRule(r1)
+
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, "aws-api-gateway-use-secure-tls-policy", "", results)
+	results, _ := scanner.New().Scan(blocks)
+	testutil.AssertCheckCode(t, r1.ID(), "", results)
 }
 
 func Test_Dynamic_Variables_FalsePositive(t *testing.T) {
 	example := `
-resource "aws_s3_bucket" "bucket" {
+resource "something" "else" {
 	x = 1
 	dynamic "blah" {
-		for_each = ["TLS_1_2"]
+		for_each = [true]
 
 		content {
-			policy = each.value
+			ok = each.value
 		}
 	}
 }
 	
-resource "aws_api_gateway_domain_name" "outdated_security_policy" {
-	security_policy = aws_s3_bucket.bucket.blah.policy
+resource "bad" "thing" {
+	secure = something.else.blah.ok
 }
 `
-	fs, err := testutil.NewFilesystem()
+	fs, err := filesystem.New()
 	require.NoError(t, err)
 	defer fs.Close()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
+
+	r1 := rule.Rule{
+		LegacyID: "ABC123",
+		Base: rules.Register(rules.Rule{
+			Provider:  provider.AWSProvider,
+			Service:   "service",
+			ShortCode: "abc123",
+			Severity:  severity.High,
+		}, nil),
+		RequiredLabels: []string{"bad"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+			if resourceBlock.GetAttribute("secure").IsTrue() {
+				return
+			}
+			results.Add("example problem", resourceBlock)
+			return
+		},
+	}
+	scanner.RegisterCheckRule(r1)
+	defer scanner.DeregisterCheckRule(r1)
+
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
-	results := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, "", "aws-api-gateway-use-secure-tls-policy", results)
+	results, _ := scanner.New().Scan(blocks)
+	testutil.AssertCheckCode(t, "", r1.ID(), results)
 }
