@@ -37,6 +37,9 @@ resource "azurerm_storage_account" "example" {
     environment = "staging"
   }
  blob_properties {
-     delete_retention_policy = 1
- } 
+
+     container_delete_retention_policy{
+       days = 1
+     } 
+      } 
 }

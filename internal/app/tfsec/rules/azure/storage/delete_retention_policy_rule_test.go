@@ -9,7 +9,7 @@ import (
 )
 
 func Test_AzureDelete_retention_policy_FailureExamples(t *testing.T) {
-	expectedCode := "azure-storage-delete_retention_policy"
+	expectedCode := "azure-storage-delete-retention-policy"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_AzureDelete_retention_policy_FailureExamples(t *testing.T) {
 }
 
 func Test_AzureDelete_retention_policy_SuccessExamples(t *testing.T) {
-	expectedCode := "azure-storage-delete_retention_policy"
+	expectedCode := "azure-storage-delete-retention-policy"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
