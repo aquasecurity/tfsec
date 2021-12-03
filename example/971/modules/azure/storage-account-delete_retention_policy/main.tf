@@ -38,7 +38,7 @@ resource "azurerm_storage_account" "example" {
   }
  blob_properties {
 
-     container_delete_retention_policy{
+     delete_retention_policy{
        days = 1
      } 
       } 

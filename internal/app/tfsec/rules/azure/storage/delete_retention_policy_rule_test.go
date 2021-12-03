@@ -26,7 +26,7 @@ func Test_AzureDelete_retention_policy_FailureExamples(t *testing.T) {
 			}
 		}()
 		results := testutil.ScanHCL(badExample, t)
-		testutil.AssertCheckCode(t, rule.ID(), "", results)
+		testutil.AssertCheckCode(t, "", rule.ID(), results)
 	}
 }
 

@@ -15,7 +15,7 @@ func Test_AzureContainer_delete_retention_policy_FailureExamples(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Rule not found: %s", expectedCode)
 	}
-	for i, badExample := range rule.Documentation.BadExample {
+	for i, badExample := range rule.Documentation.GoodExample {
 		t.Logf("Running bad example for '%s' #%d", expectedCode, i+1)
 		if strings.TrimSpace(badExample) == "" {
 			t.Fatalf("bad example code not provided for %s", rule.ID())
@@ -26,7 +26,7 @@ func Test_AzureContainer_delete_retention_policy_FailureExamples(t *testing.T) {
 			}
 		}()
 		results := testutil.ScanHCL(badExample, t)
-		testutil.AssertCheckCode(t, rule.ID(), "", results)
+		testutil.AssertCheckCode(t, "", rule.ID(), results)
 	}
 }
 
