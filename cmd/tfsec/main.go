@@ -43,6 +43,7 @@ var filterResults string
 var excludedRuleIDs string
 var includedRuleIDs string
 var tfvarsPaths []string
+var excludePaths []string
 var outputFlag string
 var customCheckDir string
 var configFile string
@@ -73,10 +74,12 @@ func init() {
 	rootCmd.Flags().StringVar(&filterResults, "filter-results", filterResults, "Filter results to return specific checks only (supports comma-delimited input).")
 	rootCmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
 	rootCmd.Flags().StringSliceVar(&tfvarsPaths, "tfvars-file", tfvarsPaths, "Path to .tfvars file, can be used multiple times and evaluated in order of specification")
+	rootCmd.Flags().StringSliceVar(&excludePaths, "exclude-path", excludePaths, "Folder path to exclude, can be used multiple times and evaluated in order of specification")
 	rootCmd.Flags().StringVar(&outputFlag, "out", outputFlag, "Set output file")
 	rootCmd.Flags().StringVar(&customCheckDir, "custom-check-dir", customCheckDir, "Explicitly the custom checks dir location")
 	rootCmd.Flags().StringVar(&configFile, "config-file", configFile, "Config file to use during run")
-	rootCmd.Flags().BoolVar(&debug.Enabled, "verbose", debug.Enabled, "Enable verbose logging")
+	rootCmd.Flags().BoolVar(&debug.Enabled, "debug", debug.Enabled, "Enable debug logging (same as verbose)")
+	rootCmd.Flags().BoolVar(&debug.Enabled, "verbose", debug.Enabled, "Enable verbose logging (same as debug)")
 	rootCmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&detailedExitCode, "detailed-exit-code", detailedExitCode, "Produce more detailed exit status codes.")
@@ -213,7 +216,6 @@ var rootCmd = &cobra.Command{
 			if format == "" {
 				format = "text"
 			}
-
 
 			multipleFormats := false
 
@@ -368,6 +370,20 @@ func getParserOptions() []parser.Option {
 		}
 		opts = append(opts, parser.OptionWithTFVarsPaths(validTfVarFiles))
 	}
+	var validExcludePaths []string
+	if len(excludePaths) > 0 {
+		for _, excludePath := range excludePaths {
+			exP, err := filepath.Abs(excludePath)
+			if err != nil {
+				fmt.Println(err)
+			}
+			if _, err := os.Stat(exP); err == nil {
+				validExcludePaths = append(validExcludePaths, exP)
+			}
+		}
+		opts = append(opts, parser.OptionWithExcludePaths(validExcludePaths))
+	}
+
 	if !ignoreHCLErrors {
 		opts = append(opts, parser.OptionStopOnHCLError())
 	}
