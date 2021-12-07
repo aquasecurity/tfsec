@@ -31,7 +31,7 @@ jobs:
           GH_TOKEN: ${{ secrets.MKDOCS_AQUA_BOT }}
       - name: Configure the git user
         run: |
-          git config user.name "owenrumney"
+          git config user.name "owenrum"
           git config user.email "owen.rumney@aquasec.com"
       - name: Deploy the latest documents from new tag push
         if: ${{ github.event.inputs.version == '' }}

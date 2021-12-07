@@ -1,12 +1,12 @@
 # Authors
 
 - [Liam Galvin][liamg] (liamg)
-- [Owen Rumney][owenrumney] (owenrumney)
+- [Owen Rumney][owenrum] (owenrum)
 
 # Contributors
 
 Thanks to all [contributors][contributors]
 
 [liamg]: https://github.com/liamg
-[owenrumney]: https://github.com/owenrumney
+[owenrum]: https://github.com/owenrum
 [contributors]: https://github.com/aquasecurity/tfsec/graphs/contributors

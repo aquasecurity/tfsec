@@ -14,7 +14,7 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/pkg/severity"
-	"github.com/owenrumney/squealer/pkg/squealer"
+	"github.com/owenrum/squealer/pkg/squealer"
 )
 
 func init() {

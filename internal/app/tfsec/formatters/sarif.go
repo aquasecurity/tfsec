@@ -8,7 +8,7 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 
-	"github.com/owenrumney/go-sarif/sarif"
+	"github.com/owenrum/go-sarif/sarif"
 )
 
 func FormatSarif(w io.Writer, results []result.Result, baseDir string, _ ...FormatterOption) error {
