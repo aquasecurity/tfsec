@@ -28,7 +28,6 @@ resource "google_compute_subnetwork" "bad_example" {
     range_name    = "tf-test-secondary-range-update1"
     ip_cidr_range = "192.168.10.0/24"
   }
-  enable_flow_logs = false
 }
 
 resource "google_compute_network" "custom-test" {
@@ -55,7 +54,11 @@ resource "google_compute_subnetwork" "good_example" {
     range_name    = "tf-test-secondary-range-update1"
     ip_cidr_range = "192.168.10.0/24"
   }
-  enable_flow_logs = true
+  log_config {
+    aggregation_interval = "INTERVAL_10_MIN"
+    flow_sampling        = 0.5
+    metadata             = "INCLUDE_ALL_METADATA"
+  }
 }
 
 resource "google_compute_network" "custom-test" {
