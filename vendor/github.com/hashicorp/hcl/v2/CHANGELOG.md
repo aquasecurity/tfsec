@@ -1,5 +1,22 @@
 # HCL Changelog
 
+## v2.11.1 (Dec 1, 2021)
+
+### Bugs Fixed
+
+* hclsyntax: The type for an upgraded unknown value with a splat expression cannot be known ([#495](https://github.com/hashicorp/hcl/pull/495))
+
+
+## v2.11.0 (Dec 1, 2021)
+
+### Enhancements
+
+* hclsyntax: Various error messages related to unexpectedly reaching end of file while parsing a delimited subtree will now return specialized messages describing the opening tokens as "unclosed", instead of returning a generic diagnostic that just happens to refer to the empty source range at the end of the file. This gives better feedback when error messages are being presented alongside a source code snippet, as is common in HCL-based applications, because it shows which innermost container the parser was working on when it encountered the error. ([#492](https://github.com/hashicorp/hcl/pull/492))
+
+### Bugs Fixed
+
+* hclsyntax: Upgrading an unknown single value to a list using a splat expression must return unknown ([#493](https://github.com/hashicorp/hcl/pull/493))
+
 ## v2.10.1 (July 21, 2021)
 
 * dynblock: Decode unknown dynamic blocks in order to obtain any diagnostics even though the decoded value is not used ([#476](https://github.com/hashicorp/hcl/pull/476))
