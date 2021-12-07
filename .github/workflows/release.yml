@@ -41,11 +41,17 @@ jobs:
        args: release --rm-dist
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
+          TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
 
-    - name: Release Docs
-      run: make publish-docs
-      env:
-          DOCS_GITHUB_TOKEN: ${{ secrets.DOCS_GITHUB_TOKEN }}
+
+      # - name: Release Docs
+    #   run: make publish-docs
+    #   env:
+    #       DOCS_GITHUB_TOKEN: ${{ secrets.DOCS_GITHUB_TOKEN }}
 
 # temporary hack to copy over the aquasec images to legacy docker hub repo
     - name: Login to docker.io registry

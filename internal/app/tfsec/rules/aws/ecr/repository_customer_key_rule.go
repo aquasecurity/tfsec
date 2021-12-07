@@ -52,7 +52,7 @@ resource "aws_ecr_repository" "good_example" {
 
 	encryption_configuration {
 		encryption_type = "KMS"
-		kms_key = aws_kms_key.ecr_kms.key_id
+		kms_key = aws_kms_key.ecr_kms.arn
 	}
   }
 `},

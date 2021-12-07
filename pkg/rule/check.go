@@ -28,7 +28,7 @@ func CheckRule(r *Rule, resourceBlock block.Block, module block.Module, ignoreEr
 
 	var links []string
 	if r.Provider != provider.CustomProvider {
-		links = append(links, fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s#%s/%s", r.Provider, r.Service, r.ShortCode, r.Provider, r.Service))
+		links = append(links, fmt.Sprintf("https://aquasecurity.github.io/tfsec/latest/checks/%s/%s/%s", r.Provider, r.Service, r.ShortCode))
 	}
 
 	links = append(links, r.Documentation.Links...)
@@ -40,6 +40,7 @@ func CheckRule(r *Rule, resourceBlock block.Block, module block.Module, ignoreEr
 		WithImpact(r.Documentation.Impact).
 		WithResolution(r.Documentation.Resolution).
 		WithRuleProvider(r.Provider).
+		WithRuleService(r.Service).
 		WithLinks(links)
 
 	r.CheckFunc(resultSet, resourceBlock, module)

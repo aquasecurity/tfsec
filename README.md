@@ -83,14 +83,14 @@ There are a number of Docker options available
 | Image Name | Base | Comment |
 |------------|------|---------|
 |[aquasec/tfsec](https://hub.docker.com/r/aquasec/tfsec)|alpine|Normal tfsec image|
-|[aquasec/tfsec-alpine](https://hub.docker.com/r/aquasec/tfsec-alpine)|alpine|Exactly the same as tfsec/tfsec, but for those whole like to be explicit|
+|[aquasec/tfsec-alpine](https://hub.docker.com/r/aquasec/tfsec-alpine)|alpine|Exactly the same as aquasec/tfsec, but for those whole like to be explicit|
 |[aquasec/tfsec-ci](https://hub.docker.com/r/aquasec/tfsec-ci)|alpine|tfsec with no entrypoint - useful for CI builds where you want to override the command|
 |[aquasec/tfsec-scratch](https://hub.docker.com/r/aquasec/tfsec-scratch)|scratch|An image built on scratch - nothing frilly, just runs tfsec|
 
 To run:
 
 ```bash
-docker run --rm -it -v "$(pwd):/src" tfsec/tfsec /src
+docker run --rm -it -v "$(pwd):/src" aquasec/tfsec /src
 ```
 
 ## Use with Visual Studio Code
@@ -119,7 +119,7 @@ block, by itself.
 
 For example, to ignore an open security group rule:
 
-```hcl
+```terraform
 resource "aws_security_group_rule" "my-rule" {
     type = "ingress"
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sgr
@@ -128,7 +128,7 @@ resource "aws_security_group_rule" "my-rule" {
 
 ...or...
 
-```hcl
+```terraform
 resource "aws_security_group_rule" "my-rule" {
     type = "ingress"
     #tfsec:ignore:aws-vpc-no-public-ingress-sgr
@@ -141,7 +141,7 @@ tfsec output for the line number of the discovered problem.
 
 You can ignore multiple rules by concatenating the rules on a single line:
 
-```hcl
+```terraform
 #tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "my-bucket" {
   bucket = "foobar"

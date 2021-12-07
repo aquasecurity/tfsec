@@ -34,13 +34,13 @@ func generateExtensionCodeFile(registeredChecks []*FileContent) error {
 				Description: check.Documentation.Summary,
 				Impact:      check.Documentation.Impact,
 				Resolution:  check.Documentation.Resolution,
-				DocUrl:      fmt.Sprintf("https://tfsec.dev/docs/%s/%s/%s/", check.Provider, check.Service, check.ShortCode),
+				DocUrl:      fmt.Sprintf("https://aquasecurity.github.io/tfsec/latest/checks/%s/%s/%s/", check.Provider, check.Service, check.ShortCode),
 			})
 
 		}
 	}
 
-	file, err := os.Create("checkdocs/codes.json")
+	file, err := os.Create("./docs/codes.json")
 	if err != nil {
 		panic(err)
 	}
