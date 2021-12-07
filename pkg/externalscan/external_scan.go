@@ -79,6 +79,8 @@ func rewriteIds(results []result.Result) []result.Result {
 	for _, r := range results {
 		if avd, ok := idMap[r.RuleID]; ok {
 			updatedResults = append(updatedResults, *r.WithRuleID(avd))
+		} else {
+			updatedResults = append(updatedResults, r)
 		}
 	}
 	return updatedResults
