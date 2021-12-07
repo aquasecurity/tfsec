@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"io/fs"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
@@ -19,6 +20,7 @@ import (
 type Parser struct {
 	initialPath    string
 	tfvarsPaths    []string
+	excludePaths   []string
 	stopOnFirstTf  bool
 	stopOnHCLError bool
 	workspaceName  string
@@ -40,8 +42,7 @@ func New(initialPath string, options ...Option) *Parser {
 	return p
 }
 
-
-func (parser *Parser) parseDirectoryFiles(files []*hcl.File) ( block.Blocks, error) {
+func (parser *Parser) parseDirectoryFiles(files []*hcl.File) (block.Blocks, error) {
 	var blocks block.Blocks
 
 	for _, file := range files {
@@ -88,7 +89,7 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 			return nil, err
 		}
 
-		parsedBlocks, err := parser.parseDirectoryFiles(files);
+		parsedBlocks, err := parser.parseDirectoryFiles(files)
 		if err != nil {
 			return nil, err
 		}
@@ -142,8 +143,11 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 		return nil, err
 	}
 
+	entries = parser.RemoveExcluded(path, entries)
+
 	var results []string
 	for _, entry := range entries {
+
 		if !entry.IsDir() && (filepath.Ext(entry.Name()) == ".tf" || strings.HasSuffix(entry.Name(), ".tf.json")) {
 			debug.Log("Found qualifying subdirectory containing .tf files: %s", path)
 			results = append(results, path)
@@ -154,6 +158,7 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 	}
 
 	for _, entry := range entries {
+
 		if entry.IsDir() {
 			dirs, err := parser.getSubdirectories(filepath.Join(path, entry.Name()))
 			if err != nil {
@@ -164,4 +169,26 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 	}
 
 	return results, nil
+}
+
+func (parser *Parser) RemoveExcluded(path string, entries []fs.FileInfo) (valid []fs.FileInfo) {
+	if len(parser.excludePaths) == 0 {
+		return entries
+	}
+
+	for _, entry := range entries {
+		var remove bool
+		fullPath := filepath.Join(path, entry.Name())
+		for _, excludePath := range parser.excludePaths {
+			if fullPath == excludePath {
+				remove = true
+			}
+		}
+		if !remove {
+			valid = append(valid, entry)
+		} else {
+			debug.Log("Excluding path %s", fullPath)
+		}
+	}
+	return valid
 }
