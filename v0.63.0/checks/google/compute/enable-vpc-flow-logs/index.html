@@ -7381,7 +7381,6 @@
     <span class="na">range_name</span>    <span class="o">=</span> <span class="s2">&quot;tf-test-secondary-range-update1&quot;</span>
     <span class="na">ip_cidr_range</span> <span class="o">=</span> <span class="s2">&quot;192.168.10.0/24&quot;</span>
   <span class="p">}</span>
-  <span class="na">enable_flow_logs</span> <span class="o">=</span> <span class="no">false</span>
 <span class="p">}</span>
 
 <span class="kr">resource</span> <span class="nc">&quot;google_compute_network&quot;</span> <span class="nv">&quot;custom-test&quot;</span> <span class="p">{</span>
@@ -7400,7 +7399,11 @@
     <span class="na">range_name</span>    <span class="o">=</span> <span class="s2">&quot;tf-test-secondary-range-update1&quot;</span>
     <span class="na">ip_cidr_range</span> <span class="o">=</span> <span class="s2">&quot;192.168.10.0/24&quot;</span>
   <span class="p">}</span>
-  <span class="na">enable_flow_logs</span> <span class="o">=</span> <span class="no">true</span>
+  <span class="nb">log_config</span> <span class="p">{</span>
+    <span class="na">aggregation_interval</span> <span class="o">=</span> <span class="s2">&quot;INTERVAL_10_MIN&quot;</span>
+    <span class="na">flow_sampling</span>        <span class="o">=</span> <span class="nv">0.5</span>
+    <span class="na">metadata</span>             <span class="o">=</span> <span class="s2">&quot;INCLUDE_ALL_METADATA&quot;</span>
+  <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="kr">resource</span> <span class="nc">&quot;google_compute_network&quot;</span> <span class="nv">&quot;custom-test&quot;</span> <span class="p">{</span>

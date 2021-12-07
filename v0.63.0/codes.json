@@ -711,14 +711,74 @@
    "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/azure/synapse/virtual-network-enabled/"
   },
   {
-   "code": "cloudstack-compute-no-sensitive-info",
-   "legacy_code": "",
+   "code": "digitalocean-compute-no-public-egress",
+   "legacy_code": "DIG002",
    "service": "compute",
-   "provider": "cloudstack",
-   "description": "No sensitive data stored in user_data",
-   "impact": "Sensitive credentials in the user data can be leaked",
-   "resolution": "Don't use sensitive data in the user data section",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/cloudstack/compute/no-sensitive-info/"
+   "provider": "digitalocean",
+   "description": "The firewall has an outbound rule with open access",
+   "impact": "The port is exposed for ingress from the internet",
+   "resolution": "Set a more restrictive cidr range",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/compute/no-public-egress/"
+  },
+  {
+   "code": "digitalocean-compute-no-public-ingress",
+   "legacy_code": "DIG001",
+   "service": "compute",
+   "provider": "digitalocean",
+   "description": "The firewall has an inbound rule with open access",
+   "impact": "Your port is exposed to the internet",
+   "resolution": "Set a more restrictive CIRDR range",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/compute/no-public-ingress/"
+  },
+  {
+   "code": "digitalocean-droplet-use-ssh-keys",
+   "legacy_code": "DIG003",
+   "service": "droplet",
+   "provider": "digitalocean",
+   "description": "SSH Keys are the preferred way to connect to your droplet, no keys are supplied",
+   "impact": "Logging in with username and password is easier to compromise",
+   "resolution": "Use ssh keys for login",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/droplet/use-ssh-keys/"
+  },
+  {
+   "code": "digitalocean-loadbalancing-enforce-https",
+   "legacy_code": "DIG004",
+   "service": "loadbalancing",
+   "provider": "digitalocean",
+   "description": "The load balancer forwarding rule is using an insecure protocol as an entrypoint",
+   "impact": "Your inbound traffic is not protected",
+   "resolution": "Switch to HTTPS to benefit from TLS security features",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/loadbalancing/enforce-https/"
+  },
+  {
+   "code": "digitalocean-spaces-acl-no-public-read",
+   "legacy_code": "DIG005",
+   "service": "spaces",
+   "provider": "digitalocean",
+   "description": "Spaces bucket or bucket object has public read acl set",
+   "impact": "The contents of the space can be accessed publicly",
+   "resolution": "Apply a more restrictive ACL",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/spaces/acl-no-public-read/"
+  },
+  {
+   "code": "digitalocean-spaces-disable-force-destroy",
+   "legacy_code": "DIG007",
+   "service": "spaces",
+   "provider": "digitalocean",
+   "description": "Force destroy is enabled on Spaces bucket which is dangerous",
+   "impact": "Accidental deletion of bucket objects",
+   "resolution": "Don't use force destroy on bucket configuration",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/spaces/disable-force-destroy/"
+  },
+  {
+   "code": "digitalocean-spaces-versioning-enabled",
+   "legacy_code": "DIG006",
+   "service": "spaces",
+   "provider": "digitalocean",
+   "description": "Spaces buckets should have versioning enabled",
+   "impact": "Deleted or modified data would not be recoverable",
+   "resolution": "Enable versioning to protect against accidental or malicious removal or modification",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/spaces/versioning-enabled/"
   },
   {
    "code": "general-secrets-sensitive-in-attribute",
@@ -759,36 +819,6 @@
    "impact": "Default values could be exposing sensitive data",
    "resolution": "Don't include sensitive data in variable defaults",
    "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/general/secrets/sensitive-in-variable/"
-  },
-  {
-   "code": "github-repositories-private",
-   "legacy_code": "GIT001",
-   "service": "repositories",
-   "provider": "github",
-   "description": "Github repository shouldn't be public.",
-   "impact": "Anyone can read the contents of the GitHub repository and leak IP",
-   "resolution": "Make sensitive or commercially important repositories private",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/github/repositories/private/"
-  },
-  {
-   "code": "github-repositories-require-signed-commits",
-   "legacy_code": "",
-   "service": "repositories",
-   "provider": "github",
-   "description": "Require signed commits should be enabled.",
-   "impact": "You cannot guarantee the source of unsigned commits.",
-   "resolution": "Require signed commits for all protected branches.",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/github/repositories/require-signed-commits/"
-  },
-  {
-   "code": "github-repositories-vulnerability-alerts",
-   "legacy_code": "",
-   "service": "repositories",
-   "provider": "github",
-   "description": "Github vulnerability alerts should be enabled.",
-   "impact": "Insecure vulnerabilities might be used in the codebase.",
-   "resolution": "Enable vulnerability alerts for all repositories.",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/github/repositories/vulnerability-alerts/"
   },
   {
    "code": "google-bigquery-no-public-access",
@@ -1431,26 +1461,6 @@
    "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/google/storage/no-public-access/"
   },
   {
-   "code": "kubernetes-network-no-public-egress",
-   "legacy_code": "",
-   "service": "network",
-   "provider": "kubernetes",
-   "description": "Public egress should not be allowed via network policies",
-   "impact": "Exfiltration of data to the public internet",
-   "resolution": "Remove public access except where explicitly required",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/kubernetes/network/no-public-egress/"
-  },
-  {
-   "code": "kubernetes-network-no-public-ingress",
-   "legacy_code": "",
-   "service": "network",
-   "provider": "kubernetes",
-   "description": "Public ingress should not be allowed via network policies",
-   "impact": "Exposure of infrastructure to the public internet",
-   "resolution": "Remove public access except where explicitly required",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/kubernetes/network/no-public-ingress/"
-  },
-  {
    "code": "openstack-compute-no-plaintext-password",
    "legacy_code": "",
    "service": "compute",
@@ -1469,6 +1479,16 @@
    "impact": "Exposure of infrastructure to the public internet",
    "resolution": "Employ more restrictive firewall rules",
    "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/openstack/fw/no-public-access/"
+  },
+  {
+   "code": "oracle-compute-no-public-ip",
+   "legacy_code": "OCI001",
+   "service": "compute",
+   "provider": "oracle",
+   "description": "Compute instance requests an IP reservation from a public pool",
+   "impact": "The compute instance has the ability to be reached from outside",
+   "resolution": "Reconsider the use of an public IP",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/oracle/compute/no-public-ip/"
   },
   {
    "code": "aws-api-gateway-enable-access-logging",
@@ -2561,84 +2581,64 @@
    "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/aws/workspace/enable-disk-encryption/"
   },
   {
-   "code": "digitalocean-compute-no-public-egress",
-   "legacy_code": "DIG002",
+   "code": "cloudstack-compute-no-sensitive-info",
+   "legacy_code": "",
    "service": "compute",
-   "provider": "digitalocean",
-   "description": "The firewall has an outbound rule with open access",
-   "impact": "The port is exposed for ingress from the internet",
-   "resolution": "Set a more restrictive cidr range",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/compute/no-public-egress/"
+   "provider": "cloudstack",
+   "description": "No sensitive data stored in user_data",
+   "impact": "Sensitive credentials in the user data can be leaked",
+   "resolution": "Don't use sensitive data in the user data section",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/cloudstack/compute/no-sensitive-info/"
   },
   {
-   "code": "digitalocean-compute-no-public-ingress",
-   "legacy_code": "DIG001",
-   "service": "compute",
-   "provider": "digitalocean",
-   "description": "The firewall has an inbound rule with open access",
-   "impact": "Your port is exposed to the internet",
-   "resolution": "Set a more restrictive CIRDR range",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/compute/no-public-ingress/"
+   "code": "github-repositories-private",
+   "legacy_code": "GIT001",
+   "service": "repositories",
+   "provider": "github",
+   "description": "Github repository shouldn't be public.",
+   "impact": "Anyone can read the contents of the GitHub repository and leak IP",
+   "resolution": "Make sensitive or commercially important repositories private",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/github/repositories/private/"
   },
   {
-   "code": "digitalocean-droplet-use-ssh-keys",
-   "legacy_code": "DIG003",
-   "service": "droplet",
-   "provider": "digitalocean",
-   "description": "SSH Keys are the preferred way to connect to your droplet, no keys are supplied",
-   "impact": "Logging in with username and password is easier to compromise",
-   "resolution": "Use ssh keys for login",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/droplet/use-ssh-keys/"
+   "code": "github-repositories-require-signed-commits",
+   "legacy_code": "",
+   "service": "repositories",
+   "provider": "github",
+   "description": "Require signed commits should be enabled.",
+   "impact": "You cannot guarantee the source of unsigned commits.",
+   "resolution": "Require signed commits for all protected branches.",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/github/repositories/require-signed-commits/"
   },
   {
-   "code": "digitalocean-loadbalancing-enforce-https",
-   "legacy_code": "DIG004",
-   "service": "loadbalancing",
-   "provider": "digitalocean",
-   "description": "The load balancer forwarding rule is using an insecure protocol as an entrypoint",
-   "impact": "Your inbound traffic is not protected",
-   "resolution": "Switch to HTTPS to benefit from TLS security features",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/loadbalancing/enforce-https/"
+   "code": "github-repositories-vulnerability-alerts",
+   "legacy_code": "",
+   "service": "repositories",
+   "provider": "github",
+   "description": "Github vulnerability alerts should be enabled.",
+   "impact": "Insecure vulnerabilities might be used in the codebase.",
+   "resolution": "Enable vulnerability alerts for all repositories.",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/github/repositories/vulnerability-alerts/"
   },
   {
-   "code": "digitalocean-spaces-acl-no-public-read",
-   "legacy_code": "DIG005",
-   "service": "spaces",
-   "provider": "digitalocean",
-   "description": "Spaces bucket or bucket object has public read acl set",
-   "impact": "The contents of the space can be accessed publicly",
-   "resolution": "Apply a more restrictive ACL",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/spaces/acl-no-public-read/"
+   "code": "kubernetes-network-no-public-egress",
+   "legacy_code": "",
+   "service": "network",
+   "provider": "kubernetes",
+   "description": "Public egress should not be allowed via network policies",
+   "impact": "Exfiltration of data to the public internet",
+   "resolution": "Remove public access except where explicitly required",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/kubernetes/network/no-public-egress/"
   },
   {
-   "code": "digitalocean-spaces-disable-force-destroy",
-   "legacy_code": "DIG007",
-   "service": "spaces",
-   "provider": "digitalocean",
-   "description": "Force destroy is enabled on Spaces bucket which is dangerous",
-   "impact": "Accidental deletion of bucket objects",
-   "resolution": "Don't use force destroy on bucket configuration",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/spaces/disable-force-destroy/"
-  },
-  {
-   "code": "digitalocean-spaces-versioning-enabled",
-   "legacy_code": "DIG006",
-   "service": "spaces",
-   "provider": "digitalocean",
-   "description": "Spaces buckets should have versioning enabled",
-   "impact": "Deleted or modified data would not be recoverable",
-   "resolution": "Enable versioning to protect against accidental or malicious removal or modification",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/spaces/versioning-enabled/"
-  },
-  {
-   "code": "oracle-compute-no-public-ip",
-   "legacy_code": "OCI001",
-   "service": "compute",
-   "provider": "oracle",
-   "description": "Compute instance requests an IP reservation from a public pool",
-   "impact": "The compute instance has the ability to be reached from outside",
-   "resolution": "Reconsider the use of an public IP",
-   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/oracle/compute/no-public-ip/"
+   "code": "kubernetes-network-no-public-ingress",
+   "legacy_code": "",
+   "service": "network",
+   "provider": "kubernetes",
+   "description": "Public ingress should not be allowed via network policies",
+   "impact": "Exposure of infrastructure to the public internet",
+   "resolution": "Remove public access except where explicitly required",
+   "doc_url": "https://aquasecurity.github.io/tfsec/latest/checks/kubernetes/network/no-public-ingress/"
   }
  ]
 }
