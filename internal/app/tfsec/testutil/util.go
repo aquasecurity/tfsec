@@ -61,6 +61,9 @@ func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 	}
 
 	for _, res := range results {
+		if res.Status() == rules.StatusPassed {
+			continue
+		}
 		if res.Rule().LongID() == excludeCode {
 			foundExclude = true
 			excludeText = res.Description()

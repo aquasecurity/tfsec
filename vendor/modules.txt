@@ -27,6 +27,7 @@ github.com/apparentlymart/go-cidr/cidr
 github.com/apparentlymart/go-textseg/v13/textseg
 # github.com/aquasecurity/defsec v0.0.37
 ## explicit
+github.com/aquasecurity/defsec/cidr
 github.com/aquasecurity/defsec/formatters
 github.com/aquasecurity/defsec/provider
 github.com/aquasecurity/defsec/provider/aws
@@ -98,6 +99,9 @@ github.com/aquasecurity/defsec/provider/kubernetes
 github.com/aquasecurity/defsec/provider/openstack
 github.com/aquasecurity/defsec/provider/oracle
 github.com/aquasecurity/defsec/rules
+github.com/aquasecurity/defsec/rules/aws/ec2
+github.com/aquasecurity/defsec/rules/aws/s3
+github.com/aquasecurity/defsec/rules/google/compute
 github.com/aquasecurity/defsec/severity
 github.com/aquasecurity/defsec/state
 github.com/aquasecurity/defsec/types

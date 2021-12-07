@@ -5,30 +5,22 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-
 	"strings"
 
-	"github.com/aquasecurity/defsec/rules"
-
-	"github.com/aquasecurity/defsec/severity"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/config"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/updater"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-
 	"github.com/aquasecurity/defsec/formatters"
-
-	"github.com/liamg/tml"
-
-	"github.com/spf13/cobra"
-
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/severity"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/config"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
+	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/updater"
 	"github.com/aquasecurity/tfsec/version"
+	"github.com/liamg/tml"
+	"github.com/spf13/cobra"
 )
 
 var showVersion = false
