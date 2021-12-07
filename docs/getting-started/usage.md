@@ -18,8 +18,10 @@ For a richer experience, there are many additional command line arguments that y
 | `--concise-output`                                    |            | Reduce the amount of output and no statistics                                            |
 | `--config-file [path to config file]`                 |            | Config file to use during run                                                            |
 | `--custom-check-dir [path to checks dir]`             |            | Explicitly the custom checks dir location                                                |
+| `--debug`                                             |            | Enable verbose logging, same as `--verbose` but for people who prefer to say debug       |
 | `--detailed-exit-code`                                |            | Produce more detailed exit status codes.                                                 |
 | `--exclude [comma,separated,rule,ids]`                | `-e`       | Provide comma-separated list of rule IDs to exclude from run.                            |
+| `--exclude-path strings`                              |            | Path to exclude from parser, can be used multiple times                                  |
 | `--exclude-downloaded-modules`                        |            | Remove results for downloaded modules in .terraform folder                               |
 | `--filter-results [comma,separated,riles,to,check]`   |            | Filter results to return specific checks only (supports comma-delimited input).          |
 | `--force-all-dirs`                                    |            | Don't search for tf files, include everything below provided directory.                  |
