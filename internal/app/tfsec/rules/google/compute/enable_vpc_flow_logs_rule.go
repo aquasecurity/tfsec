@@ -33,7 +33,6 @@ resource "google_compute_subnetwork" "bad_example" {
     range_name    = "tf-test-secondary-range-update1"
     ip_cidr_range = "192.168.10.0/24"
   }
-  enable_flow_logs = false
 }
 
 resource "google_compute_network" "custom-test" {
@@ -51,7 +50,11 @@ resource "google_compute_subnetwork" "good_example" {
     range_name    = "tf-test-secondary-range-update1"
     ip_cidr_range = "192.168.10.0/24"
   }
-  enable_flow_logs = true
+  log_config {
+    aggregation_interval = "INTERVAL_10_MIN"
+    flow_sampling        = 0.5
+    metadata             = "INCLUDE_ALL_METADATA"
+  }
 }
 
 resource "google_compute_network" "custom-test" {
@@ -71,13 +74,9 @@ resource "google_compute_network" "custom-test" {
 		},
 		DefaultSeverity: severity.Low,
 		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
-			if enableFlowLogsAttr := resourceBlock.GetAttribute("enable_flow_logs"); enableFlowLogsAttr.IsNil() { // alert on use of default value
+			if resourceBlock.MissingChild("log_config") {
 				set.AddResult().
-					WithDescription("Resource '%s' uses default value for enable_flow_logs", resourceBlock.FullName())
-			} else if enableFlowLogsAttr.IsFalse() {
-				set.AddResult().
-					WithDescription("Resource '%s' does not have enable_flow_logs set to true", resourceBlock.FullName()).
-					WithAttribute(enableFlowLogsAttr)
+					WithDescription("Resource '%s' does not have flow logging enabled", resourceBlock.FullName())
 			}
 		},
 	})
