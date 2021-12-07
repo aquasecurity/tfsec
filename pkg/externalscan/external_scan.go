@@ -7,6 +7,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
+
 	"github.com/aquasecurity/tfsec/pkg/result"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
@@ -20,6 +22,8 @@ type ExternalScanner struct {
 	internalOptions []scanner.Option
 }
 
+const customChecksDir = ".tfsec"
+
 func NewExternalScanner(options ...Option) *ExternalScanner {
 	external := &ExternalScanner{}
 	for _, option := range options {
@@ -31,6 +35,10 @@ func NewExternalScanner(options ...Option) *ExternalScanner {
 func (t *ExternalScanner) AddPath(path string) error {
 	abs, err := filepath.Abs(path)
 	if err != nil {
+		return err
+	}
+	customCheckDir := filepath.Join(filepath.Dir(path), customChecksDir)
+	if err := custom.Load(customCheckDir); err != nil {
 		return err
 	}
 	t.paths = append(t.paths, abs)
