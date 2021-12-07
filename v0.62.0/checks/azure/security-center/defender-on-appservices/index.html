@@ -1,0 +1,7472 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A static analysis security scanner for your Terraform code">
+      
+      
+      
+        <link rel="canonical" href="https://aquasecurity.github.io/tfsec/v0.62.0/checks/azure/security-center/defender-on-appservices/">
+      
+      
+        
+      
+      <link rel="icon" href="../../../../favicon.ico">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.5+insiders-4.3.0">
+    
+    
+      
+        <title>defender-on-appservices - tfsec</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.480b0f6c.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.fe799546.min.css">
+        
+      
+      <link rel="preload" as="style" href="../../../../assets/stylesheets/vendor/mermaid.733f213f.min.css">
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#explanation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="tfsec" class="md-header__button md-logo" aria-label="tfsec" data-md-component="logo">
+      
+  <img src="../../../../imgs/tfsec.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            tfsec
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              defender-on-appservices
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/aquasecurity/tfsec" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aquasecurity/tfsec
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../../.." class="md-tabs__link">
+      HOME
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../getting-started/installation/" class="md-tabs__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../aws/api-gateway/enable-access-logging/" class="md-tabs__link md-tabs__link--active">
+        Checks
+      </a>
+    </li>
+  
+
+  
+
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="tfsec" class="md-nav__button md-logo" aria-label="tfsec" data-md-component="logo">
+      
+  <img src="../../../../imgs/tfsec.png" alt="logo">
+
+    </a>
+    tfsec
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/aquasecurity/tfsec" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    aquasecurity/tfsec
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        HOME
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Getting Started
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Getting Started" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Getting Started
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/signing/" class="md-nav__link">
+        Signature Verification
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/quickstart/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/usage/" class="md-nav__link">
+        Parameters
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/credit/" class="md-nav__link">
+        Credits
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_6" type="checkbox" id="__nav_2_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_6">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Configuration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_6">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/configuration/config/" class="md-nav__link">
+        Config File
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/configuration/custom-checks/" class="md-nav__link">
+        Custom Checks
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/configuration/ignores/" class="md-nav__link">
+        Ignoring Checks
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_7" type="checkbox" id="__nav_2_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_7">
+          GitHub Actions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="GitHub Actions" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_7">
+          <span class="md-nav__icon md-icon"></span>
+          GitHub Actions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/configuration/github-actions/github-action/" class="md-nav__link">
+        GitHub Action
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../getting-started/configuration/github-actions/pr-commenter/" class="md-nav__link">
+        PR Commenter
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Checks
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Checks" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Checks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1">
+          aws
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="aws" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          aws
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_1" type="checkbox" id="__nav_3_1_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_1">
+          api-gateway
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="api-gateway" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          api-gateway
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/api-gateway/enable-access-logging/" class="md-nav__link">
+        enable-access-logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/api-gateway/enable-cache-encryption/" class="md-nav__link">
+        enable-cache-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/api-gateway/enable-tracing/" class="md-nav__link">
+        enable-tracing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/api-gateway/no-public-access/" class="md-nav__link">
+        no-public-access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/api-gateway/use-secure-tls-policy/" class="md-nav__link">
+        use-secure-tls-policy
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_2" type="checkbox" id="__nav_3_1_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_2">
+          athena
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="athena" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          athena
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/athena/enable-at-rest-encryption/" class="md-nav__link">
+        enable-at-rest-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/athena/no-encryption-override/" class="md-nav__link">
+        no-encryption-override
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_3" type="checkbox" id="__nav_3_1_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_3">
+          autoscaling
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="autoscaling" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          autoscaling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/autoscaling/enable-at-rest-encryption/" class="md-nav__link">
+        enable-at-rest-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/autoscaling/no-public-ip/" class="md-nav__link">
+        no-public-ip
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_4" type="checkbox" id="__nav_3_1_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_4">
+          cloudfront
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="cloudfront" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_4">
+          <span class="md-nav__icon md-icon"></span>
+          cloudfront
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/cloudfront/enable-logging/" class="md-nav__link">
+        enable-logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/cloudfront/enable-waf/" class="md-nav__link">
+        enable-waf
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/cloudfront/enforce-https/" class="md-nav__link">
+        enforce-https
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/cloudfront/use-secure-tls-policy/" class="md-nav__link">
+        use-secure-tls-policy
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_5" type="checkbox" id="__nav_3_1_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_5">
+          cloudtrail
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="cloudtrail" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_5">
+          <span class="md-nav__icon md-icon"></span>
+          cloudtrail
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/cloudtrail/enable-all-regions/" class="md-nav__link">
+        enable-all-regions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/cloudtrail/enable-at-rest-encryption/" class="md-nav__link">
+        enable-at-rest-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/cloudtrail/enable-log-validation/" class="md-nav__link">
+        enable-log-validation
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_6" type="checkbox" id="__nav_3_1_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_6">
+          cloudwatch
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="cloudwatch" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_6">
+          <span class="md-nav__icon md-icon"></span>
+          cloudwatch
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/cloudwatch/log-group-customer-key/" class="md-nav__link">
+        log-group-customer-key
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_7" type="checkbox" id="__nav_3_1_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_7">
+          codebuild
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="codebuild" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          codebuild
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/codebuild/enable-encryption/" class="md-nav__link">
+        enable-encryption
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_8" type="checkbox" id="__nav_3_1_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_8">
+          config
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="config" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_8">
+          <span class="md-nav__icon md-icon"></span>
+          config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/config/aggregate-all-regions/" class="md-nav__link">
+        aggregate-all-regions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_9" type="checkbox" id="__nav_3_1_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_9">
+          documentdb
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="documentdb" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_9">
+          <span class="md-nav__icon md-icon"></span>
+          documentdb
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/documentdb/enable-log-export/" class="md-nav__link">
+        enable-log-export
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/documentdb/enable-storage-encryption/" class="md-nav__link">
+        enable-storage-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/documentdb/encryption-customer-key/" class="md-nav__link">
+        encryption-customer-key
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_10" type="checkbox" id="__nav_3_1_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_10">
+          dynamodb
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="dynamodb" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_10">
+          <span class="md-nav__icon md-icon"></span>
+          dynamodb
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/dynamodb/enable-at-rest-encryption/" class="md-nav__link">
+        enable-at-rest-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/dynamodb/enable-recovery/" class="md-nav__link">
+        enable-recovery
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/dynamodb/table-customer-key/" class="md-nav__link">
+        table-customer-key
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_11" type="checkbox" id="__nav_3_1_11" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_11">
+          ebs
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="ebs" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_11">
+          <span class="md-nav__icon md-icon"></span>
+          ebs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ebs/enable-volume-encryption/" class="md-nav__link">
+        enable-volume-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ebs/encryption-customer-key/" class="md-nav__link">
+        encryption-customer-key
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_12" type="checkbox" id="__nav_3_1_12" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_12">
+          ec2
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="ec2" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_12">
+          <span class="md-nav__icon md-icon"></span>
+          ec2
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ec2/enforce-http-token-imds/" class="md-nav__link">
+        enforce-http-token-imds
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ec2/no-secrets-in-user-data/" class="md-nav__link">
+        no-secrets-in-user-data
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_13" type="checkbox" id="__nav_3_1_13" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_13">
+          ecr
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="ecr" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_13">
+          <span class="md-nav__icon md-icon"></span>
+          ecr
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ecr/enable-image-scans/" class="md-nav__link">
+        enable-image-scans
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ecr/enforce-immutable-repository/" class="md-nav__link">
+        enforce-immutable-repository
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ecr/no-public-access/" class="md-nav__link">
+        no-public-access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ecr/repository-customer-key/" class="md-nav__link">
+        repository-customer-key
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_14" type="checkbox" id="__nav_3_1_14" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_14">
+          ecs
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="ecs" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_14">
+          <span class="md-nav__icon md-icon"></span>
+          ecs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ecs/enable-container-insight/" class="md-nav__link">
+        enable-container-insight
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ecs/enable-in-transit-encryption/" class="md-nav__link">
+        enable-in-transit-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ecs/no-plaintext-secrets/" class="md-nav__link">
+        no-plaintext-secrets
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_15" type="checkbox" id="__nav_3_1_15" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_15">
+          efs
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="efs" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_15">
+          <span class="md-nav__icon md-icon"></span>
+          efs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/efs/enable-at-rest-encryption/" class="md-nav__link">
+        enable-at-rest-encryption
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_16" type="checkbox" id="__nav_3_1_16" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_16">
+          eks
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="eks" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_16">
+          <span class="md-nav__icon md-icon"></span>
+          eks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/eks/enable-control-plane-logging/" class="md-nav__link">
+        enable-control-plane-logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/eks/encrypt-secrets/" class="md-nav__link">
+        encrypt-secrets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/eks/no-public-cluster-access-to-cidr/" class="md-nav__link">
+        no-public-cluster-access-to-cidr
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/eks/no-public-cluster-access/" class="md-nav__link">
+        no-public-cluster-access
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_17" type="checkbox" id="__nav_3_1_17" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_17">
+          elastic-search
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="elastic-search" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_17">
+          <span class="md-nav__icon md-icon"></span>
+          elastic-search
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elastic-search/enable-domain-logging/" class="md-nav__link">
+        enable-domain-logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elastic-search/enable-in-transit-encryption/" class="md-nav__link">
+        enable-in-transit-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elastic-search/enable-logging/" class="md-nav__link">
+        enable-logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elastic-search/encrypt-replication-group/" class="md-nav__link">
+        encrypt-replication-group
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elastic-search/enforce-https/" class="md-nav__link">
+        enforce-https
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elastic-search/use-secure-tls-policy/" class="md-nav__link">
+        use-secure-tls-policy
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_18" type="checkbox" id="__nav_3_1_18" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_18">
+          elastic-service
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="elastic-service" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_18">
+          <span class="md-nav__icon md-icon"></span>
+          elastic-service
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elastic-service/enable-domain-encryption/" class="md-nav__link">
+        enable-domain-encryption
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_19" type="checkbox" id="__nav_3_1_19" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_19">
+          elasticache
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="elasticache" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_19">
+          <span class="md-nav__icon md-icon"></span>
+          elasticache
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elasticache/add-description-for-security-group/" class="md-nav__link">
+        add-description-for-security-group
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elasticache/enable-backup-retention/" class="md-nav__link">
+        enable-backup-retention
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elasticache/enable-in-transit-encryption/" class="md-nav__link">
+        enable-in-transit-encryption
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_20" type="checkbox" id="__nav_3_1_20" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_20">
+          elb
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="elb" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_20">
+          <span class="md-nav__icon md-icon"></span>
+          elb
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elb/drop-invalid-headers/" class="md-nav__link">
+        drop-invalid-headers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_21" type="checkbox" id="__nav_3_1_21" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_21">
+          elbv2
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="elbv2" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_21">
+          <span class="md-nav__icon md-icon"></span>
+          elbv2
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elbv2/alb-not-public/" class="md-nav__link">
+        alb-not-public
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/elbv2/http-not-used/" class="md-nav__link">
+        http-not-used
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/home/" class="md-nav__link">
+        aws
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_23" type="checkbox" id="__nav_3_1_23" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_23">
+          iam
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="iam" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_23">
+          <span class="md-nav__icon md-icon"></span>
+          iam
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/iam/block-kms-policy-wildcard/" class="md-nav__link">
+        block-kms-policy-wildcard
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/iam/no-password-reuse/" class="md-nav__link">
+        no-password-reuse
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/iam/no-policy-wildcards/" class="md-nav__link">
+        no-policy-wildcards
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/iam/require-lowercase-in-passwords/" class="md-nav__link">
+        require-lowercase-in-passwords
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/iam/require-numbers-in-passwords/" class="md-nav__link">
+        require-numbers-in-passwords
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/iam/require-symbols-in-passwords/" class="md-nav__link">
+        require-symbols-in-passwords
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/iam/require-uppercase-in-passwords/" class="md-nav__link">
+        require-uppercase-in-passwords
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/iam/set-max-password-age/" class="md-nav__link">
+        set-max-password-age
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/iam/set-minimum-password-length/" class="md-nav__link">
+        set-minimum-password-length
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_24" type="checkbox" id="__nav_3_1_24" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_24">
+          kinesis
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="kinesis" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_24">
+          <span class="md-nav__icon md-icon"></span>
+          kinesis
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/kinesis/enable-in-transit-encryption/" class="md-nav__link">
+        enable-in-transit-encryption
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_25" type="checkbox" id="__nav_3_1_25" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_25">
+          kms
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="kms" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_25">
+          <span class="md-nav__icon md-icon"></span>
+          kms
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/kms/auto-rotate-keys/" class="md-nav__link">
+        auto-rotate-keys
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_26" type="checkbox" id="__nav_3_1_26" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_26">
+          lambda
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="lambda" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_26">
+          <span class="md-nav__icon md-icon"></span>
+          lambda
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/lambda/enable-tracing/" class="md-nav__link">
+        enable-tracing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/lambda/restrict-source-arn/" class="md-nav__link">
+        restrict-source-arn
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_27" type="checkbox" id="__nav_3_1_27" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_27">
+          launch
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="launch" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_27">
+          <span class="md-nav__icon md-icon"></span>
+          launch
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/launch/no-sensitive-info/" class="md-nav__link">
+        no-sensitive-info
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_28" type="checkbox" id="__nav_3_1_28" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_28">
+          misc
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="misc" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_28">
+          <span class="md-nav__icon md-icon"></span>
+          misc
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/misc/no-exposing-plaintext-credentials/" class="md-nav__link">
+        no-exposing-plaintext-credentials
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_29" type="checkbox" id="__nav_3_1_29" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_29">
+          mq
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="mq" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_29">
+          <span class="md-nav__icon md-icon"></span>
+          mq
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/mq/enable-audit-logging/" class="md-nav__link">
+        enable-audit-logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/mq/enable-general-logging/" class="md-nav__link">
+        enable-general-logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/mq/no-public-access/" class="md-nav__link">
+        no-public-access
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_30" type="checkbox" id="__nav_3_1_30" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_30">
+          msk
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="msk" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_30">
+          <span class="md-nav__icon md-icon"></span>
+          msk
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/msk/enable-in-transit-encryption/" class="md-nav__link">
+        enable-in-transit-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/msk/enable-logging/" class="md-nav__link">
+        enable-logging
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_31" type="checkbox" id="__nav_3_1_31" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_31">
+          neptune
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="neptune" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_31">
+          <span class="md-nav__icon md-icon"></span>
+          neptune
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/neptune/enable-log-export/" class="md-nav__link">
+        enable-log-export
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/neptune/enable-storage-encryption/" class="md-nav__link">
+        enable-storage-encryption
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_32" type="checkbox" id="__nav_3_1_32" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_32">
+          rds
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="rds" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_32">
+          <span class="md-nav__icon md-icon"></span>
+          rds
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/rds/backup-retention-specified/" class="md-nav__link">
+        backup-retention-specified
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/rds/enable-performance-insights/" class="md-nav__link">
+        enable-performance-insights
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/rds/encrypt-cluster-storage-data/" class="md-nav__link">
+        encrypt-cluster-storage-data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/rds/encrypt-instance-storage-data/" class="md-nav__link">
+        encrypt-instance-storage-data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/rds/no-classic-resources/" class="md-nav__link">
+        no-classic-resources
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/rds/no-public-db-access/" class="md-nav__link">
+        no-public-db-access
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_33" type="checkbox" id="__nav_3_1_33" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_33">
+          redshift
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="redshift" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_33">
+          <span class="md-nav__icon md-icon"></span>
+          redshift
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/redshift/add-description-to-security-group/" class="md-nav__link">
+        add-description-to-security-group
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/redshift/encryption-customer-key/" class="md-nav__link">
+        encryption-customer-key
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/redshift/non-default-vpc-deployment/" class="md-nav__link">
+        non-default-vpc-deployment
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_34" type="checkbox" id="__nav_3_1_34" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_34">
+          s3
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="s3" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_34">
+          <span class="md-nav__icon md-icon"></span>
+          s3
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/s3/block-public-acls/" class="md-nav__link">
+        block-public-acls
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/s3/block-public-policy/" class="md-nav__link">
+        block-public-policy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/s3/enable-bucket-encryption/" class="md-nav__link">
+        enable-bucket-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/s3/enable-bucket-logging/" class="md-nav__link">
+        enable-bucket-logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/s3/enable-versioning/" class="md-nav__link">
+        enable-versioning
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/s3/ignore-public-acls/" class="md-nav__link">
+        ignore-public-acls
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/s3/no-public-access-with-acl/" class="md-nav__link">
+        no-public-access-with-acl
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/s3/no-public-buckets/" class="md-nav__link">
+        no-public-buckets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/s3/specify-public-access-block/" class="md-nav__link">
+        specify-public-access-block
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_35" type="checkbox" id="__nav_3_1_35" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_35">
+          sns
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="sns" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_35">
+          <span class="md-nav__icon md-icon"></span>
+          sns
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/sns/enable-topic-encryption/" class="md-nav__link">
+        enable-topic-encryption
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_36" type="checkbox" id="__nav_3_1_36" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_36">
+          sqs
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="sqs" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_36">
+          <span class="md-nav__icon md-icon"></span>
+          sqs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/sqs/enable-queue-encryption/" class="md-nav__link">
+        enable-queue-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/sqs/no-wildcards-in-policy-documents/" class="md-nav__link">
+        no-wildcards-in-policy-documents
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_37" type="checkbox" id="__nav_3_1_37" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_37">
+          ssm
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="ssm" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_37">
+          <span class="md-nav__icon md-icon"></span>
+          ssm
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/ssm/secret-use-customer-key/" class="md-nav__link">
+        secret-use-customer-key
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_38" type="checkbox" id="__nav_3_1_38" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_38">
+          vpc
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="vpc" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_38">
+          <span class="md-nav__icon md-icon"></span>
+          vpc
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/vpc/add-decription-to-security-group/" class="md-nav__link">
+        add-decription-to-security-group
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/vpc/add-description-to-security-group/" class="md-nav__link">
+        add-description-to-security-group
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/vpc/disallow-mixed-sgr/" class="md-nav__link">
+        disallow-mixed-sgr
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/vpc/no-default-vpc/" class="md-nav__link">
+        no-default-vpc
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/vpc/no-excessive-port-access/" class="md-nav__link">
+        no-excessive-port-access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/vpc/no-public-egress-sg/" class="md-nav__link">
+        no-public-egress-sg
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/vpc/no-public-egress-sgr/" class="md-nav__link">
+        no-public-egress-sgr
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/vpc/no-public-ingress-sg/" class="md-nav__link">
+        no-public-ingress-sg
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/vpc/no-public-ingress-sgr/" class="md-nav__link">
+        no-public-ingress-sgr
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/vpc/no-public-ingress/" class="md-nav__link">
+        no-public-ingress
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/vpc/use-secure-tls-policy/" class="md-nav__link">
+        use-secure-tls-policy
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_39" type="checkbox" id="__nav_3_1_39" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1_39">
+          workspace
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="workspace" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_39">
+          <span class="md-nav__icon md-icon"></span>
+          workspace
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../aws/workspace/enable-disk-encryption/" class="md-nav__link">
+        enable-disk-encryption
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2">
+          azure
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="azure" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          azure
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_1" type="checkbox" id="__nav_3_2_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_1">
+          appservice
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="appservice" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          appservice
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/account-identity-registered/" class="md-nav__link">
+        account-identity-registered
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/authentication-enabled/" class="md-nav__link">
+        authentication-enabled
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/detailed-error-messages-enabled/" class="md-nav__link">
+        detailed-error-messages-enabled
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/dotnet-framework-version/" class="md-nav__link">
+        dotnet-framework-version
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/enable-http2/" class="md-nav__link">
+        enable-http2
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/enable-https-only/" class="md-nav__link">
+        enable-https-only
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/enforce-https/" class="md-nav__link">
+        enforce-https
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/failed-request-tracing-enabled/" class="md-nav__link">
+        failed-request-tracing-enabled
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/ftp-deployments-disabled/" class="md-nav__link">
+        ftp-deployments-disabled
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/http-logs-enabled/" class="md-nav__link">
+        http-logs-enabled
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/php-version/" class="md-nav__link">
+        php-version
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/python-version/" class="md-nav__link">
+        python-version
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/require-client-cert/" class="md-nav__link">
+        require-client-cert
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appservice/use-secure-tls-policy/" class="md-nav__link">
+        use-secure-tls-policy
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_2" type="checkbox" id="__nav_3_2_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_2">
+          authorization
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="authorization" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          authorization
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../authorization/limit-role-actions/" class="md-nav__link">
+        limit-role-actions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_3" type="checkbox" id="__nav_3_2_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_3">
+          compute
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="compute" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          compute
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compute/disable-password-authentication/" class="md-nav__link">
+        disable-password-authentication
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compute/enable-disk-encryption/" class="md-nav__link">
+        enable-disk-encryption
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compute/no-secrets-in-custom-data/" class="md-nav__link">
+        no-secrets-in-custom-data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compute/ssh-authentication/" class="md-nav__link">
+        ssh-authentication
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_4" type="checkbox" id="__nav_3_2_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_4">
+          container
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="container" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          container
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../container/configured-network-policy/" class="md-nav__link">
+        configured-network-policy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../container/limit-authorized-ips/" class="md-nav__link">
+        limit-authorized-ips
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../container/logging/" class="md-nav__link">
+        logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../container/use-rbac-permissions/" class="md-nav__link">
+        use-rbac-permissions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_5" type="checkbox" id="__nav_3_2_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_5">
+          database
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="database" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          database
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../database/enable-audit/" class="md-nav__link">
+        enable-audit
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../database/enable-ssl-enforcement/" class="md-nav__link">
+        enable-ssl-enforcement
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../database/mysql-threat-detection-enabled/" class="md-nav__link">
+        mysql-threat-detection-enabled
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../database/no-public-access/" class="md-nav__link">
+        no-public-access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../database/no-public-firewall-access/" class="md-nav__link">
+        no-public-firewall-access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../database/postgres-configuration-log-checkpoints/" class="md-nav__link">
+        postgres-configuration-log-checkpoints
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../database/postgres-configuration-log-connection-throttling/" class="md-nav__link">
+        postgres-configuration-log-connection-throttling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../database/postgres-configuration-log-connections/" class="md-nav__link">
+        postgres-configuration-log-connections
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../database/retention-period-set/" class="md-nav__link">
+        retention-period-set
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../database/secure-tls-policy/" class="md-nav__link">
+        secure-tls-policy
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_6" type="checkbox" id="__nav_3_2_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_6">
+          datafactory
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="datafactory" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_6">
+          <span class="md-nav__icon md-icon"></span>
+          datafactory
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datafactory/no-public-access/" class="md-nav__link">
+        no-public-access
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_7" type="checkbox" id="__nav_3_2_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_7">
+          datalake
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="datalake" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_7">
+          <span class="md-nav__icon md-icon"></span>
+          datalake
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datalake/enable-at-rest-encryption/" class="md-nav__link">
+        enable-at-rest-encryption
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_8" type="checkbox" id="__nav_3_2_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_8">
+          functionapp
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="functionapp" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_8">
+          <span class="md-nav__icon md-icon"></span>
+          functionapp
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../functionapp/authentication-enabled/" class="md-nav__link">
+        authentication-enabled
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../functionapp/enable-http2/" class="md-nav__link">
+        enable-http2
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../home/" class="md-nav__link">
+        azure
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_10" type="checkbox" id="__nav_3_2_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_10">
+          keyvault
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="keyvault" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_10">
+          <span class="md-nav__icon md-icon"></span>
+          keyvault
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../keyvault/content-type-for-secret/" class="md-nav__link">
+        content-type-for-secret
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../keyvault/ensure-key-expiry/" class="md-nav__link">
+        ensure-key-expiry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../keyvault/ensure-secret-expiry/" class="md-nav__link">
+        ensure-secret-expiry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../keyvault/no-purge/" class="md-nav__link">
+        no-purge
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../keyvault/specify-network-acl/" class="md-nav__link">
+        specify-network-acl
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_11" type="checkbox" id="__nav_3_2_11" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_11">
+          monitor
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="monitor" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_11">
+          <span class="md-nav__icon md-icon"></span>
+          monitor
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monitor/activity-log-retention-set/" class="md-nav__link">
+        activity-log-retention-set
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monitor/capture-all-activities/" class="md-nav__link">
+        capture-all-activities
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../monitor/capture-all-regions/" class="md-nav__link">
+        capture-all-regions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_12" type="checkbox" id="__nav_3_2_12" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_12">
+          mssql
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="mssql" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_12">
+          <span class="md-nav__icon md-icon"></span>
+          mssql
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mssql/all-threat-alerts-enabled/" class="md-nav__link">
+        all-threat-alerts-enabled
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mssql/threat-alert-email-set/" class="md-nav__link">
+        threat-alert-email-set
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mssql/threat-alert-email-to-owner/" class="md-nav__link">
+        threat-alert-email-to-owner
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_13" type="checkbox" id="__nav_3_2_13" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_13">
+          network
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="network" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_13">
+          <span class="md-nav__icon md-icon"></span>
+          network
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../network/disable-rdp-from-internet/" class="md-nav__link">
+        disable-rdp-from-internet
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../network/no-public-egress/" class="md-nav__link">
+        no-public-egress
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../network/no-public-ingress/" class="md-nav__link">
+        no-public-ingress
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../network/retention-policy-set/" class="md-nav__link">
+        retention-policy-set
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../network/ssh-blocked-from-internet/" class="md-nav__link">
+        ssh-blocked-from-internet
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_14" type="checkbox" id="__nav_3_2_14" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_14">
+          security-center
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="security-center" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_14">
+          <span class="md-nav__icon md-icon"></span>
+          security-center
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../alert-on-severe-notifications/" class="md-nav__link">
+        alert-on-severe-notifications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          defender-on-appservices
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        defender-on-appservices
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#explanation" class="md-nav__link">
+    Explanation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#possible-impact" class="md-nav__link">
+    Possible Impact
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suggested-resolution" class="md-nav__link">
+    Suggested Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#insecure-example" class="md-nav__link">
+    Insecure Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#secure-example" class="md-nav__link">
+    Secure Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-links" class="md-nav__link">
+    Related Links
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../defender-on-container-registry/" class="md-nav__link">
+        defender-on-container-registry
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../defender-on-keyvault/" class="md-nav__link">
+        defender-on-keyvault
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../defender-on-kubernetes/" class="md-nav__link">
+        defender-on-kubernetes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../defender-on-servers/" class="md-nav__link">
+        defender-on-servers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../defender-on-sql-servers-vms/" class="md-nav__link">
+        defender-on-sql-servers-vms
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../defender-on-sql-servers/" class="md-nav__link">
+        defender-on-sql-servers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../defender-on-storage/" class="md-nav__link">
+        defender-on-storage
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enable-standard-subscription/" class="md-nav__link">
+        enable-standard-subscription
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../set-required-contact-details/" class="md-nav__link">
+        set-required-contact-details
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_15" type="checkbox" id="__nav_3_2_15" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_15">
+          storage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="storage" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_15">
+          <span class="md-nav__icon md-icon"></span>
+          storage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../storage/allow-microsoft-service-bypass/" class="md-nav__link">
+        allow-microsoft-service-bypass
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../storage/container-activity-logs-not-public/" class="md-nav__link">
+        container-activity-logs-not-public
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../storage/default-action-deny/" class="md-nav__link">
+        default-action-deny
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../storage/enforce-https/" class="md-nav__link">
+        enforce-https
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../storage/no-public-access/" class="md-nav__link">
+        no-public-access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../storage/queue-services-logging-enabled/" class="md-nav__link">
+        queue-services-logging-enabled
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../storage/use-secure-tls-policy/" class="md-nav__link">
+        use-secure-tls-policy
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2_16" type="checkbox" id="__nav_3_2_16" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2_16">
+          synapse
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="synapse" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_2_16">
+          <span class="md-nav__icon md-icon"></span>
+          synapse
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../synapse/virtual-network-enabled/" class="md-nav__link">
+        virtual-network-enabled
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_3">
+          cloudstack
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="cloudstack" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          cloudstack
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3_1" type="checkbox" id="__nav_3_3_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_3_1">
+          compute
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="compute" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          compute
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cloudstack/compute/no-sensitive-info/" class="md-nav__link">
+        no-sensitive-info
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cloudstack/home/" class="md-nav__link">
+        cloudstack
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_4">
+          digitalocean
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="digitalocean" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          digitalocean
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4_1" type="checkbox" id="__nav_3_4_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_4_1">
+          compute
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="compute" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_4_1">
+          <span class="md-nav__icon md-icon"></span>
+          compute
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../digitalocean/compute/no-public-egress/" class="md-nav__link">
+        no-public-egress
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../digitalocean/compute/no-public-ingress/" class="md-nav__link">
+        no-public-ingress
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4_2" type="checkbox" id="__nav_3_4_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_4_2">
+          droplet
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="droplet" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          droplet
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../digitalocean/droplet/use-ssh-keys/" class="md-nav__link">
+        use-ssh-keys
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../digitalocean/home/" class="md-nav__link">
+        digitalocean
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4_4" type="checkbox" id="__nav_3_4_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_4_4">
+          loadbalancing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="loadbalancing" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_4_4">
+          <span class="md-nav__icon md-icon"></span>
+          loadbalancing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../digitalocean/loadbalancing/enforce-https/" class="md-nav__link">
+        enforce-https
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4_5" type="checkbox" id="__nav_3_4_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_4_5">
+          spaces
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="spaces" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_4_5">
+          <span class="md-nav__icon md-icon"></span>
+          spaces
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../digitalocean/spaces/acl-no-public-read/" class="md-nav__link">
+        acl-no-public-read
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../digitalocean/spaces/disable-force-destroy/" class="md-nav__link">
+        disable-force-destroy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../digitalocean/spaces/versioning-enabled/" class="md-nav__link">
+        versioning-enabled
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_5">
+          general
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="general" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_5">
+          <span class="md-nav__icon md-icon"></span>
+          general
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../general/home/" class="md-nav__link">
+        general
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5_2" type="checkbox" id="__nav_3_5_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_5_2">
+          secrets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="secrets" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          secrets
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../general/secrets/sensitive-in-attribute-value/" class="md-nav__link">
+        sensitive-in-attribute-value
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../general/secrets/sensitive-in-attribute/" class="md-nav__link">
+        sensitive-in-attribute
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../general/secrets/sensitive-in-local/" class="md-nav__link">
+        sensitive-in-local
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../general/secrets/sensitive-in-variable/" class="md-nav__link">
+        sensitive-in-variable
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_6" type="checkbox" id="__nav_3_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_6">
+          github
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="github" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_6">
+          <span class="md-nav__icon md-icon"></span>
+          github
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../github/home/" class="md-nav__link">
+        github
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_6_2" type="checkbox" id="__nav_3_6_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_6_2">
+          repositories
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="repositories" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          repositories
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../github/repositories/private/" class="md-nav__link">
+        private
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../github/repositories/require-signed-commits/" class="md-nav__link">
+        require-signed-commits
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../github/repositories/vulnerability-alerts/" class="md-nav__link">
+        vulnerability-alerts
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_7" type="checkbox" id="__nav_3_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_7">
+          google
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="google" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_7">
+          <span class="md-nav__icon md-icon"></span>
+          google
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_7_1" type="checkbox" id="__nav_3_7_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_7_1">
+          bigquery
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="bigquery" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_7_1">
+          <span class="md-nav__icon md-icon"></span>
+          bigquery
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/bigquery/no-public-access/" class="md-nav__link">
+        no-public-access
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_7_2" type="checkbox" id="__nav_3_7_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_7_2">
+          compute
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="compute" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_7_2">
+          <span class="md-nav__icon md-icon"></span>
+          compute
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/disk-encryption-customer-key/" class="md-nav__link">
+        disk-encryption-customer-key
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/disk-encryption-customer-keys/" class="md-nav__link">
+        disk-encryption-customer-keys
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/disk-encryption-required/" class="md-nav__link">
+        disk-encryption-required
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/enable-shielded-vm/" class="md-nav__link">
+        enable-shielded-vm
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/enable-vpc-flow-logs/" class="md-nav__link">
+        enable-vpc-flow-logs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/no-default-service-account/" class="md-nav__link">
+        no-default-service-account
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/no-ip-forwarding/" class="md-nav__link">
+        no-ip-forwarding
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/no-oslogin-override/" class="md-nav__link">
+        no-oslogin-override
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/no-plaintext-disk-keys/" class="md-nav__link">
+        no-plaintext-disk-keys
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/no-plaintext-vm-disk-keys/" class="md-nav__link">
+        no-plaintext-vm-disk-keys
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/no-project-wide-ssh-keys/" class="md-nav__link">
+        no-project-wide-ssh-keys
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/no-public-egress/" class="md-nav__link">
+        no-public-egress
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/no-public-ingress/" class="md-nav__link">
+        no-public-ingress
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/no-public-ip/" class="md-nav__link">
+        no-public-ip
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/no-serial-port/" class="md-nav__link">
+        no-serial-port
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/project-level-oslogin/" class="md-nav__link">
+        project-level-oslogin
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/use-secure-tls-policy/" class="md-nav__link">
+        use-secure-tls-policy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/compute/vm-disk-encryption-customer-key/" class="md-nav__link">
+        vm-disk-encryption-customer-key
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_7_3" type="checkbox" id="__nav_3_7_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_7_3">
+          dns
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="dns" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          dns
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/dns/enable-dnssec/" class="md-nav__link">
+        enable-dnssec
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/dns/no-rsa-sha1/" class="md-nav__link">
+        no-rsa-sha1
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_7_4" type="checkbox" id="__nav_3_7_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_7_4">
+          gke
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="gke" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_7_4">
+          <span class="md-nav__icon md-icon"></span>
+          gke
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/enable-auto-repair/" class="md-nav__link">
+        enable-auto-repair
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/enable-auto-upgrade/" class="md-nav__link">
+        enable-auto-upgrade
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/enable-ip-aliasing/" class="md-nav__link">
+        enable-ip-aliasing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/enable-master-networks/" class="md-nav__link">
+        enable-master-networks
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/enable-network-policy/" class="md-nav__link">
+        enable-network-policy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/enable-private-cluster/" class="md-nav__link">
+        enable-private-cluster
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/enable-stackdriver-logging/" class="md-nav__link">
+        enable-stackdriver-logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/enable-stackdriver-monitoring/" class="md-nav__link">
+        enable-stackdriver-monitoring
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/enforce-pod-security-policy/" class="md-nav__link">
+        enforce-pod-security-policy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/metadata-endpoints-disabled/" class="md-nav__link">
+        metadata-endpoints-disabled
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/no-legacy-auth/" class="md-nav__link">
+        no-legacy-auth
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/no-legacy-authentication/" class="md-nav__link">
+        no-legacy-authentication
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/no-public-control-plane/" class="md-nav__link">
+        no-public-control-plane
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/node-metadata-security/" class="md-nav__link">
+        node-metadata-security
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/node-pool-uses-cos/" class="md-nav__link">
+        node-pool-uses-cos
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/node-shielding-enabled/" class="md-nav__link">
+        node-shielding-enabled
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/use-cluster-labels/" class="md-nav__link">
+        use-cluster-labels
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/use-rbac-permissions/" class="md-nav__link">
+        use-rbac-permissions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/gke/use-service-account/" class="md-nav__link">
+        use-service-account
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/home/" class="md-nav__link">
+        google
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_7_6" type="checkbox" id="__nav_3_7_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_7_6">
+          iam
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="iam" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_7_6">
+          <span class="md-nav__icon md-icon"></span>
+          iam
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/iam/no-folder-level-default-service-account-assignment/" class="md-nav__link">
+        no-folder-level-default-service-account-assignment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/iam/no-folder-level-service-account-impersonation/" class="md-nav__link">
+        no-folder-level-service-account-impersonation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/iam/no-org-level-default-service-account-assignment/" class="md-nav__link">
+        no-org-level-default-service-account-assignment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/iam/no-org-level-service-account-impersonation/" class="md-nav__link">
+        no-org-level-service-account-impersonation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/iam/no-privileged-service-accounts/" class="md-nav__link">
+        no-privileged-service-accounts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/iam/no-project-level-default-service-account-assignment/" class="md-nav__link">
+        no-project-level-default-service-account-assignment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/iam/no-project-level-service-account-impersonation/" class="md-nav__link">
+        no-project-level-service-account-impersonation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/iam/no-user-granted-permissions/" class="md-nav__link">
+        no-user-granted-permissions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_7_7" type="checkbox" id="__nav_3_7_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_7_7">
+          kms
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="kms" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_7_7">
+          <span class="md-nav__icon md-icon"></span>
+          kms
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/kms/rotate-kms-keys/" class="md-nav__link">
+        rotate-kms-keys
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_7_8" type="checkbox" id="__nav_3_7_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_7_8">
+          project
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="project" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_7_8">
+          <span class="md-nav__icon md-icon"></span>
+          project
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/project/no-default-network/" class="md-nav__link">
+        no-default-network
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_7_9" type="checkbox" id="__nav_3_7_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_7_9">
+          sql
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="sql" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_7_9">
+          <span class="md-nav__icon md-icon"></span>
+          sql
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/enable-backup/" class="md-nav__link">
+        enable-backup
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/enable-pg-temp-file-logging/" class="md-nav__link">
+        enable-pg-temp-file-logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/encrypt-in-transit-data/" class="md-nav__link">
+        encrypt-in-transit-data
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/mysql-no-local-infile/" class="md-nav__link">
+        mysql-no-local-infile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/no-contained-db-auth/" class="md-nav__link">
+        no-contained-db-auth
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/no-cross-db-ownership-chaining/" class="md-nav__link">
+        no-cross-db-ownership-chaining
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/no-public-access/" class="md-nav__link">
+        no-public-access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/pg-log-checkpoints/" class="md-nav__link">
+        pg-log-checkpoints
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/pg-log-connections/" class="md-nav__link">
+        pg-log-connections
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/pg-log-disconnections/" class="md-nav__link">
+        pg-log-disconnections
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/pg-log-errors/" class="md-nav__link">
+        pg-log-errors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/pg-log-lock-waits/" class="md-nav__link">
+        pg-log-lock-waits
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/sql/pg-no-min-statement-logging/" class="md-nav__link">
+        pg-no-min-statement-logging
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_7_10" type="checkbox" id="__nav_3_7_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_7_10">
+          storage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="storage" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_7_10">
+          <span class="md-nav__icon md-icon"></span>
+          storage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/storage/enable-ubla/" class="md-nav__link">
+        enable-ubla
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../google/storage/no-public-access/" class="md-nav__link">
+        no-public-access
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_8" type="checkbox" id="__nav_3_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_8">
+          kubernetes
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="kubernetes" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_8">
+          <span class="md-nav__icon md-icon"></span>
+          kubernetes
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../kubernetes/home/" class="md-nav__link">
+        kubernetes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_8_2" type="checkbox" id="__nav_3_8_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_8_2">
+          network
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="network" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          network
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../kubernetes/network/no-public-egress/" class="md-nav__link">
+        no-public-egress
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../kubernetes/network/no-public-ingress/" class="md-nav__link">
+        no-public-ingress
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_9" type="checkbox" id="__nav_3_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_9">
+          openstack
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="openstack" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_9">
+          <span class="md-nav__icon md-icon"></span>
+          openstack
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_9_1" type="checkbox" id="__nav_3_9_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_9_1">
+          compute
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="compute" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_9_1">
+          <span class="md-nav__icon md-icon"></span>
+          compute
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openstack/compute/no-plaintext-password/" class="md-nav__link">
+        no-plaintext-password
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_9_2" type="checkbox" id="__nav_3_9_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_9_2">
+          fw
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="fw" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_9_2">
+          <span class="md-nav__icon md-icon"></span>
+          fw
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openstack/fw/no-public-access/" class="md-nav__link">
+        no-public-access
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openstack/home/" class="md-nav__link">
+        openstack
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_10" type="checkbox" id="__nav_3_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_10">
+          oracle
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="oracle" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_10">
+          <span class="md-nav__icon md-icon"></span>
+          oracle
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_10_1" type="checkbox" id="__nav_3_10_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_10_1">
+          compute
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="compute" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_1">
+          <span class="md-nav__icon md-icon"></span>
+          compute
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../oracle/compute/no-public-ip/" class="md-nav__link">
+        no-public-ip
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../oracle/home/" class="md-nav__link">
+        oracle
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#explanation" class="md-nav__link">
+    Explanation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#possible-impact" class="md-nav__link">
+    Possible Impact
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suggested-resolution" class="md-nav__link">
+    Suggested Resolution
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#insecure-example" class="md-nav__link">
+    Insecure Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#secure-example" class="md-nav__link">
+    Secure Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-links" class="md-nav__link">
+    Related Links
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+  <h1>defender-on-appservices</h1>
+
+<h3 id="explanation">Explanation</h3>
+<p>Azure Defender is a cloud workload protection service that utilizes and agent-based deployment to analyze signals from Azure network fabric and the service control plane, to detect threats across all Azure resources. It can also analyze non-Azure resources, utilizing Azure Arc, including those on-premises and in both AWS and GCP (once they've been onboarded).</p>
+<h3 id="possible-impact">Possible Impact</h3>
+<p>Azure Defender for App Service detects attacks targeting applications running over App Service.</p>
+<h3 id="suggested-resolution">Suggested Resolution</h3>
+<p>Enable AppServices in Azure Defender</p>
+<h3 id="insecure-example">Insecure Example</h3>
+<p>The following example will fail the azure-security-center-defender-on-appservices check.</p>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span> <span class="nc">&quot;azurerm_security_center_subscription_pricing&quot;</span> <span class="nv">&quot;bad_example&quot;</span> <span class="p">{</span>
+  <span class="na">tier</span>          <span class="o">=</span> <span class="s2">&quot;Free&quot;</span>
+  <span class="na">resource_type</span> <span class="o">=</span> <span class="s2">&quot;VirtualMachines&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="secure-example">Secure Example</h3>
+<p>The following example will pass the azure-security-center-defender-on-appservices check.</p>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span> <span class="nc">&quot;azurerm_security_center_subscription_pricing&quot;</span> <span class="nv">&quot;good_example&quot;</span> <span class="p">{</span>
+  <span class="na">tier</span>          <span class="o">=</span> <span class="s2">&quot;Standard&quot;</span>
+  <span class="na">resource_type</span> <span class="o">=</span> <span class="s2">&quot;VirtualMachines,AppServices&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="related-links">Related Links</h3>
+<ul>
+<li>
+<p><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/security_center_subscription_pricing#resource_type" rel="nofollow noreferrer noopener" target="_blank">https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/security_center_subscription_pricing#resource_type</a></p>
+</li>
+<li>
+<p><a href="https://docs.microsoft.com/en-us/azure/security-center/defender-for-app-service-introduction" rel="nofollow noreferrer noopener" target="_blank">https://docs.microsoft.com/en-us/azure/security-center/defender-for-app-service-introduction</a></p>
+</li>
+</ul>
+
+
+
+
+              
+            </article>
+            
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../alert-on-severe-notifications/" class="md-footer__link md-footer__link--prev" aria-label="Previous: alert-on-severe-notifications" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              alert-on-severe-notifications
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../defender-on-container-registry/" class="md-footer__link md-footer__link--next" aria-label="Next: defender-on-container-registry" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              defender-on-container-registry
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../../assets/javascripts/workers/search.51301f06.min.js", "version": {"method": "mike", "provider": "mike"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.bb54cbc5.min.js"></script>
+      
+    
+  </body>
+</html>
