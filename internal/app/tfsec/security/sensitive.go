@@ -3,7 +3,7 @@ package security
 import (
 	"strings"
 
-	"github.com/owenrum/squealer/pkg/squealer"
+	"github.com/owenrumney/squealer/pkg/squealer"
 )
 
 var sensitiveAttributeTokens = []string{

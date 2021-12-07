@@ -180,16 +180,16 @@ github.com/mitchellh/go-wordwrap
 # github.com/olekukonko/tablewriter v0.0.5
 ## explicit; go 1.12
 github.com/olekukonko/tablewriter
-# github.com/owenrum/go-sarif v1.0.13
+# github.com/owenrumney/go-sarif v1.0.14
 ## explicit; go 1.16
-github.com/owenrum/go-sarif/sarif
-# github.com/owenrum/squealer v0.2.29
+github.com/owenrumney/go-sarif/sarif
+# github.com/owenrumney/squealer v0.3.1
 ## explicit; go 1.16
-github.com/owenrum/squealer/internal/app/squealer/match
-github.com/owenrum/squealer/internal/app/squealer/mertics
-github.com/owenrum/squealer/pkg/config
-github.com/owenrum/squealer/pkg/result
-github.com/owenrum/squealer/pkg/squealer
+github.com/owenrumney/squealer/internal/app/squealer/match
+github.com/owenrumney/squealer/internal/app/squealer/mertics
+github.com/owenrumney/squealer/pkg/config
+github.com/owenrumney/squealer/pkg/result
+github.com/owenrumney/squealer/pkg/squealer
 # github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942
 ## explicit
 github.com/pkg/term

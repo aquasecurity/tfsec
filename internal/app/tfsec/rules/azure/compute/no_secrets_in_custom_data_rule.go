@@ -6,7 +6,7 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/severity"
-	"github.com/owenrum/squealer/pkg/squealer"
+	"github.com/owenrumney/squealer/pkg/squealer"
 
 	"github.com/aquasecurity/tfsec/pkg/provider"
 
