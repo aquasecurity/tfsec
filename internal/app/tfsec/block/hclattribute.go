@@ -678,6 +678,11 @@ func (attr *HCLAttribute) referencesInTemplate() []*Reference {
 			}
 			refs = append(refs, ref)
 		}
+	case *hclsyntax.TupleConsExpr:
+		ref, err := createDotReferenceFromTraversal(t.Variables()...)
+		if err == nil {
+			refs = append(refs, ref)
+		}
 	}
 	return refs
 }

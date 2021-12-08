@@ -24,7 +24,7 @@ type Run struct { // https://docs.oasis-open.org/sarif/sarif/v2.1.0/csprd01/sari
 func NewRun(toolName, informationURI string) *Run {
 	run := &Run{
 		Tool: Tool{
-			Driver: &Driver{
+			Driver: &ToolComponent{
 				Name:           toolName,
 				InformationURI: &informationURI,
 			},
@@ -70,8 +70,8 @@ func (run *Run) AddDistinctArtifact(uri string) *Artifact {
 	return a
 }
 
-// AddRule returns an existing Rule for the ruleID or creates a new Rule and returns a pointer to it
-func (run *Run) AddRule(ruleID string) *Rule {
+// AddRule returns an existing ReportingDescriptor for the ruleID or creates a new ReportingDescriptor and returns a pointer to it
+func (run *Run) AddRule(ruleID string) *ReportingDescriptor {
 	for _, rule := range run.Tool.Driver.Rules {
 		if rule.ID == ruleID {
 			return rule
@@ -94,7 +94,7 @@ func (run *Run) AttachPropertyBag(pb *PropertyBag) {
 }
 
 // GetRuleById finds a rule by a given rule ID and returns a pointer to it
-func (run *Run) GetRuleById(ruleId string) (*Rule, error) {
+func (run *Run) GetRuleById(ruleId string) (*ReportingDescriptor, error) {
 	if run.Tool.Driver != nil {
 		for _, rule := range run.Tool.Driver.Rules {
 			if rule.ID == ruleId {
