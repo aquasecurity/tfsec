@@ -7,4 +7,5 @@ type Module interface {
 	GetProviderBlocksByProvider(providerName string, alias string) Blocks
 	GetReferencedBlock(referringAttr Attribute) (Block, error)
 	GetReferencingResources(originalBlock Block, referencingLabel string, referencingAttributeName string) (Blocks, error)
+	GetsModulesBySource(moduleSource string) (Blocks, error)
 }
