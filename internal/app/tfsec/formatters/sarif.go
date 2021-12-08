@@ -5,10 +5,9 @@ import (
 	"path/filepath"
 
 	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/owenrumney/go-sarif/sarif"
 
 	"github.com/aquasecurity/tfsec/pkg/result"
-
-	"github.com/owenrumney/go-sarif/sarif"
 )
 
 func FormatSarif(w io.Writer, results []result.Result, baseDir string, _ ...FormatterOption) error {
@@ -32,7 +31,7 @@ func FormatSarif(w io.Writer, results []result.Result, baseDir string, _ ...Form
 		}
 		rule := run.AddRule(res.RuleID).
 			WithDescription(res.RuleSummary).
-			WithHelp(link)
+			WithHelpURI(link)
 
 		relativePath, err := filepath.Rel(baseDir, res.Range().Filename)
 		if err != nil {
