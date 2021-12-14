@@ -1,6 +1,6 @@
 package secrets
 
-// generator-locked
+ generator-locked
 import (
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"

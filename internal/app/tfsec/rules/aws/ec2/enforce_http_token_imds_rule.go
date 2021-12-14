@@ -1,6 +1,6 @@
 package ec2
 
-// generator-locked
+ generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules/aws/ec2"
 
