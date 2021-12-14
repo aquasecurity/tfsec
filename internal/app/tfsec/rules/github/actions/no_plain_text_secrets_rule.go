@@ -54,7 +54,7 @@ resource "github_actions_environment_secret" "good_example" {
 		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
 
 			plaintextValue := resourceBlock.GetAttribute("plaintext_value")
-			if !plaintextValue.IsNil() {
+			if plaintextValue.IsNotNil() {
 				set.AddResult().WithDescription("Resource '%s' has plaintext value set. For security reasons encrypted value should be set instead.", resourceBlock.FullName()).
 					WithAttribute(plaintextValue)
 			}
