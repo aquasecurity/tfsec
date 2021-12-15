@@ -1,32 +1,17 @@
 package cloudtrail
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS064",
- 		Service:   "cloudtrail",
- 		ShortCode: "enable-log-validation",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "Cloudtrail log validation should be enabled to prevent tampering of log data",
- 			Impact:     "Illicit activity could be removed from the logs",
- 			Resolution: "Turn on log validation for Cloudtrail",
- 			Explanation: `
- Log validation should be activated on Cloudtrail logs to prevent the tampering of the underlying data in the S3 bucket. It is feasible that a rogue actor compromising an AWS account might want to modify the log data to remove trace of their actions.
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS064",
+		BadExample: []string{`
  resource "aws_cloudtrail" "bad_example" {
    is_multi_region_trail = true
  
@@ -41,7 +26,7 @@ package cloudtrail
    }
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_cloudtrail" "good_example" {
    is_multi_region_trail = true
    enable_log_file_validation = true
@@ -57,28 +42,23 @@ package cloudtrail
    }
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#enable_log_file_validation",
- 				"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_cloudtrail"},
- 		DefaultSeverity: severity.High,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 			if resourceBlock.MissingChild("enable_log_file_validation") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' does not enable log file validation.", resourceBlock.FullName())
- 				return
- 			}
- 
- 			logFileValidationAttr := resourceBlock.GetAttribute("enable_log_file_validation")
- 			if logFileValidationAttr.IsFalse() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' does not enable log file validation.", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#enable_log_file_validation",
+			"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_cloudtrail"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+			if resourceBlock.MissingChild("enable_log_file_validation") {
+				results.Add("Resource does not enable log file validation.", resourceBlock)
+				return
+			}
+
+			logFileValidationAttr := resourceBlock.GetAttribute("enable_log_file_validation")
+			if logFileValidationAttr.IsFalse() {
+				results.Add("Resource does not enable log file validation.", logFileValidationAttr)
+			}
+			return results
+		},
+	})
+}

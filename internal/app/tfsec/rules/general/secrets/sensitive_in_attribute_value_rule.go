@@ -1,31 +1,22 @@
 package secrets
 
- generator-locked
+generator-locked
 import (
-	"github.com/aquasecurity/defsec/provider"
-	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/defsec/severity"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
-	"github.com/aquasecurity/tfsec/pkg/rule"
+"github.com/aquasecurity/defsec/provider"
+"github.com/aquasecurity/defsec/rules"
+"github.com/aquasecurity/defsec/severity"
+"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
+"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		LegacyID: "GEN005",
 		Base: rules.Register(rules.Rule{
-			Service:   "secrets",
-			ShortCode: "sensitive-in-attribute-value",
-			Summary:   "The attribute has potentially sensitive data, passwords, tokens or keys in it",
-			Explanation: `
- Sensitive data stored in attributes can result in compromised data. Sensitive data should be passed in through secret variables
- 
- `,
-			Impact:     "Sensitive credentials may be compromised",
-			Resolution: "Check the code for vulnerabilities and move to variables",
-			Provider:   provider.GeneralProvider,
-			Severity:   severity.Critical,
+
+			Severity: severity.Critical,
 		}, nil),
 		BadExample: []string{`
  resource "aws_instance" "bad_example" {
@@ -67,7 +58,5 @@ func init() {
 					}
 				}
 			}
-			return
-		},
-	})
-}
+			returnreturn
+			results

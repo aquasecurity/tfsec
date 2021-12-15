@@ -1,38 +1,24 @@
 package cloudfront
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS071",
- 		Service:   "cloudfront",
- 		ShortCode: "enable-logging",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "Cloudfront distribution should have Access Logging configured",
- 			Impact:     "Logging provides vital information about access and usage",
- 			Resolution: "Enable logging for CloudFront distributions",
- 			Explanation: `
- You should configure CloudFront Access Logging to create log files that contain detailed information about every user request that CloudFront receives
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/cloudfront"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS071",
+		BadExample: []string{`
  resource "aws_cloudfront_distribution" "bad_example" {
  	// other config
  	// no logging_config
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_cloudfront_distribution" "good_example" {
  	// other config
  	logging_config {
@@ -42,22 +28,18 @@ package cloudfront
  	}
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#logging_config",
- 				"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_cloudfront_distribution"},
- 		DefaultSeverity: severity.Medium,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("logging_config") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' does not have Access Logging configured", resourceBlock.FullName())
- 			}
- 
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#logging_config",
+			"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_cloudfront_distribution"},
+		Base:           cloudfront.CheckEnableLogging,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+			if resourceBlock.MissingChild("logging_config") {
+				results.Add("Resource does not have Access Logging configured", resourceBlock)
+			}
+			return results
+		},
+	})
+}

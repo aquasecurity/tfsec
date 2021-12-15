@@ -1,29 +1,16 @@
 package compute
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		Service:   "compute",
- 		ShortCode: "no-plaintext-password",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:     "No plaintext password for compute instance",
- 			Explanation: `Assigning a password to the compute instance using plaintext could lead to compromise; it would be preferable to use key-pairs as a login mechanism`,
- 			Impact:      "Including a plaintext password could lead to compromised instance",
- 			Resolution:  "Do not use plaintext passwords in terraform files",
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		BadExample: []string{`
  resource "openstack_compute_instance_v2" "bad_example" {
    name            = "basic"
    image_id        = "ad091b52-742f-469e-8f3c-fd81cadf0743"
@@ -36,7 +23,7 @@ package compute
      name = "my_network"
    }
  }`},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "openstack_compute_instance_v2" "good_example" {
    name            = "basic"
    image_id        = "ad091b52-742f-469e-8f3c-fd81cadf0743"
@@ -49,25 +36,21 @@ package compute
      name = "my_network"
    }
  }`},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_instance_v2#admin_pass",
- 			},
- 		},
- 		Provider:        provider.OpenStackProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"openstack_compute_instance_v2"},
- 		DefaultSeverity: severity.Medium,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("admin_pass") {
- 				return
- 			}
- 
- 			if adminPassAttr := resourceBlock.GetAttribute("admin_pass"); adminPassAttr.IsString() && !adminPassAttr.IsEmpty() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' specifies a plain text password", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_instance_v2#admin_pass",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"openstack_compute_instance_v2"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.MissingChild("admin_pass") {
+				return
+			}
+
+			if adminPassAttr := resourceBlock.GetAttribute("admin_pass"); adminPassAttr.IsString() && !adminPassAttr.IsEmpty() {
+				results.Add("Resource specifies a plain text password", ?)
+			}
+			return results
+		},
+	})
+}

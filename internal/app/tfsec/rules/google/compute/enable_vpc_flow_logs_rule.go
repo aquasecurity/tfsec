@@ -5,9 +5,7 @@ package compute
 // Before making changes, consider updating the generator.
 
 import (
-	"github.com/aquasecurity/defsec/provider"
-	"github.com/aquasecurity/defsec/result"
-	"github.com/aquasecurity/defsec/severity"
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -15,15 +13,7 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Provider:  provider.GoogleProvider,
-		Service:   "compute",
-		ShortCode: "enable-vpc-flow-logs",
-		Documentation: rule.RuleDocumentation{
-			Summary:     "VPC flow logs should be enabled for all subnets",
-			Explanation: `VPC flow logs record information about all traffic, which is a vital tool in reviewing anomalous traffic.`,
-			Impact:      "Limited auditing capability and awareness",
-			Resolution:  "Enable VPC flow logs",
-			BadExample: []string{`
+		BadExample: []string{`
  resource "google_compute_subnetwork" "bad_example" {
    name          = "test-subnetwork"
    ip_cidr_range = "10.2.0.0/16"
@@ -41,7 +31,7 @@ func init() {
    auto_create_subnetworks = false
  }
  `},
-			GoodExample: []string{`
+		GoodExample: []string{`
  resource "google_compute_subnetwork" "good_example" {
    name          = "test-subnetwork"
    ip_cidr_range = "10.2.0.0/16"
@@ -59,9 +49,8 @@ func init() {
    auto_create_subnetworks = false
  }
  `},
-			Links: []string{
-				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork#enable_flow_logs",
-			},
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork#enable_flow_logs",
 		},
 		RequiredTypes: []string{
 			"resource",
@@ -69,16 +58,13 @@ func init() {
 		RequiredLabels: []string{
 			"google_compute_subnetwork",
 		},
-		DefaultSeverity: severity.Low,
-		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if enableFlowLogsAttr := resourceBlock.GetAttribute("enable_flow_logs"); enableFlowLogsAttr.IsNil() { // alert on use of default value
-				set.AddResult().
-					WithDescription("Resource '%s' uses default value for enable_flow_logs", resourceBlock.FullName())
+				results.Add("Resource uses default value for enable_flow_logs", ?)
 			} else if enableFlowLogsAttr.IsFalse() {
-				set.AddResult().
-					WithDescription("Resource '%s' does not have enable_flow_logs set to true", resourceBlock.FullName()).
-					WithAttribute("")
+				results.Add("Resource does not have enable_flow_logs set to true", enableFlowLogsAttr)
 			}
+			return results
 		},
 	})
 }

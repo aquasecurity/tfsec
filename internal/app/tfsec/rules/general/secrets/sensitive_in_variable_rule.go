@@ -1,38 +1,28 @@
 package secrets
 
- generator-locked
+generator-locked
 import (
-	"github.com/zclconf/go-cty/cty"
+"github.com/zclconf/go-cty/cty"
 
-	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/defsec/severity"
+"github.com/aquasecurity/defsec/rules"
+"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/defsec/provider"
+"github.com/aquasecurity/defsec/provider"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
-	"github.com/aquasecurity/tfsec/pkg/rule"
+"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
+"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		LegacyID: "GEN001",
 		Base: rules.Register(rules.Rule{
-			Service:    "secrets",
-			ShortCode:  "sensitive-in-variable",
-			Summary:    "Potentially sensitive data stored in \"default\" value of variable.",
-			Impact:     "Default values could be exposing sensitive data",
-			Resolution: "Don't include sensitive data in variable defaults",
-			Explanation: `
- Sensitive attributes such as passwords and API tokens should not be available in your templates, especially in a plaintext form. You can declare variables to hold the secrets, assuming you can provide values for those variables in a secure fashion. Alternatively, you can store these secrets in a secure secret store, such as AWS KMS.
- 
- *NOTE: It is also recommended to store your Terraform state in an encrypted form.*
- `,
-			Provider: provider.GeneralProvider,
+
 			Severity: severity.Critical,
 		}, nil),
 		BadExample: []string{`
@@ -76,7 +66,5 @@ func init() {
 					}
 				}
 			}
-			return
-		},
-	})
-}
+			returnreturn
+			results

@@ -8,7 +8,7 @@ type APIGateway struct {
 }
 
 const (
-	ProtoclTypeUnknown    string = ""
+	ProtocolTypeUnknown   string = ""
 	ProtocolTypeREST      string = "REST"
 	ProtocolTypeHTTP      string = "HTTP"
 	ProtocolTypeWebsocket string = "WEBSOCKET"
@@ -17,6 +17,7 @@ const (
 type API struct {
 	types.Metadata
 	Name         types.StringValue
+	Version      types.IntValue
 	ProtocolType types.StringValue
 	Stages       []Stage
 	RESTMethods  []RESTMethod
@@ -25,6 +26,7 @@ type API struct {
 type Stage struct {
 	types.Metadata
 	Name               types.StringValue
+	Version            types.IntValue
 	AccessLogging      AccessLogging
 	RESTMethodSettings RESTMethodSettings
 	XRayTracingEnabled types.BoolValue
@@ -56,6 +58,7 @@ type RESTMethod struct {
 type DomainName struct {
 	types.Metadata
 	Name           types.StringValue
+	Version        types.IntValue
 	SecurityPolicy types.StringValue
 }
 

@@ -1,32 +1,18 @@
 package dynamodb
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS092",
- 		Service:   "dynamodb",
- 		ShortCode: "table-customer-key",
- 		Documentation: rule.RuleDocumentation{
- 			Summary: "DynamoDB tables should use at rest encryption with a Customer Managed Key",
- 			Explanation: `
- DynamoDB tables are encrypted by default using AWS managed encryption keys. To increase control of the encryption and control the management of factors like key rotation, use a Customer Managed Key.
- `,
- 			Impact:     "Using AWS managed keys does not allow for fine grained control",
- 			Resolution: "Enable server side encryption with a customer managed key",
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/dynamodb"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS092",
+		BadExample: []string{`
  resource "aws_dynamodb_table" "bad_example" {
  	name             = "example"
  	hash_key         = "TestTableHashKey"
@@ -48,7 +34,7 @@ package dynamodb
  	}
    }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_kms_key" "dynamo_db_kms" {
  	enable_key_rotation = true
  }
@@ -79,40 +65,34 @@ package dynamodb
  	}
    }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#server_side_encryption",
- 				"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_dynamodb_table"},
- 		DefaultSeverity: severity.Low,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("server_side_encryption") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' is not using KMS CMK for encryption", resourceBlock.FullName())
- 				return
- 			}
- 
- 			sseBlock := resourceBlock.GetBlock("server_side_encryption")
- 			enabledAttr := sseBlock.GetAttribute("enabled")
- 			if enabledAttr.IsFalse() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' has server side encryption configured but disabled", resourceBlock.FullName()).
- 					WithBlock("")
- 			}
- 
- 			if sseBlock.HasChild("kms_key_arn") {
- 				keyIdAttr := sseBlock.GetAttribute("kms_key_arn")
- 				if keyIdAttr.Equals("alias/aws/dynamodb") {
- 					set.AddResult().
- 						WithDescription("Resource '%s' has KMS encryption configured but is using the default aws key", resourceBlock.FullName()).
- 						WithAttribute("")
- 				}
- 			}
- 
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#server_side_encryption",
+			"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_dynamodb_table"},
+		Base:           dynamodb.CheckTableCustomerKey,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.MissingChild("server_side_encryption") {
+				results.Add("Resource is not using KMS CMK for encryption", resourceBlock)
+				return
+			}
+
+			sseBlock := resourceBlock.GetBlock("server_side_encryption")
+			enabledAttr := sseBlock.GetAttribute("enabled")
+			if enabledAttr.IsFalse() {
+				results.Add("Resource has server side encryption configured but disabled", enabledAttr)
+			}
+
+			if sseBlock.HasChild("kms_key_arn") {
+				keyIdAttr := sseBlock.GetAttribute("kms_key_arn")
+				if keyIdAttr.Equals("alias/aws/dynamodb") {
+					results.Add("Resource has KMS encryption configured but is using the default aws key", keyIdAttr)
+				}
+			}
+
+			return results
+		},
+	})
+}

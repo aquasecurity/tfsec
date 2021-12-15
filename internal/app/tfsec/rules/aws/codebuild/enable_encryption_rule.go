@@ -1,32 +1,18 @@
 package codebuild
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS080",
- 		Service:   "codebuild",
- 		ShortCode: "enable-encryption",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "CodeBuild Project artifacts encryption should not be disabled",
- 			Impact:     "CodeBuild project artifacts are unencrypted",
- 			Resolution: "Enable encryption for CodeBuild project artifacts",
- 			Explanation: `
- All artifacts produced by your CodeBuild project pipeline should always be encrypted
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/codebuild"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS080",
+		BadExample: []string{`
  resource "aws_codebuild_project" "bad_example" {
  	// other config
  
@@ -53,7 +39,7 @@ package codebuild
  	}
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_codebuild_project" "good_example" {
  	// other config
  
@@ -86,40 +72,34 @@ package codebuild
  	}
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project#encryption_disabled",
- 				"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-codebuild-project-artifacts.html",
- 				"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_codebuild_project"},
- 		DefaultSeverity: severity.High,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			blocks := resourceBlock.GetBlocks("secondary_artifacts")
- 
- 			if artifact := resourceBlock.GetBlock("artifacts"); artifact.IsNotNil() {
- 				blocks = append(blocks, artifact)
- 			}
- 
- 			for _, artifactBlock := range blocks {
- 				encryptionDisabledAttr := artifactBlock.GetAttribute("encryption_disabled")
- 				if encryptionDisabledAttr.IsTrue() {
- 					artifactTypeAttr := artifactBlock.GetAttribute("type")
- 
- 					if artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
- 						set.AddResult().
- 							WithDescription("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", resourceBlock.FullName()).
- 							WithAttribute("")
- 					} else {
- 						set.AddResult().
- 							WithDescription("CodeBuild project '%s' does not encrypt produced artifacts", resourceBlock.FullName()).
- 							WithAttribute("")
- 					}
- 				}
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project#encryption_disabled",
+			"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-codebuild-project-artifacts.html",
+			"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_codebuild_project"},
+		Base:           codebuild.CheckEnableEncryption,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			blocks := resourceBlock.GetBlocks("secondary_artifacts")
+			if artifact := resourceBlock.GetBlock("artifacts"); artifact.IsNotNil() {
+				blocks = append(blocks, artifact)
+			}
+
+			for _, artifactBlock := range blocks {
+				encryptionDisabledAttr := artifactBlock.GetAttribute("encryption_disabled")
+				if encryptionDisabledAttr.IsTrue() {
+					artifactTypeAttr := artifactBlock.GetAttribute("type")
+					if artifactTypeAttr.Equals("NO_ARTIFACTS", block.IgnoreCase) {
+						results.Add("CodeBuild project '%s' is configured to disable artifact encryption while no artifacts are produced", encryptionDisabledAttr)
+					} else {
+						results.Add("CodeBuild project '%s' does not encrypt produced artifacts", encryptionDisabledAttr)
+					}
+				}
+			}
+
+			return results
+		},
+	})
+}

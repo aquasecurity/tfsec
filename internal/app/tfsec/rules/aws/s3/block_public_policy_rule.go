@@ -2,10 +2,8 @@ package s3
 
 import (
 	"github.com/aquasecurity/defsec/rules/aws/s3"
-
-	"github.com/aquasecurity/tfsec/pkg/rule"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {

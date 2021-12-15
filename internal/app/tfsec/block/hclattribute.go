@@ -86,7 +86,7 @@ func (a *HCLAttribute) GetRawValue() interface{} {
 func (attr *HCLAttribute) AsStringValue(explicit bool) types.StringValue {
 	f := types.String
 	if explicit {
-		f = types.StringDefault
+		f = types.StringExplicit
 	}
 	return f(
 		attr.Value().AsString(),
@@ -97,7 +97,7 @@ func (attr *HCLAttribute) AsStringValue(explicit bool) types.StringValue {
 func (attr *HCLAttribute) AsBoolValue(explicit bool) types.BoolValue {
 	f := types.Bool
 	if explicit {
-		f = types.BoolDefault
+		f = types.BoolExplicit
 	}
 	return f(
 		attr.IsTrue(),
@@ -108,7 +108,7 @@ func (attr *HCLAttribute) AsBoolValue(explicit bool) types.BoolValue {
 func (attr *HCLAttribute) AsIntValue(explicit bool) types.IntValue {
 	f := types.Int
 	if explicit {
-		f = types.IntDefault
+		f = types.IntExplicit
 	}
 	big := attr.Value().AsBigFloat()
 	flt, _ := big.Float64()

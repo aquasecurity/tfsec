@@ -1,32 +1,20 @@
 package eks
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS067",
- 		Service:   "eks",
- 		ShortCode: "enable-control-plane-logging",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "EKS Clusters should have cluster control plane logging turned on",
- 			Impact:     "Logging provides valuable information about access and usage",
- 			Resolution: "Enable logging for the EKS control plane",
- 			Explanation: `
- By default cluster control plane logging is not turned on. Logging is available for audit, api, authenticator, controllerManager and scheduler. All logging should be turned on for cluster control plane.
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"fmt"
+
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/eks"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS067",
+		BadExample: []string{`
  resource "aws_eks_cluster" "bad_example" {
      encryption_config {
          resources = [ "secrets" ]
@@ -42,7 +30,7 @@ package eks
      }
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_eks_cluster" "good_example" {
      encryption_config {
          resources = [ "secrets" ]
@@ -60,33 +48,33 @@ package eks
      }
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#enabled_cluster_log_types",
- 				"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_eks_cluster"},
- 		DefaultSeverity: severity.Medium,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			controlPlaneLogging := []string{"api", "audit", "authenticator", "controllerManager", "scheduler"}
- 
- 			if resourceBlock.MissingChild("enabled_cluster_log_types") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' missing the enabled_cluster_log_types attribute to enable control plane logging", resourceBlock.FullName())
- 				return
- 			}
- 
- 			configuredLoggingAttr := resourceBlock.GetAttribute("enabled_cluster_log_types")
- 			for _, logType := range controlPlaneLogging {
- 				if !configuredLoggingAttr.Contains(logType) {
- 					set.AddResult().
- 						WithDescription("Resource '%s' is missing the control plane log type '%s'", resourceBlock.FullName(), logType).
- 						WithAttribute("")
- 				}
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#enabled_cluster_log_types",
+			"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_eks_cluster"},
+		Base:           eks.CheckEnableControlPlaneLogging,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			controlPlaneLogging := []string{"api", "audit", "authenticator", "controllerManager", "scheduler"}
+
+			if resourceBlock.MissingChild("enabled_cluster_log_types") {
+				results.Add("Resource missing the enabled_cluster_log_types attribute to enable control plane logging", resourceBlock)
+				return
+			}
+
+			configuredLoggingAttr := resourceBlock.GetAttribute("enabled_cluster_log_types")
+			for _, logType := range controlPlaneLogging {
+				if !configuredLoggingAttr.Contains(logType) {
+					results.Add(
+						fmt.Sprintf("Resource is missing the control plane log type '%s'", logType),
+						configuredLoggingAttr,
+					)
+				}
+			}
+
+			return results
+		},
+	})
+}

@@ -25,7 +25,7 @@ github.com/agext/levenshtein
 github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
 github.com/apparentlymart/go-textseg/v13/textseg
-# github.com/aquasecurity/defsec v0.0.37
+# github.com/aquasecurity/defsec v0.0.38-0.20211214173304-6df6421d27ab
 ## explicit
 github.com/aquasecurity/defsec/cidr
 github.com/aquasecurity/defsec/formatters
@@ -99,7 +99,30 @@ github.com/aquasecurity/defsec/provider/kubernetes
 github.com/aquasecurity/defsec/provider/openstack
 github.com/aquasecurity/defsec/provider/oracle
 github.com/aquasecurity/defsec/rules
+github.com/aquasecurity/defsec/rules/aws/apigateway
+github.com/aquasecurity/defsec/rules/aws/athena
+github.com/aquasecurity/defsec/rules/aws/autoscaling
+github.com/aquasecurity/defsec/rules/aws/cloudfront
+github.com/aquasecurity/defsec/rules/aws/cloudtrail
+github.com/aquasecurity/defsec/rules/aws/cloudwatch
+github.com/aquasecurity/defsec/rules/aws/codebuild
+github.com/aquasecurity/defsec/rules/aws/config
+github.com/aquasecurity/defsec/rules/aws/documentdb
+github.com/aquasecurity/defsec/rules/aws/dynamodb
+github.com/aquasecurity/defsec/rules/aws/ebs
 github.com/aquasecurity/defsec/rules/aws/ec2
+github.com/aquasecurity/defsec/rules/aws/ecr
+github.com/aquasecurity/defsec/rules/aws/ecs
+github.com/aquasecurity/defsec/rules/aws/efs
+github.com/aquasecurity/defsec/rules/aws/eks
+github.com/aquasecurity/defsec/rules/aws/elasticache
+github.com/aquasecurity/defsec/rules/aws/elasticsearch
+github.com/aquasecurity/defsec/rules/aws/elb
+github.com/aquasecurity/defsec/rules/aws/iam
+github.com/aquasecurity/defsec/rules/aws/kinesis
+github.com/aquasecurity/defsec/rules/aws/kms
+github.com/aquasecurity/defsec/rules/aws/lambda
+github.com/aquasecurity/defsec/rules/aws/mq
 github.com/aquasecurity/defsec/rules/aws/s3
 github.com/aquasecurity/defsec/rules/google/compute
 github.com/aquasecurity/defsec/severity

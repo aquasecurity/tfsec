@@ -70,8 +70,8 @@ func TestBlockLabels(t *testing.T) {
 func TestDefSecUsage(t *testing.T) {
 	for _, rule := range scanner.GetRegisteredRules() {
 		t.Run(rule.ID(), func(t *testing.T) {
-			if rule.Base.Rule().AVDID == "" && rule.CheckTerraform == nil {
-				t.Errorf("Rule %s is not using defsec", rule.ID())
+			if rule.Base.Rule().AVDID == "" {
+				t.Errorf("Rule %s is not ready for defsec", rule.ID())
 			}
 		})
 	}

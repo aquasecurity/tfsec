@@ -1,10 +1,9 @@
 package secrets
 
- generator-locked
+generator-locked
 import (
-	"testing"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+"testing"
+"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
 func Test_AWSSensitiveLocals(t *testing.T) {

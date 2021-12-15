@@ -1,34 +1,18 @@
 package elb
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS083",
- 		Service:   "elb",
- 		ShortCode: "drop-invalid-headers",
- 		Documentation: rule.RuleDocumentation{
- 			Summary: "Load balancers should drop invalid headers",
- 			Explanation: `
- Passing unknown or invalid headers through to the target poses a potential risk of compromise. 
- 
- By setting drop_invalid_header_fields to true, anything that doe not conform to well known, defined headers will be removed by the load balancer.
- `,
- 			Impact:     "Invalid headers being passed through to the target of the load balance may exploit vulnerabilities",
- 			Resolution: "Set drop_invalid_header_fields to true",
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/elb"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS083",
+		BadExample: []string{`
  resource "aws_alb" "bad_example" {
  	name               = "bad_alb"
  	internal           = false
@@ -43,7 +27,7 @@ package elb
  	drop_invalid_header_fields = false
    }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_alb" "good_example" {
  	name               = "good_alb"
  	internal           = false
@@ -58,36 +42,32 @@ package elb
  	drop_invalid_header_fields = true
    }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#drop_invalid_header_fields",
- 				"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_alb", "aws_lb"},
- 		DefaultSeverity: severity.High,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.GetAttribute("load_balancer_type").IsNil() {
- 				return
- 			}
- 
- 			if resourceBlock.GetAttribute("load_balancer_type").Equals("application", block.IgnoreCase) {
- 				if resourceBlock.MissingChild("drop_invalid_header_fields") {
- 					set.AddResult().
- 						WithDescription("Resource '%s' does not drop invalid header fields", resourceBlock.FullName())
- 					return
- 				}
- 
- 				attr := resourceBlock.GetAttribute("drop_invalid_header_fields")
- 				if attr.IsFalse() {
- 					set.AddResult().
- 						WithDescription("Resource '%s' sets the drop_invalid_header_fields to false", resourceBlock.FullName()).
- 						WithAttribute("")
- 				}
- 
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#drop_invalid_header_fields",
+			"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_alb", "aws_lb"},
+		Base:           elb.CheckDropInvalidHeaders,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.GetAttribute("load_balancer_type").IsNil() {
+				return
+			}
+
+			if resourceBlock.GetAttribute("load_balancer_type").Equals("application", block.IgnoreCase) {
+				if resourceBlock.MissingChild("drop_invalid_header_fields") {
+					results.Add("Resource does not drop invalid header fields", resourceBlock)
+					return
+				}
+
+				attr := resourceBlock.GetAttribute("drop_invalid_header_fields")
+				if attr.IsFalse() {
+					results.Add("Resource sets the drop_invalid_header_fields to false", attr)
+				}
+
+			}
+			return results
+		},
+	})
+}

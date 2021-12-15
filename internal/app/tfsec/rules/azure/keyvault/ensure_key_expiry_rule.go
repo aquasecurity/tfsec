@@ -1,34 +1,17 @@
 package keyvault
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AZU026",
- 		Service:   "keyvault",
- 		ShortCode: "ensure-key-expiry",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "Ensure that the expiration date is set on all keys",
- 			Impact:     "Long life keys increase the attack surface when compromised",
- 			Resolution: "Set an expiration date on the vault key",
- 			Explanation: `
- Expiration Date is an optional Key Vault Key behavior and is not set by default.
- 
- Set when the resource will be become inactive.
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AZU026",
+		BadExample: []string{`
  resource "azurerm_key_vault_key" "bad_example" {
    name         = "generated-certificate"
    key_vault_id = azurerm_key_vault.example.id
@@ -45,7 +28,7 @@ package keyvault
    ]
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "azurerm_key_vault_key" "good_example" {
    name         = "generated-certificate"
    key_vault_id = azurerm_key_vault.example.id
@@ -63,21 +46,18 @@ package keyvault
    ]
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_key#expiration_date",
- 				"https://docs.microsoft.com/en-us/powershell/module/az.keyvault/update-azkeyvaultkey?view=azps-5.8.0#example-1--modify-a-key-to-enable-it--and-set-the-expiration-date-and-tags",
- 			},
- 		},
- 		Provider:        provider.AzureProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"azurerm_key_vault_key"},
- 		DefaultSeverity: severity.Medium,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("expiration_date") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' should have an expiration date set.", resourceBlock.FullName())
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_key#expiration_date",
+			"https://docs.microsoft.com/en-us/powershell/module/az.keyvault/update-azkeyvaultkey?view=azps-5.8.0#example-1--modify-a-key-to-enable-it--and-set-the-expiration-date-and-tags",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"azurerm_key_vault_key"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.MissingChild("expiration_date") {
+				results.Add("Resource should have an expiration date set.", resourceBlock)
+			}
+			return results
+		},
+	})
+}

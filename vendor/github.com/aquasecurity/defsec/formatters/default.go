@@ -93,11 +93,8 @@ func printResult(res rules.Result, i int, includePassedChecks bool) {
 
 `, severityFormatted, res.Description(), rng)
 
-	if code, err := highlightCode(res); err == nil {
-		_ = tml.Printf(code)
-		tml.Println("\n")
-	} else if err != nil {
-		terminal.PrintErrorf("Source code not available\n\n")
+	if err := highlightCode(res); err != nil {
+		_ = tml.Printf("<red>Failed to render source code: %s</red>\n", err)
 	}
 
 	_ = tml.Printf("  <white>ID:         </white><blue>%s</blue>\n", res.Rule().LongID())
@@ -128,47 +125,44 @@ func countPassedResults(results []rules.Result) int {
 	return passed
 }
 
-func highlightCode(result rules.Result) (string, error) {
+func highlightCode(result rules.Result) error {
 
-	rng := result.CodeBlockMetadata().Range()
-
-	if rng == nil {
-		return "", nil
+	outerRange := result.CodeBlockMetadata().Range()
+	innerRange := outerRange
+	if result.IssueBlockMetadata() != nil {
+		innerRange = result.IssueBlockMetadata().Range()
 	}
-	var resolvedValue string
-	content, err := ioutil.ReadFile(rng.GetFilename())
+
+	content, err := ioutil.ReadFile(outerRange.GetFilename())
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	hasAnnotation := result.Annotation() != "" && result.IssueBlockMetadata() != nil
+	hasAnnotation := result.Annotation() != ""
 
-	bodyStrings := strings.Split(string(content), "\n")
+	for i, bodyString := range strings.Split(string(content), "\n") {
 
-	var coloured []string
-	for i, bodyString := range bodyStrings {
-		resolvedValue = ""
-		if i >= rng.GetStartLine()-1 && i <= rng.GetEndLine() {
-			// TODO: Fix this for json
-			if !strings.HasSuffix(rng.GetFilename(), ".json") {
-				if hasAnnotation && result.IssueBlockMetadata().Range().GetStartLine() == i+1 {
-					resolvedValue = fmt.Sprintf("<blue>[%s]</blue>", result.Annotation())
-				}
-			}
+		// this line is outside the range, skip it
+		if i+1 < outerRange.GetStartLine() || i > outerRange.GetEndLine() {
+			continue
+		}
 
-			if hasAnnotation {
-				if resolvedValue == "" {
-					coloured = append(coloured, fmt.Sprintf("<blue>% 5d</blue> <dim>┃</dim> <yellow>%s</yellow>", i, bodyString))
-				} else {
-					coloured = append(coloured, fmt.Sprintf("<blue>% 5d</blue> <dim>┃</dim> <red>%s    %s</red>", i, bodyString, resolvedValue))
-				}
-			} else {
-				coloured = append(coloured, fmt.Sprintf("<blue>% 5d</blue> <dim>┃</dim> <red>%s</red>", i, bodyString))
+		// if we're not rendering json, we have an annotation, and we're rendering the line to show the annotation on,
+		// render the line with the annotation afterwards
+		if !strings.HasSuffix(outerRange.GetFilename(), ".json") && hasAnnotation && i+1 == innerRange.GetStartLine() {
+			annotation := tml.Sprintf("<blue>[%s]</blue>", result.Annotation())
+			_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <red>%s    %s</red>\n", i, bodyString, annotation)
+			continue
+		}
 
-			}
+		// if we're rendering the actual issue lines, use red
+		if i+1 >= innerRange.GetStartLine() && i < innerRange.GetEndLine() {
+			_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <red>%s</red>\n", i, bodyString)
+		} else {
+			_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <yellow>%s</yellow>\n", i, bodyString)
 		}
 	}
 
-	return strings.Join(coloured, "\n"), nil
-
+	fmt.Printf("\n\n")
+	return nil
 }

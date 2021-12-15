@@ -1,34 +1,17 @@
 package storage
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AZU013",
- 		Service:   "storage",
- 		ShortCode: "allow-microsoft-service-bypass",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "Trusted Microsoft Services should have bypass access to Storage accounts",
- 			Impact:     "Trusted Microsoft Services won't be able to access storage account unless rules set to allow",
- 			Resolution: "Allow Trusted Microsoft Services to bypass",
- 			Explanation: `
- Some Microsoft services that interact with storage accounts operate from networks that can't be granted access through network rules. 
- 
- To help this type of service work as intended, allow the set of trusted Microsoft services to bypass the network rules
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AZU013",
+		BadExample: []string{`
  resource "azurerm_storage_account" "bad_example" {
    name                = "storageaccountname"
    resource_group_name = azurerm_resource_group.example.name
@@ -59,7 +42,7 @@ package storage
    bypass                     = ["Metrics"]
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "azurerm_storage_account" "good_example" {
    name                = "storageaccountname"
    resource_group_name = azurerm_resource_group.example.name
@@ -90,36 +73,33 @@ package storage
    bypass                     = ["Metrics", "AzureServices"]
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account#bypass",
- 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account_network_rules#bypass",
- 				"https://docs.microsoft.com/en-us/azure/storage/common/storage-network-security#trusted-microsoft-services",
- 			},
- 		},
- 		Provider:        provider.AzureProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"azurerm_storage_account_network_rules", "azurerm_storage_account"},
- 		DefaultSeverity: severity.High,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			blockName := resourceBlock.FullName()
- 
- 			if resourceBlock.IsResourceType("azurerm_storage_account") {
- 				if resourceBlock.MissingChild("network_rules") {
- 					return
- 				}
- 				resourceBlock = resourceBlock.GetBlock("network_rules")
- 
- 			}
- 
- 			if resourceBlock.HasChild("bypass") {
- 				bypass := resourceBlock.GetAttribute("bypass")
- 				if bypass.IsNotNil() && !bypass.Contains("AzureServices") {
- 					set.AddResult().
- 						WithDescription("Resource '%s' defines a network rule that doesn't allow bypass of Microsoft Services.", blockName)
- 				}
- 			}
- 
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account#bypass",
+			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account_network_rules#bypass",
+			"https://docs.microsoft.com/en-us/azure/storage/common/storage-network-security#trusted-microsoft-services",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"azurerm_storage_account_network_rules", "azurerm_storage_account"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			blockName := resourceBlock.FullName()
+
+			if resourceBlock.IsResourceType("azurerm_storage_account") {
+				if resourceBlock.MissingChild("network_rules") {
+					return
+				}
+				resourceBlock = resourceBlock.GetBlock("network_rules")
+
+			}
+
+			if resourceBlock.HasChild("bypass") {
+				bypass := resourceBlock.GetAttribute("bypass")
+				if bypass.IsNotNil() && !bypass.Contains("AzureServices") {
+					results.Add("Resource defines a network rule that doesn't allow bypass of Microsoft Services.", blockName)
+				}
+			}
+
+			return results
+		},
+	})
+}

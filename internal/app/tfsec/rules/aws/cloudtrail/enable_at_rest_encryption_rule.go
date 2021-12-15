@@ -1,32 +1,18 @@
 package cloudtrail
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS065",
- 		Service:   "cloudtrail",
- 		ShortCode: "enable-at-rest-encryption",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "Cloudtrail should be encrypted at rest to secure access to sensitive trail data",
- 			Impact:     "Data can be freely read if compromised",
- 			Resolution: "Enable encryption at rest",
- 			Explanation: `
- Cloudtrail logs should be encrypted at rest to secure the sensitive data. Cloudtrail logs record all activity that occurs in the the account through API calls and would be one of the first places to look when reacting to a breach.
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/cloudtrail"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS065",
+		BadExample: []string{`
  resource "aws_cloudtrail" "bad_example" {
    is_multi_region_trail = true
  
@@ -41,7 +27,7 @@ package cloudtrail
    }
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_cloudtrail" "good_example" {
    is_multi_region_trail = true
    enable_log_file_validation = true
@@ -58,30 +44,26 @@ package cloudtrail
    }
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#kms_key_id",
- 				"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/encrypting-cloudtrail-log-files-with-aws-kms.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_cloudtrail"},
- 		DefaultSeverity: severity.High,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("kms_key_id") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' does not have a kms_key_id set.", resourceBlock.FullName())
- 				return
- 			}
- 
- 			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
- 			if kmsKeyIdAttr.IsEmpty() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' has a kms_key_id but it is not set.", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#kms_key_id",
+			"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/encrypting-cloudtrail-log-files-with-aws-kms.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_cloudtrail"},
+		Base:           cloudtrail.CheckEnableAtRestEncryption,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.MissingChild("kms_key_id") {
+				results.Add("Resource does not have a kms_key_id set.", resourceBlock)
+				return
+			}
+
+			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
+			if kmsKeyIdAttr.IsEmpty() {
+				results.Add("Resource has a kms_key_id but it is not set.", kmsKeyIdAttr)
+			}
+
+			return results
+		},
+	})
+}

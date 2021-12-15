@@ -1,32 +1,18 @@
 package dynamodb
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS081",
- 		Service:   "dynamodb",
- 		ShortCode: "enable-at-rest-encryption",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "DAX Cluster should always encrypt data at rest",
- 			Impact:     "Data can be freely read if compromised",
- 			Resolution: "Enable encryption at rest for DAX Cluster",
- 			Explanation: `
- Amazon DynamoDB Accelerator (DAX) encryption at rest provides an additional layer of data protection by helping secure your data from unauthorized access to the underlying storage.
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/dynamodb"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS081",
+		BadExample: []string{`
  resource "aws_dax_cluster" "bad_example" {
  	// no server side encryption at all
  }
@@ -47,7 +33,7 @@ package dynamodb
  	}
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_dax_cluster" "good_example" {
  	// other DAX config
  
@@ -56,36 +42,30 @@ package dynamodb
  	}
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dax_cluster#server_side_encryption",
- 				"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAXEncryptionAtRest.html",
- 				"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dax-cluster.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_dax_cluster"},
- 		DefaultSeverity: severity.High,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 			if resourceBlock.MissingChild("server_side_encryption") {
- 				set.AddResult().
- 					WithDescription("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", resourceBlock.FullName())
- 				return
- 			}
- 
- 			sseBlock := resourceBlock.GetBlock("server_side_encryption")
- 			if sseBlock.MissingChild("enabled") {
- 				set.AddResult().
- 					WithDescription("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", resourceBlock.FullName()).
- 					WithBlock("")
- 			}
- 
- 			if sseEnabledAttr := sseBlock.GetAttribute("enabled"); sseEnabledAttr.IsFalse() {
- 				set.AddResult().
- 					WithDescription("DAX cluster '%s' has disabled server side encryption", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dax_cluster#server_side_encryption",
+			"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAXEncryptionAtRest.html",
+			"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dax-cluster.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_dax_cluster"},
+		Base:           dynamodb.CheckEnableAtRestEncryption,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+			if resourceBlock.MissingChild("server_side_encryption") {
+				results.Add("DAX cluster '%s' does not have server side encryption configured. By default it is disabled.", resourceBlock)
+				return
+			}
+
+			sseBlock := resourceBlock.GetBlock("server_side_encryption")
+			if sseBlock.MissingChild("enabled") {
+				results.Add("DAX cluster '%s' server side encryption block is empty. By default SSE is disabled.", sseBlock)
+			}
+
+			if sseEnabledAttr := sseBlock.GetAttribute("enabled"); sseEnabledAttr.IsFalse() {
+				results.Add("DAX cluster '%s' has disabled server side encryption", sseEnabledAttr)
+			}
+
+			return results
+		},
+	})
+}

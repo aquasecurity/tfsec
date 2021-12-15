@@ -1,28 +1,17 @@
 package spaces
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/provider"
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "DIG006",
- 		Service:   "spaces",
- 		ShortCode: "versioning-enabled",
- 		Documentation: rule.RuleDocumentation{
- 			Summary: "Spaces buckets should have versioning enabled",
- 			Explanation: `
- Versioning is a means of keeping multiple variants of an object in the same bucket. You can use the Spaces (S3) Versioning feature to preserve, retrieve, and restore every version of every object stored in your buckets. With versioning you can recover more easily from both unintended user actions and application failures.
- `,
- 			Impact:     "Deleted or modified data would not be recoverable",
- 			Resolution: "Enable versioning to protect against accidental or malicious removal or modification",
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "DIG006",
+		BadExample: []string{`
  resource "digitalocean_spaces_bucket" "bad_example" {
    name   = "foobar"
    region = "nyc3"
@@ -37,7 +26,7 @@ package spaces
    }
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "digitalocean_spaces_bucket" "good_example" {
    name   = "foobar"
    region = "nyc3"
@@ -47,30 +36,27 @@ package spaces
    }
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#versioning",
- 				"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html",
- 			},
- 		},
- 		Provider:        provider.DigitalOceanProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"digitalocean_spaces_bucket"},
- 		DefaultSeverity: severity.Medium,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("versioning") {
- 				set.AddResult().WithDescription("Resource '%s' does not have versioning block specified", resourceBlock.FullName())
- 				return
- 			}
- 
- 			versioningBlock := resourceBlock.GetBlock("versioning")
- 			enabledAttr := versioningBlock.GetAttribute("enabled")
- 
- 			if enabledAttr.IsNil() || enabledAttr.IsFalse() {
- 				set.AddResult().WithDescription("Resource '%s' has versioning specified, but it isn't enabled", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#versioning",
+			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"digitalocean_spaces_bucket"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.MissingChild("versioning") {
+				results.Add("Resource does not have versioning block specified", resourceBlock)
+				return
+			}
+
+			versioningBlock := resourceBlock.GetBlock("versioning")
+			enabledAttr := versioningBlock.GetAttribute("enabled")
+
+			if enabledAttr.IsNil() || enabledAttr.IsFalse() {
+				results.Add("Resource has versioning specified, but it isn't enabled", ?)
+			}
+
+			return results
+		},
+	})
+}

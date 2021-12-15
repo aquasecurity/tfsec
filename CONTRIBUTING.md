@@ -108,8 +108,7 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
 		DefaultSeverity: severity.Warning,
 		CheckFunc: func(set result.Set, block block.Block, module block.Module) {
 			if attr := block.GetAttribute("hackable"); attr.IsTrue() {
-				set.AddResult().
-					WithDescription("The Gibson '%s' is configured to be hackable.", block.Name()).
+				results.Add("The Gibson '%s' is configured to be hackable.", block.Name()).
 					WithAttribute(attr),
 				)
 			}

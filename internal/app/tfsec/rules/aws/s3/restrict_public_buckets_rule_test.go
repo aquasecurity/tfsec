@@ -1,10 +1,9 @@
 package s3
 
- generator-locked
+generator-locked
 import (
-	"testing"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+"testing"
+"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
 func Test_AWSRestrictPublicBucketS3(t *testing.T) {

@@ -1,35 +1,17 @@
 package synapse
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AZU027",
- 		Service:   "synapse",
- 		ShortCode: "virtual-network-enabled",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "Synapse Workspace should have managed virtual network enabled, the default is disabled.",
- 			Impact:     "Your Synapse workspace is not using the private endpoints",
- 			Resolution: "Set manage virtual network to enabled",
- 			Explanation: `
- Synapse Workspace does not have managed virtual network enabled by default.
- 
- When you create your Azure Synapse workspace, you can choose to associate it to a Microsoft Azure Virtual Network. The Virtual Network associated with your workspace is managed by Azure Synapse. This Virtual Network is called a Managed workspace Virtual Network.
- Managed private endpoints are private endpoints created in a Managed Virtual Network associated with your Azure Synapse workspace. Managed private endpoints establish a private link to Azure resources. You can only use private links in a workspace that has a Managed workspace Virtual Network.
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AZU027",
+		BadExample: []string{`
  resource "azurerm_synapse_workspace" "bad_example" {
    name                                 = "example"
    resource_group_name                  = azurerm_resource_group.example.name
@@ -49,7 +31,7 @@ package synapse
    }
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "azurerm_synapse_workspace" "good_example" {
    name                                 = "example"
    resource_group_name                  = azurerm_resource_group.example.name
@@ -69,29 +51,24 @@ package synapse
    }
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/synapse_workspace#managed_virtual_network_enabled",
- 				"https://docs.microsoft.com/en-us/azure/synapse-analytics/security/synapse-workspace-managed-private-endpoints",
- 				"https://docs.microsoft.com/en-us/azure/synapse-analytics/security/synapse-workspace-managed-vnet",
- 			},
- 		},
- 		Provider:        provider.AzureProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"azurerm_synapse_workspace"},
- 		DefaultSeverity: severity.Medium,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("managed_virtual_network_enabled") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock.FullName())
- 				return
- 			}
- 			managedNetworkAttr := resourceBlock.GetAttribute("managed_virtual_network_enabled")
- 			if managedNetworkAttr.IsFalse() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/synapse_workspace#managed_virtual_network_enabled",
+			"https://docs.microsoft.com/en-us/azure/synapse-analytics/security/synapse-workspace-managed-private-endpoints",
+			"https://docs.microsoft.com/en-us/azure/synapse-analytics/security/synapse-workspace-managed-vnet",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"azurerm_synapse_workspace"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.MissingChild("managed_virtual_network_enabled") {
+				results.Add("Resource should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock)
+				return
+			}
+			managedNetworkAttr := resourceBlock.GetAttribute("managed_virtual_network_enabled")
+			if managedNetworkAttr.IsFalse() {
+				results.Add("Resource should have managed_virtual_network_enabled set to true, the default is false.", managedNetworkAttr)
+			}
+			return results
+		},
+	})
+}

@@ -1,15 +1,9 @@
 package s3
 
 import (
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 	"testing"
-)
 
-generator-locked
-import (
-"testing"
-
-"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
 func Test_AWSBlockPublicPolicyS3(t *testing.T) {

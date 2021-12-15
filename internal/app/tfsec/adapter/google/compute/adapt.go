@@ -5,8 +5,6 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules block.Modules) compute.Compute {
-	return compute.Compute{
-		Instances: getInstances(modules),
-	}
+func Adapt(modules []block.Module) compute.Compute {
+	return compute.Compute{}
 }

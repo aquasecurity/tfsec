@@ -1,34 +1,18 @@
 package ecr
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS078",
- 		Service:   "ecr",
- 		ShortCode: "enforce-immutable-repository",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "ECR images tags shouldn't be mutable.",
- 			Impact:     "Image tags could be overwritten with compromised images",
- 			Resolution: "Only use immutable images in ECR",
- 			Explanation: `
- ECR images should be set to IMMUTABLE to prevent code injection through image mutation.
- 
- This can be done by setting <code>image_tab_mutability</code> to <code>IMMUTABLE</code>
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/ecr"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS078",
+		BadExample: []string{`
  resource "aws_ecr_repository" "bad_example" {
    name                 = "bar"
    image_tag_mutability = "MUTABLE"
@@ -38,7 +22,7 @@ package ecr
    }
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_ecr_repository" "good_example" {
    name                 = "bar"
    image_tag_mutability = "IMMUTABLE"
@@ -48,30 +32,26 @@ package ecr
    }
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository",
- 				"https://sysdig.com/blog/toctou-tag-mutability/",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_ecr_repository"},
- 		DefaultSeverity: severity.High,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			imageTagMutabilityAttr := resourceBlock.GetAttribute("image_tag_mutability")
- 			if imageTagMutabilityAttr.IsNil() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", resourceBlock.FullName())
- 				return
- 			}
- 
- 			if imageTagMutabilityAttr.NotEqual("IMMUTABLE") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' has `image_tag_mutability` attribute  not set to `IMMUTABLE`", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository",
+			"https://sysdig.com/blog/toctou-tag-mutability/",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_ecr_repository"},
+		Base:           ecr.CheckEnforceImmutableRepository,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			imageTagMutabilityAttr := resourceBlock.GetAttribute("image_tag_mutability")
+			if imageTagMutabilityAttr.IsNil() {
+				results.Add("Resource is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", resourceBlock)
+				return
+			}
+
+			if imageTagMutabilityAttr.NotEqual("IMMUTABLE") {
+				results.Add("Resource has `image_tag_mutability` attribute  not set to `IMMUTABLE`", imageTagMutabilityAttr)
+			}
+
+			return results
+		},
+	})
+}

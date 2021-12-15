@@ -1,6 +1,5 @@
 package rules
 
- generator-locked
 import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/apigateway"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/athena"
@@ -20,14 +19,12 @@ import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/eks"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/elasticache"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/elasticsearch"
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/elasticservice"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/elb"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/elbv2"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/iam"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/kinesis"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/kms"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/lambda"
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/launch"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/misc"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/mq"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/msk"

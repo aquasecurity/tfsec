@@ -1,34 +1,17 @@
 package vpc
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS018",
- 		Service:   "vpc",
- 		ShortCode: "add-decription-to-security-group",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "Missing description for security group/security group rule.",
- 			Impact:     "Descriptions provide context for the firewall rule reasons",
- 			Resolution: "Add descriptions for all security groups and rules",
- 			Explanation: `
- Security groups and security group rules should include a description for auditing purposes.
- 
- Simplifies auditing, debugging, and managing security groups.
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS018",
+		BadExample: []string{`
  resource "aws_security_group" "bad_example" {
    name        = "http"
  
@@ -41,7 +24,7 @@ package vpc
    }
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_security_group" "good_example" {
    name        = "http"
    description = "Allow inbound HTTP traffic"
@@ -55,29 +38,24 @@ package vpc
    }
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group",
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule",
- 				"https://www.cloudconformity.com/knowledge-base/aws/EC2/security-group-rules-description.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_security_group", "aws_security_group_rule"},
- 		DefaultSeverity: severity.Low,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 			if resourceBlock.MissingChild("description") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' should include a description for auditing purposes.", resourceBlock.FullName())
- 				return
- 			}
- 
- 			descriptionAttr := resourceBlock.GetAttribute("description")
- 			if descriptionAttr.IsEmpty() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' should include a non-empty description for auditing purposes.", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group",
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule",
+			"https://www.cloudconformity.com/knowledge-base/aws/EC2/security-group-rules-description.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_security_group", "aws_security_group_rule"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+			if resourceBlock.MissingChild("description") {
+				results.Add("Resource should include a description for auditing purposes.", resourceBlock)
+				return
+			}
+
+			descriptionAttr := resourceBlock.GetAttribute("description")
+			if descriptionAttr.IsEmpty() {
+				results.Add("Resource should include a non-empty description for auditing purposes.", descriptionAttr)
+			}
+			return results
+		},
+	})
+}

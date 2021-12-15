@@ -1,37 +1,23 @@
 package ecs
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS090",
- 		Service:   "ecs",
- 		ShortCode: "enable-container-insight",
- 		Documentation: rule.RuleDocumentation{
- 			Summary: "ECS clusters should have container insights enabled",
- 			Explanation: `
- Cloudwatch Container Insights provide more metrics and logs for container based applications and micro services.
- `,
- 			Impact:     "Not all metrics and logs may be gathered for containers when Container Insights isn't enabled",
- 			Resolution: "Enable Container Insights",
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/ecs"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS090",
+		BadExample: []string{`
  resource "aws_ecs_cluster" "bad_example" {
    	name = "services-cluster"
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_ecs_cluster" "good_example" {
  	name = "services-cluster"
    
@@ -41,32 +27,28 @@ package ecs
  	}
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_cluster#setting",
- 				"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_ecs_cluster"},
- 		DefaultSeverity: severity.Low,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			settingsBlock := resourceBlock.GetBlocks("setting")
- 			for _, setting := range settingsBlock {
- 				if name := setting.GetAttribute("name"); name.IsNotNil() && name.Equals("containerinsights", block.IgnoreCase) {
- 					if valueAttr := setting.GetAttribute("value"); valueAttr.IsNotNil() {
- 						if !valueAttr.Equals("enabled", block.IgnoreCase) {
- 							set.AddResult().
- 								WithDescription("Resource '%s' has containerInsights set to disabled", resourceBlock.FullName()).
- 								WithAttribute("")
- 						}
- 						return
- 					}
- 				}
- 			}
- 			set.AddResult().
- 				WithDescription("Resource '%s' does not have containerInsights enabled", resourceBlock.FullName())
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_cluster#setting",
+			"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_ecs_cluster"},
+		Base:           ecs.CheckEnableContainerInsight,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			settingsBlock := resourceBlock.GetBlocks("setting")
+			for _, setting := range settingsBlock {
+				if name := setting.GetAttribute("name"); name.IsNotNil() && name.Equals("containerinsights", block.IgnoreCase) {
+					if valueAttr := setting.GetAttribute("value"); valueAttr.IsNotNil() {
+						if !valueAttr.Equals("enabled", block.IgnoreCase) {
+							results.Add("Resource has containerInsights set to disabled", valueAttr)
+						}
+						return
+					}
+				}
+			}
+			results.Add("Resource does not have containerInsights enabled", resourceBlock)
+			return results
+		},
+	})
+}

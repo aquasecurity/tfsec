@@ -3,9 +3,8 @@ package apigateway
 // generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules/aws/apigateway"
-	"github.com/aquasecurity/tfsec/pkg/rule"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -50,14 +49,5 @@ func init() {
 			"https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-logging.html",
 		},
 		Base: apigateway.CheckEnableAccessLogging,
-		// RequiredLabels:  []string{"aws_apigatewayv2_stage", "aws_api_gateway_stage"},
-
-		// CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
-		//
-		// 	if resourceBlock.MissingChild("access_log_settings") {
-		// 		set.AddResult().
-		// 			WithDescription("Resource '%s' is missing access log settings block.", resourceBlock.FullName())
-		// 	}
-		// },
 	})
 }

@@ -1,12 +1,9 @@
 package ec2
 
- generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules/aws/ec2"
-
-	"github.com/aquasecurity/tfsec/pkg/rule"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {

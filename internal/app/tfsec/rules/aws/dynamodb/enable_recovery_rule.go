@@ -1,34 +1,18 @@
 package dynamodb
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS086",
- 		Service:   "dynamodb",
- 		ShortCode: "enable-recovery",
- 		Documentation: rule.RuleDocumentation{
- 			Summary: "Point in time recovery should be enabled to protect DynamoDB table",
- 			Explanation: `
- DynamoDB tables should be protected against accidentally or malicious write/delete actions by ensuring that there is adequate protection.
- 
- By enabling point-in-time-recovery you can restore to a known point in the event of loss of data.
- `,
- 			Impact:     "Accidental or malicious writes and deletes can't be rolled back",
- 			Resolution: "Enable point in time recovery",
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/dynamodb"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS086",
+		BadExample: []string{`
  resource "aws_dynamodb_table" "bad_example" {
  	name             = "example"
  	hash_key         = "TestTableHashKey"
@@ -42,7 +26,7 @@ package dynamodb
  	}
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_dynamodb_table" "good_example" {
  	name             = "example"
  	hash_key         = "TestTableHashKey"
@@ -60,37 +44,31 @@ package dynamodb
  	}
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#point_in_time_recovery",
- 				"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/PointInTimeRecovery.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_dynamodb_table"},
- 		DefaultSeverity: severity.Medium,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("point_in_time_recovery") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' doesn't have point in time recovery", resourceBlock.FullName())
- 				return
- 			}
- 
- 			pointBlock := resourceBlock.GetBlock("point_in_time_recovery")
- 			if pointBlock.MissingChild("enabled") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName()).
- 					WithBlock("")
- 				return
- 			}
- 			enabledAttr := pointBlock.GetAttribute("enabled")
- 			if enabledAttr.IsFalse() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' doesn't have point in time recovery enabled", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#point_in_time_recovery",
+			"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/PointInTimeRecovery.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_dynamodb_table"},
+		Base:           dynamodb.CheckEnableRecovery,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.MissingChild("point_in_time_recovery") {
+				results.Add("Resource doesn't have point in time recovery", resourceBlock)
+				return
+			}
+
+			pointBlock := resourceBlock.GetBlock("point_in_time_recovery")
+			if pointBlock.MissingChild("enabled") {
+				results.Add("Resource doesn't have point in time recovery enabled", pointBlock)
+				return
+			}
+			enabledAttr := pointBlock.GetAttribute("enabled")
+			if enabledAttr.IsFalse() {
+				results.Add("Resource doesn't have point in time recovery enabled", enabledAttr)
+			}
+
+			return results
+		},
+	})
+}

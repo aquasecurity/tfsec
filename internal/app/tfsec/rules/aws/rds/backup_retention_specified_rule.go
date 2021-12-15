@@ -1,32 +1,17 @@
 package rds
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS091",
- 		Service:   "rds",
- 		ShortCode: "backup-retention-specified",
- 		Documentation: rule.RuleDocumentation{
- 			Summary: "RDS Cluster and RDS instance should have backup retention longer than default 1 day",
- 			Explanation: `
- RDS backup retention for clusters defaults to 1 day, this may not be enough to identify and respond to an issue. Backup retention periods should be set to a period that is a balance on cost and limiting risk.
- `,
- 			Impact:     "Potential loss of data and short opportunity for recovery",
- 			Resolution: "Explicitly set the retention period to greater than the default",
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS091",
+		BadExample: []string{`
  resource "aws_db_instance" "bad_example" {
  	allocated_storage    = 10
  	engine               = "mysql"
@@ -50,7 +35,7 @@ package rds
  	preferred_backup_window = "07:00-09:00"
    }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_rds_cluster" "good_example" {
  	cluster_identifier      = "aurora-cluster-demo"
  	engine                  = "aurora-mysql"
@@ -76,34 +61,29 @@ package rds
  	skip_final_snapshot  = true
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#backup_retention_period",
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance#backup_retention_period",
- 				"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html#USER_WorkingWithAutomatedBackups.BackupRetention",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_rds_cluster", "aws_db_instance"},
- 		DefaultSeverity: severity.Medium,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 			if resourceBlock.HasChild("replicate_source_db") {
- 				return
- 			}
- 
- 			if resourceBlock.MissingChild("backup_retention_period") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' does not have backup retention explicitly set", resourceBlock.FullName())
- 				return
- 			}
- 
- 			retentionAttr := resourceBlock.GetAttribute("backup_retention_period")
- 			if retentionAttr.LessThanOrEqualTo(1) {
- 				set.AddResult().
- 					WithDescription("Resource '%s' has backup retention period set to a low value", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#backup_retention_period",
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance#backup_retention_period",
+			"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html#USER_WorkingWithAutomatedBackups.BackupRetention",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_rds_cluster", "aws_db_instance"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+			if resourceBlock.HasChild("replicate_source_db") {
+				return
+			}
+
+			if resourceBlock.MissingChild("backup_retention_period") {
+				results.Add("Resource does not have backup retention explicitly set", resourceBlock)
+				return
+			}
+
+			retentionAttr := resourceBlock.GetAttribute("backup_retention_period")
+			if retentionAttr.LessThanOrEqualTo(1) {
+				results.Add("Resource has backup retention period set to a low value", retentionAttr)
+			}
+
+			return results
+		},
+	})
+}

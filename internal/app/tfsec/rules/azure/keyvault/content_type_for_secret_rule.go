@@ -1,41 +1,24 @@
 package keyvault
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AZU022",
- 		Service:   "keyvault",
- 		ShortCode: "content-type-for-secret",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "Key vault Secret should have a content type set",
- 			Impact:     "The secret's type is unclear without a content type",
- 			Resolution: "Provide content type for secrets to aid interpretation on retrieval",
- 			Explanation: `
- Content Type is an optional Key Vault Secret behavior and is not enabled by default.
- 
- Clients may specify the content type of a secret to assist in interpreting the secret data when it's retrieved. The maximum length of this field is 255 characters. There are no pre-defined values. The suggested usage is as a hint for interpreting the secret data.
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AZU022",
+		BadExample: []string{`
  resource "azurerm_key_vault_secret" "bad_example" {
    name         = "secret-sauce"
    value        = "szechuan"
    key_vault_id = azurerm_key_vault.example.id
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "azurerm_key_vault_secret" "good_example" {
    name         = "secret-sauce"
    value        = "szechuan"
@@ -43,21 +26,18 @@ package keyvault
    content_type = "password"
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret#content_type",
- 				"https://docs.microsoft.com/en-us/azure/key-vault/secrets/about-secrets",
- 			},
- 		},
- 		Provider:        provider.AzureProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"azurerm_key_vault_secret"},
- 		DefaultSeverity: severity.Low,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("content_type") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' should have a content type set.", resourceBlock.FullName())
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret#content_type",
+			"https://docs.microsoft.com/en-us/azure/key-vault/secrets/about-secrets",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"azurerm_key_vault_secret"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.MissingChild("content_type") {
+				results.Add("Resource should have a content type set.", resourceBlock)
+			}
+			return results
+		},
+	})
+}

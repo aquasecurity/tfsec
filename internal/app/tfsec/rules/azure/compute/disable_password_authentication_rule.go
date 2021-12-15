@@ -1,29 +1,16 @@
 package compute
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		Service:   "compute",
- 		ShortCode: "disable-password-authentication",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:     "Password authentication should be disabled on Azure virtual machines",
- 			Explanation: `Access to virtual machines should be authenticated using SSH keys. Removing the option of password authentication enforces more secure methods while removing the risks inherent with passwords.`,
- 			Impact:      "Using password authentication is less secure that ssh keys may result in compromised servers",
- 			Resolution:  "Use ssh authentication for virtual machines",
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		BadExample: []string{`
  resource "azurerm_linux_virtual_machine" "bad_linux_example" {
    name                            = "bad-linux-machine"
    resource_group_name             = azurerm_resource_group.example.name
@@ -53,7 +40,7 @@ package compute
  	}
    }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "azurerm_linux_virtual_machine" "good_linux_example" {
    name                            = "good-linux-machine"
    resource_group_name             = azurerm_resource_group.example.name
@@ -86,33 +73,30 @@ package compute
  	}
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine#disable_password_authentication",
- 				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine#disable_password_authentication",
- 			},
- 		},
- 		Provider:        provider.AzureProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"azurerm_linux_virtual_machine", "azurerm_virtual_machine"},
- 		DefaultSeverity: severity.High,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			workingBlock := resourceBlock
- 			if resourceBlock.TypeLabel() == "azurerm_virtual_machine" {
- 				if resourceBlock.HasChild("os_profile_linux_config") {
- 					workingBlock = resourceBlock.GetBlock("os_profile_linux_config")
- 				}
- 			}
- 
- 			if workingBlock.MissingChild("disable_password_authentication") {
- 				return
- 			}
- 
- 			passwordAuthAttr := workingBlock.GetAttribute("disable_password_authentication")
- 			if passwordAuthAttr.IsFalse() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' has password authentication enabled.", resourceBlock.FullName()).WithAttribute("")
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine#disable_password_authentication",
+			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine#disable_password_authentication",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"azurerm_linux_virtual_machine", "azurerm_virtual_machine"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			workingBlock := resourceBlock
+			if resourceBlock.TypeLabel() == "azurerm_virtual_machine" {
+				if resourceBlock.HasChild("os_profile_linux_config") {
+					workingBlock = resourceBlock.GetBlock("os_profile_linux_config")
+				}
+			}
+
+			if workingBlock.MissingChild("disable_password_authentication") {
+				return
+			}
+
+			passwordAuthAttr := workingBlock.GetAttribute("disable_password_authentication")
+			if passwordAuthAttr.IsFalse() {
+				results.Add("Resource has password authentication enabled.", passwordAuthAttr)
+			}
+			return results
+		},
+	})
+}

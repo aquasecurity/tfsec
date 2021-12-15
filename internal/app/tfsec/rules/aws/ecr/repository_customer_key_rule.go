@@ -1,33 +1,18 @@
 package ecr
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS093",
- 		Service:   "ecr",
- 		ShortCode: "repository-customer-key",
- 		Documentation: rule.RuleDocumentation{
- 			Summary: "ECR Repository should use customer managed keys to allow more control",
- 			Explanation: `
- Images in the ECR repository are encrypted by default using AWS managed encryption keys. To increase control of the encryption and control the management of factors like key rotation, use a Customer Managed Key.
- 
- `,
- 			Impact:     "Using AWS managed keys does not allow for fine grained control",
- 			Resolution: "Use customer managed keys",
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/ecr"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS093",
+		BadExample: []string{`
  resource "aws_ecr_repository" "bad_example" {
  	name                 = "bar"
  	image_tag_mutability = "MUTABLE"
@@ -37,7 +22,7 @@ package ecr
  	}
    }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_kms_key" "ecr_kms" {
  	enable_key_rotation = true
  }
@@ -56,37 +41,31 @@ package ecr
  	}
    }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository#encryption_configuration",
- 				"https://docs.aws.amazon.com/AmazonECR/latest/userguide/encryption-at-rest.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_ecr_repository"},
- 		DefaultSeverity: severity.Low,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("encryption_configuration") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' does not have CMK encryption configured", resourceBlock.FullName())
- 				return
- 			}
- 
- 			encBlock := resourceBlock.GetBlock("encryption_configuration")
- 			if encBlock.MissingChild("kms_key") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' configures encryption without using CMK", resourceBlock.FullName()).
- 					WithBlock("")
- 				return
- 			}
- 
- 			if encBlock.MissingChild("encryption_type") || encBlock.GetAttribute("encryption_type").Equals("AES256") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' should have the encryption type set to KMS", resourceBlock.FullName()).
- 					WithBlock("")
- 			}
- 
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository#encryption_configuration",
+			"https://docs.aws.amazon.com/AmazonECR/latest/userguide/encryption-at-rest.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_ecr_repository"},
+		Base:           ecr.CheckRepositoryCustomerKey,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.MissingChild("encryption_configuration") {
+				results.Add("Resource does not have CMK encryption configured", resourceBlock)
+				return
+			}
+
+			encBlock := resourceBlock.GetBlock("encryption_configuration")
+			if encBlock.MissingChild("kms_key") {
+				results.Add("Resource configures encryption without using CMK", encBlock)
+				return
+			}
+
+			if encBlock.MissingChild("encryption_type") || encBlock.GetAttribute("encryption_type").Equals("AES256") {
+				results.Add("Resource should have the encryption type set to KMS", encBlock)
+			}
+
+			return results
+		},
+	})
+}

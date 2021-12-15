@@ -40,21 +40,19 @@ func (p *Pool) Run() (rules.Results, error) {
 		workers = append(workers, worker)
 	}
 
-	// run defsec checks
-	for _, r := range GetRegisteredRules() {
-		outgoing <- &infraRuleJob{
-			state:        p.state,
-			rule:         r,
-			ignoreErrors: p.ignoreErrors,
-		}
-	}
-
-	// run internal checks
 	for _, module := range p.modules {
 		for _, r := range GetRegisteredRules() {
 			if r.CheckTerraform != nil {
+				// run local hcl rule
 				outgoing <- &hclModuleRuleJob{
 					module:       module,
+					rule:         r,
+					ignoreErrors: p.ignoreErrors,
+				}
+			} else {
+				// run defsec rule
+				outgoing <- &infraRuleJob{
+					state:        p.state,
 					rule:         r,
 					ignoreErrors: p.ignoreErrors,
 				}

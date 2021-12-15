@@ -1,32 +1,18 @@
 package cloudfront
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS045",
- 		Service:   "cloudfront",
- 		ShortCode: "enable-waf",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "CloudFront distribution does not have a WAF in front.",
- 			Impact:     "Complex web application attacks can more easily be performed without a WAF",
- 			Resolution: "Enable WAF for the CloudFront distribution",
- 			Explanation: `
- You should configure a Web Application Firewall in front of your CloudFront distribution. This will mitigate many types of attacks on your web application.
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/cloudfront"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS045",
+		BadExample: []string{`
  resource "aws_cloudfront_distribution" "bad_example" {
    origin_group {
      origin_id = "groupS3"
@@ -63,7 +49,7 @@ package cloudfront
    }
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_cloudfront_distribution" "good_example" {
  
    origin {
@@ -91,22 +77,21 @@ package cloudfront
    web_acl_id = "waf_id"
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#web_acl_id",
- 				"https://docs.aws.amazon.com/waf/latest/developerguide/cloudfront-features.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_cloudfront_distribution"},
- 		DefaultSeverity: severity.High,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, context block.Module) {
- 
- 			wafAclIdBlock := resourceBlock.GetAttribute("web_acl_id")
- 			if wafAclIdBlock.IsNil() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' does not have a WAF in front of it.", resourceBlock.FullName())
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#web_acl_id",
+			"https://docs.aws.amazon.com/waf/latest/developerguide/cloudfront-features.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_cloudfront_distribution"},
+		Base:           cloudfront.CheckEnableWaf,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			wafAclIdBlock := resourceBlock.GetAttribute("web_acl_id")
+			if wafAclIdBlock.IsNil() {
+				results.Add("Resource does not have a WAF in front of it.", resourceBlock)
+			}
+
+			return results
+		},
+	})
+}

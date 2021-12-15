@@ -62,7 +62,7 @@ func init() {
  }
  `},
 		Links: []string{
-			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#access_config",
+			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#access_config", return results
 		},
 	})
 }

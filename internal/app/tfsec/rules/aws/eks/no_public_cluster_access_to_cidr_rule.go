@@ -1,34 +1,19 @@
 package eks
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS068",
- 		Service:   "eks",
- 		ShortCode: "no-public-cluster-access-to-cidr",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "EKS cluster should not have open CIDR range for public access",
- 			Impact:     "EKS can be access from the internet",
- 			Resolution: "Don't enable public access to EKS Clusters",
- 			Explanation: `
- EKS Clusters have public access cidrs set to 0.0.0.0/0 by default which is wide open to the internet. This should be explicitly set to a more specific CIDR range
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/eks"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS068",
+		BadExample: []string{`
  resource "aws_eks_cluster" "bad_example" {
      // other config 
  
@@ -39,7 +24,7 @@ package eks
      }
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_eks_cluster" "good_example" {
      // other config 
  
@@ -51,38 +36,33 @@ package eks
      }
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#vpc_config",
- 				"https://docs.aws.amazon.com/eks/latest/userguide/create-public-private-vpc.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_eks_cluster"},
- 		DefaultSeverity: severity.Critical,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("vpc_config") {
- 				return
- 			}
- 			vpcConfig := resourceBlock.GetBlock("vpc_config")
- 
- 			publicAccessEnabledAttr := vpcConfig.GetAttribute("endpoint_public_access")
- 			if publicAccessEnabledAttr.IsNotNil() && publicAccessEnabledAttr.IsFalse() {
- 				return
- 			}
- 
- 			publicAccessCidrsAttr := vpcConfig.GetAttribute("public_access_cidrs")
- 			if publicAccessCidrsAttr.IsNil() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' uses the default public access cidr of 0.0.0.0/0", resourceBlock.FullName()).
- 					WithBlock("")
- 
- 			} else if cidr.IsAttributeOpen(publicAccessCidrsAttr) {
- 				set.AddResult().
- 					WithDescription("Resource '%s' has public access cidr explicitly set to wide open", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#vpc_config",
+			"https://docs.aws.amazon.com/eks/latest/userguide/create-public-private-vpc.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_eks_cluster"},
+		Base:           eks.CheckNoPublicClusterAccessToCidr,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.MissingChild("vpc_config") {
+				return
+			}
+			vpcConfig := resourceBlock.GetBlock("vpc_config")
+
+			publicAccessEnabledAttr := vpcConfig.GetAttribute("endpoint_public_access")
+			if publicAccessEnabledAttr.IsNotNil() && publicAccessEnabledAttr.IsFalse() {
+				return
+			}
+
+			publicAccessCidrsAttr := vpcConfig.GetAttribute("public_access_cidrs")
+			if publicAccessCidrsAttr.IsNil() {
+				results.Add("Resource uses the default public access cidr of 0.0.0.0/0", vpcConfig)
+			} else if cidr.IsAttributeOpen(publicAccessCidrsAttr) {
+				results.Add("Resource has public access cidr explicitly set to wide open", publicAccessCidrsAttr)
+			}
+
+			return results
+		},
+	})
+}

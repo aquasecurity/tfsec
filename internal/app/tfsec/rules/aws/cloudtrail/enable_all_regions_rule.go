@@ -1,32 +1,18 @@
 package cloudtrail
- 
- // generator-locked
- import (
- 	"github.com/aquasecurity/defsec/result"
- 	"github.com/aquasecurity/defsec/severity"
- 
- 	"github.com/aquasecurity/defsec/provider"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
- 
- 	"github.com/aquasecurity/tfsec/pkg/rule"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
- )
- 
- func init() {
- 	scanner.RegisterCheckRule(rule.Rule{
- 		LegacyID:  "AWS063",
- 		Service:   "cloudtrail",
- 		ShortCode: "enable-all-regions",
- 		Documentation: rule.RuleDocumentation{
- 			Summary:    "Cloudtrail should be enabled in all regions regardless of where your AWS resources are generally homed",
- 			Impact:     "Activity could be happening in your account in a different region",
- 			Resolution: "Enable Cloudtrail in all regions",
- 			Explanation: `
- When creating Cloudtrail in the AWS Management Console the trail is configured by default to be multi-region, this isn't the case with the Terraform resource. Cloudtrail should cover the full AWS account to ensure you can track changes in regions you are not actively operting in.
- `,
- 			BadExample: []string{`
+
+// generator-locked
+import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/cloudtrail"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+)
+
+func init() {
+	scanner.RegisterCheckRule(rule.Rule{
+		LegacyID: "AWS063",
+		BadExample: []string{`
  resource "aws_cloudtrail" "bad_example" {
    event_selector {
      read_write_type           = "All"
@@ -39,7 +25,7 @@ package cloudtrail
    }
  }
  `},
- 			GoodExample: []string{`
+		GoodExample: []string{`
  resource "aws_cloudtrail" "good_example" {
    is_multi_region_trail = true
  
@@ -54,29 +40,26 @@ package cloudtrail
    }
  }
  `},
- 			Links: []string{
- 				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#is_multi_region_trail",
- 				"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/receive-cloudtrail-log-files-from-multiple-regions.html",
- 			},
- 		},
- 		Provider:        provider.AWSProvider,
- 		RequiredTypes:   []string{"resource"},
- 		RequiredLabels:  []string{"aws_cloudtrail"},
- 		DefaultSeverity: severity.Medium,
- 		CheckTerraform: func(set result.Set, resourceBlock block.Block, _ block.Module) {
- 
- 			if resourceBlock.MissingChild("is_multi_region_trail") {
- 				set.AddResult().
- 					WithDescription("Resource '%s' does not set multi region trail config.", resourceBlock.FullName())
- 				return
- 			}
- 
- 			multiRegionAttr := resourceBlock.GetAttribute("is_multi_region_trail")
- 			if multiRegionAttr.IsFalse() {
- 				set.AddResult().
- 					WithDescription("Resource '%s' does not enable multi region trail.", resourceBlock.FullName()).
- 					WithAttribute("")
- 			}
- 		},
- 	})
- }
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#is_multi_region_trail",
+			"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/receive-cloudtrail-log-files-from-multiple-regions.html",
+		},
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_cloudtrail"},
+		Base:           cloudtrail.CheckEnableAllRegions,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+
+			if resourceBlock.MissingChild("is_multi_region_trail") {
+				results.Add("Resource does not set multi region trail config.", resourceBlock)
+				return
+			}
+
+			multiRegionAttr := resourceBlock.GetAttribute("is_multi_region_trail")
+			if multiRegionAttr.IsFalse() {
+				results.Add("Resource does not enable multi region trail.", multiRegionAttr)
+			}
+
+			return results
+		},
+	})
+}
