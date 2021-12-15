@@ -1,20 +1,17 @@
 package secrets
 
-generator-locked
 import (
-"github.com/aquasecurity/defsec/rules"
-"github.com/aquasecurity/defsec/severity"
-"github.com/zclconf/go-cty/cty"
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/general/secrets"
+	"github.com/zclconf/go-cty/cty"
 
-"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
-"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 
-"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
 
-"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
-
-"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
 var sensitiveWhitelist = []struct {
@@ -46,10 +43,6 @@ var sensitiveWhitelist = []struct {
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		LegacyID: "GEN003",
-		Base: rules.Register(rules.Rule{
-
-			Severity: severity.Critical,
-		}, nil),
 		Links: []string{
 			"https://www.terraform.io/docs/state/sensitive-data.html",
 		},
@@ -69,6 +62,7 @@ func init() {
  	root_password = var.passwordx
  }
  `},
+		Base: secrets.CheckNotExposed,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			attributes := resourceBlock.GetAttributes()
@@ -90,5 +84,7 @@ func init() {
 
 				}
 			}
-			returnreturn
-			results
+			return results
+		},
+	})
+}

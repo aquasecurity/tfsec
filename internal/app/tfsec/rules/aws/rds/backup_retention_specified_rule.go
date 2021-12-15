@@ -1,8 +1,8 @@
 package rds
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/rds"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -23,7 +23,7 @@ func init() {
  	parameter_group_name = "default.mysql5.7"
  	skip_final_snapshot  = true
  }
- 
+`, ` 
  resource "aws_rds_cluster" "bad_example" {
  	cluster_identifier      = "aurora-cluster-demo"
  	engine                  = "aurora-mysql"
@@ -48,6 +48,7 @@ func init() {
  	preferred_backup_window = "07:00-09:00"
    }
  
+`, ` 
    resource "aws_db_instance" "good_example" {
  	allocated_storage    = 10
  	engine               = "mysql"
@@ -68,6 +69,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_rds_cluster", "aws_db_instance"},
+		Base:           rds.CheckBackupRetentionSpecified,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if resourceBlock.HasChild("replicate_source_db") {
 				return

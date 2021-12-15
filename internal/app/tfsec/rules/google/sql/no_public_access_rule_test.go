@@ -1,24 +1,23 @@
 package sql
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_GoogleNoPublicAccess(t *testing.T) {
- 	expectedCode := "google-sql-no-public-access"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check detects issue with public ipv4 address being assigned",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_GoogleNoPublicAccess(t *testing.T) {
+	expectedCode := "google-sql-no-public-access"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check detects issue with public ipv4 address being assigned",
+			source: `
  resource "google_sql_database_instance" "postgres" {
  	name             = "postgres-instance-a"
  	database_version = "POSTGRES_11"
@@ -32,11 +31,11 @@ package sql
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check detects issue with public ipv4 address being assigned by default",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check detects issue with public ipv4 address being assigned by default",
+			source: `
  resource "google_sql_database_instance" "postgres" {
  	name             = "postgres-instance-a"
  	database_version = "POSTGRES_11"
@@ -49,11 +48,11 @@ package sql
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check detects issue with public ipv4 address being assigned by default",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check detects issue with public ipv4 address being assigned by default",
+			source: `
  resource "google_sql_database_instance" "postgres" {
  	name             = "postgres-instance-a"
  	database_version = "POSTGRES_11"
@@ -63,22 +62,22 @@ package sql
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check detects issue with public ipv4 address being assigned by default",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check detects issue with public ipv4 address being assigned by default",
+			source: `
  resource "google_sql_database_instance" "postgres" {
  	name             = "postgres-instance-a"
  	database_version = "POSTGRES_11"
  	
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check detects issue with authorized network being internet",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check detects issue with authorized network being internet",
+			source: `
  resource "google_sql_database_instance" "postgres" {
  	name             = "postgres-instance-a"
  	database_version = "POSTGRES_11"
@@ -101,11 +100,11 @@ package sql
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check detects no issue with authorized network being internal",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check detects no issue with authorized network being internal",
+			source: `
  resource "google_sql_database_instance" "postgres" {
  	name             = "postgres-instance-a"
  	database_version = "POSTGRES_11"
@@ -123,15 +122,15 @@ package sql
  	}
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+}

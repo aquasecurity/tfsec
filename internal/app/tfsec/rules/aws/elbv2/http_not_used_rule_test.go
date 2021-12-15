@@ -1,47 +1,46 @@
 package elbv2
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSPlainHTTP(t *testing.T) {
- 	expectedCode := "aws-elbv2-http-not-used"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check aws_alb_listener using plain HTTP",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSPlainHTTP(t *testing.T) {
+	expectedCode := "aws-elb-http-not-used"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check aws_alb_listener using plain HTTP",
+			source: `
  resource "aws_alb_listener" "my-listener" {
  	protocol = "HTTP"
  }`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check aws_lb_listener using plain HTTP",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_lb_listener using plain HTTP",
+			source: `
  resource "aws_lb_listener" "my-listener" {
  	protocol = "HTTP"
  }`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check aws_alb_listener using plain HTTP (via non specification)",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_alb_listener using plain HTTP (via non specification)",
+			source: `
  resource "aws_alb_listener" "my-listener" {
  }`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check aws_alb_listeneer should continue checks if the referenced if a load balancer is not gateway",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_alb_listeneer should continue checks if the referenced if a load balancer is not gateway",
+			source: `
  resource "aws_lb" "gwlb" {
  
  	load_balancer_type = "application"
@@ -57,19 +56,19 @@ package elbv2
  		}
  }
  	`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check aws_alb_listener using HTTPS",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_alb_listener using HTTPS",
+			source: `
  resource "aws_alb_listener" "my-listener" {
  	protocol = "HTTPS"
  }`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check aws_alb_listener using HTTP as redirect to HTTPS",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_alb_listener using HTTP as redirect to HTTPS",
+			source: `
  resource "aws_alb_listener" "my-listener" {
  	protocol = "HTTP"
  	default_action {
@@ -82,11 +81,11 @@ package elbv2
  		}
  	}
  }`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check aws_alb_listeneer should pass if a type is gateway",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_alb_listeneer should pass if a type is gateway",
+			source: `
  resource "aws_lb" "gwlb" {
  
  	load_balancer_type = "gateway"
@@ -102,16 +101,16 @@ package elbv2
  		}
  }
  	`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

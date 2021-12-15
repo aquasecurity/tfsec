@@ -1,6 +1,5 @@
 package apigateway
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,6 +18,10 @@ func Test_AWSAPIGatewayHasAccessLoggingEnabled(t *testing.T) {
 		{
 			name: "test missing access log settings has error v2",
 			source: `
+resource "aws_apigatewayv2_api" "example" {
+	
+}
+
  resource "aws_apigatewayv2_stage" "bad_example" {
    api_id = aws_apigatewayv2_api.example.id
    name   = "example-stage"
@@ -29,6 +32,10 @@ func Test_AWSAPIGatewayHasAccessLoggingEnabled(t *testing.T) {
 		{
 			name: "test missing access log settings has error",
 			source: `
+resource "aws_api_gateway_rest_api" "example" {
+	
+}
+
  resource "aws_api_gateway_stage" "bad_example" {
    deployment_id = aws_api_gateway_deployment.example.id
    rest_api_id   = aws_api_gateway_rest_api.example.id
@@ -40,12 +47,16 @@ func Test_AWSAPIGatewayHasAccessLoggingEnabled(t *testing.T) {
 		{
 			name: "test access log settings present has no error v2",
 			source: `
+resource "aws_apigatewayv2_api" "example" {
+	
+}
+
  resource "aws_apigatewayv2_stage" "good_example" {
    api_id = aws_apigatewayv2_api.example.id
    name   = "example-stage"
 
    access_log_settings {
-     destination_arn = ""
+     destination_arn = "somewhere"
      format          = ""
    }
  }
@@ -55,13 +66,17 @@ func Test_AWSAPIGatewayHasAccessLoggingEnabled(t *testing.T) {
 		{
 			name: "test access log settings present has no error",
 			source: `
+resource "aws_api_gateway_rest_api" "example" {
+	
+}
+
  resource "aws_api_gateway_stage" "good_example" {
    deployment_id = aws_api_gateway_deployment.example.id
    rest_api_id   = aws_api_gateway_rest_api.example.id
    stage_name    = "example"
 
    access_log_settings {
-     destination_arn = ""
+     destination_arn = "somewhere"
      format          = ""
    }
  }

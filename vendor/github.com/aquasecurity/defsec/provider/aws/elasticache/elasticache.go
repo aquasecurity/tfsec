@@ -18,6 +18,7 @@ type Cluster struct {
 type ReplicationGroup struct {
 	types.Metadata
 	TransitEncryptionEnabled types.BoolValue
+	AtRestEncryptionEnabled  types.BoolValue
 }
 
 type SecurityGroup struct {

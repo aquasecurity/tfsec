@@ -1,6 +1,5 @@
 package gke
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"

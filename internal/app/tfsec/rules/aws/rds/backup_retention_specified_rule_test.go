@@ -1,24 +1,23 @@
 package rds
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSRDSRetentionPeriod(t *testing.T) {
- 	expectedCode := "aws-rds-backup-retention-specified"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "db instance with default retention fails check",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSRDSRetentionPeriod(t *testing.T) {
+	expectedCode := "aws-rds-specify-backup-retention"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "db instance with default retention fails check",
+			source: `
  			resource "aws_db_instance" "bad_example" {
  				allocated_storage    = 10
  				engine               = "mysql"
@@ -31,11 +30,11 @@ package rds
  				skip_final_snapshot  = true
  			}
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "rds cluster with default retention fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "rds cluster with default retention fails check",
+			source: `
  			resource "aws_rds_cluster" "bad_example" {
  				cluster_identifier      = "aurora-cluster-demo"
  				engine                  = "aurora-mysql"
@@ -47,11 +46,11 @@ package rds
  				preferred_backup_window = "07:00-09:00"
  			}
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "db instance with explicit retention of 1 fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "db instance with explicit retention of 1 fails check",
+			source: `
  			resource "aws_db_instance" "bad_example" {
  				allocated_storage    = 10
  				engine               = "mysql"
@@ -65,11 +64,11 @@ package rds
  				skip_final_snapshot  = true
  			}
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "rds cluster with explicit retention of 1 fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "rds cluster with explicit retention of 1 fails check",
+			source: `
  			resource "aws_rds_cluster" "bad_example" {
  				cluster_identifier      = "aurora-cluster-demo"
  				engine                  = "aurora-mysql"
@@ -82,11 +81,11 @@ package rds
  				preferred_backup_window = "07:00-09:00"
  			}
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "rds cluster with retention greater than default passes check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "rds cluster with retention greater than default passes check",
+			source: `
  			resource "aws_rds_cluster" "good_example" {
  				cluster_identifier      = "aurora-cluster-demo"
  				engine                  = "aurora-mysql"
@@ -99,11 +98,11 @@ package rds
  				preferred_backup_window = "07:00-09:00"
  			}
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "db instance with retention greater than default passes check",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "db instance with retention greater than default passes check",
+			source: `
  	        resource "aws_db_instance" "good_example" {
  				allocated_storage       = 10
  				engine                  = "mysql"
@@ -117,11 +116,11 @@ package rds
  				skip_final_snapshot     = true
  			}
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "db instance with which is a replica with no retention period set  passes check",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "db instance with which is a replica with no retention period set  passes check",
+			source: `
  			resource "aws_db_instance" "good_example" {
  				allocated_storage       = 10
  				engine                  = "mysql"
@@ -149,16 +148,16 @@ package rds
  				skip_final_snapshot     = true
  			}
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

@@ -1,24 +1,23 @@
 package iam
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege(t *testing.T) {
- 	expectedCode := "aws-iam-no-policy-wildcards"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "Fails on wildcarded resource (inline)",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSIAMPolicyShouldUsePrincipleOfLeastPrivilege(t *testing.T) {
+	expectedCode := "aws-iam-no-policy-wildcards"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "Fails on wildcarded resource (inline)",
+			source: `
  				resource "aws_iam_role_policy" "test_policy" {
  					name = "test_policy"
  					role = aws_iam_role.test_role.id
@@ -54,11 +53,11 @@ package iam
  					}
  				}
  						`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Fails on wildcarded templated identifier (inline)",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Fails on wildcarded templated identifier (inline)",
+			source: `
  				resource "aws_iam_role_policy" "test_policy" {
  					name = "test_policy"
  					role = aws_iam_role.test_role.id
@@ -94,11 +93,11 @@ package iam
  					}
  				}
  				`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Fails on wildcarded templated identifier with local (inline)",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Fails on wildcarded templated identifier with local (inline)",
+			source: `
  		resource "aws_iam_role_policy" "test_policy" {
  			name = "test_policy"
  			role = aws_iam_role.test_role.id
@@ -138,11 +137,11 @@ package iam
  			}
  		}
  		`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Fails on wildcarded templated identifier with variable (inline)",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Fails on wildcarded templated identifier with variable (inline)",
+			source: `
  		resource "aws_iam_role_policy" "test_policy" {
  			name = "test_policy"
  			role = aws_iam_role.test_role.id
@@ -182,11 +181,11 @@ package iam
  			}
  		}
  		`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Fails on wildcarded action (inline)",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Fails on wildcarded action (inline)",
+			source: `
  resource "aws_iam_role_policy" "test_policy" {
  	name = "test_policy"
  	role = aws_iam_role.test_role.id
@@ -222,11 +221,11 @@ package iam
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Fails on wildcarded principal (inline)",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Fails on wildcarded principal (inline)",
+			source: `
  resource "aws_iam_role_policy" "test_policy" {
  	name = "test_policy"
  	role = aws_iam_role.test_role.id
@@ -262,11 +261,11 @@ package iam
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Fails on wildcarded resource (json)",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Fails on wildcarded resource (json)",
+			source: `
  resource "aws_iam_role_policy" "test_policy" {
  	name = "test_policy"
  	role = aws_iam_role.test_role.id
@@ -307,11 +306,11 @@ package iam
  }
  
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Fails on wildcarded action (json)",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Fails on wildcarded action (json)",
+			source: `
  resource "aws_iam_role_policy" "test_policy" {
  	name = "test_policy"
  	role = aws_iam_role.test_role.id
@@ -352,11 +351,11 @@ package iam
  }
  
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Fails on wildcarded principal (json)",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Fails on wildcarded principal (json)",
+			source: `
  resource "aws_iam_role_policy" "test_policy" {
  	name = "test_policy"
  	role = aws_iam_role.test_role.id
@@ -397,11 +396,11 @@ package iam
  }
  
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Passes without wildcard usage",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Passes without wildcard usage",
+			source: `
  resource "aws_iam_role_policy" "test_policy" {
  	name = "test_policy"
  	role = aws_iam_role.test_role.id
@@ -437,11 +436,11 @@ package iam
  	}
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Passes when resource is star and action is inspector (hcl)",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "Passes when resource is star and action is inspector (hcl)",
+			source: `
  resource "aws_iam_role_policy" "test_policy" {
  	name = "test_policy"
  	role = aws_iam_role.test_role.id
@@ -477,11 +476,11 @@ package iam
  	}
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Passes when resource is star and action is inspector (hcl)",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "Passes when resource is star and action is inspector (hcl)",
+			source: `
  resource "aws_iam_role_policy" "test_policy" {
  	name = "test_policy"
  	role = aws_iam_role.test_role.id
@@ -517,11 +516,11 @@ package iam
  	}
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Passes when resource is star and action is inspector (json)",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "Passes when resource is star and action is inspector (json)",
+			source: `
  resource "aws_iam_role_policy" "test_policy" {
  	name = "test_policy"
  	role = aws_iam_role.test_role.id
@@ -563,16 +562,16 @@ package iam
  }
  
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustIncludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

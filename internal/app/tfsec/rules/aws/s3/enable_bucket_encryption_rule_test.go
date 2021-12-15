@@ -1,32 +1,31 @@
 package s3
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSUnencryptedS3Bucket(t *testing.T) {
- 	expectedCode := "aws-s3-enable-bucket-encryption"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check no server_side_encryption_configuration aws_s3_bucket",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSUnencryptedS3Bucket(t *testing.T) {
+	expectedCode := "aws-s3-enable-bucket-encryption"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check no server_side_encryption_configuration aws_s3_bucket",
+			source: `
  resource "aws_s3_bucket" "my-bucket" {
  	
  }`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check no server_side_encryption_configuration aws_s3_bucket",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check no server_side_encryption_configuration aws_s3_bucket",
+			source: `
  resource "aws_s3_bucket" "my-bucket" {
    bucket = "mybucket"
  
@@ -39,11 +38,11 @@ package s3
      }
    }
  }`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "no error when server_side_encryption_configuration provided",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "no error when server_side_encryption_configuration provided",
+			source: `
  resource "aws_s3_bucket" "this" {
     bucket = "accesslog"
     acl    = "private"
@@ -91,16 +90,16 @@ package s3
       #tfsec:ignore:AWS002 This S3 does not need logging to be enabled
   }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

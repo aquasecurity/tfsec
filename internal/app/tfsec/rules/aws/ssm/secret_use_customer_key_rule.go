@@ -1,11 +1,11 @@
 package ssm
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/ssm"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -32,7 +32,8 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_secretsmanager_secret"},
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+		Base:           ssm.CheckSecretUseCustomerKey,
+		CheckTerraform: func(resourceBlock block.Block, module block.Module) (results rules.Results) {
 
 			if resourceBlock.MissingChild("kms_key_id") {
 				results.Add("Resource does not use CMK", resourceBlock)
@@ -47,7 +48,7 @@ func init() {
 				}
 				keyIdAttr := kmsData.GetAttribute("key_id")
 				if keyIdAttr.IsNotNil() && keyIdAttr.Equals("alias/aws/secretsmanager") {
-					results.Add("Resource explicitly uses the default CMK", ?)
+					results.Add("Resource explicitly uses the default CMK", keyIdAttr)
 				}
 			}
 

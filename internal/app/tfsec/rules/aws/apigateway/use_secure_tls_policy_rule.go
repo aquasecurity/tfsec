@@ -1,6 +1,5 @@
 package apigateway
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules/aws/apigateway"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"

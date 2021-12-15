@@ -1,6 +1,5 @@
 package iam
 
-// generator-locked
 import (
 	"strings"
 	"github.com/aquasecurity/defsec/rules"

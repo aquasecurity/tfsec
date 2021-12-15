@@ -1,11 +1,11 @@
 package vpc
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/vpc"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -35,6 +35,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_network_acl_rule"},
+		Base:           vpc.CheckNoExcessivePortAccess,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			egressAttr := resourceBlock.GetAttribute("egress")
@@ -51,13 +52,13 @@ func init() {
 
 			if cidrBlockAttr := resourceBlock.GetAttribute("cidr_block"); cidrBlockAttr.IsNotNil() {
 				if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-					results.Add("Resource defines a fully open ingress Network ACL rule with ALL ports open.", ?)
+					results.Add("Resource defines a fully open ingress Network ACL rule with ALL ports open.", protoAttr)
 				}
 			}
 
 			if ipv6CidrBlockAttr := resourceBlock.GetAttribute("ipv6_cidr_block"); ipv6CidrBlockAttr.IsNotNil() {
 				if protoAttr.Value().AsString() == "all" || protoAttr.Value().AsString() == "-1" {
-					results.Add("Resource defines a fully open ingress Network ACL rule with ALL ports open.", ?)
+					results.Add("Resource defines a fully open ingress Network ACL rule with ALL ports open.", protoAttr)
 				}
 			}
 

@@ -1,24 +1,23 @@
 package storage
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AZUDefaultActionOnNetworkRuleSetToDeny(t *testing.T) {
- 	expectedCode := "azure-storage-default-action-deny"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check default action of allow causes a failure",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AZUDefaultActionOnNetworkRuleSetToDeny(t *testing.T) {
+	expectedCode := "azure-storage-default-action-deny"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check default action of allow causes a failure",
+			source: `
  resource "azurerm_storage_account_network_rules" "test" {
    
    default_action             = "Allow"
@@ -27,11 +26,11 @@ package storage
    bypass                     = ["Metrics"]
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check default action of allow causes a failure, regardless of casing",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check default action of allow causes a failure, regardless of casing",
+			source: `
  resource "azurerm_storage_account_network_rules" "test" {
    
    default_action             = "allow"
@@ -40,11 +39,11 @@ package storage
    bypass                     = ["Metrics"]
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check default action of Allow on storage account causes a failure",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check default action of Allow on storage account causes a failure",
+			source: `
  resource "azurerm_storage_account" "example" {
    name                = "storageaccountname"
    resource_group_name = azurerm_resource_group.example.name
@@ -65,11 +64,11 @@ package storage
    }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check no error when the default action is set to deny",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check no error when the default action is set to deny",
+			source: `
  resource "azurerm_storage_account_network_rules" "test" {
    
    default_action             = "Deny"
@@ -78,11 +77,11 @@ package storage
    bypass                     = ["Metrics"]
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check no error when the default action is set to deny, regardless of case",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check no error when the default action is set to deny, regardless of case",
+			source: `
  resource "azurerm_storage_account_network_rules" "test" {
    
    default_action             = "deny"
@@ -91,16 +90,16 @@ package storage
    bypass                     = ["Metrics"]
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

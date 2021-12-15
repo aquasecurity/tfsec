@@ -1,24 +1,23 @@
 package eks
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSEKSHasControlPlaneLoggingEnabled(t *testing.T) {
- 	expectedCode := "aws-eks-enable-control-plane-logging"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "Test eks cluster with no logging configured fails check",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSEKSHasControlPlaneLoggingEnabled(t *testing.T) {
+	expectedCode := "aws-eks-enable-control-plane-logging"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "Test eks cluster with no logging configured fails check",
+			source: `
  resource "aws_eks_cluster" "bad_example" {
      encryption_config {
          resources = [ "secrets" ]
@@ -34,11 +33,11 @@ package eks
      }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Test EKS cluster with only some cluster logging enabled fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Test EKS cluster with only some cluster logging enabled fails check",
+			source: `
  resource "aws_eks_cluster" "bad_example" {
      encryption_config {
          resources = [ "secrets" ]
@@ -56,11 +55,11 @@ package eks
      }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Test eks cluster with all logging enabled passes check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Test eks cluster with all logging enabled passes check",
+			source: `
  resource "aws_eks_cluster" "good_example" {
      encryption_config {
          resources = [ "secrets" ]
@@ -78,16 +77,16 @@ package eks
      }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

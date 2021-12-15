@@ -1,24 +1,23 @@
 package dynamodb
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSDynamoDBTableEncryption(t *testing.T) {
- 	expectedCode := "aws-dynamodb-table-customer-key"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "DynamoDB table using default encryption fails check",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSDynamoDBTableEncryption(t *testing.T) {
+	expectedCode := "aws-dynamodb-table-customer-key"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "DynamoDB table using default encryption fails check",
+			source: `
  resource "aws_dynamodb_table" "bad_example" {
  	name             = "example"
  	hash_key         = "TestTableHashKey"
@@ -40,11 +39,11 @@ package dynamodb
  	}
    }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "DynamoDB Table with disabled server side encryption fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "DynamoDB Table with disabled server side encryption fails check",
+			source: `
  resource "aws_dynamodb_table" "bad_example" {
  	name             = "example"
  	hash_key         = "TestTableHashKey"
@@ -71,11 +70,11 @@ package dynamodb
  	}
    }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "DynamoDB Table with enabled server side encryption using default key fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "DynamoDB Table with enabled server side encryption using default key fails check",
+			source: `
  resource "aws_dynamodb_table" "bad_example" {
  	name             = "example"
  	hash_key         = "TestTableHashKey"
@@ -102,11 +101,11 @@ package dynamodb
  	}
    }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "DynamoDB table that uses KMS CMK passes check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "DynamoDB table that uses KMS CMK passes check",
+			source: `
  resource "aws_kms_key" "dynamo_db_kms" {
  	enable_key_rotation = true
  }
@@ -137,16 +136,16 @@ package dynamodb
  	}
    }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

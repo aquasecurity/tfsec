@@ -1,6 +1,5 @@
 package ebs
 
-// generator-locked
 import (
 	"strings"
 	"testing"

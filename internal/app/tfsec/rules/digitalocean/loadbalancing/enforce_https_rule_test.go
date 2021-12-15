@@ -1,24 +1,23 @@
 package loadbalancing
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_DIGLoadBalancerWithPlainHTTP(t *testing.T) {
- 	expectedCode := "digitalocean-loadbalancing-enforce-https"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "Load balancer with http entry protocol fails check",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_DIGLoadBalancerWithPlainHTTP(t *testing.T) {
+	expectedCode := "digitalocean-loadbalancing-enforce-https"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "Load balancer with http entry protocol fails check",
+			source: `
  resource "digitalocean_loadbalancer" "bad_example" {
    name   = "bad_example-1"
    region = "nyc3"
@@ -34,11 +33,11 @@ package loadbalancing
    droplet_ids = [digitalocean_droplet.web.id]
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Load blanacer with non plain http passes check (https)",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Load blanacer with non plain http passes check (https)",
+			source: `
  resource "digitalocean_loadbalancer" "bad_example" {
    name   = "bad_example-1"
    region = "nyc3"
@@ -54,11 +53,11 @@ package loadbalancing
    droplet_ids = [digitalocean_droplet.web.id]
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Load blanacer with non plain http passes check (http2)",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "Load blanacer with non plain http passes check (http2)",
+			source: `
  resource "digitalocean_loadbalancer" "bad_example" {
    name   = "bad_example-1"
    region = "nyc3"
@@ -74,11 +73,11 @@ package loadbalancing
    droplet_ids = [digitalocean_droplet.web.id]
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Load blanacer with non plain http passes check (tcp)",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "Load blanacer with non plain http passes check (tcp)",
+			source: `
  resource "digitalocean_loadbalancer" "bad_example" {
    name   = "bad_example-1"
    region = "nyc3"
@@ -94,16 +93,16 @@ package loadbalancing
    droplet_ids = [digitalocean_droplet.web.id]
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

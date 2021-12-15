@@ -1,12 +1,12 @@
 package vpc
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
+	"github.com/aquasecurity/defsec/rules/aws/vpc"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -29,6 +29,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group_rule"},
+		Base:           vpc.CheckNoPublicEgressSgr,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			typeAttr := resourceBlock.GetAttribute("type")
@@ -39,16 +40,16 @@ func init() {
 			if cidrBlocksAttr := resourceBlock.GetAttribute("cidr_blocks"); cidrBlocksAttr.IsNotNil() {
 
 				if cidr.IsAttributeOpen(cidrBlocksAttr) {
-					results.Add("Resource defines a fully open egress security group rule.", ?)
+					results.Add("Resource defines a fully open egress security group rule.", cidrBlocksAttr)
 				}
 			}
 
 			if ipv6CidrBlocksAttr := resourceBlock.GetAttribute("ipv6_cidr_blocks"); ipv6CidrBlocksAttr.IsNotNil() {
-
 				if cidr.IsAttributeOpen(ipv6CidrBlocksAttr) {
-					results.Add("Resource defines a fully open egress security group rule.", ?)
+					results.Add("Resource defines a fully open egress security group rule.", ipv6CidrBlocksAttr)
 				}
 			}
+
 			return results
 		},
 	})

@@ -1,24 +1,23 @@
 package ecs
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSECSTaskDefinitionEncryptionInTransit(t *testing.T) {
- 	expectedCode := "aws-ecs-enable-in-transit-encryption"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "ecs definition with efs and in transit encryption not set fails check",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSECSTaskDefinitionEncryptionInTransit(t *testing.T) {
+	expectedCode := "aws-ecs-enable-in-transit-encryption"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "ecs definition with efs and in transit encryption not set fails check",
+			source: `
  resource "aws_ecs_task_definition" "bad_example" {
  	family                = "service"
  	container_definitions = file("task-definitions/service.json")
@@ -37,11 +36,11 @@ package ecs
  	}
    }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "ecs definition with efs and in transit encryption set to disabled fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "ecs definition with efs and in transit encryption set to disabled fails check",
+			source: `
  resource "aws_ecs_task_definition" "bad_example" {
  	family                = "service"
  	container_definitions = file("task-definitions/service.json")
@@ -62,11 +61,11 @@ package ecs
  	}
    }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "ecs definition with efs and in transit encryption enabled passes",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "ecs definition with efs and in transit encryption enabled passes",
+			source: `
  resource "aws_ecs_task_definition" "good_example" {
  	family                = "service"
  	container_definitions = file("task-definitions/service.json")
@@ -87,11 +86,11 @@ package ecs
  	}
    }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "ecs definition without efs passes",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "ecs definition without efs passes",
+			source: `
  resource "aws_ecs_task_definition" "good_example" {
  	family                = "service"
  	container_definitions = file("task-definitions/service.json")
@@ -101,16 +100,16 @@ package ecs
  	}
    }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

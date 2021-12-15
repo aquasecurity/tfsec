@@ -1,33 +1,32 @@
 package ecs
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSECSClusterContainerInsights(t *testing.T) {
- 	expectedCode := "aws-ecs-enable-container-insight"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "ECS cluster without container insights fails check",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSECSClusterContainerInsights(t *testing.T) {
+	expectedCode := "aws-ecs-enable-container-insight"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "ECS cluster without container insights fails check",
+			source: `
  resource "aws_ecs_cluster" "bad_example" {
    	name = "services-cluster"
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "ECS cluster with container insights configured but disabled fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "ECS cluster with container insights configured but disabled fails check",
+			source: `
  resource "aws_ecs_cluster" "bad_example" {
    	name = "services-cluster"
  
@@ -37,11 +36,11 @@ package ecs
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "ECS cluster with settings but no container insights fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "ECS cluster with settings but no container insights fails check",
+			source: `
  resource "aws_ecs_cluster" "bad_example" {
    	name = "services-cluster"
    
@@ -51,11 +50,11 @@ package ecs
  	  }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "ECS cluster with container insights enabled passess check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "ECS cluster with container insights enabled passess check",
+			source: `
  resource "aws_ecs_cluster" "good_example" {
  	name = "services-cluster"
    
@@ -65,16 +64,16 @@ package ecs
  	}
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

@@ -13,6 +13,10 @@ import (
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		BadExample: []string{`
+ resource "aws_api_gateway_rest_api" "MyDemoAPI" {
+	
+ }
+
  resource "aws_api_gateway_method" "bad_example" {
    rest_api_id   = aws_api_gateway_rest_api.MyDemoAPI.id
    resource_id   = aws_api_gateway_resource.MyDemoResource.id
@@ -21,6 +25,10 @@ func init() {
  }
  `},
 		GoodExample: []string{`
+ resource "aws_api_gateway_rest_api" "MyDemoAPI" {
+	
+ }
+
  resource "aws_api_gateway_method" "good_example" {
    rest_api_id   = aws_api_gateway_rest_api.MyDemoAPI.id
    resource_id   = aws_api_gateway_resource.MyDemoResource.id
@@ -29,6 +37,10 @@ func init() {
  }
  `,
 			`
+ resource "aws_api_gateway_rest_api" "MyDemoAPI" {
+	
+ }
+
  resource "aws_api_gateway_method" "good_example" {
    rest_api_id      = aws_api_gateway_rest_api.MyDemoAPI.id
    resource_id      = aws_api_gateway_resource.MyDemoResource.id
@@ -38,6 +50,10 @@ func init() {
  }
  `,
 			`
+ resource "aws_api_gateway_rest_api" "MyDemoAPI" {
+	
+ }
+
  resource "aws_api_gateway_method" "good_example" {
    rest_api_id   = aws_api_gateway_rest_api.MyDemoAPI.id
    resource_id   = aws_api_gateway_resource.MyDemoResource.id

@@ -1,24 +1,23 @@
 package compute
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AzureDiablePasswordAuthentication(t *testing.T) {
- 	expectedCode := "azure-compute-disable-password-authentication"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "linux virtual machine with password authentication enabled fails check",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AzureDiablePasswordAuthentication(t *testing.T) {
+	expectedCode := "azure-compute-disable-password-authentication"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "linux virtual machine with password authentication enabled fails check",
+			source: `
  resource "azurerm_linux_virtual_machine" "bad_linux_example" {
    name                            = "bad-linux-machine"
    resource_group_name             = azurerm_resource_group.example.name
@@ -29,11 +28,11 @@ package compute
    disable_password_authentication = false
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "virtual machine with password authentication enabled fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "virtual machine with password authentication enabled fails check",
+			source: `
  resource "azurerm_virtual_machine" "bad_example" {
  	name                            = "bad-linux-machine"
  	resource_group_name             = azurerm_resource_group.example.name
@@ -53,11 +52,11 @@ package compute
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "virtual machine with password authentication disabled passes check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "virtual machine with password authentication disabled passes check",
+			source: `
  resource "azurerm_virtual_machine" "good_example" {
  	name                            = "good-linux-machine"
  	resource_group_name             = azurerm_resource_group.example.name
@@ -76,11 +75,11 @@ package compute
  	}
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "linux virtual machine with password authentication disable passes check",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "linux virtual machine with password authentication disable passes check",
+			source: `
  resource "azurerm_linux_virtual_machine" "good_linux_example" {
    name                            = "good-linux-machine"
    resource_group_name             = azurerm_resource_group.example.name
@@ -95,15 +94,15 @@ package compute
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+}

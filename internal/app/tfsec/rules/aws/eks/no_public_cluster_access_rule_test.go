@@ -1,24 +1,23 @@
 package eks
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSEKSClusterPublicAccessDisabled(t *testing.T) {
- 	expectedCode := "aws-eks-no-public-cluster-access"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "Test eks cluster without vpc_config defaults to public access fails check",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSEKSClusterPublicAccessDisabled(t *testing.T) {
+	expectedCode := "aws-eks-no-public-cluster-access"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "Test eks cluster without vpc_config defaults to public access fails check",
+			source: `
  resource "aws_eks_cluster" "bad_example" {
      // other config 
  
@@ -26,11 +25,11 @@ package eks
      role_arn = var.cluster_arn
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Test vpc config with public access fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Test vpc config with public access fails check",
+			source: `
  resource "aws_eks_cluster" "bad_example" {
      // other config 
  
@@ -42,11 +41,11 @@ package eks
      }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Test eks cluster with the public access disabled passes check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Test eks cluster with the public access disabled passes check",
+			source: `
  resource "aws_eks_cluster" "good_example" {
      // other config 
  
@@ -58,16 +57,16 @@ package eks
      }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

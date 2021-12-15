@@ -1,6 +1,5 @@
 package lambda
 
-// generator-locked
 import (
 	"strings"
 	"testing"

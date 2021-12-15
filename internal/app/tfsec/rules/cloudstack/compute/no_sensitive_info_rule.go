@@ -78,7 +78,7 @@ func init() {
 					encoded = []byte(customDataAttr.Value().AsString())
 				}
 				if checkStringForSensitive(string(encoded)) {
-					results.Add("Resource has user_data_base64 with sensitive data.", ?)
+					results.Add("Resource has user_data_base64 with sensitive data.", customDataAttr)
 				}
 			}
 
@@ -87,8 +87,6 @@ func init() {
 	})
 }
 
-func checkStringForSensitive(stringToCheck
-string) bool{
-scanResult, := squealer.NewStringScanner().Scan(stringToCheck)
-return scanResult.TransgressionFound
+func checkStringForSensitive(stringToCheck string) bool {
+	return squealer.NewStringScanner().Scan(stringToCheck).TransgressionFound
 }

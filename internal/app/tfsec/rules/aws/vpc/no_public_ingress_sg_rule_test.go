@@ -1,34 +1,33 @@
 package vpc
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSOpenIngressSecurityGroup(t *testing.T) {
- 	expectedCode := "aws-vpc-no-public-ingress-sg"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check aws_security_group ingress on 0.0.0.0/0",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSOpenIngressSecurityGroup(t *testing.T) {
+	expectedCode := "aws-vpc-no-public-ingress-sgr"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check aws_security_group ingress on 0.0.0.0/0",
+			source: `
  		resource "aws_security_group" "my-group" {
  			ingress {
  				cidr_blocks = ["0.0.0.0/0"]
  			}
  		}`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check dynamic blocks using for_each",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check dynamic blocks using for_each",
+			source: `
  		variable "vpc_cidr_block" {}
  		variable "ingress_filter" { default = "ALLOW_ALL" }
  		
@@ -72,11 +71,11 @@ package vpc
  		 }
  		}
  					`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check aws_security_group multiple ingress on 0.0.0.0/0",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_security_group multiple ingress on 0.0.0.0/0",
+			source: `
  		resource "aws_security_group" "my-group" {
  			ingress {
  				cidr_blocks = ["10.10.0.32/16"]
@@ -85,36 +84,36 @@ package vpc
  				cidr_blocks = ["0.0.0.0/0"]
  			}
  		}`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check aws_security_group ingress on ::/0",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_security_group ingress on ::/0",
+			source: `
  		resource "aws_security_group" "my-group" {
  			ingress {
  				ipv6_cidr_blocks = ["0.0.0.0/0"]
  			}
  		}`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check aws_security_group ingress on 10.10.0.0/16",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check aws_security_group ingress on 10.10.0.0/16",
+			source: `
  		resource "aws_security_group" "my-group" {
  			ingress {
  				ipv6_cidr_blocks = ["10.10.0.0/16"]
  			}
  		}`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

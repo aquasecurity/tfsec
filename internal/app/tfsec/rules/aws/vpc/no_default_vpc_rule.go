@@ -1,11 +1,11 @@
 package vpc
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/vpc"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -27,8 +27,9 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_default_vpc"},
+		Base:           vpc.CheckNoDefaultVpc,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			results.Add("Resource should not exist", ?)
+			results.Add("Resource should not exist", resourceBlock)
 			return results
 		},
 	})

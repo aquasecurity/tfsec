@@ -1,24 +1,23 @@
-package workspace
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSAWSWorkspaceVolumesEncrypted(t *testing.T) {
- 	expectedCode := "aws-workspace-enable-disk-encryption"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "Root and user encryption not set fails check",
- 			source: `
+package workspaces
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSAWSWorkspaceVolumesEncrypted(t *testing.T) {
+	expectedCode := "aws-workspaces-enable-disk-encryption"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "Root and user encryption not set fails check",
+			source: `
  resource "aws_workspaces_workspace" "bad_example" {
  	directory_id = aws_workspaces_directory.test.id
  	bundle_id    = data.aws_workspaces_bundle.value_windows_10.id
@@ -33,11 +32,11 @@ package workspace
  	}
    }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "User encryption not set fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "User encryption not set fails check",
+			source: `
  resource "aws_workspaces_workspace" "bad_example" {
  	directory_id = aws_workspaces_directory.test.id
  	bundle_id    = data.aws_workspaces_bundle.value_windows_10.id
@@ -54,11 +53,11 @@ package workspace
  	}
    }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Root encryption not set fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Root encryption not set fails check",
+			source: `
  resource "aws_workspaces_workspace" "bad_example" {
  	directory_id = aws_workspaces_directory.test.id
  	bundle_id    = data.aws_workspaces_bundle.value_windows_10.id
@@ -75,11 +74,11 @@ package workspace
  	}
    }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Root encryption set to false fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Root encryption set to false fails check",
+			source: `
  resource "aws_workspaces_workspace" "bad_example" {
  	directory_id = aws_workspaces_directory.test.id
  	bundle_id    = data.aws_workspaces_bundle.value_windows_10.id
@@ -96,11 +95,11 @@ package workspace
  	}
    }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Root and user encryption enable passes check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Root and user encryption enable passes check",
+			source: `
  resource "aws_workspaces_workspace" "good_example" {
  		directory_id 				   = aws_workspaces_directory.test.id
  		bundle_id    				   = data.aws_workspaces_bundle.value_windows_10.id
@@ -117,16 +116,16 @@ package workspace
  		}
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

@@ -1,11 +1,11 @@
 package rds
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/rds"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -28,17 +28,20 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_rds_cluster"},
+		Base:           rds.CheckEncryptClusterStorageData,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
-			storageEncryptedattr := resourceBlock.GetAttribute("storage_encrypted")
+			storageEncryptedAttr := resourceBlock.GetAttribute("storage_encrypted")
 
-			if kmsKeyIdAttr.IsEmpty() && storageEncryptedattr.IsFalse() {
-				results.Add("Resource defines a disabled RDS Cluster encryption.", kmsKeyIdAttr)
-			} else if kmsKeyIdAttr.IsNotNil() && kmsKeyIdAttr.Equals("") {
-				results.Add("Resource defines a disabled RDS Cluster encryption.", ?)
-			} else if storageEncryptedattr.IsNil() || storageEncryptedattr.IsFalse() {
-				results.Add("Resource defines a enabled RDS Cluster encryption but not the required encrypted_storage.", ?)
+			if storageEncryptedAttr.IsNil() {
+				results.Add("Storage encryption is not enabled.", resourceBlock)
+			} else if storageEncryptedAttr.IsFalse() {
+				results.Add("Storage encryption is not enabled.", storageEncryptedAttr)
+			} else if kmsKeyIdAttr.IsNil() {
+				results.Add("Storage encryption does not use a customer-managed key.", resourceBlock)
+			} else if kmsKeyIdAttr.IsEmpty() {
+				results.Add("Storage encryption does not use a customer-managed key.", kmsKeyIdAttr)
 			}
 			return results
 		},

@@ -1,23 +1,22 @@
 package cloudfront
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSCloudFrontWafWebAclId(t *testing.T) {
- 	expectedCode := "aws-cloudfront-enable-waf"
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check there is no waf web_acl_id for aws_cloudfront_distribution",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSCloudFrontWafWebAclId(t *testing.T) {
+	expectedCode := "aws-cloudfront-enable-waf"
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check there is no waf web_acl_id for aws_cloudfront_distribution",
+			source: `
  resource "aws_cloudfront_distribution" "s3_distribution" {
    origin_group {
      origin_id = "groupS3"
@@ -53,11 +52,11 @@ package cloudfront
      target_origin_id = "groupS3"
    }
  }`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check there is a waf web_acl_id for aws_cloudfront_distribution",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check there is a waf web_acl_id for aws_cloudfront_distribution",
+			source: `
  resource "aws_cloudfront_distribution" "s3_distribution" {
  
    origin {
@@ -84,15 +83,15 @@ package cloudfront
  
    web_acl_id = "waf_id"
  }`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+}

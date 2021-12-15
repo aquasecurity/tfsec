@@ -1,6 +1,5 @@
 package fw
 
-// generator-locked
 import (
 	"fmt"
 	"github.com/aquasecurity/defsec/rules"

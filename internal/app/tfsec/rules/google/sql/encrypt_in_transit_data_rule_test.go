@@ -1,24 +1,23 @@
 package sql
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_GoogleEncryptInTransitData(t *testing.T) {
- 	expectedCode := "google-sql-encrypt-in-transit-data"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "Rule matches when ssl is not required",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_GoogleEncryptInTransitData(t *testing.T) {
+	expectedCode := "google-sql-encrypt-in-transit-data"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "Rule matches when ssl is not required",
+			source: `
  resource "google_sql_database_instance" "postgres" {
  	name             = "postgres-instance-a"
  	database_version = "POSTGRES_11"
@@ -37,11 +36,11 @@ package sql
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Rule does not match when ssl is required",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Rule does not match when ssl is required",
+			source: `
  resource "google_sql_database_instance" "postgres" {
  	name             = "postgres-instance-a"
  	database_version = "POSTGRES_11"
@@ -60,15 +59,15 @@ package sql
  	}
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+}

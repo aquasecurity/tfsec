@@ -1,23 +1,22 @@
 package cloudtrail
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSCloudtrailEncryptedAtRest(t *testing.T) {
- 	expectedCode := "aws-cloudtrail-enable-at-rest-encryption"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{{
- 		name: "Test check fails when missing kms id",
- 		source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSCloudtrailEncryptedAtRest(t *testing.T) {
+	expectedCode := "aws-cloudtrail-enable-at-rest-encryption"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{{
+		name: "Test check fails when missing kms id",
+		source: `
  resource "aws_cloudtrail" "bad_example" {
    is_multi_region_trail = true
    enable_log_file_validation = true
@@ -33,11 +32,11 @@ package cloudtrail
    }
  }
  `,
- 		mustIncludeResultCode: expectedCode,
- 	},
- 		{
- 			name: "Test check fails when kms_key_id present but empty",
- 			source: `
+		mustIncludeResultCode: expectedCode,
+	},
+		{
+			name: "Test check fails when kms_key_id present but empty",
+			source: `
  resource "aws_cloudtrail" "bad_example" {
    is_multi_region_trail = true
    enable_log_file_validation = true
@@ -54,11 +53,11 @@ package cloudtrail
    }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Test check passes when kms_key_id present and populated",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Test check passes when kms_key_id present and populated",
+			source: `
  resource "aws_cloudtrail" "good_example" {
    is_multi_region_trail = true
    enable_log_file_validation = true
@@ -75,16 +74,16 @@ package cloudtrail
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

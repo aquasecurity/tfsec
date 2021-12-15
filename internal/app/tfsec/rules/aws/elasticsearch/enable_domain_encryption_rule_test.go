@@ -1,6 +1,5 @@
 package elasticsearch
 
-// generator-locked
 import (
 	"testing"
 
@@ -8,7 +7,7 @@ import (
 )
 
 func TestAWSUnencryptedElasticsearchDomain(t *testing.T) {
-	expectedCode := "aws-elastic-service-enable-domain-encryption"
+	expectedCode := "aws-elastic-search-enable-domain-encryption"
 
 	var tests = []struct {
 		name                  string

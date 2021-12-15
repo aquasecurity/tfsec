@@ -1,24 +1,23 @@
 package storage
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AZUQueueStorageAnalyticsTurnedOn(t *testing.T) {
- 	expectedCode := "azure-storage-queue-services-logging-enabled"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check queue services storage account without analytics logging causes failure",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AZUQueueStorageAnalyticsTurnedOn(t *testing.T) {
+	expectedCode := "azure-storage-queue-services-logging-enabled"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check queue services storage account without analytics logging causes failure",
+			source: `
  resource "azurerm_storage_account" "good_example" {
      name                     = "example"
      resource_group_name      = data.azurerm_resource_group.example.name
@@ -30,11 +29,11 @@ package storage
    }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check queue services storage account with analytics logging enabled passes",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check queue services storage account with analytics logging enabled passes",
+			source: `
  resource "azurerm_storage_account" "good_example" {
      name                     = "example"
      resource_group_name      = data.azurerm_resource_group.example.name
@@ -52,16 +51,16 @@ package storage
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

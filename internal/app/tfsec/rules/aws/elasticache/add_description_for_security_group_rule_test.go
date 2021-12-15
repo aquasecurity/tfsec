@@ -1,6 +1,5 @@
 package elasticache
 
-// generator-locked
 import (
 	"strings"
 	"testing"

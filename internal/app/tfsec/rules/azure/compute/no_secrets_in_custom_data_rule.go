@@ -1,6 +1,5 @@
 package compute
 
-// generator-locked
 import (
 	"encoding/base64"
 	"github.com/aquasecurity/defsec/rules"

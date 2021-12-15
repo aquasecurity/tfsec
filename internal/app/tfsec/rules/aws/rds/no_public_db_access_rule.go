@@ -1,8 +1,8 @@
 package rds
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/rds"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -26,6 +26,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_db_instance", "aws_dms_replication_instance", "aws_rds_cluster_instance", "aws_redshift_cluster"},
+		Base:           rds.CheckNoPublicDbAccess,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			publicAttr := resourceBlock.GetAttribute("publicly_accessible")
 			if publicAttr.IsTrue() {

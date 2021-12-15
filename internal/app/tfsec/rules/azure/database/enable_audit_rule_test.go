@@ -1,24 +1,23 @@
 package database
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AZUSQLDatabaseAuditingEnabled(t *testing.T) {
- 	expectedCode := "azure-database-enable-audit"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check fails when extended audit policy not configured",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AZUSQLDatabaseAuditingEnabled(t *testing.T) {
+	expectedCode := "azure-database-enable-audit"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check fails when extended audit policy not configured",
+			source: `
  resource "azurerm_sql_server" "back_example" {
    name                         = "mssqlserver"
    resource_group_name          = azurerm_resource_group.example.name
@@ -28,11 +27,11 @@ package database
    administrator_login_password = "tfsecRocks"
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check fails when extended audit policy not configured on mssql server",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check fails when extended audit policy not configured on mssql server",
+			source: `
  resource "azurerm_mssql_server" "bad_example" {
    name                         = "mssqlserver"
    resource_group_name          = azurerm_resource_group.example.name
@@ -42,11 +41,11 @@ package database
    administrator_login_password = "tfsecRocks"
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check passes when extended audit policy is configured",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check passes when extended audit policy is configured",
+			source: `
  resource "azurerm_sql_server" "good_example" {
    name                         = "mssqlserver"
    resource_group_name          = azurerm_resource_group.example.name
@@ -63,11 +62,11 @@ package database
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check passes when extended audit policy is configured on MSSQL",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check passes when extended audit policy is configured on MSSQL",
+			source: `
  resource "azurerm_mssql_server" "good_example" {
    name                         = "mssqlserver"
    resource_group_name          = azurerm_resource_group.example.name
@@ -84,11 +83,11 @@ package database
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check passes when separate azurerm_mssql_server_extended_auditing_policy is configured",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check passes when separate azurerm_mssql_server_extended_auditing_policy is configured",
+			source: `
  			provider "azurerm" {
  				features {}
  			  }
@@ -122,16 +121,16 @@ package database
  				storage_account_access_key_is_secondary = false
  				retention_in_days                       = 6
  			  }`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

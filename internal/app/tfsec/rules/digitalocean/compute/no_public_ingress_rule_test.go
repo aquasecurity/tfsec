@@ -1,24 +1,23 @@
 package compute
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_DIGFirewallHasOpenInboundAccess(t *testing.T) {
- 	expectedCode := "digitalocean-compute-no-public-ingress"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "digital ocean firewall with open source addresses fails check",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_DIGFirewallHasOpenInboundAccess(t *testing.T) {
+	expectedCode := "digitalocean-compute-no-public-ingress"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "digital ocean firewall with open source addresses fails check",
+			source: `
  resource "digitalocean_firewall" "bad_example" {
  	name = "only-22-80-and-443"
    
@@ -31,11 +30,11 @@ package compute
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "digital ocean firewall with open ipv6 source addresses fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "digital ocean firewall with open ipv6 source addresses fails check",
+			source: `
  resource "digitalocean_firewall" "bad_example" {
  	name = "only-22-80-and-443"
    
@@ -48,11 +47,11 @@ package compute
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "digital ocean firewall with open ipv4 source addresses fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "digital ocean firewall with open ipv4 source addresses fails check",
+			source: `
  resource "digitalocean_firewall" "bad_example" {
  	name = "only-22-80-and-443"
    
@@ -65,11 +64,11 @@ package compute
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "digital ocean firewall with good source addresses passes check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "digital ocean firewall with good source addresses passes check",
+			source: `
  resource "digitalocean_firewall" "good_example" {
  	name = "only-22-80-and-443"
    
@@ -83,16 +82,16 @@ package compute
  }
  
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

@@ -1,24 +1,23 @@
 package network
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
- 	expectedCode := "azure-network-ssh-blocked-from-internet"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check ssh access from * causes a failure",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
+	expectedCode := "azure-network-ssh-blocked-from-internet"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check ssh access from * causes a failure",
+			source: `
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -30,11 +29,11 @@ package network
       destination_address_prefix  = "*"
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check ssh access from * is ok when mode is deny",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check ssh access from * is ok when mode is deny",
+			source: `
  resource "azurerm_network_security_rule" "example_deny" {
       name                        = "example_deny_security_rule"
       direction                   = "Inbound"
@@ -46,11 +45,11 @@ package network
       destination_address_prefix  = "*"
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check ssh access from 0.0.0.0 causes a failure",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check ssh access from 0.0.0.0 causes a failure",
+			source: `
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -62,11 +61,11 @@ package network
       destination_address_prefix  = "*"
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check ssh access from /0 causes a failure",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check ssh access from /0 causes a failure",
+			source: `
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -78,11 +77,11 @@ package network
       destination_address_prefix  = "*"
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check ssh access from internet causes a failure",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check ssh access from internet causes a failure",
+			source: `
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -94,11 +93,11 @@ package network
       destination_address_prefix  = "*"
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check ssh access from internet causes a failure",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check ssh access from internet causes a failure",
+			source: `
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -110,11 +109,11 @@ package network
       destination_address_prefix  = "*"
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check ssh access from * causes a failure on security group",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check ssh access from * causes a failure on security group",
+			source: `
  resource "azurerm_network_security_group" "example" {
    name                = "tf-appsecuritygroup"
    location            = azurerm_resource_group.example.location
@@ -128,11 +127,11 @@ package network
    }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check ssh access from * is ok when access mode is deny",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check ssh access from * is ok when access mode is deny",
+			source: `
  resource "azurerm_network_security_group" "example_deny" {
    name                = "tf-appsecuritygroup"
    location            = azurerm_resource_group.example.location
@@ -147,11 +146,11 @@ package network
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check ssh access from multiple security rules causes a failure on security group",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check ssh access from multiple security rules causes a failure on security group",
+			source: `
  resource "azurerm_network_security_group" "example" {
    name                = "tf-appsecuritygroup"
    location            = azurerm_resource_group.example.location
@@ -172,11 +171,11 @@ package network
    }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check ssh is acceptable from a specific source",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check ssh is acceptable from a specific source",
+			source: `
  resource "azurerm_network_security_rule" "good_example" {
       name                        = "good_example_security_rule"
       direction                   = "Inbound"
@@ -188,11 +187,11 @@ package network
       destination_address_prefix  = "*"
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check ssh is acceptable from a specific source on security group",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check ssh is acceptable from a specific source on security group",
+			source: `
  resource "azurerm_network_security_group" "example" {
    name                = "tf-appsecuritygroup"
    location            = azurerm_resource_group.example.location
@@ -206,16 +205,16 @@ package network
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

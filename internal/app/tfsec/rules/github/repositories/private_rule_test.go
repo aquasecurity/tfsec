@@ -1,24 +1,23 @@
 package repositories
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_GENEnsureGithubRepositoryIsPrivate(t *testing.T) {
- 	expectedCode := "github-repositories-private"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "should fire if there is no visibility or private attribute",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_GENEnsureGithubRepositoryIsPrivate(t *testing.T) {
+	expectedCode := "github-repositories-private"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "should fire if there is no visibility or private attribute",
+			source: `
  resource "github_repository" "good_example" {
    name        = "example"
    description = "My awesome codebase"
@@ -29,11 +28,11 @@ package repositories
    }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "should not fire if private is set to true",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "should not fire if private is set to true",
+			source: `
  resource "github_repository" "good_example" {
    name        = "example"
    description = "My awesome codebase"
@@ -46,11 +45,11 @@ package repositories
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "should not fire if visibility is set to private",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "should not fire if visibility is set to private",
+			source: `
  resource "github_repository" "good_example" {
    name        = "example"
    description = "My awesome codebase"
@@ -63,11 +62,11 @@ package repositories
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "should not fire if visibility is set to internal",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "should not fire if visibility is set to internal",
+			source: `
  resource "github_repository" "good_example" {
    name        = "example"
    description = "My awesome codebase"
@@ -80,11 +79,11 @@ package repositories
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "should not fire as visibility is overriding private",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "should not fire as visibility is overriding private",
+			source: `
  resource "github_repository" "good_example" {
    name        = "example"
    description = "My awesome codebase"
@@ -98,16 +97,16 @@ package repositories
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

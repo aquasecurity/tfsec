@@ -1,6 +1,5 @@
 package athena
 
-// generator-locked
 import (
 	"strings"
 

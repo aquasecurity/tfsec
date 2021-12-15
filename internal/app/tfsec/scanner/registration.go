@@ -2,7 +2,6 @@ package scanner
 
 import (
 	"fmt"
-	"os"
 	"sort"
 	"sync"
 
@@ -16,12 +15,6 @@ var registeredRules []rule.Rule
 func RegisterCheckRule(rule rule.Rule) {
 	rulesLock.Lock()
 	defer rulesLock.Unlock()
-	for _, existing := range registeredRules {
-		if existing.ID() == rule.ID() {
-			fmt.Fprintf(os.Stderr, "Error: rule already exists with code '%s'\n", rule.ID())
-			os.Exit(1)
-		}
-	}
 	registeredRules = append(registeredRules, rule)
 }
 

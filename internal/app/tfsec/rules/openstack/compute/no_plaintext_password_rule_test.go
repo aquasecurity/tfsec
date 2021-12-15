@@ -1,24 +1,23 @@
 package compute
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_OpenStackNoPlaintextPassword(t *testing.T) {
- 	expectedCode := "openstack-compute-no-plaintext-password"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "compute instance with a plain text password fails check",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_OpenStackNoPlaintextPassword(t *testing.T) {
+	expectedCode := "openstack-compute-no-plaintext-password"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "compute instance with a plain text password fails check",
+			source: `
  resource "openstack_compute_instance_v2" "bad_example" {
    name            = "basic"
    image_id        = "ad091b52-742f-469e-8f3c-fd81cadf0743"
@@ -32,11 +31,11 @@ package compute
    }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "compute instance with no admin_pass passes check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "compute instance with no admin_pass passes check",
+			source: `
  resource "openstack_compute_instance_v2" "good_example" {
    name            = "basic"
    image_id        = "ad091b52-742f-469e-8f3c-fd81cadf0743"
@@ -50,12 +49,12 @@ package compute
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 
- 		{
- 			name: "compute instance with no admin_pass passes check",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+
+		{
+			name: "compute instance with no admin_pass passes check",
+			source: `
  variable "password" {
  	type = string
  }
@@ -73,15 +72,15 @@ package compute
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+}

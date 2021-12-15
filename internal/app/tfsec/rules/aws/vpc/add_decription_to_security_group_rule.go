@@ -1,8 +1,8 @@
 package vpc
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/vpc"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -44,7 +44,8 @@ func init() {
 			"https://www.cloudconformity.com/knowledge-base/aws/EC2/security-group-rules-description.html",
 		},
 		RequiredTypes:  []string{"resource"},
-		RequiredLabels: []string{"aws_security_group", "aws_security_group_rule"},
+		RequiredLabels: []string{"aws_security_group"},
+		Base:           vpc.CheckAddDescriptionToSecurityGroup,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if resourceBlock.MissingChild("description") {
 				results.Add("Resource should include a description for auditing purposes.", resourceBlock)

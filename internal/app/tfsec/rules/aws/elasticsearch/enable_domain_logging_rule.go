@@ -1,6 +1,5 @@
 package elasticsearch
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/elasticsearch"
@@ -17,14 +16,14 @@ func init() {
    domain_name           = "example"
    elasticsearch_version = "1.5"
  }
- 
+ `, `
  resource "aws_elasticsearch_domain" "bad_example" {
    domain_name           = "example"
    elasticsearch_version = "1.5"
  
    log_publishing_options {
      cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
-     log_type                 = "INDEX_SLOW_LOGS"
+     log_type                 = "AUDIT_LOGS"
      enabled                  = false  
    }
  }
@@ -36,18 +35,7 @@ func init() {
  
    log_publishing_options {
      cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
-     log_type                 = "INDEX_SLOW_LOGS"
-     enabled                  = true  
-   }
- }
- 
- resource "aws_elasticsearch_domain" "good_example" {
-   domain_name           = "example"
-   elasticsearch_version = "1.5"
- 
-   log_publishing_options {
-     cloudwatch_log_group_arn = aws_cloudwatch_log_group.example.arn
-     log_type                 = "INDEX_SLOW_LOGS"
+     log_type                 = "AUDIT_LOGS"
      enabled                  = true  
    }
  }

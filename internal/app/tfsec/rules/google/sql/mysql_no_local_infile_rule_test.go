@@ -1,24 +1,23 @@
 package sql
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_GoogleMysqlNoLocalInfile(t *testing.T) {
- 	expectedCode := "google-sql-mysql-no-local-infile"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "rule matches when flag is enabled",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_GoogleMysqlNoLocalInfile(t *testing.T) {
+	expectedCode := "google-sql-mysql-no-local-infile"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "rule matches when flag is enabled",
+			source: `
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "MYSQL_5_6"
@@ -31,11 +30,11 @@ package sql
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "rule does not match when flag is disabled",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "rule does not match when flag is disabled",
+			source: `
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "MYSQL_5_6"
@@ -48,26 +47,26 @@ package sql
  	}
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "rule does not match when flag is defaulted (to disabled)",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "rule does not match when flag is defaulted (to disabled)",
+			source: `
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "MYSQL_5_6"
  	region           = "us-central1"
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+}

@@ -1,6 +1,5 @@
 package iam
 
-// generator-locked
 import (
 	"encoding/json"
 	"fmt"

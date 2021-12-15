@@ -1,24 +1,23 @@
 package storage
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_GoogleStorageUniformBucketLevelAccess(t *testing.T) {
- 	expectedCode := "google-storage-enable-ubla"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check google_storage_bucket with uniform_bucket_level_access = false",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_GoogleStorageUniformBucketLevelAccess(t *testing.T) {
+	expectedCode := "google-storage-enable-ubla"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check google_storage_bucket with uniform_bucket_level_access = false",
+			source: `
  			resource "google_storage_bucket" "static-site" {
  				name          = "image-store.com"
  				location      = "EU"
@@ -37,11 +36,11 @@ package storage
  					max_age_seconds = 3600
  				}
  			}`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check google_storage_bucket with uniform_bucket_level_access is undefined",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check google_storage_bucket with uniform_bucket_level_access is undefined",
+			source: `
  			resource "google_storage_bucket" "static-site" {
  				name          = "image-store.com"
  				location      = "EU"
@@ -58,11 +57,11 @@ package storage
  					max_age_seconds = 3600
  				}
  			}`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check google_storage_bucket with uniform_bucket_level_access = true",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check google_storage_bucket with uniform_bucket_level_access = true",
+			source: `
  			resource "google_storage_bucket" "static-site" {
  				name          = "image-store.com"
  				location      = "EU"
@@ -81,16 +80,16 @@ package storage
  					max_age_seconds = 3600
  				}
  			}`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

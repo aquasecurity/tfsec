@@ -1,24 +1,23 @@
 package elasticache
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AWSRedisClusterBackupRetention(t *testing.T) {
- 	expectedCode := "aws-elasticache-enable-backup-retention"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "cluster with no snapshot retention fails check",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AWSRedisClusterBackupRetention(t *testing.T) {
+	expectedCode := "aws-elasticache-enable-backup-retention"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "cluster with no snapshot retention fails check",
+			source: `
  resource "aws_elasticache_cluster" "bad_example" {
  	cluster_id           = "cluster-example"
  	engine               = "redis"
@@ -29,11 +28,11 @@ package elasticache
  	port                 = 6379
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "cluster with snapshot retention set to 0 fails check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "cluster with snapshot retention set to 0 fails check",
+			source: `
  resource "aws_elasticache_cluster" "bad_example" {
  	cluster_id           = "cluster-example"
  	engine               = "redis"
@@ -46,11 +45,11 @@ package elasticache
  	snapshot_retention_limit = 0
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Cluster which is memcached but no retention passes check",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "Cluster which is memcached but no retention passes check",
+			source: `
  resource "aws_elasticache_cluster" "good_example" {
  	cluster_id           = "cluster-example"
  	engine               = "memcached"
@@ -60,11 +59,11 @@ package elasticache
  	port                 = 11211
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Cluster with small node type passes without snapshot retention passes check",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "Cluster with small node type passes without snapshot retention passes check",
+			source: `
  resource "aws_elasticache_cluster" "good_example" {
  	cluster_id           = "cluster-example"
  	engine               = "redis"
@@ -75,11 +74,11 @@ package elasticache
  	port                 = 6379
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "Cluster with small node type passes without snapshot retention passes check",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "Cluster with small node type passes without snapshot retention passes check",
+			source: `
  resource "aws_elasticache_cluster" "good_example" {
  	cluster_id           = "cluster-example"
  	engine               = "redis"
@@ -92,16 +91,16 @@ package elasticache
  	snapshot_retention_limit = 5
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

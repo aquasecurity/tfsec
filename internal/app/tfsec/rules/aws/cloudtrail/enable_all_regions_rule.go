@@ -1,6 +1,5 @@
 package cloudtrail
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/cloudtrail"

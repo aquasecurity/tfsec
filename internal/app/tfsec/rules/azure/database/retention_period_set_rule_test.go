@@ -1,24 +1,23 @@
 package database
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AZUDatabaseAuditingRetention90Days(t *testing.T) {
- 	expectedCode := "azure-database-retention-period-set"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check fails if retention period is less than 90",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AZUDatabaseAuditingRetention90Days(t *testing.T) {
+	expectedCode := "azure-database-retention-period-set"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check fails if retention period is less than 90",
+			source: `
  resource "azurerm_mssql_database_extended_auditing_policy" "bad_example" {
    database_id                             = azurerm_mssql_database.example.id
    storage_endpoint                        = azurerm_storage_account.example.primary_blob_endpoint
@@ -27,11 +26,11 @@ package database
    retention_in_days                       = 10
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check fails if extended_auditing_policy has retention less than 90 days",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check fails if extended_auditing_policy has retention less than 90 days",
+			source: `
  resource "azurerm_sql_server" "good_example" {
    name                         = "mssqlserver"
    resource_group_name          = azurerm_resource_group.example.name
@@ -48,11 +47,11 @@ package database
    }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check passes if retention not specified",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check passes if retention not specified",
+			source: `
  resource "azurerm_mssql_database_extended_auditing_policy" "good_example" {
    database_id                             = azurerm_mssql_database.example.id
    storage_endpoint                        = azurerm_storage_account.example.primary_blob_endpoint
@@ -60,10 +59,10 @@ package database
    storage_account_access_key_is_secondary = false
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		}, {
- 			name: "check passes if the extended_auditing_policy has retention not specified",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		}, {
+			name: "check passes if the extended_auditing_policy has retention not specified",
+			source: `
  resource "azurerm_sql_server" "good_example" {
    name                         = "mssqlserver"
    resource_group_name          = azurerm_resource_group.example.name
@@ -79,11 +78,11 @@ package database
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check passes if retention period is greatet than or equal 90",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check passes if retention period is greatet than or equal 90",
+			source: `
  resource "azurerm_mssql_database_extended_auditing_policy" "good_example" {
    database_id                             = azurerm_mssql_database.example.id
    storage_endpoint                        = azurerm_storage_account.example.primary_blob_endpoint
@@ -92,11 +91,11 @@ package database
    retention_in_days                       = 90
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check passes if extended auditing policy has retention period is greatet than or equal 90",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check passes if extended auditing policy has retention period is greatet than or equal 90",
+			source: `
  resource "azurerm_sql_server" "good_example" {
    name                         = "mssqlserver"
    resource_group_name          = azurerm_resource_group.example.name
@@ -113,16 +112,16 @@ package database
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

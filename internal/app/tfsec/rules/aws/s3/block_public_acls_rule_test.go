@@ -1,11 +1,11 @@
 package s3
 
-generator-locked
 import (
-"strings"
-"testing"
-"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+	"strings"
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
 func Test_AWSBlockPublicAclS3_FailureExamples(t *testing.T) {

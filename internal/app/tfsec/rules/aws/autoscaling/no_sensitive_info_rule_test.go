@@ -9,7 +9,7 @@ import (
 )
 
 func Test_AWSNoSensitiveInfo_FailureExamples(t *testing.T) {
-	expectedCode := "aws-launch-no-sensitive-info"
+	expectedCode := "aws-autoscaling-no-sensitive-info"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_AWSNoSensitiveInfo_FailureExamples(t *testing.T) {
 }
 
 func Test_AWSNoSensitiveInfo_SuccessExamples(t *testing.T) {
-	expectedCode := "aws-launch-no-sensitive-info"
+	expectedCode := "aws-autoscaling-no-sensitive-info"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

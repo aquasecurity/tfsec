@@ -1,24 +1,23 @@
 package gke
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_GkeNodeMetadataExposed(t *testing.T) {
- 	expectedCode := "google-gke-node-metadata-security"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to EXPOSE",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_GkeNodeMetadataExposed(t *testing.T) {
+	expectedCode := "google-gke-node-metadata-security"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to EXPOSE",
+			source: `
  resource "google_container_cluster" "gke" {
  	node_config {
  		workload_metadata_config {
@@ -26,11 +25,11 @@ package gke
  		}
  	}
  }`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to UNSPECIFIED",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to UNSPECIFIED",
+			source: `
  resource "google_container_cluster" "gke" {
  	node_config {
  		workload_metadata_config {
@@ -38,11 +37,11 @@ package gke
  		}
  	}
  }`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to EXPOSE",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to EXPOSE",
+			source: `
  resource "google_container_node_pool" "gke" {
  	node_config {
  		workload_metadata_config {
@@ -50,11 +49,11 @@ package gke
  		}
  	}
  }`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to UNSPECIFIED",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to UNSPECIFIED",
+			source: `
  resource "google_container_node_pool" "gke" {
  	node_config {
  		workload_metadata_config {
@@ -62,11 +61,11 @@ package gke
  		}
  	}
  }`,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to SECURE",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to SECURE",
+			source: `
  resource "google_container_cluster" "gke" {
  	node_config {
  		workload_metadata_config {
@@ -74,11 +73,11 @@ package gke
  		}
  	}
  }`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to GKE_METADATA_SERVER",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to GKE_METADATA_SERVER",
+			source: `
  resource "google_container_cluster" "gke" {
  	node_config {
  		workload_metadata_config {
@@ -86,11 +85,11 @@ package gke
  		}
  	}
  }`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to SECURE",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to SECURE",
+			source: `
  resource "google_container_node_pool" "gke" {
  	node_config {
  		workload_metadata_config {
@@ -98,11 +97,11 @@ package gke
  		}
  	}
  }`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to GKE_METADATA_SERVER",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to GKE_METADATA_SERVER",
+			source: `
  resource "google_container_node_pool" "gke" {
  	node_config {
  		workload_metadata_config {
@@ -110,16 +109,16 @@ package gke
  		}
  	}
  }`,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}

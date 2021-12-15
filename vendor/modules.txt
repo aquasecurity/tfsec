@@ -25,7 +25,7 @@ github.com/agext/levenshtein
 github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
 github.com/apparentlymart/go-textseg/v13/textseg
-# github.com/aquasecurity/defsec v0.0.38-0.20211214173304-6df6421d27ab
+# github.com/aquasecurity/defsec v0.0.38-0.20211215165825-9c2d6ed342bc
 ## explicit
 github.com/aquasecurity/defsec/cidr
 github.com/aquasecurity/defsec/formatters
@@ -123,7 +123,17 @@ github.com/aquasecurity/defsec/rules/aws/kinesis
 github.com/aquasecurity/defsec/rules/aws/kms
 github.com/aquasecurity/defsec/rules/aws/lambda
 github.com/aquasecurity/defsec/rules/aws/mq
+github.com/aquasecurity/defsec/rules/aws/msk
+github.com/aquasecurity/defsec/rules/aws/neptune
+github.com/aquasecurity/defsec/rules/aws/rds
+github.com/aquasecurity/defsec/rules/aws/redshift
 github.com/aquasecurity/defsec/rules/aws/s3
+github.com/aquasecurity/defsec/rules/aws/sns
+github.com/aquasecurity/defsec/rules/aws/sqs
+github.com/aquasecurity/defsec/rules/aws/ssm
+github.com/aquasecurity/defsec/rules/aws/vpc
+github.com/aquasecurity/defsec/rules/aws/workspaces
+github.com/aquasecurity/defsec/rules/general/secrets
 github.com/aquasecurity/defsec/rules/google/compute
 github.com/aquasecurity/defsec/severity
 github.com/aquasecurity/defsec/state

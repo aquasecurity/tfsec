@@ -1,24 +1,23 @@
 package sql
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_GooglePgLogLockWaits(t *testing.T) {
- 	expectedCode := "google-sql-pg-log-lock-waits"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "rule matches when flag is explicitly set to off",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_GooglePgLogLockWaits(t *testing.T) {
+	expectedCode := "google-sql-pg-log-lock-waits"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "rule matches when flag is explicitly set to off",
+			source: `
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "POSTGRES_12"
@@ -31,22 +30,22 @@ package sql
  	}
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "rule matches when flag is set to default (off)",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "rule matches when flag is set to default (off)",
+			source: `
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "POSTGRES_12"
  	region           = "us-central1"
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "rule does not match when flag is set to on",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "rule does not match when flag is set to on",
+			source: `
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "POSTGRES_12"
@@ -59,26 +58,26 @@ package sql
  	}
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "rule does not match when not postgres",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "rule does not match when not postgres",
+			source: `
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "MYSQL_5_6"
  	region           = "us-central1"
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+}

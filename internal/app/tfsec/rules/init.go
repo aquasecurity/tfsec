@@ -36,7 +36,7 @@ import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/sqs"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/ssm"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/vpc"
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/workspace"
+	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/workspaces"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/appservice"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/authorization"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/compute"

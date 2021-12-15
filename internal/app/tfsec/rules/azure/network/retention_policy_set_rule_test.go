@@ -1,24 +1,23 @@
 package network
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AzureRetentionPeriodSet(t *testing.T) {
- 	expectedCode := "azure-network-retention-policy-set"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "TODO: add test name",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AzureRetentionPeriodSet(t *testing.T) {
+	expectedCode := "azure-network-retention-policy-set"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "TODO: add test name",
+			source: `
  resource "azurerm_network_watcher_flow_log" "bad_watcher" {
    network_watcher_name = "bad_watcher"
    resource_group_name  = "resource-group"
@@ -33,11 +32,11 @@ package network
    }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "TODO: add test name",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "TODO: add test name",
+			source: `
  resource "azurerm_network_watcher_flow_log" "bad_watcher" {
    network_watcher_name = "bad_watcher"
    resource_group_name  = "resource-group"
@@ -52,11 +51,11 @@ package network
    }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "TODO: add test name",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "TODO: add test name",
+			source: `
  resource "azurerm_network_watcher_flow_log" "good_watcher" {
    network_watcher_name = "good_watcher"
    resource_group_name  = "resource-group"
@@ -71,15 +70,15 @@ package network
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+}

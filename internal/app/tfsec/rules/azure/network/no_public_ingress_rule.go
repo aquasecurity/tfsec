@@ -1,6 +1,5 @@
 package network
 
-// generator-locked
 import (
 	"strings"
 	"github.com/aquasecurity/defsec/rules"

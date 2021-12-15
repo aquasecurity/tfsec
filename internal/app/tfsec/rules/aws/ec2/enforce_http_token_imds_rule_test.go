@@ -1,9 +1,9 @@
 package ec2
 
-generator-locked
 import (
-"testing"
-"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
 func Test_AWSInstanceMetadataChec(t *testing.T) {

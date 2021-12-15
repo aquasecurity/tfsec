@@ -1,6 +1,5 @@
 package eks
 
-// generator-locked
 import (
 	"fmt"
 

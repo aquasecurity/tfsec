@@ -1,35 +1,30 @@
 package rds
 
-// generator-locked
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/rds"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		LegacyID: "AWS053",
-
-		When enabling Performance Insights on an RDS cluster or RDS DB Instance, and encryption key should be provided.
-
-		The encryption key specified in ` + "`" + `performance_insights_kms_key_id` + "`" + ` references a KMS ARN
-		`,
 		BadExample: []string{`
-		resource "aws_rds_cluster_instance" "bad_example" {
-		name = "bar"
-		performance_insights_enabled = true
-		performance_insights_kms_key_id = ""
-		}
+resource "aws_rds_cluster_instance" "bad_example" {
+	name = "bar"
+	performance_insights_enabled = true
+	performance_insights_kms_key_id = ""
+}
 		`},
 		GoodExample: []string{`
-		resource "aws_rds_cluster_instance" "good_example" {
-		name = "bar"
-		performance_insights_enabled = true
-		performance_insights_kms_key_id = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
-		}
-	`},
+resource "aws_rds_cluster_instance" "good_example" {
+	name = "bar"
+	performance_insights_enabled = true
+	performance_insights_kms_key_id = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+}
+		`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_instance#performance_insights_kms_key_id",
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance#performance_insights_kms_key_id",
@@ -37,6 +32,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_rds_cluster_instance", "aws_db_instance"},
+		Base:           rds.CheckEnablePerformanceInsights,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			if resourceBlock.HasChild("performance_insights_enabled") && resourceBlock.GetAttribute("performance_insights_enabled").IsTrue() {
@@ -46,7 +42,7 @@ func init() {
 				}
 
 				if keyAttr := resourceBlock.GetAttribute("performance_insights_kms_key_id"); keyAttr.IsEmpty() {
-					results.Add("Resource defines Performance Insights without encryption key specified.", ?)
+					results.Add("Resource defines Performance Insights without encryption key specified.", keyAttr)
 				}
 			}
 

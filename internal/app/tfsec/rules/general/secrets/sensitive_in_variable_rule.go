@@ -1,30 +1,22 @@
 package secrets
 
-generator-locked
 import (
-"github.com/zclconf/go-cty/cty"
+	"github.com/zclconf/go-cty/cty"
 
-"github.com/aquasecurity/defsec/rules"
-"github.com/aquasecurity/defsec/severity"
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/general/secrets"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
-"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 
-"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
 
-"github.com/aquasecurity/tfsec/pkg/rule"
-
-"github.com/aquasecurity/tfsec/internal/app/tfsec/security"
-
-"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		LegacyID: "GEN001",
-		Base: rules.Register(rules.Rule{
-
-			Severity: severity.Critical,
-		}, nil),
 		BadExample: []string{`
  variable "password" {
    description = "The root password for our VM"
@@ -50,6 +42,7 @@ func init() {
 			"https://www.terraform.io/docs/state/sensitive-data.html",
 		},
 		RequiredTypes: []string{"variable"},
+		Base:          secrets.CheckNotExposed,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			if len(resourceBlock.Labels()) == 0 || !security.IsSensitiveAttribute(resourceBlock.TypeLabel()) {
@@ -66,5 +59,7 @@ func init() {
 					}
 				}
 			}
-			returnreturn
-			results
+			return results
+		},
+	})
+}

@@ -1,24 +1,23 @@
 package storage
- 
- // generator-locked
- import (
- 	"testing"
- 
- 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
- )
- 
- func Test_AZUTrustedMicrosoftServicesHaveStroageAccountAccess(t *testing.T) {
- 	expectedCode := "azure-storage-allow-microsoft-service-bypass"
- 
- 	var tests = []struct {
- 		name                  string
- 		source                string
- 		mustIncludeResultCode string
- 		mustExcludeResultCode string
- 	}{
- 		{
- 			name: "check storage account without MicrosoftServices causes failure",
- 			source: `
+
+import (
+	"testing"
+
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+)
+
+func Test_AZUTrustedMicrosoftServicesHaveStroageAccountAccess(t *testing.T) {
+	expectedCode := "azure-storage-allow-microsoft-service-bypass"
+
+	var tests = []struct {
+		name                  string
+		source                string
+		mustIncludeResultCode string
+		mustExcludeResultCode string
+	}{
+		{
+			name: "check storage account without MicrosoftServices causes failure",
+			source: `
  resource "azurerm_storage_account" "example" {
    name                = "storageaccountname"
    resource_group_name = azurerm_resource_group.example.name
@@ -39,11 +38,11 @@ package storage
    }
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check storage account network rules without MicrosoftServices bypass causes failure",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check storage account network rules without MicrosoftServices bypass causes failure",
+			source: `
  resource "azurerm_storage_account_network_rules" "test" {
  resource_group_name  = azurerm_resource_group.test.name
  storage_account_name = azurerm_storage_account.test.name
@@ -54,11 +53,11 @@ package storage
  	bypass                     = ["Metrics"]
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check storage account network rules with empty bypass fails",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check storage account network rules with empty bypass fails",
+			source: `
  resource "azurerm_storage_account_network_rules" "test" {
  resource_group_name  = azurerm_resource_group.test.name
  storage_account_name = azurerm_storage_account.test.name
@@ -69,11 +68,11 @@ package storage
  	bypass                     = []
  }
  `,
- 			mustIncludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check storage account that has MicrosoftServices bypass passes",
- 			source: `
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check storage account that has MicrosoftServices bypass passes",
+			source: `
  resource "azurerm_storage_account" "example" {
    name                = "storageaccountname"
    resource_group_name = azurerm_resource_group.example.name
@@ -94,11 +93,11 @@ package storage
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check storage account with no network rules passes",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check storage account with no network rules passes",
+			source: `
  resource "azurerm_storage_account" "example" {
    name                = "storageaccountname"
    resource_group_name = azurerm_resource_group.example.name
@@ -112,11 +111,11 @@ package storage
    }
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 		{
- 			name: "check storage account network rules that has MicrosoftServices bypass passes",
- 			source: `
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check storage account network rules that has MicrosoftServices bypass passes",
+			source: `
  resource "azurerm_storage_account_network_rules" "test" {
  resource_group_name  = azurerm_resource_group.test.name
  storage_account_name = azurerm_storage_account.test.name
@@ -127,16 +126,16 @@ package storage
  	bypass                     = ["Metrics", "AzureServices"]
  }
  `,
- 			mustExcludeResultCode: expectedCode,
- 		},
- 	}
- 
- 	for _, test := range tests {
- 		t.Run(test.name, func(t *testing.T) {
- 
- 			results := testutil.ScanHCL(test.source, t)
- 			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
- 		})
- 	}
- 
- }
+			mustExcludeResultCode: expectedCode,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+
+			results := testutil.ScanHCL(test.source, t)
+			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+		})
+	}
+
+}
