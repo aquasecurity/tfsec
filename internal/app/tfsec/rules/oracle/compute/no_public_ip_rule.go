@@ -3,8 +3,8 @@ package compute
 import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -30,7 +30,7 @@ func init() {
 		RequiredLabels: []string{"opc_compute_ip_address_reservation"},
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if attr := resourceBlock.GetAttribute("ip_address_pool"); attr.Equals("public-ippool") {
-				results.Add("Resource is using an IP from a public IP pool", ?)
+				results.Add("Resource is using an IP from a public IP pool", attr)
 			}
 			return results
 		},

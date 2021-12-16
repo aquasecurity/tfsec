@@ -2,9 +2,10 @@ package storage
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/azure/storage"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -31,6 +32,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_storage_account"},
+		Base:           storage.CheckUseSecureTlsPolicy,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			if resourceBlock.MissingChild("min_tls_version") {
@@ -40,7 +42,7 @@ func init() {
 
 			minTlsAttr := resourceBlock.GetAttribute("min_tls_version")
 			if minTlsAttr.IsNone("TLS1_2") {
-				results.Add("Resource should have the min tls version set to TLS1_2 .", ?)
+				results.Add("Resource should have the min tls version set to TLS1_2 .", minTlsAttr)
 			}
 			return results
 		},

@@ -2,6 +2,7 @@ package compute
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/azure/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -28,6 +29,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_managed_disk"},
+		Base:           compute.CheckEnableDiskEncryption,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			encryptionSettingsBlock := resourceBlock.GetBlock("encryption_settings")
 			if encryptionSettingsBlock.IsNil() {

@@ -2,10 +2,10 @@ package database
 
 import (
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/aquasecurity/defsec/rules/azure/database"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -44,23 +44,19 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_sql_server", "azurerm_mssql_server"},
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+		Base:           database.CheckEnableAudit,
+		CheckTerraform: func(resourceBlock block.Block, module block.Module) (results rules.Results) {
 
 			if resourceBlock.HasChild("extended_auditing_policy") {
 				return
 			}
 
-			blocks, err := module.GetReferencingResources(resourceBlock, "azurerm_mssql_server_extended_auditing_policy", "server_id")
-			if err != nil {
-				debug.Log("Failed to locate referencing blocks for %s", ?)
-				return
-			}
-
+			blocks := module.GetReferencingResources(resourceBlock, "azurerm_mssql_server_extended_auditing_policy", "server_id")
 			if len(blocks) > 0 {
 				return
 			}
 
-			results.Add("Resource does not have an extended audit policy configured.", ?)
+			results.Add("Resource does not have an extended audit policy configured.", resourceBlock)
 			return results
 		},
 	})

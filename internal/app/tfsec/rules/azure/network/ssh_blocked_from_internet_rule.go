@@ -2,6 +2,7 @@ package network
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/azure/network"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -66,6 +67,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_group", "azurerm_network_security_rule"},
+		Base:           network.CheckSshBlockedFromInternet,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			var securityRules block.Blocks

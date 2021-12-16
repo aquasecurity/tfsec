@@ -2,11 +2,12 @@ package iam
 
 import (
 	"strings"
+
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/zclconf/go-cty/cty"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
 func init() {
@@ -82,7 +83,7 @@ func init() {
 			}
 			for _, identities := range members {
 				if identities.IsKnown() && identities.Type() == cty.String && strings.HasPrefix(identities.AsString(), "user:") {
-					results.Add("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", ?)
+					results.Add("'%s' grants IAM to a user object. It is recommended to manage user permissions with groups.", resourceBlock)
 				}
 			}
 			return results

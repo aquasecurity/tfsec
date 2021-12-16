@@ -2,9 +2,10 @@ package network
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/azure/network"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -67,6 +68,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_group", "azurerm_network_security_rule"},
+		Base:           network.CheckDisableRdpFromInternet,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			var securityRules block.Blocks
@@ -84,7 +86,7 @@ func init() {
 					if securityRule.HasChild("source_address_prefix") {
 						sourceAddrAttr := securityRule.GetAttribute("source_address_prefix")
 						if sourceAddrAttr.IsAny("*", "0.0.0.0", "/0", "internet", "any") {
-							results.Add("Resource has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", ?)
+							results.Add("Resource has a source address prefix of *, 0.0.0.0, /0, internet or an any. Consider using the Azure Bastion Service.", sourceAddrAttr)
 						}
 					}
 				}

@@ -2,6 +2,7 @@ package appservice
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/azure/appservice"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -40,15 +41,14 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_function_app"},
+		Base:           appservice.CheckEnforceHttps,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
 			if resourceBlock.MissingChild("https_only") {
 				results.Add("Resource should have https_only set to true, the default is false.", resourceBlock)
 				return
 			}
-			httpsOnlyAttr := resourceBlock.GetAttribute("https_only")
-			if httpsOnlyAttr.IsFalse() {
-				results.Add("Resource should have https_only set to true, the default is false.", httpsOnlyAttr)
+			if httpsOnlyAttr := resourceBlock.GetAttribute("https_only"); httpsOnlyAttr.IsFalse() {
+				results.Add("Resource should be HTTPS only.", httpsOnlyAttr)
 			}
 			return results
 		},

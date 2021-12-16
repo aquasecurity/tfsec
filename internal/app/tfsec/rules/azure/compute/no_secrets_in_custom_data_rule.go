@@ -2,12 +2,15 @@ package compute
 
 import (
 	"encoding/base64"
+
+	"github.com/aquasecurity/defsec/rules/azure/compute"
+
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/owenrumney/squealer/pkg/squealer"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/owenrumney/squealer/pkg/squealer"
 )
 
 func init() {
@@ -33,6 +36,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_virtual_machine", "azurerm_linux_virtual_machine", "azurerm_windows_virtual_machine"},
+		Base:           compute.CheckNoSecretsInCustomData,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			if resourceBlock.MissingChild("custom_data") {
@@ -44,7 +48,7 @@ func init() {
 			if resourceBlock.TypeLabel() == "azurerm_virtual_machine" {
 				for _, str := range customDataAttr.ValueAsStrings() {
 					if checkStringForSensitive(str) {
-						results.Add("Resource has custom_data with sensitive data.", ?)
+						results.Add("Resource has custom_data with sensitive data.", customDataAttr)
 					}
 				}
 			} else if customDataAttr.IsResolvable() && customDataAttr.IsString() {
@@ -54,7 +58,7 @@ func init() {
 					encoded = []byte(customDataAttr.Value().AsString())
 				}
 				if checkStringForSensitive(string(encoded)) {
-					results.Add("Resource has custom_data with sensitive data.", ?)
+					results.Add("Resource has custom_data with sensitive data.", customDataAttr)
 				}
 
 			}
@@ -63,8 +67,6 @@ func init() {
 	})
 }
 
-func checkStringForSensitive(stringToCheck
-string) bool{
-scanResult, := squealer.NewStringScanner().Scan(stringToCheck)
-return scanResult.TransgressionFound
+func checkStringForSensitive(stringToCheck string) bool {
+	return squealer.NewStringScanner().Scan(stringToCheck).TransgressionFound
 }

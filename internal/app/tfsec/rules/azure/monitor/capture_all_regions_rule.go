@@ -1,6 +1,10 @@
 package monitor
 
 import (
+	"fmt"
+
+	"github.com/aquasecurity/defsec/rules/azure/monitor"
+
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -118,6 +122,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_monitor_log_profile"},
+		Base:           monitor.CheckCaptureAllRegions,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			if resourceBlock.MissingChild("locations") {
@@ -133,7 +138,7 @@ func init() {
 
 			for _, location := range locations {
 				if !locationsAttr.Contains(location) {
-					results.Add("Resource does not have the location '%s'", resourceBlock.LocalName(), location)
+					results.Add(fmt.Sprintf("Resource does not have the location '%s'", location), locationsAttr)
 				}
 			}
 

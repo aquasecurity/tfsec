@@ -2,6 +2,7 @@ package storage
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/azure/storage"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -34,9 +35,8 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_storage_account", "azurerm_storage_account_network_rules"},
+		Base:           storage.CheckDefaultActionDeny,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			blockName := resourceBlock.FullName()
 
 			if resourceBlock.IsResourceType("azurerm_storage_account") {
 				if resourceBlock.MissingChild("network_rules") {
@@ -47,7 +47,7 @@ func init() {
 
 			defaultAction := resourceBlock.GetAttribute("default_action")
 			if defaultAction.IsNotNil() && defaultAction.Equals("Allow", block.IgnoreCase) {
-				results.Add("Resource defines a default_action of Allow. It should be Deny.", blockName)
+				results.Add("Resource defines a default_action of Allow. It should be Deny.", defaultAction)
 			}
 
 			return results

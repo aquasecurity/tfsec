@@ -2,6 +2,7 @@ package database
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/azure/database"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -46,6 +47,7 @@ func init() {
 			"azurerm_postgresql_firewall_rule",
 			"azurerm_mariadb_firewall_rule",
 		},
+		Base: database.CheckNoPublicFirewallAccess,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			if resourceBlock.MissingChild("start_ip_address") || resourceBlock.MissingChild("end_ip_address") {

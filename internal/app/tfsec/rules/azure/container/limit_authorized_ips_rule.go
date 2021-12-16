@@ -2,9 +2,10 @@ package container
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/azure/container"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -28,6 +29,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_kubernetes_cluster"},
+		Base:           container.CheckLimitAuthorizedIps,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			if (resourceBlock.MissingChild("api_server_authorized_ip_ranges") ||
@@ -35,7 +37,7 @@ func init() {
 				(resourceBlock.MissingChild("private_cluster_enabled") ||
 					resourceBlock.GetAttribute("private_cluster_enabled").IsFalse()) {
 				{
-					results.Add("Resource defined without limited set of IP address ranges to the API server.", ?)
+					results.Add("Resource defined without limited set of IP address ranges to the API server.", resourceBlock)
 				}
 			}
 			return results

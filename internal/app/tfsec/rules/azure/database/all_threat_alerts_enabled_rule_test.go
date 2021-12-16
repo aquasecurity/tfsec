@@ -1,4 +1,4 @@
-package mssql
+package database
 
 import (
 	"strings"
@@ -8,8 +8,8 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
 
-func Test_AzureThreatAlertEmailToOwner_FailureExamples(t *testing.T) {
-	expectedCode := "azure-mssql-threat-alert-email-to-owner"
+func Test_AzureAllThreatAlertsEnabled_FailureExamples(t *testing.T) {
+	expectedCode := "azure-mssql-all-threat-alerts-enabled"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -30,8 +30,8 @@ func Test_AzureThreatAlertEmailToOwner_FailureExamples(t *testing.T) {
 	}
 }
 
-func Test_AzureThreatAlertEmailToOwner_SuccessExamples(t *testing.T) {
-	expectedCode := "azure-mssql-threat-alert-email-to-owner"
+func Test_AzureAllThreatAlertsEnabled_SuccessExamples(t *testing.T) {
+	expectedCode := "azure-mssql-all-threat-alerts-enabled"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

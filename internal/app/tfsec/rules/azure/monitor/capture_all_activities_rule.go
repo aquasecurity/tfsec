@@ -1,10 +1,13 @@
 package monitor
 
 import (
+	"fmt"
+
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/azure/monitor"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -44,17 +47,18 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_monitor_log_profile"},
+		Base:           monitor.CheckCaptureAllActivities,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			categoriesAttr := resourceBlock.GetAttribute("categories")
 			if categoriesAttr.IsNil() || categoriesAttr.IsEmpty() {
-				results.Add("Resource does not have required categories", ?)
+				results.Add("Resource does not have required categories", resourceBlock)
 				return
 			}
 
 			for _, category := range []string{"Action", "Write", "Delete"} {
 				if !categoriesAttr.Contains(category) {
-					results.Add("Resource is missing '%s' category", resourceBlock.FullName(), category)
+					results.Add(fmt.Sprintf("Resource is missing '%s' category", category), categoriesAttr)
 				}
 			}
 

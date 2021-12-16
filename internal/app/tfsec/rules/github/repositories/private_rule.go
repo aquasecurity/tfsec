@@ -3,8 +3,8 @@ package repositories
 import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -48,7 +48,7 @@ func init() {
 			privateAttribute := resourceBlock.GetAttribute("private")
 			visibilityAttribute := resourceBlock.GetAttribute("visibility")
 			if visibilityAttribute.IsNil() && privateAttribute.IsNil() {
-				results.Add("Resource is missing both of `private` or `visibility` attributes - one of these is required to make repository private", ?)
+				results.Add("Resource is missing both of `private` or `visibility` attributes - one of these is required to make repository private", resourceBlock)
 				return
 			}
 

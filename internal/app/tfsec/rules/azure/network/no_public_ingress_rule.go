@@ -1,12 +1,15 @@
 package network
 
 import (
+	"fmt"
 	"strings"
+
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
+	"github.com/aquasecurity/defsec/rules/azure/network"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -30,6 +33,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_rule"},
+		Base:           network.CheckNoPublicIngress,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			directionAttr := resourceBlock.GetAttribute("direction")
@@ -40,7 +44,7 @@ func init() {
 			if prefixAttr := resourceBlock.GetAttribute("source_address_prefix"); prefixAttr.IsString() {
 				if cidr.IsAttributeOpen(prefixAttr) {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.Equals("ALLOW", block.IgnoreCase) {
-						results.Add("Resource defines a fully open %s network security group rule.", resourceBlock.FullName(), strings.ToLower(directionAttr.Value().AsString()))
+						results.Add(fmt.Sprintf("Resource defines a fully open %s network security group rule.", strings.ToLower(directionAttr.Value().AsString())), accessAttr)
 					}
 				}
 			}
@@ -48,7 +52,7 @@ func init() {
 			if prefixesAttr := resourceBlock.GetAttribute("source_address_prefixes"); !prefixesAttr.IsEmpty() {
 				if cidr.IsAttributeOpen(prefixesAttr) {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.Equals("ALLOW", block.IgnoreCase) {
-						results.Add("Resource defines a fully open security group rule.", ?)
+						results.Add("Resource defines a fully open security group rule.", accessAttr)
 					}
 				}
 			}
