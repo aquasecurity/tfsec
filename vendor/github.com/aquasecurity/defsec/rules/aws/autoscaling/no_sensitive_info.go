@@ -12,6 +12,7 @@ import (
 
 var CheckNoSensitiveInfo = rules.Register(
 	rules.Rule{
+		AVDID:       "AVD-AWS-0122",
 		Provider:    provider.AWSProvider,
 		Service:     "autoscaling",
 		ShortCode:   "no-sensitive-info",
