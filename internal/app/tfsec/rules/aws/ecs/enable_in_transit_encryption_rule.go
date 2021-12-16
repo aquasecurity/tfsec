@@ -53,8 +53,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition#transit_encryption",
-			"https://docs.aws.amazon.com/AmazonECS/latest/userguide/efs-volumes.html",
-			"https://docs.aws.amazon.com/efs/latest/ug/encryption-in-transit.html",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecs_task_definition"},

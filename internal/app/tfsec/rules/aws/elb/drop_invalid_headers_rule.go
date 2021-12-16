@@ -43,7 +43,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#drop_invalid_header_fields",
-			"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_alb", "aws_lb"},

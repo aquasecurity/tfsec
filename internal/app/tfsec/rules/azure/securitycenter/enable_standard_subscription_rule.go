@@ -24,7 +24,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/security_center_subscription_pricing#tier",
-			"https://docs.microsoft.com/en-us/azure/security-center/security-center-pricing",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_security_center_subscription_pricing"},

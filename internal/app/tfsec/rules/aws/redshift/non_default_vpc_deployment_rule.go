@@ -35,7 +35,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster#cluster_subnet_group_name",
-			"https://docs.aws.amazon.com/redshift/latest/mgmt/managing-clusters-vpc.html",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_redshift_cluster"},

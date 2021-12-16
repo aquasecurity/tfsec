@@ -30,7 +30,6 @@ resource "aws_lambda_permission" "good_example" {
 		`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission",
-			"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_lambda_permission"},

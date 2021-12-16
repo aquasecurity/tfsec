@@ -40,7 +40,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/firewall",
-			"https://docs.digitalocean.com/products/networking/firewalls/how-to/configure-rules/",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"digitalocean_firewall"},

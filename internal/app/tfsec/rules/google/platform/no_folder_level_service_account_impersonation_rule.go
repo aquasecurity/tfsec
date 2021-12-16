@@ -32,7 +32,6 @@ func init() {
  			`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_folder_iam",
-			"https://cloud.google.com/iam/docs/impersonating-service-accounts",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_folder_iam_binding", "google_folder_iam_member"},

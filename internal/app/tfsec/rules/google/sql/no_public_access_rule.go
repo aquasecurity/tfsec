@@ -54,7 +54,6 @@ func init() {
  			`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance",
-			"https://www.cloudconformity.com/knowledge-base/gcp/CloudSQL/publicly-accessible-cloud-sql-instances.html",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_sql_database_instance"},

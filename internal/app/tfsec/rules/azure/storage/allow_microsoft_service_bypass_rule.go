@@ -76,7 +76,6 @@ func init() {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account#bypass",
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account_network_rules#bypass",
-			"https://docs.microsoft.com/en-us/azure/storage/common/storage-network-security#trusted-microsoft-services",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_storage_account_network_rules", "azurerm_storage_account"},

@@ -58,7 +58,6 @@ func init() {
    `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_configuration",
-			"https://docs.microsoft.com/en-us/azure/postgresql/concepts-server-logs#configure-logging",
 		},
 		RequiredTypes: []string{
 			"resource",

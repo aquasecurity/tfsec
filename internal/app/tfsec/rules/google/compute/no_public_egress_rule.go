@@ -22,7 +22,6 @@ func init() {
  }`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall",
-			"https://cloud.google.com/vpc/docs/using-firewalls",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_compute_firewall"},

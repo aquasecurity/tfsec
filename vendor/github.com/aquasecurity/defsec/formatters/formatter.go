@@ -10,7 +10,6 @@ type FormatterOption int
 
 const (
 	ConciseOutput FormatterOption = iota
-	IncludePassed
 	PassingGif
 	NoColour
 )

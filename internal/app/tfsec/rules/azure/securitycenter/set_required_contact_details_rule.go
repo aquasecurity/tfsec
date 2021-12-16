@@ -30,7 +30,6 @@ func init() {
 	`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/security_center_contact#phone",
-			"https://azure.microsoft.com/en-us/services/security-center/",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_security_center_contact"},

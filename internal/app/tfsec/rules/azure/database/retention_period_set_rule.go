@@ -39,7 +39,6 @@ func init() {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy",
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server#retention_in_days",
-			"https://docs.microsoft.com/en-us/azure/azure-sql/database/auditing-overview",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_sql_server", "azurerm_sql_server", "azurerm_mssql_database_extended_auditing_policy"},

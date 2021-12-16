@@ -87,7 +87,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#master_auth",
-			"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#restrict_authn_methods",
 		},
 		RequiredTypes: []string{
 			"resource",

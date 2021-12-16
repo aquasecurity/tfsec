@@ -30,7 +30,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault#purge_protection_enabled",
-			"https://docs.microsoft.com/en-us/azure/key-vault/general/soft-delete-overview#purge-protection",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_key_vault"},

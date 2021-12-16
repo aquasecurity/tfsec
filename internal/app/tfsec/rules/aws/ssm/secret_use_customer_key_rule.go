@@ -28,7 +28,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret#kms_key_id",
-			"https://docs.aws.amazon.com/kms/latest/developerguide/services-secrets-manager.html#asm-encrypt",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_secretsmanager_secret"},

@@ -34,7 +34,6 @@ func init() {
  `},
 		Links: []string{
 			"https://www.terraform.io/docs/providers/azure/r/storage_container.html#properties",
-			"https://docs.microsoft.com/en-us/azure/storage/blobs/anonymous-read-access-configure?tabs=portal#set-the-public-access-level-for-a-container",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azure_storage_container"},

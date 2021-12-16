@@ -24,7 +24,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener",
-			"https://www.cloudflare.com/en-gb/learning/ssl/why-is-http-not-secure/",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_lb_listener", "aws_alb_listener"},

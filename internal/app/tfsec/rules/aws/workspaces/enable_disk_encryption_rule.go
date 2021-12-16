@@ -45,7 +45,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/workspaces_workspace#root_volume_encryption_enabled",
-			"https://docs.aws.amazon.com/workspaces/latest/adminguide/encrypt-workspaces.html",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_workspaces_workspace"},

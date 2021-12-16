@@ -33,7 +33,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/config_configuration_aggregator#all_regions",
-			"https://docs.aws.amazon.com/config/latest/developerguide/aggregate-data.html",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_config_configuration_aggregator"},

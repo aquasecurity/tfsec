@@ -45,7 +45,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/loadbalancer",
-			"https://docs.digitalocean.com/products/networking/load-balancers/",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"digitalocean_loadbalancer"},

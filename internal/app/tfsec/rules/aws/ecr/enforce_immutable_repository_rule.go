@@ -33,7 +33,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository",
-			"https://sysdig.com/blog/toctou-tag-mutability/",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecr_repository"},

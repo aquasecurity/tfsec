@@ -21,7 +21,6 @@ func init() {
  }`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/data_lake_store",
-			"https://docs.microsoft.com/en-us/azure/data-lake-store/data-lake-store-security-overview",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_data_lake_store"},

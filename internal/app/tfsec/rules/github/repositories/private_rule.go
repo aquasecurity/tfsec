@@ -39,8 +39,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository",
-			"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-repository-visibility",
-			"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-repository-visibility#about-internal-repositories",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"github_repository"},

@@ -25,7 +25,6 @@ func init() {
  }`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_disk",
-			"https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_managed_disk"},

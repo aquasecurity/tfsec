@@ -38,7 +38,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#versioning",
-			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"digitalocean_spaces_bucket"},

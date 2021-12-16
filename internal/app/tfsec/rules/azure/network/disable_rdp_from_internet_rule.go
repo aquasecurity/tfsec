@@ -64,7 +64,6 @@ func init() {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/network_security_group#security_rule",
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule#source_port_ranges",
-			"https://docs.microsoft.com/en-us/azure/bastion/tutorial-create-host-portal",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_group", "azurerm_network_security_rule"},

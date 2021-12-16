@@ -42,7 +42,6 @@ resource "azurerm_network_watcher_flow_log" "good_watcher" {
 	`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_watcher_flow_log#retention_policy",
-			"https://docs.microsoft.com/en-us/azure/network-watcher/network-watcher-monitoring-overview",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_watcher_flow_log"},

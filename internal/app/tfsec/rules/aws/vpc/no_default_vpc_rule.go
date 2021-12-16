@@ -23,7 +23,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_vpc",
-			"https://docs.aws.amazon.com/vpc/latest/userguide/default-vpc.html",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_default_vpc"},

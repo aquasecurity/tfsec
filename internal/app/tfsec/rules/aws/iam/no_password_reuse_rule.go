@@ -28,7 +28,6 @@ func init() {
  			`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy",
-			"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_iam_account_password_policy"},

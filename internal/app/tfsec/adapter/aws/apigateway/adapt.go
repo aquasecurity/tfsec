@@ -15,6 +15,7 @@ func Adapt(modules []block.Module) apigateway.APIGateway {
 		// domain names v1
 		for _, nameBlock := range module.GetResourcesByType("aws_api_gateway_domain_name") {
 			var domainName apigateway.DomainName
+			domainName.Metadata = nameBlock.Metadata()
 			domainName.Version = types.Int(1, nameBlock.Metadata())
 
 			if name := nameBlock.GetAttribute("domain_name"); name.IsString() {
@@ -35,6 +36,7 @@ func Adapt(modules []block.Module) apigateway.APIGateway {
 		// domain names v2
 		for _, nameBlock := range module.GetResourcesByType("aws_apigatewayv2_domain_name") {
 			var domainName apigateway.DomainName
+			domainName.Metadata = nameBlock.Metadata()
 			domainName.Version = types.Int(2, nameBlock.Metadata())
 
 			if name := nameBlock.GetAttribute("domain_name"); name.IsString() {

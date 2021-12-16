@@ -45,7 +45,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/apigatewayv2_stage#access_log_settings",
-			"https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-logging.html",
 		},
 		Base: apigateway.CheckEnableAccessLogging,
 	})

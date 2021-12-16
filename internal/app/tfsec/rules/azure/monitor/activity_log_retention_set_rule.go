@@ -32,7 +32,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_log_profile#retention_policy",
-			"https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/platform-logs-overview",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_monitor_log_profile"},

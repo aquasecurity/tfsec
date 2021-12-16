@@ -28,7 +28,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret#expiration_date",
-			"https://docs.microsoft.com/en-us/azure/key-vault/secrets/about-secrets",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_key_vault_secret"},

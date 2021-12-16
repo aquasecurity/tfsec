@@ -36,8 +36,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app#https_only",
-			"https://docs.microsoft.com/en-us/azure/app-service/configure-ssl-bindings#enforce-https",
-			"https://docs.microsoft.com/en-us/azure/azure-functions/security-concepts",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_function_app"},

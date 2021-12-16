@@ -37,7 +37,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_cluster#snapshot_retention_limit",
-			"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-automatic.html",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticache_cluster"},

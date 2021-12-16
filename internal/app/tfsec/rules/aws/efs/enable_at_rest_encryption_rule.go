@@ -25,7 +25,6 @@ func init() {
  }`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system",
-			"https://docs.aws.amazon.com/efs/latest/ug/encryption.html",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_efs_file_system"},

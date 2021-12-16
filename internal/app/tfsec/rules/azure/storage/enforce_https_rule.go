@@ -33,7 +33,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account#enable_https_traffic_only",
-			"https://docs.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_storage_account"},

@@ -31,7 +31,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account_network_rules#default_action",
-			"https://docs.microsoft.com/en-us/azure/firewall/rule-processing",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_storage_account", "azurerm_storage_account_network_rules"},

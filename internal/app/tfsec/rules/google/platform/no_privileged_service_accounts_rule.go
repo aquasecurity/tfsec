@@ -38,7 +38,6 @@ func init() {
  			`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam",
-			"https://cloud.google.com/iam/docs/understanding-roles",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_project_iam_member"},

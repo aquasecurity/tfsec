@@ -28,7 +28,6 @@ resource "aws_rds_cluster_instance" "good_example" {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster_instance#performance_insights_kms_key_id",
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance#performance_insights_kms_key_id",
-			"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.htm",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_rds_cluster_instance", "aws_db_instance"},

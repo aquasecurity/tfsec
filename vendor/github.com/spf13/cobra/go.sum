@@ -55,7 +55,16 @@ github.com/aquasecurity/defsec v0.1.2 h1:g0H4G7UAjfO8PLa1xs/N0JbTBhT0uBlnHwkRGXy
 github.com/aquasecurity/defsec v0.1.2/go.mod h1:S2X0l6vg/KbnCkV0vpwAJ6aVGFVemzIEgdm4IUf6B4k=
 github.com/aquasecurity/defsec v0.1.3 h1:oENd0z75HoL8ckyWFulIaSZJI3LRzEccZi3FIhHUoKg=
 github.com/aquasecurity/defsec v0.1.3/go.mod h1:S2X0l6vg/KbnCkV0vpwAJ6aVGFVemzIEgdm4IUf6B4k=
+<<<<<<< HEAD:vendor/github.com/spf13/cobra/go.sum
 >>>>>>> Upgrade defsec to fix missing avd id:go.sum
+=======
+github.com/aquasecurity/defsec v0.1.4 h1:CnWem5TsKG699FbkHHyYwKJG2BOUSfLYvlG/107vYNA=
+github.com/aquasecurity/defsec v0.1.4/go.mod h1:S2X0l6vg/KbnCkV0vpwAJ6aVGFVemzIEgdm4IUf6B4k=
+github.com/aquasecurity/defsec v0.1.5-0.20211216131750-8f6076604694 h1:M24kPacvfKwfiWo2XIsgE9qmF2sv762n9Azj+dUYM5k=
+github.com/aquasecurity/defsec v0.1.5-0.20211216131750-8f6076604694/go.mod h1:S2X0l6vg/KbnCkV0vpwAJ6aVGFVemzIEgdm4IUf6B4k=
+github.com/aquasecurity/defsec v0.1.5 h1:ZB9MXywzJjaSogIjFYuKMWrAInAat+PyytsJC4uRJC8=
+github.com/aquasecurity/defsec v0.1.5/go.mod h1:S2X0l6vg/KbnCkV0vpwAJ6aVGFVemzIEgdm4IUf6B4k=
+>>>>>>> Remvoe duplicate links:go.sum
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=
 github.com/armon/go-radix v0.0.0-20180808171621-7fddfc383310/go.mod h1:ufUuZ+zHj4x4TnLV4JWEpy2hxWSpsRywHrMgIH9cCH8=

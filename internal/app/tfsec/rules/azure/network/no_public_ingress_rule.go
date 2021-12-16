@@ -29,7 +29,6 @@ func init() {
  }`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule",
-			"https://docs.microsoft.com/en-us/azure/security/fundamentals/network-best-practices",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_network_security_rule"},

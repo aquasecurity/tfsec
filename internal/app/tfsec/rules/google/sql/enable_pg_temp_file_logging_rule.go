@@ -35,7 +35,6 @@ func init() {
  			`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance",
-			"https://postgresqlco.nf/doc/en/param/log_temp_files/",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_sql_database_instance"},

@@ -21,7 +21,6 @@ resource "aws_s3_bucket" "good_example" {
 `},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket",
-			"https://aws.amazon.com/premiumsupport/knowledge-center/secure-s3-resources/",
 		},
 		Base: s3.CheckForPublicACL,
 	})

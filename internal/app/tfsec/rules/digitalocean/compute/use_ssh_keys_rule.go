@@ -34,7 +34,6 @@ func init() {
  `},
 		Links: []string{
 			"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/droplet#ssh_keys",
-			"https://www.digitalocean.com/community/tutorials/understanding-the-ssh-encryption-and-connection-process",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"digitalocean_droplet"},

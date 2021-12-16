@@ -45,7 +45,6 @@ func init() {
 		Links: []string{
 			"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#acl",
 			"https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket_object#acl",
-			"https://docs.digitalocean.com/reference/api/spaces-api/#access-control-lists-acls",
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"digitalocean_spaces_bucket", "digitalocean_spaces_bucket_object"},

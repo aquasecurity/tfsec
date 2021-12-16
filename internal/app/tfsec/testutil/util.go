@@ -23,6 +23,11 @@ func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) r
 		opt(scanner)
 	}
 	res, _ := scanner.Scan(modules)
+	for _, result := range res {
+		if result.NarrowestRange() == nil {
+			t.Errorf("result has no range specified: %#v", result)
+		}
+	}
 	return res
 }
 

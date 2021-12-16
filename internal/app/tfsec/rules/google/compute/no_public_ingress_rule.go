@@ -22,7 +22,7 @@ func init() {
  }`},
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall#source_ranges",
-			"https://cloud.google.com/vpc/docs/using-firewalls",
+
 			"https://www.terraform.io/docs/providers/google/r/compute_firewall.html",
 		},
 		RequiredTypes:  []string{"resource"},

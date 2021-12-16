@@ -18,14 +18,11 @@ var severityFormat map[severity.Severity]string
 func FormatDefault(_ io.Writer, results []rules.Result, _ string, options ...FormatterOption) error {
 
 	showSuccessOutput := true
-	includePassedChecks := false
 
 	var showGif bool
 
 	for _, option := range options {
 		switch option {
-		case IncludePassed:
-			includePassedChecks = true
 		case ConciseOutput:
 			showSuccessOutput = false
 		case PassingGif:
@@ -45,7 +42,9 @@ func FormatDefault(_ io.Writer, results []rules.Result, _ string, options ...For
 		}
 	}
 
-	if len(results) == 0 || len(results) == countPassedResults(results) {
+	passCount := countPassedResults(results)
+
+	if len(results) == 0 || len(results) == passCount {
 		if showGif {
 			if renderer, err := ascii.FromURL("https://media.giphy.com/media/kyLYXonQYYfwYDIeZl/source.gif"); err == nil {
 				renderer.SetFill(true)
@@ -60,21 +59,26 @@ func FormatDefault(_ io.Writer, results []rules.Result, _ string, options ...For
 
 	fmt.Println("")
 	for i, res := range results {
-		printResult(res, i, includePassedChecks)
+		printResult(res, i)
 	}
 
-	terminal.PrintErrorf("\n  %d potential problems detected.\n\n", len(results)-countPassedResults(results))
+	var passInfo string
+	if passCount > 0 {
+		passInfo = fmt.Sprintf(" (%d passed)", passCount)
+	}
+
+	terminal.PrintErrorf("\n  %d potential problems detected%s.\n\n", len(results)-countPassedResults(results), passInfo)
 
 	return nil
 
 }
 
-func printResult(res rules.Result, i int, includePassedChecks bool) {
+func printResult(res rules.Result, i int) {
 
 	resultHeader := fmt.Sprintf("  <underline>Result %d</underline>\n", i+1)
 
 	var severityFormatted string
-	if includePassedChecks && res.Status() == rules.StatusPassed {
+	if res.Status() == rules.StatusPassed {
 		terminal.PrintSuccessf(resultHeader)
 		severityFormatted = tml.Sprintf("<green>PASSED</green>")
 	} else {
@@ -157,7 +161,11 @@ func highlightCode(result rules.Result) error {
 
 		// if we're rendering the actual issue lines, use red
 		if i+1 >= innerRange.GetStartLine() && i < innerRange.GetEndLine() {
-			_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <red>%s</red>\n", i, bodyString)
+			if result.Status() == rules.StatusPassed {
+				_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <green>%s</green>\n", i, bodyString)
+			} else {
+				_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <red>%s</red>\n", i, bodyString)
+			}
 		} else {
 			_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <yellow>%s</yellow>\n", i, bodyString)
 		}

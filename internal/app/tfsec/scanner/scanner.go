@@ -109,7 +109,7 @@ func (scanner *Scanner) filterResults(results []rules.Result) []rules.Result {
 			if !scanner.includeIgnored && checkInList(result.Rule().LongID(), FindLegacyID(result.Rule().LongID()), scanner.excludedRuleIDs) {
 				metrics.Add(metrics.IgnoredChecks, 1)
 				debug.Log("Ignoring '%s'", result.Rule().LongID())
-			} else {
+			} else if scanner.includePassed || result.Status() != rules.StatusPassed {
 				filtered = append(filtered, result)
 			}
 		}
