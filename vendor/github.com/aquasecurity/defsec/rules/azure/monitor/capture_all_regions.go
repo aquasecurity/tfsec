@@ -13,6 +13,7 @@ import (
 
 var CheckCaptureAllRegions = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0032",
 		Provider:    provider.AzureProvider,
 		Service:     "monitor",
 		ShortCode:   "capture-all-regions",

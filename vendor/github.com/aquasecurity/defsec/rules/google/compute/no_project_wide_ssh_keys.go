@@ -9,6 +9,7 @@ import (
 
 var CheckNoProjectWideSshKeys = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-GCP-0030",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "no-project-wide-ssh-keys",

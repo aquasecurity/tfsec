@@ -2,9 +2,10 @@ package sql
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/sql"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -53,6 +54,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_sql_database_instance"},
+		Base:           sql.CheckEncryptInTransitData,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			settingsBlock := resourceBlock.GetBlock("settings")
@@ -62,15 +64,14 @@ func init() {
 
 			ipConfigBlock := settingsBlock.GetBlock("ip_configuration")
 			if ipConfigBlock.IsNil() {
-				results.Add("Resource does not require SSL for all connections", ?)
+				results.Add("Resource does not require SSL for all connections", settingsBlock)
 				return
 			}
 
 			if requireSSLAttr := ipConfigBlock.GetAttribute("require_ssl"); requireSSLAttr.IsNil() {
-				results.Add("Resource does not require SSL for all connections", ?)
+				results.Add("Resource does not require SSL for all connections", ipConfigBlock)
 			} else if requireSSLAttr.IsFalse() {
-				set.AddResult().
-					WithDescription("Resource explicitly does not require SSL for all connections", ?)
+				results.Add("Resource explicitly does not require SSL for all connections", requireSSLAttr)
 			}
 
 			return results

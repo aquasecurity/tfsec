@@ -9,6 +9,7 @@ import (
 
 var CheckAclNoPublicRead = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-DIG-0006",
 		Provider:    provider.DigitalOceanProvider,
 		Service:     "spaces",
 		ShortCode:   "acl-no-public-read",

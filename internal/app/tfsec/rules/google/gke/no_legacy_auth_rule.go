@@ -2,6 +2,7 @@ package gke
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/gke"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -94,16 +95,17 @@ func init() {
 		RequiredLabels: []string{
 			"google_container_cluster",
 		},
+		Base: gke.CheckNoLegacyAuthentication,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			masterAuthBlock := resourceBlock.GetBlock("master_auth")
 			if masterAuthBlock.IsNil() {
 				return
 			}
 			if issueClientCertificateAttr := masterAuthBlock.GetBlock("client_certificate_config").GetAttribute("issue_client_certificate"); issueClientCertificateAttr.IsTrue() {
-				results.Add("Resource uses client certificates which are no longer recommended", ?)
+				results.Add("Resource uses client certificates which are no longer recommended", issueClientCertificateAttr)
 			}
 			if usernameAttr := masterAuthBlock.GetAttribute("username"); usernameAttr.IsString() {
-				results.Add("Resource uses basic auth which is not recommended", ?)
+				results.Add("Resource uses basic auth which is not recommended", usernameAttr)
 			}
 			return results
 		},

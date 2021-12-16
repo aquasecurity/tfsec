@@ -9,6 +9,7 @@ import (
 
 var CheckSetRequiredContactDetails = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0046",
 		Provider:   provider.AzureProvider,
 		Service:    "security-center",
 		ShortCode:  "set-required-contact-details",

@@ -2,6 +2,7 @@ package sql
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/sql"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -40,6 +41,7 @@ func init() {
 			"https://dev.mysql.com/doc/refman/8.0/en/load-data-local-security.html"},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_sql_database_instance"},
+		Base:           sql.CheckMysqlNoLocalInfile,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			// we only need to check this for MYSQL

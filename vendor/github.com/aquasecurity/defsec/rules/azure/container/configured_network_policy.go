@@ -9,6 +9,7 @@ import (
 
 var CheckConfiguredNetworkPolicy = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0043",
 		Provider:    provider.AzureProvider,
 		Service:     "container",
 		ShortCode:   "configured-network-policy",

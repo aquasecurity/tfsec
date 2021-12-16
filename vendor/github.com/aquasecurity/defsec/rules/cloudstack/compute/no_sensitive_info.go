@@ -12,6 +12,7 @@ var scanner = squealer.NewStringScanner()
 
 var CheckNoSensitiveInfo = rules.Register(
 	rules.Rule{
+		AVDID:       "AVD-CLDSTK-0001",
 		Provider:    provider.CloudStackProvider,
 		Service:     "compute",
 		ShortCode:   "no-sensitive-info",

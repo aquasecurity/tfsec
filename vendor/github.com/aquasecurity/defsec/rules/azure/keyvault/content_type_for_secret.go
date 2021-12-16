@@ -9,6 +9,7 @@ import (
 
 var CheckContentTypeForSecret = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0015",
 		Provider:   provider.AzureProvider,
 		Service:    "keyvault",
 		ShortCode:  "content-type-for-secret",

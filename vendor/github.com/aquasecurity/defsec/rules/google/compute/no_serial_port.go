@@ -9,6 +9,7 @@ import (
 
 var CheckNoSerialPort = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-GCP-0032",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "no-serial-port",

@@ -10,7 +10,7 @@ import (
 
 var CheckNoPublicAccess = rules.Register(
 	rules.Rule{
-		AVDID:       "",
+		AVDID:       "AVD-AWS-0004",
 		Provider:    provider.AWSProvider,
 		Service:     "api-gateway",
 		ShortCode:   "no-public-access",

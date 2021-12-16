@@ -9,6 +9,7 @@ import (
 
 var CheckNoOsloginOverride = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-GCP-0036",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "no-oslogin-override",

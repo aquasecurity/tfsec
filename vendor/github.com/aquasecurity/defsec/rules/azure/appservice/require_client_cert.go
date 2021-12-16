@@ -9,6 +9,7 @@ import (
 
 var CheckRequireClientCert = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0001",
 		Provider:    provider.AzureProvider,
 		Service:     "appservice",
 		ShortCode:   "require-client-cert",

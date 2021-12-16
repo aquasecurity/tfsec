@@ -9,6 +9,7 @@ import (
 
 var CheckEnableVPCFlowLogs = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-GCP-0029",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "enable-vpc-flow-logs",

@@ -2,10 +2,11 @@ package compute
 
 import (
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
+	"github.com/aquasecurity/defsec/rules/google/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -26,15 +27,14 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_compute_firewall"},
+		Base:           compute.CheckNoPublicIngress,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
 			if sourceRanges := resourceBlock.GetAttribute("source_ranges"); sourceRanges.IsNotNil() {
 				if cidr.IsAttributeOpen(sourceRanges) {
-					results.Add("Resource defines a fully open inbound firewall rule.", ?)
+					results.Add("Resource defines a fully open inbound firewall rule.", sourceRanges)
 				}
 			}
-
+			return results
 		},
 	})
-
 }

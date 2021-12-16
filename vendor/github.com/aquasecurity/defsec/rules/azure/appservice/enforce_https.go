@@ -9,6 +9,7 @@ import (
 
 var CheckEnforceHttps = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0004",
 		Provider:    provider.AzureProvider,
 		Service:     "appservice",
 		ShortCode:   "enforce-https",

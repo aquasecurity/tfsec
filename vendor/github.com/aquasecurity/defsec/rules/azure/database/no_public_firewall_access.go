@@ -10,6 +10,7 @@ import (
 
 var CheckNoPublicFirewallAccess = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0029",
 		Provider:    provider.AzureProvider,
 		Service:     "database",
 		ShortCode:   "no-public-firewall-access",

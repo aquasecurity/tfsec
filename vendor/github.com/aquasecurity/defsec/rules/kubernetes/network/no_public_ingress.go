@@ -10,6 +10,7 @@ import (
 
 var CheckNoPublicIngress = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-KUBE-0001",
 		Provider:    provider.KubernetesProvider,
 		Service:     "network",
 		ShortCode:   "no-public-ingress",

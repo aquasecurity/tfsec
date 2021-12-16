@@ -2,6 +2,7 @@ package compute
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -45,9 +46,13 @@ func init() {
 		RequiredLabels: []string{
 			"google_compute_disk",
 		},
+		Base: compute.CheckNoPlaintextVmDiskKeys,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if rawKeyAttr := resourceBlock.GetBlock("disk_encryption_key").GetAttribute("raw_key"); rawKeyAttr.IsResolvable() {
-				results.Add("Resource sets disk_encryption_key.raw_key", ?)
+				results.Add("Resource sets disk_encryption_key.raw_key", rawKeyAttr)
+			}
+			if diskEncryptionKeyRawAttr := resourceBlock.GetBlock("boot_disk").GetAttribute("disk_encryption_key_raw"); diskEncryptionKeyRawAttr.IsResolvable() {
+				results.Add("Resource sets boot_disk.disk_encryption_key_raw", diskEncryptionKeyRawAttr)
 			}
 			return results
 		},

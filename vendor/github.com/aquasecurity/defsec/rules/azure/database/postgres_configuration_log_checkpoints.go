@@ -9,6 +9,7 @@ import (
 
 var CheckPostgresConfigurationLogCheckpoints = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0024",
 		Provider:    provider.AzureProvider,
 		Service:     "database",
 		ShortCode:   "postgres-configuration-log-checkpoints",

@@ -66,6 +66,9 @@ func checkStatement(document iam.PolicyDocument, statement iam.PolicyDocumentSta
 	}
 	for _, resource := range statement.Resource {
 		if strings.Contains(resource, "*") && !iam.IsWildcardAllowed(statement.Action...) {
+			if strings.HasSuffix(resource, "/*") && strings.HasPrefix(resource, "arn:aws:s3") {
+				continue
+			}
 			results.Add(
 				"IAM policy document uses wildcarded resource for sensitive action(s).",
 				document,

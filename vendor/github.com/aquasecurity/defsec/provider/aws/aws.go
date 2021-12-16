@@ -30,6 +30,7 @@ import (
 	"github.com/aquasecurity/defsec/provider/aws/rds"
 	"github.com/aquasecurity/defsec/provider/aws/redshift"
 	"github.com/aquasecurity/defsec/provider/aws/s3"
+	"github.com/aquasecurity/defsec/provider/aws/sam"
 	"github.com/aquasecurity/defsec/provider/aws/sns"
 	"github.com/aquasecurity/defsec/provider/aws/sqs"
 	"github.com/aquasecurity/defsec/provider/aws/ssm"
@@ -66,6 +67,7 @@ type AWS struct {
 	Neptune       neptune.Neptune
 	RDS           rds.RDS
 	Redshift      redshift.Redshift
+	SAM           sam.SAM
 	S3            s3.S3
 	SNS           sns.SNS
 	SQS           sqs.SQS

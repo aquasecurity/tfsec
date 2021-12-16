@@ -9,6 +9,7 @@ import (
 
 var CheckAllowMicrosoftServiceBypass = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0010",
 		Provider:   provider.AzureProvider,
 		Service:    "storage",
 		ShortCode:  "allow-microsoft-service-bypass",

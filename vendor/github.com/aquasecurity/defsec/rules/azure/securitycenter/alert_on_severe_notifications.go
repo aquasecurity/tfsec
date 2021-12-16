@@ -9,6 +9,7 @@ import (
 
 var CheckAlertOnSevereNotifications = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0044",
 		Provider:   provider.AzureProvider,
 		Service:    "security-center",
 		ShortCode:  "alert-on-severe-notifications",

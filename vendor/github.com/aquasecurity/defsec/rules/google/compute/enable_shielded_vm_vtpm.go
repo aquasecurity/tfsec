@@ -9,6 +9,7 @@ import (
 
 var CheckEnableShieldedVMVTPM = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-GCP-0041",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "enable-shielded-vm-vtpm",

@@ -9,6 +9,7 @@ import (
 
 var CheckAccountIdentityRegistered = rules.Register(
 	rules.Rule{
+		AVDID:       "AVD-AZU-0002",
 		Provider:    provider.AzureProvider,
 		Service:     "appservice",
 		ShortCode:   "account-identity-registered",

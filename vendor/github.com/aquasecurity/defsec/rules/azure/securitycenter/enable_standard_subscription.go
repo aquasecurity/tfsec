@@ -10,6 +10,7 @@ import (
 
 var CheckEnableStandardSubscription = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0045",
 		Provider:   provider.AzureProvider,
 		Service:    "security-center",
 		ShortCode:  "enable-standard-subscription",

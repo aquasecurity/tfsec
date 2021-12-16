@@ -2,6 +2,7 @@ package compute
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -89,6 +90,7 @@ func init() {
 		RequiredLabels: []string{
 			"google_compute_instance",
 		},
+		Base: compute.CheckNoDefaultServiceAccount,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if emailAttr := resourceBlock.GetBlock("service_account").GetAttribute("email"); emailAttr.IsNil() || emailAttr.EndsWith("-compute@developer.gserviceaccount.com") {
 				results.Add("Resource uses the default service account.", resourceBlock)

@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/apparentlymart/go-cidr v1.1.0
-	github.com/aquasecurity/defsec v0.0.38-0.20211215165825-9c2d6ed342bc
+	github.com/aquasecurity/defsec v0.1.2
 	github.com/bmatcuk/doublestar v1.3.4
 	github.com/google/go-cmp v0.5.6
 	github.com/google/uuid v1.3.0
@@ -48,7 +48,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.12 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/owenrumney/squealer v0.2.28
+	github.com/owenrumney/squealer v0.3.1
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0

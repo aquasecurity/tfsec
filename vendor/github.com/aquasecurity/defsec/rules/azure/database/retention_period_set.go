@@ -9,6 +9,7 @@ import (
 
 var CheckRetentionPeriodSet = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0025",
 		Provider:   provider.AzureProvider,
 		Service:    "database",
 		ShortCode:  "retention-period-set",

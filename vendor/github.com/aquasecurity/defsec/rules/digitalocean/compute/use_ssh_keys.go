@@ -9,6 +9,7 @@ import (
 
 var CheckUseSshKeys = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-DIG-0004",
 		Provider:    provider.DigitalOceanProvider,
 		Service:     "droplet",
 		ShortCode:   "use-ssh-keys",

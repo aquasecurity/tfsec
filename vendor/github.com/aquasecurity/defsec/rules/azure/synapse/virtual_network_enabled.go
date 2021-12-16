@@ -9,6 +9,7 @@ import (
 
 var CheckVirtualNetworkEnabled = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0034",
 		Provider:   provider.AzureProvider,
 		Service:    "synapse",
 		ShortCode:  "virtual-network-enabled",

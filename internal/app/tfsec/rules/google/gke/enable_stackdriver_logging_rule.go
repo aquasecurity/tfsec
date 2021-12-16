@@ -2,6 +2,7 @@ package gke
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/gke"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -90,9 +91,10 @@ func init() {
 		RequiredLabels: []string{
 			"google_container_cluster",
 		},
+		Base: gke.CheckEnableStackdriverLogging,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if loggingServiceAttr := resourceBlock.GetAttribute("logging_service"); loggingServiceAttr.NotEqual("logging.googleapis.com/kubernetes") {
-				results.Add("Resource does not have logging_service set to logging.googleapis.com/kubernetes", ?)
+				results.Add("Resource does not have logging_service set to logging.googleapis.com/kubernetes", resourceBlock)
 			}
 			return results
 		},

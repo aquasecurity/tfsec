@@ -2,6 +2,7 @@ package dns
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/dns"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -64,6 +65,7 @@ func init() {
 		RequiredLabels: []string{
 			"google_dns_keys",
 		},
+		Base: dns.CheckNoRsaSha1,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if algorithmAttr := resourceBlock.GetBlock("zone_signing_keys").GetAttribute("algorithm"); algorithmAttr.Equals("rsasha1") {
 				results.Add("Data '%s' has zone_signing_keys.algorithm set to rsasha1", algorithmAttr)

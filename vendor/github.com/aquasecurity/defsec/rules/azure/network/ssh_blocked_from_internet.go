@@ -10,6 +10,7 @@ import (
 
 var CheckSshBlockedFromInternet = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0050",
 		Provider:   provider.AzureProvider,
 		Service:    "network",
 		ShortCode:  "ssh-blocked-from-internet",

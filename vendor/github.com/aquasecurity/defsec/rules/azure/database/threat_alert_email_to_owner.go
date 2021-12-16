@@ -9,6 +9,7 @@ import (
 
 var CheckThreatAlertEmailToOwner = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0023",
 		Provider:    provider.AzureProvider,
 		Service:     "database",
 		ShortCode:   "threat-alert-email-to-owner",

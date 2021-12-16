@@ -1,7 +1,5 @@
 package secrets
 
-// AVD-GEN-0004
-
 import (
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"

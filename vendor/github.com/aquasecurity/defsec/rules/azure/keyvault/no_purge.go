@@ -9,6 +9,7 @@ import (
 
 var CheckNoPurge = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0016",
 		Provider:   provider.AzureProvider,
 		Service:    "keyvault",
 		ShortCode:  "no-purge",

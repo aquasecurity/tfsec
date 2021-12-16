@@ -2,6 +2,7 @@ package compute
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -109,6 +110,7 @@ func init() {
 		RequiredLabels: []string{
 			"google_compute_instance",
 		},
+		Base: compute.CheckNoProjectWideSshKeys,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			metadataAttr := resourceBlock.GetAttribute("metadata")
 			val := metadataAttr.MapValue("block-project-ssh-keys")

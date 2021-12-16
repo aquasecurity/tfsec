@@ -9,6 +9,7 @@ import (
 
 var CheckPrivate = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-GIT-0001",
 		Provider:   provider.GitHubProvider,
 		Service:    "repositories",
 		ShortCode:  "private",

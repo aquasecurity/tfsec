@@ -9,6 +9,7 @@ import (
 
 var CheckAllThreatAlertsEnabled = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0028",
 		Provider:    provider.AzureProvider,
 		Service:     "database",
 		ShortCode:   "all-threat-alerts-enabled",

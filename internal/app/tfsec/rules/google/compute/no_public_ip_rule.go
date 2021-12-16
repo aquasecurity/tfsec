@@ -1,14 +1,15 @@
 package compute
 
 import (
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/compute"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Base: compute.CheckInstancesDoNotHavePublicIPs,
 		BadExample: []string{`
  resource "google_compute_instance" "bad_example" {
    name         = "test"
@@ -62,7 +63,20 @@ func init() {
  }
  `},
 		Links: []string{
-			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#access_config", return results
+			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#access_config",
+		},
+		RequiredTypes: []string{
+			"resource",
+		},
+		RequiredLabels: []string{
+			"google_compute_instance",
+		},
+		Base: compute.CheckInstancesDoNotHavePublicIPs,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+			if accessConfigBlock := resourceBlock.GetBlock("network_interface").GetBlock("access_config"); !accessConfigBlock.IsNil() {
+				results.Add("Resource sets access_config", accessConfigBlock)
+			}
+			return results
 		},
 	})
 }

@@ -9,6 +9,7 @@ import (
 
 var CheckPostgresConfigurationLogConnections = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0019",
 		Provider:    provider.AzureProvider,
 		Service:     "database",
 		ShortCode:   "postgres-configuration-log-connections",

@@ -9,6 +9,7 @@ import (
 
 var CheckNoPlaintextPassword = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-OPNSTK-0001",
 		Provider:    provider.OpenStackProvider,
 		Service:     "compute",
 		ShortCode:   "no-plaintext-password",

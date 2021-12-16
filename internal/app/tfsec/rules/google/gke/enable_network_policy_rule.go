@@ -2,6 +2,7 @@ package gke
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/gke"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -94,9 +95,10 @@ func init() {
 		RequiredLabels: []string{
 			"google_container_cluster",
 		},
+		Base: gke.CheckEnableNetworkPolicy,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if enabledAttr := resourceBlock.GetBlock("network_policy").GetAttribute("enabled"); enabledAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for network_policy.enabled", ?)
+				results.Add("Resource uses default value for network_policy.enabled", resourceBlock)
 			} else if enabledAttr.IsFalse() {
 				results.Add("Resource does not have network_policy.enabled set to true", enabledAttr)
 			}

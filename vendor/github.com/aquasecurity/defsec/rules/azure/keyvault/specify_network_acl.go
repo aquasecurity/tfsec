@@ -9,6 +9,7 @@ import (
 
 var CheckSpecifyNetworkAcl = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0013",
 		Provider:   provider.AzureProvider,
 		Service:    "keyvault",
 		ShortCode:  "specify-network-acl",

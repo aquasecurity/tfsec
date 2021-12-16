@@ -9,6 +9,7 @@ import (
 
 var CheckEnableSslEnforcement = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0020",
 		Provider:    provider.AzureProvider,
 		Service:     "database",
 		ShortCode:   "enable-ssl-enforcement",

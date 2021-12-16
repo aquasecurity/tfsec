@@ -9,6 +9,7 @@ import (
 
 var CheckUseRbacPermissions = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0042",
 		Provider:    provider.AzureProvider,
 		Service:     "container",
 		ShortCode:   "use-rbac-permissions",

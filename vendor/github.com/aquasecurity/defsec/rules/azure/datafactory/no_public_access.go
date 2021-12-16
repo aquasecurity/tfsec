@@ -9,6 +9,7 @@ import (
 
 var CheckNoPublicAccess = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0035",
 		Provider:   provider.AzureProvider,
 		Service:    "datafactory",
 		ShortCode:  "no-public-access",

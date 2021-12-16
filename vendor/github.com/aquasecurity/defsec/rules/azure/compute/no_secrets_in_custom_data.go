@@ -12,6 +12,7 @@ var scanner = squealer.NewStringScanner()
 
 var CheckNoSecretsInCustomData = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0037",
 		Provider:    provider.AzureProvider,
 		Service:     "compute",
 		ShortCode:   "no-secrets-in-custom-data",

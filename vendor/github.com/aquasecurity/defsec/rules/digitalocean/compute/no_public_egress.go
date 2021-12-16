@@ -9,6 +9,7 @@ import (
 
 var CheckNoPublicEgress = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-DIG-0003",
 		Provider:    provider.DigitalOceanProvider,
 		Service:     "compute",
 		ShortCode:   "no-public-egress",

@@ -7,7 +7,7 @@ import (
 )
 
 func Test_OpenStackNoPublicAccess(t *testing.T) {
-	expectedCode := "openstack-fw-no-public-access"
+	expectedCode := "openstack-compute-no-public-access"
 
 	var tests = []struct {
 		name                  string

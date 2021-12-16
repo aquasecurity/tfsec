@@ -13,6 +13,7 @@ import (
 
 var CheckDisableRdpFromInternet = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0048",
 		Provider:   provider.AzureProvider,
 		Service:    "network",
 		ShortCode:  "disable-rdp-from-internet",

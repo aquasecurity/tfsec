@@ -9,6 +9,7 @@ import (
 
 var CheckUseSecureTlsPolicy = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-GCP-0039",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "use-secure-tls-policy",

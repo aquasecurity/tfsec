@@ -9,6 +9,7 @@ import (
 
 var CheckVmDiskEncryptionCustomerKey = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-GCP-0033",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "vm-disk-encryption-customer-key",

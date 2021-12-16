@@ -36,6 +36,15 @@ func isPrivate(ip net.IP) bool {
 	return false
 }
 
+func CountAddresses(inputCIDR string) int {
+	_, network, err := net.ParseCIDR(inputCIDR)
+	if err != nil {
+		return 0
+	}
+	prefixLen, bits := network.Mask.Size()
+	return 1 << (uint64(bits) - uint64(prefixLen))
+}
+
 // IsPublic returns true if a provided IP is outside of the designated public ranges, or
 // true if either of the min/max addresses of a provided CIDR are outside of these ranges.
 func IsPublic(cidr string) bool {

@@ -2,6 +2,7 @@ package compute
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -54,9 +55,10 @@ func init() {
 		RequiredLabels: []string{
 			"google_compute_subnetwork",
 		},
+		Base: compute.CheckEnableVPCFlowLogs,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if enableFlowLogsAttr := resourceBlock.GetAttribute("enable_flow_logs"); enableFlowLogsAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for enable_flow_logs", ?)
+				results.Add("Resource uses default value for enable_flow_logs", resourceBlock)
 			} else if enableFlowLogsAttr.IsFalse() {
 				results.Add("Resource does not have enable_flow_logs set to true", enableFlowLogsAttr)
 			}

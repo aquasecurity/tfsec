@@ -9,6 +9,7 @@ import (
 
 var CheckNoIpForwarding = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-GCP-0043",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "no-ip-forwarding",

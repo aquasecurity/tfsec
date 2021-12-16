@@ -9,6 +9,7 @@ import (
 
 var CheckEnableAtRestEncryption = rules.Register(
 	rules.Rule{
+                AVDID: "AVD-AZU-0036",
 		Provider:    provider.AzureProvider,
 		Service:     "datalake",
 		ShortCode:   "enable-at-rest-encryption",

@@ -2,6 +2,7 @@ package compute
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -58,9 +59,10 @@ func init() {
 		RequiredLabels: []string{
 			"google_compute_instance",
 		},
+		Base: compute.CheckNoIpForwarding,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if canIpForwardAttr := resourceBlock.GetAttribute("can_ip_forward"); canIpForwardAttr.IsTrue() {
-				results.Add("Resource has can_ip_forward set to true", ?)
+				results.Add("Resource has can_ip_forward set to true", canIpForwardAttr)
 			}
 			return results
 		},
