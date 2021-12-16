@@ -8,12 +8,12 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/defsec/formatters"
+	"github.com/aquasecurity/defsec/metrics"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/config"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -278,8 +278,15 @@ var rootCmd = &cobra.Command{
 			results = filteredResult
 		}
 
+		metrics.Counter("counts", "blocks").Increment(0)
+		metrics.Counter("counts", "modules").Increment(0)
+		metrics.Counter("counts", "files").Increment(parser.CountFiles())
+		metrics.Counter("results", "critical")
+		metrics.Counter("results", "high")
+		metrics.Counter("results", "medium")
+		metrics.Counter("results", "low")
 		for _, result := range results {
-			metrics.AddResult(result.Rule().Severity)
+			metrics.Counter("results", strings.ToLower(string(result.Rule().Severity))).Increment(1)
 		}
 
 		if runStatistics {
@@ -403,6 +410,9 @@ func getFormatterOptions() []formatters.FormatterOption {
 	}
 	if passingGif {
 		options = append(options, formatters.PassingGif)
+	}
+	if debug.Enabled {
+		options = append(options, formatters.WithDebug)
 	}
 	return options
 }

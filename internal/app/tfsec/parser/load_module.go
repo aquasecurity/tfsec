@@ -7,12 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/aquasecurity/defsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/hashicorp/hcl/v2"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -85,7 +83,8 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 		return nil, fmt.Errorf("module without label at %s", b.Range())
 	}
 
-	evalTime := metrics.Start(metrics.Evaluation)
+	evalTimer := metrics.Timer("timings", "evaluation")
+	evalTimer.Start()
 
 	var source string
 	attrs := b.Attributes()
@@ -98,7 +97,7 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 		}
 	}
 
-	evalTime.Stop()
+	evalTimer.Stop()
 
 	if source == "" {
 		return nil, fmt.Errorf("could not read module source attribute at %s", b.Range().String())
@@ -137,7 +136,7 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 		}
 	}
 	debug.Log("Loaded module '%s' (requested at %s)", modulePath, b.Range())
-	metrics.Add(metrics.ModuleLoadCount, 1)
+	metrics.Counter("counts", "modules").Increment(1)
 
 	return &ModuleDefinition{
 		Name:       b.Label(),

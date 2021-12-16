@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/aquasecurity/defsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
@@ -83,7 +81,8 @@ func NewEvaluator(
 
 func (e *Evaluator) evaluateStep(i int) {
 
-	evalTime := metrics.Start(metrics.Evaluation)
+	evalTimer := metrics.Timer("timings", "evaluation")
+	evalTimer.Start()
 	debug.Log("Starting iteration %d of context evaluation...", i+1)
 
 	e.ctx.Set(e.getValuesByBlockType("variable"), "var")
@@ -98,7 +97,7 @@ func (e *Evaluator) evaluateStep(i int) {
 	e.ctx.Set(e.getValuesByBlockType("data"), "data")
 	e.ctx.Set(e.getValuesByBlockType("output"), "output")
 
-	evalTime.Stop()
+	evalTimer.Stop()
 
 	e.evaluateModules()
 }
@@ -120,7 +119,8 @@ func (e *Evaluator) evaluateModules() {
 
 		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path, module.Definition.Reference().String()})
 
-		evalTime := metrics.Start(metrics.Evaluation)
+		evalTimer := metrics.Timer("timings", "evaluation")
+		evalTimer.Start()
 		vars := module.Definition.Values().AsValueMap()
 
 		moduleIgnores := module.Modules[0].Ignores()
@@ -134,8 +134,7 @@ func (e *Evaluator) evaluateModules() {
 		module.Modules, _ = moduleEvaluator.EvaluateAll()
 		// export module outputs
 		e.ctx.Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
-
-		evalTime.Stop()
+		evalTimer.Stop()
 	}
 }
 

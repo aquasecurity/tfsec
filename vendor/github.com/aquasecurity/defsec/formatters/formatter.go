@@ -12,6 +12,7 @@ const (
 	ConciseOutput FormatterOption = iota
 	PassingGif
 	NoColour
+	WithDebug
 )
 
 // Formatter formats scan results into a specific format

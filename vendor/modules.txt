@@ -25,10 +25,11 @@ github.com/agext/levenshtein
 github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
 github.com/apparentlymart/go-textseg/v13/textseg
-# github.com/aquasecurity/defsec v0.1.5
+# github.com/aquasecurity/defsec v0.2.4
 ## explicit
 github.com/aquasecurity/defsec/cidr
 github.com/aquasecurity/defsec/formatters
+github.com/aquasecurity/defsec/metrics
 github.com/aquasecurity/defsec/provider
 github.com/aquasecurity/defsec/provider/aws
 github.com/aquasecurity/defsec/provider/aws/apigateway

@@ -5,10 +5,11 @@ import (
 	"io/fs"
 	"strings"
 
+	"github.com/aquasecurity/defsec/metrics"
+
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 
 	"io/ioutil"
 	"os"
@@ -70,12 +71,13 @@ func (parser *Parser) parseDirectoryFiles(files []File) (block.Blocks, block.Ign
 func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 
 	debug.Log("Finding Terraform subdirectories...")
-	t := metrics.Start(metrics.DiskIO)
+	diskTimer := metrics.Timer("timings", "disk i/o")
+	diskTimer.Start()
 	subdirectories, err := parser.getSubdirectories(parser.initialPath)
 	if err != nil {
 		return nil, err
 	}
-	t.Stop()
+	diskTimer.Stop()
 
 	var blocks block.Blocks
 	var ignores block.Ignores
@@ -100,7 +102,7 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 		blocks = append(blocks, parsedBlocks...)
 	}
 
-	metrics.Add(metrics.BlocksLoaded, len(blocks))
+	metrics.Counter("counts", "blocks").Increment(len(blocks))
 
 	if len(blocks) == 0 && parser.stopOnFirstTf {
 		return nil, nil
@@ -124,9 +126,9 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 		debug.Log("Skipping module metadata loading, --exclude-downloaded-modules passed")
 	} else {
 		debug.Log("Loading module metadata...")
-		t = metrics.Start(metrics.DiskIO)
+		diskTimer.Start()
 		modulesMetadata, _ = LoadModuleMetadata(tfPath)
-		t.Stop()
+		diskTimer.Stop()
 	}
 
 	debug.Log("Evaluating expressions...")

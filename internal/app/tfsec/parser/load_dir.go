@@ -7,11 +7,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
-
-	"github.com/hashicorp/hcl/v2/hclparse"
-
+	"github.com/aquasecurity/defsec/metrics"
 	"github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/hclparse"
 )
 
 var knownFiles = make(map[string]struct{})
@@ -27,7 +25,8 @@ func CountFiles() int {
 
 func LoadDirectory(fullPath string, stopOnHCLError bool) ([]File, error) {
 
-	t := metrics.Start(metrics.DiskIO)
+	t := metrics.Timer("timings", "disk i/o")
+	t.Start()
 	defer t.Stop()
 
 	hclParser := hclparse.NewParser()

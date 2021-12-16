@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/aquasecurity/defsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/schema"
 
 	"github.com/hashicorp/hcl/v2"
@@ -20,7 +20,8 @@ func LoadBlocksFromFile(file File, moduleName string) (hcl.Blocks, []block.Ignor
 		ignores = append(ignores, ignore)
 	}
 
-	t := metrics.Start(metrics.HCLParse)
+	t := metrics.Timer("timings", "hcl parsing")
+	t.Start()
 	defer t.Stop()
 
 	contents, diagnostics := file.file.Body.Content(schema.TerraformSchema_0_12)

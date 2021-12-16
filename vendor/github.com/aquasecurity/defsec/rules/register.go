@@ -1,6 +1,8 @@
 package rules
 
-import "github.com/aquasecurity/defsec/state"
+import (
+	"github.com/aquasecurity/defsec/state"
+)
 
 type CheckFunc func(s *state.State) (results Results)
 

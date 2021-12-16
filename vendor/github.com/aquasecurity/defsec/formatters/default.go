@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/aquasecurity/defsec/metrics"
+
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/liamg/clinch/terminal"
@@ -17,7 +19,9 @@ var severityFormat map[severity.Severity]string
 
 func FormatDefault(_ io.Writer, results []rules.Result, _ string, options ...FormatterOption) error {
 
+	showDebug := false
 	showSuccessOutput := true
+	showMetrics := true
 
 	var showGif bool
 
@@ -25,10 +29,14 @@ func FormatDefault(_ io.Writer, results []rules.Result, _ string, options ...For
 		switch option {
 		case ConciseOutput:
 			showSuccessOutput = false
+			showMetrics = false
 		case PassingGif:
 			showGif = true
+			showMetrics = false
 		case NoColour:
 			tml.DisableFormatting()
+		case WithDebug:
+			showDebug = true
 		}
 	}
 
@@ -62,6 +70,10 @@ func FormatDefault(_ io.Writer, results []rules.Result, _ string, options ...For
 		printResult(res, i)
 	}
 
+	if showMetrics {
+		printMetrics(showDebug)
+	}
+
 	var passInfo string
 	if passCount > 0 {
 		passInfo = fmt.Sprintf(" (%d passed)", passCount)
@@ -70,6 +82,24 @@ func FormatDefault(_ io.Writer, results []rules.Result, _ string, options ...For
 	terminal.PrintErrorf("\n  %d potential problems detected%s.\n\n", len(results)-countPassedResults(results), passInfo)
 
 	return nil
+
+}
+
+func printMetrics(debug bool) {
+
+	categories := metrics.General()
+
+	if debug {
+		categories = append(categories, metrics.Debug()...)
+	}
+
+	for _, category := range categories {
+		_ = tml.Printf("  <blue>%s</blue>\n  %s\n", category.Name(), strings.Repeat("-", 42))
+		for _, metric := range category.Metrics() {
+			_ = tml.Printf("  <blue>%-20s</blue> %s\n", metric.Name(), metric.Value())
+		}
+		fmt.Printf("\n")
+	}
 
 }
 
@@ -147,7 +177,7 @@ func highlightCode(result rules.Result) error {
 	for i, bodyString := range strings.Split(string(content), "\n") {
 
 		// this line is outside the range, skip it
-		if i+1 < outerRange.GetStartLine() || i > outerRange.GetEndLine() {
+		if i+1 < outerRange.GetStartLine() || i+1 > outerRange.GetEndLine() {
 			continue
 		}
 

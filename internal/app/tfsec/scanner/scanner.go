@@ -4,11 +4,11 @@ import (
 	"runtime"
 	"sort"
 
+	"github.com/aquasecurity/defsec/metrics"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 )
 
 // Scanner scans HCL blocks by running all registered rules against them
@@ -54,9 +54,10 @@ func FindLegacyID(longID string) string {
 
 func (scanner *Scanner) Scan(modules []block.Module) (rules.Results, error) {
 
-	adaptationTime := metrics.Start(metrics.Adaptation)
+	adaptationTimer := metrics.Timer("timings", "adaptation")
+	adaptationTimer.Start()
 	infra := adapter.Adapt(modules)
-	adaptationTime.Stop()
+	adaptationTimer.Stop()
 
 	threads := runtime.NumCPU()
 	if threads > 1 {
@@ -66,12 +67,13 @@ func (scanner *Scanner) Scan(modules []block.Module) (rules.Results, error) {
 		threads = 1
 	}
 
-	checkTime := metrics.Start(metrics.Checking)
+	checkTimer := metrics.Timer("timings", "running checks")
+	checkTimer.Start()
 	results, err := NewPool(threads, GetRegisteredRules(), modules, infra, scanner.ignoreCheckErrors).Run()
 	if err != nil {
 		return nil, err
 	}
-	checkTime.Stop()
+	checkTimer.Stop()
 
 	var resultsAfterIgnores []rules.Result
 	if !scanner.includeIgnored {
@@ -87,7 +89,6 @@ func (scanner *Scanner) Scan(modules []block.Module) (rules.Results, error) {
 				result.Rule().LongID(),
 				FindLegacyID(result.Rule().LongID()),
 			) != nil {
-				metrics.Add(metrics.IgnoredChecks, 1)
 				debug.Log("Ignoring '%s'", result.Rule().LongID())
 				continue
 			}
@@ -97,6 +98,8 @@ func (scanner *Scanner) Scan(modules []block.Module) (rules.Results, error) {
 		resultsAfterIgnores = results
 	}
 
+	metrics.Counter("results", "ignored").Increment(len(results) - len(resultsAfterIgnores))
+
 	filtered := scanner.filterResults(resultsAfterIgnores)
 	scanner.sortResults(filtered)
 	return filtered, nil
@@ -104,10 +107,11 @@ func (scanner *Scanner) Scan(modules []block.Module) (rules.Results, error) {
 
 func (scanner *Scanner) filterResults(results []rules.Result) []rules.Result {
 	var filtered []rules.Result
+	excludeCounter := metrics.Counter("results", "excluded")
 	for _, result := range results {
 		if len(scanner.includedRuleIDs) == 0 || len(scanner.includedRuleIDs) > 0 && checkInList(result.Rule().LongID(), FindLegacyID(result.Rule().LongID()), scanner.includedRuleIDs) {
 			if !scanner.includeIgnored && checkInList(result.Rule().LongID(), FindLegacyID(result.Rule().LongID()), scanner.excludedRuleIDs) {
-				metrics.Add(metrics.IgnoredChecks, 1)
+				excludeCounter.Increment(1)
 				debug.Log("Ignoring '%s'", result.Rule().LongID())
 			} else if scanner.includePassed || result.Status() != rules.StatusPassed {
 				filtered = append(filtered, result)
