@@ -52,8 +52,6 @@ import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/azure/synapse"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/cloudstack/compute"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/digitalocean/compute"
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/digitalocean/droplet"
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/digitalocean/loadbalancing"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/digitalocean/spaces"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/general/secrets"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/github/repositories"
@@ -68,6 +66,5 @@ import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/storage"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/kubernetes/network"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/openstack/compute"
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/openstack/fw"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/oracle/compute"
 )

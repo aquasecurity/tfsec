@@ -2,6 +2,7 @@ package network
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/kubernetes/network"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -143,17 +144,18 @@ func init() {
 		RequiredLabels: []string{
 			"kubernetes_network_policy",
 		},
+		Base: network.CheckNoPublicIngress,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			ingressBlock := resourceBlock.GetBlock("spec").GetBlock("ingress")
 			if ingressBlock.IsNil() || len(ingressBlock.GetBlocks("from")) == 0 {
-				results.Add("Resource allows all ingress traffic by default", ?)
+				results.Add("Resource allows all ingress traffic by default", resourceBlock)
 				return
 			}
 
 			for _, from := range ingressBlock.GetBlocks("from") {
 				if cidrAttr := from.GetBlock("ip_block").GetAttribute("cidr"); cidrAttr.IsString() {
 					if cidr.IsAttributeOpen(cidrAttr) {
-						results.Add("Resource allows ingress traffic from the internet", ?)
+						results.Add("Resource allows ingress traffic from the internet", resourceBlock)
 					}
 				}
 			}

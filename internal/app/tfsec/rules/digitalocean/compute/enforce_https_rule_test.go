@@ -1,4 +1,4 @@
-package loadbalancing
+package compute
 
 import (
 	"testing"

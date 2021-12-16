@@ -2,6 +2,7 @@ package network
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/kubernetes/network"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -143,6 +144,7 @@ func init() {
 		RequiredLabels: []string{
 			"kubernetes_network_policy",
 		},
+		Base: network.CheckNoPublicEgress,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			egressBlock := resourceBlock.GetBlock("spec").GetBlock("egress")

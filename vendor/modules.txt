@@ -146,8 +146,15 @@ github.com/aquasecurity/defsec/rules/azure/network
 github.com/aquasecurity/defsec/rules/azure/securitycenter
 github.com/aquasecurity/defsec/rules/azure/storage
 github.com/aquasecurity/defsec/rules/azure/synapse
+github.com/aquasecurity/defsec/rules/cloudstack/compute
+github.com/aquasecurity/defsec/rules/digitalocean/compute
+github.com/aquasecurity/defsec/rules/digitalocean/spaces
 github.com/aquasecurity/defsec/rules/general/secrets
+github.com/aquasecurity/defsec/rules/github/repositories
 github.com/aquasecurity/defsec/rules/google/compute
+github.com/aquasecurity/defsec/rules/kubernetes/network
+github.com/aquasecurity/defsec/rules/openstack/compute
+github.com/aquasecurity/defsec/rules/oracle/compute
 github.com/aquasecurity/defsec/severity
 github.com/aquasecurity/defsec/state
 github.com/aquasecurity/defsec/types

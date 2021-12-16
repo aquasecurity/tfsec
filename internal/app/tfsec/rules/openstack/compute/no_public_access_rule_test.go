@@ -1,4 +1,4 @@
-package fw
+package compute
 
 import (
 	"testing"

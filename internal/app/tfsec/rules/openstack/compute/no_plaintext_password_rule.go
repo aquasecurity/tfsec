@@ -2,9 +2,10 @@ package compute
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/openstack/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -40,6 +41,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"openstack_compute_instance_v2"},
+		Base:           compute.CheckNoPlaintextPassword,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			if resourceBlock.MissingChild("admin_pass") {
@@ -47,7 +49,7 @@ func init() {
 			}
 
 			if adminPassAttr := resourceBlock.GetAttribute("admin_pass"); adminPassAttr.IsString() && !adminPassAttr.IsEmpty() {
-				results.Add("Resource specifies a plain text password", ?)
+				results.Add("Resource specifies a plain text password", adminPassAttr)
 			}
 			return results
 		},

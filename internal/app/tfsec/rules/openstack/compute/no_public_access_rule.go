@@ -1,12 +1,12 @@
-package fw
+package compute
 
 import (
-	"fmt"
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
+	"github.com/aquasecurity/defsec/rules/openstack/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
@@ -38,6 +38,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"openstack_fw_rule_v1"},
+		Base:           compute.CheckNoPublicAccess,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			if resourceBlock.GetAttribute("enabled").IsFalse() {
@@ -49,9 +50,7 @@ func init() {
 			}
 
 			if destinationIP := resourceBlock.GetAttribute("destination_ip_address"); destinationIP.IsNil() || destinationIP.Equals("") {
-				results.Add(
-					fmt.Sprintf("Resource defines a firewall rule with no restriction on destination IP", resourceBlock),
-				).
+				results.Add("Resource defines a firewall rule with no restriction on destination IP", resourceBlock)
 
 			} else if cidr.IsAttributeOpen(destinationIP) {
 				results.Add("Resource defines a firewall rule with a public destination CIDR", resourceBlock)

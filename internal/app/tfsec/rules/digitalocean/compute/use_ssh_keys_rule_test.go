@@ -1,4 +1,4 @@
-package droplet
+package compute
 
 import (
 	"testing"

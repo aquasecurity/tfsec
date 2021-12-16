@@ -2,6 +2,7 @@ package compute
 
 import (
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/digitalocean/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -43,6 +44,7 @@ func init() {
 		},
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"digitalocean_firewall"},
+		Base:           compute.CheckNoPublicEgress,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			inboundBlocks := resourceBlock.GetBlocks("outbound_rule")
 
@@ -52,7 +54,7 @@ func init() {
 				}
 				destinationAddressesAttr := inboundRuleBlock.GetAttribute("destination_addresses")
 				if cidr.IsAttributeOpen(destinationAddressesAttr) {
-					results.Add("Resource defines a fully open outbound_rule.", ?)
+					results.Add("Resource defines a fully open outbound_rule.", destinationAddressesAttr)
 				}
 			}
 			return results
