@@ -7,7 +7,7 @@ import (
 )
 
 func Test_AWSSensitiveLocals(t *testing.T) {
-	expectedCode := "general-secrets-sensitive-in-local"
+	expectedCode := "general-secrets-no-plaintext-exposure"
 
 	var tests = []struct {
 		name                  string

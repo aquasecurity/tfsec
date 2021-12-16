@@ -7,7 +7,7 @@ import (
 )
 
 func Test_GCPRawEncryptionKeySpecifiedForComputeDisk(t *testing.T) {
-	expectedCode := "google-compute-disk-encryption-required"
+	expectedCode := "google-compute-disk-encryption-no-plaintext-key"
 
 	var tests = []struct {
 		name                  string

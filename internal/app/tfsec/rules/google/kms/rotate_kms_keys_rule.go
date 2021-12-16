@@ -3,6 +3,8 @@ package kms
 import (
 	"strconv"
 
+	"github.com/aquasecurity/defsec/rules/google/kms"
+
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -52,6 +54,7 @@ func init() {
 		RequiredLabels: []string{
 			"google_kms_crypto_key",
 		},
+		Base: kms.CheckRotateKmsKeys,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			rotationAttr := resourceBlock.GetAttribute("rotation_period")
 			if rotationAttr.IsNil() || (rotationAttr.IsResolvable() && rotationAttr.IsEmpty()) {

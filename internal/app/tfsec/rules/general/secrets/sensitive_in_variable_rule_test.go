@@ -7,7 +7,7 @@ import (
 )
 
 func Test_AWSSensitiveVariables(t *testing.T) {
-	expectedCode := "general-secrets-sensitive-in-variable"
+	expectedCode := "general-secrets-no-plaintext-exposure"
 
 	var tests = []struct {
 		name                  string

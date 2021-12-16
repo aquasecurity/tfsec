@@ -9,7 +9,7 @@ import (
 )
 
 func Test_GoogleNoPlaintextDiskKeys_FailureExamples(t *testing.T) {
-	expectedCode := "google-compute-no-plaintext-disk-keys"
+	expectedCode := "google-compute-no-plaintext-vm-disk-keys"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_GoogleNoPlaintextDiskKeys_FailureExamples(t *testing.T) {
 }
 
 func Test_GoogleNoPlaintextDiskKeys_SuccessExamples(t *testing.T) {
-	expectedCode := "google-compute-no-plaintext-disk-keys"
+	expectedCode := "google-compute-no-plaintext-vm-disk-keys"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

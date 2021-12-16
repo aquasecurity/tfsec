@@ -9,7 +9,7 @@ import (
 )
 
 func Test_AzurePostgresConfigurationLogConnectionThrottling_FailureExamples(t *testing.T) {
-	expectedCode := "azure-database-postgres-configuration-log-connection-throttling"
+	expectedCode := "azure-database-postgres-configuration-connection-throttling"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_AzurePostgresConfigurationLogConnectionThrottling_FailureExamples(t *t
 }
 
 func Test_AzurePostgresConfigurationLogConnectionThrottling_SuccessExamples(t *testing.T) {
-	expectedCode := "azure-database-postgres-configuration-log-connection-throttling"
+	expectedCode := "azure-database-postgres-configuration-connection-throttling"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

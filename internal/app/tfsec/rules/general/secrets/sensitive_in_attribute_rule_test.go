@@ -7,7 +7,7 @@ import (
 )
 
 func Test_AWSSensitiveAttributes(t *testing.T) {
-	expectedCode := "general-secrets-sensitive-in-attribute"
+	expectedCode := "general-secrets-no-plaintext-exposure"
 
 	var tests = []struct {
 		name                  string
@@ -67,7 +67,7 @@ func Test_AWSSensitiveAttributes(t *testing.T) {
 }
 
 func Test_GitHubSensitiveAttributes(t *testing.T) {
-	expectedCode := "general-secrets-sensitive-in-attribute"
+	expectedCode := "general-secrets-no-plaintext-exposure"
 
 	var tests = []struct {
 		name                  string

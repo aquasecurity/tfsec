@@ -71,7 +71,7 @@ func TestDefSecUsage(t *testing.T) {
 	for _, rule := range scanner.GetRegisteredRules() {
 		t.Run(rule.ID(), func(t *testing.T) {
 			if rule.Base.Rule().AVDID == "" {
-				t.Errorf("Rule %s is not ready for defsec", rule.ID())
+				t.Error("Rule is not ready for defsec")
 			}
 		})
 	}

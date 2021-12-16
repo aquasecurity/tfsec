@@ -15,7 +15,7 @@ func Test_GoogleNoDefaultServiceAccountAtProjectAssignment_FailureExamples(t *te
 	if err != nil {
 		t.FailNow()
 	}
-	for i, badExample := range check.Documentation.BadExample {
+	for i, badExample := range check.BadExample {
 		t.Logf("Running bad example for '%s' #%d", expectedCode, i+1)
 		if strings.TrimSpace(badExample) == "" {
 			t.Fatalf("bad example code not provided for %s", check.ID())

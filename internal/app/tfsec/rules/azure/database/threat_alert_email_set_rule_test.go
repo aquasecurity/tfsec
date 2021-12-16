@@ -9,7 +9,7 @@ import (
 )
 
 func Test_AzureThreatAlertEmailSet_FailureExamples(t *testing.T) {
-	expectedCode := "azure-mssql-threat-alert-email-set"
+	expectedCode := "azure-database-threat-alert-email-set"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_AzureThreatAlertEmailSet_FailureExamples(t *testing.T) {
 }
 
 func Test_AzureThreatAlertEmailSet_SuccessExamples(t *testing.T) {
-	expectedCode := "azure-mssql-threat-alert-email-set"
+	expectedCode := "azure-database-threat-alert-email-set"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

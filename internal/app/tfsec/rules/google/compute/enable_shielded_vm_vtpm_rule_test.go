@@ -9,7 +9,7 @@ import (
 )
 
 func Test_GoogleEnableShieldedVm_FailureExamples(t *testing.T) {
-	expectedCode := "google-compute-enable-shielded-vm"
+	expectedCode := "google-compute-enable-shielded-vm-vtpm"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_GoogleEnableShieldedVm_FailureExamples(t *testing.T) {
 }
 
 func Test_GoogleEnableShieldedVm_SuccessExamples(t *testing.T) {
-	expectedCode := "google-compute-enable-shielded-vm"
+	expectedCode := "google-compute-enable-shielded-vm-vtpm"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

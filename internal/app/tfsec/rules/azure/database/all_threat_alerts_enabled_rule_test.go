@@ -9,7 +9,7 @@ import (
 )
 
 func Test_AzureAllThreatAlertsEnabled_FailureExamples(t *testing.T) {
-	expectedCode := "azure-mssql-all-threat-alerts-enabled"
+	expectedCode := "azure-database-all-threat-alerts-enabled"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_AzureAllThreatAlertsEnabled_FailureExamples(t *testing.T) {
 }
 
 func Test_AzureAllThreatAlertsEnabled_SuccessExamples(t *testing.T) {
-	expectedCode := "azure-mssql-all-threat-alerts-enabled"
+	expectedCode := "azure-database-all-threat-alerts-enabled"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

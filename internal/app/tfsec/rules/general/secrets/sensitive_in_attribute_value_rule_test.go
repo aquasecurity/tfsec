@@ -7,7 +7,7 @@ import (
 )
 
 func Test_GENAttributeHasSensitiveData(t *testing.T) {
-	expectedCode := "general-secrets-sensitive-in-attribute-value"
+	expectedCode := "general-secrets-no-plaintext-exposure"
 
 	var tests = []struct {
 		name                  string

@@ -7,7 +7,7 @@ import (
 )
 
 func Test_DIGLoadBalancerWithPlainHTTP(t *testing.T) {
-	expectedCode := "digitalocean-loadbalancing-enforce-https"
+	expectedCode := "digitalocean-compute-enforce-https"
 
 	var tests = []struct {
 		name                  string
