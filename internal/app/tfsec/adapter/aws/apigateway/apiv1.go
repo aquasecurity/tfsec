@@ -6,6 +6,34 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
+func adaptAPIMethodsV1(module block.Module, apiBlock block.Block) []apigateway.RESTMethod {
+	var methods []apigateway.RESTMethod
+	for _, methodBlock := range module.GetReferencingResources(apiBlock, "aws_api_gateway_method", "rest_api_id") {
+		var method apigateway.RESTMethod
+
+		if httpMethod := methodBlock.GetAttribute("http_method"); httpMethod.IsString() {
+			method.HTTPMethod = httpMethod.AsStringValue(true)
+		} else {
+			method.HTTPMethod = types.StringDefault("", methodBlock.Metadata())
+		}
+
+		if auth := methodBlock.GetAttribute("authorization"); auth.IsString() {
+			method.AuthorizationType = auth.AsStringValue(true)
+		} else {
+			method.AuthorizationType = types.StringDefault("", methodBlock.Metadata())
+		}
+
+		if apiKey := methodBlock.GetAttribute("api_key_required"); apiKey.IsBool() {
+			method.APIKeyRequired = apiKey.AsBoolValue(true)
+		} else {
+			method.APIKeyRequired = types.BoolDefault(false, methodBlock.Metadata())
+		}
+
+		methods = append(methods, method)
+	}
+	return methods
+}
+
 func adaptAPIsV1(modules []block.Module) []apigateway.API {
 
 	var apis []apigateway.API
@@ -23,29 +51,7 @@ func adaptAPIsV1(modules []block.Module) []apigateway.API {
 			}
 			api.ProtocolType = types.StringDefault(apigateway.ProtocolTypeREST, apiBlock.Metadata())
 
-			for _, methodBlock := range module.GetReferencingResources(apiBlock, "aws_api_gateway_method", "rest_api_id") {
-				var method apigateway.RESTMethod
-
-				if httpMethod := methodBlock.GetAttribute("http_method"); httpMethod.IsString() {
-					method.HTTPMethod = httpMethod.AsStringValue(true)
-				} else {
-					method.HTTPMethod = types.StringDefault("", methodBlock.Metadata())
-				}
-
-				if auth := methodBlock.GetAttribute("authorization"); auth.IsString() {
-					method.AuthorizationType = auth.AsStringValue(true)
-				} else {
-					method.AuthorizationType = types.StringDefault("", methodBlock.Metadata())
-				}
-
-				if apiKey := methodBlock.GetAttribute("api_key_required"); apiKey.IsBool() {
-					method.APIKeyRequired = apiKey.AsBoolValue(true)
-				} else {
-					method.APIKeyRequired = types.BoolDefault(false, methodBlock.Metadata())
-				}
-
-				api.RESTMethods = append(api.RESTMethods, method)
-			}
+			api.RESTMethods = adaptAPIMethodsV1(module, apiBlock)
 
 			var defaultCacheEncryption = types.BoolDefault(false, api.Metadata)
 			for _, methodSettings := range module.GetReferencingResources(apiBlock, "aws_api_gateway_method_settings", "rest_api_id") {
