@@ -43,6 +43,14 @@ func (r *Rule) CheckAgainstBlock(b block.Block, m block.Module) rules.Results {
 		base.Links = append(r.Links, base.Links...)
 		results.SetRule(base)
 	}
+	for i, result := range results {
+		if result.IssueBlockMetadata() == nil && *(result.CodeBlockMetadata()) != b.Metadata() {
+			result.OverrideIssueBlockMetadata(result.CodeBlockMetadata())
+			meta := b.Metadata()
+			result.OverrideCodeBlockMetadata(&meta)
+			results[i] = result
+		}
+	}
 	return results
 }
 

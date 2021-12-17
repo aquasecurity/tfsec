@@ -45,6 +45,10 @@ func (r *Result) OverrideIssueBlockMetadata(metadata *types.Metadata) {
 	r.issueBlock = metadata
 }
 
+func (r *Result) OverrideCodeBlockMetadata(metadata *types.Metadata) {
+	r.codeBlock = metadata
+}
+
 func (r *Result) OverrideAnnotation(annotation string) {
 	r.annotation = annotation
 }
@@ -90,19 +94,23 @@ type MetadataProvider interface {
 func (r *Results) Add(description string, source MetadataProvider, issueBlock ...MetadataProvider) {
 	var annotationStr string
 
+	srcMeta := *(source.GetMetadata())
+
 	result := Result{
 		description: description,
-		codeBlock:   source.GetMetadata(),
+		codeBlock:   &srcMeta,
 	}
 
 	if len(issueBlock) > 0 {
 		metadata := issueBlock[0].GetMetadata()
-		if metadata != nil && metadata.IsExplicit() {
-			annotationStr = rawToString(issueBlock[0].GetRawValue())
-
+		if metadata != nil {
+			if metadata.IsExplicit() {
+				annotationStr = rawToString(issueBlock[0].GetRawValue())
+			}
+			result.annotation = annotationStr
+			literalMeta := *metadata
+			result.issueBlock = &literalMeta
 		}
-		result.annotation = annotationStr
-		result.issueBlock = issueBlock[0].GetMetadata()
 	}
 
 	*r = append(*r, result)

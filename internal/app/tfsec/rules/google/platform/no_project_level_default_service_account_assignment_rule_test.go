@@ -13,7 +13,7 @@ func Test_GoogleNoDefaultServiceAccountAtProjectAssignment_FailureExamples(t *te
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
-		t.FailNow()
+		t.Fatal(err)
 	}
 	for i, badExample := range check.BadExample {
 		t.Logf("Running bad example for '%s' #%d", expectedCode, i+1)
@@ -35,7 +35,7 @@ func Test_GoogleNoDefaultServiceAccountAtProjectAssignment_SuccessExamples(t *te
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
-		t.FailNow()
+		t.Fatal(err)
 	}
 	for i, example := range check.GoodExample {
 		t.Logf("Running good example for '%s' #%d", expectedCode, i+1)

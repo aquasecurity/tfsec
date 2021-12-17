@@ -35,7 +35,7 @@ func Test_AWSBlockPublicAclS3_SuccessExamples(t *testing.T) {
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
-		t.FailNow()
+		t.Fatal(err)
 	}
 	for i, example := range check.GoodExample {
 		t.Logf("Running good example for '%s' #%d", expectedCode, i+1)

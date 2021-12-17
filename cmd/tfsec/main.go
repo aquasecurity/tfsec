@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -90,6 +91,12 @@ func main() {
 	}
 }
 
+type formatterInfo struct {
+	formatter  *formatters.Formatter
+	outputFile *os.File
+	format     string
+}
+
 var rootCmd = &cobra.Command{
 	Use:   "tfsec [directory]",
 	Short: "tfsec is a terraform security scanner",
@@ -123,7 +130,7 @@ var rootCmd = &cobra.Command{
 		var dir string
 		var err error
 		var filterResultsList []string
-		var outputFile *os.File
+		var outputFiles []formatterInfo
 
 		if ignoreWarnings || ignoreInfo {
 			fmt.Fprint(os.Stderr, "WARNING: The --ignore-info and --ignore-warnings flags are deprecated and will soon be removed.\n")
@@ -138,6 +145,19 @@ var rootCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
+
+		if dirInfo, err := os.Stat(dir); err != nil {
+			if os.IsNotExist(err) {
+				fmt.Println("The provided path does not exist, exiting")
+				os.Exit(1)
+			}
+			fmt.Println(err)
+			os.Exit(1)
+		} else if !dirInfo.IsDir() {
+			fmt.Println("The provided path is not a dir, exiting")
+			os.Exit(1)
+		}
+
 		tfsecDir := fmt.Sprintf("%s/.tfsec", dir)
 
 		if len(configFile) > 0 {
@@ -180,6 +200,7 @@ var rootCmd = &cobra.Command{
 			filterResultsList = strings.Split(filterResults, ",")
 		}
 
+		formats := strings.Split(format, ",")
 		if outputFlag != "" {
 			if format == "" {
 				format = "text"
@@ -236,16 +257,8 @@ var rootCmd = &cobra.Command{
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			defer func() { _ = f.Close() }()
-			outputFile = f
-		} else {
-			outputFile = os.Stdout
-		}
 
-		formatter, err := getFormatter()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			outputFiles[i].formatter = &formatter
 		}
 
 		if len(tfvarsPaths) == 0 && unusedTfvarsPresent(dir) {
@@ -298,8 +311,15 @@ var rootCmd = &cobra.Command{
 			return nil
 		}
 
-		if err := formatter(outputFile, results, dir, getFormatterOptions()...); err != nil {
-			return err
+		for _, formatInfo := range outputFiles {
+			formatter := formatInfo.formatter
+			if formatter == nil {
+				return errors.New(fmt.Sprintf("Could not access formatter for file format '%s'", formatInfo.format))
+			}
+
+			if err := (*formatter)(formatInfo.outputFile, results, dir, getFormatterOptions()...); err != nil {
+				return err
+			}
 		}
 
 		// Soft fail always takes precedence. If set, only execution errors
@@ -490,8 +510,8 @@ func updateResultSeverity(results []rules.Result) []rules.Result {
 	return overriddenResults
 }
 
-func getFormatter() (formatters.Formatter, error) {
-	switch strings.ToLower(format) {
+func getFormatter(fileFormat string) (formatters.Formatter, error) {
+	switch strings.ToLower(fileFormat) {
 	case "", "default":
 		return formatters.FormatDefault, nil
 	case "json":
@@ -506,8 +526,19 @@ func getFormatter() (formatters.Formatter, error) {
 		return formatters.FormatText, nil
 	case "sarif":
 		return formatters.FormatSarif, nil
+	case "gif":
+		return formatters.FormatGif, nil
 	default:
-		return nil, fmt.Errorf("invalid format specified: '%s'", format)
+		return nil, fmt.Errorf("invalid format specified: '%s'", fileFormat)
+	}
+}
+
+func defaultExtensionForFormatter(fileFormat string) string {
+	switch strings.ToLower(fileFormat) {
+	case "text":
+		return "txt"
+	default:
+		return fileFormat
 	}
 }
 

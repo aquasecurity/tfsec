@@ -725,6 +725,18 @@ func (attr *HCLAttribute) SingleReference() (*Reference, error) {
 	}
 }
 
+func (attr *HCLAttribute) ReferencesBlock(b Block) bool {
+	if attr == nil {
+		return false
+	}
+	for _, ref := range attr.AllReferences() {
+		if ref.RefersTo(b.Reference()) {
+			return true
+		}
+	}
+	return false
+}
+
 func (attr *HCLAttribute) AllReferences(blocks ...Block) []*Reference {
 	if attr == nil {
 		return nil
@@ -761,7 +773,7 @@ func (attr *HCLAttribute) referencesInTemplate() []*Reference {
 			refs = append(refs, ref)
 		}
 	case *hclsyntax.TupleConsExpr:
-		ref, err := createDotReferenceFromTraversal(t.Variables()...)
+		ref, err := createDotReferenceFromTraversal(attr.module, t.Variables()...)
 		if err == nil {
 			refs = append(refs, ref)
 		}

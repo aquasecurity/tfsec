@@ -76,10 +76,10 @@ func FormatDefault(_ io.Writer, results []rules.Result, _ string, options ...For
 
 	var passInfo string
 	if passCount > 0 {
-		passInfo = fmt.Sprintf(" (%d passed)", passCount)
+		passInfo = fmt.Sprintf("%d passed, ", passCount)
 	}
 
-	terminal.PrintErrorf("\n  %d potential problems detected%s.\n\n", len(results)-countPassedResults(results), passInfo)
+	terminal.PrintErrorf("\n  %s%d potential problems detected.\n\n", passInfo, len(results)-countPassedResults(results))
 
 	return nil
 
@@ -176,28 +176,30 @@ func highlightCode(result rules.Result) error {
 
 	for i, bodyString := range strings.Split(string(content), "\n") {
 
+		line := i + 1
+
 		// this line is outside the range, skip it
-		if i+1 < outerRange.GetStartLine() || i+1 > outerRange.GetEndLine() {
+		if line < outerRange.GetStartLine() || line > outerRange.GetEndLine() {
 			continue
 		}
 
 		// if we're not rendering json, we have an annotation, and we're rendering the line to show the annotation on,
 		// render the line with the annotation afterwards
-		if !strings.HasSuffix(outerRange.GetFilename(), ".json") && hasAnnotation && i+1 == innerRange.GetStartLine() {
+		if !strings.HasSuffix(outerRange.GetFilename(), ".json") && hasAnnotation && line == innerRange.GetStartLine() {
 			annotation := tml.Sprintf("<blue>[%s]</blue>", result.Annotation())
-			_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <red>%s    %s</red>\n", i, bodyString, annotation)
+			_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <red>%s    %s</red>\n", line, bodyString, annotation)
 			continue
 		}
 
 		// if we're rendering the actual issue lines, use red
 		if i+1 >= innerRange.GetStartLine() && i < innerRange.GetEndLine() {
 			if result.Status() == rules.StatusPassed {
-				_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <green>%s</green>\n", i, bodyString)
+				_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <green>%s</green>\n", line, bodyString)
 			} else {
-				_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <red>%s</red>\n", i, bodyString)
+				_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <red>%s</red>\n", line, bodyString)
 			}
 		} else {
-			_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <yellow>%s</yellow>\n", i, bodyString)
+			_ = tml.Printf("<blue>% 5d</blue> <dim>┃</dim> <yellow>%s</yellow>\n", line, bodyString)
 		}
 	}
 

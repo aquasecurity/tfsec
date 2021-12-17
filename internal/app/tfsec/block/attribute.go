@@ -53,4 +53,5 @@ type Attribute interface {
 	AsBoolValue(explicit bool) types.BoolValue
 	AsIntValue(explicit bool) types.IntValue
 	Metadata() types.Metadata
+	ReferencesBlock(b Block) bool
 }

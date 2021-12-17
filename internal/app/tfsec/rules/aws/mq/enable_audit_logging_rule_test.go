@@ -13,7 +13,7 @@ func Test_AWSEnableAuditLogging_FailureExamples(t *testing.T) {
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
-		t.FailNow()
+		t.Fatal(err)
 	}
 	for i, badExample := range rule.BadExample {
 		t.Logf("Running bad example for '%s' #%d", expectedCode, i+1)
@@ -35,7 +35,7 @@ func Test_AWSEnableAuditLogging_SuccessExamples(t *testing.T) {
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
-		t.FailNow()
+		t.Fatal(err)
 	}
 	for i, example := range rule.GoodExample {
 		t.Logf("Running good example for '%s' #%d", expectedCode, i+1)
