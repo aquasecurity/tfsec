@@ -1,6 +1,5 @@
 package s3
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,21 +18,21 @@ func Test_AWSS3DataShouldBeVersioned(t *testing.T) {
 		{
 			name: "Rule fails if bucket has no versioning block",
 			source: `
-resource "aws_s3_bucket" "bad_example" {
-
-}
-`,
+ resource "aws_s3_bucket" "bad_example" {
+ 
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Rule passes if versioning block present and enabled",
 			source: `
-resource "aws_s3_bucket" "good_example" {
-	versioning {
-		
-	}
-}
-`,
+ resource "aws_s3_bucket" "good_example" {
+ 	versioning {
+ 		
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

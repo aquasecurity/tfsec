@@ -1,6 +1,5 @@
 package elb
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,93 +18,93 @@ func Test_AWSALBDropsInvalidHeaders(t *testing.T) {
 		{
 			name: "Alb that doesn't drop invalid headers by default fails",
 			source: `
-resource "aws_alb" "bad_example" {
-	name               = "bad_alb"
-	internal           = false
-	load_balancer_type = "application"
-	
-  }
-`,
+ resource "aws_alb" "bad_example" {
+ 	name               = "bad_alb"
+ 	internal           = false
+ 	load_balancer_type = "application"
+ 	
+   }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "lb that doesn't drop invalid headers by default fails",
 			source: `
-resource "aws_lb" "bad_example" {
-	name               = "bad_alb"
-	internal           = false
-	load_balancer_type = "application"
-	
-	access_logs {
-	  bucket  = aws_s3_bucket.lb_logs.bucket
-	  prefix  = "test-lb"
-	  enabled = true
-	}
-  }
-`,
+ resource "aws_lb" "bad_example" {
+ 	name               = "bad_alb"
+ 	internal           = false
+ 	load_balancer_type = "application"
+ 	
+ 	access_logs {
+ 	  bucket  = aws_s3_bucket.lb_logs.bucket
+ 	  prefix  = "test-lb"
+ 	  enabled = true
+ 	}
+   }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Alb that doesn't drop invalid headers explicitly fails",
 			source: `
-resource "aws_alb" "bad_example" {
-	name               = "bad_alb"
-	internal           = false
-	load_balancer_type = "application"
-	
-	drop_invalid_header_fields = false
-  }
-`,
+ resource "aws_alb" "bad_example" {
+ 	name               = "bad_alb"
+ 	internal           = false
+ 	load_balancer_type = "application"
+ 	
+ 	drop_invalid_header_fields = false
+   }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "lb that doesn't drop invalid headers fails",
 			source: `
-resource "aws_lb" "bad_example" {
-	name               = "bad_alb"
-	internal           = false
-	load_balancer_type = "application"
-  
-	drop_invalid_header_fields = false
-  }
-`,
+ resource "aws_lb" "bad_example" {
+ 	name               = "bad_alb"
+ 	internal           = false
+ 	load_balancer_type = "application"
+   
+ 	drop_invalid_header_fields = false
+   }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "ALB that drops invalid headers passes check",
 			source: `
-resource "aws_alb" "good_example" {
-	name               = "good_alb"
-	internal           = false
-	load_balancer_type = "application"
-	
-	drop_invalid_header_fields = true
-  }
-`,
+ resource "aws_alb" "good_example" {
+ 	name               = "good_alb"
+ 	internal           = false
+ 	load_balancer_type = "application"
+ 	
+ 	drop_invalid_header_fields = true
+   }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "LB that drops invalid headers passes check",
 			source: `
-resource "aws_lb" "good_example" {
-	name               = "good_alb"
-	internal           = false
-	load_balancer_type = "application"
-
-	drop_invalid_header_fields = true
-  }
-`,
+ resource "aws_lb" "good_example" {
+ 	name               = "good_alb"
+ 	internal           = false
+ 	load_balancer_type = "application"
+ 
+ 	drop_invalid_header_fields = true
+   }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "Network LB passes check as not applicablt",
 			source: `
-resource "aws_lb" "good_example" {
-	name               = "good_alb"
-	internal           = false
-	load_balancer_type = "network"
-  }
-`,
+ resource "aws_lb" "good_example" {
+ 	name               = "good_alb"
+ 	internal           = false
+ 	load_balancer_type = "network"
+   }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

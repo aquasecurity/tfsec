@@ -1,6 +1,5 @@
 package elbv2
 
-// generator-locked
 import (
 	"testing"
 
@@ -8,7 +7,7 @@ import (
 )
 
 func Test_AWSNotInternal(t *testing.T) {
-	expectedCode := "aws-elbv2-alb-not-public"
+	expectedCode := "aws-elb-alb-not-public"
 
 	var tests = []struct {
 		name                  string
@@ -19,50 +18,50 @@ func Test_AWSNotInternal(t *testing.T) {
 		{
 			name: "check aws_alb when not internal",
 			source: `
-resource "aws_alb" "my-resource" {
-	internal = false
-}`,
+ resource "aws_alb" "my-resource" {
+ 	internal = false
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_elb when not internal",
 			source: `
-resource "aws_elb" "my-resource" {
-	internal = false
-}`,
+ resource "aws_elb" "my-resource" {
+ 	internal = false
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_lb when not internal",
 			source: `
-resource "aws_lb" "my-resource" {
-	internal = false
-}`,
+ resource "aws_lb" "my-resource" {
+ 	internal = false
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_lb when not explicitly marked as internal",
 			source: `
-resource "aws_lb" "my-resource" {
-}`,
+ resource "aws_lb" "my-resource" {
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_lb when explicitly marked as internal",
 			source: `
-resource "aws_lb" "my-resource" {
-	internal = true
-}`,
+ resource "aws_lb" "my-resource" {
+ 	internal = true
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_lb when explicitly is a gateway",
 			source: `
-resource "aws_lb" "gwlb" {
-	name               = var.gwlb_name
-	load_balancer_type = "gateway"
-	subnets            = local.appliance_subnets_id
-  }`,
+ resource "aws_lb" "gwlb" {
+ 	name               = var.gwlb_name
+ 	load_balancer_type = "gateway"
+ 	subnets            = local.appliance_subnets_id
+   }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

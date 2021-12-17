@@ -1,6 +1,5 @@
 package s3
 
-// generator-locked
 import (
 	"strings"
 	"testing"
@@ -14,9 +13,9 @@ func Test_AWSBlockPublicAclS3_FailureExamples(t *testing.T) {
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
-		t.FailNow()
+		t.Fatal(err)
 	}
-	for i, badExample := range check.Documentation.BadExample {
+	for i, badExample := range check.BadExample {
 		t.Logf("Running bad example for '%s' #%d", expectedCode, i+1)
 		if strings.TrimSpace(badExample) == "" {
 			t.Fatalf("bad example code not provided for %s", check.ID())
@@ -36,9 +35,9 @@ func Test_AWSBlockPublicAclS3_SuccessExamples(t *testing.T) {
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
-		t.FailNow()
+		t.Fatal(err)
 	}
-	for i, example := range check.Documentation.GoodExample {
+	for i, example := range check.GoodExample {
 		t.Logf("Running good example for '%s' #%d", expectedCode, i+1)
 		if strings.TrimSpace(example) == "" {
 			t.Fatalf("good example code not provided for %s", check.ID())

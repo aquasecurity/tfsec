@@ -3,49 +3,55 @@ package test
 import (
 	"testing"
 
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/severity"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
+	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_ResourcesWithCount(t *testing.T) {
 	var tests = []struct {
-		name                  string
-		source                string
-		mustIncludeResultCode string
-		mustExcludeResultCode string
+		name            string
+		source          string
+		expectedResults int
 	}{
 		{
 			name: "unspecified count defaults to 1",
 			source: `
-			resource "aws_default_vpc" "this" {}
+			resource "bad" "this" {}
 `,
-			mustIncludeResultCode: "aws-vpc-no-default-vpc",
+			expectedResults: 1,
 		},
 		{
 			name: "count is literal 1",
 			source: `
-			resource "aws_default_vpc" "this" {
+			resource "bad" "this" {
 				count = 1
 			}
 `,
-			mustIncludeResultCode: "aws-vpc-no-default-vpc",
+			expectedResults: 1,
 		},
 		{
 			name: "count is literal 99",
 			source: `
-			resource "aws_default_vpc" "this" {
+			resource "bad" "this" {
 				count = 99
 			}
 `,
-			mustIncludeResultCode: "aws-vpc-no-default-vpc",
+			expectedResults: 99,
 		},
 		{
 			name: "count is literal 0",
 			source: `
-			resource "aws_default_vpc" "this" {
+			resource "bad" "this" {
 				count = 0
 			}
 `,
-			mustExcludeResultCode: "aws-vpc-no-default-vpc",
+			expectedResults: 0,
 		},
 		{
 			name: "count is 0 from variable",
@@ -53,11 +59,11 @@ func Test_ResourcesWithCount(t *testing.T) {
 			variable "count" {
 				default = 0
 			}
-			resource "aws_default_vpc" "this" {
+			resource "bad" "this" {
 				count = var.count
 			}
 `,
-			mustExcludeResultCode: "aws-vpc-no-default-vpc",
+			expectedResults: 0,
 		},
 		{
 			name: "count is 1 from variable",
@@ -65,22 +71,22 @@ func Test_ResourcesWithCount(t *testing.T) {
 			variable "count" {
 				default = 1
 			}
-			resource "aws_default_vpc" "this" {
+			resource "bad" "this" {
 				count =  var.count
 			}
 `,
-			mustIncludeResultCode: "aws-vpc-no-default-vpc",
+			expectedResults: 1,
 		},
 		{
 			name: "count is 1 from variable without default",
 			source: `
 			variable "count" {
 			}
-			resource "aws_default_vpc" "this" {
+			resource "bad" "this" {
 				count =  var.count
 			}
 `,
-			mustIncludeResultCode: "aws-vpc-no-default-vpc",
+			expectedResults: 1,
 		},
 		{
 			name: "count is 0 from conditional",
@@ -88,99 +94,98 @@ func Test_ResourcesWithCount(t *testing.T) {
 			variable "enabled" {
 				default = false
 			}
-			resource "aws_default_vpc" "this" {
+			resource "bad" "this" {
 				count = var.enabled ? 1 : 0
 			}
 `,
-			mustExcludeResultCode: "aws-vpc-no-default-vpc",
+			expectedResults: 0,
 		},
 		{
-			name: "count is 0 from conditional",
+			name: "count is 1 from conditional",
 			source: `
 			variable "enabled" {
-				default = false
+				default = true
 			}
-			resource "aws_default_vpc" "this" {
+			resource "bad" "this" {
 				count = var.enabled ? 1 : 0
 			}
 `,
-			mustExcludeResultCode: "aws-vpc-no-default-vpc",
+			expectedResults: 1,
 		},
 		{
 			name: "issue 962",
 			source: `
-			resource "aws_s3_bucket" "access-logs-bucket" {
-			count = var.enable_cloudtrail ? 1 : 0
-			bucket = "cloudtrail-access-logs"
-			acl    = "private"
-			force_destroy = true
-
-			versioning {
-				enabled = true
+			resource "something" "else" {
+				count = 2
+				ok = true
 			}
 
-			server_side_encryption_configuration {
-				rule {
-				apply_server_side_encryption_by_default {
-					sse_algorithm = "AES256"
-				}
-				}
-			}
-			}
-
-			resource "aws_s3_bucket_public_access_block" "access-logs" {
-			count = var.enable_cloudtrail ? 1 : 0
-
-			bucket = aws_s3_bucket.access-logs-bucket[0].id
-			
-			block_public_acls   = true
-			block_public_policy = true
-			ignore_public_acls  = true
-			restrict_public_buckets = true
+			resource "bad" "bad" {
+				secure = something.else[0].ok
 			}	
 `,
-			mustExcludeResultCode: "aws-s3-specify-public-access-block",
+			expectedResults: 0,
 		},
 		{
 			name: "Test use of count.index",
 			source: `
-resource "aws_security_group_rule" "trust-rules-dev" {
+resource "bad" "thing" {
 	count = 1
-	description = var.trust-sg-rules[count.index]["description"]
-	type = "ingress"
-	protocol = "tcp"
-	cidr_blocks = ["0.0.0.0/2"]
-	to_port = var.trust-sg-rules[count.index]["to_port"]
-	from_port = 10
-	security_group_id = aws_security_group.trust-rules-dev.id
+	secure = var.things[count.index]["ok"]
 }
 	
-resource "aws_security_group" "trust-rules-dev" {
-	description = "description"
-}
-	
-variable "trust-sg-rules" {
+variable "things" {
 	description = "A list of maps that creates a number of sg"
 	type = list(map(string))
 	
 	default = [
 		{
-			description = "Allow egress of http traffic"
-			from_port = "80"
-			to_port = "80"
-			type = "egress"
+			ok = true
 		}
 	]
 }
 			`,
-			mustExcludeResultCode: "aws-vpc-add-description-to-security-group",
+			expectedResults: 0,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
+			r1 := rule.Rule{
+				LegacyID: "ABC123",
+				Base: rules.Register(
+					rules.Rule{
+						Provider:  provider.AWSProvider,
+						Service:   "service",
+						ShortCode: "abc123",
+						Severity:  severity.High,
+					},
+					nil,
+				),
+				RequiredLabels: []string{"bad"},
+				CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+					if resourceBlock.GetAttribute("secure").IsTrue() {
+						return
+					}
+					results.Add(
+						"example problem",
+						resourceBlock,
+					)
+					return
+				},
+			}
+			scanner.RegisterCheckRule(r1)
+			defer scanner.DeregisterCheckRule(r1)
 			results := testutil.ScanHCL(test.source, t)
-			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+			var include string
+			var exclude string
+			if test.expectedResults > 0 {
+				include = r1.ID()
+			} else {
+				exclude = r1.ID()
+			}
+			assert.Equal(t, test.expectedResults, len(results))
+			testutil.AssertCheckCode(t, include, exclude, results)
 		})
 	}
 }

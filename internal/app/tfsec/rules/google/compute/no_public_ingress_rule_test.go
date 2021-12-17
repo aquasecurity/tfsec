@@ -1,6 +1,5 @@
 package compute
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,17 +18,17 @@ func Test_GoogleOpenInboundFirewallRule(t *testing.T) {
 		{
 			name: "check google_compute_firewall ingress on 0.0.0.0/0",
 			source: `
-resource "google_compute_firewall" "my-firewall" {
-	source_ranges = ["0.0.0.0/0"]
-}`,
+ resource "google_compute_firewall" "my-firewall" {
+ 	source_ranges = ["0.0.0.0/0"]
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check google_compute_firewall ingress on /32",
 			source: `
-resource "google_compute_firewall" "my-firewall" {
-	source_ranges = ["1.2.3.4/32"]
-}`,
+ resource "google_compute_firewall" "my-firewall" {
+ 	source_ranges = ["1.2.3.4/32"]
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

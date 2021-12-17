@@ -9,7 +9,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -56,7 +55,7 @@ func getSortedFileContents() []*FileContent {
 	checkMap := make(map[string][]rule.Rule)
 
 	for _, r := range rules {
-		provider := string(r.Provider)
+		provider := string(r.Base.Rule().Provider)
 		checkMap[provider] = append(checkMap[provider], r)
 	}
 

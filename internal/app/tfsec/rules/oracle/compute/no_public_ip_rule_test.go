@@ -1,6 +1,5 @@
 package compute
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,17 +18,17 @@ func Test_OCIComputeIpReservation(t *testing.T) {
 		{
 			name: "Rule OCI compute IP reservation with ip_address_pool = public-ippool",
 			source: `
-resource "opc_compute_ip_address_reservation" "my-ip-address" {
-	ip_address_pool = "public-ippool"
-}`,
+ resource "opc_compute_ip_address_reservation" "my-ip-address" {
+ 	ip_address_pool = "public-ippool"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Rule OCI compute IP reservation with ip_address_pool = cloud-ippool",
 			source: `
-resource "opc_compute_ip_address_reservation" "my-ip-address" {
-	ip_address_pool = "cloud-ippool"
-}`,
+ resource "opc_compute_ip_address_reservation" "my-ip-address" {
+ 	ip_address_pool = "cloud-ippool"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

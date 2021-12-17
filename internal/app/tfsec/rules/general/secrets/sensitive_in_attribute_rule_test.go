@@ -1,6 +1,5 @@
 package secrets
 
-// generator-locked
 import (
 	"testing"
 
@@ -8,7 +7,7 @@ import (
 )
 
 func Test_AWSSensitiveAttributes(t *testing.T) {
-	expectedCode := "general-secrets-sensitive-in-attribute"
+	expectedCode := "general-secrets-no-plaintext-exposure"
 
 	var tests = []struct {
 		name                  string
@@ -19,41 +18,41 @@ func Test_AWSSensitiveAttributes(t *testing.T) {
 		{
 			name: "check sensitive attribute",
 			source: `
-resource "evil_corp" "virtual_machine" {
-	root_password = "secret"
-}`,
+ resource "evil_corp" "virtual_machine" {
+ 	root_password = "secret"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check non-sensitive local",
 			source: `
-resource "evil_corp" "virtual_machine" {
-	memory = 512
-}`,
+ resource "evil_corp" "virtual_machine" {
+ 	memory = 512
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "avoid false positive for aws_efs_file_system",
 			source: `
-resource "aws_efs_file_system" "myfs" {
-	creation_token = "something"
-}`,
+ resource "aws_efs_file_system" "myfs" {
+ 	creation_token = "something"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "avoid false positive for google_secret_manager_secret",
 			source: `
-resource "google_secret_manager_secret" "secret" {
-	secret_id = "secret"
-}`,
+ resource "google_secret_manager_secret" "secret" {
+ 	secret_id = "secret"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "avoid false positive for non-string attributes",
 			source: `
-resource "something" "secret" {
-	secret = true
-}`,
+ resource "something" "secret" {
+ 	secret = true
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}
@@ -68,7 +67,7 @@ resource "something" "secret" {
 }
 
 func Test_GitHubSensitiveAttributes(t *testing.T) {
-	expectedCode := "general-secrets-sensitive-in-attribute"
+	expectedCode := "general-secrets-no-plaintext-exposure"
 
 	var tests = []struct {
 		name                  string
@@ -79,9 +78,9 @@ func Test_GitHubSensitiveAttributes(t *testing.T) {
 		{
 			name: "avoid false positive for github_actions_secret",
 			source: `
-resource "github_actions_secret" "infrastructure_digitalocean_deploy_user" {
-	secret_name = "digitalocean_deploy_user"
-}`,
+ resource "github_actions_secret" "infrastructure_digitalocean_deploy_user" {
+ 	secret_name = "digitalocean_deploy_user"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

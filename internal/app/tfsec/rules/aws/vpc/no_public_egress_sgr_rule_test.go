@@ -1,6 +1,5 @@
 package vpc
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,28 +18,28 @@ func Test_AWSOpenEgressSecurityGroupRule(t *testing.T) {
 		{
 			name: "check aws_security_group_rule egress on 0.0.0.0/0",
 			source: `
-resource "aws_security_group_rule" "my-rule" {
-	type = "egress"
-	cidr_blocks = ["0.0.0.0/0"]
-}`,
+ resource "aws_security_group_rule" "my-rule" {
+ 	type = "egress"
+ 	cidr_blocks = ["0.0.0.0/0"]
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_security_group_rule egress on 0.0.0.0/0 in list",
 			source: `
-resource "aws_security_group_rule" "my-rule" {
-	type = "egress"
-	cidr_blocks = ["10.0.0.0/16", "0.0.0.0/0"]
-}`,
+ resource "aws_security_group_rule" "my-rule" {
+ 	type = "egress"
+ 	cidr_blocks = ["10.0.0.0/16", "0.0.0.0/0"]
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_security_group_rule egress on 10.0.0.0/16",
 			source: `
-resource "aws_security_group_rule" "my-rule" {
-	type = "egress"
-	cidr_blocks = ["10.0.0.0/16"]
-}`,
+ resource "aws_security_group_rule" "my-rule" {
+ 	type = "egress"
+ 	cidr_blocks = ["10.0.0.0/16"]
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

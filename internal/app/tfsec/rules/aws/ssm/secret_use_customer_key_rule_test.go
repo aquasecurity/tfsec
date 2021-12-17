@@ -1,6 +1,5 @@
 package ssm
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,52 +18,52 @@ func Test_AWSSecretsManagerSecretEncryption(t *testing.T) {
 		{
 			name: "secret without specified CMK fails check",
 			source: `
-				resource "aws_secretsmanager_secret" "bad_example" {
-				  name       = "lambda_password"
-				}
-				`,
+ 				resource "aws_secretsmanager_secret" "bad_example" {
+ 				  name       = "lambda_password"
+ 				}
+ 				`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Secret using default CMK fails check",
 			source: `
-		data "aws_kms_key" "by_alias" {
-		  key_id = "alias/aws/secretsmanager"
-		}
-
-		resource "aws_secretsmanager_secret" "bad_example" {
-		  name       = "lambda_password"
-		  kms_key_id = data.aws_kms_key.by_alias.arn
-		}
-		`,
+ 		data "aws_kms_key" "by_alias" {
+ 		  key_id = "alias/aws/secretsmanager"
+ 		}
+ 
+ 		resource "aws_secretsmanager_secret" "bad_example" {
+ 		  name       = "lambda_password"
+ 		  kms_key_id = data.aws_kms_key.by_alias.arn
+ 		}
+ 		`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Secret with customer control CMK passes check",
 			source: `
-					data "aws_kms_key" "by_alias" {
-						key_id = "alias/aws/secretsmanager"
-					  }
-
-		resource "aws_secretsmanager_secret" "good_example" {
-		  name       = "lambda_password"
-		  kms_key_id = aws_kms_key.secrets.arn
-		}
-		`,
+ 					data "aws_kms_key" "by_alias" {
+ 						key_id = "alias/aws/secretsmanager"
+ 					  }
+ 
+ 		resource "aws_secretsmanager_secret" "good_example" {
+ 		  name       = "lambda_password"
+ 		  kms_key_id = aws_kms_key.secrets.arn
+ 		}
+ 		`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "Secret with customer control CMK passes check",
 			source: `
-data "aws_kms_key" "ours_by_alias" {
-  key_id = "alias/ourkeys/lambda_secret"
-}
-
-resource "aws_secretsmanager_secret" "good_example" {
-  name       = "lambda_password"
-  kms_key_id = data.aws_kms_key.ours_by_alias.arn
-}
-`,
+ data "aws_kms_key" "ours_by_alias" {
+   key_id = "alias/ourkeys/lambda_secret"
+ }
+ 
+ resource "aws_secretsmanager_secret" "good_example" {
+   name       = "lambda_password"
+   kms_key_id = data.aws_kms_key.ours_by_alias.arn
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

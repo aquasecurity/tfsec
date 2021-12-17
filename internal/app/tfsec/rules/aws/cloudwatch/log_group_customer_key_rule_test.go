@@ -1,6 +1,5 @@
 package cloudwatch
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,21 +18,21 @@ func Test_AWSCloudWatchLogGroupsCMKEncrypted(t *testing.T) {
 		{
 			name: "cloudwatch without cmk fails check",
 			source: `
-resource "aws_cloudwatch_log_group" "bad_exampe" {
-	name = "bad_example"
-}
-`,
+ resource "aws_cloudwatch_log_group" "bad_exampe" {
+ 	name = "bad_example"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "cloudwatch with cmk passes check",
 			source: `
-resource "aws_cloudwatch_log_group" "good_example" {
-	name = "good_example"
-
-	kms_key_id = aws_kms_key.log_key.id
-}
-`,
+ resource "aws_cloudwatch_log_group" "good_example" {
+ 	name = "good_example"
+ 
+ 	kms_key_id = aws_kms_key.log_key.id
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

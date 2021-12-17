@@ -28,6 +28,148 @@ github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
 ## explicit; go 1.16
 github.com/apparentlymart/go-textseg/v13/textseg
+# github.com/aquasecurity/defsec v0.2.8
+## explicit; go 1.17
+github.com/aquasecurity/defsec/cidr
+github.com/aquasecurity/defsec/formatters
+github.com/aquasecurity/defsec/metrics
+github.com/aquasecurity/defsec/provider
+github.com/aquasecurity/defsec/provider/aws
+github.com/aquasecurity/defsec/provider/aws/apigateway
+github.com/aquasecurity/defsec/provider/aws/athena
+github.com/aquasecurity/defsec/provider/aws/autoscaling
+github.com/aquasecurity/defsec/provider/aws/cloudfront
+github.com/aquasecurity/defsec/provider/aws/cloudtrail
+github.com/aquasecurity/defsec/provider/aws/cloudwatch
+github.com/aquasecurity/defsec/provider/aws/codebuild
+github.com/aquasecurity/defsec/provider/aws/config
+github.com/aquasecurity/defsec/provider/aws/documentdb
+github.com/aquasecurity/defsec/provider/aws/dynamodb
+github.com/aquasecurity/defsec/provider/aws/ebs
+github.com/aquasecurity/defsec/provider/aws/ec2
+github.com/aquasecurity/defsec/provider/aws/ecr
+github.com/aquasecurity/defsec/provider/aws/ecs
+github.com/aquasecurity/defsec/provider/aws/efs
+github.com/aquasecurity/defsec/provider/aws/eks
+github.com/aquasecurity/defsec/provider/aws/elasticache
+github.com/aquasecurity/defsec/provider/aws/elasticsearch
+github.com/aquasecurity/defsec/provider/aws/elb
+github.com/aquasecurity/defsec/provider/aws/iam
+github.com/aquasecurity/defsec/provider/aws/kinesis
+github.com/aquasecurity/defsec/provider/aws/kms
+github.com/aquasecurity/defsec/provider/aws/lambda
+github.com/aquasecurity/defsec/provider/aws/mq
+github.com/aquasecurity/defsec/provider/aws/msk
+github.com/aquasecurity/defsec/provider/aws/neptune
+github.com/aquasecurity/defsec/provider/aws/rds
+github.com/aquasecurity/defsec/provider/aws/redshift
+github.com/aquasecurity/defsec/provider/aws/s3
+github.com/aquasecurity/defsec/provider/aws/sam
+github.com/aquasecurity/defsec/provider/aws/sns
+github.com/aquasecurity/defsec/provider/aws/sqs
+github.com/aquasecurity/defsec/provider/aws/ssm
+github.com/aquasecurity/defsec/provider/aws/vpc
+github.com/aquasecurity/defsec/provider/aws/workspaces
+github.com/aquasecurity/defsec/provider/azure
+github.com/aquasecurity/defsec/provider/azure/appservice
+github.com/aquasecurity/defsec/provider/azure/authorization
+github.com/aquasecurity/defsec/provider/azure/compute
+github.com/aquasecurity/defsec/provider/azure/container
+github.com/aquasecurity/defsec/provider/azure/database
+github.com/aquasecurity/defsec/provider/azure/datafactory
+github.com/aquasecurity/defsec/provider/azure/datalake
+github.com/aquasecurity/defsec/provider/azure/keyvault
+github.com/aquasecurity/defsec/provider/azure/monitor
+github.com/aquasecurity/defsec/provider/azure/network
+github.com/aquasecurity/defsec/provider/azure/securitycenter
+github.com/aquasecurity/defsec/provider/azure/storage
+github.com/aquasecurity/defsec/provider/azure/synapse
+github.com/aquasecurity/defsec/provider/cloudstack
+github.com/aquasecurity/defsec/provider/cloudstack/compute
+github.com/aquasecurity/defsec/provider/digitalocean
+github.com/aquasecurity/defsec/provider/digitalocean/compute
+github.com/aquasecurity/defsec/provider/digitalocean/spaces
+github.com/aquasecurity/defsec/provider/github
+github.com/aquasecurity/defsec/provider/google
+github.com/aquasecurity/defsec/provider/google/bigquery
+github.com/aquasecurity/defsec/provider/google/compute
+github.com/aquasecurity/defsec/provider/google/dns
+github.com/aquasecurity/defsec/provider/google/gke
+github.com/aquasecurity/defsec/provider/google/iam
+github.com/aquasecurity/defsec/provider/google/kms
+github.com/aquasecurity/defsec/provider/google/platform
+github.com/aquasecurity/defsec/provider/google/sql
+github.com/aquasecurity/defsec/provider/google/storage
+github.com/aquasecurity/defsec/provider/kubernetes
+github.com/aquasecurity/defsec/provider/openstack
+github.com/aquasecurity/defsec/provider/oracle
+github.com/aquasecurity/defsec/rules
+github.com/aquasecurity/defsec/rules/aws/apigateway
+github.com/aquasecurity/defsec/rules/aws/athena
+github.com/aquasecurity/defsec/rules/aws/autoscaling
+github.com/aquasecurity/defsec/rules/aws/cloudfront
+github.com/aquasecurity/defsec/rules/aws/cloudtrail
+github.com/aquasecurity/defsec/rules/aws/cloudwatch
+github.com/aquasecurity/defsec/rules/aws/codebuild
+github.com/aquasecurity/defsec/rules/aws/config
+github.com/aquasecurity/defsec/rules/aws/documentdb
+github.com/aquasecurity/defsec/rules/aws/dynamodb
+github.com/aquasecurity/defsec/rules/aws/ebs
+github.com/aquasecurity/defsec/rules/aws/ec2
+github.com/aquasecurity/defsec/rules/aws/ecr
+github.com/aquasecurity/defsec/rules/aws/ecs
+github.com/aquasecurity/defsec/rules/aws/efs
+github.com/aquasecurity/defsec/rules/aws/eks
+github.com/aquasecurity/defsec/rules/aws/elasticache
+github.com/aquasecurity/defsec/rules/aws/elasticsearch
+github.com/aquasecurity/defsec/rules/aws/elb
+github.com/aquasecurity/defsec/rules/aws/iam
+github.com/aquasecurity/defsec/rules/aws/kinesis
+github.com/aquasecurity/defsec/rules/aws/kms
+github.com/aquasecurity/defsec/rules/aws/lambda
+github.com/aquasecurity/defsec/rules/aws/mq
+github.com/aquasecurity/defsec/rules/aws/msk
+github.com/aquasecurity/defsec/rules/aws/neptune
+github.com/aquasecurity/defsec/rules/aws/rds
+github.com/aquasecurity/defsec/rules/aws/redshift
+github.com/aquasecurity/defsec/rules/aws/s3
+github.com/aquasecurity/defsec/rules/aws/sns
+github.com/aquasecurity/defsec/rules/aws/sqs
+github.com/aquasecurity/defsec/rules/aws/ssm
+github.com/aquasecurity/defsec/rules/aws/vpc
+github.com/aquasecurity/defsec/rules/aws/workspaces
+github.com/aquasecurity/defsec/rules/azure/appservice
+github.com/aquasecurity/defsec/rules/azure/authorization
+github.com/aquasecurity/defsec/rules/azure/compute
+github.com/aquasecurity/defsec/rules/azure/container
+github.com/aquasecurity/defsec/rules/azure/database
+github.com/aquasecurity/defsec/rules/azure/datafactory
+github.com/aquasecurity/defsec/rules/azure/datalake
+github.com/aquasecurity/defsec/rules/azure/keyvault
+github.com/aquasecurity/defsec/rules/azure/monitor
+github.com/aquasecurity/defsec/rules/azure/network
+github.com/aquasecurity/defsec/rules/azure/securitycenter
+github.com/aquasecurity/defsec/rules/azure/storage
+github.com/aquasecurity/defsec/rules/azure/synapse
+github.com/aquasecurity/defsec/rules/cloudstack/compute
+github.com/aquasecurity/defsec/rules/digitalocean/compute
+github.com/aquasecurity/defsec/rules/digitalocean/spaces
+github.com/aquasecurity/defsec/rules/general/secrets
+github.com/aquasecurity/defsec/rules/github/repositories
+github.com/aquasecurity/defsec/rules/google/bigquery
+github.com/aquasecurity/defsec/rules/google/compute
+github.com/aquasecurity/defsec/rules/google/dns
+github.com/aquasecurity/defsec/rules/google/gke
+github.com/aquasecurity/defsec/rules/google/kms
+github.com/aquasecurity/defsec/rules/google/platform
+github.com/aquasecurity/defsec/rules/google/sql
+github.com/aquasecurity/defsec/rules/google/storage
+github.com/aquasecurity/defsec/rules/kubernetes/network
+github.com/aquasecurity/defsec/rules/openstack/compute
+github.com/aquasecurity/defsec/rules/oracle/compute
+github.com/aquasecurity/defsec/severity
+github.com/aquasecurity/defsec/state
+github.com/aquasecurity/defsec/types
 # github.com/bmatcuk/doublestar v1.3.4
 ## explicit; go 1.12
 github.com/bmatcuk/doublestar
@@ -157,7 +299,6 @@ github.com/jbenet/go-context/io
 ## explicit; go 1.11
 # github.com/liamg/clinch v1.5.6
 ## explicit; go 1.13
-github.com/liamg/clinch/prompt
 github.com/liamg/clinch/terminal
 # github.com/liamg/gifwrap v0.0.6
 ## explicit; go 1.16
@@ -180,9 +321,9 @@ github.com/mitchellh/go-wordwrap
 # github.com/olekukonko/tablewriter v0.0.5
 ## explicit; go 1.12
 github.com/olekukonko/tablewriter
-# github.com/owenrumney/go-sarif v1.1.1
+# github.com/owenrumney/go-sarif/v2 v2.0.13
 ## explicit; go 1.16
-github.com/owenrumney/go-sarif/sarif
+github.com/owenrumney/go-sarif/v2/sarif
 # github.com/owenrumney/squealer v0.3.1
 ## explicit; go 1.16
 github.com/owenrumney/squealer/internal/app/squealer/match
@@ -190,10 +331,6 @@ github.com/owenrumney/squealer/internal/app/squealer/mertics
 github.com/owenrumney/squealer/pkg/config
 github.com/owenrumney/squealer/pkg/result
 github.com/owenrumney/squealer/pkg/squealer
-# github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942
-## explicit
-github.com/pkg/term
-github.com/pkg/term/termios
 # github.com/pmezard/go-difflib v1.0.0
 ## explicit
 github.com/pmezard/go-difflib/difflib

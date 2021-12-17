@@ -2,8 +2,10 @@ package block
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
+	"github.com/aquasecurity/defsec/types"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -12,10 +14,21 @@ type Reference struct {
 	typeLabel string
 	nameLabel string
 	remainder []string
-	key       string
+	key       cty.Value
+	parent    string
 }
 
-func newReference(parts []string) (*Reference, error) {
+func extendReference(ref *Reference, name string) *Reference {
+	child := *ref
+	child.remainder = make([]string, len(ref.remainder))
+	if len(ref.remainder) > 0 {
+		copy(child.remainder, ref.remainder)
+	}
+	child.remainder = append(child.remainder, name)
+	return &child
+}
+
+func newReference(parts []string, parentKey string) (*Reference, error) {
 
 	var ref Reference
 
@@ -50,11 +63,20 @@ func newReference(parts []string) (*Reference, error) {
 	if strings.Contains(ref.nameLabel, "[") {
 		bits := strings.Split(ref.nameLabel, "[")
 		ref.nameLabel = bits[0]
-		ref.key = "[" + bits[1]
+		keyRaw := strings.ReplaceAll(bits[1][:strings.Index(bits[1], "]")], "\"", "")
+		if i, err := strconv.Atoi(keyRaw); err == nil {
+			ref.key = cty.NumberIntVal(int64(i))
+		} else {
+			ref.key = cty.StringVal(keyRaw)
+		}
 	}
 
 	if len(parts) > 3 {
 		ref.remainder = parts[3:]
+	}
+
+	if parentKey != "root" {
+		ref.parent = parentKey
 	}
 
 	return &ref, nil
@@ -72,9 +94,23 @@ func (r *Reference) NameLabel() string {
 	return r.nameLabel
 }
 
+func (r *Reference) HumanReadable() string {
+	if r.parent == "" {
+		return r.String()
+	}
+	return fmt.Sprintf("%s:%s", r.parent, r.String())
+}
+
+func (r *Reference) LogicalID() string {
+	return r.String()
+}
+
 func (r *Reference) String() string {
 
-	base := fmt.Sprintf("%s.%s", r.typeLabel, r.nameLabel)
+	base := r.typeLabel
+	if r.nameLabel != "" {
+		base = fmt.Sprintf("%s.%s", base, r.nameLabel)
+	}
 
 	if !r.blockType.removeTypeInReference {
 		base = r.blockType.Name()
@@ -86,9 +122,7 @@ func (r *Reference) String() string {
 		}
 	}
 
-	if r.key != "" {
-		base += r.key
-	}
+	base += r.KeyBracketed()
 
 	for _, rem := range r.remainder {
 		base += "." + rem
@@ -97,33 +131,52 @@ func (r *Reference) String() string {
 	return base
 }
 
-func (r *Reference) RefersTo(b Block) bool {
-	if r.BlockType() != b.Reference().BlockType() {
+func (r *Reference) RefersTo(a types.Reference) bool {
+	other := a.(*Reference)
+
+	if r.BlockType() != other.BlockType() {
 		return false
 	}
-	if r.TypeLabel() != b.Reference().TypeLabel() {
+	if r.TypeLabel() != other.TypeLabel() {
 		return false
 	}
-	if r.NameLabel() != b.Reference().NameLabel() {
+	if r.NameLabel() != other.NameLabel() {
 		return false
 	}
-	if r.Key() != "" && r.Key() != b.Reference().Key() {
+	if (r.Key() != "" || other.Key() != "") && r.Key() != other.Key() {
 		return false
 	}
 	return true
 }
 
 func (r *Reference) SetKey(key cty.Value) {
-	switch key.Type() {
+	r.key = key
+}
+func (r *Reference) KeyBracketed() string {
+	switch r.key.Type() {
 	case cty.Number:
-		f := key.AsBigFloat()
+		f := r.key.AsBigFloat()
 		f64, _ := f.Float64()
-		r.key = fmt.Sprintf("[%d]", int(f64))
+		return fmt.Sprintf("[%d]", int(f64))
 	case cty.String:
-		r.key = fmt.Sprintf("[%q]", key.AsString())
+		return fmt.Sprintf("[%q]", r.key.AsString())
+	default:
+		return ""
 	}
+}
+func (r *Reference) RawKey() cty.Value {
+	return r.key
 }
 
 func (r *Reference) Key() string {
-	return r.key
+	switch r.key.Type() {
+	case cty.Number:
+		f := r.key.AsBigFloat()
+		f64, _ := f.Float64()
+		return fmt.Sprintf("%d", int(f64))
+	case cty.String:
+		return fmt.Sprintf("%s", r.key.AsString())
+	default:
+		return ""
+	}
 }

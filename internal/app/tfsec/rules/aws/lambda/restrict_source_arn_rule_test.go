@@ -1,6 +1,5 @@
 package lambda
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,37 +18,37 @@ func Test_AWSCheckLambdaFunctionForSourceARN(t *testing.T) {
 		{
 			name: "Principal present with no source_arn",
 			source: `
-resource "aws_lambda_permission" "with_sns" {
-  statement_id  = "AllowExecutionFromSNS"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.func.function_name
-  principal     = "sns.amazonaws.com"
-}
-`,
+ resource "aws_lambda_permission" "with_sns" {
+   statement_id  = "AllowExecutionFromSNS"
+   action        = "lambda:InvokeFunction"
+   function_name = aws_lambda_function.func.function_name
+   principal     = "sns.amazonaws.com"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Principal present and source_arn present",
 			source: `
-resource "aws_lambda_permission" "with_sns" {
-  statement_id  = "AllowExecutionFromSNS"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.func.function_name
-  principal     = "sns.amazonaws.com"
-  source_arn    = aws_sns_topic.default.arn
-}
-`,
+ resource "aws_lambda_permission" "with_sns" {
+   statement_id  = "AllowExecutionFromSNS"
+   action        = "lambda:InvokeFunction"
+   function_name = aws_lambda_function.func.function_name
+   principal     = "sns.amazonaws.com"
+   source_arn    = aws_sns_topic.default.arn
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "No principal specified",
 			source: `
-resource "aws_lambda_permission" "with_sns" {
-  statement_id  = "AllowExecutionFromSNS"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.func.function_name
-}
-`,
+ resource "aws_lambda_permission" "with_sns" {
+   statement_id  = "AllowExecutionFromSNS"
+   action        = "lambda:InvokeFunction"
+   function_name = aws_lambda_function.func.function_name
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

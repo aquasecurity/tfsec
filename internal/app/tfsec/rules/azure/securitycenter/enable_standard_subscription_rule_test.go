@@ -1,6 +1,5 @@
 package securitycenter
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,21 +18,21 @@ func Test_AzureEnableStandardSubscription(t *testing.T) {
 		{
 			name: "Tier set to free fails the check",
 			source: `
-resource "azurerm_security_center_subscription_pricing" "bad_example" {
-  tier          = "Free"
-  resource_type = "VirtualMachines"
-}
-`,
+ resource "azurerm_security_center_subscription_pricing" "bad_example" {
+   tier          = "Free"
+   resource_type = "VirtualMachines"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Tier set to Standard passses the check",
 			source: `
-resource "azurerm_security_center_subscription_pricing" "good_example" {
-  tier          = "Standard"
-  resource_type = "VirtualMachines"
-}
-`,
+ resource "azurerm_security_center_subscription_pricing" "good_example" {
+   tier          = "Standard"
+   resource_type = "VirtualMachines"
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

@@ -1,6 +1,5 @@
 package storage
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,49 +18,49 @@ func Test_AZUMinTLSForStorageAccountsSet(t *testing.T) {
 		{
 			name: "check when min_tls not set check fails",
 			source: `
-resource "azurerm_storage_account" "example" {
-  name                     = "storageaccountname"
-  resource_group_name      = azurerm_resource_group.example.name
-  location                 = azurerm_resource_group.example.location
-  min_tls_version          = "TLS1_0"
-}
-`,
+ resource "azurerm_storage_account" "example" {
+   name                     = "storageaccountname"
+   resource_group_name      = azurerm_resource_group.example.name
+   location                 = azurerm_resource_group.example.location
+   min_tls_version          = "TLS1_0"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check when min_tls set to TLS1_0 check fails",
 			source: `
-resource "azurerm_storage_account" "example" {
-  name                     = "storageaccountname"
-  resource_group_name      = azurerm_resource_group.example.name
-  location                 = azurerm_resource_group.example.location
-  min_tls_version          = "TLS1_0"
-}
-`,
+ resource "azurerm_storage_account" "example" {
+   name                     = "storageaccountname"
+   resource_group_name      = azurerm_resource_group.example.name
+   location                 = azurerm_resource_group.example.location
+   min_tls_version          = "TLS1_0"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check when min_tls set to TLS1_1 check fails",
 			source: `
-resource "azurerm_storage_account" "example" {
-  name                     = "storageaccountname"
-  resource_group_name      = azurerm_resource_group.example.name
-  location                 = azurerm_resource_group.example.location
-  min_tls_version          = "TLS1_1"
-}
-`,
+ resource "azurerm_storage_account" "example" {
+   name                     = "storageaccountname"
+   resource_group_name      = azurerm_resource_group.example.name
+   location                 = azurerm_resource_group.example.location
+   min_tls_version          = "TLS1_1"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "TODO: add test name",
 			source: `
-resource "azurerm_storage_account" "example" {
-  name                     = "storageaccountname"
-  resource_group_name      = azurerm_resource_group.example.name
-  location                 = azurerm_resource_group.example.location
-  min_tls_version          = "TLS1_2"
-}
-`,
+ resource "azurerm_storage_account" "example" {
+   name                     = "storageaccountname"
+   resource_group_name      = azurerm_resource_group.example.name
+   location                 = azurerm_resource_group.example.location
+   min_tls_version          = "TLS1_2"
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

@@ -1,6 +1,5 @@
 package ec2
 
-// generator-locked
 import (
 	"testing"
 
@@ -20,8 +19,8 @@ func Test_AWSInstanceMetadataChec(t *testing.T) {
 			name: "should fire as http_tokens not specified and by default are optional",
 			source: `
 		resource "aws_instance" "working example"{
-		  ami           = "ami-005e54dee72cc1d00"
-		  instance_type = "t2.micro"
+		ami           = "ami-005e54dee72cc1d00"
+		instance_type = "t2.micro"
 		}
 		`,
 			mustIncludeResultCode: expectedCode,
@@ -30,11 +29,11 @@ func Test_AWSInstanceMetadataChec(t *testing.T) {
 			name: "should fire as http_tokens explicitly set to optional and should be required",
 			source: `
 		resource "aws_instance" "working example"{
-		  ami           = "ami-005e54dee72cc1d00"
-		  instance_type = "t2.micro"
-		  metadata_options {
-			http_tokens = "optional"
-		  }
+		ami           = "ami-005e54dee72cc1d00"
+		instance_type = "t2.micro"
+		metadata_options {
+		http_tokens = "optional"
+		}
 		}
 		`,
 			mustIncludeResultCode: expectedCode,
@@ -42,28 +41,28 @@ func Test_AWSInstanceMetadataChec(t *testing.T) {
 		{
 			name: "should not fire when http_tokens set to required",
 			source: `
-		resource "aws_instance" "working example"{
-		  ami           = "ami-005e54dee72cc1d00"
-		  instance_type = "t2.micro"
-		  metadata_options {
-			http_tokens = "required"
-		  }
-		}
-		`,
+		 resource "aws_instance" "working example"{
+			 ami           = "ami-005e54dee72cc1d00"
+			 instance_type = "t2.micro"
+			 metadata_options {
+			 http_tokens = "required"
+			 }
+		 }
+		 `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "should not fire when http_endpoint disabled as IMDS is not available",
 			source: `
-resource "aws_instance" "working example"{
-  ami           = "ami-005e54dee72cc1d00"
-  instance_type = "t2.micro"
-  metadata_options {
-	http_endpoint = "disabled"
-	http_tokens   = "optional"
-  }	
-}
-`,
+ resource "aws_instance" "working example"{
+	 ami           = "ami-005e54dee72cc1d00"
+	 instance_type = "t2.micro"
+	 metadata_options {
+	 http_endpoint = "disabled"
+	 http_tokens   = "optional"
+	 }	
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

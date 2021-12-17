@@ -60,7 +60,7 @@ resource "aws_security_group_rule" "my-rule" {
 In the example above, when tfsec is run with the `--workspace` flag set to development, this ignore will be honoured, but otherwise will be disregarded.
 
 ```bash
-tfsec --workspace development .
+tfsec --workspaces development .
 ```
 
 ### Ignoring specific values

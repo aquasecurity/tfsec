@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math"
-	"os"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
@@ -14,26 +13,31 @@ type linter struct {
 }
 
 func (l *linter) lint(check rule.Rule) {
+
+	var errorFound bool
+
 	// crashout immediately if there is a check with no id
-	if check.ShortCode == "" {
+	if check.Base.Rule().ShortCode == "" {
 		fmt.Printf("%s: Found a check with no short code\n", check.ID())
-		os.Exit(1)
+		errorFound = true
 	}
-	if check.Service == "" {
+	if check.Base.Rule().Service == "" {
 		fmt.Printf("%s: Found a check with no service\n", check.ID())
-		os.Exit(1)
+		errorFound = true
 	}
-	if check.Provider == "" {
+	if check.Base.Rule().Provider == "" {
 		fmt.Printf("%s: Found a check with no provider\n", check.ID())
-		os.Exit(1)
+		errorFound = true
 	}
-	if len(check.Documentation.Links) == 0 {
-		fmt.Printf("%s: Found check with no links\n", check.ID())
-		os.Exit(1)
+	if len(check.Links) == 0 {
+		fmt.Printf("%s: Found check with no terraform-specific links\n", check.ID())
+		errorFound = true
+		return
 	}
 
-	errorFound := l.checkDocumentation(check)
-	if len(check.RequiredTypes) == 0 {
+	errorFound = errorFound || l.checkDocumentation(check)
+
+	if check.CheckTerraform != nil && len(check.RequiredTypes) == 0 {
 		fmt.Printf("%s: missing required types\n", check.ID())
 		errorFound = true
 	}
@@ -44,47 +48,42 @@ func (l *linter) lint(check rule.Rule) {
 }
 
 func (l *linter) checkDocumentation(check rule.Rule) bool {
-	docs := check.Documentation
 
 	var errorFound bool
-	if !strings.Contains(check.Documentation.Links[0], ".terraform.io") {
+	if !strings.Contains(check.Links[0], ".terraform.io") {
 		fmt.Printf("%s: The first link should be Terraform for consistency\n", check.ID())
 		errorFound = true
 	}
 
-	if err := l.verifyPart(string(docs.Summary), "Summary"); err != nil {
+	if err := l.verifyPart(string(check.Base.Rule().Summary), "Summary"); err != nil {
 		fmt.Printf("%s: %s\n", check.ID(), err.Error())
 		errorFound = true
 	}
-	if err := l.verifyPart(docs.Impact, "Impact"); err != nil {
+	if err := l.verifyPart(check.Base.Rule().Impact, "Impact"); err != nil {
 		fmt.Printf("%s: %s\n", check.ID(), err.Error())
 		errorFound = true
 	}
-	if err := l.verifyPart(docs.Resolution, "Resolution"); err != nil {
+	if err := l.verifyPart(check.Base.Rule().Resolution, "Resolution"); err != nil {
 		fmt.Printf("%s: %s\n", check.ID(), err.Error())
 		errorFound = true
 	}
-	if err := l.verifyPart(docs.Explanation, "Explanation"); err != nil {
+	if err := l.verifyPart(check.Base.Rule().Explanation, "Explanation"); err != nil {
 		fmt.Printf("%s: %s\n", check.ID(), err.Error())
 		errorFound = true
 	}
-	for _, goodExample := range docs.GoodExample {
+	for _, goodExample := range check.GoodExample {
 		if err := l.verifyPart(goodExample, "GoodExample"); err != nil {
 			fmt.Printf("%s: %s\n", check.ID(), err.Error())
 			errorFound = true
 		}
 	}
-	for _, badExample := range docs.BadExample {
+	for _, badExample := range check.BadExample {
 		if err := l.verifyPart(badExample, "BadExample"); err != nil {
 			fmt.Printf("%s: %s\n", check.ID(), err.Error())
 			errorFound = true
 		}
 	}
 
-	if len(docs.Links) == 0 {
-		fmt.Printf("%s: Has no links configure\n", check.ID())
-		errorFound = true
-	}
 	return errorFound
 }
 

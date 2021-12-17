@@ -1,6 +1,5 @@
 package container
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,29 +18,29 @@ func Test_AZUAKSClusterRBACenabled(t *testing.T) {
 		{
 			name: "check azurerm_kubernetes_cluster with no role_based_access_control define",
 			source: `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
-
-}`,
+ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+ 
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with role_based_access_control disabled",
 			source: `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
-	role_based_access_control {
-		enabled = false
-	}
-}`,
+ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+ 	role_based_access_control {
+ 		enabled = false
+ 	}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with RBAC enabled",
 			source: `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
-	role_based_access_control {
-		enabled = true
-	}
-}`,
+ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+ 	role_based_access_control {
+ 		enabled = true
+ 	}
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

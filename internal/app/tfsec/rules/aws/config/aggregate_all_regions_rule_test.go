@@ -1,6 +1,5 @@
 package config
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,65 +18,65 @@ func Test_AWSConfigAggregatorCoveringAllRegions(t *testing.T) {
 		{
 			name: "Account aggregation not set fails check",
 			source: `
-		resource "aws_config_configuration_aggregator" "bad_example" {
-			name = "example"
-		}
-		`,
+ 		resource "aws_config_configuration_aggregator" "bad_example" {
+ 			name = "example"
+ 		}
+ 		`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Account aggregation using specific regions fails check",
 			source: `
-		resource "aws_config_configuration_aggregator" "bad_example" {
-			name = "example"
-
-			account_aggregation_source {
-			  account_ids = ["123456789012"]
-			  regions     = ["us-west-2", "eu-west-1"]
-			}
-		}
-		`,
+ 		resource "aws_config_configuration_aggregator" "bad_example" {
+ 			name = "example"
+ 
+ 			account_aggregation_source {
+ 			  account_ids = ["123456789012"]
+ 			  regions     = ["us-west-2", "eu-west-1"]
+ 			}
+ 		}
+ 		`,
 			mustIncludeResultCode: expectedCode,
 		}, {
 			name: "All regions set to false fails check",
 			source: `
-		resource "aws_config_configuration_aggregator" "bad_example" {
-			name = "example"
-
-			account_aggregation_source {
-			  account_ids = ["123456789012"]
-			  all_regions = false
-			}
-		}
-		`,
+ 		resource "aws_config_configuration_aggregator" "bad_example" {
+ 			name = "example"
+ 
+ 			account_aggregation_source {
+ 			  account_ids = ["123456789012"]
+ 			  all_regions = false
+ 			}
+ 		}
+ 		`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "All regions set to true passes check",
 			source: `
-resource "aws_config_configuration_aggregator" "good_example" {
-	name = "example"
-	  
-	account_aggregation_source {
-	  account_ids = ["123456789012"]
-	  all_regions = true
-	}
-}
-`,
+ resource "aws_config_configuration_aggregator" "good_example" {
+ 	name = "example"
+ 	  
+ 	account_aggregation_source {
+ 	  account_ids = ["123456789012"]
+ 	  all_regions = true
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "All regions set to true passes check",
 			source: `
-resource "aws_config_configuration_aggregator" "good_example" {
-	name = "example"
-	  
-	organization_aggregation_source {
-	  account_ids = ["123456789012"]
-	  all_regions = true
-	}
-}
-`,
+ resource "aws_config_configuration_aggregator" "good_example" {
+ 	name = "example"
+ 	  
+ 	organization_aggregation_source {
+ 	  account_ids = ["123456789012"]
+ 	  all_regions = true
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

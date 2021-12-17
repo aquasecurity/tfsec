@@ -1,6 +1,5 @@
 package network
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,58 +18,58 @@ func Test_AzureRetentionPeriodSet(t *testing.T) {
 		{
 			name: "TODO: add test name",
 			source: `
-resource "azurerm_network_watcher_flow_log" "bad_watcher" {
-  network_watcher_name = "bad_watcher"
-  resource_group_name  = "resource-group"
-
-  network_security_group_id = azurerm_network_security_group.test.id
-  storage_account_id        = azurerm_storage_account.test.id
-  enabled                   = true
-
-  retention_policy {
-    enabled = true
-    days    = 7
-  }
-}
-`,
+ resource "azurerm_network_watcher_flow_log" "bad_watcher" {
+   network_watcher_name = "bad_watcher"
+   resource_group_name  = "resource-group"
+ 
+   network_security_group_id = azurerm_network_security_group.test.id
+   storage_account_id        = azurerm_storage_account.test.id
+   enabled                   = true
+ 
+   retention_policy {
+     enabled = true
+     days    = 7
+   }
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "TODO: add test name",
 			source: `
-resource "azurerm_network_watcher_flow_log" "bad_watcher" {
-  network_watcher_name = "bad_watcher"
-  resource_group_name  = "resource-group"
-
-  network_security_group_id = azurerm_network_security_group.test.id
-  storage_account_id        = azurerm_storage_account.test.id
-  enabled                   = true
-
-  retention_policy {
-    enabled = false
-    days    = 7
-  }
-}
-`,
+ resource "azurerm_network_watcher_flow_log" "bad_watcher" {
+   network_watcher_name = "bad_watcher"
+   resource_group_name  = "resource-group"
+ 
+   network_security_group_id = azurerm_network_security_group.test.id
+   storage_account_id        = azurerm_storage_account.test.id
+   enabled                   = true
+ 
+   retention_policy {
+     enabled = false
+     days    = 7
+   }
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "TODO: add test name",
 			source: `
-resource "azurerm_network_watcher_flow_log" "good_watcher" {
-  network_watcher_name = "good_watcher"
-  resource_group_name  = "resource-group"
-
-  network_security_group_id = azurerm_network_security_group.test.id
-  storage_account_id        = azurerm_storage_account.test.id
-  enabled                   = true
-
-  retention_policy {
-    enabled = true
-    days    = 90
-  }
-}
-`,
+ resource "azurerm_network_watcher_flow_log" "good_watcher" {
+   network_watcher_name = "good_watcher"
+   resource_group_name  = "resource-group"
+ 
+   network_security_group_id = azurerm_network_security_group.test.id
+   storage_account_id        = azurerm_storage_account.test.id
+   enabled                   = true
+ 
+   retention_policy {
+     enabled = true
+     days    = 90
+   }
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}
