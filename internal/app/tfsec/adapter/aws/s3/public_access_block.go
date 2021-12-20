@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/defsec/provider/aws/s3"
-	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
@@ -17,14 +16,13 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 
 			pba := s3.PublicAccessBlock{
 				Metadata:              b.Metadata(),
-				BlockPublicACLs:       isAttrTrue(b, "block_public_acls"),
-				BlockPublicPolicy:     isAttrTrue(b, "block_public_policy"),
-				IgnorePublicACLs:      isAttrTrue(b, "ignore_public_acls"),
-				RestrictPublicBuckets: isAttrTrue(b, "restrict_public_buckets"),
+				BlockPublicACLs:       b.GetAttribute("block_public_acls").AsBoolValueOrDefault(false, b),
+				BlockPublicPolicy:     b.GetAttribute("block_public_policy").AsBoolValueOrDefault(false, b),
+				IgnorePublicACLs:      b.GetAttribute("ignore_public_acls").AsBoolValueOrDefault(false, b),
+				RestrictPublicBuckets: b.GetAttribute("restrict_public_buckets").AsBoolValueOrDefault(false, b),
 			}
 
 			var bucketName string
-
 			bucketAttr := b.GetAttribute("bucket")
 
 			if bucketAttr.IsString() {
@@ -53,12 +51,4 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 	}
 
 	return publicAccessBlocks
-}
-
-func isAttrTrue(block block.Block, attrName string) types.BoolValue {
-	attr := block.GetAttribute(attrName)
-	if attr.IsNil() {
-		return types.BoolDefault(false, block.Metadata())
-	}
-	return attr.AsBoolValue(true)
 }

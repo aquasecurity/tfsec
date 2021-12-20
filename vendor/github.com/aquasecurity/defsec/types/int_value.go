@@ -27,6 +27,12 @@ func IntDefault(value int, m Metadata) IntValue {
 	return b
 }
 
+func IntUnresolvable(m Metadata) IntValue {
+	b := Int(0, m)
+	b.GetMetadata().isUnresolvable = true
+	return b
+}
+
 func IntExplicit(value int, m Metadata) IntValue {
 	b := Int(value, m)
 	b.GetMetadata().isExplicit = true

@@ -10,25 +10,9 @@ func adaptAPIMethodsV1(module block.Module, apiBlock block.Block) []apigateway.R
 	var methods []apigateway.RESTMethod
 	for _, methodBlock := range module.GetReferencingResources(apiBlock, "aws_api_gateway_method", "rest_api_id") {
 		var method apigateway.RESTMethod
-
-		if httpMethod := methodBlock.GetAttribute("http_method"); httpMethod.IsString() {
-			method.HTTPMethod = httpMethod.AsStringValue(true)
-		} else {
-			method.HTTPMethod = types.StringDefault("", methodBlock.Metadata())
-		}
-
-		if auth := methodBlock.GetAttribute("authorization"); auth.IsString() {
-			method.AuthorizationType = auth.AsStringValue(true)
-		} else {
-			method.AuthorizationType = types.StringDefault("", methodBlock.Metadata())
-		}
-
-		if apiKey := methodBlock.GetAttribute("api_key_required"); apiKey.IsBool() {
-			method.APIKeyRequired = apiKey.AsBoolValue(true)
-		} else {
-			method.APIKeyRequired = types.BoolDefault(false, methodBlock.Metadata())
-		}
-
+		method.HTTPMethod = methodBlock.GetAttribute("http_method").AsStringValueOrDefault("", methodBlock)
+		method.AuthorizationType = methodBlock.GetAttribute("authorization").AsStringValueOrDefault("", methodBlock)
+		method.APIKeyRequired = methodBlock.GetAttribute("api_key_required").AsBoolValueOrDefault(false, methodBlock)
 		methods = append(methods, method)
 	}
 	return methods
@@ -44,21 +28,14 @@ func adaptAPIsV1(modules []block.Module) []apigateway.API {
 			var api apigateway.API
 			api.Metadata = apiBlock.Metadata()
 			api.Version = types.Int(1, apiBlock.Metadata())
-			if name := apiBlock.GetAttribute("name"); name.IsString() {
-				api.Name = name.AsStringValue(true)
-			} else {
-				api.Name = types.StringDefault("", apiBlock.Metadata())
-			}
+			api.Name = apiBlock.GetAttribute("name").AsStringValueOrDefault("", apiBlock)
 			api.ProtocolType = types.StringDefault(apigateway.ProtocolTypeREST, apiBlock.Metadata())
-
 			api.RESTMethods = adaptAPIMethodsV1(module, apiBlock)
 
 			var defaultCacheEncryption = types.BoolDefault(false, api.Metadata)
 			for _, methodSettings := range module.GetReferencingResources(apiBlock, "aws_api_gateway_method_settings", "rest_api_id") {
 				if settings := methodSettings.GetBlock("settings"); settings.IsNotNil() {
-					if encrypted := settings.GetAttribute("cache_data_encrypted"); encrypted.IsNotNil() {
-						defaultCacheEncryption = encrypted.AsBoolValue(true)
-					}
+					defaultCacheEncryption = settings.GetAttribute("cache_data_encrypted").AsBoolValueOrDefault(false, settings)
 				}
 			}
 
@@ -71,33 +48,21 @@ func adaptAPIsV1(modules []block.Module) []apigateway.API {
 				for _, methodSettings := range module.GetReferencingResources(stageBlock, "aws_api_gateway_method_settings", "stage_name") {
 					if settings := methodSettings.GetBlock("settings"); settings.IsNotNil() {
 						if encrypted := settings.GetAttribute("cache_data_encrypted"); encrypted.IsNotNil() {
-							stage.RESTMethodSettings.CacheDataEncrypted = encrypted.AsBoolValue(true)
+							stage.RESTMethodSettings.CacheDataEncrypted = settings.GetAttribute("cache_data_encrypted").AsBoolValueOrDefault(false, settings)
 						}
 					}
 				}
 
-				if name := stageBlock.GetAttribute("stage_name"); name.IsString() {
-					stage.Name = name.AsStringValue(true)
-				} else {
-					stage.Name = types.StringDefault("", stageBlock.Metadata())
-				}
+				stage.Name = stageBlock.GetAttribute("stage_name").AsStringValueOrDefault("", stageBlock)
 				if accessLogging := stageBlock.GetBlock("access_log_settings"); accessLogging.IsNotNil() {
 					stage.AccessLogging.Metadata = accessLogging.Metadata()
-					if logGroupARN := accessLogging.GetAttribute("destination_arn"); logGroupARN.IsNotNil() {
-						stage.AccessLogging.CloudwatchLogGroupARN = logGroupARN.AsStringValue(true)
-					} else {
-						stage.AccessLogging.CloudwatchLogGroupARN = types.StringDefault("", accessLogging.Metadata())
-					}
+					stage.AccessLogging.CloudwatchLogGroupARN = accessLogging.GetAttribute("destination_arn").AsStringValueOrDefault("", accessLogging)
 				} else {
 					stage.AccessLogging.Metadata = stageBlock.Metadata()
 					stage.AccessLogging.CloudwatchLogGroupARN = types.StringDefault("", stageBlock.Metadata())
 				}
 
-				if xray := stageBlock.GetAttribute("xray_tracing_enabled"); xray.IsBool() {
-					stage.XRayTracingEnabled = xray.AsBoolValue(true)
-				} else {
-					stage.XRayTracingEnabled = types.BoolDefault(false, stageBlock.Metadata())
-				}
+				stage.XRayTracingEnabled = stageBlock.GetAttribute("xray_tracing_enabled").AsBoolValueOrDefault(false, stageBlock)
 
 				api.Stages = append(api.Stages, stage)
 			}

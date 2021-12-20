@@ -10,6 +10,8 @@ type Storage struct {
 }
 
 type Bucket struct {
+	Name                           types.StringValue
+	Location                       types.StringValue
 	EnableUniformBucketLevelAccess types.BoolValue
 	Members                        []iam.Member
 	Bindings                       []iam.Binding
