@@ -20,7 +20,7 @@ func getInstances(modules block.Modules) []ec2.Instance {
 	for _, b := range blocks {
 
 		metadataOptions := getMetadataOptions(b)
-		userData := getUserData(b)
+		userData := b.GetAttribute("user_data").AsStringValueOrDefault("", b)
 
 		instances = append(instances, ec2.Instance{
 			Metadata:        *(b.GetMetadata()),
@@ -32,16 +32,6 @@ func getInstances(modules block.Modules) []ec2.Instance {
 	return instances
 }
 
-func getUserData(b block.Block) types.StringValue {
-	if userDataAttr := b.GetAttribute("user_data"); userDataAttr.IsNotNil() && userDataAttr.IsString() {
-		return userDataAttr.AsStringValue(true)
-	}
-	return types.StringDefault(
-		"",
-		b.Metadata(),
-	)
-}
-
 func getMetadataOptions(b block.Block) ec2.MetadataOptions {
 
 	if metadataOptions := b.GetBlock("metadata_options"); metadataOptions.IsNotNil() {
@@ -49,17 +39,8 @@ func getMetadataOptions(b block.Block) ec2.MetadataOptions {
 			Metadata: metadataOptions.Metadata(),
 		}
 
-		if httpTokens := metadataOptions.GetAttribute("http_tokens"); httpTokens.IsNotNil() {
-			metaOpts.HttpTokens = httpTokens.AsStringValue(true)
-		} else {
-			metaOpts.HttpTokens = types.StringDefault("", metadataOptions.Metadata())
-		}
-
-		if httpEndpoint := metadataOptions.GetAttribute("http_endpoint"); httpEndpoint.IsNotNil() {
-			metaOpts.HttpEndpoint = httpEndpoint.AsStringValue(true)
-		} else {
-			metaOpts.HttpEndpoint = types.StringDefault("", metadataOptions.Metadata())
-		}
+		metaOpts.HttpTokens = metadataOptions.GetAttribute("http_tokens").AsStringValueOrDefault("", metadataOptions)
+		metaOpts.HttpEndpoint = metadataOptions.GetAttribute("http_endpoint").AsStringValueOrDefault("", metadataOptions)
 		return metaOpts
 	}
 

@@ -15,19 +15,8 @@ func adaptDomainNamesV1(modules []block.Module) []apigateway.DomainName {
 			var domainName apigateway.DomainName
 			domainName.Metadata = nameBlock.Metadata()
 			domainName.Version = types.Int(1, nameBlock.Metadata())
-
-			if name := nameBlock.GetAttribute("domain_name"); name.IsString() {
-				domainName.Name = name.AsStringValue(true)
-			} else {
-				domainName.Name = types.StringDefault("", nameBlock.Metadata())
-			}
-
-			if policy := nameBlock.GetAttribute("security_policy"); policy.IsString() {
-				domainName.SecurityPolicy = policy.AsStringValue(true)
-			} else {
-				domainName.SecurityPolicy = types.StringDefault("TLS_1_0", nameBlock.Metadata())
-			}
-
+			domainName.Name = nameBlock.GetAttribute("domain_name").AsStringValueOrDefault("", nameBlock)
+			domainName.SecurityPolicy = nameBlock.GetAttribute("security_policy").AsStringValueOrDefault("TLS_1_0", nameBlock)
 			domainNames = append(domainNames, domainName)
 		}
 	}

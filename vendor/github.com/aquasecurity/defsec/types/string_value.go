@@ -19,6 +19,7 @@ func StringDefault(value string, m Metadata) StringValue {
 	b.GetMetadata().isDefault = true
 	return b
 }
+
 func StringUnresolvable(m Metadata) StringValue {
 	b := String("", m)
 	b.GetMetadata().isUnresolvable = true

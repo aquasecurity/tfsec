@@ -25,6 +25,12 @@ func BoolDefault(value bool, metadata Metadata) BoolValue {
 	return b
 }
 
+func BoolUnresolvable(m Metadata) BoolValue {
+	b := Bool(false, m)
+	b.GetMetadata().isUnresolvable = true
+	return b
+}
+
 func BoolExplicit(value bool, metadata Metadata) BoolValue {
 	b := Bool(value, metadata)
 	b.GetMetadata().isExplicit = true

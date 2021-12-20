@@ -49,9 +49,9 @@ type Attribute interface {
 	ValueAsStrings() []string
 	IsIterable() bool
 	Each(f func(key cty.Value, val cty.Value))
-	AsStringValue(explicit bool) types.StringValue
-	AsBoolValue(explicit bool) types.BoolValue
-	AsIntValue(explicit bool) types.IntValue
+	AsStringValueOrDefault(defaultValue string, parent Block) types.StringValue
+	AsBoolValueOrDefault(defaultValue bool, parent Block) types.BoolValue
+	AsIntValueOrDefault(defaultValue int, parent Block) types.IntValue
 	Metadata() types.Metadata
 	ReferencesBlock(b Block) bool
 }

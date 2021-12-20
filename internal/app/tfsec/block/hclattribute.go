@@ -83,36 +83,42 @@ func (a *HCLAttribute) GetRawValue() interface{} {
 	return nil
 }
 
-func (attr *HCLAttribute) AsStringValue(explicit bool) types.StringValue {
-	f := types.String
-	if explicit {
-		f = types.StringExplicit
+func (attr *HCLAttribute) AsStringValueOrDefault(defaultValue string, parent Block) types.StringValue {
+	if attr.IsNil() {
+		return types.StringDefault(defaultValue, parent.Metadata())
 	}
-	return f(
+	if attr.IsNotResolvable() || !attr.IsString() {
+		return types.StringUnresolvable(attr.Metadata())
+	}
+	return types.StringExplicit(
 		attr.Value().AsString(),
 		*(attr.GetMetadata()),
 	)
 }
 
-func (attr *HCLAttribute) AsBoolValue(explicit bool) types.BoolValue {
-	f := types.Bool
-	if explicit {
-		f = types.BoolExplicit
+func (attr *HCLAttribute) AsBoolValueOrDefault(defaultValue bool, parent Block) types.BoolValue {
+	if attr.IsNil() {
+		return types.BoolDefault(defaultValue, parent.Metadata())
 	}
-	return f(
+	if attr.IsNotResolvable() || !attr.IsBool() {
+		return types.BoolUnresolvable(attr.Metadata())
+	}
+	return types.BoolExplicit(
 		attr.IsTrue(),
 		*(attr.GetMetadata()),
 	)
 }
 
-func (attr *HCLAttribute) AsIntValue(explicit bool) types.IntValue {
-	f := types.Int
-	if explicit {
-		f = types.IntExplicit
+func (attr *HCLAttribute) AsIntValueOrDefault(defaultValue int, parent Block) types.IntValue {
+	if attr.IsNil() {
+		return types.IntDefault(defaultValue, parent.Metadata())
+	}
+	if attr.IsNotResolvable() || !attr.IsNumber() {
+		return types.IntUnresolvable(attr.Metadata())
 	}
 	big := attr.Value().AsBigFloat()
 	flt, _ := big.Float64()
-	return f(
+	return types.IntExplicit(
 		int(flt),
 		*(attr.GetMetadata()),
 	)
