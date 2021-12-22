@@ -1,6 +1,5 @@
 package sqs
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,25 +18,25 @@ func Test_AWSUnencryptedSQSQueue(t *testing.T) {
 		{
 			name: "check no encryption key id specified for aws_sqs_queue",
 			source: `
-resource "aws_sqs_queue" "my-queue" {
-	
-}`,
+ resource "aws_sqs_queue" "my-queue" {
+ 	
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check blank encryption key id specified for aws_sqs_queue",
 			source: `
-resource "aws_sqs_queue" "my-queue" {
-	kms_master_key_id = ""
-}`,
+ resource "aws_sqs_queue" "my-queue" {
+ 	kms_master_key_id = ""
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check encryption key id specified for aws_sqs_queue",
 			source: `
-resource "aws_sqs_queue" "my-queue" {
-	kms_master_key_id = "/blah"
-}`,
+ resource "aws_sqs_queue" "my-queue" {
+ 	kms_master_key_id = "/blah"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

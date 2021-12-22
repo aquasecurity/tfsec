@@ -1,6 +1,5 @@
 package sql
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,57 +18,57 @@ func Test_GooglePgLogLockWaits(t *testing.T) {
 		{
 			name: "rule matches when flag is explicitly set to off",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_lock_waits"
-			value = "off"
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_lock_waits"
+ 			value = "off"
+ 		}
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "rule matches when flag is set to default (off)",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "rule does not match when flag is set to on",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_lock_waits"
-			value = "on"
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_lock_waits"
+ 			value = "on"
+ 		}
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "rule does not match when not postgres",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "MYSQL_5_6"
-	region           = "us-central1"
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "MYSQL_5_6"
+ 	region           = "us-central1"
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

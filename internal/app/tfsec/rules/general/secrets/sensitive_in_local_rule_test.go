@@ -1,6 +1,5 @@
 package secrets
 
-// generator-locked
 import (
 	"testing"
 
@@ -8,7 +7,7 @@ import (
 )
 
 func Test_AWSSensitiveLocals(t *testing.T) {
-	expectedCode := "general-secrets-sensitive-in-local"
+	expectedCode := "general-secrets-no-plaintext-exposure"
 
 	var tests = []struct {
 		name                  string
@@ -19,17 +18,17 @@ func Test_AWSSensitiveLocals(t *testing.T) {
 		{
 			name: "check sensitive local with value",
 			source: `
-locals {
-	password = "secret"
-}`,
+ locals {
+ 	password = "secret"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check non-sensitive local",
 			source: `
-locals {
-	something = "something"
-}`,
+ locals {
+ 	something = "something"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

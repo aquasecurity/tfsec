@@ -1,6 +1,5 @@
 package dynamodb
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,48 +18,48 @@ func Test_AWSDAXEncryptedAtRest(t *testing.T) {
 		{
 			name: "Rule should not pass when no SSE block at all",
 			source: `
-resource "aws_dax_cluster" "bad_example" {
-	// no server side encryption at all
-}
-`,
+ resource "aws_dax_cluster" "bad_example" {
+ 	// no server side encryption at all
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		}, {
 			name: "Rule should not pass when SSE block empty",
 			source: `
-resource "aws_dax_cluster" "bad_example" {
-	// other DAX config
-
-	server_side_encryption {
-		// empty server side encryption config
-	}
-}
-`,
+ resource "aws_dax_cluster" "bad_example" {
+ 	// other DAX config
+ 
+ 	server_side_encryption {
+ 		// empty server side encryption config
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Rule should not pass when SSE disabled",
 			source: `
-resource "aws_dax_cluster" "bad_example" {
-	// other DAX config
-
-	server_side_encryption {
-		enabled = false // disabled server side encryption
-	}
-}
-`,
+ resource "aws_dax_cluster" "bad_example" {
+ 	// other DAX config
+ 
+ 	server_side_encryption {
+ 		enabled = false // disabled server side encryption
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Rule should pass when SSE is enabled",
 			source: `
-resource "aws_dax_cluster" "good_example" {
-	// other DAX config
-
-	server_side_encryption {
-		enabled = true // enabled server side encryption
-	}
-}
-`,
+ resource "aws_dax_cluster" "good_example" {
+ 	// other DAX config
+ 
+ 	server_side_encryption {
+ 		enabled = true // enabled server side encryption
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

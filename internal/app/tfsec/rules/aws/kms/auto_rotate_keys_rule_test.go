@@ -1,6 +1,5 @@
 package kms
 
-// generator-locked
 import (
 	"testing"
 
@@ -23,25 +22,25 @@ func Test_AWSNoKmsKeyAutoRotate(t *testing.T) {
 		{
 			name: "check KMS Key with auto-rotation disabled",
 			source: `
-resource "aws_kms_key" "kms_key" {
-	enable_key_rotation = false
-}`,
+ resource "aws_kms_key" "kms_key" {
+ 	enable_key_rotation = false
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check KMS Key with auto-rotation enabled",
 			source: `
-resource "aws_kms_key" "kms_key" {
-	enable_key_rotation = true
-}`,
+ resource "aws_kms_key" "kms_key" {
+ 	enable_key_rotation = true
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check SIGN_VERIFY KMS Key with auto-rotation disabled",
 			source: `
-resource "aws_kms_key" "kms_key" {
-	key_usage = "SIGN_VERIFY"
-}`,
+ resource "aws_kms_key" "kms_key" {
+ 	key_usage = "SIGN_VERIFY"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

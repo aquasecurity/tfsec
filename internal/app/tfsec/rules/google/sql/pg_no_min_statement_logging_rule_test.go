@@ -1,6 +1,5 @@
 package sql
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,46 +18,46 @@ func Test_GooglePgLogDurationStatement(t *testing.T) {
 		{
 			name: "rule matches when flag is explicitly set to 99",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_min_duration_statement"
-			value = "99"
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_min_duration_statement"
+ 			value = "99"
+ 		}
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "rule does not match when flag is explicitly set to -1",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_min_duration_statement"
-			value = "-1"
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_min_duration_statement"
+ 			value = "-1"
+ 		}
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "rule does not match when flag is set to default (-1)",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

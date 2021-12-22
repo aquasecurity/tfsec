@@ -1,14 +1,17 @@
 package block
 
 import (
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/zclconf/go-cty/cty"
 )
 
 type Attribute interface {
+	rules.MetadataProvider
 	IsLiteral() bool
 	Type() cty.Type
 	Value() cty.Value
-	Range() Range
+	Range() HCLRange
 	Name() string
 	Contains(checkValue interface{}, equalityOptions ...EqualityOption) bool
 	NotContains(checkValue interface{}, equalityOptions ...EqualityOption) bool
@@ -33,10 +36,11 @@ type Attribute interface {
 	GreaterThan(checkValue interface{}) bool
 	GreaterThanOrEqualTo(checkValue interface{}) bool
 	IsDataBlockReference() bool
-	Reference() (*Reference, error)
-	AllReferences() []*Reference
+	Reference() *Reference
+	SingleReference() (*Reference, error)
+	AllReferences(blocks ...Block) []*Reference
 	IsResourceBlockReference(resourceType string) bool
-	ReferencesBlock(b Block) bool
+	References(r types.Reference) bool
 	IsResolvable() bool
 	IsNotResolvable() bool
 	IsString() bool
@@ -45,4 +49,9 @@ type Attribute interface {
 	ValueAsStrings() []string
 	IsIterable() bool
 	Each(f func(key cty.Value, val cty.Value))
+	AsStringValueOrDefault(defaultValue string, parent Block) types.StringValue
+	AsBoolValueOrDefault(defaultValue bool, parent Block) types.BoolValue
+	AsIntValueOrDefault(defaultValue int, parent Block) types.IntValue
+	Metadata() types.Metadata
+	ReferencesBlock(b Block) bool
 }

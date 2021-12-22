@@ -3,17 +3,12 @@ package custom
 import (
 	"fmt"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/severity"
-
-	"github.com/aquasecurity/tfsec/pkg/result"
-
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-
-	"github.com/aquasecurity/tfsec/pkg/rule"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 var matchFunctions = map[CheckAction]func(block.Block, *MatchSpec) bool{
@@ -128,27 +123,32 @@ func processFoundChecks(checks ChecksFile) {
 		func(customCheck Check) {
 			debug.Log("Loading check: %s\n", customCheck.Code)
 			scanner.RegisterCheckRule(rule.Rule{
-				LegacyID:  customCheck.Code,
-				Service:   "custom",
-				ShortCode: customCheck.Code,
-				Documentation: rule.RuleDocumentation{
-					Summary:    customCheck.Description,
-					Links:      customCheck.RelatedLinks,
-					Impact:     customCheck.Impact,
-					Resolution: customCheck.Resolution,
-				},
-				Provider:        provider.CustomProvider,
+				Base: rules.Register(
+					rules.Rule{
+						Service:    "custom",
+						ShortCode:  customCheck.Code,
+						Summary:    customCheck.Description,
+						Impact:     customCheck.Impact,
+						Resolution: customCheck.Resolution,
+						Provider:   provider.CustomProvider,
+						Links:      customCheck.RelatedLinks,
+						Severity:   customCheck.Severity,
+					},
+					nil,
+				),
+				LegacyID:        customCheck.Code,
 				RequiredTypes:   customCheck.RequiredTypes,
 				RequiredLabels:  customCheck.RequiredLabels,
 				RequiredSources: customCheck.RequiredSources,
-				DefaultSeverity: severity.Medium,
-				CheckFunc: func(set result.Set, rootBlock block.Block, module block.Module) {
+				CheckTerraform: func(rootBlock block.Block, module block.Module) (results rules.Results) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, module) {
-						set.AddResult().
-							WithDescription("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage).
-							WithSeverity(customCheck.Severity)
+						results.Add(
+							fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage),
+							rootBlock,
+						)
 					}
+					return
 				},
 			})
 		}(*customCheck)

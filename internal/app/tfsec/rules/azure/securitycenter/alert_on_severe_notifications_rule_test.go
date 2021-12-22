@@ -1,6 +1,5 @@
 package securitycenter
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,27 +18,27 @@ func Test_AzureAlertOnSevereNotifications(t *testing.T) {
 		{
 			name: "contact with alerts turned off fails check",
 			source: `
-resource "azurerm_security_center_contact" "bad_example" {
-  email = "bad_example@example.com"
-  phone = "+1-555-555-5555"
-
-  alert_notifications = false
-  alerts_to_admins    = false
-}
-`,
+ resource "azurerm_security_center_contact" "bad_example" {
+   email = "bad_example@example.com"
+   phone = "+1-555-555-5555"
+ 
+   alert_notifications = false
+   alerts_to_admins    = false
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "contact with alerts turned on passes check",
 			source: `
-resource "azurerm_security_center_contact" "good_example" {
-  email = "good_example@example.com"
-  phone = "+1-555-555-5555"
-
-  alert_notifications = true
-  alerts_to_admins    = true
-}
-`,
+ resource "azurerm_security_center_contact" "good_example" {
+   email = "good_example@example.com"
+   phone = "+1-555-555-5555"
+ 
+   alert_notifications = true
+   alerts_to_admins    = true
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

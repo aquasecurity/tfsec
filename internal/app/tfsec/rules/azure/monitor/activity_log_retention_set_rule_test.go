@@ -1,6 +1,5 @@
 package monitor
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,29 +18,29 @@ func Test_AzureActivityLogRetentionSet(t *testing.T) {
 		{
 			name: "TODO: add test name",
 			source: `
-resource "azurerm_monitor_log_profile" "bad_example" {
-  name = "bad_example"
-
-  retention_policy {
-    enabled = true
-    days    = 7
-  }
-}
-`,
+ resource "azurerm_monitor_log_profile" "bad_example" {
+   name = "bad_example"
+ 
+   retention_policy {
+     enabled = true
+     days    = 7
+   }
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "TODO: add test name",
 			source: `
-resource "azurerm_monitor_log_profile" "good_example" {
-  name = "good_example"
-
-  retention_policy {
-    enabled = true
-    days    = 365
-  }
-}
-`,
+ resource "azurerm_monitor_log_profile" "good_example" {
+   name = "good_example"
+ 
+   retention_policy {
+     enabled = true
+     days    = 365
+   }
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

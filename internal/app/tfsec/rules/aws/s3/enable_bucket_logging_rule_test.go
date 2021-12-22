@@ -1,6 +1,5 @@
 package s3
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,27 +18,27 @@ func Test_AWSBucketLogging(t *testing.T) {
 		{
 			name: "check bucket with logging disabled",
 			source: `
-resource "aws_s3_bucket" "my-bucket" {
-	
-}`,
+ resource "aws_s3_bucket" "my-bucket" {
+ 	
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check bucket with logging enabled",
 			source: `
-resource "aws_s3_bucket" "my-bucket" {
-	logging {
-		target_bucket = "target-bucket"
-	}
-}`,
+ resource "aws_s3_bucket" "my-bucket" {
+ 	logging {
+ 		target_bucket = "target-bucket"
+ 	}
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check bucket with acl 'log-delivery-write' for logging",
 			source: `
-resource "aws_s3_bucket" "my-bucket" {
-	acl = "log-delivery-write"
-}`,
+ resource "aws_s3_bucket" "my-bucket" {
+ 	acl = "log-delivery-write"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

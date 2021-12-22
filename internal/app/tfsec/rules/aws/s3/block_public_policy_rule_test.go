@@ -1,6 +1,5 @@
 package s3
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,32 +18,44 @@ func Test_AWSBlockPublicPolicyS3(t *testing.T) {
 		{
 			name: "Rule fails when block_public_policy not set, defaults to false",
 			source: `
-resource "aws_s3_bucket_public_access_block" "bad_example" {
-	bucket = aws_s3_bucket.example.id
+ resource "aws_s3_bucket_public_access_block" "bad_example" {
+ 	bucket = aws_s3_bucket.example.id
+ }
+
+resource "aws_s3_bucket" "example" {
+  bucket = "mybucket"
 }
-`,
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Rule fails when block_public_policy set but is false",
 			source: `
-resource "aws_s3_bucket_public_access_block" "bad_example" {
-	bucket = aws_s3_bucket.example.id
+ resource "aws_s3_bucket_public_access_block" "bad_example" {
+ 	bucket = aws_s3_bucket.example.id
+ 
+ 	block_public_policy = false
+ }
 
-	block_public_policy = false
+resource "aws_s3_bucket" "example" {
+  bucket = "mybucket"
 }
-`,
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Rule passes when block_public_policy is true",
 			source: `
-resource "aws_s3_bucket_public_access_block" "bad_example" {
-	bucket = aws_s3_bucket.example.id
+ resource "aws_s3_bucket_public_access_block" "bad_example" {
+ 	bucket = aws_s3_bucket.example.id
+ 
+ 	block_public_policy = true
+ }
 
-	block_public_policy = true
+resource "aws_s3_bucket" "example" {
+  bucket = "mybucket"
 }
-`,
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

@@ -2,13 +2,13 @@ before:
   hooks:
     - go mod tidy
     - go mod vendor
+
 builds:
-  -
-    id: tfsec
+  - id: tfsec
     main: ./cmd/tfsec
     binary: tfsec
     ldflags:
-    - "-X github.com/aquasecurity/tfsec/version.Version={{.Version}} -s -w -extldflags '-fno-PIC -static'"
+      - "-X github.com/aquasecurity/tfsec/version.Version={{.Version}} -s -w -extldflags '-fno-PIC -static'"
     env:
       - CGO_ENABLED=0
       - GOFLAGS=-mod=vendor
@@ -38,8 +38,7 @@ signs:
     signature: "${artifact}.D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE.sig"
 
 archives:
-  -
-    format: binary
+  - format: binary
     name_template: "{{ .Binary}}-{{ .Os }}-{{ .Arch }}"
 
 release:
@@ -49,74 +48,66 @@ release:
     name: tfsec
 
 dockers:
-  - 
-    goos: linux
+  - goos: linux
     goarch: amd64
     ids:
-    - tfsec
-
+      - tfsec
     dockerfile: Dockerfile
     skip_push: auto
     image_templates:
-    - "aquasec/tfsec:latest"
-    - "aquasec/tfsec:{{ .Tag }}"
-    - "aquasec/tfsec:v{{ .Major }}.{{ .Minor }}"
-    - "aquasec/tfsec-alpine:latest"
-    - "aquasec/tfsec-alpine:{{ .Tag }}"
-    - "aquasec/tfsec-alpine:v{{ .Major }}.{{ .Minor }}"
-  - 
-    goos: linux
+      - "aquasec/tfsec:latest"
+      - "aquasec/tfsec:{{ .Tag }}"
+      - "aquasec/tfsec:v{{ .Major }}.{{ .Minor }}"
+      - "aquasec/tfsec-alpine:latest"
+      - "aquasec/tfsec-alpine:{{ .Tag }}"
+      - "aquasec/tfsec-alpine:v{{ .Major }}.{{ .Minor }}"
+
+  - goos: linux
     goarch: amd64
     ids:
-    - tfsec
-
+      - tfsec
     dockerfile: Dockerfile.scratch
     skip_push: auto
     image_templates:
-    - "aquasec/tfsec-scratch:latest"
-    - "aquasec/tfsec-scratch:{{ .Tag }}"
-    - "aquasec/tfsec-scratch:v{{ .Major }}.{{ .Minor }}"
-  - 
-    goos: linux
+      - "aquasec/tfsec-scratch:latest"
+      - "aquasec/tfsec-scratch:{{ .Tag }}"
+      - "aquasec/tfsec-scratch:v{{ .Major }}.{{ .Minor }}"
+
+  - goos: linux
     goarch: amd64
     ids:
-    - tfsec
-
+      - tfsec
     dockerfile: Dockerfile.ci
     skip_push: auto
     image_templates:
-    - "aquasec/tfsec-ci:latest"
-    - "aquasec/tfsec-ci:{{ .Tag }}"
-    - "aquasec/tfsec-ci:v{{ .Major }}.{{ .Minor }}"
+      - "aquasec/tfsec-ci:latest"
+      - "aquasec/tfsec-ci:{{ .Tag }}"
+      - "aquasec/tfsec-ci:v{{ .Major }}.{{ .Minor }}"
 
-  - 
-    goos: linux
+  - goos: linux
     goarch: amd64
     ids:
-    - tfsec
-
+      - tfsec
     dockerfile: Dockerfile
     image_templates:
-    - "aquasec/tfsec:{{ .Tag }}"
-    - "aquasec/tfsec-alpine:{{ .Tag }}"
-  - 
-    goos: linux
+      - "aquasec/tfsec:{{ .Tag }}"
+      - "aquasec/tfsec-alpine:{{ .Tag }}"
+
+  - goos: linux
     goarch: amd64
     ids:
-    - tfsec
-
+      - tfsec
     dockerfile: Dockerfile.scratch
     image_templates:
-    - "aquasec/tfsec-scratch:{{ .Tag }}"
-  - 
-    goos: linux
+      - "aquasec/tfsec-scratch:{{ .Tag }}"
+
+  - goos: linux
     goarch: amd64
     ids:
     - tfsec
-
     dockerfile: Dockerfile.ci
     image_templates:
-    - "aquasec/tfsec-ci:{{ .Tag }}"
+      - "aquasec/tfsec-ci:{{ .Tag }}"
 
 announce:
   slack:

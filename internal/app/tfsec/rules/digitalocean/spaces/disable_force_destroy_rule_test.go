@@ -1,6 +1,5 @@
 package spaces
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,33 +18,33 @@ func Test_DIGForceDestroyEnabled(t *testing.T) {
 		{
 			name: "force destroy turned on fails check",
 			source: `
-resource "digitalocean_spaces_bucket" "bad_example" {
-  name   		= "foobar"
-  region 		= "nyc3"
-  force_destroy = true
-}
-`,
+ resource "digitalocean_spaces_bucket" "bad_example" {
+   name   		= "foobar"
+   region 		= "nyc3"
+   force_destroy = true
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "force destroy left to default passes check",
 			source: `
-resource "digitalocean_spaces_bucket" "good_example" {
-  name   = "foobar"
-  region = "nyc3"
-}
-`,
+ resource "digitalocean_spaces_bucket" "good_example" {
+   name   = "foobar"
+   region = "nyc3"
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "force destroy explicitly turned off passes check",
 			source: `
-resource "digitalocean_spaces_bucket" "good_example" {
-	name   	 	  = "foobar"
-	region 		  = "nyc3"
-	force_destroy = false
-}
-`,
+ resource "digitalocean_spaces_bucket" "good_example" {
+ 	name   	 	  = "foobar"
+ 	region 		  = "nyc3"
+ 	force_destroy = false
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

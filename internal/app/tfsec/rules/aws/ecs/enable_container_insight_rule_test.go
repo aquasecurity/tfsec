@@ -1,6 +1,5 @@
 package ecs
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,52 +18,52 @@ func Test_AWSECSClusterContainerInsights(t *testing.T) {
 		{
 			name: "ECS cluster without container insights fails check",
 			source: `
-resource "aws_ecs_cluster" "bad_example" {
-  	name = "services-cluster"
-}
-`,
+ resource "aws_ecs_cluster" "bad_example" {
+   	name = "services-cluster"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "ECS cluster with container insights configured but disabled fails check",
 			source: `
-resource "aws_ecs_cluster" "bad_example" {
-  	name = "services-cluster"
-
-	setting {
-		name  = "containerInsights"
-		value = "disabled"
-	}
-}
-`,
+ resource "aws_ecs_cluster" "bad_example" {
+   	name = "services-cluster"
+ 
+ 	setting {
+ 		name  = "containerInsights"
+ 		value = "disabled"
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "ECS cluster with settings but no container insights fails check",
 			source: `
-resource "aws_ecs_cluster" "bad_example" {
-  	name = "services-cluster"
-  
-	  setting {
-		name  = "NotContainerInsights"
-		value = "enabled"
-	  }
-}
-`,
+ resource "aws_ecs_cluster" "bad_example" {
+   	name = "services-cluster"
+   
+ 	  setting {
+ 		name  = "NotContainerInsights"
+ 		value = "enabled"
+ 	  }
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "ECS cluster with container insights enabled passess check",
 			source: `
-resource "aws_ecs_cluster" "good_example" {
-	name = "services-cluster"
-  
-	setting {
-	  name  = "containerInsights"
-	  value = "enabled"
-	}
-}
-`,
+ resource "aws_ecs_cluster" "good_example" {
+ 	name = "services-cluster"
+   
+ 	setting {
+ 	  name  = "containerInsights"
+ 	  value = "enabled"
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}
