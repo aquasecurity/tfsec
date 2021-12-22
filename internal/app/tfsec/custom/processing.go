@@ -222,7 +222,7 @@ func processAndPredicate(spec *MatchSpec, b block.Block, module block.Module) bo
 
 	}
 
-	return len(set) == 1 && set[true] == true
+	return len(set) == 1 && set[true]
 }
 
 func processSubMatches(spec *MatchSpec, b block.Block, evalResult bool) bool {
