@@ -1,6 +1,5 @@
 package vpc
 
-// generator-locked
 import (
 	"testing"
 
@@ -8,7 +7,7 @@ import (
 )
 
 func Test_AWSOpenEgressSecurityGroup(t *testing.T) {
-	expectedCode := "aws-vpc-no-public-egress-sg"
+	expectedCode := "aws-vpc-no-public-egress-sgr"
 
 	var tests = []struct {
 		name                  string
@@ -19,31 +18,31 @@ func Test_AWSOpenEgressSecurityGroup(t *testing.T) {
 		{
 			name: "check aws_security_group egress on 0.0.0.0/0",
 			source: `
-		resource "aws_security_group" "my-group" {
-			egress {
-				cidr_blocks = ["0.0.0.0/0"]
-			}
-		}`,
+ 		resource "aws_security_group" "my-group" {
+ 			egress {
+ 				cidr_blocks = ["0.0.0.0/0"]
+ 			}
+ 		}`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_security_group egress on 0.0.0.0/0 in list",
 			source: `
-		resource "aws_security_group" "my-group" {
-			egress {
-				cidr_blocks = ["10.0.0.0/16", "0.0.0.0/0"]
-			}
-		}`,
+ 		resource "aws_security_group" "my-group" {
+ 			egress {
+ 				cidr_blocks = ["10.0.0.0/16", "0.0.0.0/0"]
+ 			}
+ 		}`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_security_group egress on 10.0.0.0/16",
 			source: `
-		resource "aws_security_group" "my-group" {
-			egress {
-				cidr_blocks = ["10.0.0.0/16"]
-			}
-		}`,
+ 		resource "aws_security_group" "my-group" {
+ 			egress {
+ 				cidr_blocks = ["10.0.0.0/16"]
+ 			}
+ 		}`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

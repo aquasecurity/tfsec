@@ -1,6 +1,5 @@
 package gke
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,10 +18,10 @@ func Test_GkeAbacEnabled(t *testing.T) {
 		{
 			name: "check google_container_cluster with enable_legacy_abac set to true",
 			source: `
-resource "google_container_cluster" "gke" {
-	enable_legacy_abac = "true"
-	
-}`,
+ resource "google_container_cluster" "gke" {
+ 	enable_legacy_abac = "true"
+ 	
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 	}

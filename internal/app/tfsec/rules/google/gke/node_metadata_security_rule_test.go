@@ -1,6 +1,5 @@
 package gke
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,97 +18,97 @@ func Test_GkeNodeMetadataExposed(t *testing.T) {
 		{
 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to EXPOSE",
 			source: `
-resource "google_container_cluster" "gke" {
-	node_config {
-		workload_metadata_config {
-			node_metadata = "EXPOSE"
-		}
-	}
-}`,
+ resource "google_container_cluster" "gke" {
+ 	node_config {
+ 		workload_metadata_config {
+ 			node_metadata = "EXPOSE"
+ 		}
+ 	}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to UNSPECIFIED",
 			source: `
-resource "google_container_cluster" "gke" {
-	node_config {
-		workload_metadata_config {
-			node_metadata = "UNSPECIFIED"
-		}
-	}
-}`,
+ resource "google_container_cluster" "gke" {
+ 	node_config {
+ 		workload_metadata_config {
+ 			node_metadata = "UNSPECIFIED"
+ 		}
+ 	}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to EXPOSE",
 			source: `
-resource "google_container_node_pool" "gke" {
-	node_config {
-		workload_metadata_config {
-			node_metadata = "EXPOSE"
-		}
-	}
-}`,
+ resource "google_container_node_pool" "gke" {
+ 	node_config {
+ 		workload_metadata_config {
+ 			node_metadata = "EXPOSE"
+ 		}
+ 	}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to UNSPECIFIED",
 			source: `
-resource "google_container_node_pool" "gke" {
-	node_config {
-		workload_metadata_config {
-			node_metadata = "UNSPECIFIED"
-		}
-	}
-}`,
+ resource "google_container_node_pool" "gke" {
+ 	node_config {
+ 		workload_metadata_config {
+ 			node_metadata = "UNSPECIFIED"
+ 		}
+ 	}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to SECURE",
 			source: `
-resource "google_container_cluster" "gke" {
-	node_config {
-		workload_metadata_config {
-			node_metadata = "SECURE"
-		}
-	}
-}`,
+ resource "google_container_cluster" "gke" {
+ 	node_config {
+ 		workload_metadata_config {
+ 			node_metadata = "SECURE"
+ 		}
+ 	}
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check google_container_cluster with node_config.workload_metadata_config.node_metadata set to GKE_METADATA_SERVER",
 			source: `
-resource "google_container_cluster" "gke" {
-	node_config {
-		workload_metadata_config {
-			node_metadata = "GKE_METADATA_SERVER"
-		}
-	}
-}`,
+ resource "google_container_cluster" "gke" {
+ 	node_config {
+ 		workload_metadata_config {
+ 			node_metadata = "GKE_METADATA_SERVER"
+ 		}
+ 	}
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to SECURE",
 			source: `
-resource "google_container_node_pool" "gke" {
-	node_config {
-		workload_metadata_config {
-			node_metadata = "SECURE"
-		}
-	}
-}`,
+ resource "google_container_node_pool" "gke" {
+ 	node_config {
+ 		workload_metadata_config {
+ 			node_metadata = "SECURE"
+ 		}
+ 	}
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check google_container_node_pool with node_config.workload_metadata_config.node_metadata set to GKE_METADATA_SERVER",
 			source: `
-resource "google_container_node_pool" "gke" {
-	node_config {
-		workload_metadata_config {
-			node_metadata = "GKE_METADATA_SERVER"
-		}
-	}
-}`,
+ resource "google_container_node_pool" "gke" {
+ 	node_config {
+ 		workload_metadata_config {
+ 			node_metadata = "GKE_METADATA_SERVER"
+ 		}
+ 	}
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

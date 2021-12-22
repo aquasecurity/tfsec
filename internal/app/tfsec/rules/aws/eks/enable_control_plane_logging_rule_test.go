@@ -1,6 +1,5 @@
 package eks
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,65 +18,65 @@ func Test_AWSEKSHasControlPlaneLoggingEnabled(t *testing.T) {
 		{
 			name: "Test eks cluster with no logging configured fails check",
 			source: `
-resource "aws_eks_cluster" "bad_example" {
-    encryption_config {
-        resources = [ "secrets" ]
-        provider {
-            key_arn = var.kms_arn
-        }
-    }
-
-    name = "bad_example_cluster"
-    role_arn = var.cluster_arn
-    vpc_config {
-        endpoint_public_access = false
-    }
-}
-`,
+ resource "aws_eks_cluster" "bad_example" {
+     encryption_config {
+         resources = [ "secrets" ]
+         provider {
+             key_arn = var.kms_arn
+         }
+     }
+ 
+     name = "bad_example_cluster"
+     role_arn = var.cluster_arn
+     vpc_config {
+         endpoint_public_access = false
+     }
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Test EKS cluster with only some cluster logging enabled fails check",
 			source: `
-resource "aws_eks_cluster" "bad_example" {
-    encryption_config {
-        resources = [ "secrets" ]
-        provider {
-            key_arn = var.kms_arn
-        }
-    }
-
-	enabled_cluster_log_types = ["api", "authenticator", "scheduler", "controllerManager"]
-
-    name = "bad_example_cluster"
-    role_arn = var.cluster_arn
-    vpc_config {
-        endpoint_public_access = false
-    }
-}
-`,
+ resource "aws_eks_cluster" "bad_example" {
+     encryption_config {
+         resources = [ "secrets" ]
+         provider {
+             key_arn = var.kms_arn
+         }
+     }
+ 
+ 	enabled_cluster_log_types = ["api", "authenticator", "scheduler", "controllerManager"]
+ 
+     name = "bad_example_cluster"
+     role_arn = var.cluster_arn
+     vpc_config {
+         endpoint_public_access = false
+     }
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Test eks cluster with all logging enabled passes check",
 			source: `
-resource "aws_eks_cluster" "good_example" {
-    encryption_config {
-        resources = [ "secrets" ]
-        provider {
-            key_arn = var.kms_arn
-        }
-    }
-
-	enabled_cluster_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
-
-    name = "good_example_cluster"
-    role_arn = var.cluster_arn
-    vpc_config {
-        endpoint_public_access = false
-    }
-}
-`,
+ resource "aws_eks_cluster" "good_example" {
+     encryption_config {
+         resources = [ "secrets" ]
+         provider {
+             key_arn = var.kms_arn
+         }
+     }
+ 
+ 	enabled_cluster_log_types = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
+ 
+     name = "good_example_cluster"
+     role_arn = var.cluster_arn
+     vpc_config {
+         endpoint_public_access = false
+     }
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

@@ -15,7 +15,7 @@ func Test_AzureAccountIdentityRegistered_FailureExamples(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Rule not found: %s", expectedCode)
 	}
-	for i, badExample := range rule.Documentation.BadExample {
+	for i, badExample := range rule.BadExample {
 		t.Logf("Running bad example for '%s' #%d", expectedCode, i+1)
 		if strings.TrimSpace(badExample) == "" {
 			t.Fatalf("bad example code not provided for %s", rule.ID())
@@ -37,7 +37,7 @@ func Test_AzureAccountIdentityRegistered_SuccessExamples(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Rule not found: %s", expectedCode)
 	}
-	for i, example := range rule.Documentation.GoodExample {
+	for i, example := range rule.GoodExample {
 		t.Logf("Running good example for '%s' #%d", expectedCode, i+1)
 		if strings.TrimSpace(example) == "" {
 			t.Fatalf("good example code not provided for %s", rule.ID())

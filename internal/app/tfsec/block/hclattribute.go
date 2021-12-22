@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
@@ -14,14 +15,117 @@ import (
 
 type HCLAttribute struct {
 	hclAttribute *hcl.Attribute
+	module       string
 	ctx          *Context
+	forEachRefs  []*Reference
+	ref          *Reference
 }
 
-func NewHCLAttribute(attr *hcl.Attribute, ctx *Context) *HCLAttribute {
+func NewHCLAttribute(attr *hcl.Attribute, ctx *Context, module string, parentRef *Reference) *HCLAttribute {
 	return &HCLAttribute{
 		hclAttribute: attr,
 		ctx:          ctx,
+		module:       module,
+		ref:          extendReference(parentRef, attr.Name),
 	}
+}
+
+func (a *HCLAttribute) Metadata() types.Metadata {
+	return types.NewMetadata(a.Range(), a.Reference())
+}
+
+func (a *HCLAttribute) GetMetadata() *types.Metadata {
+	// this is hacky but we need to satisfy the upstream metadata provider interface...
+	m := a.Metadata()
+	return &m
+}
+
+func (a *HCLAttribute) GetRawValue() interface{} {
+	switch typ := a.Type(); typ {
+	case cty.String:
+		return a.Value().AsString()
+	case cty.Bool:
+		return a.Value().True()
+	case cty.Number:
+		float, _ := a.Value().AsBigFloat().Float64()
+		return float
+	default:
+		switch true {
+		case typ.IsTupleType(), typ.IsListType():
+			values := a.Value().AsValueSlice()
+			if len(values) == 0 {
+				return []string{}
+			}
+			switch values[0].Type() {
+			case cty.String:
+				var output []string
+				for _, value := range values {
+					output = append(output, value.AsString())
+				}
+				return output
+			case cty.Number:
+				var output []float64
+				for _, value := range values {
+					bf := value.AsBigFloat()
+					f, _ := bf.Float64()
+					output = append(output, f)
+				}
+				return output
+			case cty.Bool:
+				var output []bool
+				for _, value := range values {
+					output = append(output, value.True())
+				}
+				return output
+			}
+		}
+	}
+	return nil
+}
+
+func (attr *HCLAttribute) AsStringValueOrDefault(defaultValue string, parent Block) types.StringValue {
+	if attr.IsNil() {
+		return types.StringDefault(defaultValue, parent.Metadata())
+	}
+	if attr.IsNotResolvable() || !attr.IsString() {
+		return types.StringUnresolvable(attr.Metadata())
+	}
+	return types.StringExplicit(
+		attr.Value().AsString(),
+		*(attr.GetMetadata()),
+	)
+}
+
+func (attr *HCLAttribute) AsBoolValueOrDefault(defaultValue bool, parent Block) types.BoolValue {
+	if attr.IsNil() {
+		return types.BoolDefault(defaultValue, parent.Metadata())
+	}
+	if attr.IsNotResolvable() || !attr.IsBool() {
+		return types.BoolUnresolvable(attr.Metadata())
+	}
+	return types.BoolExplicit(
+		attr.IsTrue(),
+		*(attr.GetMetadata()),
+	)
+}
+
+func (attr *HCLAttribute) AsIntValueOrDefault(defaultValue int, parent Block) types.IntValue {
+	if attr.IsNil() {
+		return types.IntDefault(defaultValue, parent.Metadata())
+	}
+	if attr.IsNotResolvable() || !attr.IsNumber() {
+		return types.IntUnresolvable(attr.Metadata())
+	}
+	big := attr.Value().AsBigFloat()
+	flt, _ := big.Float64()
+	return types.IntExplicit(
+		int(flt),
+		*(attr.GetMetadata()),
+	)
+}
+
+func (attr *HCLAttribute) Reference() *Reference {
+	return attr.ref
 }
 
 func (attr *HCLAttribute) IsLiteral() bool {
@@ -104,15 +208,16 @@ func (attr *HCLAttribute) Value() (ctyVal cty.Value) {
 	return ctyVal
 }
 
-func (attr *HCLAttribute) Range() Range {
+func (attr *HCLAttribute) Range() HCLRange {
 	if attr == nil {
-		return Range{}
+		return HCLRange{}
 	}
-	return Range{
-		Filename:  attr.hclAttribute.Range.Filename,
-		StartLine: attr.hclAttribute.Range.Start.Line,
-		EndLine:   attr.hclAttribute.Range.End.Line,
-	}
+	return NewRange(
+		attr.hclAttribute.Range.Filename,
+		attr.hclAttribute.Range.Start.Line,
+		attr.hclAttribute.Range.End.Line,
+		attr.module,
+	)
 }
 
 func (attr *HCLAttribute) Name() string {
@@ -122,17 +227,11 @@ func (attr *HCLAttribute) Name() string {
 	return attr.hclAttribute.Name
 }
 
-func (attr *HCLAttribute) ValueAsStrings() (strings []string) {
+func (attr *HCLAttribute) ValueAsStrings() []string {
 	if attr == nil {
-		return strings
+		return nil
 	}
-	defer func() {
-		if err := recover(); err != nil {
-			strings = nil
-		}
-	}()
-	strings = getStrings(attr.hclAttribute.Expr, attr.ctx.Inner())
-	return
+	return getStrings(attr.hclAttribute.Expr, attr.ctx.Inner())
 }
 
 func getStrings(expr hcl.Expression, ctx *hcl.EvalContext) []string {
@@ -368,16 +467,6 @@ func (attr *HCLAttribute) IsAny(options ...interface{}) bool {
 			}
 		}
 	}
-	if attr.IsIterable() {
-		attrVals := attr.Value().AsValueSlice()
-		for _, option := range options {
-			for _, attrVal := range attrVals {
-				if attrVal.Type() == cty.String && attrVal.AsString() == option {
-					return true
-				}
-			}
-		}
-	}
 	return false
 }
 
@@ -585,9 +674,9 @@ func (attr *HCLAttribute) IsDataBlockReference() bool {
 	return false
 }
 
-func createDotReferenceFromTraversal(traversals ...hcl.Traversal) (*Reference, error) {
+func createDotReferenceFromTraversal(parentRef string, traversals ...hcl.Traversal) (*Reference, error) {
 	var refParts []string
-
+	var key cty.Value
 	for _, x := range traversals {
 		for _, p := range x {
 			switch part := p.(type) {
@@ -596,38 +685,30 @@ func createDotReferenceFromTraversal(traversals ...hcl.Traversal) (*Reference, e
 			case hcl.TraverseAttr:
 				refParts = append(refParts, part.Name)
 			case hcl.TraverseIndex:
-				refParts[len(refParts)-1] = fmt.Sprintf("%s[%s]", refParts[len(refParts)-1], getIndexValue(part))
+				key = part.Key
 			}
 		}
 	}
-	return newReference(refParts)
-}
-
-func getIndexValue(part hcl.TraverseIndex) string {
-	switch part.Key.Type() {
-	case cty.String:
-		return fmt.Sprintf("%q", part.Key.AsString())
-	case cty.Number:
-		var intVal int
-		if err := gocty.FromCtyValue(part.Key, &intVal); err != nil {
-			debug.Log("could not unpack the int, returning 0")
-			return "0"
-		}
-		return fmt.Sprintf("%d", intVal)
-	default:
-		return "0"
+	ref, err := newReference(refParts, parentRef)
+	if err != nil {
+		return nil, err
 	}
+	if !key.IsNull() {
+		ref.SetKey(key)
+	}
+	return ref, nil
 }
 
-func (attr *HCLAttribute) Reference() (*Reference, error) {
+func (attr *HCLAttribute) SingleReference() (*Reference, error) {
 	if attr == nil {
 		return nil, fmt.Errorf("attribute is nil")
 	}
+
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.RelativeTraversalExpr:
 		switch s := t.Source.(type) {
 		case *hclsyntax.IndexExpr:
-			collectionRef, err := createDotReferenceFromTraversal(s.Collection.Variables()...)
+			collectionRef, err := createDotReferenceFromTraversal(attr.module, s.Collection.Variables()...)
 			if err != nil {
 				return nil, err
 			}
@@ -635,10 +716,10 @@ func (attr *HCLAttribute) Reference() (*Reference, error) {
 			collectionRef.SetKey(key)
 			return collectionRef, nil
 		default:
-			return createDotReferenceFromTraversal(t.Source.Variables()...)
+			return createDotReferenceFromTraversal(attr.module, t.Source.Variables()...)
 		}
 	case *hclsyntax.ScopeTraversalExpr:
-		return createDotReferenceFromTraversal(t.Traversal)
+		return createDotReferenceFromTraversal(attr.module, t.Traversal)
 	case *hclsyntax.TemplateExpr:
 		refs := attr.referencesInTemplate()
 		if len(refs) == 0 {
@@ -650,16 +731,35 @@ func (attr *HCLAttribute) Reference() (*Reference, error) {
 	}
 }
 
-func (attr *HCLAttribute) AllReferences() []*Reference {
+func (attr *HCLAttribute) ReferencesBlock(b Block) bool {
+	if attr == nil {
+		return false
+	}
+	for _, ref := range attr.AllReferences() {
+		if ref.RefersTo(b.Reference()) {
+			return true
+		}
+	}
+	return false
+}
+
+func (attr *HCLAttribute) AllReferences(blocks ...Block) []*Reference {
 	if attr == nil {
 		return nil
 	}
 	var refs []*Reference
 	refs = append(refs, attr.referencesInTemplate()...)
 	refs = append(refs, attr.referencesInConditional()...)
-	ref, err := attr.Reference()
+	ref, err := attr.SingleReference()
 	if err == nil {
 		refs = append(refs, ref)
+	}
+	for _, block := range blocks {
+		for _, ref := range refs {
+			if ref.TypeLabel() == "each" && block.HasChild("for_each") {
+				refs = append(refs, block.GetAttribute("for_each").AllReferences()...)
+			}
+		}
 	}
 	return refs
 }
@@ -672,14 +772,14 @@ func (attr *HCLAttribute) referencesInTemplate() []*Reference {
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.TemplateExpr:
 		for _, part := range t.Parts {
-			ref, err := createDotReferenceFromTraversal(part.Variables()...)
+			ref, err := createDotReferenceFromTraversal(attr.module, part.Variables()...)
 			if err != nil {
 				continue
 			}
 			refs = append(refs, ref)
 		}
 	case *hclsyntax.TupleConsExpr:
-		ref, err := createDotReferenceFromTraversal(t.Variables()...)
+		ref, err := createDotReferenceFromTraversal(attr.module, t.Variables()...)
 		if err == nil {
 			refs = append(refs, ref)
 		}
@@ -694,13 +794,13 @@ func (attr *HCLAttribute) referencesInConditional() []*Reference {
 	var refs []*Reference
 	switch t := attr.hclAttribute.Expr.(type) {
 	case *hclsyntax.ConditionalExpr:
-		if ref, err := createDotReferenceFromTraversal(t.TrueResult.Variables()...); err == nil {
+		if ref, err := createDotReferenceFromTraversal(attr.module, t.TrueResult.Variables()...); err == nil {
 			refs = append(refs, ref)
 		}
-		if ref, err := createDotReferenceFromTraversal(t.FalseResult.Variables()...); err == nil {
+		if ref, err := createDotReferenceFromTraversal(attr.module, t.FalseResult.Variables()...); err == nil {
 			refs = append(refs, ref)
 		}
-		if ref, err := createDotReferenceFromTraversal(t.Condition.Variables()...); err == nil {
+		if ref, err := createDotReferenceFromTraversal(attr.module, t.Condition.Variables()...); err == nil {
 			refs = append(refs, ref)
 		}
 	}
@@ -719,12 +819,12 @@ func (attr *HCLAttribute) IsResourceBlockReference(resourceType string) bool {
 	return false
 }
 
-func (attr *HCLAttribute) ReferencesBlock(b Block) bool {
+func (attr *HCLAttribute) References(r types.Reference) bool {
 	if attr == nil {
 		return false
 	}
 	for _, ref := range attr.AllReferences() {
-		if ref.RefersTo(b) {
+		if ref.RefersTo(r) {
 			return true
 		}
 	}

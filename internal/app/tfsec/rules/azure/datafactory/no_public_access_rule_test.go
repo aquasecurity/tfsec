@@ -1,6 +1,5 @@
 package datafactory
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,36 +18,36 @@ func Test_AZUDataFactoryPublicNetwork(t *testing.T) {
 		{
 			name: "check if public_network_enabled not set, check fails",
 			source: `
-resource "azurerm_data_factory" "bad_example" {
-  name                = "example"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-}
-`,
+ resource "azurerm_data_factory" "bad_example" {
+   name                = "example"
+   location            = azurerm_resource_group.example.location
+   resource_group_name = azurerm_resource_group.example.name
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check if public_network_enabled is set to false, check passes",
 			source: `
-resource "azurerm_data_factory" "good_example" {
-  name                = "example"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-  public_network_enabled = false
-}
-`,
+ resource "azurerm_data_factory" "good_example" {
+   name                = "example"
+   location            = azurerm_resource_group.example.location
+   resource_group_name = azurerm_resource_group.example.name
+   public_network_enabled = false
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check if public_network_enabled is set to true, check fails",
 			source: `
-resource "azurerm_data_factory" "bad_example" {
-  name                = "example"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-  public_network_enabled = true
-}
-`,
+ resource "azurerm_data_factory" "bad_example" {
+   name                = "example"
+   location            = azurerm_resource_group.example.location
+   resource_group_name = azurerm_resource_group.example.name
+   public_network_enabled = true
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 	}

@@ -1,6 +1,5 @@
 package elasticsearch
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,33 +18,33 @@ func Test_AWSUnenforcedHTTPSElasticsearchDomainEndpoint(t *testing.T) {
 		{
 			name: "check no  domain_endpoint_options aws_elasticsearch_domain",
 			source: `
-resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
-	
-}`,
+ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+ 	
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check false enforce_https attr aws_elasticsearch_domain",
 			source: `
-resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
-  domain_name = "domain-foo"
-
-  domain_endpoint_options {
-    enforce_https = false
-  }
-}`,
+ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+   domain_name = "domain-foo"
+ 
+   domain_endpoint_options {
+     enforce_https = false
+   }
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check true enforce_https aws_elasticsearch_domain",
 			source: `
-resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
-  domain_name = "domain-foo"
-
-  domain_endpoint_options {
-    enforce_https = true
-  }
-}`,
+ resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
+   domain_name = "domain-foo"
+ 
+   domain_endpoint_options {
+     enforce_https = true
+   }
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

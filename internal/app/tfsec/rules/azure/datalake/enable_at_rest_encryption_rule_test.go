@@ -1,6 +1,5 @@
 package datalake
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,25 +18,25 @@ func Test_AzureUnencryptedDataLakeStore(t *testing.T) {
 		{
 			name: "check azurerm_data_lake_store with encryption disabled",
 			source: `
-resource "azurerm_data_lake_store" "my-lake-store" {
-	encryption_state = "Disabled"
-}`,
+ resource "azurerm_data_lake_store" "my-lake-store" {
+ 	encryption_state = "Disabled"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check azurerm_data_lake_store with encryption enabled",
 			source: `
-resource "azurerm_data_lake_store" "my-lake-store" {
-	encryption_state = "Enabled"
-}`,
+ resource "azurerm_data_lake_store" "my-lake-store" {
+ 	encryption_state = "Enabled"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check azurerm_data_lake_store with encryption enabled by default",
 			source: `
-resource "azurerm_data_lake_store" "my-lake-store" {
-	
-}`,
+ resource "azurerm_data_lake_store" "my-lake-store" {
+ 	
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

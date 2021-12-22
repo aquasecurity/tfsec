@@ -1,53 +1,35 @@
 package compute
 
-// generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
-
-	"github.com/aquasecurity/tfsec/pkg/provider"
-
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/azure/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-
-	"github.com/aquasecurity/tfsec/pkg/rule"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:  "AZU003",
-		Service:   "compute",
-		ShortCode: "enable-disk-encryption",
-		Documentation: rule.RuleDocumentation{
-			Summary:    "Enable disk encryption on managed disk",
-			Impact:     "Data could be read if compromised",
-			Resolution: "Enable encryption on managed disks",
-			Explanation: `
-Manage disks should be encrypted at rest. When specifying the <code>encryption_settings</code> block, the enabled attribute should be set to <code>true</code>.
-`,
-			BadExample: []string{`
-resource "azurerm_managed_disk" "bad_example" {
-	encryption_settings {
-		enabled = false
-	}
-}`},
-			GoodExample: []string{`
-resource "azurerm_managed_disk" "good_example" {
-	encryption_settings {
-		enabled = true
-	}
-}`},
-			Links: []string{
-				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_disk",
-				"https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption",
-			},
+		LegacyID: "AZU003",
+		BadExample: []string{`
+ resource "azurerm_managed_disk" "bad_example" {
+ 	encryption_settings {
+ 		enabled = false
+ 	}
+ }`},
+		GoodExample: []string{`
+ resource "azurerm_managed_disk" "good_example" {
+ 	encryption_settings {
+ 		enabled = true
+ 	}
+ }`},
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_disk",
 		},
-		Provider:        provider.AzureProvider,
-		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"azurerm_managed_disk"},
-		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"azurerm_managed_disk"},
+		Base:           compute.CheckEnableDiskEncryption,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			encryptionSettingsBlock := resourceBlock.GetBlock("encryption_settings")
 			if encryptionSettingsBlock.IsNil() {
 				return // encryption is by default now, so this is fine
@@ -59,11 +41,10 @@ resource "azurerm_managed_disk" "good_example" {
 
 			enabledAttr := encryptionSettingsBlock.GetAttribute("enabled")
 			if enabledAttr.IsFalse() {
-				set.AddResult().
-					WithDescription("Resource '%s' defines an unencrypted managed disk.", resourceBlock.FullName()).
-					WithAttribute(enabledAttr)
+				results.Add("Resource defines an unencrypted managed disk.", enabledAttr)
 			}
 
+			return results
 		},
 	})
 }

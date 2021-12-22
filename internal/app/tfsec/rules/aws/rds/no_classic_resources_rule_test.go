@@ -1,6 +1,5 @@
 package rds
 
-// generator-locked
 import (
 	"testing"
 

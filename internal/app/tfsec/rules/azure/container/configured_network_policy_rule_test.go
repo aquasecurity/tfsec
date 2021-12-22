@@ -1,6 +1,5 @@
 package container
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,19 +18,19 @@ func Test_AZUAKSClusterNetworkPolicy(t *testing.T) {
 		{
 			name: "check if network_policy set",
 			source: `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
-	network_profile {}
-}`,
+ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+ 	network_profile {}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check network_policy set",
 			source: `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
-	network_profile {
-		network_policy = "calico"
-		}
-}`,
+ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+ 	network_profile {
+ 		network_policy = "calico"
+ 		}
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

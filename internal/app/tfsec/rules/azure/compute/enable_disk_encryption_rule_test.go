@@ -1,6 +1,5 @@
 package compute
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,29 +18,29 @@ func Test_AzureUnencryptedManagedDisk(t *testing.T) {
 		{
 			name: "check azurerm_managed_disk with no encryption_settings",
 			source: `
-resource "azurerm_managed_disk" "my-disk" {
-	
-}`,
+ resource "azurerm_managed_disk" "my-disk" {
+ 	
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check azurerm_managed_disk with encryption disabled",
 			source: `
-resource "azurerm_managed_disk" "my-disk" {
-	encryption_settings {
-		enabled = false
-	}
-}`,
+ resource "azurerm_managed_disk" "my-disk" {
+ 	encryption_settings {
+ 		enabled = false
+ 	}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check azurerm_managed_disk with encryption enabled",
 			source: `
-resource "azurerm_managed_disk" "my-disk" {
-	encryption_settings {
-		enabled = true
-	}
-}`,
+ resource "azurerm_managed_disk" "my-disk" {
+ 	encryption_settings {
+ 		enabled = true
+ 	}
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

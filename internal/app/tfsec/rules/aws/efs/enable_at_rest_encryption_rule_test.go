@@ -1,6 +1,5 @@
 package efs
 
-// generator-locked
 import (
 	"testing"
 
@@ -24,21 +23,21 @@ func Test_AWSEfsEncryptionNotEnabled(t *testing.T) {
 		{
 			name: "check if EFS Encryption is set to false",
 			source: `
-resource "aws_efs_file_system" "foo" {
-  name                 = "bar"
-  encrypted = false
-  kms_key_id = ""
-}`,
+ resource "aws_efs_file_system" "foo" {
+   name                 = "bar"
+   encrypted = false
+   kms_key_id = ""
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Encryption key is provided",
 			source: `
-resource "aws_efs_file_system" "foo" {
-  name                 = "bar"
-  encrypted = true
-  kms_key_id = "my_encryption_key"
-}`,
+ resource "aws_efs_file_system" "foo" {
+   name                 = "bar"
+   encrypted = true
+   kms_key_id = "my_encryption_key"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

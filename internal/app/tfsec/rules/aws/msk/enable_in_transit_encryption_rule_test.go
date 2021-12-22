@@ -1,6 +1,5 @@
 package msk
 
-// generator-locked
 import (
 	"testing"
 
@@ -23,61 +22,61 @@ func Test_AWSUnencryptedMSKBroker(t *testing.T) {
 		{
 			name: "check MSK broker with encryption_in_transit not set",
 			source: `
-resource "aws_msk_cluster" "msk-cluster" {
-	encryption_info {
-		encryption_in_transit {
-			client_broker = "TLS_PLAINTEXT"
-			in_cluster = true
-		}
-	}
-}`,
+ resource "aws_msk_cluster" "msk-cluster" {
+ 	encryption_info {
+ 		encryption_in_transit {
+ 			client_broker = "TLS_PLAINTEXT"
+ 			in_cluster = true
+ 		}
+ 	}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check MSK broker with client_broker not set",
 			source: `
-resource "aws_msk_cluster" "msk-cluster" {
-	encryption_info {
-		encryption_in_transit {
-		}
-	}
-}`,
+ resource "aws_msk_cluster" "msk-cluster" {
+ 	encryption_info {
+ 		encryption_in_transit {
+ 		}
+ 	}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check MSK broker with client_broker set to PLAINTEXT",
 			source: `
-resource "aws_msk_cluster" "msk-cluster" {
-	encryption_info {
-		encryption_in_transit {
-			client_broker = "PLAINTEXT"
-		}
-	}
-}`,
+ resource "aws_msk_cluster" "msk-cluster" {
+ 	encryption_info {
+ 		encryption_in_transit {
+ 			client_broker = "PLAINTEXT"
+ 		}
+ 	}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check MSK broker with client_broker set to TLS_PLAINTEXT",
 			source: `
-resource "aws_msk_cluster" "msk-cluster" {
-	encryption_info {
-		encryption_in_transit {
-			client_broker = "TLS_PLAINTEXT"
-		}
-	}
-}`,
+ resource "aws_msk_cluster" "msk-cluster" {
+ 	encryption_info {
+ 		encryption_in_transit {
+ 			client_broker = "TLS_PLAINTEXT"
+ 		}
+ 	}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check MSK broker with client_broker set to TLS",
 			source: `
-resource "aws_msk_cluster" "msk-cluster" {
-	encryption_info {
-		encryption_in_transit {
-			client_broker = "TLS"
-		}
-	}
-}`,
+ resource "aws_msk_cluster" "msk-cluster" {
+ 	encryption_info {
+ 		encryption_in_transit {
+ 			client_broker = "TLS"
+ 		}
+ 	}
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

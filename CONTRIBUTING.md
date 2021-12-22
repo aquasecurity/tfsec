@@ -48,53 +48,30 @@ You need to tell the scanner about your check; this is done by calling an init()
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 
-		// the service eg; iam, compute, datalake
-		Service: "iam"
-		// our new check code
-		ID: "gibson-not-hackable",
-
-		// all of our documentation data that will be available in the output and/or at https://tfsec.dev/
-		Documentation: rule.RuleDocumentation{
-			// A description for your check - this message will be output to a user when the check fails.
-			Summary:     "The Gibson should not be hackable",
-			// A note on the impact associated to the check
-			Impact:      "The Gibson might get hacked",
-			// A note on the resolution to pass the check
-			Resolution:  "Set hackable to false",
-			// An explanation for your check. This should contain reasoning why this check enforces good practice. Full markdown is supported here.
-			Explanation: `You should always set <code>hackable</code> to *false* to prevent your Gibson from being hacked.`,
-			// An example of Terraform code that would fail our check. Our test suite will make sure this example fails the check.
-			BadExample:  []string{ `
+        BadExample:  []string{ `
 resource "aws_gibson" "my-gibson" {
-    hackable = true
+hackable = true
 }
 `
-			},
-			// An example of Terraform code that would pass our check. Our test suite will make sure this example passes the check.
-			GoodExample: []string{ `
+        },
+        // An example of Terraform code that would pass our check. Our test suite will make sure this example passes the check.
+        GoodExample: []string{ `
 resource "aws_gibson" "my-gibson" {
-    hackable = false
+hackable = false
 }
 `
-			},
-			Links: []string{ // any useful links relating to your check go here
-				"https://www.imdb.com/title/tt0113243/"
-			},
-		},
-
-		// the provider your check targets
-		Provider:       provider.AWSProvider,
-
+        },
+        Links: []string{ // any useful links relating to your check go here
+            "https://www.imdb.com/title/tt0113243/"
+        },
 		// which terraform blocks do you want to check - usually "resource"
 		RequiredTypes:  []string{"resource"},
-
 		// the type of resource(s) you want to target
 		RequiredLabels: []string{"aws_gibson"},
-
 		// the actual logic for your check
-		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, block block.Block, module block.Module) {
+		CheckTerraform: func(block block.Block, module block.Module) (results rules.Results){
 			// TODO: add check logic here
+			return results
 		},
 	})
 }
@@ -105,13 +82,9 @@ Now all that's left is writing the logic itself. You'll likely find it useful he
 ```go
 ...
 
-		DefaultSeverity: severity.Warning,
-		CheckFunc: func(set result.Set, block block.Block, module block.Module) {
+		CheckTerraform: func(block block.Block, module block.Module) (results rules.Results){
 			if attr := block.GetAttribute("hackable"); attr.IsTrue() {
-				set.AddResult().
-					WithDescription("The Gibson '%s' is configured to be hackable.", block.Name()).
-					WithAttribute(attr),
-				)
+				results.Add("The Gibson '%s' is configured to be hackable.", attr)
 			}
 		},
 ...

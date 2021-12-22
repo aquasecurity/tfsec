@@ -1,6 +1,5 @@
 package apigateway
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,33 +18,33 @@ func Test_AWSMissingSecurityPolicy(t *testing.T) {
 		{
 			name: "check aws_api_gateway_domain_name with outdated policy",
 			source: `
-resource "aws_api_gateway_domain_name" "my-resource" {
-	security_policy = "TLS_1_0"
-}`,
+ resource "aws_api_gateway_domain_name" "my-resource" {
+ 	security_policy = "TLS_1_0"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_api_gateway_domain_name with empty security policy",
 			source: `
-resource "aws_api_gateway_domain_name" "my-resource" {
-	security_policy = ""
-}`,
+ resource "aws_api_gateway_domain_name" "my-resource" {
+ 	security_policy = ""
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_api_gateway_domain_name without security policy",
 			source: `
-resource "aws_api_gateway_domain_name" "my-resource" {
- domain=""
-}`,
+ resource "aws_api_gateway_domain_name" "my-resource" {
+  domain=""
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_api_gateway_domain_name with ok policy",
 			source: `
-resource "aws_api_gateway_domain_name" "my-resource" {
-	security_policy = "TLS_1_2"
-}`,
+ resource "aws_api_gateway_domain_name" "my-resource" {
+ 	security_policy = "TLS_1_2"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

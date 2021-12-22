@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
-
+	"github.com/aquasecurity/defsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/zclconf/go-cty/cty"
-
-	"github.com/hashicorp/hcl/v2"
 )
 
 func LoadTFVars(filenames []string) (map[string]cty.Value, error) {
@@ -31,7 +29,8 @@ func LoadTFVars(filenames []string) (map[string]cty.Value, error) {
 
 func loadTFVars(filename string) (map[string]cty.Value, error) {
 
-	diskTime := metrics.Start(metrics.DiskIO)
+	diskTimer := metrics.Timer("timings", "disk i/o")
+	diskTimer.Start()
 
 	inputVars := make(map[string]cty.Value)
 
@@ -45,10 +44,11 @@ func loadTFVars(filename string) (map[string]cty.Value, error) {
 		return nil, err
 	}
 
-	diskTime.Stop()
+	diskTimer.Stop()
 
-	hclParseTime := metrics.Start(metrics.HCLParse)
-	defer hclParseTime.Stop()
+	hclParseTimer := metrics.Timer("timings", "hcl parsing")
+	hclParseTimer.Start()
+	defer hclParseTimer.Stop()
 
 	variableFile, _ := hclsyntax.ParseConfig(src, filename, hcl.Pos{Line: 1, Column: 1})
 	attrs, _ := variableFile.Body.JustAttributes()

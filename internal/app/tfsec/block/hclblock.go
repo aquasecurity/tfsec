@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/schema"
 	"github.com/hashicorp/hcl/v2"
@@ -14,13 +15,13 @@ import (
 )
 
 type HCLBlock struct {
-	hclBlock         *hcl.Block
-	context          *Context
-	moduleBlock      Block
-	expanded         bool
-	cloneIndex       int
-	childBlocks      []Block
-	cachedAttributes []Attribute
+	hclBlock    *hcl.Block
+	context     *Context
+	moduleBlock Block
+	expanded    bool
+	cloneIndex  int
+	childBlocks []Block
+	attributes  []Attribute
 }
 
 func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
@@ -42,12 +43,33 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
 			}
 		}
 	}
-	return &HCLBlock{
+
+	b := HCLBlock{
 		context:     ctx,
 		hclBlock:    hclBlock,
 		moduleBlock: moduleBlock,
 		childBlocks: children,
 	}
+
+	module := b.Range().module
+	for _, attr := range b.createAttributes() {
+		b.attributes = append(b.attributes, NewHCLAttribute(attr, ctx, module, b.Reference()))
+	}
+
+	return &b
+}
+
+func (b *HCLBlock) Metadata() types.Metadata {
+	return types.NewMetadata(b.Range(), b.Reference())
+}
+
+func (b *HCLBlock) GetMetadata() *types.Metadata {
+	m := b.Metadata()
+	return &m
+}
+
+func (b *HCLBlock) GetRawValue() interface{} {
+	return nil
 }
 
 func (b *HCLBlock) InjectBlock(block Block, name string) {
@@ -116,20 +138,9 @@ func (b *HCLBlock) OverrideContext(ctx *Context) {
 	for _, block := range b.childBlocks {
 		block.OverrideContext(ctx.NewChild())
 	}
-}
-
-func (b *HCLBlock) HasModuleBlock() bool {
-	if b == nil {
-		return false
+	for _, attr := range b.attributes {
+		attr.(*HCLAttribute).ctx = ctx
 	}
-	return b.moduleBlock != nil
-}
-
-func (b *HCLBlock) GetModuleBlock() (Block, error) {
-	if b.HasModuleBlock() {
-		return b.moduleBlock, nil
-	}
-	return nil, fmt.Errorf("the block does not have an associated module block")
 }
 
 func (b *HCLBlock) Type() string {
@@ -140,9 +151,9 @@ func (b *HCLBlock) Labels() []string {
 	return b.hclBlock.Labels
 }
 
-func (b *HCLBlock) Range() Range {
+func (b *HCLBlock) Range() HCLRange {
 	if b == nil || b.hclBlock == nil {
-		return Range{}
+		return HCLRange{}
 	}
 	var r hcl.Range
 	switch body := b.hclBlock.Body.(type) {
@@ -152,11 +163,16 @@ func (b *HCLBlock) Range() Range {
 		r = b.hclBlock.DefRange
 		r.End = b.hclBlock.Body.MissingItemRange().End
 	}
-	return Range{
-		Filename:  r.Filename,
-		StartLine: r.Start.Line,
-		EndLine:   r.End.Line,
+	moduleName := "root"
+	if b.moduleBlock != nil {
+		moduleName = b.moduleBlock.FullName()
 	}
+	return NewRange(
+		r.Filename,
+		r.Start.Line,
+		r.End.Line,
+		moduleName,
+	)
 }
 
 func (b *HCLBlock) GetFirstMatchingBlock(names ...string) Block {
@@ -170,7 +186,7 @@ func (b *HCLBlock) GetFirstMatchingBlock(names ...string) Block {
 	return returnBlock
 }
 
-func (b *HCLBlock) getHCLAttributes() hcl.Attributes {
+func (b *HCLBlock) createAttributes() hcl.Attributes {
 	switch body := b.hclBlock.Body.(type) {
 	case *hclsyntax.Body:
 		attributes := make(hcl.Attributes)
@@ -225,18 +241,10 @@ func (b *HCLBlock) GetBlocks(name string) Blocks {
 }
 
 func (b *HCLBlock) GetAttributes() []Attribute {
-	var results []Attribute
-	if b == nil || b.hclBlock == nil {
+	if b == nil {
 		return nil
 	}
-	if b.cachedAttributes != nil {
-		//return b.cachedAttributes
-	}
-	for _, attr := range b.getHCLAttributes() {
-		results = append(results, NewHCLAttribute(attr, b.context))
-	}
-	b.cachedAttributes = results
-	return results
+	return b.attributes
 }
 
 func (b *HCLBlock) GetAttribute(name string) Attribute {
@@ -244,7 +252,7 @@ func (b *HCLBlock) GetAttribute(name string) Attribute {
 	if b == nil || b.hclBlock == nil {
 		return attr
 	}
-	for _, attr := range b.GetAttributes() {
+	for _, attr := range b.attributes {
 		if attr.Name() == name {
 			return attr
 		}
@@ -282,12 +290,12 @@ func (b *HCLBlock) Reference() *Reference {
 		parts = append(parts, b.Type())
 	}
 	parts = append(parts, b.Labels()...)
-	ref, _ := newReference(parts)
+	var parent string
+	if b.moduleBlock != nil {
+		parent = b.moduleBlock.FullName()
+	}
+	ref, _ := newReference(parts, parent)
 	return ref
-}
-
-func (b *HCLBlock) ReadLines() (lines []string, comments []string, err error) {
-	return b.Range().ReadLines(false)
 }
 
 // LocalName is the name relative to the current module
@@ -310,9 +318,9 @@ func (b *HCLBlock) FullName() string {
 
 func (b *HCLBlock) UniqueName() string {
 	if b.moduleBlock != nil {
-		return fmt.Sprintf("%s:%s:%s", b.FullName(), b.Range().Filename, b.moduleBlock.UniqueName())
+		return fmt.Sprintf("%s:%s:%s", b.FullName(), b.Range().GetFilename(), b.moduleBlock.UniqueName())
 	}
-	return fmt.Sprintf("%s:%s", b.FullName(), b.Range().Filename)
+	return fmt.Sprintf("%s:%s", b.FullName(), b.Range().GetFilename())
 }
 
 func (b *HCLBlock) TypeLabel() string {

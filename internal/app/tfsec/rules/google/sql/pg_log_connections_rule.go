@@ -1,90 +1,69 @@
 package sql
 
-// generator-locked
 import (
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
-
-	"github.com/aquasecurity/tfsec/pkg/provider"
-
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/google/sql"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-
-	"github.com/aquasecurity/tfsec/pkg/rule"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		Service:   "sql",
-		ShortCode: "pg-log-connections",
-		Documentation: rule.RuleDocumentation{
-			Summary:     "Ensure that logging of connections is enabled.",
-			Explanation: `Logging connections provides useful diagnostic data such as session length, which can identify performance issues in an application and potential DoS vectors.`,
-			Impact:      "Insufficient diagnostic data.",
-			Resolution:  "Enable connection logging.",
-			BadExample: []string{`
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_connections"
-			value = "off"
-		}
-	}
-}
-			`},
-			GoodExample: []string{`
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_connections"
-			value = "on"
-		}
-	}
-}
-			`},
-			Links: []string{
-				"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance",
-				"https://www.postgresql.org/docs/13/runtime-config-logging.html#GUC-LOG-CONNECTIONS",
-			},
+		BadExample: []string{`
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_connections"
+ 			value = "off"
+ 		}
+ 	}
+ }
+ 			`},
+		GoodExample: []string{`
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_connections"
+ 			value = "on"
+ 		}
+ 	}
+ }
+ 			`},
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance",
 		},
-		Provider:        provider.GoogleProvider,
-		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"google_sql_database_instance"},
-		DefaultSeverity: severity.Medium,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"google_sql_database_instance"},
+		Base:           sql.CheckPgLogConnections,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if !resourceBlock.GetAttribute("database_version").StartsWith("POSTGRES") {
 				return
 			}
 
 			settingsBlock := resourceBlock.GetBlock("settings")
 			if settingsBlock.IsNil() {
-				set.AddResult().
-					WithDescription("Resource '%s' is not configured to log connections", resourceBlock.FullName())
+				results.Add("Resource is not configured to log connections", resourceBlock)
 				return
 			}
 
 			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
 				if dbFlagBlock.GetAttribute("name").Equals("log_connections") {
 					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.Equals("off") {
-						set.AddResult().
-							WithDescription("Resource '%s' is configured not to log connections", resourceBlock.FullName()).
-							WithAttribute(valueAttr)
+						results.Add("Resource is configured not to log connections", valueAttr)
 					}
 					return
 				}
 			}
 
-			set.AddResult().
-				WithDescription("Resource '%s' is not configured to log connections", resourceBlock.FullName()).
-				WithBlock(settingsBlock)
-
+			results.Add("Resource is not configured to log connections", resourceBlock)
+			return results
 		},
 	})
 }

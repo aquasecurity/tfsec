@@ -1,6 +1,5 @@
 package cloudfront
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,22 +18,22 @@ func Test_AWSCloudfrontDistributionAccessLoggingEnabled(t *testing.T) {
 		{
 			name: "Rule does not pass when logging_config is missing in aws_cloudfront_distribution",
 			source: `
-resource "aws_cloudfront_distribution" "bad_example" {
-	// other config
-	// no logging_config
-}
-`,
+ resource "aws_cloudfront_distribution" "bad_example" {
+ 	// other config
+ 	// no logging_config
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Rule passes when logging_config is declared in aws_cloudfront_distribution",
 			source: `
-resource "aws_cloudfront_distribution" "good_example" {
-	// other config
-	logging_config {
-	}
-}
-`,
+ resource "aws_cloudfront_distribution" "good_example" {
+ 	// other config
+ 	logging_config {
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

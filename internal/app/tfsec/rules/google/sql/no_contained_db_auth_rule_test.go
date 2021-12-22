@@ -1,6 +1,5 @@
 package sql
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,29 +18,29 @@ func Test_GoogleNoContainedDbAuth(t *testing.T) {
 		{
 			name: "rule matches when contained db auth defaults to enabled",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "SQLSERVER_2017_STANDARD"
-	region           = "us-central1"
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "SQLSERVER_2017_STANDARD"
+ 	region           = "us-central1"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "rule does not match when contained auth is disabled",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "SQLSERVER_2017_STANDARD"
-	region           = "us-central1"
-	settings {
-		database_flags {
-		    name  = "contained database authentication"
-			value = "off"
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "SQLSERVER_2017_STANDARD"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 		    name  = "contained database authentication"
+ 			value = "off"
+ 		}
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

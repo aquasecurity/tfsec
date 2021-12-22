@@ -1,6 +1,5 @@
 package sql
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,74 +18,74 @@ func Test_GoogleEnablePgTempFileLogging(t *testing.T) {
 		{
 			name: "rule matches when flag is not explicitly set (defaults to -1)",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "rule matches when flag is set to '-1'",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_temp_files"
-			value = "-1"
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_temp_files"
+ 			value = "-1"
+ 		}
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "rule matches when flag is set to '512'",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_temp_files"
-			value = "512"
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_temp_files"
+ 			value = "512"
+ 		}
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "rule does not match when flag is set to '0'",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_temp_files"
-			value = "0"
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_temp_files"
+ 			value = "0"
+ 		}
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "rule does not match when postgres is not used",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "MYSQL_8_0"
-	region           = "us-central1"
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "MYSQL_8_0"
+ 	region           = "us-central1"
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

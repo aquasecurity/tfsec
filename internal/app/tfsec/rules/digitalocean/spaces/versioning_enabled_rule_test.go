@@ -1,6 +1,5 @@
 package spaces
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,39 +18,39 @@ func Test_DIGSpacesBucketVersioningEnabled(t *testing.T) {
 		{
 			name: "Spaces bucket with versioning actively disabled fails check",
 			source: `
-		resource "digitalocean_spaces_bucket" "bad_example" {
-		  name   = "foobar"
-		  region = "nyc3"
-
-		  versioning {
-			enabled = false
-		  }
-		}
-		`,
+ 		resource "digitalocean_spaces_bucket" "bad_example" {
+ 		  name   = "foobar"
+ 		  region = "nyc3"
+ 
+ 		  versioning {
+ 			enabled = false
+ 		  }
+ 		}
+ 		`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Spaces bucket with versioning left to default fails check",
 			source: `
-resource "digitalocean_spaces_bucket" "bad_example" {
-  name   = "foobar"
-  region = "nyc3"
-}
-`,
+ resource "digitalocean_spaces_bucket" "bad_example" {
+   name   = "foobar"
+   region = "nyc3"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Spaces bucket with versioning enabled passes check",
 			source: `
-resource "digitalocean_spaces_bucket" "good_example" {
-  name   = "foobar"
-  region = "nyc3"
-
-  versioning {
-	enabled = true
-  }
-}
-`,
+ resource "digitalocean_spaces_bucket" "good_example" {
+   name   = "foobar"
+   region = "nyc3"
+ 
+   versioning {
+ 	enabled = true
+   }
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

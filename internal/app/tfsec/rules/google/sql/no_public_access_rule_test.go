@@ -1,6 +1,5 @@
 package sql
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,110 +18,110 @@ func Test_GoogleNoPublicAccess(t *testing.T) {
 		{
 			name: "check detects issue with public ipv4 address being assigned",
 			source: `
-resource "google_sql_database_instance" "postgres" {
-	name             = "postgres-instance-a"
-	database_version = "POSTGRES_11"
-	
-	settings {
-		tier = "db-f1-micro"
-	
-		ip_configuration {
-			ipv4_enabled = true
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "postgres" {
+ 	name             = "postgres-instance-a"
+ 	database_version = "POSTGRES_11"
+ 	
+ 	settings {
+ 		tier = "db-f1-micro"
+ 	
+ 		ip_configuration {
+ 			ipv4_enabled = true
+ 		}
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check detects issue with public ipv4 address being assigned by default",
 			source: `
-resource "google_sql_database_instance" "postgres" {
-	name             = "postgres-instance-a"
-	database_version = "POSTGRES_11"
-	
-	settings {
-			tier = "db-f1-micro"
-	
-			ip_configuration {
-			}
-	}
-}
-`,
+ resource "google_sql_database_instance" "postgres" {
+ 	name             = "postgres-instance-a"
+ 	database_version = "POSTGRES_11"
+ 	
+ 	settings {
+ 			tier = "db-f1-micro"
+ 	
+ 			ip_configuration {
+ 			}
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check detects issue with public ipv4 address being assigned by default",
 			source: `
-resource "google_sql_database_instance" "postgres" {
-	name             = "postgres-instance-a"
-	database_version = "POSTGRES_11"
-	
-	settings {
-		tier = "db-f1-micro"
-	}
-}
-`,
+ resource "google_sql_database_instance" "postgres" {
+ 	name             = "postgres-instance-a"
+ 	database_version = "POSTGRES_11"
+ 	
+ 	settings {
+ 		tier = "db-f1-micro"
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check detects issue with public ipv4 address being assigned by default",
 			source: `
-resource "google_sql_database_instance" "postgres" {
-	name             = "postgres-instance-a"
-	database_version = "POSTGRES_11"
-	
-}
-`,
+ resource "google_sql_database_instance" "postgres" {
+ 	name             = "postgres-instance-a"
+ 	database_version = "POSTGRES_11"
+ 	
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check detects issue with authorized network being internet",
 			source: `
-resource "google_sql_database_instance" "postgres" {
-	name             = "postgres-instance-a"
-	database_version = "POSTGRES_11"
-	
-	settings {
-		tier = "db-f1-micro"
-	
-		ip_configuration {
-			ipv4_enabled = false
-			authorized_networks {
-				value           = "108.12.12.0/24"
-				name            = "internal"
-			}
-	
-			authorized_networks {
-				value           = "0.0.0.0/0"
-				name            = "internet"
-			}
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "postgres" {
+ 	name             = "postgres-instance-a"
+ 	database_version = "POSTGRES_11"
+ 	
+ 	settings {
+ 		tier = "db-f1-micro"
+ 	
+ 		ip_configuration {
+ 			ipv4_enabled = false
+ 			authorized_networks {
+ 				value           = "108.12.12.0/24"
+ 				name            = "internal"
+ 			}
+ 	
+ 			authorized_networks {
+ 				value           = "0.0.0.0/0"
+ 				name            = "internet"
+ 			}
+ 		}
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check detects no issue with authorized network being internal",
 			source: `
-resource "google_sql_database_instance" "postgres" {
-	name             = "postgres-instance-a"
-	database_version = "POSTGRES_11"
-	
-	settings {
-		tier = "db-f1-micro"
-	
-		ip_configuration {
-			ipv4_enabled = false
-			authorized_networks {
-				value           = "108.12.12.0/24"
-				name            = "internal"
-			}
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "postgres" {
+ 	name             = "postgres-instance-a"
+ 	database_version = "POSTGRES_11"
+ 	
+ 	settings {
+ 		tier = "db-f1-micro"
+ 	
+ 		ip_configuration {
+ 			ipv4_enabled = false
+ 			authorized_networks {
+ 				value           = "108.12.12.0/24"
+ 				name            = "internal"
+ 			}
+ 		}
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

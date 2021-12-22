@@ -1,6 +1,5 @@
 package ecr
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,42 +18,42 @@ func Test_AWSEcrImagesHaveImmutableTags(t *testing.T) {
 		{
 			name: "should fire when image_tab_mutability attribute missing",
 			source: `
-resource "aws_ecr_repository" "foo" {
-  name                 = "bar"
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
-`,
+ resource "aws_ecr_repository" "foo" {
+   name                 = "bar"
+ 
+   image_scanning_configuration {
+     scan_on_push = true
+   }
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "should fire when image_tab_mutability not set to IMMUTABLE",
 			source: `
-resource "aws_ecr_repository" "foo" {
-  name                 = "bar"
-  image_tag_mutability = "MUTABLE"
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
-`,
+ resource "aws_ecr_repository" "foo" {
+   name                 = "bar"
+   image_tag_mutability = "MUTABLE"
+ 
+   image_scanning_configuration {
+     scan_on_push = true
+   }
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "should not fire when image_tab_mutability set to IMMUTABLE",
 			source: `
-resource "aws_ecr_repository" "foo" {
-  name                 = "bar"
-  image_tag_mutability = "IMMUTABLE"
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
-`,
+ resource "aws_ecr_repository" "foo" {
+   name                 = "bar"
+   image_tag_mutability = "IMMUTABLE"
+ 
+   image_scanning_configuration {
+     scan_on_push = true
+   }
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

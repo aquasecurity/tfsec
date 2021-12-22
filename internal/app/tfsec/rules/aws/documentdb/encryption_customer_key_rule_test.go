@@ -13,9 +13,9 @@ func Test_AWSEncryptionCustomerKey_FailureExamples(t *testing.T) {
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
-		t.FailNow()
+		t.Fatal(err)
 	}
-	for i, badExample := range rule.Documentation.BadExample {
+	for i, badExample := range rule.BadExample {
 		t.Logf("Running bad example for '%s' #%d", expectedCode, i+1)
 		if strings.TrimSpace(badExample) == "" {
 			t.Fatalf("bad example code not provided for %s", rule.ID())
@@ -35,9 +35,9 @@ func Test_AWSEncryptionCustomerKey_SuccessExamples(t *testing.T) {
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
-		t.FailNow()
+		t.Fatal(err)
 	}
-	for i, example := range rule.Documentation.GoodExample {
+	for i, example := range rule.GoodExample {
 		t.Logf("Running good example for '%s' #%d", expectedCode, i+1)
 		if strings.TrimSpace(example) == "" {
 			t.Fatalf("good example code not provided for %s", rule.ID())

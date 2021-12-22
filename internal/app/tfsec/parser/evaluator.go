@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/aquasecurity/defsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
@@ -32,20 +30,24 @@ type Evaluator struct {
 	projectRootPath   string // root of the current scan
 	stopOnHCLError    bool
 	modulePath        string
+	moduleName        string
 	workingDir        string
 	workspace         string
+	ignores           block.Ignores
 }
 
 func NewEvaluator(
 	projectRootPath string,
 	modulePath string,
 	workingDir string,
+	moduleName string,
 	blocks block.Blocks,
 	inputVars map[string]cty.Value,
 	moduleMetadata *ModulesMetadata,
 	visitedModules []*visitedModule,
 	stopOnHCLError bool,
 	workspace string,
+	ignores []block.Ignore,
 ) *Evaluator {
 
 	ctx := block.NewContext(&hcl.EvalContext{
@@ -63,6 +65,7 @@ func NewEvaluator(
 
 	return &Evaluator{
 		modulePath:      modulePath,
+		moduleName:      moduleName,
 		projectRootPath: projectRootPath,
 		workingDir:      workingDir,
 		ctx:             ctx,
@@ -72,12 +75,14 @@ func NewEvaluator(
 		visitedModules:  visitedModules,
 		stopOnHCLError:  stopOnHCLError,
 		workspace:       workspace,
+		ignores:         ignores,
 	}
 }
 
 func (e *Evaluator) evaluateStep(i int) {
 
-	evalTime := metrics.Start(metrics.Evaluation)
+	evalTimer := metrics.Timer("timings", "evaluation")
+	evalTimer.Start()
 	debug.Log("Starting iteration %d of context evaluation...", i+1)
 
 	e.ctx.Set(e.getValuesByBlockType("variable"), "var")
@@ -92,7 +97,7 @@ func (e *Evaluator) evaluateStep(i int) {
 	e.ctx.Set(e.getValuesByBlockType("data"), "data")
 	e.ctx.Set(e.getValuesByBlockType("output"), "output")
 
-	evalTime.Stop()
+	evalTimer.Stop()
 
 	e.evaluateModules()
 }
@@ -114,14 +119,22 @@ func (e *Evaluator) evaluateModules() {
 
 		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path, module.Definition.Reference().String()})
 
-		evalTime := metrics.Start(metrics.Evaluation)
+		evalTimer := metrics.Timer("timings", "evaluation")
+		evalTimer.Start()
 		vars := module.Definition.Values().AsValueMap()
-		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, e.workingDir, module.Modules[0].GetBlocks(), vars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError, e.workspace)
+
+		moduleIgnores := module.Modules[0].Ignores()
+		if ignore := e.ignores.Covering(module.Definition.Range(), e.workspace); ignore != nil {
+			moduleIgnore := *ignore
+			moduleIgnore.ModuleKey = module.Definition.FullName()
+			moduleIgnores = append(moduleIgnores, moduleIgnore)
+		}
+
+		moduleEvaluator := NewEvaluator(e.projectRootPath, module.Path, e.workingDir, module.Definition.FullName(), module.Modules[0].GetBlocks(), vars, e.moduleMetadata, e.visitedModules, e.stopOnHCLError, e.workspace, moduleIgnores)
 		module.Modules, _ = moduleEvaluator.EvaluateAll()
 		// export module outputs
 		e.ctx.Set(moduleEvaluator.ExportOutputs(), "module", module.Name)
-
-		evalTime.Stop()
+		evalTimer.Stop()
 	}
 }
 
@@ -147,7 +160,7 @@ func (e *Evaluator) EvaluateAll() ([]block.Module, error) {
 		e.evaluateStep(i)
 
 		// if ctx matches the last evaluation, we can bail, nothing left to resolve
-		if reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
+		if i > 0 && reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
 			break
 		}
 
@@ -164,13 +177,14 @@ func (e *Evaluator) EvaluateAll() ([]block.Module, error) {
 
 	// expand out resources and modules via count
 	e.blocks = e.expandBlocks(e.blocks)
+	e.blocks = e.expandBlocks(e.blocks)
 
 	for i := 0; i < maxContextIterations; i++ {
 
 		e.evaluateStep(i)
 
 		// if ctx matches the last evaluation, we can bail, nothing left to resolve
-		if reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
+		if i > 0 && reflect.DeepEqual(lastContext.Variables, e.ctx.Inner().Variables) {
 			break
 		}
 
@@ -183,7 +197,7 @@ func (e *Evaluator) EvaluateAll() ([]block.Module, error) {
 	}
 
 	var modules []block.Module
-	modules = append(modules, block.NewHCLModule(e.projectRootPath, e.modulePath, e.blocks))
+	modules = append(modules, block.NewHCLModule(e.projectRootPath, e.modulePath, e.blocks, e.ignores))
 	for _, definition := range e.moduleDefinitions {
 		modules = append(modules, definition.Modules...)
 	}
@@ -220,15 +234,27 @@ func (e *Evaluator) expandDynamicBlock(b block.Block) {
 
 func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 	var forEachFiltered block.Blocks
+
 	for _, block := range blocks {
+
 		forEachAttr := block.GetAttribute("for_each")
+
 		if forEachAttr.IsNil() || block.IsCountExpanded() || (block.Type() != "resource" && block.Type() != "module" && block.Type() != "dynamic") {
 			forEachFiltered = append(forEachFiltered, block)
 			continue
 		}
 		if !forEachAttr.Value().IsNull() && forEachAttr.Value().IsKnown() && forEachAttr.IsIterable() {
+			var clones []cty.Value
 			forEachAttr.Each(func(key cty.Value, val cty.Value) {
-				clone := block.Clone(key)
+
+				index := key
+
+				switch val.Type() {
+				case cty.String, cty.Number:
+					index = val
+				}
+
+				clone := block.Clone(index)
 
 				ctx := clone.Context()
 
@@ -242,7 +268,15 @@ func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 
 				debug.Log("Added %s from for_each", clone.Reference())
 				forEachFiltered = append(forEachFiltered, clone)
+
+				clones = append(clones, clone.Values())
+				e.ctx.SetByDot(clone.Values(), clone.Reference().String())
 			})
+			if len(clones) == 0 {
+				e.ctx.SetByDot(cty.EmptyTupleVal, block.Reference().String())
+			} else {
+				e.ctx.SetByDot(cty.TupleVal(clones), block.Reference().String())
+			}
 		}
 	}
 
@@ -265,13 +299,22 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 			}
 		}
 
+		var clones []cty.Value
 		for i := 0; i < count; i++ {
 			c, _ := gocty.ToCtyValue(i, cty.Number)
 			clone := block.Clone(c)
+			clones = append(clones, clone.Values())
 			block.TypeLabel()
 			debug.Log("Added %s from count var", clone.Reference())
 			countFiltered = append(countFiltered, clone)
+			e.ctx.SetByDot(clone.Values(), clone.Reference().String())
 		}
+		if len(clones) == 0 {
+			e.ctx.SetByDot(cty.EmptyTupleVal, block.Reference().String())
+		} else {
+			e.ctx.SetByDot(cty.TupleVal(clones), block.Reference().String())
+		}
+
 	}
 
 	return countFiltered
@@ -298,7 +341,7 @@ func (e *Evaluator) copyVariables(from, to block.Block) {
 
 	srcValue := e.ctx.Root().Get(fromBase, fromRel)
 	if srcValue == cty.NilVal {
-		debug.Log("error trying to copyVariable from the source of '%s.%s'", fromBase, fromRel)
+		debug.Log("error trying to copy variable from the source of '%s.%s'", fromBase, fromRel)
 		return
 	}
 	e.ctx.Root().Set(srcValue, fromBase, toRel)

@@ -1,6 +1,5 @@
 package sqs
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,42 +18,42 @@ func Test_AWSSqsPolicyWildcardActions(t *testing.T) {
 		{
 			name: "check with actions defined as an array",
 			source: `
-resource "aws_sqs_queue_policy" "test" {
-  queue_url = aws_sqs_queue.q.id
-
-  policy = <<POLICY
-{
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": ["sqs:SendMessage", "sqs:ReceiveMessage"],
-    }
-  ]
-}
-POLICY
-}
-`,
+ resource "aws_sqs_queue_policy" "test" {
+   queue_url = aws_sqs_queue.q.id
+ 
+   policy = <<POLICY
+ {
+   "Statement": [
+     {
+       "Effect": "Allow",
+       "Principal": "*",
+       "Action": ["sqs:SendMessage", "sqs:ReceiveMessage"],
+     }
+   ]
+ }
+ POLICY
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check with prefixed wildcard action",
 			source: `
-resource "aws_sqs_queue_policy" "test" {
-  queue_url = aws_sqs_queue.q.id
-
-  policy = <<POLICY
-{
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "sqs:*"
-    }
-  ]
-}
-POLICY
-}
-`,
+ resource "aws_sqs_queue_policy" "test" {
+   queue_url = aws_sqs_queue.q.id
+ 
+   policy = <<POLICY
+ {
+   "Statement": [
+     {
+       "Effect": "Allow",
+       "Action": "sqs:*"
+     }
+   ]
+ }
+ POLICY
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 	}

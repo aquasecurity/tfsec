@@ -1,6 +1,5 @@
 package ecr
 
-// generator-locked
 import (
 	"testing"
 
@@ -23,39 +22,39 @@ func Test_AWSEcrImageScanNotEnabled(t *testing.T) {
 		{
 			name: "check ECR Image Scan disabled",
 			source: `
-resource "aws_ecr_repository" "foo" {
-  name                 = "bar"
-  image_tag_mutability = "MUTABLE"
-
-  image_scanning_configuration {
-    scan_on_push = false
-  }
-}`,
+ resource "aws_ecr_repository" "foo" {
+   name                 = "bar"
+   image_tag_mutability = "MUTABLE"
+ 
+   image_scanning_configuration {
+     scan_on_push = false
+   }
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check ECR Image Scan on push not set",
 			source: `
-resource "aws_ecr_repository" "foo" {
-  name                 = "bar"
-  image_tag_mutability = "MUTABLE"
-
-  image_scanning_configuration {
-  }
-}`,
+ resource "aws_ecr_repository" "foo" {
+   name                 = "bar"
+   image_tag_mutability = "MUTABLE"
+ 
+   image_scanning_configuration {
+   }
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check ECR Image Scan disabled",
 			source: `
-resource "aws_ecr_repository" "foo" {
-  name                 = "bar"
-  image_tag_mutability = "MUTABLE"
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}`,
+ resource "aws_ecr_repository" "foo" {
+   name                 = "bar"
+   image_tag_mutability = "MUTABLE"
+ 
+   image_scanning_configuration {
+     scan_on_push = true
+   }
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

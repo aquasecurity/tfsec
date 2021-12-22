@@ -1,6 +1,5 @@
 package secrets
 
-// generator-locked
 import (
 	"testing"
 
@@ -8,7 +7,7 @@ import (
 )
 
 func Test_AWSSensitiveVariables(t *testing.T) {
-	expectedCode := "general-secrets-sensitive-in-variable"
+	expectedCode := "general-secrets-no-plaintext-exposure"
 
 	var tests = []struct {
 		name                  string
@@ -19,17 +18,17 @@ func Test_AWSSensitiveVariables(t *testing.T) {
 		{
 			name: "check sensitive variable with value",
 			source: `
-variable "db_password" {
-	default = "something"
-}`,
+ variable "db_password" {
+ 	default = "something"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check sensitive variable without default",
 			source: `
-variable "db_password" {
-
-}`,
+ variable "db_password" {
+ 
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}
