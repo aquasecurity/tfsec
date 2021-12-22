@@ -1,10 +1,7 @@
 package network
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/kubernetes/network"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -145,22 +142,5 @@ func init() {
 			"kubernetes_network_policy",
 		},
 		Base: network.CheckNoPublicEgress,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			egressBlock := resourceBlock.GetBlock("spec").GetBlock("egress")
-			if egressBlock.IsNil() || len(egressBlock.GetBlocks("to")) == 0 {
-				results.Add("Resource allows all egress traffic by default", egressBlock)
-				return
-			}
-
-			for _, to := range egressBlock.GetBlocks("to") {
-				if cidrAttr := to.GetBlock("ip_block").GetAttribute("cidr"); cidrAttr.IsString() {
-					if cidr.IsAttributeOpen(cidrAttr) {
-						results.Add("Resource allows egress traffic to the internet", cidrAttr)
-					}
-				}
-			}
-			return results
-		},
 	})
 }
