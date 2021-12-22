@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -314,7 +313,7 @@ var rootCmd = &cobra.Command{
 		for _, formatInfo := range outputFiles {
 			formatter := formatInfo.formatter
 			if formatter == nil {
-				return errors.New(fmt.Sprintf("Could not access formatter for file format '%s'", formatInfo.format))
+				return fmt.Errorf("Could not access formatter for file format '%s'", formatInfo.format)
 			}
 
 			if err := (*formatter)(formatInfo.outputFile, results, dir, getFormatterOptions()...); err != nil {
