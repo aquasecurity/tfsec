@@ -175,7 +175,7 @@ func (r *Reference) Key() string {
 		f64, _ := f.Float64()
 		return fmt.Sprintf("%d", int(f64))
 	case cty.String:
-		return fmt.Sprintf("%s", r.key.AsString())
+		return r.key.AsString()
 	default:
 		return ""
 	}
