@@ -20,6 +20,9 @@ var TerraformSchema_0_12 = &hcl.BodySchema{
 			Type: "locals",
 		},
 		{
+			Type: "moved",
+		},
+		{
 			Type:       "output",
 			LabelNames: []string{"name"},
 		},
