@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/aquasecurity/defsec/metrics"
@@ -13,6 +14,8 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 )
+
+const terraformSourcesRegExp string = "(registry.terraform.io/)|(git::https://)"
 
 type moduleLoadError struct {
 	source string
@@ -107,8 +110,9 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 
 	if e.moduleMetadata != nil {
 		// if we have module metadata we can parse all the modules as they'll be cached locally!
+		m := regexp.MustCompile(terraformSourcesRegExp)
 		for _, module := range e.moduleMetadata.Modules {
-			if module.Source == source {
+			if m.ReplaceAllString(module.Source, "$1W") == source {
 				modulePath = filepath.Clean(filepath.Join(e.projectRootPath, module.Dir))
 				break
 			}

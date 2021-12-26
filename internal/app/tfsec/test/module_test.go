@@ -271,6 +271,14 @@ module "something" {
   	source = "/nowhere"
 	bad = true
 }
+module "something_from_tf" {
+	source = "terraform-modules/some/module"
+    bad = true
+}
+module "something_from_gh" {
+    source = "github.com/some/module"
+    bad = true
+}
 `))
 	require.NoError(t, fs.WriteTextFile("project/.terraform/modules/a/main.tf", `
 variable "bad" {
@@ -281,7 +289,11 @@ resource "problem" "uhoh" {
 }
 `))
 	require.NoError(t, fs.WriteTextFile("project/.terraform/modules/modules.json", `
-	{"Modules":[{"Key":"something","Source":"/nowhere","Version":"2.35.0","Dir":".terraform/modules/a"}]}
+	{"Modules":[
+	{"Key":"something","Source":"/nowhere","Version":"2.35.0","Dir":".terraform/modules/a"},
+	{"Key":"something_from_tf","Source":"registry.terraform.io/terraform-modules/some/module","Version":"2.35.0","Dir":".terraform/modules/b"},
+	{"Key":"something_from_gh","Source":"git::https://github.com/some/module.git","Version":"2.35.0","Dir":".terraform/modules/c"}
+	]}
 `))
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
