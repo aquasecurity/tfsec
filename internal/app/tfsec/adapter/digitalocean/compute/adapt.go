@@ -1,6 +1,8 @@
 package compute
 
 import (
+	"fmt"
+
 	"github.com/aquasecurity/defsec/provider/digitalocean/compute"
 	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
@@ -10,6 +12,7 @@ func Adapt(modules []block.Module) compute.Compute {
 	return compute.Compute{
 		Droplets:  adaptDroplets(modules),
 		Firewalls: adaptFirewalls(modules),
+		// LoadBalancers: adaptLoadBalancers(modules),
 	}
 }
 
@@ -42,26 +45,35 @@ func adaptFirewalls(module block.Modules) []compute.Firewall {
 		for _, block := range module.GetResourcesByType("digitalocean_firewall") {
 			firewall := compute.Firewall{}
 			inboundRules := block.GetBlock("inbound_rule")
-			// outboundRules := block.GetBlock("outbound_rule")
+			outboundRules := block.GetBlocks("outbound_rule")
+			fmt.Println()
 
-			// for _, from := range ingressBlock.GetBlocks("from") {
-			// 	cidrAtrr := from.GetBlock("ip_block").GetAttribute("cidr")
-			// 	cidrVal := cidrAtrr.AsStringValueOrDefault("", from)
-
-			// 	spec.Ingress.SourceCIDRs = append(spec.Ingress.SourceCIDRs, cidrVal)
-			// }
-
-			/*
-				inbound_rule {
-					protocol         = "tcp"
-					port_range       = "22"
-					source_addresses = ["0.0.0.0/0", "::/0"]
+			ibSourceAddresses := inboundRules.GetAttribute("source_addresses")
+			if ibSourceAddresses != nil {
+				inboundFirewallRule := compute.InboundFirewallRule{}
+				inboundFirewallRule.SourceAddresses = []types.StringValue{}
+				for _, value := range ibSourceAddresses.ValueAsStrings() {
+					inboundFirewallRule.SourceAddresses = append(inboundFirewallRule.SourceAddresses, types.String(value, ibSourceAddresses.Metadata()))
 				}
-			*/
+			}
 
-			compute.InboundFirewallRule.SourceAddresses = inboundRules.GetAttribute("source_addresses").ValueAsStrings()
+			if outboundRules != nil {
+				outboundFirewallRules := []compute.OutboundFirewallRule{}
+				for _, outBoundRule := range outboundRules {
+					obDestinationAddresses := outBoundRule.GetAttribute("destination_addresses")
+					if obDestinationAddresses != nil {
+						outboundFirewallRule := compute.OutboundFirewallRule{}
+						outboundFirewallRule.DestinationAddresses = []types.StringValue{}
+						for _, value := range obDestinationAddresses.ValueAsStrings() {
+							outboundFirewallRule.DestinationAddresses = append(outboundFirewallRule.DestinationAddresses, types.String(value, obDestinationAddresses.Metadata()))
+						}
+						outboundFirewallRules = append(outboundFirewallRules, outboundFirewallRule)
+					}
+				}
+				firewall.OutboundRules = outboundFirewallRules
+			}
+
 			firewalls = append(firewalls, firewall)
-
 		}
 	}
 
