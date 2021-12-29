@@ -8,7 +8,8 @@ import (
 
 func Adapt(modules []block.Module) compute.Compute {
 	return compute.Compute{
-		Droplets: adaptDroplets(modules),
+		Droplets:  adaptDroplets(modules),
+		Firewalls: adaptFirewalls(modules),
 	}
 }
 
@@ -32,4 +33,41 @@ func adaptDroplets(module block.Modules) []compute.Droplet {
 		}
 	}
 	return droplets
+}
+
+func adaptFirewalls(module block.Modules) []compute.Firewall {
+	var firewalls []compute.Firewall
+
+	for _, module := range module {
+		for _, block := range module.GetResourcesByType("digitalocean_firewall") {
+			firewall := compute.Firewall{}
+			inboundRules := block.GetBlock("inbound_rule")
+			// outboundRules := block.GetBlock("outbound_rule")
+
+			// for _, from := range ingressBlock.GetBlocks("from") {
+			// 	cidrAtrr := from.GetBlock("ip_block").GetAttribute("cidr")
+			// 	cidrVal := cidrAtrr.AsStringValueOrDefault("", from)
+
+			// 	spec.Ingress.SourceCIDRs = append(spec.Ingress.SourceCIDRs, cidrVal)
+			// }
+
+			/*
+				inbound_rule {
+					protocol         = "tcp"
+					port_range       = "22"
+					source_addresses = ["0.0.0.0/0", "::/0"]
+				}
+			*/
+
+			compute.InboundFirewallRule.SourceAddresses = inboundRules.GetAttribute("source_addresses").ValueAsStrings()
+			firewalls = append(firewalls, firewall)
+
+		}
+	}
+
+	return firewalls
+}
+
+func adaptLoadBalancers(module block.Modules) []compute.LoadBalancer {
+	return nil
 }

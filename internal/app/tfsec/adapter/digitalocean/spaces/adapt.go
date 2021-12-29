@@ -6,5 +6,13 @@ import (
 )
 
 func Adapt(modules []block.Module) spaces.Spaces {
-	return spaces.Spaces{}
+	return spaces.Spaces{
+		Buckets: adaptBuckets(modules),
+	}
+}
+
+func adaptBuckets(modules block.Modules) []spaces.Bucket {
+	var spaces []spaces.Bucket
+
+	return spaces
 }
