@@ -241,8 +241,7 @@ func getStrings(expr hcl.Expression, ctx *hcl.EvalContext) []string {
 		for _, expr := range t.Exprs {
 			results = append(results, getStrings(expr, ctx)...)
 		}
-	case *hclsyntax.FunctionCallExpr, *hclsyntax.ScopeTraversalExpr,
-		*hclsyntax.ConditionalExpr:
+	case *hclsyntax.FunctionCallExpr, *hclsyntax.ConditionalExpr:
 		subVal, err := t.Value(ctx)
 		if err == nil && subVal.Type() == cty.String {
 			results = append(results, subVal.AsString())
@@ -255,6 +254,18 @@ func getStrings(expr hcl.Expression, ctx *hcl.EvalContext) []string {
 		// walk the parts of the expression to ensure that it has a literal value
 		for _, p := range t.Parts {
 			results = append(results, getStrings(p, ctx)...)
+		}
+	case *hclsyntax.ScopeTraversalExpr:
+		// handle the case for referencing a data
+		if len(t.Variables()) > 0 {
+			if t.Variables()[0].RootName() == "data" {
+				results = append(results, "Data Reference")
+				return results
+			}
+		}
+		subVal, err := t.Value(ctx)
+		if err == nil && subVal.Type() == cty.String {
+			results = append(results, subVal.AsString())
 		}
 	}
 	return results

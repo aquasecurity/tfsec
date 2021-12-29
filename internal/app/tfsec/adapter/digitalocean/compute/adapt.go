@@ -2,6 +2,7 @@ package compute
 
 import (
 	"github.com/aquasecurity/defsec/provider/digitalocean/compute"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
@@ -19,9 +20,12 @@ func adaptDroplets(module block.Modules) []compute.Droplet {
 			droplet := compute.Droplet{
 				Metadata: *(block.GetMetadata()),
 			}
-			sshKeys := block.GetAttribute("ssh_keys").GetRawValue()
-			if sshKeys == nil {
-				droplet.SSHKeys = nil
+			sshKeys := block.GetAttribute("ssh_keys")
+			if sshKeys != nil {
+				droplet.SSHKeys = []types.StringValue{}
+				for _, value := range sshKeys.ValueAsStrings() {
+					droplet.SSHKeys = append(droplet.SSHKeys, types.String(value, sshKeys.Metadata()))
+				}
 			}
 
 			droplets = append(droplets, droplet)
