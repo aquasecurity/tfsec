@@ -38,6 +38,10 @@ var TypeLocal = Type{
 	refName: "local",
 }
 
+var TypeMoved = Type{
+	name: "moved",
+}
+
 var TypeProvider = Type{
 	name: "provider",
 }
@@ -58,6 +62,7 @@ var ValidTypes = []Type{
 	TypeData,
 	TypeLocal,
 	TypeModule,
+	TypeMoved,
 	TypeOutput,
 	TypeProvider,
 	TypeResource,
