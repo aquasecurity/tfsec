@@ -268,23 +268,11 @@ func Test_ProblemInInitialisedModule(t *testing.T) {
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", `
 module "something" {
-  	source = "../modules/somewhere"
-	bad = false
-}
-`))
-	require.NoError(t, fs.WriteTextFile("modules/somewhere/main.tf", `
-module "something_nested" {
-	count = 1
-  	source = "github.com/some/module.git"
+  	source = "/nowhere"
 	bad = true
 }
-
-variable "bad" {
-	default = false
-}
-
 `))
-	require.NoError(t, fs.WriteTextFile("project/.terraform/modules/something.something_nested/main.tf", `
+	require.NoError(t, fs.WriteTextFile("project/.terraform/modules/a/main.tf", `
 variable "bad" {
 	default = false
 }
@@ -293,7 +281,7 @@ resource "problem" "uhoh" {
 }
 `))
 	require.NoError(t, fs.WriteTextFile("project/.terraform/modules/modules.json", `
-	{"Modules":[{"Key":"something","Source":"../modules/somewhere","Version":"2.35.0","Dir":"../modules/somewhere"},{"Key":"something.something_nested","Source":"git::https://github.com/some/module.git","Version":"2.35.0","Dir":".terraform/modules/something.something_nested"}]}
+	{"Modules":[{"Key":"something","Source":"/nowhere","Version":"2.35.0","Dir":".terraform/modules/a"}]}
 `))
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
@@ -330,7 +318,7 @@ resource "problem" "uhoh" {
 }
 `))
 	require.NoError(t, fs.WriteTextFile("project/.terraform/modules/modules.json", `
-	{"Modules":[{"Key":"something","Source":"/nowhere","Version":"2.35.0","Dir":".terraform/modules/a"},{"Key":"something2","Source":"/nowhere","Version":"2.35.0","Dir":".terraform/modules/a"}]}
+	{"Modules":[{"Key":"something","Source":"/nowhere","Version":"2.35.0","Dir":".terraform/modules/a"}]}
 `))
 
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
