@@ -173,10 +173,10 @@ there are also checks which are provider agnostic.
 
 | Checks |
 |:---|
-|[AWS Checks](https://www.tfsec.dev/docs/aws/home/)|
-|[Azure Checks](https://www.tfsec.dev/docs/azure/home/)|
-|[GCP Checks](https://www.tfsec.dev/docs/google/home/)|
-|[General Checks](https://www.tfsec.dev/docs/general/home/)|
+|[AWS Checks](https://aquasecurity.github.io/tfsec/latest/checks/aws/home/)|
+|[Azure Checks](https://aquasecurity.github.io/tfsec/latest/checks/azure/home/)|
+|[GCP Checks](https://aquasecurity.github.io/tfsec/latest/checks/google/home/)|
+|[General Checks](https://aquasecurity.github.io/tfsec/latest/checks/general/home/)|
 
 ## Running in CI
 
