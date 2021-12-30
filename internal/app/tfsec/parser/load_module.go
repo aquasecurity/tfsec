@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/aquasecurity/defsec/metrics"
@@ -107,8 +108,11 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 
 	if e.moduleMetadata != nil {
 		// if we have module metadata we can parse all the modules as they'll be cached locally!
+
+		name := getModuleKeyName(b.Label(), e.moduleName)
+
 		for _, module := range e.moduleMetadata.Modules {
-			if module.Source == source {
+			if module.Key == name {
 				modulePath = filepath.Clean(filepath.Join(e.projectRootPath, module.Dir))
 				break
 			}
@@ -174,4 +178,25 @@ func getModuleBlocks(b block.Block, modulePath string, moduleName string, stopOn
 		ignores = append(ignores, fileIgnores...)
 	}
 	return blocks, ignores, nil
+}
+
+func getModuleKeyName(blockName, moduleName string) (name string) {
+	// regular expression for removing count and or for_each indexes
+	indexRegExp := regexp.MustCompile(`\[["'0-9a-zA-Z]{0,60}\]`)
+
+	if moduleName == "root" {
+		return indexRegExp.ReplaceAllString(blockName, "")
+	}
+	modules := strings.Split(moduleName, ":")
+
+	if len(modules) == 1 {
+		return indexRegExp.ReplaceAllString((strings.TrimPrefix(moduleName, "module.") + "." + blockName), "")
+	}
+	for i, module := range modules {
+		name += strings.TrimPrefix(module, "module.")
+		if i != len(modules)-1 {
+			name = name + "."
+		}
+	}
+	return indexRegExp.ReplaceAllString(name, "")
 }
