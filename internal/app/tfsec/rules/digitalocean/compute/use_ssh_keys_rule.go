@@ -1,9 +1,7 @@
 package compute
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/digitalocean/compute"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -38,17 +36,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"digitalocean_droplet"},
 		Base:           compute.CheckUseSshKeys,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("ssh_keys") {
-				results.Add("Resource does not define ssh_keys", resourceBlock)
-				return
-			}
-			sshKeysAttr := resourceBlock.GetAttribute("ssh_keys")
-			if sshKeysAttr.IsEmpty() {
-				results.Add("Resource has ssh_key specified but is empty.", sshKeysAttr)
-			}
-			return results
-		},
 	})
 }
