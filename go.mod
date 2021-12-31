@@ -1,10 +1,11 @@
-module github.com/aquasecurity/tfsec
+module github.com/martijnvdp/tfsec
 
 go 1.17
 
 require (
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/aquasecurity/defsec v0.2.13
+	github.com/aquasecurity/tfsec v0.0.0-00010101000000-000000000000
 	github.com/bmatcuk/doublestar v1.3.4
 	github.com/google/go-cmp v0.5.6
 	github.com/google/uuid v1.3.0
@@ -39,7 +40,6 @@ require (
 	github.com/go-git/go-git/v5 v5.4.2 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
-	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/liamg/clinch v1.5.6 // indirect
 	github.com/liamg/gifwrap v0.0.6 // indirect
 	github.com/lucasb-eyer/go-colorful v1.0.3 // indirect
