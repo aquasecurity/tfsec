@@ -34,7 +34,7 @@ type ModuleDefinition struct {
 // getModuleKeyName constructs the module keyname from the block label and the modulename
 func (e *Evaluator) getModuleKeyName(name string) (keyName string) {
 	// regular expression for removing count and or for_each indexes
-	indexRegExp := regexp.MustCompile(`\[.*\]`)
+	indexRegExp := regexp.MustCompile(`\[.+?\]`)
 
 	if e.moduleName == "root" {
 		return indexRegExp.ReplaceAllString(name, "")
