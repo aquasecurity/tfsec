@@ -198,24 +198,3 @@ func getModuleBlocks(b block.Block, modulePath string, moduleName string, stopOn
 	}
 	return blocks, ignores, nil
 }
-
-func getModuleKeyName(blockName, moduleName string) (name string) {
-	// regular expression for removing count and or for_each indexes
-	indexRegExp := regexp.MustCompile(`\[["'0-9a-zA-Z]{0,60}\]`)
-
-	if moduleName == "root" {
-		return indexRegExp.ReplaceAllString(blockName, "")
-	}
-	modules := strings.Split(moduleName, ":")
-
-	if len(modules) == 1 {
-		return indexRegExp.ReplaceAllString((strings.TrimPrefix(moduleName, "module.") + "." + blockName), "")
-	}
-	for i, module := range modules {
-		name += strings.TrimPrefix(module, "module.")
-		if i != len(modules)-1 {
-			name = name + "."
-		}
-	}
-	return indexRegExp.ReplaceAllString(name, "")
-}
