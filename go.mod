@@ -1,4 +1,4 @@
-module github.com/martijnvdp/tfsec
+module github.com/aquasecurity/tfsec
 
 go 1.17
 
