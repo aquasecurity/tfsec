@@ -1,11 +1,10 @@
-module github.com/martijnvdp/tfsec
+module github.com/aquasecurity/tfsec
 
 go 1.17
 
 require (
 	github.com/apparentlymart/go-cidr v1.1.0
 	github.com/aquasecurity/defsec v0.2.13
-	github.com/aquasecurity/tfsec v0.0.0-00010101000000-000000000000
 	github.com/bmatcuk/doublestar v1.3.4
 	github.com/google/go-cmp v0.5.6
 	github.com/google/uuid v1.3.0
