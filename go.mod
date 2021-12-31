@@ -56,5 +56,3 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
-
-replace github.com/aquasecurity/tfsec => github.com/martijnvdp/tfsec v0.63.1-fix
