@@ -58,8 +58,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
 
-replace github.com/aquasecurity/tfsec/internal/app/tfsec/parser => github.com/martijnvdp/tfsec/internal/app/tfsec/parser v0.63.1-fix
-
-replace github.com/aquasecurity/tfsec/internal/app/tfsec/block => github.com/martijnvdp/tfsec/internal/app/tfsec/block v0.63.1-fix
-
-replace github.com/aquasecurity/tfsec/internal/app/tfsec/schema => github.com/martijnvdp/tfsec/internal/app/tfsec/schema v0.63.1-fix
+replace github.com/aquasecurity/tfsec => github.com/martijnvdp/tfsec v0.63.1-fix
