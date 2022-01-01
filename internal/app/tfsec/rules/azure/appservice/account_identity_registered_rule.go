@@ -1,9 +1,7 @@
 package appservice
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/appservice"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -41,11 +39,5 @@ func init() {
 			"azurerm_app_service",
 		},
 		Base: appservice.CheckAccountIdentityRegistered,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if identityAttr := resourceBlock.GetBlock("identity"); identityAttr.IsNil() { // alert on use of default value
-				results.Add("Resource does not set identity", resourceBlock)
-			}
-			return results
-		},
 	})
 }
