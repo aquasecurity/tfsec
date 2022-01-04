@@ -1,9 +1,7 @@
 package appservice
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/appservice"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -51,15 +49,5 @@ func init() {
 			"azurerm_app_service",
 		},
 		Base: appservice.CheckEnableHttp2,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if configBlock := resourceBlock.GetBlock("site_config"); configBlock.IsNil() {
-				results.Add("Resource uses default value for site_config.http2_enabled", resourceBlock)
-			} else if http2EnabledAttr := configBlock.GetAttribute("http2_enabled"); http2EnabledAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for site_config.http2_enabled", configBlock)
-			} else if http2EnabledAttr.IsFalse() {
-				results.Add("Resource has attribute site_config.http2_enabled that is false", http2EnabledAttr)
-			}
-			return results
-		},
 	})
 }
