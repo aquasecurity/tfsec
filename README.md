@@ -168,15 +168,21 @@ You can include values from a tfvars file in the scan,  using, for example: `--t
 
 ## Included Checks
 
-Checks are currently limited to AWS/Azure/GCP resources, but
-there are also checks which are provider agnostic.
+tfsec supports AWS/Azure/GCP, and a variety of other resources.
+There are also checks which are provider agnostic.
 
 | Checks |
 |:---|
-|[AWS Checks](https://www.tfsec.dev/docs/aws/home/)|
-|[Azure Checks](https://www.tfsec.dev/docs/azure/home/)|
-|[GCP Checks](https://www.tfsec.dev/docs/google/home/)|
-|[General Checks](https://www.tfsec.dev/docs/general/home/)|
+|[AWS Checks](https://aquasecurity.github.io/tfsec/latest/checks/aws/home/)|
+|[Azure Checks](https://aquasecurity.github.io/tfsec/latest/checks/azure/home/)|
+|[GCP Checks](https://aquasecurity.github.io/tfsec/latest/checks/google/home/)|
+|[CloudStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/cloudstack/home/)|
+|[DigitalOcean Checks](https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/home/)|
+|[GitHub Checks](https://aquasecurity.github.io/tfsec/latest/checks/github/home/)|
+|[Kubernetes Checks](https://aquasecurity.github.io/tfsec/latest/checks/kubernetes/home/)|
+|[OpenStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/openstack/home/)|
+|[Oracle Checks](https://aquasecurity.github.io/tfsec/latest/checks/oracle/home/)|
+|[General Checks](https://aquasecurity.github.io/tfsec/latest/checks/general/home/)|
 
 ## Running in CI
 
