@@ -13,10 +13,6 @@
 tfsec uses static analysis of your terraform templates to spot potential
 security issues. Now with terraform CDK support.
 
-## Aqua and tfsec
-
-Great news - tfsec has [now joined Aqua Security](https://www.aquasec.com/news/aqua-security-acquires-tfsec/). Not only will the project remain open source, it now has a lot more resource and expertise behind it. Expect great new features and many more checks very soon...
-
 ## Example Output
 
 ![Example screenshot](screenshot.png)
@@ -224,3 +220,8 @@ We always welcome contributions; big or small, it can be documentation updates, 
 </a>
 
 Made with [contributors-img](https://contrib.rocks).
+
+`tfsec` is an [Aqua Security](https://aquasec.com) open source project.
+Learn about our open source work and portfolio [here](https://www.aquasec.com/products/open-source-projects/).
+Join the community, and talk to us about any matter in [GitHub Discussion](https://github.com/aquasecurity/tfsec/discussions) or [Slack](https://slack.aquasec.com).
+
