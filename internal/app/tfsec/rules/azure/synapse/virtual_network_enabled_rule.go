@@ -1,9 +1,7 @@
 package synapse
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/synapse"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -57,17 +55,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_synapse_workspace"},
 		Base:           synapse.CheckVirtualNetworkEnabled,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("managed_virtual_network_enabled") {
-				results.Add("Resource should have managed_virtual_network_enabled set to true, the default is false.", resourceBlock)
-				return
-			}
-			managedNetworkAttr := resourceBlock.GetAttribute("managed_virtual_network_enabled")
-			if managedNetworkAttr.IsFalse() {
-				results.Add("Resource should have managed_virtual_network_enabled set to true, the default is false.", managedNetworkAttr)
-			}
-			return results
-		},
 	})
 }
