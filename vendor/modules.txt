@@ -155,6 +155,7 @@ github.com/aquasecurity/defsec/rules/cloudstack/compute
 github.com/aquasecurity/defsec/rules/digitalocean/compute
 github.com/aquasecurity/defsec/rules/digitalocean/spaces
 github.com/aquasecurity/defsec/rules/general/secrets
+github.com/aquasecurity/defsec/rules/github/actions
 github.com/aquasecurity/defsec/rules/github/repositories
 github.com/aquasecurity/defsec/rules/google/bigquery
 github.com/aquasecurity/defsec/rules/google/compute

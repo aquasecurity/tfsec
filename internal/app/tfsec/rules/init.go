@@ -54,6 +54,7 @@ import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/digitalocean/compute"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/digitalocean/spaces"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/general/secrets"
+	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/github/actions"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/github/repositories"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/bigquery"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/google/compute"
