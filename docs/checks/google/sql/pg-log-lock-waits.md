@@ -1,6 +1,8 @@
 ---
-title: pg-log-lock-waits
+title: Ensure that logging of lock waits is enabled.
 ---
+
+### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation
 
@@ -16,21 +18,20 @@ Enable lock wait logging.
 ### Insecure Example
 
 The following example will fail the google-sql-pg-log-lock-waits check.
-
 ```terraform
 
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_lock_waits"
-			value = "off"
-		}
-	}
-}
-			
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_lock_waits"
+ 			value = "off"
+ 		}
+ 	}
+ }
+ 			
 ```
 
 
@@ -38,31 +39,30 @@ resource "google_sql_database_instance" "db" {
 ### Secure Example
 
 The following example will pass the google-sql-pg-log-lock-waits check.
-
 ```terraform
 
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_lock_waits"
-			value = "on"
-		}
-	}
-}
-			
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_lock_waits"
+ 			value = "on"
+ 		}
+ 	}
+ }
+ 			
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance){:target="_blank" rel="nofollow noreferrer noopener"}
 
 - [https://www.postgresql.org/docs/13/runtime-config-logging.html#GUC-LOG-LOCK-WAITS](https://www.postgresql.org/docs/13/runtime-config-logging.html#GUC-LOG-LOCK-WAITS){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

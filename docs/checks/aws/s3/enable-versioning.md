@@ -1,6 +1,8 @@
 ---
-title: enable-versioning
+title: S3 Data should be versioned
 ---
+
+### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation
 
@@ -20,7 +22,6 @@ Enable versioning to protect against accidental/malicious removal or modificatio
 ### Insecure Example
 
 The following example will fail the aws-s3-enable-versioning check.
-
 ```terraform
 
 resource "aws_s3_bucket" "bad_example" {
@@ -34,7 +35,6 @@ resource "aws_s3_bucket" "bad_example" {
 ### Secure Example
 
 The following example will pass the aws-s3-enable-versioning check.
-
 ```terraform
 
 resource "aws_s3_bucket" "good_example" {
@@ -48,12 +48,12 @@ resource "aws_s3_bucket" "good_example" {
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#versioning](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#versioning){:target="_blank" rel="nofollow noreferrer noopener"}
 
 - [https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

@@ -1,6 +1,8 @@
 ---
-title: enable-vpc-flow-logs
+title: VPC flow logs should be enabled for all subnetworks
 ---
+
+### Default Severity: <span class="severity low">low</span>
 
 ### Explanation
 
@@ -16,7 +18,6 @@ Enable VPC flow logs
 ### Insecure Example
 
 The following example will fail the google-compute-enable-vpc-flow-logs check.
-
 ```terraform
 
 resource "google_compute_subnetwork" "bad_example" {
@@ -29,7 +30,6 @@ resource "google_compute_subnetwork" "bad_example" {
     ip_cidr_range = "192.168.10.0/24"
   }
 }
-
 resource "google_compute_network" "custom-test" {
   name                    = "test-network"
   auto_create_subnetworks = false
@@ -42,7 +42,6 @@ resource "google_compute_network" "custom-test" {
 ### Secure Example
 
 The following example will pass the google-compute-enable-vpc-flow-logs check.
-
 ```terraform
 
 resource "google_compute_subnetwork" "good_example" {
@@ -60,7 +59,6 @@ resource "google_compute_subnetwork" "good_example" {
     metadata             = "INCLUDE_ALL_METADATA"
   }
 }
-
 resource "google_compute_network" "custom-test" {
   name                    = "test-network"
   auto_create_subnetworks = false
@@ -70,10 +68,10 @@ resource "google_compute_network" "custom-test" {
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork#enable_flow_logs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork#enable_flow_logs){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

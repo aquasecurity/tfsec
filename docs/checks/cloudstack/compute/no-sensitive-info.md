@@ -1,6 +1,8 @@
 ---
-title: no-sensitive-info
+title: No sensitive data stored in user_data
 ---
+
+### Default Severity: <span class="severity high">high</span>
 
 ### Explanation
 
@@ -16,20 +18,19 @@ Don't use sensitive data in the user data section
 ### Insecure Example
 
 The following example will fail the cloudstack-compute-no-sensitive-info check.
-
 ```terraform
 
-resource "cloudstack_instance" "web" {
-  name             = "server-1"
-  service_offering = "small"
-  network_id       = "6eb22f91-7454-4107-89f4-36afcdf33021"
-  template         = "CentOS 6.5"
-  zone             = "zone-1"
-  user_data        = <<EOF
-export DATABASE_PASSWORD=\"SomeSortOfPassword\"
-EOF
-}
-
+ resource "cloudstack_instance" "web" {
+   name             = "server-1"
+   service_offering = "small"
+   network_id       = "6eb22f91-7454-4107-89f4-36afcdf33021"
+   template         = "CentOS 6.5"
+   zone             = "zone-1"
+   user_data        = <<EOF
+ export DATABASE_PASSWORD=\"SomeSortOfPassword\"
+ EOF
+ }
+ 
 ```
 
 
@@ -37,28 +38,27 @@ EOF
 ### Secure Example
 
 The following example will pass the cloudstack-compute-no-sensitive-info check.
-
 ```terraform
 
-resource "cloudstack_instance" "web" {
-  name             = "server-1"
-  service_offering = "small"
-  network_id       = "6eb22f91-7454-4107-89f4-36afcdf33021"
-  template         = "CentOS 6.5"
-  zone             = "zone-1"
-  user_data        = <<EOF
-export GREETING="Hello there"
-EOF
-}
-
+ resource "cloudstack_instance" "web" {
+   name             = "server-1"
+   service_offering = "small"
+   network_id       = "6eb22f91-7454-4107-89f4-36afcdf33021"
+   template         = "CentOS 6.5"
+   zone             = "zone-1"
+   user_data        = <<EOF
+ export GREETING="Hello there"
+ EOF
+ }
+ 
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/cloudstack/latest/docs/resources/instance#](https://registry.terraform.io/providers/hashicorp/cloudstack/latest/docs/resources/instance#){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

@@ -1,6 +1,8 @@
 ---
-title: restrict-source-arn
+title: Ensure that lambda function permission has a source arn specified
 ---
+
+### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation
 
@@ -20,16 +22,15 @@ Always provide a source arn for Lambda permissions
 ### Insecure Example
 
 The following example will fail the aws-lambda-restrict-source-arn check.
-
 ```terraform
 
 resource "aws_lambda_permission" "bad_example" {
-  statement_id  = "AllowExecutionFromSNS"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.func.function_name
-  principal     = "sns.amazonaws.com"
+	statement_id = "AllowExecutionFromSNS"
+	action = "lambda:InvokeFunction"
+	function_name = aws_lambda_function.func.function_name
+	principal = "sns.amazonaws.com"
 }
-
+		
 ```
 
 
@@ -37,27 +38,26 @@ resource "aws_lambda_permission" "bad_example" {
 ### Secure Example
 
 The following example will pass the aws-lambda-restrict-source-arn check.
-
 ```terraform
 
 resource "aws_lambda_permission" "good_example" {
-  statement_id  = "AllowExecutionFromSNS"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.func.function_name
-  principal     = "sns.amazonaws.com"
-  source_arn    = aws_sns_topic.default.arn
+	statement_id = "AllowExecutionFromSNS"
+	action = "lambda:InvokeFunction"
+	function_name = aws_lambda_function.func.function_name
+	principal = "sns.amazonaws.com"
+	source_arn = aws_sns_topic.default.arn
 }
-
+		
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission){:target="_blank" rel="nofollow noreferrer noopener"}
 
 - [https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

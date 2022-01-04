@@ -1,6 +1,8 @@
 ---
-title: enforce-http-token-imds
+title: aws_instance should activate session tokens for Instance Metadata Service.
 ---
+
+### Default Severity: <span class="severity high">high</span>
 
 ### Explanation
 
@@ -20,14 +22,13 @@ Enable HTTP token requirement for IMDS
 ### Insecure Example
 
 The following example will fail the aws-ec2-enforce-http-token-imds check.
-
 ```terraform
 
-resource "aws_instance" "bad_example" {
-  ami           = "ami-005e54dee72cc1d00"
-  instance_type = "t2.micro"
-}
-
+ resource "aws_instance" "bad_example" {
+	 ami           = "ami-005e54dee72cc1d00"
+	 instance_type = "t2.micro"
+ }
+ 
 ```
 
 
@@ -35,27 +36,26 @@ resource "aws_instance" "bad_example" {
 ### Secure Example
 
 The following example will pass the aws-ec2-enforce-http-token-imds check.
-
 ```terraform
 
-resource "aws_instance" "good_example" {
-  ami           = "ami-005e54dee72cc1d00"
-  instance_type = "t2.micro"
-  metadata_options {
-	http_tokens = "required"
-  }	
-}
-
+ resource "aws_instance" "good_example" {
+	 ami           = "ami-005e54dee72cc1d00"
+	 instance_type = "t2.micro"
+	 metadata_options {
+	 http_tokens = "required"
+	 }	
+ }
+ 
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#metadata-options](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#metadata-options){:target="_blank" rel="nofollow noreferrer noopener"}
 
 - [https://aws.amazon.com/blogs/security/defense-in-depth-open-firewalls-reverse-proxies-ssrf-vulnerabilities-ec2-instance-metadata-service](https://aws.amazon.com/blogs/security/defense-in-depth-open-firewalls-reverse-proxies-ssrf-vulnerabilities-ec2-instance-metadata-service){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

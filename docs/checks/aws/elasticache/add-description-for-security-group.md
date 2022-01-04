@@ -1,6 +1,8 @@
 ---
-title: add-description-for-security-group
+title: Missing description for security group/security group rule.
 ---
+
+### Default Severity: <span class="severity low">low</span>
 
 ### Explanation
 
@@ -18,19 +20,18 @@ Add descriptions for all security groups and rules
 ### Insecure Example
 
 The following example will fail the aws-elasticache-add-description-for-security-group check.
-
 ```terraform
 
 resource "aws_security_group" "bar" {
-  name = "security-group"
+	name = "security-group"
 }
 
 resource "aws_elasticache_security_group" "bad_example" {
-  name                 = "elasticache-security-group"
-  security_group_names = [aws_security_group.bar.name]
-  description = ""
+	name = "elasticache-security-group"
+	security_group_names = [aws_security_group.bar.name]
+	description = ""
 }
-
+		
 ```
 
 
@@ -38,27 +39,28 @@ resource "aws_elasticache_security_group" "bad_example" {
 ### Secure Example
 
 The following example will pass the aws-elasticache-add-description-for-security-group check.
-
 ```terraform
 
 resource "aws_security_group" "bar" {
-  name = "security-group"
+	name = "security-group"
 }
 
 resource "aws_elasticache_security_group" "good_example" {
-  name                 = "elasticache-security-group"
-  security_group_names = [aws_security_group.bar.name]
-  description = "something"
+	name = "elasticache-security-group"
+	security_group_names = [aws_security_group.bar.name]
+	description = "something"
 }
-
+	
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_security_group#description](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_security_group#description){:target="_blank" rel="nofollow noreferrer noopener"}
+
+- [https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/SecurityGroups.Creating.html](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/SecurityGroups.Creating.html){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 
