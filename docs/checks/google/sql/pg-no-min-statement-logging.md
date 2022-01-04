@@ -1,6 +1,8 @@
 ---
-title: pg-no-min-statement-logging
+title: Ensure that logging of long statements is disabled.
 ---
+
+### Default Severity: <span class="severity low">low</span>
 
 ### Explanation
 
@@ -16,21 +18,20 @@ Disable minimum duration statement logging completely
 ### Insecure Example
 
 The following example will fail the google-sql-pg-no-min-statement-logging check.
-
 ```terraform
 
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_min_duration_statement"
-			value = "99"
-		}
-	}
-}
-			
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_min_duration_statement"
+ 			value = "99"
+ 		}
+ 	}
+ }
+ 			
 ```
 
 
@@ -38,31 +39,30 @@ resource "google_sql_database_instance" "db" {
 ### Secure Example
 
 The following example will pass the google-sql-pg-no-min-statement-logging check.
-
 ```terraform
 
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "log_min_duration_statement"
-			value = "-1"
-		}
-	}
-}
-			
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "log_min_duration_statement"
+ 			value = "-1"
+ 		}
+ 	}
+ }
+ 			
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance){:target="_blank" rel="nofollow noreferrer noopener"}
 
 - [https://www.postgresql.org/docs/13/runtime-config-logging.html#GUC-LOG-MIN-DURATION-STATEMENT](https://www.postgresql.org/docs/13/runtime-config-logging.html#GUC-LOG-MIN-DURATION-STATEMENT){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

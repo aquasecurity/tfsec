@@ -27,14 +27,14 @@ func generateExtensionCodeFile(registeredChecks []*FileContent) error {
 	for _, c := range registeredChecks {
 		for _, check := range c.Checks {
 			blocks = append(blocks, checkBlock{
-				Code:        check.ID(),
+				Code:        check.ID,
 				LegacyCode:  check.LegacyID,
-				Service:     check.Base.Rule().Service,
-				Provider:    string(check.Base.Rule().Provider),
-				Description: check.Base.Rule().Summary,
-				Impact:      check.Base.Rule().Impact,
-				Resolution:  check.Base.Rule().Resolution,
-				DocUrl:      fmt.Sprintf("https://aquasecurity.github.io/tfsec/latest/checks/%s/%s/%s/", check.Base.Rule().Provider, check.Base.Rule().Service, check.Base.Rule().ShortCode),
+				Service:     check.Service,
+				Provider:    check.Provider,
+				Description: check.Summary,
+				Impact:      check.Impact,
+				Resolution:  check.Resolution,
+				DocUrl:      fmt.Sprintf("https://aquasecurity.github.io/tfsec/latest/checks/%s/%s/%s/", check.Provider, check.Service, check.ShortCode),
 			})
 
 		}

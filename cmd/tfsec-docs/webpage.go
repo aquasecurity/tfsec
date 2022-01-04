@@ -7,72 +7,74 @@ import (
 	"text/template"
 
 	"github.com/aquasecurity/defsec/provider"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 const (
 	baseWebPageTemplate = `---
-title: {{$.Base.Summary}}
-shortcode: {{$.ID}}
-legacy: {{$.LegacyID}}
-summary: {{$.Base.Summary}} 
-resources: {{$.RequiredLabels}} 
-permalink: /docs/{{$.Provider}}/{{$.Service}}/{{$.ShortCode}}/
-redirect_from: 
-  - /docs/{{$.Provider}}/{{$.LegacyID}}/
+title: {{$.Summary}}
 ---
+
+### Default Severity: <span class="severity {{$.Severity | ToLower }}">{{$.Severity }}</span>
 
 ### Explanation
 
-{{$.Base.Explanation}}
+{{$.Explanation}}
 
 ### Possible Impact
-{{$.Base.Impact}}
+{{$.Impact}}
 
 ### Suggested Resolution
-{{$.Base.Resolution}}
+{{$.Resolution}}
 
 {{if $.BadExample }}
 ### Insecure Example
 
 The following example will fail the {{$.ID}} check.
-
-{% highlight terraform %}
-{{ (index $.BadExample 0) }}
-{% endhighlight %}
+` + "```terraform" + `
+{{ $.BadExample }}
+` + "```" + `
 
 {{end}}
 {{if $.GoodExample }}
 ### Secure Example
 
 The following example will pass the {{$.ID}} check.
-
-{% highlight terraform %}
-{{ (index $.GoodExample 0) }}
-{% endhighlight %}
+` + "```terraform" + `
+{{ $.GoodExample }}
+` + "```" + `
 {{end}}
 
 {{if $.Links}}
-### Provider Links
+### Links
 
 {{range $link := $.Links}}
 - [{{.}}]({{.}}){:target="_blank" rel="nofollow noreferrer noopener"}
 {{end}}
-{{if $.Base.Links}}
-### General Links
-
-{{range $link := $.Base.Links}}
-- [{{.}}]({{.}}){:target="_blank" rel="nofollow noreferrer noopener"}
 {{end}}
 
-{{end}}
 `
 )
+
+type templateObject struct {
+	ID          string
+	ShortCode   string
+	LegacyID    string
+	Severity    string
+	Summary     string
+	Service     string
+	Provider    string
+	Explanation string
+	Impact      string
+	Resolution  string
+	BadExample  string
+	GoodExample string
+	Links       []string
+}
 
 func generateWebPages(fileContents []*FileContent) error {
 	for _, contents := range fileContents {
 		for _, check := range contents.Checks {
-			webProviderPath := fmt.Sprintf("%s/docs/%s/%s", webPath, strings.ToLower(string(check.Base.Rule().Provider)), strings.ToLower(check.Base.Rule().Service))
+			webProviderPath := fmt.Sprintf("%s/%s/%s", webPath, strings.ToLower(check.Provider), strings.ToLower(check.Service))
 			if err := generateWebPage(webProviderPath, check); err != nil {
 				return err
 			}
@@ -83,6 +85,7 @@ func generateWebPages(fileContents []*FileContent) error {
 
 var funcMap = template.FuncMap{
 	"ToUpper":            strings.ToUpper,
+	"ToLower":            strings.ToLower,
 	"FormatProviderName": formatProviderName,
 	"Join":               join,
 }
@@ -101,13 +104,13 @@ func formatProviderName(providerName string) string {
 	return provider.Provider(providerName).DisplayName()
 }
 
-func generateWebPage(webProviderPath string, r rule.Rule) error {
+func generateWebPage(webProviderPath string, r templateObject) error {
 
 	if err := os.MkdirAll(webProviderPath, os.ModePerm); err != nil {
 		return err
 	}
-	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.Base.Rule().ShortCode)
-	fmt.Printf("Generating page for %s at %s\n", r.ID(), filePath)
+	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.ShortCode)
+	fmt.Printf("Generating page for %s at %s\n", r.ID, filePath)
 	webTmpl := template.Must(template.New("web").Funcs(funcMap).Parse(baseWebPageTemplate))
 
 	return writeTemplate(r, filePath, webTmpl)

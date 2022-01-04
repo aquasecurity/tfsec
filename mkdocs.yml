@@ -420,3 +420,6 @@ markdown_extensions:
 - def_list
 - pymdownx.details
 - tables
+
+extra_css:
+  - css/extra.css

@@ -1,6 +1,8 @@
 ---
-title: ignore-public-acls
+title: S3 Access Block should Ignore Public Acl
 ---
+
+### Default Severity: <span class="severity high">high</span>
 
 ### Explanation
 
@@ -18,19 +20,18 @@ Enable ignoring the application of public ACLs in PUT calls
 ### Insecure Example
 
 The following example will fail the aws-s3-ignore-public-acls check.
-
 ```terraform
 
-resource "aws_s3_bucket_public_access_block" "bad_example" {
-	bucket = aws_s3_bucket.example.id
-}
-
-resource "aws_s3_bucket_public_access_block" "bad_example" {
-	bucket = aws_s3_bucket.example.id
-  
-	ignore_public_acls = false
-}
-
+ resource "aws_s3_bucket_public_access_block" "bad_example" {
+ 	bucket = aws_s3_bucket.example.id
+ }
+ 
+ resource "aws_s3_bucket_public_access_block" "bad_example" {
+ 	bucket = aws_s3_bucket.example.id
+   
+ 	ignore_public_acls = false
+ }
+ 
 ```
 
 
@@ -38,25 +39,24 @@ resource "aws_s3_bucket_public_access_block" "bad_example" {
 ### Secure Example
 
 The following example will pass the aws-s3-ignore-public-acls check.
-
 ```terraform
 
-resource "aws_s3_bucket_public_access_block" "good_example" {
-	bucket = aws_s3_bucket.example.id
-  
-	ignore_public_acls = true
-}
-
+ resource "aws_s3_bucket_public_access_block" "good_example" {
+ 	bucket = aws_s3_bucket.example.id
+   
+ 	ignore_public_acls = true
+ }
+ 
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block#ignore_public_acls](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block#ignore_public_acls){:target="_blank" rel="nofollow noreferrer noopener"}
 
 - [https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

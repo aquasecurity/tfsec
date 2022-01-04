@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"os"
 	"sort"
-
-	"github.com/aquasecurity/tfsec/pkg/rule"
+	"strings"
 
 	"github.com/spf13/cobra"
 
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 )
 
 var (
@@ -19,7 +19,7 @@ var (
 
 type FileContent struct {
 	Provider string
-	Checks   []rule.Rule
+	Checks   []templateObject
 }
 
 func init() {
@@ -52,11 +52,24 @@ var rootCmd = &cobra.Command{
 func getSortedFileContents() []*FileContent {
 	rules := scanner.GetRegisteredRules()
 
-	checkMap := make(map[string][]rule.Rule)
+	checkMap := make(map[string][]templateObject)
 
 	for _, r := range rules {
 		provider := string(r.Base.Rule().Provider)
-		checkMap[provider] = append(checkMap[provider], r)
+		checkMap[provider] = append(checkMap[provider], templateObject{
+			ID:          r.ID(),
+			ShortCode:   r.Base.Rule().ShortCode,
+			Severity:    strings.ToLower(string(r.Base.Rule().Severity)),
+			Service:     r.Base.Rule().Service,
+			Provider:    string(r.Base.Rule().Provider),
+			Summary:     r.Base.Rule().Summary,
+			Explanation: r.Base.Rule().Explanation,
+			Impact:      r.Base.Rule().Impact,
+			Resolution:  r.Base.Rule().Resolution,
+			BadExample:  r.BadExample[0],
+			GoodExample: r.GoodExample[0],
+			Links:       append(r.Links, r.Base.Rule().Links...),
+		})
 	}
 
 	var fileContents []*FileContent
@@ -71,8 +84,8 @@ func getSortedFileContents() []*FileContent {
 	return fileContents
 }
 
-func sortChecks(checks []rule.Rule) {
+func sortChecks(checks []templateObject) {
 	sort.Slice(checks, func(i, j int) bool {
-		return checks[i].ID() < checks[j].ID()
+		return checks[i].ID < checks[j].ID
 	})
 }
