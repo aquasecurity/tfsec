@@ -1,9 +1,7 @@
 package appservice
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/appservice"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -40,15 +38,5 @@ func init() {
 			"azurerm_app_service",
 		},
 		Base: appservice.CheckUseSecureTlsPolicy,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if resourceBlock.MissingChild("site_config") {
-				return
-			}
-
-			if minTlsVersionAttr := resourceBlock.GetBlock("site_config").GetAttribute("min_tls_version"); minTlsVersionAttr.IsNotNil() && minTlsVersionAttr.NotEqual("1.2") {
-				results.Add("Resource does not have site_config.min_tls_version set to 1.2", minTlsVersionAttr)
-			}
-			return results
-		},
 	})
 }

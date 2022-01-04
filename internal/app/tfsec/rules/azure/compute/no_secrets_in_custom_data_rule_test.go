@@ -20,9 +20,14 @@ func Test_AzureNoSecretsInCustomData(t *testing.T) {
 			source: `
  			resource "azurerm_virtual_machine" "bad_example" {
  				name = "bad_example"
- 				custom_data =<<EOF
- DATABASE_PASSWORD=SomeSortOfPassword
- EOF
+				os_profile_windows_config {
+					disable_password_authentication = false
+				}
+				os_profile {
+					custom_data =<<EOF
+						DATABASE_PASSWORD=SomeSortOfPassword
+						EOF
+				}
  			}
  `,
 			mustIncludeResultCode: expectedCode,
@@ -32,9 +37,14 @@ func Test_AzureNoSecretsInCustomData(t *testing.T) {
 			source: `
  			resource "azurerm_virtual_machine" "bad_example" {
  				name = "bad_example"
- 				custom_data =<<EOF
- DATABASE_PASSWORD="SomeSortOfPassword"
- EOF
+				os_profile_windows_config {
+					disable_password_authentication = false
+				}
+				os_profile {
+ 					custom_data =<<EOF
+ 						DATABASE_PASSWORD="SomeSortOfPassword"
+ 						EOF
+				}
  			}
  `,
 			mustIncludeResultCode: expectedCode,
@@ -52,11 +62,16 @@ func Test_AzureNoSecretsInCustomData(t *testing.T) {
 		{
 			name: "virtual machine with no sensitive information in custom_data passes check",
 			source: `
- resource "azurerm_virtual_machine" "god_example" {
+ resource "azurerm_virtual_machine" "good_example" {
  				name = "good_example"
- 				custom_data =<<EOF
- GREETING_TEXT="Hello"
- EOF
+				os_profile_windows_config {
+					disable_password_authentication = false
+				}
+				os_profile {
+					custom_data =<<EOF
+						GREETING_TEXT="Hello"
+						EOF
+				}
  			}
  `,
 			mustExcludeResultCode: expectedCode,
@@ -64,7 +79,7 @@ func Test_AzureNoSecretsInCustomData(t *testing.T) {
 		{
 			name: "linux virtual machine with no sensitive information in base64 custom_data passes check",
 			source: `
- resource "azurerm_linux_virtual_machine" "god_example" {
+ resource "azurerm_linux_virtual_machine" "good_example" {
  				name = "good_example"
  				custom_data = "ZXhwb3J0IEVESVRPUj12aW1hY3M=" 
  			}
