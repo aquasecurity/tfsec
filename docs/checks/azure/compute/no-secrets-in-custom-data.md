@@ -1,6 +1,8 @@
 ---
-title: no-secrets-in-custom-data
+title: Ensure that no sensitive credentials are exposed in VM custom_data
 ---
+
+### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation
 
@@ -16,16 +18,15 @@ Don't use sensitive credentials in the VM custom_data
 ### Insecure Example
 
 The following example will fail the azure-compute-no-secrets-in-custom-data check.
-
 ```terraform
 
-resource "azurerm_virtual_machine" "bad_example" {
-	name = "bad_example"
-	custom_data =<<EOF
-export DATABASE_PASSWORD=\"SomeSortOfPassword\"
-EOF
-}
-
+ resource "azurerm_virtual_machine" "bad_example" {
+ 	name = "bad_example"
+ 	custom_data =<<EOF
+ export DATABASE_PASSWORD=\"SomeSortOfPassword\"
+ EOF
+ }
+ 
 ```
 
 
@@ -33,24 +34,23 @@ EOF
 ### Secure Example
 
 The following example will pass the azure-compute-no-secrets-in-custom-data check.
-
 ```terraform
 
-resource "azurerm_virtual_machine" "good_example" {
-	name = "good_example"
-	custom_data =<<EOF
-export GREETING="Hello there"
-EOF
-}
-
+ resource "azurerm_virtual_machine" "good_example" {
+ 	name = "good_example"
+ 	custom_data =<<EOF
+ export GREETING="Hello there"
+ EOF
+ }
+ 
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine#custom_data](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine#custom_data){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

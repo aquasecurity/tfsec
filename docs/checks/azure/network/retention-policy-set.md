@@ -1,6 +1,8 @@
 ---
-title: retention-policy-set
+title: Retention policy for flow logs should be enabled and set to greater than 90 days
 ---
+
+### Default Severity: <span class="severity low">low</span>
 
 ### Explanation
 
@@ -19,23 +21,22 @@ Ensure flow log retention is turned on with an expiry of >90 days
 ### Insecure Example
 
 The following example will fail the azure-network-retention-policy-set check.
-
 ```terraform
 
 resource "azurerm_network_watcher_flow_log" "bad_watcher" {
-  network_watcher_name = "bad_watcher"
-  resource_group_name  = "resource-group"
+	network_watcher_name = "bad_watcher"
+	resource_group_name = "resource-group"
 
-  network_security_group_id = azurerm_network_security_group.test.id
-  storage_account_id        = azurerm_storage_account.test.id
-  enabled                   = true
+	network_security_group_id = azurerm_network_security_group.test.id
+	storage_account_id = azurerm_storage_account.test.id
+	enabled = true
 
-  retention_policy {
-    enabled = true
-    days    = 7
-  }
+	retention_policy {
+		enabled = true
+		days = 7
+	}
 }
-
+		
 ```
 
 
@@ -43,33 +44,32 @@ resource "azurerm_network_watcher_flow_log" "bad_watcher" {
 ### Secure Example
 
 The following example will pass the azure-network-retention-policy-set check.
-
 ```terraform
 
 resource "azurerm_network_watcher_flow_log" "good_watcher" {
-  network_watcher_name = "good_watcher"
-  resource_group_name  = "resource-group"
+	network_watcher_name = "good_watcher"
+	resource_group_name = "resource-group"
 
-  network_security_group_id = azurerm_network_security_group.test.id
-  storage_account_id        = azurerm_storage_account.test.id
-  enabled                   = true
+	network_security_group_id = azurerm_network_security_group.test.id
+	storage_account_id = azurerm_storage_account.test.id
+	enabled = true
 
-  retention_policy {
-    enabled = true
-    days    = 90
-  }
+	retention_policy {
+		enabled = true
+		days = 90
+	}
 }
-
+	
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_watcher_flow_log#retention_policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_watcher_flow_log#retention_policy){:target="_blank" rel="nofollow noreferrer noopener"}
 
 - [https://docs.microsoft.com/en-us/azure/network-watcher/network-watcher-monitoring-overview](https://docs.microsoft.com/en-us/azure/network-watcher/network-watcher-monitoring-overview){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

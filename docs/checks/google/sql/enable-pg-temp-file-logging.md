@@ -1,6 +1,8 @@
 ---
-title: enable-pg-temp-file-logging
+title: Temporary file logging should be enabled for all temporary files.
 ---
+
+### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation
 
@@ -16,15 +18,14 @@ Enable temporary file logging for all files
 ### Insecure Example
 
 The following example will fail the google-sql-enable-pg-temp-file-logging check.
-
 ```terraform
 
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-}
-			
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ }
+ 			
 ```
 
 
@@ -32,31 +33,30 @@ resource "google_sql_database_instance" "db" {
 ### Secure Example
 
 The following example will pass the google-sql-enable-pg-temp-file-logging check.
-
 ```terraform
 
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "POSTGRES_12"
-	region           = "us-central1"
-	settings {
-	    database_flags {
-		    name  = "log_temp_files"
-		    value = "0"
-		}
-	}
-}
-			
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "POSTGRES_12"
+ 	region           = "us-central1"
+ 	settings {
+ 	    database_flags {
+ 		    name  = "log_temp_files"
+ 		    value = "0"
+ 		}
+ 	}
+ }
+ 			
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance){:target="_blank" rel="nofollow noreferrer noopener"}
 
 - [https://postgresqlco.nf/doc/en/param/log_temp_files/](https://postgresqlco.nf/doc/en/param/log_temp_files/){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

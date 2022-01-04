@@ -1,6 +1,8 @@
 ---
-title: enable-ubla
+title: Ensure that Cloud Storage buckets have uniform bucket-level access enabled
 ---
+
+### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation
 
@@ -16,28 +18,27 @@ Enable uniform bucket level access to provide a uniform permissioning system.
 ### Insecure Example
 
 The following example will fail the google-storage-enable-ubla check.
-
 ```terraform
 
-resource "google_storage_bucket" "static-site" {
-	name          = "image-store.com"
-	location      = "EU"
-	force_destroy = true
-	
-	uniform_bucket_level_access = false
-	
-	website {
-		main_page_suffix = "index.html"
-		not_found_page   = "404.html"
-	}
-	cors {
-		origin          = ["http://image-store.com"]
-		method          = ["GET", "HEAD", "PUT", "POST", "DELETE"]
-		response_header = ["*"]
-		max_age_seconds = 3600
-	}
-}
-
+ resource "google_storage_bucket" "static-site" {
+ 	name          = "image-store.com"
+ 	location      = "EU"
+ 	force_destroy = true
+ 	
+ 	uniform_bucket_level_access = false
+ 	
+ 	website {
+ 		main_page_suffix = "index.html"
+ 		not_found_page   = "404.html"
+ 	}
+ 	cors {
+ 		origin          = ["http://image-store.com"]
+ 		method          = ["GET", "HEAD", "PUT", "POST", "DELETE"]
+ 		response_header = ["*"]
+ 		max_age_seconds = 3600
+ 	}
+ }
+ 
 ```
 
 
@@ -45,34 +46,32 @@ resource "google_storage_bucket" "static-site" {
 ### Secure Example
 
 The following example will pass the google-storage-enable-ubla check.
-
 ```terraform
 
-resource "google_storage_bucket" "static-site" {
-	name          = "image-store.com"
-	location      = "EU"
-	force_destroy = true
-	
-	uniform_bucket_level_access = true
-	
-	website {
-		main_page_suffix = "index.html"
-		not_found_page   = "404.html"
-	}
-	cors {
-		origin          = ["http://image-store.com"]
-		method          = ["GET", "HEAD", "PUT", "POST", "DELETE"]
-		response_header = ["*"]
-		max_age_seconds = 3600
-	}
-}
-
+ resource "google_storage_bucket" "static-site" {
+ 	name          = "image-store.com"
+ 	location      = "EU"
+ 	force_destroy = true
+ 	
+ 	uniform_bucket_level_access = true
+ 	
+ 	website {
+ 		main_page_suffix = "index.html"
+ 		not_found_page   = "404.html"
+ 	}
+ 	cors {
+ 		origin          = ["http://image-store.com"]
+ 		method          = ["GET", "HEAD", "PUT", "POST", "DELETE"]
+ 		response_header = ["*"]
+ 		max_age_seconds = 3600
+ 	}
+ }
+ 
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket#uniform_bucket_level_access](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket#uniform_bucket_level_access){:target="_blank" rel="nofollow noreferrer noopener"}
@@ -80,5 +79,6 @@ resource "google_storage_bucket" "static-site" {
 - [https://cloud.google.com/storage/docs/uniform-bucket-level-access](https://cloud.google.com/storage/docs/uniform-bucket-level-access){:target="_blank" rel="nofollow noreferrer noopener"}
 
 - [https://jbrojbrojbro.medium.com/you-make-the-rules-with-authentication-controls-for-cloud-storage-53c32543747b](https://jbrojbrojbro.medium.com/you-make-the-rules-with-authentication-controls-for-cloud-storage-53c32543747b){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 
