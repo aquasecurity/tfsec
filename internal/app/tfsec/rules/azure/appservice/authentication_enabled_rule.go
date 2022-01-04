@@ -1,9 +1,7 @@
 package appservice
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/appservice"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -40,15 +38,5 @@ func init() {
 			"azurerm_app_service",
 		},
 		Base: appservice.CheckAuthenticationEnabled,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if authBlock := resourceBlock.GetBlock("auth_settings"); authBlock.IsNil() {
-				results.Add("Resource uses default value for auth_settings.enabled", resourceBlock)
-			} else if enabledAttr := authBlock.GetAttribute("enabled"); enabledAttr.IsNil() {
-				results.Add("Resource uses default value for auth_settings.enabled", authBlock)
-			} else if enabledAttr.IsFalse() {
-				results.Add("Resource has attribute auth_settings.enabled that is false", enabledAttr)
-			}
-			return results
-		},
 	})
 }

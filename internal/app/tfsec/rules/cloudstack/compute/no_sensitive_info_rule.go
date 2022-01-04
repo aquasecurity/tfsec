@@ -1,16 +1,10 @@
 package compute
 
 import (
-	"encoding/base64"
-
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/cloudstack/compute"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/owenrumney/squealer/pkg/squealer"
 )
 
 func init() {
@@ -67,26 +61,5 @@ func init() {
 			"cloudstack_instance",
 		},
 		Base: compute.CheckNoSensitiveInfo,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			customDataAttr := resourceBlock.GetAttribute("user_data")
-
-			if customDataAttr.IsNotNil() && customDataAttr.IsString() {
-				encoded, err := base64.StdEncoding.DecodeString(customDataAttr.Value().AsString())
-				if err != nil {
-					debug.Log("could not decode the base64 string in the terraform, trying with the string verbatim")
-					encoded = []byte(customDataAttr.Value().AsString())
-				}
-				if checkStringForSensitive(string(encoded)) {
-					results.Add("Resource has user_data_base64 with sensitive data.", customDataAttr)
-				}
-			}
-
-			return results
-		},
 	})
-}
-
-func checkStringForSensitive(stringToCheck string) bool {
-	return squealer.NewStringScanner().Scan(stringToCheck).TransgressionFound
 }

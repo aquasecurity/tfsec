@@ -1,9 +1,7 @@
 package appservice
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/appservice"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -47,13 +45,5 @@ func init() {
 			"azurerm_app_service",
 		},
 		Base: appservice.CheckRequireClientCert,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if clientCertEnabledAttr := resourceBlock.GetAttribute("client_cert_enabled"); clientCertEnabledAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for client_cert_enabled", resourceBlock)
-			} else if clientCertEnabledAttr.IsFalse() {
-				results.Add("Resource has attribute client_cert_enabled that is false", clientCertEnabledAttr)
-			}
-			return results
-		},
 	})
 }

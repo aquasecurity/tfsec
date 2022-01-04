@@ -42,7 +42,7 @@ Find your new check and the associated test in one of the subfolders of `interna
 
 Here's an example:
 
-You need to tell the scanner about your check; this is done by calling an init() function with the following code:
+You need to tell the scanner about your check; this is done by calling an `init()` function with the following code:
 
 ```go
 func init() {
@@ -68,27 +68,11 @@ hackable = false
 		RequiredTypes:  []string{"resource"},
 		// the type of resource(s) you want to target
 		RequiredLabels: []string{"aws_gibson"},
-		// the actual logic for your check
-		CheckTerraform: func(block block.Block, module block.Module) (results rules.Results){
-			// TODO: add check logic here
-			return results
-		},
 	})
 }
 ```
 
-Now all that's left is writing the logic itself. You'll likely find it useful here to learn from preexisting check code, but the logic is usually fairly minimal. Here's a basic example:
-
-```go
-...
-
-		CheckTerraform: func(block block.Block, module block.Module) (results rules.Results){
-			if attr := block.GetAttribute("hackable"); attr.IsTrue() {
-				results.Add("The Gibson '%s' is configured to be hackable.", attr)
-			}
-		},
-...
-```
+Now all that's left is writing the logic itself. This has been moved to [defsec](https://github.com/aquasecurity/defsec). You need to make sure that there's an adapter for the resource. You can see [aws/ec2/adapter.go](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/adapter/aws/ec2/adapt.go) for an example.
 
 You can see a good example of a real check file [here](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/rules/aws/vpc/no_public_egress_sg_rule.go).
 This check also provides [tests](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/rules/aws/vpc/no_public_egress_sg_rule_test.go) and uses provided data checks like `cidr.IsAttributeOpen()` provided [here](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/cidr/cidr.go).
@@ -99,9 +83,7 @@ There is no longer a need to create dedicated tests for new checks - the `BadExa
 
 The first example that you add for Good and Bad will be used in the documentation, additional blocks you want to be tested to to verify the check should be added afterwards.
 
-
 And that's it! If you have any difficulties, please feel free to raise a draft PR and note any questions/problems in the description and we'll do our best to help you out.
-
 
 ### Submitting the PR
 
