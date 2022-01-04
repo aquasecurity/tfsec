@@ -1,5 +1,6 @@
 package github
 
 type GitHub struct {
-	Repositories []Repository
+	Repositories       []Repository
+	EnvironmentSecrets []EnvironmentSecret
 }
