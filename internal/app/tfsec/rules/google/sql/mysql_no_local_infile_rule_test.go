@@ -1,6 +1,5 @@
 package sql
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,46 +18,46 @@ func Test_GoogleMysqlNoLocalInfile(t *testing.T) {
 		{
 			name: "rule matches when flag is enabled",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "MYSQL_5_6"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "local_infile"
-			value = "on"
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "MYSQL_5_6"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "local_infile"
+ 			value = "on"
+ 		}
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "rule does not match when flag is disabled",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "MYSQL_5_6"
-	region           = "us-central1"
-	settings {
-		database_flags {
-			name  = "local_infile"
-			value = "off"
-		}
-	}
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "MYSQL_5_6"
+ 	region           = "us-central1"
+ 	settings {
+ 		database_flags {
+ 			name  = "local_infile"
+ 			value = "off"
+ 		}
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "rule does not match when flag is defaulted (to disabled)",
 			source: `
-resource "google_sql_database_instance" "db" {
-	name             = "db"
-	database_version = "MYSQL_5_6"
-	region           = "us-central1"
-}
-`,
+ resource "google_sql_database_instance" "db" {
+ 	name             = "db"
+ 	database_version = "MYSQL_5_6"
+ 	region           = "us-central1"
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

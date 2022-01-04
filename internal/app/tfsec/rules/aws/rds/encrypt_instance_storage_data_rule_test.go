@@ -1,6 +1,5 @@
 package rds
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,47 +18,47 @@ func Test_AWSRDSEncryptionNotEnabled(t *testing.T) {
 		{
 			name: "Encryption not enabled on db instance",
 			source: `
-resource "aws_db_instance" "my-db-instance" {
-	
-}
-`,
+ resource "aws_db_instance" "my-db-instance" {
+ 	
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Encryption not enabled on db instance",
 			source: `
-resource "aws_db_instance" "my-db-instance" {
-	storage_encrypted = false
-}
-`,
+ resource "aws_db_instance" "my-db-instance" {
+ 	storage_encrypted = false
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Encryption not enabled on db instance",
 			source: `
-resource "aws_db_instance" "my-db-instance" {
-	kms_key_id = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
-}
-`,
+ resource "aws_db_instance" "my-db-instance" {
+ 	kms_key_id = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Encryption using specified CMK enabled on db instance",
 			source: `
-resource "aws_db_instance" "my-db-instance" {
-	storage_encrypted = true
-	kms_key_id = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
-}
-`,
+ resource "aws_db_instance" "my-db-instance" {
+ 	storage_encrypted = true
+ 	kms_key_id = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "Encryption using default CMK enabled on db instance",
 			source: `
-resource "aws_db_instance" "my-db-instance" {
-	storage_encrypted = true
-}
-`,
+ resource "aws_db_instance" "my-db-instance" {
+ 	storage_encrypted = true
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

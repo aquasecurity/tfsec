@@ -1,124 +1,197 @@
 package iam
 
-// generator-locked
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/iam"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/tfsec/pkg/severity"
 	"github.com/zclconf/go-cty/cty"
 )
 
+type PolicyDocument struct {
+	Statements []awsIAMPolicyDocumentStatement `json:"Statement"`
+}
+
+type awsIAMPolicyDocumentStatement struct {
+	Effect    string                    `json:"Effect"`
+	Action    awsIAMPolicyDocumentValue `json:"Action"`
+	Resource  awsIAMPolicyDocumentValue `json:"Resource,omitempty"`
+	Principal awsIAMPolicyPrincipal     `json:"Principal,omitempty"`
+}
+
+type awsIAMPolicyPrincipal struct {
+	AWS     []string
+	Service []string
+}
+
+// AWS allows string or []string as value, we convert everything to []string to avoid casting
+type awsIAMPolicyDocumentValue []string
+
+func (value *awsIAMPolicyPrincipal) UnmarshalJSON(b []byte) error {
+
+	var raw interface{}
+	err := json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+
+	//  value can be string or []string, convert everything to []string
+	switch v := raw.(type) {
+	case map[string]interface{}:
+		for key, each := range v {
+			switch raw := each.(type) {
+			case string:
+				if key == "Service" {
+					value.Service = append(value.Service, raw)
+				} else {
+					value.AWS = append(value.AWS, raw)
+				}
+			case []string:
+				if key == "Service" {
+					value.Service = append(value.Service, raw...)
+				} else {
+					value.AWS = append(value.AWS, raw...)
+				}
+			}
+		}
+	case string:
+		value.AWS = []string{v}
+	case []interface{}:
+		for _, item := range v {
+			value.AWS = append(value.AWS, fmt.Sprintf("%v", item))
+		}
+	default:
+		return fmt.Errorf("invalid %s value element: allowed is only string or []string", value)
+	}
+
+	return nil
+}
+
+func (value *awsIAMPolicyDocumentValue) UnmarshalJSON(b []byte) error {
+
+	var raw interface{}
+	err := json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+
+	var p []string
+	//  value can be string or []string, convert everything to []string
+	switch v := raw.(type) {
+	case string:
+		p = []string{v}
+	case []interface{}:
+		var items []string
+		for _, item := range v {
+			items = append(items, fmt.Sprintf("%v", item))
+		}
+		p = items
+	default:
+		return fmt.Errorf("invalid %s value element: allowed is only string or []string", value)
+	}
+
+	*value = p
+	return nil
+}
+
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:  "AWS099",
-		Service:   "iam",
-		ShortCode: "no-policy-wildcards",
-		Documentation: rule.RuleDocumentation{
-			Summary: "IAM policy should avoid use of wildcards and instead apply the principle of least privilege",
-			Explanation: `
-You should use the principle of least privilege when defining your IAM policies. This means you should specify each exact permission required without using wildcards, as this could cause the granting of access to certain undesired actions, resources and principals.
-`,
-			Impact:     "Overly permissive policies may grant access to sensitive resources",
-			Resolution: "Specify the exact permissions required, and to which resources they should apply instead of using wildcards.",
-			BadExample: []string{`
-resource "aws_iam_role_policy" "test_policy" {
-	name = "test_policy"
-	role = aws_iam_role.test_role.id
-
-	policy = data.aws_iam_policy_document.s3_policy.json
-}
-
-resource "aws_iam_role" "test_role" {
-	name = "test_role"
-	assume_role_policy = jsonencode({
-		Version = "2012-10-17"
-		Statement = [
-		{
-			Action = "sts:AssumeRole"
-			Effect = "Allow"
-			Sid    = ""
-			Principal = {
-			Service = "s3.amazonaws.com"
-			}
+		LegacyID: "AWS099",
+		BadExample: []string{`
+ resource "aws_iam_role_policy" "test_policy" {
+ 	name = "test_policy"
+ 	role = aws_iam_role.test_role.id
+ 
+ 	policy = data.aws_iam_policy_document.s3_policy.json
+ }
+ 
+ resource "aws_iam_role" "test_role" {
+ 	name = "test_role"
+ 	assume_role_policy = jsonencode({
+ 		Version = "2012-10-17"
+ 		Statement = [
+ 		{
+ 			Action = "sts:AssumeRole"
+ 			Effect = "Allow"
+ 			Sid    = ""
+ 			Principal = {
+ 			Service = "s3.amazonaws.com"
+ 			}
+ 		},
+ 		]
+ 	})
+ }
+ 
+ data "aws_iam_policy_document" "s3_policy" {
+   statement {
+     principals {
+       type        = "AWS"
+       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+     }
+     actions   = ["s3:*"]
+     resources = ["*"]
+   }
+ }
+ `},
+		GoodExample: []string{`
+ resource "aws_iam_role_policy" "test_policy" {
+ 	name = "test_policy"
+ 	role = aws_iam_role.test_role.id
+ 
+ 	policy = data.aws_iam_policy_document.s3_policy.json
+ }
+ 
+ resource "aws_iam_role" "test_role" {
+ 	name = "test_role"
+ 	assume_role_policy = jsonencode({
+ 		Version = "2012-10-17"
+ 		Statement = [
+ 		{
+ 			Action = "sts:AssumeRole"
+ 			Effect = "Allow"
+ 			Sid    = ""
+ 			Principal = {
+ 			Service = "s3.amazonaws.com"
+ 			}
+ 		},
+ 		]
+ 	})
+ }
+ 
+ data "aws_iam_policy_document" "s3_policy" {
+   statement {
+     principals {
+       type        = "AWS"
+       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+     }
+     actions   = ["s3:GetObject"]
+     resources = [aws_s3_bucket.example.arn]
+   }
+ }
+ `},
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document",
 		},
-		]
-	})
-}
-
-data "aws_iam_policy_document" "s3_policy" {
-  statement {
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
-    }
-    actions   = ["s3:*"]
-    resources = ["*"]
-  }
-}
-`},
-			GoodExample: []string{`
-resource "aws_iam_role_policy" "test_policy" {
-	name = "test_policy"
-	role = aws_iam_role.test_role.id
-
-	policy = data.aws_iam_policy_document.s3_policy.json
-}
-
-resource "aws_iam_role" "test_role" {
-	name = "test_role"
-	assume_role_policy = jsonencode({
-		Version = "2012-10-17"
-		Statement = [
-		{
-			Action = "sts:AssumeRole"
-			Effect = "Allow"
-			Sid    = ""
-			Principal = {
-			Service = "s3.amazonaws.com"
-			}
-		},
-		]
-	})
-}
-
-data "aws_iam_policy_document" "s3_policy" {
-  statement {
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
-    }
-    actions   = ["s3:GetObject"]
-    resources = [aws_s3_bucket.example.arn]
-  }
-}
-`},
-			Links: []string{
-				"https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document",
-				"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
-			},
-		},
-		Provider:        provider.AWSProvider,
-		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"aws_iam_policy", "aws_iam_user_policy", "aws_iam_group_policy", "aws_iam_role_policy"},
-		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, module block.Module) {
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"aws_iam_policy", "aws_iam_user_policy", "aws_iam_group_policy", "aws_iam_role_policy"},
+		Base:           iam.CheckNoPolicyWildcards,
+		CheckTerraform: func(resourceBlock block.Block, module block.Module) (results rules.Results) {
 			policyAttr := resourceBlock.GetAttribute("policy")
 			if policyAttr.IsNil() {
 				return
 			}
 
 			if policyAttr.IsString() {
-				checkAWS099PolicyJSON(set, resourceBlock, policyAttr)
+				results = append(results, checkAWS099PolicyJSON(policyAttr)...)
 				return
 			}
 
-			policyDocumentBlock, err := module.GetReferencedBlock(policyAttr)
+			policyDocumentBlock, err := module.GetReferencedBlock(policyAttr, resourceBlock)
 			if err != nil {
 				return
 			}
@@ -127,33 +200,28 @@ data "aws_iam_policy_document" "s3_policy" {
 				return
 			}
 
-			checkAWS099PolicyDocumentBlock(set, policyDocumentBlock)
+			results = append(results, checkAWS099PolicyDocumentBlock(policyDocumentBlock)...)
 
+			return results
 		},
 	})
 }
 
-func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, policyDocumentBlock block.Block) {
+func checkAWS099StatementBlock(statementBlock block.Block) (results rules.Results) {
 	if statementBlock.HasChild("effect") && statementBlock.GetAttribute("effect").Equals("deny", block.IgnoreCase) {
 		return
 	}
 
 	actionsAttr := statementBlock.GetAttribute("actions")
 	actionsAttr.Each(func(key, value cty.Value) {
-		if value.Type() == cty.String && strings.Contains(value.AsString(), ("*")) {
-			set.AddResult().
-				WithDescription("Resource '%s' defines a policy with wildcarded actions.", policyDocumentBlock.FullName()).
-				WithBlock(policyDocumentBlock).
-				WithAttribute(actionsAttr)
+		if value.Type() == cty.String && strings.Contains(value.AsString(), "*") {
+			results.Add("Resource defines a policy with wildcard actions.", actionsAttr)
 		}
 	})
 
 	resourcesAttr := statementBlock.GetAttribute("resources")
 	if resourcesAttr.IsNotNil() && resourcesAttr.Contains("*") && (actionsAttr.IsNil() || !doActionsAllowWildcardResource(actionsAttr.ValueAsStrings())) {
-		set.AddResult().
-			WithDescription("Resource '%s' defines a policy with wildcarded resources.", policyDocumentBlock.FullName()).
-			WithBlock(policyDocumentBlock).
-			WithAttribute(resourcesAttr)
+		results.Add("Resource defines a policy with wildcard resources.", resourcesAttr)
 	}
 
 	principalsBlock := statementBlock.GetBlock("principals")
@@ -164,28 +232,29 @@ func checkAWS099StatementBlock(set result.Set, statementBlock block.Block, polic
 			if identifiersAttr.IsNotNil() {
 				for _, ident := range identifiersAttr.ValueAsStrings() {
 					if strings.Contains(ident, "*") {
-						set.AddResult().
-							WithDescription("Resource '%s' defines a policy with wildcarded principal identifiers.", policyDocumentBlock.FullName()).
-							WithBlock(policyDocumentBlock).
-							WithAttribute(resourcesAttr)
+						results.Add("Resource defines a policy with wildcard principal identifiers.", identifiersAttr)
 						break
 					}
 				}
 			}
 		}
 	}
+
+	return results
 }
 
-func checkAWS099PolicyDocumentBlock(set result.Set, policyDocumentBlock block.Block) {
+func checkAWS099PolicyDocumentBlock(policyDocumentBlock block.Block) (results rules.Results) {
 
 	if statementBlocks := policyDocumentBlock.GetBlocks("statement"); statementBlocks != nil {
 		for _, statementBlock := range statementBlocks {
-			checkAWS099StatementBlock(set, statementBlock, policyDocumentBlock)
+			results = append(results, checkAWS099StatementBlock(statementBlock)...)
 		}
 	}
+
+	return results
 }
 
-func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr block.Attribute) {
+func checkAWS099PolicyJSON(policyAttr block.Attribute) (results rules.Results) {
 	var document PolicyDocument
 	if err := json.Unmarshal([]byte(policyAttr.Value().AsString()), &document); err != nil {
 		return
@@ -196,26 +265,21 @@ func checkAWS099PolicyJSON(set result.Set, resourceBlock block.Block, policyAttr
 		}
 		for _, action := range statement.Action {
 			if strings.Contains(action, "*") {
-				set.AddResult().
-					WithDescription("Resource '%s' defines a policy with wildcarded actions.", resourceBlock.FullName()).
-					WithAttribute(policyAttr)
+				results.Add("Resource defines a policy with wildcard actions.", policyAttr)
 			}
 		}
 		for _, resource := range statement.Resource {
 			if strings.Contains(resource, "*") && !doActionsAllowWildcardResource(statement.Action) {
-				set.AddResult().
-					WithDescription("Resource '%s' defines a policy with wildcarded resources.", resourceBlock.FullName()).
-					WithAttribute(policyAttr)
+				results.Add("Resource defines a policy with wildcard resources.", policyAttr)
 			}
 		}
 		for _, identifier := range statement.Principal.AWS {
 			if strings.Contains(identifier, "*") {
-				set.AddResult().
-					WithDescription("Resource '%s' defines a policy with wildcarded principal identifiers.", resourceBlock.FullName()).
-					WithAttribute(policyAttr)
+				results.Add("Resource defines a policy with wildcard principal identifiers.", policyAttr)
 			}
 		}
 	}
+	return results
 }
 
 func doActionsAllowWildcardResource(actions []string) bool {
@@ -227,7 +291,7 @@ func doActionsAllowWildcardResource(actions []string) bool {
 	return true
 }
 
-//see https://docs.aws.amazon.com/service-authorization/latest/reference/list_identityandaccessmanagement.html
+// see https://docs.aws.amazon.com/service-authorization/latest/reference/list_identityandaccessmanagement.html
 var allowedActionsForResourceWildcards = []string{
 	"account:DisableRegion",
 	"account:EnableRegion",

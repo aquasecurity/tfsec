@@ -37,3 +37,9 @@ func OptionWithWorkspaceName(workspaceName string) func(s *Scanner) {
 		s.workspaceName = workspaceName
 	}
 }
+
+func OptionWithSingleThread(single bool) func(s *Scanner) {
+	return func(s *Scanner) {
+		s.useSingleThread = single
+	}
+}

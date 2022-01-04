@@ -1,6 +1,5 @@
 package container
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,40 +18,40 @@ func Test_AZUAKSAzureMonitor(t *testing.T) {
 		{
 			name: "check azurerm_kubernetes_cluster with no addon_profile define",
 			source: `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
-}`,
+ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with no oms_agent define",
 			source: `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
-	addon_profile {}
-}`,
+ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+ 	addon_profile {}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with oms_agent disabled",
 			source: `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
-	addon_profile {
-		oms_agent {
-			enabled = false
-		}
-	}
-}`,
+ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+ 	addon_profile {
+ 		oms_agent {
+ 			enabled = false
+ 		}
+ 	}
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check azurerm_kubernetes_cluster with oms_agent enabled",
 			source: `
-resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
-	addon_profile {
-		oms_agent {
-			enabled = true
-		}
-	}
-}`,
+ resource "azurerm_kubernetes_cluster" "my-aks-cluster" {
+ 	addon_profile {
+ 		oms_agent {
+ 			enabled = true
+ 		}
+ 	}
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

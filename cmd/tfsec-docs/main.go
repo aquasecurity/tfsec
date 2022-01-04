@@ -9,7 +9,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 )
 
@@ -24,8 +23,8 @@ type FileContent struct {
 }
 
 func init() {
-	defaultWebDocsPath := fmt.Sprintf("%s/checkdocs", projectRoot)
-	rootCmd.Flags().StringVar(&webPath, "web-path", defaultWebDocsPath, "The path to generate web into, defaults to ./checkdocs")
+	defaultWebDocsPath := fmt.Sprintf("%s/docs/checks", projectRoot)
+	rootCmd.Flags().StringVar(&webPath, "web-path", defaultWebDocsPath, "The path to generate web into, defaults to ./docs/checks")
 }
 
 func main() {
@@ -42,10 +41,6 @@ var rootCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		fileContents := getSortedFileContents()
-		if err := generateChecksFiles(fileContents); err != nil {
-			return err
-		}
-
 		if err := generateExtensionCodeFile(fileContents); err != nil {
 			return err
 		}
@@ -60,7 +55,7 @@ func getSortedFileContents() []*FileContent {
 	checkMap := make(map[string][]rule.Rule)
 
 	for _, r := range rules {
-		provider := string(r.Provider)
+		provider := string(r.Base.Rule().Provider)
 		checkMap[provider] = append(checkMap[provider], r)
 	}
 
@@ -73,7 +68,6 @@ func getSortedFileContents() []*FileContent {
 			Checks:   checks,
 		})
 	}
-	generateNavIndexFile(fileContents)
 	return fileContents
 }
 

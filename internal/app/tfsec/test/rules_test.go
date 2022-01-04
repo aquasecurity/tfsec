@@ -13,31 +13,31 @@ func TestExampleCode(t *testing.T) {
 	for _, rule := range scanner.GetRegisteredRules() {
 
 		t.Run(fmt.Sprintf("Rule explanation for %s", rule.ID()), func(t *testing.T) {
-			if strings.TrimSpace(rule.Documentation.Explanation) == "" {
+			if strings.TrimSpace(rule.Base.Rule().Explanation) == "" {
 				t.Fatalf("No explanation found for %s", rule.ID())
 			}
 		})
 
 		t.Run(fmt.Sprintf("Rule impact for %s", rule.ID()), func(t *testing.T) {
-			if strings.TrimSpace(rule.Documentation.Impact) == "" {
+			if strings.TrimSpace(rule.Base.Rule().Impact) == "" {
 				t.Fatalf("No impact found for %s", rule.ID())
 			}
 		})
 
 		t.Run(fmt.Sprintf("Rule resolution for %s", rule.ID()), func(t *testing.T) {
-			if strings.TrimSpace(rule.Documentation.Resolution) == "" {
+			if strings.TrimSpace(rule.Base.Rule().Resolution) == "" {
 				t.Fatalf("No resolution found for %s", rule.ID())
 			}
 		})
 
 		t.Run(fmt.Sprintf("Rule bad example(s) for %s", rule.ID()), func(t *testing.T) {
-			if len(rule.Documentation.BadExample) == 0 {
+			if len(rule.BadExample) == 0 {
 				t.Fatalf("No bad example found for %s", rule.ID())
 			}
 		})
 
 		t.Run(fmt.Sprintf("Rule good example(s) for %s", rule.ID()), func(t *testing.T) {
-			if len(rule.Documentation.GoodExample) == 0 {
+			if len(rule.GoodExample) == 0 {
 				t.Fatalf("No good example found for %s", rule.ID())
 			}
 		})
@@ -64,5 +64,15 @@ func TestBlockLabels(t *testing.T) {
 				t.Errorf("Invalid required label for rule %s: '%s'", rule.ID(), label)
 			}
 		}
+	}
+}
+
+func TestDefSecUsage(t *testing.T) {
+	for _, rule := range scanner.GetRegisteredRules() {
+		t.Run(rule.ID(), func(t *testing.T) {
+			if rule.Base.Rule().AVDID == "" {
+				t.Errorf("Rule is not ready for defsec: %#v", rule)
+			}
+		})
 	}
 }

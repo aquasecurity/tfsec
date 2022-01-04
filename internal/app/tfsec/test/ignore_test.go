@@ -7,9 +7,9 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
+	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/severity"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 
@@ -22,13 +22,34 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var exampleRule = rule.Rule{
+	LegacyID: "ABC123",
+	Base: rules.Register(rules.Rule{
+		Provider:  provider.AWSProvider,
+		Service:   "service",
+		ShortCode: "abc123",
+		Severity:  severity.High,
+	}, nil),
+	RequiredLabels: []string{"bad"},
+	CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+		attr := resourceBlock.GetAttribute("secure")
+		if attr.IsNil() {
+			results.Add("example problem", resourceBlock)
+		}
+		if attr.IsFalse() {
+			results.Add("example problem", attr)
+		}
+		return
+	},
+}
+
 func Test_IgnoreAll(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
-resource "aws_security_group_rule" "my-rule" {
-    type        = "ingress"
-    cidr_blocks = ["0.0.0.0/0"] // tfsec:ignore:*
-	description = "testing"
+resource "bad" "my-rule" {
+    secure = false // tfsec:ignore:*
 }
 `, t)
 	assert.Len(t, results, 0)
@@ -36,11 +57,13 @@ resource "aws_security_group_rule" "my-rule" {
 }
 
 func Test_IgnoreLineAboveTheBlock(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
 	results := testutil.ScanHCL(`
 // tfsec:ignore:*
-resource "aws_security_group_rule" "my-rule" {
-    type        = "ingress"
-    cidr_blocks = ["0.0.0.0/0"] 
+resource "bad" "my-rule" {
+    
 }
 `, t)
 	assert.Len(t, results, 0)
@@ -49,33 +72,31 @@ resource "aws_security_group_rule" "my-rule" {
 func Test_IgnoreLineAboveTheLine(t *testing.T) {
 	results := testutil.ScanHCL(`
 
-resource "aws_security_group_rule" "my-rule" {
-    type        = "ingress"
-	# tfsec:ignore:AWS006
-    cidr_blocks = ["0.0.0.0/0"] 
-	description = "test security group rule"
+resource "bad" "my-rule" {
+	# tfsec:ignore:ABC123
+    secure = false
 }
 `, t)
 	assert.Len(t, results, 0)
 }
 func Test_IgnoreLineOnTheLine(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
 	results := testutil.ScanHCL(`
-resource "aws_security_group_rule" "my-rule" {
-    type        = "ingress"
-	
-    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:AWS006
-	description = "test security group rule"
+resource "bad" "my-rule" {
+    secure = false # tfsec:ignore:ABC123
 }
 `, t)
 	assert.Len(t, results, 0)
 }
 
 func Test_IgnoreLineWithCarriageReturn(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
 	results := testutil.ScanHCL(strings.ReplaceAll(`
-resource "aws_security_group_rule" "my-rule" {
-    type        = "ingress"
-    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:AWS006
-	description = "test security group rule"
+resource "bad" "my-rule" {
+    secure = false # tfsec:ignore:ABC123
 }
 `, "\n", "\r\n"), t)
 	assert.Len(t, results, 0)
@@ -83,31 +104,24 @@ resource "aws_security_group_rule" "my-rule" {
 
 func Test_IgnoreSpecific(t *testing.T) {
 
-	r1 := rule.Rule{
-		LegacyID:        "ABC123",
-		Provider:        provider.AWSProvider,
-		Service:         "service",
-		ShortCode:       "abc123",
-		RequiredLabels:  []string{"bad"},
-		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
-			set.AddResult().
-				WithDescription("example problem")
-		},
-	}
-	scanner.RegisterCheckRule(r1)
-	defer scanner.DeregisterCheckRule(r1)
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
 
 	r2 := rule.Rule{
-		LegacyID:        "DEF456",
-		Provider:        provider.AWSProvider,
-		Service:         "service",
-		ShortCode:       "def456",
-		RequiredLabels:  []string{"bad"},
-		DefaultSeverity: severity.High,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
-			set.AddResult().
-				WithDescription("example problem")
+		LegacyID: "DEF456",
+		Base: rules.Register(rules.Rule{
+			Provider:  provider.AWSProvider,
+			Service:   "service",
+			ShortCode: "def456",
+			Severity:  severity.High,
+		}, nil),
+		RequiredLabels: []string{"bad"},
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+			results.Add(
+				"example problem",
+				resourceBlock,
+			)
+			return
 		},
 	}
 	scanner.RegisterCheckRule(r2)
@@ -120,110 +134,113 @@ func Test_IgnoreSpecific(t *testing.T) {
 	resource "bad" "my-bad" {} 
 `, t)
 	require.Len(t, results, 2)
-	assert.Equal(t, results[0].RuleID, "aws-service-def456")
-	assert.Equal(t, results[1].LegacyRuleID, "DEF456")
+	assert.Equal(t, results[0].Rule().LongID(), "aws-service-def456")
+	assert.Equal(t, scanner.FindLegacyID(results[1].Rule().LongID()), "DEF456")
 
 }
 
 func Test_IgnoreWithExpDateIfDateBreachedThenDontIgnore(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
 	results := testutil.ScanHCL(`
-resource "aws_security_group_rule" "my-rule" {
-    type        = "ingress"
-	
-    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:AWS006:exp:2000-01-02
-	description = "test security group rule"
+resource "bad" "my-rule" {
+    secure = false # tfsec:ignore:ABC123:exp:2000-01-02
 }
 `, t)
 	assert.Len(t, results, 1)
 }
 
 func Test_IgnoreWithExpDateIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
 	results := testutil.ScanHCL(`
-resource "aws_security_group_rule" "my-rule" {
-    type        = "ingress"
-	
-    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:AWS006:exp:2221-01-02
-	description = "test security group rule"
+resource "bad" "my-rule" {
+    secure = false # tfsec:ignore:ABC123:exp:2221-01-02
 }
 `, t)
 	assert.Len(t, results, 0)
 }
 
 func Test_IgnoreWithExpDateIfDateInvalidThenDropTheIgnore(t *testing.T) {
-	results := testutil.ScanHCL(`
-resource "aws_security_group_rule" "my-rule" {
-   type        = "ingress"
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
 
-   cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:AWS006:exp:2221-13-02
-	description = "test security group rule"
+	results := testutil.ScanHCL(`
+resource "bad" "my-rule" {
+   secure = false # tfsec:ignore:ABC123:exp:2221-13-02
 }
 `, t)
 	assert.Len(t, results, 1)
 }
 
 func Test_IgnoreAboveResourceBlockWithExpDateIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
 	results := testutil.ScanHCL(`
-#tfsec:ignore:AWS006:exp:2221-01-02
-resource "aws_security_group_rule" "my-rule" {
-    type        = "ingress"
-	
-    cidr_blocks = ["0.0.0.0/0"]
-	description = "test security group rule"
+#tfsec:ignore:ABC123:exp:2221-01-02
+resource "bad" "my-rule" {
 }
 `, t)
 	assert.Len(t, results, 0)
 }
 
 func Test_IgnoreAboveResourceBlockWithExpDateAndMultipleIgnoresIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
 	results := testutil.ScanHCL(`
-# tfsec:ignore:AWS006:exp:2221-01-02 tfsec:ignore:AWS018
-resource "aws_security_group_rule" "my-rule" {
-    type        = "ingress"
+# tfsec:ignore:ABC123:exp:2221-01-02
+resource "bad" "my-rule" {
 	
-    cidr_blocks = ["0.0.0.0/0"]
 }
 `, t)
 	assert.Len(t, results, 0)
 }
 
 func Test_IgnoreIgnoreWithExpiryAndWorkspaceAndWorkspaceSupplied(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
 	results := testutil.ScanHCL(`
-# tfsec:ignore:AWS006:exp:2221-01-02 #tfsec:ignore:AWS018:ws:testworkspace
-resource "aws_security_group_rule" "my-rule" {
-    type        = "ingress"
-	
-    cidr_blocks = ["0.0.0.0/0"]
+# tfsec:ignore:ABC123:exp:2221-01-02:ws:testworkspace
+resource "bad" "my-rule" {
 }
 `, t, scanner.OptionWithWorkspaceName("testworkspace"))
 	assert.Len(t, results, 0)
 }
 
 func Test_IgnoreInline(t *testing.T) {
-	results := testutil.ScanHCL(`
-	resource "aws_instance" "sample" {
-		metadata_options {
-		  http_tokens = "optional" # tfsec:ignore:aws-ec2-enforce-http-token-imds
-		}
-	  }
-	  `, t)
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
+	results := testutil.ScanHCL(fmt.Sprintf(`
+	resource "bad" "sample" {
+		  secure = false # tfsec:ignore:%s
+	}
+	  `, exampleRule.ID()), t)
 	assert.Len(t, results, 0)
 }
 
 func Test_IgnoreIgnoreWithExpiryAndWorkspaceButWrongWorkspaceSupplied(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
 	results := testutil.ScanHCL(`
-# tfsec:ignore:AWS006:exp:2221-01-02 #tfsec:ignore:AWS018:ws:otherworkspace
-resource "aws_security_group_rule" "my-rule" {
-    type        = "ingress"
+# tfsec:ignore:ABC123:exp:2221-01-02:ws:otherworkspace
+resource "bad" "my-rule" {
 	
-    cidr_blocks = ["0.0.0.0/0"]
 }
 `, t, scanner.OptionWithWorkspaceName("testworkspace"))
 	assert.Len(t, results, 1)
 }
 
 func TestBlockLevelIgnoresForAllRules(t *testing.T) {
+
 	for _, check := range scanner.GetRegisteredRules() {
-		for _, badExample := range check.Documentation.BadExample {
+		for _, badExample := range check.BadExample {
 
 			if strings.TrimSpace(badExample) == "" {
 				continue
@@ -241,13 +258,11 @@ func TestBlockLevelIgnoresForAllRules(t *testing.T) {
 				var lines []string
 				for i, badLine := range badLines {
 					for _, result := range results {
-						if result.RuleID != check.ID() {
+						if result.Rule().LongID() != check.ID() {
 							continue
 						}
-						for _, block := range result.Blocks() {
-							if block.Range().StartLine-1 == i {
-								lines = append(lines, fmt.Sprintf("# tfsec:ignore:%s", check.ID()))
-							}
+						if result.NarrowestRange().GetStartLine()-1 == i {
+							lines = append(lines, fmt.Sprintf("# tfsec:ignore:%s", check.ID()))
 						}
 					}
 					lines = append(lines, badLine)
@@ -259,76 +274,6 @@ func TestBlockLevelIgnoresForAllRules(t *testing.T) {
 
 			})
 
-		}
-	}
-}
-
-func TestInlineIgnoresForAllRules(t *testing.T) {
-	for _, check := range scanner.GetRegisteredRules() {
-		for _, badExample := range check.Documentation.BadExample {
-
-			if strings.TrimSpace(badExample) == "" {
-				continue
-			}
-
-			results := testutil.ScanHCL(badExample, t)
-			badLines := strings.Split(badExample, "\n")
-
-			testCases := []struct {
-				pre  string
-				post string
-			}{
-				{pre: "#", post: ""},
-				{pre: "# ", post: ""},
-				{pre: "//", post: ""},
-				{pre: "// ", post: ""},
-				{pre: "/* ", post: "*/"},
-				{pre: "/*", post: "*/"},
-				{pre: " #", post: ""},
-				{pre: " //", post: ""},
-				{pre: " /* ", post: "*/"},
-			}
-			for _, testCase := range testCases {
-				t.Run(fmt.Sprintf("Test attribute-level ignore for %s (pre=[%s] post=[%s])", check.ID(), testCase.pre, testCase.post), func(t *testing.T) {
-					var required bool
-					for _, result := range results {
-						if result.IsOnAttribute() {
-							required = true
-							break
-						}
-					}
-					if !required {
-						return
-					}
-					defer func() {
-						if err := recover(); err != nil {
-							t.Fatalf("Scan (bad) failed: %s", err)
-						}
-					}()
-					var lines []string
-					for i, badLine := range badLines {
-						for _, result := range results {
-							if result.RuleID != check.ID() {
-								continue
-							}
-							if result.Range().StartLine-1 == i {
-								if !result.IsOnAttribute() || strings.Contains(badLine, "<<") {
-									lines = append(lines, fmt.Sprintf("%stfsec:ignore:%s%s", testCase.pre, check.ID(), testCase.post))
-								} else {
-									badLine = fmt.Sprintf("%s%s", badLine, fmt.Sprintf("%s tfsec:ignore:%s %s", testCase.pre, check.ID(), testCase.post))
-								}
-							}
-						}
-						lines = append(lines, badLine)
-					}
-					withIgnores := strings.Join(lines, "\n")
-
-					t.Log(withIgnores)
-
-					results := testutil.ScanHCL(withIgnores, t)
-					testutil.AssertCheckCode(t, "", check.ID(), results, "Ignore rule was not effective")
-				})
-			}
 		}
 	}
 }

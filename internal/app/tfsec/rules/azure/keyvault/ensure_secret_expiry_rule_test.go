@@ -1,6 +1,5 @@
 package keyvault
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,24 +18,24 @@ func Test_AZUKeyVaultSecretExpirationDate(t *testing.T) {
 		{
 			name: "check if expiration_date is not set, check fails",
 			source: `
-resource "azurerm_key_vault_secret" "bad_example" {
-  name         = "secret-sauce"
-  value        = "szechuan"
-  key_vault_id = azurerm_key_vault.example.id
-}
-`,
+ resource "azurerm_key_vault_secret" "bad_example" {
+   name         = "secret-sauce"
+   value        = "szechuan"
+   key_vault_id = azurerm_key_vault.example.id
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check if expiration_date is set, check passes",
 			source: `
-resource "azurerm_key_vault_secret" "good_example" {
-  name            = "secret-sauce"
-  value        	  = "szechuan"
-  key_vault_id    = azurerm_key_vault.example.id
-  expiration_date = "1982-12-31T00:00:00Z"
-}
-`,
+ resource "azurerm_key_vault_secret" "good_example" {
+   name            = "secret-sauce"
+   value        	  = "szechuan"
+   key_vault_id    = azurerm_key_vault.example.id
+   expiration_date = "1982-12-31T00:00:00Z"
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

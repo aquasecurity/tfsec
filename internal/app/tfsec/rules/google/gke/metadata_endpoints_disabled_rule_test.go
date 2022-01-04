@@ -1,6 +1,5 @@
 package gke
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,21 +18,21 @@ func Test_GkeLegacyMetadataEndpoints(t *testing.T) {
 		{
 			name: "check google_container_cluster with metadata.disable-legacy-endpoints set to false",
 			source: `
-resource "google_container_cluster" "gke" {
-	metadata {
-    disable-legacy-endpoints = false
-  }
-}`,
+ resource "google_container_cluster" "gke" {
+ 	metadata {
+     disable-legacy-endpoints = false
+   }
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check google_container_cluster with metadata.disable-legacy-endpoints set to true",
 			source: `
-resource "google_container_cluster" "gke" {
-	metadata {
-    disable-legacy-endpoints = true
-  }
-}`,
+ resource "google_container_cluster" "gke" {
+ 	metadata {
+     disable-legacy-endpoints = true
+   }
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

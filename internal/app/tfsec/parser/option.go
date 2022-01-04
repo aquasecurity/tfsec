@@ -31,3 +31,9 @@ func OptionSkipDownloaded() Option {
 		p.skipDownloaded = true
 	}
 }
+
+func OptionWithExcludePaths(paths []string) Option {
+	return func(p *Parser) {
+		p.excludePaths = paths
+	}
+}

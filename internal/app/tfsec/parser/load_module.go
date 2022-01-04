@@ -1,25 +1,53 @@
 package parser
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
+	"github.com/aquasecurity/defsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/hashicorp/hcl/v2"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/hashicorp/hcl/v2"
 	"github.com/zclconf/go-cty/cty"
 )
+
+type moduleLoadError struct {
+	source string
+	err    error
+}
+
+func (m *moduleLoadError) Error() string {
+	return fmt.Sprintf("failed to load module '%s': %s", m.source, m.err)
+}
 
 type ModuleDefinition struct {
 	Name       string
 	Path       string
 	Definition block.Block
 	Modules    []block.Module
+}
+
+// getModuleKeyName constructs the module keyname from the block label and the modulename
+func (e *Evaluator) getModuleKeyName(name string) (keyName string) {
+	// regular expression for removing count and or for_each indexes
+	indexRegExp := regexp.MustCompile(`\[.+?\]`)
+
+	if e.moduleName == "root" {
+		return indexRegExp.ReplaceAllString(name, "")
+	}
+
+	modules := strings.Split(e.moduleName, ":")
+	for i := range modules {
+		keyName += strings.TrimPrefix(modules[i], "module.")
+		if i != len(modules)-1 {
+			keyName += "."
+		}
+	}
+	return indexRegExp.ReplaceAllString(keyName+"."+name, "")
 }
 
 // LoadModules reads all module blocks and loads the underlying modules, adding blocks to e.moduleBlocks
@@ -31,16 +59,38 @@ func (e *Evaluator) loadModules(stopOnHCLError bool) []*ModuleDefinition {
 
 	expanded := e.expandBlocks(blocks.OfType("module"))
 
+	var loadErrors []*moduleLoadError
+
 	for _, moduleBlock := range expanded {
 		if moduleBlock.Label() == "" {
 			continue
 		}
 		moduleDefinition, err := e.loadModule(moduleBlock, stopOnHCLError)
 		if err != nil {
+			if loadErr, ok := err.(*moduleLoadError); ok {
+				var found bool
+				for _, fm := range loadErrors {
+					if fm.source == loadErr.source {
+						found = true
+						break
+					}
+				}
+				if !found {
+					loadErrors = append(loadErrors, loadErr)
+				}
+				continue
+			}
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: Failed to load module: %s\n", err)
 			continue
 		}
 		moduleDefinitions = append(moduleDefinitions, moduleDefinition)
+	}
+
+	if len(loadErrors) > 0 {
+		_, _ = fmt.Fprintf(os.Stderr, "WARNING: Did you forget to 'terraform init'? The following modules failed to load:\n")
+		for _, err := range loadErrors {
+			_, _ = fmt.Fprintf(os.Stderr, " - %s\n", err.source)
+		}
 	}
 
 	return moduleDefinitions
@@ -53,7 +103,8 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 		return nil, fmt.Errorf("module without label at %s", b.Range())
 	}
 
-	evalTime := metrics.Start(metrics.Evaluation)
+	evalTimer := metrics.Timer("timings", "evaluation")
+	evalTimer.Start()
 
 	var source string
 	attrs := b.Attributes()
@@ -66,7 +117,7 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 		}
 	}
 
-	evalTime.Stop()
+	evalTimer.Stop()
 
 	if source == "" {
 		return nil, fmt.Errorf("could not read module source attribute at %s", b.Range().String())
@@ -76,8 +127,11 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 
 	if e.moduleMetadata != nil {
 		// if we have module metadata we can parse all the modules as they'll be cached locally!
+
+		name := e.getModuleKeyName(b.Label())
+
 		for _, module := range e.moduleMetadata.Modules {
-			if module.Source == source {
+			if module.Key == name {
 				modulePath = filepath.Clean(filepath.Join(e.projectRootPath, module.Dir))
 				break
 			}
@@ -87,41 +141,49 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 		// if we have no metadata, we can only support modules available on the local filesystem
 		// users wanting this feature should run a `terraform init` before running tfsec to cache all modules locally
 		if !strings.HasPrefix(source, fmt.Sprintf(".%c", os.PathSeparator)) && !strings.HasPrefix(source, fmt.Sprintf("..%c", os.PathSeparator)) {
-			return nil, fmt.Errorf("missing module with source '%s' -  try to 'terraform init' first", source)
+			return nil, &moduleLoadError{
+				source: source,
+				err:    errors.New("missing source code"),
+			}
 		}
 
 		// combine the current calling module with relative source of the module
 		modulePath = filepath.Join(e.modulePath, source)
 	}
 
-	var blocks block.Blocks
-	err := getModuleBlocks(b, modulePath, &blocks, stopOnHCLError)
+	blocks, ignores, err := getModuleBlocks(b, modulePath, e.moduleName, stopOnHCLError)
 	if err != nil {
-		return nil, err
+		return nil, &moduleLoadError{
+			source: source,
+			err:    err,
+		}
 	}
 	debug.Log("Loaded module '%s' (requested at %s)", modulePath, b.Range())
-	metrics.Add(metrics.ModuleLoadCount, 1)
+	metrics.Counter("counts", "modules").Increment(1)
 
 	return &ModuleDefinition{
 		Name:       b.Label(),
 		Path:       modulePath,
 		Definition: b,
-		Modules:    []block.Module{block.NewHCLModule(e.projectRootPath, modulePath, blocks)},
+		Modules:    []block.Module{block.NewHCLModule(e.projectRootPath, modulePath, blocks, ignores)},
 	}, nil
 }
 
-func getModuleBlocks(b block.Block, modulePath string, blocks *block.Blocks, stopOnHCLError bool) error {
+func getModuleBlocks(b block.Block, modulePath string, moduleName string, stopOnHCLError bool) (block.Blocks, []block.Ignore, error) {
 	moduleFiles, err := LoadDirectory(modulePath, stopOnHCLError)
 	if err != nil {
-		return fmt.Errorf("failed to load module %s: %w", b.Label(), err)
+		return nil, nil, err
 	}
+
+	var blocks block.Blocks
+	var ignores []block.Ignore
 
 	moduleCtx := block.NewContext(&hcl.EvalContext{}, nil)
 	for _, file := range moduleFiles {
-		fileBlocks, err := LoadBlocksFromFile(file)
+		fileBlocks, fileIgnores, err := LoadBlocksFromFile(file, moduleName)
 		if err != nil {
 			if stopOnHCLError {
-				return err
+				return nil, nil, err
 			}
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: HCL error: %s\n", err)
 			continue
@@ -130,8 +192,9 @@ func getModuleBlocks(b block.Block, modulePath string, blocks *block.Blocks, sto
 			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 		}
 		for _, fileBlock := range fileBlocks {
-			*blocks = append(*blocks, block.NewHCLBlock(fileBlock, moduleCtx, b))
+			blocks = append(blocks, block.NewHCLBlock(fileBlock, moduleCtx, b))
 		}
+		ignores = append(ignores, fileIgnores...)
 	}
-	return nil
+	return blocks, ignores, nil
 }

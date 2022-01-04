@@ -1,6 +1,5 @@
 package dynamodb
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,63 +18,63 @@ func Test_AWSDynamoDBRecoveryEnabled(t *testing.T) {
 		{
 			name: "table with no point in time recovery fails check",
 			source: `
-resource "aws_dynamodb_table" "bad_example" {
-	name             = "example"
-	hash_key         = "TestTableHashKey"
-	billing_mode     = "PAY_PER_REQUEST"
-	stream_enabled   = true
-	stream_view_type = "NEW_AND_OLD_IMAGES"
-  
-	attribute {
-	  name = "TestTableHashKey"
-	  type = "S"
-	}
-}
-`,
+ resource "aws_dynamodb_table" "bad_example" {
+ 	name             = "example"
+ 	hash_key         = "TestTableHashKey"
+ 	billing_mode     = "PAY_PER_REQUEST"
+ 	stream_enabled   = true
+ 	stream_view_type = "NEW_AND_OLD_IMAGES"
+   
+ 	attribute {
+ 	  name = "TestTableHashKey"
+ 	  type = "S"
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "table with point in time recovery set but disabled fails check",
 			source: `
-resource "aws_dynamodb_table" "bad_example" {
-	name             = "example"
-	hash_key         = "TestTableHashKey"
-	billing_mode     = "PAY_PER_REQUEST"
-	stream_enabled   = true
-	stream_view_type = "NEW_AND_OLD_IMAGES"
-  
-	attribute {
-	  name = "TestTableHashKey"
-	  type = "S"
-	}
-
-	point_in_time_recovery {
-		enabled = false
-	}
-}
-`,
+ resource "aws_dynamodb_table" "bad_example" {
+ 	name             = "example"
+ 	hash_key         = "TestTableHashKey"
+ 	billing_mode     = "PAY_PER_REQUEST"
+ 	stream_enabled   = true
+ 	stream_view_type = "NEW_AND_OLD_IMAGES"
+   
+ 	attribute {
+ 	  name = "TestTableHashKey"
+ 	  type = "S"
+ 	}
+ 
+ 	point_in_time_recovery {
+ 		enabled = false
+ 	}
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "table with point in time recovery passes check",
 			source: `
-resource "aws_dynamodb_table" "good_example" {
-	name             = "example"
-	hash_key         = "TestTableHashKey"
-	billing_mode     = "PAY_PER_REQUEST"
-	stream_enabled   = true
-	stream_view_type = "NEW_AND_OLD_IMAGES"
-  
-	attribute {
-	  name = "TestTableHashKey"
-	  type = "S"
-	}
-
-	point_in_time_recovery {
-		enabled = true
-	}
-}
-`,
+ resource "aws_dynamodb_table" "good_example" {
+ 	name             = "example"
+ 	hash_key         = "TestTableHashKey"
+ 	billing_mode     = "PAY_PER_REQUEST"
+ 	stream_enabled   = true
+ 	stream_view_type = "NEW_AND_OLD_IMAGES"
+   
+ 	attribute {
+ 	  name = "TestTableHashKey"
+ 	  type = "S"
+ 	}
+ 
+ 	point_in_time_recovery {
+ 		enabled = true
+ 	}
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

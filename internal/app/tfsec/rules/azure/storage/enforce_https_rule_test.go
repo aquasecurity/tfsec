@@ -1,6 +1,5 @@
 package storage
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,42 +18,42 @@ func Test_AZURequireSecureTransferForStorageAccounts(t *testing.T) {
 		{
 			name: "check the storage account with explicit enable_https_traffic_only set to false fails",
 			source: `
-resource "azurerm_storage_account" "example" {
-  name                      = "storageaccountname"
-  resource_group_name       = azurerm_resource_group.example.name
-  location                  = azurerm_resource_group.example.location
-  account_tier              = "Standard"
-  account_replication_type  = "GRS"
-  enable_https_traffic_only = false
-}
-`,
+ resource "azurerm_storage_account" "example" {
+   name                      = "storageaccountname"
+   resource_group_name       = azurerm_resource_group.example.name
+   location                  = azurerm_resource_group.example.location
+   account_tier              = "Standard"
+   account_replication_type  = "GRS"
+   enable_https_traffic_only = false
+ }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check the storage account with no explicit enable_https_traffic_only set passes",
 			source: `
-resource "azurerm_storage_account" "example" {
-  name                      = "storageaccountname"
-  resource_group_name       = azurerm_resource_group.example.name
-  location                  = azurerm_resource_group.example.location
-  account_tier              = "Standard"
-  account_replication_type  = "GRS"
-}
-`,
+ resource "azurerm_storage_account" "example" {
+   name                      = "storageaccountname"
+   resource_group_name       = azurerm_resource_group.example.name
+   location                  = azurerm_resource_group.example.location
+   account_tier              = "Standard"
+   account_replication_type  = "GRS"
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check the storage account with explicit enable_https_traffic_only set to true passes",
 			source: `
-resource "azurerm_storage_account" "example" {
-  name                      = "storageaccountname"
-  resource_group_name       = azurerm_resource_group.example.name
-  location                  = azurerm_resource_group.example.location
-  account_tier              = "Standard"
-  account_replication_type  = "GRS"
-  enable_https_traffic_only = true
-}
-`,
+ resource "azurerm_storage_account" "example" {
+   name                      = "storageaccountname"
+   resource_group_name       = azurerm_resource_group.example.name
+   location                  = azurerm_resource_group.example.location
+   account_tier              = "Standard"
+   account_replication_type  = "GRS"
+   enable_https_traffic_only = true
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

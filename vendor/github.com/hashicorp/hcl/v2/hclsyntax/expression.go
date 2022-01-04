@@ -1432,9 +1432,22 @@ func (e *SplatExpr) Value(ctx *hcl.EvalContext) (cty.Value, hcl.Diagnostics) {
 		return cty.DynamicVal, diags
 	}
 
+	upgradedUnknown := false
 	if autoUpgrade {
+		// If we're upgrading an unknown value to a tuple/list, the result
+		// cannot be known. Otherwise a tuple containing an unknown value will
+		// upgrade to a different number of elements depending on whether
+		// sourceVal becomes null or not.
+		// We record this condition here so we can process any remaining
+		// expression after the * to verify the result of the traversal. For
+		// example, it is valid to use a splat on a single object to retrieve a
+		// list of a single attribute, but we still need to check if that
+		// attribute actually exists.
+		upgradedUnknown = !sourceVal.IsKnown()
+
 		sourceVal = cty.TupleVal([]cty.Value{sourceVal})
 		sourceTy = sourceVal.Type()
+
 	}
 
 	// We'll compute our result type lazily if we need it. In the normal case
@@ -1498,6 +1511,10 @@ func (e *SplatExpr) Value(ctx *hcl.EvalContext) (cty.Value, hcl.Diagnostics) {
 		vals = append(vals, newItem)
 	}
 	e.Item.clearValue(ctx) // clean up our temporary value
+
+	if upgradedUnknown {
+		return cty.DynamicVal, diags
+	}
 
 	if !isKnown {
 		// We'll ingore the resultTy diagnostics in this case since they

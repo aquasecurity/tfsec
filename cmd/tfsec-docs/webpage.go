@@ -6,16 +6,16 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/aquasecurity/tfsec/pkg/provider"
+	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 const (
 	baseWebPageTemplate = `---
-title: {{$.Documentation.Summary}}
+title: {{$.Base.Summary}}
 shortcode: {{$.ID}}
 legacy: {{$.LegacyID}}
-summary: {{$.Documentation.Summary}} 
+summary: {{$.Base.Summary}} 
 resources: {{$.RequiredLabels}} 
 permalink: /docs/{{$.Provider}}/{{$.Service}}/{{$.ShortCode}}/
 redirect_from: 
@@ -24,40 +24,47 @@ redirect_from:
 
 ### Explanation
 
-{{$.Documentation.Explanation}}
+{{$.Base.Explanation}}
 
 ### Possible Impact
-{{$.Documentation.Impact}}
+{{$.Base.Impact}}
 
 ### Suggested Resolution
-{{$.Documentation.Resolution}}
+{{$.Base.Resolution}}
 
-{{if $.Documentation.BadExample }}
+{{if $.BadExample }}
 ### Insecure Example
 
 The following example will fail the {{$.ID}} check.
 
 {% highlight terraform %}
-{{ (index $.Documentation.BadExample 0) }}
+{{ (index $.BadExample 0) }}
 {% endhighlight %}
 
 {{end}}
-{{if $.Documentation.GoodExample }}
+{{if $.GoodExample }}
 ### Secure Example
 
 The following example will pass the {{$.ID}} check.
 
 {% highlight terraform %}
-{{ (index $.Documentation.GoodExample 0) }}
+{{ (index $.GoodExample 0) }}
 {% endhighlight %}
 {{end}}
 
-{{if $.Documentation.Links}}
-### Related Links
+{{if $.Links}}
+### Provider Links
 
-{{range $link := $.Documentation.Links}}
+{{range $link := $.Links}}
 - [{{.}}]({{.}}){:target="_blank" rel="nofollow noreferrer noopener"}
 {{end}}
+{{if $.Base.Links}}
+### General Links
+
+{{range $link := $.Base.Links}}
+- [{{.}}]({{.}}){:target="_blank" rel="nofollow noreferrer noopener"}
+{{end}}
+
 {{end}}
 `
 )
@@ -65,7 +72,7 @@ The following example will pass the {{$.ID}} check.
 func generateWebPages(fileContents []*FileContent) error {
 	for _, contents := range fileContents {
 		for _, check := range contents.Checks {
-			webProviderPath := fmt.Sprintf("%s/docs/%s/%s", webPath, strings.ToLower(string(check.Provider)), strings.ToLower(check.Service))
+			webProviderPath := fmt.Sprintf("%s/docs/%s/%s", webPath, strings.ToLower(string(check.Base.Rule().Provider)), strings.ToLower(check.Base.Rule().Service))
 			if err := generateWebPage(webProviderPath, check); err != nil {
 				return err
 			}
@@ -99,7 +106,7 @@ func generateWebPage(webProviderPath string, r rule.Rule) error {
 	if err := os.MkdirAll(webProviderPath, os.ModePerm); err != nil {
 		return err
 	}
-	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.ShortCode)
+	filePath := fmt.Sprintf("%s/%s.md", webProviderPath, r.Base.Rule().ShortCode)
 	fmt.Printf("Generating page for %s at %s\n", r.ID(), filePath)
 	webTmpl := template.Must(template.New("web").Funcs(funcMap).Parse(baseWebPageTemplate))
 

@@ -32,6 +32,10 @@ provider "cats" {
 
 }
 
+moved {
+
+}
+
 resource "cats_cat" "mittens" {
 	name = "mittens"
 	special = true

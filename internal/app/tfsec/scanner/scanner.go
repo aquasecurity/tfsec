@@ -1,17 +1,13 @@
 package scanner
 
 import (
+	"runtime"
 	"sort"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
-
+	"github.com/aquasecurity/defsec/metrics"
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-
-	"github.com/aquasecurity/tfsec/pkg/rule"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
-
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 )
 
@@ -23,6 +19,7 @@ type Scanner struct {
 	includedRuleIDs   []string
 	ignoreCheckErrors bool
 	workspaceName     string
+	useSingleThread   bool
 }
 
 // New creates a new Scanner
@@ -46,63 +43,93 @@ func checkInList(id string, legacyID string, list []string) bool {
 	return false
 }
 
-func (scanner *Scanner) Scan(modules []block.Module) []result.Result {
-	checkTime := metrics.Start(metrics.Check)
-	defer checkTime.Stop()
-	var results []result.Result
-	rules := GetRegisteredRules()
-	for _, module := range modules {
-		results = append(results, scanner.scanModule(module, rules)...)
-	}
-	sort.Slice(results, func(i, j int) bool {
-		switch {
-		case results[i].RuleID < results[j].RuleID:
-			return true
-		case results[i].RuleID > results[j].RuleID:
-			return false
-		default:
-			return results[i].HashCode() > results[j].HashCode()
+func FindLegacyID(longID string) string {
+	for _, rule := range GetRegisteredRules() {
+		if rule.ID() == longID {
+			return rule.LegacyID
 		}
-	})
-	return results
+	}
+	return ""
 }
 
-func (scanner *Scanner) scanModule(module block.Module, rules []rule.Rule) []result.Result {
-	var results []result.Result
-	for _, checkBlock := range module.GetBlocks() {
-		for _, r := range rules {
-			if rule.IsRuleRequiredForBlock(&r, checkBlock) {
-				debug.Log("Running rule for %s on %s (%s)...", r.ID(), checkBlock.Reference(), checkBlock.Range().Filename)
-				ruleResults := rule.CheckRule(&r, checkBlock, module, scanner.ignoreCheckErrors)
-				if scanner.includePassed && ruleResults.All() == nil {
-					res := result.New(checkBlock).
-						WithLegacyRuleID(r.LegacyID).
-						WithRuleID(r.ID()).
-						WithDescription("Resource '%s' passed check: %s", checkBlock.FullName(), r.Documentation.Summary).
-						WithStatus(result.Passed).
-						WithImpact(r.Documentation.Impact).
-						WithResolution(r.Documentation.Resolution).
-						WithSeverity(r.DefaultSeverity)
-					results = append(results, *res)
-				} else if ruleResults != nil {
-					for _, ruleResult := range ruleResults.All() {
-						if ruleResult.Severity == severity.None {
-							ruleResult.Severity = r.DefaultSeverity
-						}
-						if len(scanner.includedRuleIDs) == 0 || len(scanner.includedRuleIDs) > 0 && checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.includedRuleIDs) {
-							if !scanner.includeIgnored && (ruleResult.IsIgnored(scanner.workspaceName) || checkInList(ruleResult.RuleID, ruleResult.LegacyRuleID, scanner.excludedRuleIDs)) {
-								// rule was ignored
-								metrics.Add(metrics.IgnoredChecks, 1)
-								debug.Log("Ignoring '%s'", ruleResult.RuleID)
-							} else {
-								results = append(results, *ruleResult)
+func (scanner *Scanner) Scan(modules []block.Module) (rules.Results, error) {
 
-							}
-						}
-					}
-				}
+	adaptationTimer := metrics.Timer("timings", "adaptation")
+	adaptationTimer.Start()
+	infra := adapter.Adapt(modules)
+	adaptationTimer.Stop()
+
+	threads := runtime.NumCPU()
+	if threads > 1 {
+		threads = threads - 1
+	}
+	if scanner.useSingleThread {
+		threads = 1
+	}
+
+	checkTimer := metrics.Timer("timings", "running checks")
+	checkTimer.Start()
+	results, err := NewPool(threads, GetRegisteredRules(), modules, infra, scanner.ignoreCheckErrors).Run()
+	if err != nil {
+		return nil, err
+	}
+	checkTimer.Stop()
+
+	var resultsAfterIgnores []rules.Result
+	if !scanner.includeIgnored {
+		var ignores block.Ignores
+		for _, module := range modules {
+			ignores = append(ignores, module.Ignores()...)
+		}
+
+		for _, result := range results {
+			if !scanner.includeIgnored && ignores.Covering(
+				result.NarrowestRange(),
+				scanner.workspaceName,
+				result.Rule().LongID(),
+				FindLegacyID(result.Rule().LongID()),
+			) != nil {
+				debug.Log("Ignoring '%s'", result.Rule().LongID())
+				continue
+			}
+			resultsAfterIgnores = append(resultsAfterIgnores, result)
+		}
+	} else {
+		resultsAfterIgnores = results
+	}
+
+	metrics.Counter("results", "ignored").Increment(len(results) - len(resultsAfterIgnores))
+
+	filtered := scanner.filterResults(resultsAfterIgnores)
+	scanner.sortResults(filtered)
+	return filtered, nil
+}
+
+func (scanner *Scanner) filterResults(results []rules.Result) []rules.Result {
+	var filtered []rules.Result
+	excludeCounter := metrics.Counter("results", "excluded")
+	for _, result := range results {
+		if len(scanner.includedRuleIDs) == 0 || len(scanner.includedRuleIDs) > 0 && checkInList(result.Rule().LongID(), FindLegacyID(result.Rule().LongID()), scanner.includedRuleIDs) {
+			if !scanner.includeIgnored && checkInList(result.Rule().LongID(), FindLegacyID(result.Rule().LongID()), scanner.excludedRuleIDs) {
+				excludeCounter.Increment(1)
+				debug.Log("Ignoring '%s'", result.Rule().LongID())
+			} else if scanner.includePassed || result.Status() != rules.StatusPassed {
+				filtered = append(filtered, result)
 			}
 		}
 	}
-	return results
+	return filtered
+}
+
+func (scanner *Scanner) sortResults(results []rules.Result) {
+	sort.Slice(results, func(i, j int) bool {
+		switch {
+		case results[i].Rule().LongID() < results[j].Rule().LongID():
+			return true
+		case results[i].Rule().LongID() > results[j].Rule().LongID():
+			return false
+		default:
+			return results[i].NarrowestRange().String() > results[j].NarrowestRange().String()
+		}
+	})
 }

@@ -7,9 +7,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -19,6 +19,8 @@ type ExternalScanner struct {
 	paths           []string
 	internalOptions []scanner.Option
 }
+
+const customChecksDir = ".tfsec"
 
 func NewExternalScanner(options ...Option) *ExternalScanner {
 	external := &ExternalScanner{}
@@ -33,11 +35,15 @@ func (t *ExternalScanner) AddPath(path string) error {
 	if err != nil {
 		return err
 	}
+	customCheckDir := filepath.Join(filepath.Dir(path), customChecksDir)
+	if err := custom.Load(customCheckDir); err != nil {
+		return err
+	}
 	t.paths = append(t.paths, abs)
 	return nil
 }
 
-func (t *ExternalScanner) Scan() ([]result.Result, error) {
+func (t *ExternalScanner) Scan() ([]rules.FlatResult, error) {
 
 	projectModules := make(map[string][]block.Module)
 
@@ -54,26 +60,14 @@ func (t *ExternalScanner) Scan() ([]result.Result, error) {
 		projectModules[dir] = modules
 	}
 
-	var results []result.Result
+	var results rules.Results
 	internal := scanner.New(t.internalOptions...)
 	for _, modules := range projectModules {
-		projectResults := internal.Scan(modules)
+		projectResults, _ := internal.Scan(modules)
 		results = append(results, projectResults...)
 	}
 
-	// temporary hack to convert IDs pending switch to v1 tfsec using defsec
-	results = rewriteIds(results)
-	return results, nil
-}
-
-func rewriteIds(results []result.Result) []result.Result {
-	var updatedResults []result.Result
-	for _, r := range results {
-		if avd, ok := idMap[r.RuleID]; ok {
-			updatedResults = append(updatedResults, *r.WithRuleID(avd))
-		}
-	}
-	return updatedResults
+	return results.Flatten(), nil
 }
 
 func findTFRootModules(paths []string) ([]string, error) {

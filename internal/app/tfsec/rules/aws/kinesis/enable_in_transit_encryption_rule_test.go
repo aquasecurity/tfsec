@@ -1,6 +1,5 @@
 package kinesis
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,34 +18,34 @@ func Test_AWSUnencryptedKinesisStream(t *testing.T) {
 		{
 			name: "check no encryption specified for aws_kinesis_stream",
 			source: `
-resource "aws_kinesis_stream" "test_stream" {
-	
-}`,
+ resource "aws_kinesis_stream" "test_stream" {
+ 	
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check encryption disabled for aws_kinesis_stream",
 			source: `
-resource "aws_kinesis_stream" "test_stream" {
-	encryption_type = "NONE"
-}`,
+ resource "aws_kinesis_stream" "test_stream" {
+ 	encryption_type = "NONE"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check no encryption key id specified for aws_kinesis_stream",
 			source: `
-resource "aws_kinesis_stream" "test_stream" {
-	encryption_type = "KMS"
-}`,
+ resource "aws_kinesis_stream" "test_stream" {
+ 	encryption_type = "KMS"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check encryption key id specified for aws_sqs_queue",
 			source: `
-resource "aws_kinesis_stream" "test_stream" {
-	encryption_type = "KMS"
-	kms_key_id = "my/key"
-}`,
+ resource "aws_kinesis_stream" "test_stream" {
+ 	encryption_type = "KMS"
+ 	kms_key_id = "my/key"
+ }`,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

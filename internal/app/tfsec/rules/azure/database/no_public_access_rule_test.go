@@ -1,6 +1,5 @@
 package database
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,37 +18,37 @@ func Test_AzureNoPublicAccess(t *testing.T) {
 		{
 			name: "server with public access enabled fails check",
 			source: `
-resource "azurerm_postgresql_server" "bad_example" {
-  name                = "bad_example"
-
-  public_network_access_enabled    = true
-  ssl_enforcement_enabled          = false
-  ssl_minimal_tls_version_enforced = "TLS1_2"
-}`,
+ resource "azurerm_postgresql_server" "bad_example" {
+   name                = "bad_example"
+ 
+   public_network_access_enabled    = true
+   ssl_enforcement_enabled          = false
+   ssl_minimal_tls_version_enforced = "TLS1_2"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "server with public access not set fails check",
 			source: `
-resource "azurerm_mariadb_server" "bad_example" {
-  name                = "bad_example"
-
-
-  ssl_minimal_tls_version_enforced = "TLS1_2"
-}`,
+ resource "azurerm_mariadb_server" "bad_example" {
+   name                = "bad_example"
+ 
+ 
+   ssl_minimal_tls_version_enforced = "TLS1_2"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "server public access disabled passes check",
 			source: `
-resource "azurerm_mysql_server" "goodl_example" {
-  name                = "goodl_example"
-
-  public_network_access_enabled    = false
-  ssl_enforcement_enabled          = true
-  ssl_minimal_tls_version_enforced = "TLS1_2"
-}
-`,
+ resource "azurerm_mysql_server" "goodl_example" {
+   name                = "goodl_example"
+ 
+   public_network_access_enabled    = false
+   ssl_enforcement_enabled          = true
+   ssl_minimal_tls_version_enforced = "TLS1_2"
+ }
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

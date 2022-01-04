@@ -1,59 +1,39 @@
 package network
 
-// generator-locked
 import (
+	"fmt"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
-	"github.com/aquasecurity/tfsec/pkg/severity"
-
-	"github.com/aquasecurity/tfsec/pkg/provider"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
-
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/azure/network"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-
-	"github.com/aquasecurity/tfsec/pkg/rule"
-
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID:  "AZU001",
-		Service:   "network",
-		ShortCode: "no-public-ingress",
-		Documentation: rule.RuleDocumentation{
-			Summary:    "An inbound network security rule allows traffic from /0.",
-			Impact:     "The port is exposed for ingress from the internet",
-			Resolution: "Set a more restrictive cidr range",
-			Explanation: `
-Network security rules should not use very broad subnets.
-
-Where possible, segments should be broken into smaller subnets.
-`,
-			BadExample: []string{`
-resource "azurerm_network_security_rule" "bad_example" {
-	direction = "Inbound"
-	source_address_prefix = "0.0.0.0/0"
-	access = "Allow"
-}`},
-			GoodExample: []string{`
-resource "azurerm_network_security_rule" "good_example" {
-	direction = "Inbound"
-	destination_address_prefix = "10.0.0.0/16"
-	access = "Allow"
-}`},
-			Links: []string{
-				"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule",
-				"https://docs.microsoft.com/en-us/azure/security/fundamentals/network-best-practices",
-			},
+		LegacyID: "AZU001",
+		BadExample: []string{`
+ resource "azurerm_network_security_rule" "bad_example" {
+ 	direction = "Inbound"
+ 	source_address_prefix = "0.0.0.0/0"
+ 	access = "Allow"
+ }`},
+		GoodExample: []string{`
+ resource "azurerm_network_security_rule" "good_example" {
+ 	direction = "Inbound"
+ 	destination_address_prefix = "10.0.0.0/16"
+ 	access = "Allow"
+ }`},
+		Links: []string{
+			"https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule",
 		},
-		Provider:        provider.AzureProvider,
-		RequiredTypes:   []string{"resource"},
-		RequiredLabels:  []string{"azurerm_network_security_rule"},
-		DefaultSeverity: severity.Critical,
-		CheckFunc: func(set result.Set, resourceBlock block.Block, _ block.Module) {
+		RequiredTypes:  []string{"resource"},
+		RequiredLabels: []string{"azurerm_network_security_rule"},
+		Base:           network.CheckNoPublicIngress,
+		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			directionAttr := resourceBlock.GetAttribute("direction")
 			if directionAttr.NotEqual("INBOUND", block.IgnoreCase) {
@@ -63,9 +43,7 @@ resource "azurerm_network_security_rule" "good_example" {
 			if prefixAttr := resourceBlock.GetAttribute("source_address_prefix"); prefixAttr.IsString() {
 				if cidr.IsAttributeOpen(prefixAttr) {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.Equals("ALLOW", block.IgnoreCase) {
-						set.AddResult().
-							WithDescription("Resource '%s' defines a fully open %s network security group rule.", resourceBlock.FullName(), strings.ToLower(directionAttr.Value().AsString())).
-							WithAttribute(prefixAttr)
+						results.Add(fmt.Sprintf("Resource defines a fully open %s network security group rule.", strings.ToLower(directionAttr.Value().AsString())), accessAttr)
 					}
 				}
 			}
@@ -73,13 +51,12 @@ resource "azurerm_network_security_rule" "good_example" {
 			if prefixesAttr := resourceBlock.GetAttribute("source_address_prefixes"); !prefixesAttr.IsEmpty() {
 				if cidr.IsAttributeOpen(prefixesAttr) {
 					if accessAttr := resourceBlock.GetAttribute("access"); accessAttr.Equals("ALLOW", block.IgnoreCase) {
-						set.AddResult().
-							WithDescription("Resource '%s' defines a fully open security group rule.", resourceBlock.FullName()).
-							WithAttribute(prefixesAttr)
+						results.Add("Resource defines a fully open security group rule.", accessAttr)
 					}
 				}
 			}
 
+			return results
 		},
 	})
 }

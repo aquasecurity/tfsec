@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/aquasecurity/tfsec/pkg/result"
+	"github.com/aquasecurity/defsec/rules"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
@@ -381,7 +381,7 @@ func givenCheck(jsonContent string) {
 	processFoundChecks(checksfile)
 }
 
-func scanTerraform(t *testing.T, mainTf string) []result.Result {
+func scanTerraform(t *testing.T, mainTf string) []rules.Result {
 	dirName, err := ioutil.TempDir("", "tfsec-testing-")
 	assert.NoError(t, err)
 
@@ -391,7 +391,8 @@ func scanTerraform(t *testing.T, mainTf string) []result.Result {
 	blocks, err := parser.New(dirName, parser.OptionStopOnHCLError()).ParseDirectory()
 	assert.NoError(t, err)
 
-	return scanner.New(scanner.OptionStopOnErrors()).Scan(blocks)
+	res, _ := scanner.New(scanner.OptionStopOnErrors()).Scan(blocks)
+	return res
 }
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.

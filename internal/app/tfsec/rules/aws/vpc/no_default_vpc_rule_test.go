@@ -1,6 +1,5 @@
 package vpc
 
-// generator-locked
 import (
 	"testing"
 
@@ -19,18 +18,18 @@ func Test_AWSDontUseDefaultVPC(t *testing.T) {
 		{
 			name: "Default aws vpc is present so check fails",
 			source: `
-resource "aws_default_vpc" "default" {
-	tags = {
-	  Name = "Default VPC"
-	}
-  }
-`,
+ resource "aws_default_vpc" "default" {
+ 	tags = {
+ 	  Name = "Default VPC"
+ 	}
+   }
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Default aws vpc is not present so check passes",
 			source: `
-`,
+ `,
 			mustExcludeResultCode: expectedCode,
 		},
 	}

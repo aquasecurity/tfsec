@@ -1,6 +1,5 @@
 package vpc
 
-// generator-locked
 import (
 	"testing"
 
@@ -8,7 +7,7 @@ import (
 )
 
 func Test_AWSOpenIngressNetworkACLRule(t *testing.T) {
-	expectedCode := "aws-vpc-no-public-ingress"
+	expectedCode := "aws-vpc-no-public-ingress-acl"
 
 	var tests = []struct {
 		name                  string
@@ -19,58 +18,58 @@ func Test_AWSOpenIngressNetworkACLRule(t *testing.T) {
 		{
 			name: "check aws_network_acl_rule ingress on 0.0.0.0/0",
 			source: `
-resource "aws_network_acl_rule" "my-rule" {
-  egress         = false
-  protocol       = "tcp"
-  from_port      = 22
-  to_port        = 22
-  rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
-}`,
+ resource "aws_network_acl_rule" "my-rule" {
+   egress         = false
+   protocol       = "tcp"
+   from_port      = 22
+   to_port        = 22
+   rule_action    = "allow"
+   cidr_block     = "0.0.0.0/0"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		}, {
 			name: "check aws_network_acl_rule ingress on 0.0.0.0/0 implied egress",
 			source: `
-resource "aws_network_acl_rule" "my-rule" {
-  protocol       = "tcp"
-  from_port      = 22
-  to_port        = 22
-  rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
-}`,
+ resource "aws_network_acl_rule" "my-rule" {
+   protocol       = "tcp"
+   from_port      = 22
+   to_port        = 22
+   rule_action    = "allow"
+   cidr_block     = "0.0.0.0/0"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check variable containing 0.0.0.0/0",
 			source: `
-resource "aws_network_acl_rule" "my-rule" {
-  egress         = false
-  protocol       = "tcp"
-  from_port      = 22
-  to_port        = 22
-  rule_action    = "allow"
-  cidr_block     = var.cidr
-}
-
-variable "cidr" {
-	default="0.0.0.0/0"
-}
-
-`,
+ resource "aws_network_acl_rule" "my-rule" {
+   egress         = false
+   protocol       = "tcp"
+   from_port      = 22
+   to_port        = 22
+   rule_action    = "allow"
+   cidr_block     = var.cidr
+ }
+ 
+ variable "cidr" {
+ 	default="0.0.0.0/0"
+ }
+ 
+ `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check aws_network_acl_rule ingress on ::/0",
 			source: `
-resource "aws_network_acl_rule" "my-rule" {
-  rule_number    = 200
-  egress         = false
-  protocol       = "tcp"
-  from_port      = 22
-  to_port        = 22
-  rule_action    = "allow"
-  ipv6_cidr_block = "::/0"
-}`,
+ resource "aws_network_acl_rule" "my-rule" {
+   rule_number    = 200
+   egress         = false
+   protocol       = "tcp"
+   from_port      = 22
+   to_port        = 22
+   rule_action    = "allow"
+   ipv6_cidr_block = "::/0"
+ }`,
 			mustIncludeResultCode: expectedCode,
 		},
 	}

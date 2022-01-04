@@ -1,6 +1,9 @@
 IMAGE := tfsec/tfsec
 SHELL := /bin/bash
 
+MKDOCS_IMAGE := aquasec/mkdocs-material:tracee
+MKDOCS_PORT := 8000
+
 .PHONY: image
 image:
 	docker build --build-arg tfsec_version=$(TRAVIS_TAG) -t $(IMAGE) .
@@ -23,8 +26,8 @@ generate-codes-json:
 	@go run ./cmd/tfsec-codes
 
 .PHONY: publish-docs
-publish-docs:
-	./scripts/publish-docs.sh
+publish-docs: generate-docs
+	@python3 ./build_checks_nav.py
 
 .PHONY: new-check
 new-check:
@@ -88,3 +91,9 @@ pr-ready: quality sanity pr-lint typos
 .PHONY: bench
 bench:
 	go test -run ^$$ -bench . ./...
+
+# Runs MkDocs dev server to preview the docs page before it is published.
+.PHONY: mkdocs-serve
+mkdocs-serve:
+	docker build -t $(MKDOCS_IMAGE) -f docs/Dockerfile docs
+	docker  run --name mkdocs-serve --rm -v $(PWD):/docs -p $(MKDOCS_PORT):8000 $(MKDOCS_IMAGE)

@@ -2,13 +2,14 @@ package parser
 
 import (
 	"fmt"
+	"io/fs"
 	"strings"
 
+	"github.com/aquasecurity/defsec/metrics"
+
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/hashicorp/hcl/v2"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/metrics"
 
 	"io/ioutil"
 	"os"
@@ -19,6 +20,7 @@ import (
 type Parser struct {
 	initialPath    string
 	tfvarsPaths    []string
+	excludePaths   []string
 	stopOnFirstTf  bool
 	stopOnHCLError bool
 	workspaceName  string
@@ -40,15 +42,15 @@ func New(initialPath string, options ...Option) *Parser {
 	return p
 }
 
-
-func (parser *Parser) parseDirectoryFiles(files []*hcl.File) ( block.Blocks, error) {
+func (parser *Parser) parseDirectoryFiles(files []File) (block.Blocks, block.Ignores, error) {
 	var blocks block.Blocks
+	var ignores block.Ignores
 
 	for _, file := range files {
-		fileBlocks, err := LoadBlocksFromFile(file)
+		fileBlocks, fileIgnores, err := LoadBlocksFromFile(file, "root")
 		if err != nil {
 			if parser.stopOnHCLError {
-				return nil, err
+				return nil, nil, err
 			}
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: HCL error: %s\n", err)
 			continue
@@ -59,23 +61,26 @@ func (parser *Parser) parseDirectoryFiles(files []*hcl.File) ( block.Blocks, err
 		for _, fileBlock := range fileBlocks {
 			blocks = append(blocks, block.NewHCLBlock(fileBlock, nil, nil))
 		}
+		ignores = append(ignores, fileIgnores...)
 	}
 
-	return blocks, nil
+	return blocks, ignores, nil
 }
 
 // ParseDirectory parses all terraform files within a given directory
 func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 
 	debug.Log("Finding Terraform subdirectories...")
-	t := metrics.Start(metrics.DiskIO)
+	diskTimer := metrics.Timer("timings", "disk i/o")
+	diskTimer.Start()
 	subdirectories, err := parser.getSubdirectories(parser.initialPath)
 	if err != nil {
 		return nil, err
 	}
-	t.Stop()
+	diskTimer.Stop()
 
 	var blocks block.Blocks
+	var ignores block.Ignores
 
 	for _, dir := range subdirectories {
 		if parser.skipDownloaded && strings.Contains(dir, ".terraform") {
@@ -88,15 +93,16 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 			return nil, err
 		}
 
-		parsedBlocks, err := parser.parseDirectoryFiles(files);
+		parsedBlocks, dirIgnores, err := parser.parseDirectoryFiles(files)
 		if err != nil {
 			return nil, err
 		}
+		ignores = append(ignores, dirIgnores...)
 
 		blocks = append(blocks, parsedBlocks...)
 	}
 
-	metrics.Add(metrics.BlocksLoaded, len(blocks))
+	metrics.Counter("counts", "blocks").Increment(len(blocks))
 
 	if len(blocks) == 0 && parser.stopOnFirstTf {
 		return nil, nil
@@ -120,14 +126,14 @@ func (parser *Parser) ParseDirectory() ([]block.Module, error) {
 		debug.Log("Skipping module metadata loading, --exclude-downloaded-modules passed")
 	} else {
 		debug.Log("Loading module metadata...")
-		t = metrics.Start(metrics.DiskIO)
+		diskTimer.Start()
 		modulesMetadata, _ = LoadModuleMetadata(tfPath)
-		t.Stop()
+		diskTimer.Stop()
 	}
 
 	debug.Log("Evaluating expressions...")
 	workingDir, _ := os.Getwd()
-	evaluator := NewEvaluator(tfPath, tfPath, workingDir, blocks, inputVars, modulesMetadata, nil, parser.stopOnHCLError, parser.workspaceName)
+	evaluator := NewEvaluator(tfPath, tfPath, workingDir, "root", blocks, inputVars, modulesMetadata, nil, parser.stopOnHCLError, parser.workspaceName, ignores)
 	modules, err := evaluator.EvaluateAll()
 	if err != nil {
 		return nil, err
@@ -142,18 +148,23 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 		return nil, err
 	}
 
+	entries = parser.RemoveExcluded(path, entries)
+
 	var results []string
 	for _, entry := range entries {
+
 		if !entry.IsDir() && (filepath.Ext(entry.Name()) == ".tf" || strings.HasSuffix(entry.Name(), ".tf.json")) {
 			debug.Log("Found qualifying subdirectory containing .tf files: %s", path)
 			results = append(results, path)
 			if parser.stopOnFirstTf {
 				return results, nil
 			}
+			break
 		}
 	}
 
 	for _, entry := range entries {
+
 		if entry.IsDir() {
 			dirs, err := parser.getSubdirectories(filepath.Join(path, entry.Name()))
 			if err != nil {
@@ -164,4 +175,26 @@ func (parser *Parser) getSubdirectories(path string) ([]string, error) {
 	}
 
 	return results, nil
+}
+
+func (parser *Parser) RemoveExcluded(path string, entries []fs.FileInfo) (valid []fs.FileInfo) {
+	if len(parser.excludePaths) == 0 {
+		return entries
+	}
+
+	for _, entry := range entries {
+		var remove bool
+		fullPath := filepath.Join(path, entry.Name())
+		for _, excludePath := range parser.excludePaths {
+			if fullPath == excludePath {
+				remove = true
+			}
+		}
+		if !remove {
+			valid = append(valid, entry)
+		} else {
+			debug.Log("Excluding path %s", fullPath)
+		}
+	}
+	return valid
 }
