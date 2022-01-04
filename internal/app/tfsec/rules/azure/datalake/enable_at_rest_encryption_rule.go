@@ -1,9 +1,7 @@
 package datalake
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/datalake"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -25,18 +23,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_data_lake_store"},
 		Base:           datalake.CheckEnableAtRestEncryption,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("encryption_state") {
-				return
-			}
-
-			encryptionStateAttr := resourceBlock.GetAttribute("encryption_state")
-			if encryptionStateAttr.Equals("Disabled") {
-				results.Add("Resource defines an unencrypted data lake store.", encryptionStateAttr)
-			}
-
-			return results
-		},
 	})
 }

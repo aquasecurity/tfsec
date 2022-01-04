@@ -35,13 +35,13 @@ func Test_DIGDropletHasNoSSHKeysAssigned(t *testing.T) {
    name     = "web-1"
    region   = "nyc2"
    size     = "s-1vcpu-1gb"
-   ssh_heys = []
+   ssh_keys = []
  }
  `,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
-			name: "TODO: add test name",
+			name: "empty data for ssh key fails",
 			source: `
  data "digitalocean_ssh_key" "terraform" {
    name = "myKey"

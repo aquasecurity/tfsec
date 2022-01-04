@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/aquasecurity/defsec/metrics"
@@ -28,6 +29,25 @@ type ModuleDefinition struct {
 	Path       string
 	Definition block.Block
 	Modules    []block.Module
+}
+
+// getModuleKeyName constructs the module keyname from the block label and the modulename
+func (e *Evaluator) getModuleKeyName(name string) (keyName string) {
+	// regular expression for removing count and or for_each indexes
+	indexRegExp := regexp.MustCompile(`\[.+?\]`)
+
+	if e.moduleName == "root" {
+		return indexRegExp.ReplaceAllString(name, "")
+	}
+
+	modules := strings.Split(e.moduleName, ":")
+	for i := range modules {
+		keyName += strings.TrimPrefix(modules[i], "module.")
+		if i != len(modules)-1 {
+			keyName += "."
+		}
+	}
+	return indexRegExp.ReplaceAllString(keyName+"."+name, "")
 }
 
 // LoadModules reads all module blocks and loads the underlying modules, adding blocks to e.moduleBlocks
@@ -107,8 +127,11 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 
 	if e.moduleMetadata != nil {
 		// if we have module metadata we can parse all the modules as they'll be cached locally!
+
+		name := e.getModuleKeyName(b.Label())
+
 		for _, module := range e.moduleMetadata.Modules {
-			if module.Source == source {
+			if module.Key == name {
 				modulePath = filepath.Clean(filepath.Join(e.projectRootPath, module.Dir))
 				break
 			}
