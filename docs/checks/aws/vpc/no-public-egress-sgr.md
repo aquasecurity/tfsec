@@ -1,12 +1,12 @@
 ---
-title: no-public-egress-sgr
+title: An egress security group rule allows traffic to /0.
 ---
+
+### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation
 
-
 Opening up ports to connect out to the public internet is generally to be avoided. You should restrict access to IP addresses or ranges that are explicitly required where possible.
-
 
 ### Possible Impact
 Your port is egressing data to the internet
@@ -18,14 +18,13 @@ Set a more restrictive cidr range
 ### Insecure Example
 
 The following example will fail the aws-vpc-no-public-egress-sgr check.
-
 ```terraform
 
-resource "aws_security_group_rule" "bad_example" {
-	type = "egress"
-	cidr_blocks = ["0.0.0.0/0"]
-}
-
+ resource "aws_security_group_rule" "bad_example" {
+ 	type = "egress"
+ 	cidr_blocks = ["0.0.0.0/0"]
+ }
+ 
 ```
 
 
@@ -33,22 +32,23 @@ resource "aws_security_group_rule" "bad_example" {
 ### Secure Example
 
 The following example will pass the aws-vpc-no-public-egress-sgr check.
-
 ```terraform
 
-resource "aws_security_group_rule" "good_example" {
-	type = "egress"
-	cidr_blocks = ["10.0.0.0/16"]
-}
-
+ resource "aws_security_group_rule" "good_example" {
+ 	type = "egress"
+ 	cidr_blocks = ["10.0.0.0/16"]
+ }
+ 
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule){:target="_blank" rel="nofollow noreferrer noopener"}
+
+- [https://docs.aws.amazon.com/whitepapers/latest/building-scalable-secure-multi-vpc-network-infrastructure/centralized-egress-to-internet.html](https://docs.aws.amazon.com/whitepapers/latest/building-scalable-secure-multi-vpc-network-infrastructure/centralized-egress-to-internet.html){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

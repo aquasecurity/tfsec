@@ -1,6 +1,8 @@
 ---
-title: rotate-kms-keys
+title: KMS keys should be rotated at least every 90 days
 ---
+
+### Default Severity: <span class="severity high">high</span>
 
 ### Explanation
 
@@ -16,24 +18,23 @@ Set key rotation period to 90 days
 ### Insecure Example
 
 The following example will fail the google-kms-rotate-kms-keys check.
-
 ```terraform
 
-resource "google_kms_key_ring" "keyring" {
-  name     = "keyring-example"
-  location = "global"
-}
-
-resource "google_kms_crypto_key" "example-key" {
-  name            = "crypto-key-example"
-  key_ring        = google_kms_key_ring.keyring.id
-  rotation_period = "15552000s"
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
+ resource "google_kms_key_ring" "keyring" {
+   name     = "keyring-example"
+   location = "global"
+ }
+ 
+ resource "google_kms_crypto_key" "example-key" {
+   name            = "crypto-key-example"
+   key_ring        = google_kms_key_ring.keyring.id
+   rotation_period = "15552000s"
+ 
+   lifecycle {
+     prevent_destroy = true
+   }
+ }
+ 
 ```
 
 
@@ -41,43 +42,31 @@ resource "google_kms_crypto_key" "example-key" {
 ### Secure Example
 
 The following example will pass the google-kms-rotate-kms-keys check.
-
 ```terraform
 
-resource "google_kms_key_ring" "keyring" {
-  name     = "keyring-example"
-  location = "global"
-}
-
-resource "google_kms_crypto_key" "example-key" {
-  name            = "crypto-key-example"
-  key_ring        = google_kms_key_ring.keyring.id
-  rotation_period = "7776000s"
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "google_kms_crypto_key" "example-key" {
-  name            = "crypto-key-example"
-  key_ring        = google_kms_key_ring.keyring.id
-  algorithm       = "EXTERNAL_SYMMETRIC_ENCRYPTION"
-  protectionLevel = "EXTERNAL"
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
+ resource "google_kms_key_ring" "keyring" {
+   name     = "keyring-example"
+   location = "global"
+ }
+ 
+ resource "google_kms_crypto_key" "example-key" {
+   name            = "crypto-key-example"
+   key_ring        = google_kms_key_ring.keyring.id
+   rotation_period = "7776000s"
+ 
+   lifecycle {
+     prevent_destroy = true
+   }
+ }
+ 
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key#rotation_period](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key#rotation_period){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

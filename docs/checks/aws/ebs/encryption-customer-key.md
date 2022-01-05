@@ -1,6 +1,8 @@
 ---
-title: encryption-customer-key
+title: EBS volume encryption should use Customer Managed Keys
 ---
+
+### Default Severity: <span class="severity low">low</span>
 
 ### Explanation
 
@@ -16,18 +18,17 @@ Enable encryption using customer managed keys
 ### Insecure Example
 
 The following example will fail the aws-ebs-encryption-customer-key check.
-
 ```terraform
 
-resource "aws_ebs_volume" "example" {
-  availability_zone = "us-west-2a"
-  size              = 40
-
-  tags = {
-    Name = "HelloWorld"
-  }
-}
-
+ resource "aws_ebs_volume" "example" {
+   availability_zone = "us-west-2a"
+   size              = 40
+ 
+   tags = {
+     Name = "HelloWorld"
+   }
+ }
+ 
 ```
 
 
@@ -35,32 +36,33 @@ resource "aws_ebs_volume" "example" {
 ### Secure Example
 
 The following example will pass the aws-ebs-encryption-customer-key check.
-
 ```terraform
 
-resource "aws_kms_key" "ebs_encryption" {
-	enable_key_rotation = true
-}
-
-resource "aws_ebs_volume" "example" {
-  availability_zone = "us-west-2a"
-  size              = 40
-
-  kms_key_id = aws_kms_key.ebs_encryption.arn
-
-  tags = {
-    Name = "HelloWorld"
-  }
-}
-
+ resource "aws_kms_key" "ebs_encryption" {
+ 	enable_key_rotation = true
+ }
+ 
+ resource "aws_ebs_volume" "example" {
+   availability_zone = "us-west-2a"
+   size              = 40
+ 
+   kms_key_id = aws_kms_key.ebs_encryption.arn
+ 
+   tags = {
+     Name = "HelloWorld"
+   }
+ }
+ 
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume#kms_key_id](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume#kms_key_id){:target="_blank" rel="nofollow noreferrer noopener"}
+
+- [https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

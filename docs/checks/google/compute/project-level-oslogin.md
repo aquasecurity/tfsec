@@ -1,6 +1,8 @@
 ---
-title: project-level-oslogin
+title: OS Login should be enabled at project level
 ---
+
+### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation
 
@@ -16,15 +18,14 @@ Enable OS Login at project level
 ### Insecure Example
 
 The following example will fail the google-compute-project-level-oslogin check.
-
 ```terraform
 
-resource "google_compute_project_metadata" "default" {
-  metadata = {
-	enable-oslogin = false
-  }
-}
-
+ resource "google_compute_project_metadata" "default" {
+   metadata = {
+ 	enable-oslogin = false
+   }
+ }
+ 
 ```
 
 
@@ -32,23 +33,22 @@ resource "google_compute_project_metadata" "default" {
 ### Secure Example
 
 The following example will pass the google-compute-project-level-oslogin check.
-
 ```terraform
 
-resource "google_compute_project_metadata" "default" {
-  metadata = {
-    enable-oslogin = true
-  }
-}
-
+ resource "google_compute_project_metadata" "default" {
+   metadata = {
+     enable-oslogin = true
+   }
+ }
+ 
 ```
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_project_metadata#](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_project_metadata#){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 

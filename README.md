@@ -13,10 +13,6 @@
 tfsec uses static analysis of your terraform templates to spot potential
 security issues. Now with terraform CDK support.
 
-## Aqua and tfsec
-
-Great news - tfsec has [now joined Aqua Security](https://www.aquasec.com/news/aqua-security-acquires-tfsec/). Not only will the project remain open source, it now has a lot more resource and expertise behind it. Expect great new features and many more checks very soon...
-
 ## Example Output
 
 ![Example screenshot](screenshot.png)
@@ -168,15 +164,21 @@ You can include values from a tfvars file in the scan,  using, for example: `--t
 
 ## Included Checks
 
-Checks are currently limited to AWS/Azure/GCP resources, but
-there are also checks which are provider agnostic.
+tfsec supports AWS/Azure/GCP, and a variety of other resources.
+There are also checks which are provider agnostic.
 
 | Checks |
 |:---|
-|[AWS Checks](https://www.tfsec.dev/docs/aws/home/)|
-|[Azure Checks](https://www.tfsec.dev/docs/azure/home/)|
-|[GCP Checks](https://www.tfsec.dev/docs/google/home/)|
-|[General Checks](https://www.tfsec.dev/docs/general/home/)|
+|[AWS Checks](https://aquasecurity.github.io/tfsec/latest/checks/aws/home/)|
+|[Azure Checks](https://aquasecurity.github.io/tfsec/latest/checks/azure/home/)|
+|[GCP Checks](https://aquasecurity.github.io/tfsec/latest/checks/google/home/)|
+|[CloudStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/cloudstack/home/)|
+|[DigitalOcean Checks](https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/home/)|
+|[GitHub Checks](https://aquasecurity.github.io/tfsec/latest/checks/github/home/)|
+|[Kubernetes Checks](https://aquasecurity.github.io/tfsec/latest/checks/kubernetes/home/)|
+|[OpenStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/openstack/home/)|
+|[Oracle Checks](https://aquasecurity.github.io/tfsec/latest/checks/oracle/home/)|
+|[General Checks](https://aquasecurity.github.io/tfsec/latest/checks/general/home/)|
 
 ## Running in CI
 
@@ -218,3 +220,8 @@ We always welcome contributions; big or small, it can be documentation updates, 
 </a>
 
 Made with [contributors-img](https://contrib.rocks).
+
+`tfsec` is an [Aqua Security](https://aquasec.com) open source project.
+Learn about our open source work and portfolio [here](https://www.aquasec.com/products/open-source-projects/).
+Join the community, and talk to us about any matter in [GitHub Discussion](https://github.com/aquasecurity/tfsec/discussions) or [Slack](https://slack.aquasec.com).
+

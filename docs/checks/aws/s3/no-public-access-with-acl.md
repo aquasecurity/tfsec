@@ -1,28 +1,25 @@
 ---
-title: no-public-access-with-acl
+title: S3 Bucket does not have logging enabled.
 ---
+
+### Default Severity: <span class="severity high">high</span>
 
 ### Explanation
 
 
-S3 bucket permissions should be set to deny public access unless explicitly required.
-
-Granting write access publicly with <code>public-read-write</code> is especially dangerous as you will be billed for any uploaded files.
-
-Additionally, you should not use the <code>authenticated-read</code> canned ACL, as this provides read access to any authenticated AWS user, not just AWS users within your organisation.
+Buckets should have logging enabled so that access can be audited. 
 
 
 ### Possible Impact
-The contents of the bucket can be accessed publicly
+There is no way to determine the access to this bucket
 
 ### Suggested Resolution
-Apply a more restrictive bucket ACL
+Add a logging block to the resource to enable access logging
 
 
 ### Insecure Example
 
 The following example will fail the aws-s3-no-public-access-with-acl check.
-
 ```terraform
 
 resource "aws_s3_bucket" "bad_example" {
@@ -36,7 +33,6 @@ resource "aws_s3_bucket" "bad_example" {
 ### Secure Example
 
 The following example will pass the aws-s3-no-public-access-with-acl check.
-
 ```terraform
 
 resource "aws_s3_bucket" "good_example" {
@@ -47,12 +43,12 @@ resource "aws_s3_bucket" "good_example" {
 
 
 
-
-### Related Links
+### Links
 
 
 - [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket){:target="_blank" rel="nofollow noreferrer noopener"}
 
-- [https://aws.amazon.com/premiumsupport/knowledge-center/secure-s3-resources/](https://aws.amazon.com/premiumsupport/knowledge-center/secure-s3-resources/){:target="_blank" rel="nofollow noreferrer noopener"}
+- [https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html](https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html){:target="_blank" rel="nofollow noreferrer noopener"}
+
 
 
