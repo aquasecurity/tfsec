@@ -68,7 +68,8 @@ func adaptCluster(resource block.Block) container.KubernetesCluster {
 		APIServerAuthorizedIPRanges: authIPRangesVals,
 		AddonProfile: container.AddonProfile{
 			OMSAgent: container.OMSAgent{
-				Enabled: enabledVal},
+				Enabled: enabledVal,
+			},
 		},
 		RoleBasedAccessControl: container.RoleBasedAccessControl{
 			Enabled: rbEnabledVal,
