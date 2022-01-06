@@ -1,12 +1,8 @@
 package kms
 
 import (
-	"strconv"
-
 	"github.com/aquasecurity/defsec/rules/google/kms"
 
-	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -55,28 +51,5 @@ func init() {
 			"google_kms_crypto_key",
 		},
 		Base: kms.CheckRotateKmsKeys,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			rotationAttr := resourceBlock.GetAttribute("rotation_period")
-			if rotationAttr.IsNil() || (rotationAttr.IsResolvable() && rotationAttr.IsEmpty()) {
-				results.Add("Resource does not have key rotation enabled.", resourceBlock)
-				return
-			}
-			if !rotationAttr.IsResolvable() || !rotationAttr.IsString() {
-				return
-			}
-
-			rotationStr := rotationAttr.Value().AsString()
-			if rotationStr[len(rotationStr)-1:] != "s" {
-				return
-			}
-			seconds, err := strconv.Atoi(rotationStr[:len(rotationStr)-1])
-			if err != nil {
-				return
-			}
-			if seconds > 7776000 {
-				results.Add("Resource has a key rotation of greater than 90 days.", resourceBlock)
-			}
-			return results
-		},
 	})
 }
