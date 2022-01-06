@@ -1,9 +1,7 @@
 package container
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/container"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -31,18 +29,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_kubernetes_cluster"},
 		Base:           container.CheckLogging,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingNestedChild("addon_profile.oms_agent") {
-				results.Add("Resource AKS logging to Azure Monitoring is not configured.", resourceBlock)
-				return
-			}
-
-			enabledAttr := resourceBlock.GetNestedAttribute("addon_profile.oms_agent.enabled")
-			if enabledAttr.IsFalse() {
-				results.Add("Resource AKS logging to Azure Monitoring is not configured (oms_agent disabled).", enabledAttr)
-			}
-			return results
-		},
 	})
 }
