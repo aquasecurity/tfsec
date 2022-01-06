@@ -29,6 +29,19 @@ func Test_AZUDatabaseAuditingRetention90Days(t *testing.T) {
 			mustIncludeResultCode: expectedCode,
 		},
 		{
+			name: "check passes if retention period is unlimited (0)",
+			source: `
+ resource "azurerm_mssql_database_extended_auditing_policy" "unlimited_retention" {
+   database_id                             = azurerm_mssql_database.example.id
+   storage_endpoint                        = azurerm_storage_account.example.primary_blob_endpoint
+   storage_account_access_key              = azurerm_storage_account.example.primary_access_key
+   storage_account_access_key_is_secondary = false
+   retention_in_days                       = 0
+ }
+ `,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
 			name: "check fails if extended_auditing_policy has retention less than 90 days",
 			source: `
  resource "azurerm_sql_server" "good_example" {
@@ -81,7 +94,7 @@ func Test_AZUDatabaseAuditingRetention90Days(t *testing.T) {
 			mustExcludeResultCode: expectedCode,
 		},
 		{
-			name: "check passes if retention period is greatet than or equal 90",
+			name: "check passes if retention period is greater than or equal 90",
 			source: `
  resource "azurerm_mssql_database_extended_auditing_policy" "good_example" {
    database_id                             = azurerm_mssql_database.example.id
@@ -94,7 +107,7 @@ func Test_AZUDatabaseAuditingRetention90Days(t *testing.T) {
 			mustExcludeResultCode: expectedCode,
 		},
 		{
-			name: "check passes if extended auditing policy has retention period is greatet than or equal 90",
+			name: "check passes if extended auditing policy has retention period is greater than or equal 90",
 			source: `
  resource "azurerm_sql_server" "good_example" {
    name                         = "mssqlserver"
@@ -109,6 +122,27 @@ func Test_AZUDatabaseAuditingRetention90Days(t *testing.T) {
      storage_account_access_key              = azurerm_storage_account.example.primary_access_key
      storage_account_access_key_is_secondary = true
  	retention_in_days                       = 90
+   }
+ }
+ `,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check passes if extended auditing policy is unlimited retention",
+			source: `
+ resource "azurerm_sql_server" "good_example" {
+   name                         = "mssqlserver"
+   resource_group_name          = azurerm_resource_group.example.name
+   location                     = azurerm_resource_group.example.location
+   version                      = "12.0"
+   administrator_login          = "mradministrator"
+   administrator_login_password = "tfsecRocks"
+
+   extended_auditing_policy {
+     storage_endpoint                        = azurerm_storage_account.example.primary_blob_endpoint
+     storage_account_access_key              = azurerm_storage_account.example.primary_access_key
+     storage_account_access_key_is_secondary = true
+     retention_in_days                        = 0
    }
  }
  `,

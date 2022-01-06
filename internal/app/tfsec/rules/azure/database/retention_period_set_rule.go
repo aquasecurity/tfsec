@@ -55,6 +55,12 @@ func init() {
 				// using default of unlimited
 				return
 			}
+
+			if resourceBlock.GetAttribute("retention_in_days").Equals(0) {
+				// using explicit unlimited
+				return
+			}
+
 			if resourceBlock.GetAttribute("retention_in_days").LessThan(90) {
 				results.Add("Resource specifies a retention period of less than 90 days.", resourceBlock)
 			}

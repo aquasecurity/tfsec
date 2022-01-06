@@ -14,7 +14,7 @@ If the retention period is to be explicitly set, it should be set for no less th
 Short logging retention could result in missing valuable historical information
 
 ### Suggested Resolution
-Set retention periods of database auditing to greater than 90 days
+Set retention periods of database auditing to greater than 90 days or unlimited (0).
 
 
 ### Insecure Example
@@ -56,16 +56,8 @@ The following example will pass the azure-database-retention-period-set check.
  
 ```
 
-
-
 ### Links
 
-
 - [https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy){:target="_blank" rel="nofollow noreferrer noopener"}
-
 - [https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server#retention_in_days](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server#retention_in_days){:target="_blank" rel="nofollow noreferrer noopener"}
-
 - [https://docs.microsoft.com/en-us/azure/azure-sql/database/auditing-overview](https://docs.microsoft.com/en-us/azure/azure-sql/database/auditing-overview){:target="_blank" rel="nofollow noreferrer noopener"}
-
-
-
