@@ -1,8 +1,6 @@
 package compute
 
 import (
-	"fmt"
-
 	"github.com/aquasecurity/defsec/provider/digitalocean/compute"
 	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
@@ -10,9 +8,9 @@ import (
 
 func Adapt(modules []block.Module) compute.Compute {
 	return compute.Compute{
-		Droplets:  adaptDroplets(modules),
-		Firewalls: adaptFirewalls(modules),
-		// LoadBalancers: adaptLoadBalancers(modules),
+		Droplets:      adaptDroplets(modules),
+		Firewalls:     adaptFirewalls(modules),
+		LoadBalancers: adaptLoadBalancers(modules),
 	}
 }
 
@@ -51,7 +49,6 @@ func adaptFirewalls(module block.Modules) []compute.Firewall {
 			for _, inBoundRule := range inboundRules {
 				inboundFirewallRule := compute.InboundFirewallRule{}
 				ibSourceAddresses := inBoundRule.GetAttribute("source_addresses")
-				fmt.Println(ibSourceAddresses)
 				if ibSourceAddresses != nil {
 					inboundFirewallRule.SourceAddresses = []types.StringValue{}
 					for _, value := range ibSourceAddresses.ValueAsStrings() {
@@ -60,7 +57,6 @@ func adaptFirewalls(module block.Modules) []compute.Firewall {
 				}
 				inboundFirewallRules = append(inboundFirewallRules, inboundFirewallRule)
 			}
-			fmt.Println(inboundFirewallRules)
 			firewall.InboundRules = inboundFirewallRules
 
 			outboundFirewallRules := []compute.OutboundFirewallRule{}
@@ -70,11 +66,10 @@ func adaptFirewalls(module block.Modules) []compute.Firewall {
 				if obDestinationAddresses != nil {
 					outboundFirewallRule.DestinationAddresses = []types.StringValue{}
 					for _, value := range obDestinationAddresses.ValueAsStrings() {
-						outboundFirewallRule.DestinationAddresses = append(outboundFirewallRule.DestinationAddresses, types.String(value, obDestinationAddresses.Metadata()))
+						outboundFirewallRule.DestinationAddresses = append(outboundFirewallRule.DestinationAddresses, types.String(value, *obDestinationAddresses.GetMetadata()))
 					}
 				}
 				outboundFirewallRules = append(outboundFirewallRules, outboundFirewallRule)
-
 			}
 			firewall.OutboundRules = outboundFirewallRules
 			firewalls = append(firewalls, firewall)
@@ -85,5 +80,22 @@ func adaptFirewalls(module block.Modules) []compute.Firewall {
 }
 
 func adaptLoadBalancers(module block.Modules) []compute.LoadBalancer {
-	return nil
+	var loadBalancers []compute.LoadBalancer
+
+	for _, module := range module {
+		for _, block := range module.GetResourcesByType("digitalocean_loadbalancer") {
+			loadBalancer := compute.LoadBalancer{}
+			forwardingRules := block.GetBlocks("forwarding_rule")
+			fRules := []compute.ForwardingRule{}
+
+			for _, fRule := range forwardingRules {
+				rule := compute.ForwardingRule{}
+				rule.EntryProtocol = fRule.GetAttribute("entry_protocol").AsStringValueOrDefault("", fRule)
+				fRules = append(fRules, rule)
+			}
+			loadBalancers = append(loadBalancers, loadBalancer)
+		}
+	}
+
+	return loadBalancers
 }
