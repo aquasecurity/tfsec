@@ -1,9 +1,7 @@
 package spaces
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/digitalocean/spaces"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -49,15 +47,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"digitalocean_spaces_bucket", "digitalocean_spaces_bucket_object"},
 		Base:           spaces.CheckAclNoPublicRead,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.HasChild("acl") {
-				aclAttr := resourceBlock.GetAttribute("acl")
-				if aclAttr.Equals("public-read", block.IgnoreCase) {
-					results.Add("Resource has a publicly readable acl.", aclAttr)
-				}
-			}
-			return results
-		},
 	})
 }
