@@ -16,68 +16,75 @@ func Test_AZUBlobStorageContainerNoPublicAccess(t *testing.T) {
 		mustExcludeResultCode string
 	}{
 		{
-			name: "check there is an error when the public access is set to blob",
+			name: "check there is an error when the container access type is set to blob",
 			source: `
- resource "azure_storage_container" "blob_storage_container" {
- 	name                  = "terraform-container-storage"
- 	container_access_type = "blob"
- 	
- 	properties = {
- 		"publicAccess" = "blob"
- 	}
+ resource "azurerm_storage_account" "example" {
+	name                     = "examplestoraccount"
  }
- `,
-			mustIncludeResultCode: expectedCode,
-		},
-		{
-			name: "check there is an error when the public access is set to container",
-			source: `
- resource "azure_storage_container" "blob_storage_container" {
- 	name                  = "terraform-container-storage"
- 	container_access_type = "blob"
- 	
- 	properties = {
- 		"publicAccess" = "container"
- 	}
- }
- `,
-			mustIncludeResultCode: expectedCode,
-		},
-		{
-			name: "check there is no failure when the public access is set to off",
-			source: `
- resource "azure_storage_container" "blob_storage_container" {
- 	name                  = "terraform-container-storage"
- 	container_access_type = "blob"
- 	
- 	properties = {
- 		"publicAccess" = "off"
- 	}
- }
- `,
-			mustExcludeResultCode: expectedCode,
-		},
-		{
-			name: "check there is no failure when public access level is not set",
-			source: `
- resource "azure_storage_container" "blob_storage_container" {
- 	name                  = "terraform-container-storage"
- 	container_access_type = "blob"
- 	
- 	properties = {
- 		"publicAccess" = "off"
- 	}
- }
- `,
-			mustExcludeResultCode: expectedCode,
-		},
-		{
-			name: "check there is no failure when no properties are supplied",
-			source: `
- resource "azure_storage_container" "blob_storage_container" {
- 	name                  = "terraform-container-storage"
- 	container_access_type = "blob"
  
+ resource "azurerm_storage_container" "blob_storage_container" {
+ 	name                  = "terraform-container-storage"
+ 	container_access_type = "blob"
+	storage_account_name  = azurerm_storage_account.example.name
+ }
+ `,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check there is an error when the container access type is set to container",
+			source: `
+ resource "azurerm_storage_account" "example" {
+	name                     = "examplestoraccount"
+ }
+
+ resource "azurerm_storage_container" "blob_storage_container" {
+ 	name                  = "terraform-container-storage"
+	storage_account_name  = azurerm_storage_account.example.name
+ 	container_access_type = "container"
+ }
+ `,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check there is no failure when the container access type is set to private",
+			source: `
+ resource "azurerm_storage_account" "example" {
+ 	name                     = "examplestoraccount"
+ }
+
+ resource "azurerm_storage_container" "blob_storage_container" {
+ 	name                  = "terraform-container-storage"
+	storage_account_name  = azurerm_storage_account.example.name
+ 	container_access_type = "private"
+ }
+ `,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check there is no failure when container access type is not set",
+			source: `
+ resource "azurerm_storage_account" "example" {
+ 	name                     = "examplestoraccount"
+ }
+
+ resource "azurerm_storage_container" "blob_storage_container" {
+ 	name                  = "terraform-container-storage"
+	storage_account_name  = azurerm_storage_account.example.name
+	container_access_type = ""
+ }
+ `,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check there is no failure when no container access type is supplied",
+			source: `
+ resource "azurerm_storage_account" "example" {
+	name                     = "examplestoraccount"
+ }
+
+ resource "azurerm_storage_container" "blob_storage_container" {
+ 	name                  = "terraform-container-storage"
+	storage_account_name  = azurerm_storage_account.example.name
  }
  `,
 			mustExcludeResultCode: expectedCode,

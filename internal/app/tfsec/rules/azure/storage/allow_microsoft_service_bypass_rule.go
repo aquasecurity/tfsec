@@ -1,9 +1,7 @@
 package storage
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/storage"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -80,23 +78,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_storage_account_network_rules", "azurerm_storage_account"},
 		Base:           storage.CheckAllowMicrosoftServiceBypass,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.IsResourceType("azurerm_storage_account") {
-				if resourceBlock.MissingChild("network_rules") {
-					return
-				}
-				resourceBlock = resourceBlock.GetBlock("network_rules")
-			}
-
-			if resourceBlock.HasChild("bypass") {
-				bypass := resourceBlock.GetAttribute("bypass")
-				if bypass.IsNotNil() && !bypass.Contains("AzureServices") {
-					results.Add("Resource defines a network rule that doesn't allow bypass of Microsoft Services.", bypass)
-				}
-			}
-
-			return results
-		},
 	})
 }
