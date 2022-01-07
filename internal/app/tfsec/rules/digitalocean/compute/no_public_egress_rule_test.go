@@ -77,7 +77,7 @@ func Test_DIGFirewallHasOpenOutboundAccess(t *testing.T) {
  	outbound_rule {
  	  protocol         = "tcp"
  	  port_range       = "22"
- 	  destination_addresses = ["192.168.1.0/24", "2002:1:2::/48"]
+ 	  destination_addresses = ["192.168.1.0/24", "fc02:1:2::/48"]
  	}
  }
  

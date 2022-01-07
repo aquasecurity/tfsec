@@ -1,10 +1,7 @@
 package compute
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/digitalocean/compute"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -44,20 +41,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"digitalocean_firewall"},
 		Base:           compute.CheckNoPublicIngress,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			inboundBlocks := resourceBlock.GetBlocks("inbound_rule")
-
-			for _, inboundRuleBlock := range inboundBlocks {
-				if inboundRuleBlock.MissingChild("source_addresses") {
-					continue
-				}
-				sourceAddressesAttr := inboundRuleBlock.GetAttribute("source_addresses")
-				if cidr.IsAttributeOpen(sourceAddressesAttr) {
-					results.Add("Resource defines a fully open inbound_rule.", sourceAddressesAttr)
-				}
-			}
-			return results
-		},
 	})
 }

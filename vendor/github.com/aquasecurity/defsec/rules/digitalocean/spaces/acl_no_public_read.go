@@ -9,7 +9,7 @@ import (
 
 var CheckAclNoPublicRead = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-DIG-0006",
+		AVDID:       "AVD-DIG-0006",
 		Provider:    provider.DigitalOceanProvider,
 		Service:     "spaces",
 		ShortCode:   "acl-no-public-read",
@@ -20,17 +20,17 @@ var CheckAclNoPublicRead = rules.Register(
 		Links: []string{
 			"https://docs.digitalocean.com/reference/api/spaces-api/#access-control-lists-acls",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformAclNoPublicReadGoodExamples,
-            BadExamples:         terraformAclNoPublicReadBadExamples,
-            Links:               terraformAclNoPublicReadLinks,
-            RemediationMarkdown: terraformAclNoPublicReadRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformAclNoPublicReadGoodExamples,
+			BadExamples:         terraformAclNoPublicReadBadExamples,
+			Links:               terraformAclNoPublicReadLinks,
+			RemediationMarkdown: terraformAclNoPublicReadRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.DigitalOcean.Spaces.Buckets {
-			if bucket.ACL.GetMetadata().IsManaged() {
+			if bucket.IsManaged() {
 				if bucket.ACL.EqualTo("public-read") {
 					results.Add(
 						"Bucket is publicly exposed.",

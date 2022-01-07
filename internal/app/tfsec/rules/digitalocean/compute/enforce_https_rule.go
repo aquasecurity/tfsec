@@ -1,9 +1,7 @@
 package compute
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/digitalocean/compute"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -49,23 +47,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"digitalocean_loadbalancer"},
 		Base:           compute.CheckEnforceHttps,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("forwarding_rule") {
-				return
-			}
-
-			forwardingRules := resourceBlock.GetBlocks("forwarding_rule")
-			for _, rule := range forwardingRules {
-				if rule.MissingChild("entry_protocol") {
-					continue
-				}
-				entryPointAttr := rule.GetAttribute("entry_protocol")
-				if entryPointAttr.Equals("http", block.IgnoreCase) {
-					results.Add("Resource uses plain HTTP instead of HTTPS.", entryPointAttr)
-				}
-			}
-			return results
-		},
 	})
 }

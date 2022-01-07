@@ -7,6 +7,8 @@ type Spaces struct {
 }
 
 type Bucket struct {
+	types.Metadata
+	Name         types.StringValue
 	Objects      []Object
 	ACL          types.StringValue
 	ForceDestroy types.BoolValue
@@ -19,4 +21,12 @@ type Versioning struct {
 
 type Object struct {
 	ACL types.StringValue
+}
+
+func (b *Bucket) GetMetadata() *types.Metadata {
+	return &b.Metadata
+}
+
+func (b *Bucket) GetRawValue() interface{} {
+	return nil
 }
