@@ -29,6 +29,9 @@ func Test_DIGPublicReadAclOnSpacesBucket(t *testing.T) {
 		{
 			name: "Spaces bucket object with public-read acl fails check",
 			source: `
+ resource "digitalocean_spaces_bucket" "bad_example" {
+	name   = "foobar"
+ }
  resource "digitalocean_spaces_bucket_object" "index" {
    region       = digitalocean_spaces_bucket.bad_example.region
    bucket       = digitalocean_spaces_bucket.bad_example.name
@@ -43,6 +46,9 @@ func Test_DIGPublicReadAclOnSpacesBucket(t *testing.T) {
 		{
 			name: "Spaces bucket object using default acl (private) passes check",
 			source: `
+resource "digitalocean_spaces_bucket" "good_example" {
+	name   = "foobar"
+}
  resource "digitalocean_spaces_bucket_object" "index" {
    region       = digitalocean_spaces_bucket.good_example.region
    bucket       = digitalocean_spaces_bucket.good_example.name
