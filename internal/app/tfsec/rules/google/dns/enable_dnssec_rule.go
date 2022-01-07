@@ -1,9 +1,7 @@
 package dns
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/dns"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -54,13 +52,5 @@ func init() {
 			"google_dns_managed_zone",
 		},
 		Base: dns.CheckEnableDnssec,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if stateAttr := resourceBlock.GetBlock("dnssec_config").GetAttribute("state"); stateAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for dnssec_config.state", resourceBlock)
-			} else if stateAttr.NotEqual("on") {
-				results.Add("Resource does not have dnssec_config.state set to on", stateAttr)
-			}
-			return results
-		},
 	})
 }
