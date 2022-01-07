@@ -22,7 +22,19 @@ Simplifies auditing, debugging, and managing security groups.`,
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/SecurityGroups.Creating.html",
 		},
-		Severity: severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformAddDescriptionForSecurityGroupGoodExamples,
+            BadExamples:         terraformAddDescriptionForSecurityGroupBadExamples,
+            Links:               terraformAddDescriptionForSecurityGroupLinks,
+            RemediationMarkdown: terraformAddDescriptionForSecurityGroupRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationAddDescriptionForSecurityGroupGoodExamples,
+            BadExamples:         cloudFormationAddDescriptionForSecurityGroupBadExamples,
+            Links:               cloudFormationAddDescriptionForSecurityGroupLinks,
+            RemediationMarkdown: cloudFormationAddDescriptionForSecurityGroupRemediationMarkdown,
+        },
+        Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, sg := range s.AWS.ElastiCache.SecurityGroups {

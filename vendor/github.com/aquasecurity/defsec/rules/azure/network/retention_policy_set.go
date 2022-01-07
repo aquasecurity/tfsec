@@ -23,7 +23,13 @@ Setting an retention policy will help ensure as much information is available fo
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/network-watcher/network-watcher-monitoring-overview",
 		},
-		Severity: severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformRetentionPolicySetGoodExamples,
+            BadExamples:         terraformRetentionPolicySetBadExamples,
+            Links:               terraformRetentionPolicySetLinks,
+            RemediationMarkdown: terraformRetentionPolicySetRemediationMarkdown,
+        },
+        Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, flowLog := range s.Azure.Network.NetworkWatcherFlowLogs {

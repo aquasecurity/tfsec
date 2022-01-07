@@ -20,7 +20,19 @@ var CheckEnableQueueEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableQueueEncryptionGoodExamples,
+            BadExamples:         terraformEnableQueueEncryptionBadExamples,
+            Links:               terraformEnableQueueEncryptionLinks,
+            RemediationMarkdown: terraformEnableQueueEncryptionRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableQueueEncryptionGoodExamples,
+            BadExamples:         cloudFormationEnableQueueEncryptionBadExamples,
+            Links:               cloudFormationEnableQueueEncryptionLinks,
+            RemediationMarkdown: cloudFormationEnableQueueEncryptionRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, queue := range s.AWS.SQS.Queues {

@@ -20,7 +20,13 @@ var CheckNoPublicIngress = rules.Register(
 		Links: []string{
 			"https://docs.digitalocean.com/products/networking/firewalls/how-to/configure-rules/",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicIngressGoodExamples,
+            BadExamples:         terraformNoPublicIngressBadExamples,
+            Links:               terraformNoPublicIngressLinks,
+            RemediationMarkdown: terraformNoPublicIngressRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, x := range s.AWS.S3.Buckets {

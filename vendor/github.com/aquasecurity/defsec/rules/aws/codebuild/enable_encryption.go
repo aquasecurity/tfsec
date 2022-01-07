@@ -21,7 +21,19 @@ var CheckEnableEncryption = rules.Register(
 			"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-codebuild-project-artifacts.html",
 			"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableEncryptionGoodExamples,
+            BadExamples:         terraformEnableEncryptionBadExamples,
+            Links:               terraformEnableEncryptionLinks,
+            RemediationMarkdown: terraformEnableEncryptionRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableEncryptionGoodExamples,
+            BadExamples:         cloudFormationEnableEncryptionBadExamples,
+            Links:               cloudFormationEnableEncryptionLinks,
+            RemediationMarkdown: cloudFormationEnableEncryptionRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, project := range s.AWS.CodeBuild.Projects {

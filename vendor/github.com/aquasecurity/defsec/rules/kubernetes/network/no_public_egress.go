@@ -19,7 +19,13 @@ var CheckNoPublicEgress = rules.Register(
 		Resolution:  "Remove public access except where explicitly required",
 		Explanation: `You should not expose infrastructure to the public internet except where explicitly required`,
 		Links:       []string{},
-		Severity:    severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicEgressGoodExamples,
+            BadExamples:         terraformNoPublicEgressBadExamples,
+            Links:               terraformNoPublicEgressLinks,
+            RemediationMarkdown: terraformNoPublicEgressRemediationMarkdown,
+        },
+        Severity:    severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, policy := range s.Kubernetes.NetworkPolicies {

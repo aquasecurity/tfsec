@@ -20,7 +20,13 @@ var CheckAclNoPublicRead = rules.Register(
 		Links: []string{
 			"https://docs.digitalocean.com/reference/api/spaces-api/#access-control-lists-acls",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformAclNoPublicReadGoodExamples,
+            BadExamples:         terraformAclNoPublicReadBadExamples,
+            Links:               terraformAclNoPublicReadLinks,
+            RemediationMarkdown: terraformAclNoPublicReadRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.DigitalOcean.Spaces.Buckets {

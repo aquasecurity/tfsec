@@ -22,7 +22,19 @@ The encryption key specified in ` + "`" + `performance_insights_kms_key_id` + "`
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.htm",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnablePerformanceInsightsGoodExamples,
+            BadExamples:         terraformEnablePerformanceInsightsBadExamples,
+            Links:               terraformEnablePerformanceInsightsLinks,
+            RemediationMarkdown: terraformEnablePerformanceInsightsRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnablePerformanceInsightsGoodExamples,
+            BadExamples:         cloudFormationEnablePerformanceInsightsBadExamples,
+            Links:               cloudFormationEnablePerformanceInsightsLinks,
+            RemediationMarkdown: cloudFormationEnablePerformanceInsightsRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.RDS.Clusters {

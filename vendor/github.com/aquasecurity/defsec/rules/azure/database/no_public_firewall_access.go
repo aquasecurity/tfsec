@@ -21,7 +21,13 @@ var CheckNoPublicFirewallAccess = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/rest/api/sql/2021-02-01-preview/firewall-rules/create-or-update",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicFirewallAccessGoodExamples,
+            BadExamples:         terraformNoPublicFirewallAccessBadExamples,
+            Links:               terraformNoPublicFirewallAccessLinks,
+            RemediationMarkdown: terraformNoPublicFirewallAccessRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.MariaDBServers {

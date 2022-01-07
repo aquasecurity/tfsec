@@ -20,7 +20,13 @@ var CheckUseServiceAccount = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#use_least_privilege_sa",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformUseServiceAccountGoodExamples,
+            BadExamples:         terraformUseServiceAccountBadExamples,
+            Links:               terraformUseServiceAccountLinks,
+            RemediationMarkdown: terraformUseServiceAccountRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {

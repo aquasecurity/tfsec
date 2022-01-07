@@ -20,7 +20,13 @@ var CheckNoProjectLevelDefaultServiceAccountAssignment = rules.Register(
 		Links: []string{
 			"",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoProjectLevelDefaultServiceAccountAssignmentGoodExamples,
+            BadExamples:         terraformNoProjectLevelDefaultServiceAccountAssignmentBadExamples,
+            Links:               terraformNoProjectLevelDefaultServiceAccountAssignmentLinks,
+            RemediationMarkdown: terraformNoProjectLevelDefaultServiceAccountAssignmentRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, project := range s.Google.Platform.AllProjects() {

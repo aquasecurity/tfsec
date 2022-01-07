@@ -23,7 +23,13 @@ You can do this by either setting <code>private</code> attribute to 'true' or <c
 			"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-repository-visibility",
 			"https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-repository-visibility#about-internal-repositories",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformPrivateGoodExamples,
+            BadExamples:         terraformPrivateBadExamples,
+            Links:               terraformPrivateLinks,
+            RemediationMarkdown: terraformPrivateRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, repo := range s.GitHub.Repositories {

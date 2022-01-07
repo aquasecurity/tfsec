@@ -21,7 +21,13 @@ var CheckPgLogConnections = rules.Register(
 		Links: []string{
 			"https://www.postgresql.org/docs/13/runtime-config-logging.html#GUC-LOG-CONNECTIONS",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformPgLogConnectionsGoodExamples,
+            BadExamples:         terraformPgLogConnectionsBadExamples,
+            Links:               terraformPgLogConnectionsLinks,
+            RemediationMarkdown: terraformPgLogConnectionsRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {

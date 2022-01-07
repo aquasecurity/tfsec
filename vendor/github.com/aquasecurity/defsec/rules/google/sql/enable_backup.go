@@ -20,7 +20,13 @@ var CheckEnableBackup = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/sql/docs/mysql/backup-recovery/backups",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableBackupGoodExamples,
+            BadExamples:         terraformEnableBackupBadExamples,
+            Links:               terraformEnableBackupLinks,
+            RemediationMarkdown: terraformEnableBackupRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {

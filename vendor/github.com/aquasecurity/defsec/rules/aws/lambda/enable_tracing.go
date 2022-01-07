@@ -21,7 +21,19 @@ var CheckEnableTracing = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html",
 		},
-		Severity: severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableTracingGoodExamples,
+            BadExamples:         terraformEnableTracingBadExamples,
+            Links:               terraformEnableTracingLinks,
+            RemediationMarkdown: terraformEnableTracingRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableTracingGoodExamples,
+            BadExamples:         cloudFormationEnableTracingBadExamples,
+            Links:               cloudFormationEnableTracingLinks,
+            RemediationMarkdown: cloudFormationEnableTracingRemediationMarkdown,
+        },
+        Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, function := range s.AWS.Lambda.Functions {

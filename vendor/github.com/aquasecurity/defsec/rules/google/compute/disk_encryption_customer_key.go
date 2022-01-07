@@ -18,7 +18,13 @@ var CheckDiskEncryptionCustomerKey = rules.Register(
 		Resolution:  "Use managed keys to encrypt disks.",
 		Explanation: `Using unmanaged keys makes rotation and general management difficult.`,
 		Links:       []string{},
-		Severity:    severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformDiskEncryptionCustomerKeyGoodExamples,
+            BadExamples:         terraformDiskEncryptionCustomerKeyBadExamples,
+            Links:               terraformDiskEncryptionCustomerKeyLinks,
+            RemediationMarkdown: terraformDiskEncryptionCustomerKeyRemediationMarkdown,
+        },
+        Severity:    severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, disk := range s.Google.Compute.Disks {

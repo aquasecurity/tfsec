@@ -18,7 +18,13 @@ var CheckRotateKmsKeys = rules.Register(
 		Resolution:  "Set key rotation period to 90 days",
 		Explanation: `Keys should be rotated on a regular basis to limit exposure if a given key should become compromised.`,
 		Links:       []string{},
-		Severity:    severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformRotateKmsKeysGoodExamples,
+            BadExamples:         terraformRotateKmsKeysBadExamples,
+            Links:               terraformRotateKmsKeysLinks,
+            RemediationMarkdown: terraformRotateKmsKeysRemediationMarkdown,
+        },
+        Severity:    severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, keyring := range s.Google.KMS.KeyRings {

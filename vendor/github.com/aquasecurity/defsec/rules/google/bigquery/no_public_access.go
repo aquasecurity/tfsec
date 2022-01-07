@@ -19,7 +19,13 @@ var CheckNoPublicAccess = rules.Register(
 		Resolution:  "Configure access permissions with higher granularity",
 		Explanation: `Using 'allAuthenticatedUsers' provides any GCP user - even those outside of your organisation - access to your BigQuery dataset.`,
 		Links:       []string{},
-		Severity:    severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicAccessGoodExamples,
+            BadExamples:         terraformNoPublicAccessBadExamples,
+            Links:               terraformNoPublicAccessLinks,
+            RemediationMarkdown: terraformNoPublicAccessRemediationMarkdown,
+        },
+        Severity:    severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, dataset := range s.Google.BigQuery.Datasets {

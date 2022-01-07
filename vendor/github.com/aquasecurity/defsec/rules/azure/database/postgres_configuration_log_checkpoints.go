@@ -20,7 +20,13 @@ var CheckPostgresConfigurationLogCheckpoints = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/postgresql/concepts-server-logs#configure-logging",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformPostgresConfigurationLogCheckpointsGoodExamples,
+            BadExamples:         terraformPostgresConfigurationLogCheckpointsBadExamples,
+            Links:               terraformPostgresConfigurationLogCheckpointsLinks,
+            RemediationMarkdown: terraformPostgresConfigurationLogCheckpointsRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.PostgreSQLServers {

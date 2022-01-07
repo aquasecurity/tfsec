@@ -20,7 +20,13 @@ var CheckNoOrgLevelServiceAccountImpersonation = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/iam/docs/impersonating-service-accounts",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoOrgLevelServiceAccountImpersonationGoodExamples,
+            BadExamples:         terraformNoOrgLevelServiceAccountImpersonationBadExamples,
+            Links:               terraformNoOrgLevelServiceAccountImpersonationLinks,
+            RemediationMarkdown: terraformNoOrgLevelServiceAccountImpersonationRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, org := range s.Google.Platform.Organizations {

@@ -18,7 +18,13 @@ var CheckUseSecureTlsPolicy = rules.Register(
 		Resolution:  "The TLS version being outdated and has known vulnerabilities",
 		Explanation: `Use a more recent TLS/SSL policy for the App Service`,
 		Links:       []string{},
-		Severity:    severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformUseSecureTlsPolicyGoodExamples,
+            BadExamples:         terraformUseSecureTlsPolicyBadExamples,
+            Links:               terraformUseSecureTlsPolicyLinks,
+            RemediationMarkdown: terraformUseSecureTlsPolicyRemediationMarkdown,
+        },
+        Severity:    severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, service := range s.Azure.AppService.Services {

@@ -20,7 +20,13 @@ var CheckNoProjectLevelServiceAccountImpersonation = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/iam/docs/impersonating-service-accounts",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoProjectLevelServiceAccountImpersonationGoodExamples,
+            BadExamples:         terraformNoProjectLevelServiceAccountImpersonationBadExamples,
+            Links:               terraformNoProjectLevelServiceAccountImpersonationLinks,
+            RemediationMarkdown: terraformNoProjectLevelServiceAccountImpersonationRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, project := range s.Google.Platform.AllProjects() {

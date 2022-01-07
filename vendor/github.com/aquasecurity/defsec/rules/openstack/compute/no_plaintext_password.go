@@ -18,7 +18,13 @@ var CheckNoPlaintextPassword = rules.Register(
 		Resolution:  "Do not use plaintext passwords in terraform files",
 		Explanation: `Assigning a password to the compute instance using plaintext could lead to compromise; it would be preferable to use key-pairs as a login mechanism`,
 		Links:       []string{},
-		Severity:    severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPlaintextPasswordGoodExamples,
+            BadExamples:         terraformNoPlaintextPasswordBadExamples,
+            Links:               terraformNoPlaintextPasswordLinks,
+            RemediationMarkdown: terraformNoPlaintextPasswordRemediationMarkdown,
+        },
+        Severity:    severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.OpenStack.Compute.Instances {

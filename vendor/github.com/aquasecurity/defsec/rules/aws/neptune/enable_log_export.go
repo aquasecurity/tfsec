@@ -20,7 +20,19 @@ var CheckEnableLogExport = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/neptune/latest/userguide/auditing.html",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableLogExportGoodExamples,
+            BadExamples:         terraformEnableLogExportBadExamples,
+            Links:               terraformEnableLogExportLinks,
+            RemediationMarkdown: terraformEnableLogExportRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableLogExportGoodExamples,
+            BadExamples:         cloudFormationEnableLogExportBadExamples,
+            Links:               cloudFormationEnableLogExportLinks,
+            RemediationMarkdown: cloudFormationEnableLogExportRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.Neptune.Clusters {

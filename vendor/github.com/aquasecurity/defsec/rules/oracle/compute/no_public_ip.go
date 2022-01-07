@@ -20,7 +20,13 @@ var CheckNoPublicIp = rules.Register(
 
 The compute instance has the ability to be reached from outside, you might want to sonder the use of a non public IP.`,
 		Links:    []string{},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicIpGoodExamples,
+            BadExamples:         terraformNoPublicIpBadExamples,
+            Links:               terraformNoPublicIpLinks,
+            RemediationMarkdown: terraformNoPublicIpRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, reservation := range s.Oracle.Compute.AddressReservations {

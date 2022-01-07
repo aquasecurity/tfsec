@@ -22,7 +22,13 @@ Purge protection can only be enabled once soft-delete is enabled. It can be turn
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/key-vault/general/soft-delete-overview#purge-protection",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPurgeGoodExamples,
+            BadExamples:         terraformNoPurgeBadExamples,
+            Links:               terraformNoPurgeLinks,
+            RemediationMarkdown: terraformNoPurgeRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, vault := range s.Azure.KeyVault.Vaults {

@@ -22,7 +22,19 @@ You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning 
 		Links: []string{
 			"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-data-protection.html",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnforceHttpsGoodExamples,
+            BadExamples:         terraformEnforceHttpsBadExamples,
+            Links:               terraformEnforceHttpsLinks,
+            RemediationMarkdown: terraformEnforceHttpsRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnforceHttpsGoodExamples,
+            BadExamples:         cloudFormationEnforceHttpsBadExamples,
+            Links:               cloudFormationEnforceHttpsLinks,
+            RemediationMarkdown: cloudFormationEnforceHttpsRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, domain := range s.AWS.Elasticsearch.Domains {

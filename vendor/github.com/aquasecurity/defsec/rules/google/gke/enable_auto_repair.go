@@ -18,7 +18,13 @@ var CheckEnableAutoRepair = rules.Register(
 		Resolution:  "Enable automatic repair",
 		Explanation: `Automatic repair will monitor nodes and attempt repair when a node fails multiple subsequent health checks`,
 		Links:       []string{},
-		Severity:    severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableAutoRepairGoodExamples,
+            BadExamples:         terraformEnableAutoRepairBadExamples,
+            Links:               terraformEnableAutoRepairLinks,
+            RemediationMarkdown: terraformEnableAutoRepairRemediationMarkdown,
+        },
+        Severity:    severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {

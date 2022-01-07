@@ -18,7 +18,13 @@ var CheckNoDefaultServiceAccount = rules.Register(
 		Resolution:  "Remove use of default service account",
 		Explanation: `The default service account has full project access. Instances should instead be assigned the minimal access they need.`,
 		Links:       []string{},
-		Severity:    severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoDefaultServiceAccountGoodExamples,
+            BadExamples:         terraformNoDefaultServiceAccountBadExamples,
+            Links:               terraformNoDefaultServiceAccountLinks,
+            RemediationMarkdown: terraformNoDefaultServiceAccountRemediationMarkdown,
+        },
+        Severity:    severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.Compute.Instances {

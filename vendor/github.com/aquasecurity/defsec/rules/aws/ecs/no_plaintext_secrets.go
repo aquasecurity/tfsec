@@ -25,7 +25,19 @@ var CheckNoPlaintextSecrets = rules.Register(
 			"https://docs.aws.amazon.com/systems-manager/latest/userguide/integration-ps-secretsmanager.html",
 			"https://www.vaultproject.io/",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPlaintextSecretsGoodExamples,
+            BadExamples:         terraformNoPlaintextSecretsBadExamples,
+            Links:               terraformNoPlaintextSecretsLinks,
+            RemediationMarkdown: terraformNoPlaintextSecretsRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationNoPlaintextSecretsGoodExamples,
+            BadExamples:         cloudFormationNoPlaintextSecretsBadExamples,
+            Links:               cloudFormationNoPlaintextSecretsLinks,
+            RemediationMarkdown: cloudFormationNoPlaintextSecretsRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 

@@ -20,7 +20,13 @@ var CheckActivityLogRetentionSet = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/platform-logs-overview",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformActivityLogRetentionSetGoodExamples,
+            BadExamples:         terraformActivityLogRetentionSetBadExamples,
+            Links:               terraformActivityLogRetentionSetLinks,
+            RemediationMarkdown: terraformActivityLogRetentionSetRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, profile := range s.Azure.Monitor.LogProfiles {

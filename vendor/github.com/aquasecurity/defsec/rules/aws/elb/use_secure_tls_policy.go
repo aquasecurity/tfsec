@@ -25,7 +25,13 @@ var CheckUseSecureTlsPolicy = rules.Register(
 		Resolution:  "Use a more recent TLS/SSL policy for the load balancer",
 		Explanation: `You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.`,
 		Links:       []string{},
-		Severity:    severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformUseSecureTlsPolicyGoodExamples,
+            BadExamples:         terraformUseSecureTlsPolicyBadExamples,
+            Links:               terraformUseSecureTlsPolicyLinks,
+            RemediationMarkdown: terraformUseSecureTlsPolicyRemediationMarkdown,
+        },
+        Severity:    severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, lb := range s.AWS.ELB.LoadBalancers {

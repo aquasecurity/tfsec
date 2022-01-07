@@ -18,7 +18,13 @@ var CheckNoRsaSha1 = rules.Register(
 		Resolution:  "Use RSA SHA512",
 		Explanation: `RSA SHA1 is a weaker algorithm than SHA2-based algorithms such as RSA SHA256/512`,
 		Links:       []string{},
-		Severity:    severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoRsaSha1GoodExamples,
+            BadExamples:         terraformNoRsaSha1BadExamples,
+            Links:               terraformNoRsaSha1Links,
+            RemediationMarkdown: terraformNoRsaSha1RemediationMarkdown,
+        },
+        Severity:    severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, zone := range s.Google.DNS.ManagedZones {

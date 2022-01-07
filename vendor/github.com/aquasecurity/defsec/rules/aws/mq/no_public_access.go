@@ -20,7 +20,19 @@ var CheckNoPublicAccess = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/using-amazon-mq-securely.html#prefer-brokers-without-public-accessibility",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicAccessGoodExamples,
+            BadExamples:         terraformNoPublicAccessBadExamples,
+            Links:               terraformNoPublicAccessLinks,
+            RemediationMarkdown: terraformNoPublicAccessRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationNoPublicAccessGoodExamples,
+            BadExamples:         cloudFormationNoPublicAccessBadExamples,
+            Links:               cloudFormationNoPublicAccessLinks,
+            RemediationMarkdown: cloudFormationNoPublicAccessRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, broker := range s.AWS.MQ.Brokers {

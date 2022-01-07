@@ -20,7 +20,19 @@ var CheckEnableAllRegions = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/receive-cloudtrail-log-files-from-multiple-regions.html",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableAllRegionsGoodExamples,
+            BadExamples:         terraformEnableAllRegionsBadExamples,
+            Links:               terraformEnableAllRegionsLinks,
+            RemediationMarkdown: terraformEnableAllRegionsRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableAllRegionsGoodExamples,
+            BadExamples:         cloudFormationEnableAllRegionsBadExamples,
+            Links:               cloudFormationEnableAllRegionsLinks,
+            RemediationMarkdown: cloudFormationEnableAllRegionsRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, trail := range s.AWS.CloudTrail.Trails {

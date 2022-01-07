@@ -21,7 +21,13 @@ var CheckMysqlNoLocalInfile = rules.Register(
 		Links: []string{
 			"https://dev.mysql.com/doc/refman/8.0/en/load-data-local-security.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformMysqlNoLocalInfileGoodExamples,
+            BadExamples:         terraformMysqlNoLocalInfileBadExamples,
+            Links:               terraformMysqlNoLocalInfileLinks,
+            RemediationMarkdown: terraformMysqlNoLocalInfileRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {

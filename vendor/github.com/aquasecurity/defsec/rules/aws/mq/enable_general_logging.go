@@ -20,7 +20,19 @@ var CheckEnableGeneralLogging = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/configure-logging-monitoring-activemq.html",
 		},
-		Severity: severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableGeneralLoggingGoodExamples,
+            BadExamples:         terraformEnableGeneralLoggingBadExamples,
+            Links:               terraformEnableGeneralLoggingLinks,
+            RemediationMarkdown: terraformEnableGeneralLoggingRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableGeneralLoggingGoodExamples,
+            BadExamples:         cloudFormationEnableGeneralLoggingBadExamples,
+            Links:               cloudFormationEnableGeneralLoggingLinks,
+            RemediationMarkdown: cloudFormationEnableGeneralLoggingRemediationMarkdown,
+        },
+        Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, broker := range s.AWS.MQ.Brokers {

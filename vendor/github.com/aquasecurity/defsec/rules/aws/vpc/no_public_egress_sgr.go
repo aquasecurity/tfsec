@@ -21,7 +21,19 @@ var CheckNoPublicEgressSgr = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/whitepapers/latest/building-scalable-secure-multi-vpc-network-infrastructure/centralized-egress-to-internet.html",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicEgressSgrGoodExamples,
+            BadExamples:         terraformNoPublicEgressSgrBadExamples,
+            Links:               terraformNoPublicEgressSgrLinks,
+            RemediationMarkdown: terraformNoPublicEgressSgrRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationNoPublicEgressSgrGoodExamples,
+            BadExamples:         cloudFormationNoPublicEgressSgrBadExamples,
+            Links:               cloudFormationNoPublicEgressSgrLinks,
+            RemediationMarkdown: cloudFormationNoPublicEgressSgrRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.AWS.VPC.SecurityGroups {

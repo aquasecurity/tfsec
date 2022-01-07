@@ -18,7 +18,13 @@ var CheckEnableStackdriverMonitoring = rules.Register(
 		Resolution:  "Enable StackDriver monitoring",
 		Explanation: `StackDriver monitoring aggregates logs, events, and metrics from your Kubernetes environment on GKE to help you understand your application's behavior in production.`,
 		Links:       []string{},
-		Severity:    severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableStackdriverMonitoringGoodExamples,
+            BadExamples:         terraformEnableStackdriverMonitoringBadExamples,
+            Links:               terraformEnableStackdriverMonitoringLinks,
+            RemediationMarkdown: terraformEnableStackdriverMonitoringRemediationMarkdown,
+        },
+        Severity:    severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {

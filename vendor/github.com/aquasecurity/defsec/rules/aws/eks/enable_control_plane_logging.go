@@ -20,7 +20,13 @@ var CheckEnableControlPlaneLogging = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableControlPlaneLoggingGoodExamples,
+            BadExamples:         terraformEnableControlPlaneLoggingBadExamples,
+            Links:               terraformEnableControlPlaneLoggingLinks,
+            RemediationMarkdown: terraformEnableControlPlaneLoggingRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.EKS.Clusters {

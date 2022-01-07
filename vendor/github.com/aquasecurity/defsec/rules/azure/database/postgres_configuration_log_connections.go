@@ -20,7 +20,13 @@ var CheckPostgresConfigurationLogConnections = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/postgresql/concepts-server-logs#configure-logging",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformPostgresConfigurationLogConnectionsGoodExamples,
+            BadExamples:         terraformPostgresConfigurationLogConnectionsBadExamples,
+            Links:               terraformPostgresConfigurationLogConnectionsLinks,
+            RemediationMarkdown: terraformPostgresConfigurationLogConnectionsRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.PostgreSQLServers {

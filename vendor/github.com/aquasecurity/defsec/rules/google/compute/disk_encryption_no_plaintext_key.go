@@ -20,7 +20,13 @@ var CheckDiskEncryptionRequired = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/compute/docs/disks/customer-supplied-encryption",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformDiskEncryptionNoPlaintextKeyGoodExamples,
+            BadExamples:         terraformDiskEncryptionNoPlaintextKeyBadExamples,
+            Links:               terraformDiskEncryptionNoPlaintextKeyLinks,
+            RemediationMarkdown: terraformDiskEncryptionNoPlaintextKeyRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, disk := range s.Google.Compute.Disks {

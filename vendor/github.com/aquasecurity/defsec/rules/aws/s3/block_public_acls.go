@@ -22,7 +22,19 @@ S3 buckets should block public ACLs on buckets and any objects they contain. By 
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformBlockPublicAclsGoodExamples,
+            BadExamples:         terraformBlockPublicAclsBadExamples,
+            Links:               terraformBlockPublicAclsLinks,
+            RemediationMarkdown: terraformBlockPublicAclsRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationBlockPublicAclsGoodExamples,
+            BadExamples:         cloudFormationBlockPublicAclsBadExamples,
+            Links:               cloudFormationBlockPublicAclsLinks,
+            RemediationMarkdown: cloudFormationBlockPublicAclsRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.AWS.S3.Buckets {

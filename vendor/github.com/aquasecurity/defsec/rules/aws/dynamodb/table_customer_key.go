@@ -20,7 +20,13 @@ var CheckTableCustomerKey = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html",
 		},
-		Severity: severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformTableCustomerKeyGoodExamples,
+            BadExamples:         terraformTableCustomerKeyBadExamples,
+            Links:               terraformTableCustomerKeyLinks,
+            RemediationMarkdown: terraformTableCustomerKeyRemediationMarkdown,
+        },
+        Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.DynamoDB.DAXClusters {

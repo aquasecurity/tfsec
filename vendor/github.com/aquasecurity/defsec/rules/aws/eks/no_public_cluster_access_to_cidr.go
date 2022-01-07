@@ -23,7 +23,13 @@ var CheckNoPublicClusterAccessToCidr = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/eks/latest/userguide/create-public-private-vpc.html",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicClusterAccessToCidrGoodExamples,
+            BadExamples:         terraformNoPublicClusterAccessToCidrBadExamples,
+            Links:               terraformNoPublicClusterAccessToCidrLinks,
+            RemediationMarkdown: terraformNoPublicClusterAccessToCidrRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.EKS.Clusters {

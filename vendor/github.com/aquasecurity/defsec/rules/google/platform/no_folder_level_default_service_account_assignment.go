@@ -22,7 +22,13 @@ var CheckNoFolderLevelDefaultServiceAccountAssignment = rules.Register(
 		Links: []string{
 			"",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoFolderLevelDefaultServiceAccountAssignmentGoodExamples,
+            BadExamples:         terraformNoFolderLevelDefaultServiceAccountAssignmentBadExamples,
+            Links:               terraformNoFolderLevelDefaultServiceAccountAssignmentLinks,
+            RemediationMarkdown: terraformNoFolderLevelDefaultServiceAccountAssignmentRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, folder := range s.Google.Platform.AllFolders() {

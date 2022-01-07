@@ -18,7 +18,13 @@ var CheckSecureTlsPolicy = rules.Register(
 		Resolution:  "Use the most modern TLS policies available",
 		Explanation: `You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.`,
 		Links:       []string{},
-		Severity:    severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformSecureTlsPolicyGoodExamples,
+            BadExamples:         terraformSecureTlsPolicyBadExamples,
+            Links:               terraformSecureTlsPolicyLinks,
+            RemediationMarkdown: terraformSecureTlsPolicyRemediationMarkdown,
+        },
+        Severity:    severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.MariaDBServers {

@@ -23,7 +23,13 @@ Where possible, segments should be broken into smaller subnets and avoid using t
 		Links: []string{
 			"https://cloud.google.com/vpc/docs/using-firewalls",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicEgressGoodExamples,
+            BadExamples:         terraformNoPublicEgressBadExamples,
+            Links:               terraformNoPublicEgressLinks,
+            RemediationMarkdown: terraformNoPublicEgressRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, network := range s.Google.Compute.Networks {

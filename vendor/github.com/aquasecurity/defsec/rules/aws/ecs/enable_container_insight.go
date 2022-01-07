@@ -20,7 +20,19 @@ var CheckEnableContainerInsight = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights.html",
 		},
-		Severity: severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableContainerInsightGoodExamples,
+            BadExamples:         terraformEnableContainerInsightBadExamples,
+            Links:               terraformEnableContainerInsightLinks,
+            RemediationMarkdown: terraformEnableContainerInsightRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableContainerInsightGoodExamples,
+            BadExamples:         cloudFormationEnableContainerInsightBadExamples,
+            Links:               cloudFormationEnableContainerInsightLinks,
+            RemediationMarkdown: cloudFormationEnableContainerInsightRemediationMarkdown,
+        },
+        Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.ECS.Clusters {

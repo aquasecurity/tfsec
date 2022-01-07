@@ -22,7 +22,13 @@ IAM user accounts should be protected with multi factor authentication to add sa
 		Links: []string{
 			"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnforceMfaGoodExamples,
+            BadExamples:         terraformEnforceMfaBadExamples,
+            Links:               terraformEnforceMfaLinks,
+            RemediationMarkdown: terraformEnforceMfaRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		return

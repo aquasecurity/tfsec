@@ -20,7 +20,19 @@ var CheckEnableWaf = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/waf/latest/developerguide/cloudfront-features.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableWafGoodExamples,
+            BadExamples:         terraformEnableWafBadExamples,
+            Links:               terraformEnableWafLinks,
+            RemediationMarkdown: terraformEnableWafRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableWafGoodExamples,
+            BadExamples:         cloudFormationEnableWafBadExamples,
+            Links:               cloudFormationEnableWafLinks,
+            RemediationMarkdown: cloudFormationEnableWafRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, dist := range s.AWS.Cloudfront.Distributions {
