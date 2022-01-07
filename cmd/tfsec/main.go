@@ -14,6 +14,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/config"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/ignores"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -44,6 +45,7 @@ var includeIgnored = false
 var ignoreWarnings = false
 var ignoreInfo = false
 var allDirs = false
+var migrateIgnores = false
 var runStatistics bool
 var ignoreHCLErrors bool
 var stopOnCheckError bool
@@ -58,6 +60,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
 	rootCmd.Flags().BoolVar(&runUpdate, "update", runUpdate, "Update to latest version")
+	rootCmd.Flags().BoolVar(&migrateIgnores, "migrate-ignores", migrateIgnores, "Migrate ignore codes to the new ID structure")
 	rootCmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: default, json, csv, checkstyle, junit, sarif")
 	rootCmd.Flags().StringVarP(&excludedRuleIDs, "exclude", "e", excludedRuleIDs, "Provide comma-separated list of rule IDs to exclude from run.")
 	rootCmd.Flags().StringVar(&filterResults, "filter-results", filterResults, "Filter results to return specific checks only (supports comma-delimited input).")
@@ -120,6 +123,33 @@ var rootCmd = &cobra.Command{
 		if runUpdate {
 			if err := updater.Update(); err != nil {
 				_ = tml.Printf("Not updating, %s\n", err.Error())
+			}
+			os.Exit(0)
+		}
+
+		if migrateIgnores {
+			var dir string
+			var err error
+
+			if len(args) == 1 {
+				dir, err = filepath.Abs(args[0])
+			} else {
+				dir, err = os.Getwd()
+			}
+			if err != nil {
+				_ = tml.Printf("The provided dir was not found")
+				os.Exit(1)
+			}
+
+			stats, err := ignores.RunMigration(dir)
+			if err != nil {
+				_ = tml.Printf("Errors occurred while running migration. %s", err.Error())
+				os.Exit(1)
+			}
+			if len(stats) > 0 {
+				for _, stat := range stats {
+					_ = tml.Printf("%s:%d migrated from %s => %s\n", stat.Filename, stat.LineNo, stat.FromCode, stat.ToCode)
+				}
 			}
 			os.Exit(0)
 		}
