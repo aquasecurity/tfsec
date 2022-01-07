@@ -7,7 +7,7 @@ import (
 )
 
 func Test_DIGDropletHasNoSSHKeysAssigned(t *testing.T) {
-	expectedCode := "digitalocean-droplet-use-ssh-keys"
+	expectedCode := "digitalocean-compute-use-ssh-keys"
 
 	var tests = []struct {
 		name                  string
