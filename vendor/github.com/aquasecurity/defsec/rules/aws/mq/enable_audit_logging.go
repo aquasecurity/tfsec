@@ -20,7 +20,19 @@ var CheckEnableAuditLogging = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/configure-logging-monitoring-activemq.html",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableAuditLoggingGoodExamples,
+            BadExamples:         terraformEnableAuditLoggingBadExamples,
+            Links:               terraformEnableAuditLoggingLinks,
+            RemediationMarkdown: terraformEnableAuditLoggingRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableAuditLoggingGoodExamples,
+            BadExamples:         cloudFormationEnableAuditLoggingBadExamples,
+            Links:               cloudFormationEnableAuditLoggingLinks,
+            RemediationMarkdown: cloudFormationEnableAuditLoggingRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, broker := range s.AWS.MQ.Brokers {

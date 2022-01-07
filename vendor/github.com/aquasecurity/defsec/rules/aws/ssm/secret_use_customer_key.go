@@ -20,7 +20,19 @@ var CheckSecretUseCustomerKey = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/kms/latest/developerguide/services-secrets-manager.html#asm-encrypt",
 		},
-		Severity: severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformSecretUseCustomerKeyGoodExamples,
+            BadExamples:         terraformSecretUseCustomerKeyBadExamples,
+            Links:               terraformSecretUseCustomerKeyLinks,
+            RemediationMarkdown: terraformSecretUseCustomerKeyRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationSecretUseCustomerKeyGoodExamples,
+            BadExamples:         cloudFormationSecretUseCustomerKeyBadExamples,
+            Links:               cloudFormationSecretUseCustomerKeyLinks,
+            RemediationMarkdown: cloudFormationSecretUseCustomerKeyRemediationMarkdown,
+        },
+        Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, secret := range s.AWS.SSM.Secrets {

@@ -25,7 +25,13 @@ Permissions should be granted on roles, groups, services accounts instead.`,
 			"https://cloud.google.com/iam/docs/overview#permissions",
 			"https://cloud.google.com/resource-manager/reference/rest/v1/projects/setIamPolicy",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoUserGrantedPermissionsGoodExamples,
+            BadExamples:         terraformNoUserGrantedPermissionsBadExamples,
+            Links:               terraformNoUserGrantedPermissionsLinks,
+            RemediationMarkdown: terraformNoUserGrantedPermissionsRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, project := range s.Google.Platform.AllProjects() {

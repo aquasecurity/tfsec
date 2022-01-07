@@ -20,7 +20,13 @@ var CheckEnableAtRestEncryption = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/data-lake-store/data-lake-store-security-overview",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableAtRestEncryptionGoodExamples,
+            BadExamples:         terraformEnableAtRestEncryptionBadExamples,
+            Links:               terraformEnableAtRestEncryptionLinks,
+            RemediationMarkdown: terraformEnableAtRestEncryptionRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, store := range s.Azure.DataLake.Stores {

@@ -20,7 +20,13 @@ var CheckNoOrgLevelDefaultServiceAccountAssignment = rules.Register(
 		Links: []string{
 			"",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoOrgLevelDefaultServiceAccountAssignmentGoodExamples,
+            BadExamples:         terraformNoOrgLevelDefaultServiceAccountAssignmentBadExamples,
+            Links:               terraformNoOrgLevelDefaultServiceAccountAssignmentLinks,
+            RemediationMarkdown: terraformNoOrgLevelDefaultServiceAccountAssignmentRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, org := range s.Google.Platform.Organizations {

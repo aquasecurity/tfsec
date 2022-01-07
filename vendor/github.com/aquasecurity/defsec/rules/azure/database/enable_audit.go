@@ -20,7 +20,13 @@ var CheckEnableAudit = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/azure-sql/database/auditing-overview",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableAuditGoodExamples,
+            BadExamples:         terraformEnableAuditBadExamples,
+            Links:               terraformEnableAuditLinks,
+            RemediationMarkdown: terraformEnableAuditRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.MSSQLServers {

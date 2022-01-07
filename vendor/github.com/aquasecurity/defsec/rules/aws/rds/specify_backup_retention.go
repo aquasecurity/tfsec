@@ -20,7 +20,19 @@ var CheckBackupRetentionSpecified = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html#USER_WorkingWithAutomatedBackups.BackupRetention",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformSpecifyBackupRetentionGoodExamples,
+            BadExamples:         terraformSpecifyBackupRetentionBadExamples,
+            Links:               terraformSpecifyBackupRetentionLinks,
+            RemediationMarkdown: terraformSpecifyBackupRetentionRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationSpecifyBackupRetentionGoodExamples,
+            BadExamples:         cloudFormationSpecifyBackupRetentionBadExamples,
+            Links:               cloudFormationSpecifyBackupRetentionLinks,
+            RemediationMarkdown: cloudFormationSpecifyBackupRetentionRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.RDS.Clusters {

@@ -20,7 +20,13 @@ var CheckEncryptInTransitData = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/sql/docs/mysql/configure-ssl-instance",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEncryptInTransitDataGoodExamples,
+            BadExamples:         terraformEncryptInTransitDataBadExamples,
+            Links:               terraformEncryptInTransitDataLinks,
+            RemediationMarkdown: terraformEncryptInTransitDataRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {

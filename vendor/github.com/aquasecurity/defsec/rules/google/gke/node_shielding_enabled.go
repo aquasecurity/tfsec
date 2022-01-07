@@ -22,7 +22,13 @@ Shielded GKE Nodes provide strong, verifiable node identity and integrity to inc
 		Links: []string{
 			"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#shielded_nodes",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNodeShieldingEnabledGoodExamples,
+            BadExamples:         terraformNodeShieldingEnabledBadExamples,
+            Links:               terraformNodeShieldingEnabledLinks,
+            RemediationMarkdown: terraformNodeShieldingEnabledRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {

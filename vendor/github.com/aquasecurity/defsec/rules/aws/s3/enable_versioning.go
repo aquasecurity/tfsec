@@ -24,7 +24,19 @@ With versioning you can recover more easily from both unintended user actions an
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableVersioningGoodExamples,
+            BadExamples:         terraformEnableVersioningBadExamples,
+            Links:               terraformEnableVersioningLinks,
+            RemediationMarkdown: terraformEnableVersioningRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableVersioningGoodExamples,
+            BadExamples:         cloudFormationEnableVersioningBadExamples,
+            Links:               cloudFormationEnableVersioningLinks,
+            RemediationMarkdown: cloudFormationEnableVersioningRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.AWS.S3.Buckets {

@@ -21,7 +21,13 @@ var CheckEnablePgTempFileLogging = rules.Register(
 		Links: []string{
 			"https://postgresqlco.nf/doc/en/param/log_temp_files/",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnablePgTempFileLoggingGoodExamples,
+            BadExamples:         terraformEnablePgTempFileLoggingBadExamples,
+            Links:               terraformEnablePgTempFileLoggingLinks,
+            RemediationMarkdown: terraformEnablePgTempFileLoggingRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {

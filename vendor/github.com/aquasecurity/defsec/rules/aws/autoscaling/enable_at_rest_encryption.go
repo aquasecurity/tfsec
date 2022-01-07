@@ -20,7 +20,19 @@ var CheckEnableAtRestEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/RootDeviceStorage.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableAtRestEncryptionGoodExamples,
+            BadExamples:         terraformEnableAtRestEncryptionBadExamples,
+            Links:               terraformEnableAtRestEncryptionLinks,
+            RemediationMarkdown: terraformEnableAtRestEncryptionRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableAtRestEncryptionGoodExamples,
+            BadExamples:         cloudFormationEnableAtRestEncryptionBadExamples,
+            Links:               cloudFormationEnableAtRestEncryptionLinks,
+            RemediationMarkdown: cloudFormationEnableAtRestEncryptionRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, launchConfig := range s.AWS.Autoscaling.LaunchConfigurations {

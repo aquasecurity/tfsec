@@ -22,7 +22,19 @@ When enabling encryption by setting the kms_key_id, the storage_encrypted must a
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEncryptClusterStorageDataGoodExamples,
+            BadExamples:         terraformEncryptClusterStorageDataBadExamples,
+            Links:               terraformEncryptClusterStorageDataLinks,
+            RemediationMarkdown: terraformEncryptClusterStorageDataRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEncryptClusterStorageDataGoodExamples,
+            BadExamples:         cloudFormationEncryptClusterStorageDataBadExamples,
+            Links:               cloudFormationEncryptClusterStorageDataLinks,
+            RemediationMarkdown: cloudFormationEncryptClusterStorageDataRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.RDS.Clusters {

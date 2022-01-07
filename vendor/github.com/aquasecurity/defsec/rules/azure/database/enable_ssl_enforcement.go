@@ -18,7 +18,13 @@ var CheckEnableSslEnforcement = rules.Register(
 		Resolution:  "Enable SSL enforcement",
 		Explanation: `SSL connections should be enforced were available to ensure secure transfer and reduce the risk of compromising data in flight.`,
 		Links:       []string{},
-		Severity:    severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableSslEnforcementGoodExamples,
+            BadExamples:         terraformEnableSslEnforcementBadExamples,
+            Links:               terraformEnableSslEnforcementLinks,
+            RemediationMarkdown: terraformEnableSslEnforcementRemediationMarkdown,
+        },
+        Severity:    severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.MariaDBServers {

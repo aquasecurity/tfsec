@@ -22,7 +22,19 @@ Simplifies auditing, debugging, and managing security groups.`,
 		Links: []string{
 			"https://www.cloudconformity.com/knowledge-base/aws/EC2/security-group-rules-description.html",
 		},
-		Severity: severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformAddDescriptionToSecurityGroupRuleGoodExamples,
+            BadExamples:         terraformAddDescriptionToSecurityGroupRuleBadExamples,
+            Links:               terraformAddDescriptionToSecurityGroupRuleLinks,
+            RemediationMarkdown: terraformAddDescriptionToSecurityGroupRuleRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationAddDescriptionToSecurityGroupRuleGoodExamples,
+            BadExamples:         cloudFormationAddDescriptionToSecurityGroupRuleBadExamples,
+            Links:               cloudFormationAddDescriptionToSecurityGroupRuleLinks,
+            RemediationMarkdown: cloudFormationAddDescriptionToSecurityGroupRuleRemediationMarkdown,
+        },
+        Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.AWS.VPC.SecurityGroups {

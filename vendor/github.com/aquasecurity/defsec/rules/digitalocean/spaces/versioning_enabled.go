@@ -20,7 +20,13 @@ var CheckVersioningEnabled = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformVersioningEnabledGoodExamples,
+            BadExamples:         terraformVersioningEnabledBadExamples,
+            Links:               terraformVersioningEnabledLinks,
+            RemediationMarkdown: terraformVersioningEnabledRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.DigitalOcean.Spaces.Buckets {

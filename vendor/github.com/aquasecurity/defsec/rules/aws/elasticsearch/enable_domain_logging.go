@@ -26,7 +26,19 @@ All the logs are disabled by default.`,
 		Links: []string{
 			"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-createdomain-configure-slow-logs.html",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableDomainLoggingGoodExamples,
+            BadExamples:         terraformEnableDomainLoggingBadExamples,
+            Links:               terraformEnableDomainLoggingLinks,
+            RemediationMarkdown: terraformEnableDomainLoggingRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableDomainLoggingGoodExamples,
+            BadExamples:         cloudFormationEnableDomainLoggingBadExamples,
+            Links:               cloudFormationEnableDomainLoggingLinks,
+            RemediationMarkdown: cloudFormationEnableDomainLoggingRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, domain := range s.AWS.Elasticsearch.Domains {

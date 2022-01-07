@@ -18,7 +18,13 @@ var CheckProjectLevelOslogin = rules.Register(
 		Resolution:  "Enable OS Login at project level",
 		Explanation: `OS Login automatically revokes the relevant SSH keys when an IAM user has their access revoked.`,
 		Links:       []string{},
-		Severity:    severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformProjectLevelOsloginGoodExamples,
+            BadExamples:         terraformProjectLevelOsloginBadExamples,
+            Links:               terraformProjectLevelOsloginLinks,
+            RemediationMarkdown: terraformProjectLevelOsloginRemediationMarkdown,
+        },
+        Severity:    severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		if s.Google.Compute.ProjectMetadata.EnableOSLogin.IsFalse() {

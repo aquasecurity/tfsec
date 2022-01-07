@@ -20,7 +20,13 @@ var CheckLogging = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-onboard",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformLoggingGoodExamples,
+            BadExamples:         terraformLoggingBadExamples,
+            Links:               terraformLoggingLinks,
+            RemediationMarkdown: terraformLoggingRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Azure.Container.KubernetesClusters {

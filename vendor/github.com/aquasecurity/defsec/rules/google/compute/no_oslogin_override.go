@@ -18,7 +18,13 @@ var CheckNoOsloginOverride = rules.Register(
 		Resolution:  "Enable OS Login at project level and remove instance-level overrides",
 		Explanation: `OS Login automatically revokes the relevant SSH keys when an IAM user has their access revoked.`,
 		Links:       []string{},
-		Severity:    severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoOsloginOverrideGoodExamples,
+            BadExamples:         terraformNoOsloginOverrideBadExamples,
+            Links:               terraformNoOsloginOverrideLinks,
+            RemediationMarkdown: terraformNoOsloginOverrideRemediationMarkdown,
+        },
+        Severity:    severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.Compute.Instances {

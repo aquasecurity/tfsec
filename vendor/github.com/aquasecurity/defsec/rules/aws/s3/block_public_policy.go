@@ -23,7 +23,19 @@ S3 bucket policy should have block public policy to prevent users from putting a
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonS3/latest/dev-retired/access-control-block-public-access.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformBlockPublicPolicyGoodExamples,
+            BadExamples:         terraformBlockPublicPolicyBadExamples,
+            Links:               terraformBlockPublicPolicyLinks,
+            RemediationMarkdown: terraformBlockPublicPolicyRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationBlockPublicPolicyGoodExamples,
+            BadExamples:         cloudFormationBlockPublicPolicyBadExamples,
+            Links:               cloudFormationBlockPublicPolicyLinks,
+            RemediationMarkdown: cloudFormationBlockPublicPolicyRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.AWS.S3.Buckets {

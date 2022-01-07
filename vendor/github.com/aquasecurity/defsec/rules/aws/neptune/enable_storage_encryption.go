@@ -20,7 +20,19 @@ var CheckEnableStorageEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/neptune/latest/userguide/encrypt.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableStorageEncryptionGoodExamples,
+            BadExamples:         terraformEnableStorageEncryptionBadExamples,
+            Links:               terraformEnableStorageEncryptionLinks,
+            RemediationMarkdown: terraformEnableStorageEncryptionRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableStorageEncryptionGoodExamples,
+            BadExamples:         cloudFormationEnableStorageEncryptionBadExamples,
+            Links:               cloudFormationEnableStorageEncryptionLinks,
+            RemediationMarkdown: cloudFormationEnableStorageEncryptionRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.Neptune.Clusters {

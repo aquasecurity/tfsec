@@ -20,7 +20,19 @@ var CheckNoPublicDbAccess = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html#USER_VPC.Hiding",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicDbAccessGoodExamples,
+            BadExamples:         terraformNoPublicDbAccessBadExamples,
+            Links:               terraformNoPublicDbAccessLinks,
+            RemediationMarkdown: terraformNoPublicDbAccessRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationNoPublicDbAccessGoodExamples,
+            BadExamples:         cloudFormationNoPublicDbAccessBadExamples,
+            Links:               cloudFormationNoPublicDbAccessLinks,
+            RemediationMarkdown: cloudFormationNoPublicDbAccessRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.RDS.Clusters {

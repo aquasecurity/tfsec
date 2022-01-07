@@ -18,7 +18,13 @@ var CheckEnableNetworkPolicy = rules.Register(
 		Resolution:  "Enable network policy",
 		Explanation: `Enabling a network policy allows the segregation of network traffic by namespace`,
 		Links:       []string{},
-		Severity:    severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableNetworkPolicyGoodExamples,
+            BadExamples:         terraformEnableNetworkPolicyBadExamples,
+            Links:               terraformEnableNetworkPolicyLinks,
+            RemediationMarkdown: terraformEnableNetworkPolicyRemediationMarkdown,
+        },
+        Severity:    severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {

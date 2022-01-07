@@ -22,7 +22,19 @@ var CheckNoPublicIngress = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicIngressAclGoodExamples,
+            BadExamples:         terraformNoPublicIngressAclBadExamples,
+            Links:               terraformNoPublicIngressAclLinks,
+            RemediationMarkdown: terraformNoPublicIngressAclRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationNoPublicIngressAclGoodExamples,
+            BadExamples:         cloudFormationNoPublicIngressAclBadExamples,
+            Links:               cloudFormationNoPublicIngressAclLinks,
+            RemediationMarkdown: cloudFormationNoPublicIngressAclRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, acl := range s.AWS.VPC.NetworkACLs {

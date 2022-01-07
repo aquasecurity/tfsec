@@ -20,7 +20,13 @@ var CheckNoPublicAccess = rules.Register(
 		Links: []string{
 			"https://jbrojbrojbro.medium.com/you-make-the-rules-with-authentication-controls-for-cloud-storage-53c32543747b",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicAccessGoodExamples,
+            BadExamples:         terraformNoPublicAccessBadExamples,
+            Links:               terraformNoPublicAccessLinks,
+            RemediationMarkdown: terraformNoPublicAccessRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.Google.Storage.Buckets {

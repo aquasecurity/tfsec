@@ -22,7 +22,13 @@ The attribute should be set to <code>SECURE</code> to use metadata concealment, 
 		Links: []string{
 			"https://cloud.google.com/kubernetes-engine/docs/how-to/protecting-cluster-metadata#create-concealed",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNodeMetadataSecurityGoodExamples,
+            BadExamples:         terraformNodeMetadataSecurityBadExamples,
+            Links:               terraformNodeMetadataSecurityLinks,
+            RemediationMarkdown: terraformNodeMetadataSecurityRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {

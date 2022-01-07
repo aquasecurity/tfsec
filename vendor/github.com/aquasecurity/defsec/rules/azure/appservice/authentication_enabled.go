@@ -18,7 +18,13 @@ var CheckAuthenticationEnabled = rules.Register(
 		Resolution:  "Enable authentication to prevent anonymous request being accepted",
 		Explanation: `Enabling authentication ensures that all communications in the application are authenticated. The auth_settings block needs to be filled out with the appropriate auth backend settings`,
 		Links:       []string{},
-		Severity:    severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformAuthenticationEnabledGoodExamples,
+            BadExamples:         terraformAuthenticationEnabledBadExamples,
+            Links:               terraformAuthenticationEnabledLinks,
+            RemediationMarkdown: terraformAuthenticationEnabledRemediationMarkdown,
+        },
+        Severity:    severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, service := range s.Azure.AppService.Services {

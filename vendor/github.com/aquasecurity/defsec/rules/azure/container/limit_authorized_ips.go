@@ -20,7 +20,13 @@ var CheckLimitAuthorizedIps = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/aks/api-server-authorized-ip-ranges",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformLimitAuthorizedIpsGoodExamples,
+            BadExamples:         terraformLimitAuthorizedIpsBadExamples,
+            Links:               terraformLimitAuthorizedIpsLinks,
+            RemediationMarkdown: terraformLimitAuthorizedIpsRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Azure.Container.KubernetesClusters {

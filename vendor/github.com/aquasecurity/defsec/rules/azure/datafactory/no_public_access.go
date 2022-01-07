@@ -22,7 +22,13 @@ Disabling public network access is applicable only to the self-hosted integratio
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/data-factory/data-movement-security-considerations#hybrid-scenarios",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicAccessGoodExamples,
+            BadExamples:         terraformNoPublicAccessBadExamples,
+            Links:               terraformNoPublicAccessLinks,
+            RemediationMarkdown: terraformNoPublicAccessRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, factory := range s.Azure.DataFactory.DataFactories {

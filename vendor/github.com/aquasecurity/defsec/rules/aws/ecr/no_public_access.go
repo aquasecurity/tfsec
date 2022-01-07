@@ -22,7 +22,19 @@ var CheckNoPublicAccess = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonECR/latest/public/public-repository-policies.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicAccessGoodExamples,
+            BadExamples:         terraformNoPublicAccessBadExamples,
+            Links:               terraformNoPublicAccessLinks,
+            RemediationMarkdown: terraformNoPublicAccessRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationNoPublicAccessGoodExamples,
+            BadExamples:         cloudFormationNoPublicAccessBadExamples,
+            Links:               cloudFormationNoPublicAccessLinks,
+            RemediationMarkdown: cloudFormationNoPublicAccessRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, repo := range s.AWS.ECR.Repositories {

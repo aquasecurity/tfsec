@@ -20,7 +20,13 @@ var CheckNoFolderLevelServiceAccountImpersonation = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/iam/docs/impersonating-service-accounts",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoFolderLevelServiceAccountImpersonationGoodExamples,
+            BadExamples:         terraformNoFolderLevelServiceAccountImpersonationBadExamples,
+            Links:               terraformNoFolderLevelServiceAccountImpersonationLinks,
+            RemediationMarkdown: terraformNoFolderLevelServiceAccountImpersonationRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, folder := range s.Google.Platform.AllFolders() {

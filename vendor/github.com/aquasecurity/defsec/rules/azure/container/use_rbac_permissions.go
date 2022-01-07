@@ -20,7 +20,13 @@ var CheckUseRbacPermissions = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/aks/concepts-identity",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformUseRbacPermissionsGoodExamples,
+            BadExamples:         terraformUseRbacPermissionsBadExamples,
+            Links:               terraformUseRbacPermissionsLinks,
+            RemediationMarkdown: terraformUseRbacPermissionsRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Azure.Container.KubernetesClusters {

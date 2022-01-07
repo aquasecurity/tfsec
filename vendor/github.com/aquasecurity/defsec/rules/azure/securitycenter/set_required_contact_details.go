@@ -21,7 +21,13 @@ Microsoft will notify the security contact directly in the event of a security i
 		Links: []string{
 			"https://azure.microsoft.com/en-us/services/security-center/",
 		},
-		Severity: severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformSetRequiredContactDetailsGoodExamples,
+            BadExamples:         terraformSetRequiredContactDetailsBadExamples,
+            Links:               terraformSetRequiredContactDetailsLinks,
+            RemediationMarkdown: terraformSetRequiredContactDetailsRemediationMarkdown,
+        },
+        Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, contact := range s.Azure.SecurityCenter.Contacts {

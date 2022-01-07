@@ -18,7 +18,13 @@ var CheckNoPlaintextVmDiskKeys = rules.Register(
 		Resolution:  "Use managed keys or provide the raw key via a secrets manager ",
 		Explanation: `Providing your encryption key in plaintext format means anyone with access to the source code also has access to the key.`,
 		Links:       []string{},
-		Severity:    severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPlaintextVmDiskKeysGoodExamples,
+            BadExamples:         terraformNoPlaintextVmDiskKeysBadExamples,
+            Links:               terraformNoPlaintextVmDiskKeysLinks,
+            RemediationMarkdown: terraformNoPlaintextVmDiskKeysRemediationMarkdown,
+        },
+        Severity:    severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.Compute.Instances {

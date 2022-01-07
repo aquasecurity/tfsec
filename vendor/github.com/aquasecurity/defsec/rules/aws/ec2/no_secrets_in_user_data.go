@@ -25,7 +25,19 @@ var CheckNoSecretsInUserData = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoSecretsInUserDataGoodExamples,
+            BadExamples:         terraformNoSecretsInUserDataBadExamples,
+            Links:               terraformNoSecretsInUserDataLinks,
+            RemediationMarkdown: terraformNoSecretsInUserDataRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationNoSecretsInUserDataGoodExamples,
+            BadExamples:         cloudFormationNoSecretsInUserDataBadExamples,
+            Links:               cloudFormationNoSecretsInUserDataLinks,
+            RemediationMarkdown: cloudFormationNoSecretsInUserDataRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.AWS.EC2.Instances {

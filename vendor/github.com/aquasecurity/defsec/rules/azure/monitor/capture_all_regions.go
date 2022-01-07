@@ -24,7 +24,13 @@ var CheckCaptureAllRegions = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/cli/azure/monitor/log-profiles?view=azure-cli-latest#az_monitor_log_profiles_create-required-parameters",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformCaptureAllRegionsGoodExamples,
+            BadExamples:         terraformCaptureAllRegionsBadExamples,
+            Links:               terraformCaptureAllRegionsLinks,
+            RemediationMarkdown: terraformCaptureAllRegionsRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, profile := range s.Azure.Monitor.LogProfiles {

@@ -22,7 +22,13 @@ The account password policy should be set to prevent using any of the last five 
 		Links: []string{
 			"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPasswordReuseGoodExamples,
+            BadExamples:         terraformNoPasswordReuseBadExamples,
+            Links:               terraformNoPasswordReuseLinks,
+            RemediationMarkdown: terraformNoPasswordReuseRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 

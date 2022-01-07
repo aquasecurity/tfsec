@@ -22,7 +22,13 @@ var CheckNoPrivilegedServiceAccounts = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/iam/docs/understanding-roles",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPrivilegedServiceAccountsGoodExamples,
+            BadExamples:         terraformNoPrivilegedServiceAccountsBadExamples,
+            Links:               terraformNoPrivilegedServiceAccountsLinks,
+            RemediationMarkdown: terraformNoPrivilegedServiceAccountsRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, project := range s.Google.Platform.AllProjects() {

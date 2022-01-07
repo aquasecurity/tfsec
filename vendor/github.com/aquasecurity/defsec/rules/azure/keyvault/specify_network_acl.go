@@ -22,7 +22,13 @@ The default action of the Network ACL should be set to deny for when IPs are not
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/key-vault/general/network-security",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformSpecifyNetworkAclGoodExamples,
+            BadExamples:         terraformSpecifyNetworkAclBadExamples,
+            Links:               terraformSpecifyNetworkAclLinks,
+            RemediationMarkdown: terraformSpecifyNetworkAclRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, vault := range s.Azure.KeyVault.Vaults {

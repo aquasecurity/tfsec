@@ -21,7 +21,19 @@ var CheckUseSecureTlsPolicy = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformUseSecureTlsPolicyGoodExamples,
+            BadExamples:         terraformUseSecureTlsPolicyBadExamples,
+            Links:               terraformUseSecureTlsPolicyLinks,
+            RemediationMarkdown: terraformUseSecureTlsPolicyRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationUseSecureTlsPolicyGoodExamples,
+            BadExamples:         cloudFormationUseSecureTlsPolicyBadExamples,
+            Links:               cloudFormationUseSecureTlsPolicyLinks,
+            RemediationMarkdown: cloudFormationUseSecureTlsPolicyRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, dist := range s.AWS.Cloudfront.Distributions {

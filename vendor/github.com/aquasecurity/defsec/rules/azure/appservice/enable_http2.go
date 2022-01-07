@@ -18,7 +18,13 @@ var CheckEnableHttp2 = rules.Register(
 		Resolution:  "Use the latest version of HTTP",
 		Explanation: `Use the latest version of HTTP to ensure you are benefiting from security fixes`,
 		Links:       []string{},
-		Severity:    severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableHttp2GoodExamples,
+            BadExamples:         terraformEnableHttp2BadExamples,
+            Links:               terraformEnableHttp2Links,
+            RemediationMarkdown: terraformEnableHttp2RemediationMarkdown,
+        },
+        Severity:    severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, service := range s.Azure.AppService.Services {

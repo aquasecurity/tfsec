@@ -18,7 +18,13 @@ var CheckRequireClientCert = rules.Register(
 		Resolution:  "Enable incoming certificates for clients",
 		Explanation: `The TLS mutual authentication technique in enterprise environments ensures the authenticity of clients to the server. If incoming client certificates are enabled only an authenticated client with valid certificates can access the app.`,
 		Links:       []string{},
-		Severity:    severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformRequireClientCertGoodExamples,
+            BadExamples:         terraformRequireClientCertBadExamples,
+            Links:               terraformRequireClientCertLinks,
+            RemediationMarkdown: terraformRequireClientCertRemediationMarkdown,
+        },
+        Severity:    severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, service := range s.Azure.AppService.Services {

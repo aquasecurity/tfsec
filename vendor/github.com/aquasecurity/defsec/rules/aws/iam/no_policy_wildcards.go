@@ -23,7 +23,19 @@ var CheckNoPolicyWildcards = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPolicyWildcardsGoodExamples,
+            BadExamples:         terraformNoPolicyWildcardsBadExamples,
+            Links:               terraformNoPolicyWildcardsLinks,
+            RemediationMarkdown: terraformNoPolicyWildcardsRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationNoPolicyWildcardsGoodExamples,
+            BadExamples:         cloudFormationNoPolicyWildcardsBadExamples,
+            Links:               cloudFormationNoPolicyWildcardsLinks,
+            RemediationMarkdown: cloudFormationNoPolicyWildcardsRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 

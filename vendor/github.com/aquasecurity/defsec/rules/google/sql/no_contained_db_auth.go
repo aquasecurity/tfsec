@@ -21,7 +21,13 @@ var CheckNoContainedDbAuth = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/contained-database-authentication-server-configuration-option?view=sql-server-ver15",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoContainedDbAuthGoodExamples,
+            BadExamples:         terraformNoContainedDbAuthBadExamples,
+            Links:               terraformNoContainedDbAuthLinks,
+            RemediationMarkdown: terraformNoContainedDbAuthRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {

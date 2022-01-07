@@ -21,7 +21,19 @@ var CheckEnableInTransitEncryption = rules.Register(
 			"https://docs.aws.amazon.com/AmazonECS/latest/userguide/efs-volumes.html",
 			"https://docs.aws.amazon.com/efs/latest/ug/encryption-in-transit.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableInTransitEncryptionGoodExamples,
+            BadExamples:         terraformEnableInTransitEncryptionBadExamples,
+            Links:               terraformEnableInTransitEncryptionLinks,
+            RemediationMarkdown: terraformEnableInTransitEncryptionRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableInTransitEncryptionGoodExamples,
+            BadExamples:         cloudFormationEnableInTransitEncryptionBadExamples,
+            Links:               cloudFormationEnableInTransitEncryptionLinks,
+            RemediationMarkdown: cloudFormationEnableInTransitEncryptionRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, definition := range s.AWS.ECS.TaskDefinitions {
