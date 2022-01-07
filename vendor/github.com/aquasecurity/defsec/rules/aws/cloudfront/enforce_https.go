@@ -23,7 +23,19 @@ You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning 
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-cloudfront-to-s3-origin.html",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnforceHttpsGoodExamples,
+            BadExamples:         terraformEnforceHttpsBadExamples,
+            Links:               terraformEnforceHttpsLinks,
+            RemediationMarkdown: terraformEnforceHttpsRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnforceHttpsGoodExamples,
+            BadExamples:         cloudFormationEnforceHttpsBadExamples,
+            Links:               cloudFormationEnforceHttpsLinks,
+            RemediationMarkdown: cloudFormationEnforceHttpsRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, dist := range s.AWS.Cloudfront.Distributions {

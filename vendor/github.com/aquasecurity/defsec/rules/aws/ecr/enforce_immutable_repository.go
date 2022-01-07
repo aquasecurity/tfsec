@@ -22,7 +22,19 @@ This can be done by setting <code>image_tab_mutability</code> to <code>IMMUTABLE
 		Links: []string{
 			"https://sysdig.com/blog/toctou-tag-mutability/",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnforceImmutableRepositoryGoodExamples,
+            BadExamples:         terraformEnforceImmutableRepositoryBadExamples,
+            Links:               terraformEnforceImmutableRepositoryLinks,
+            RemediationMarkdown: terraformEnforceImmutableRepositoryRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnforceImmutableRepositoryGoodExamples,
+            BadExamples:         cloudFormationEnforceImmutableRepositoryBadExamples,
+            Links:               cloudFormationEnforceImmutableRepositoryLinks,
+            RemediationMarkdown: cloudFormationEnforceImmutableRepositoryRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, repo := range s.AWS.ECR.Repositories {

@@ -18,7 +18,13 @@ var CheckEnableDnssec = rules.Register(
 		Resolution:  "Enable DNSSEC",
 		Explanation: `DNSSEC authenticates DNS responses, preventing MITM attacks and impersonation.`,
 		Links:       []string{},
-		Severity:    severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableDnssecGoodExamples,
+            BadExamples:         terraformEnableDnssecBadExamples,
+            Links:               terraformEnableDnssecLinks,
+            RemediationMarkdown: terraformEnableDnssecRemediationMarkdown,
+        },
+        Severity:    severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, zone := range s.Google.DNS.ManagedZones {

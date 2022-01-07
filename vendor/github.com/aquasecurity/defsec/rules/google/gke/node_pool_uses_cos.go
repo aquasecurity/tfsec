@@ -18,7 +18,13 @@ var CheckNodePoolUsesCos = rules.Register(
 		Resolution:  "Use the COS image type",
 		Explanation: `GKE supports several OS image types but COS is the recommended OS image to use on cluster nodes for enhanced security`,
 		Links:       []string{},
-		Severity:    severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNodePoolUsesCosGoodExamples,
+            BadExamples:         terraformNodePoolUsesCosBadExamples,
+            Links:               terraformNodePoolUsesCosLinks,
+            RemediationMarkdown: terraformNodePoolUsesCosRemediationMarkdown,
+        },
+        Severity:    severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {

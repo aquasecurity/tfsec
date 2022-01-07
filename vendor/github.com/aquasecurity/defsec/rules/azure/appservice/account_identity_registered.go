@@ -18,7 +18,13 @@ var CheckAccountIdentityRegistered = rules.Register(
 		Resolution:  "Register the app identity with AD",
 		Explanation: `Registering the identity used by an App with AD allows it to interact with other services without using username and password`,
 		Links:       []string{},
-		Severity:    severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformAccountIdentityRegisteredGoodExamples,
+            BadExamples:         terraformAccountIdentityRegisteredBadExamples,
+            Links:               terraformAccountIdentityRegisteredLinks,
+            RemediationMarkdown: terraformAccountIdentityRegisteredRemediationMarkdown,
+        },
+        Severity:    severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, service := range s.Azure.AppService.Services {

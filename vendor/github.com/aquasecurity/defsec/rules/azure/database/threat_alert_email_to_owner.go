@@ -18,7 +18,13 @@ var CheckThreatAlertEmailToOwner = rules.Register(
 		Resolution:  "Enable email to subscription owners",
 		Explanation: `Subscription owners should be notified when there are security alerts. By ensuring the administrators of the account have been notified they can quickly assist in any required remediation`,
 		Links:       []string{},
-		Severity:    severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformThreatAlertEmailToOwnerGoodExamples,
+            BadExamples:         terraformThreatAlertEmailToOwnerBadExamples,
+            Links:               terraformThreatAlertEmailToOwnerLinks,
+            RemediationMarkdown: terraformThreatAlertEmailToOwnerRemediationMarkdown,
+        },
+        Severity:    severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.MSSQLServers {

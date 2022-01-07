@@ -20,7 +20,19 @@ var CheckEncryptSecrets = rules.Register(
 		Links: []string{
 			"https://aws.amazon.com/about-aws/whats-new/2020/03/amazon-eks-adds-envelope-encryption-for-secrets-with-aws-kms/",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEncryptSecretsGoodExamples,
+            BadExamples:         terraformEncryptSecretsBadExamples,
+            Links:               terraformEncryptSecretsLinks,
+            RemediationMarkdown: terraformEncryptSecretsRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEncryptSecretsGoodExamples,
+            BadExamples:         cloudFormationEncryptSecretsBadExamples,
+            Links:               cloudFormationEncryptSecretsLinks,
+            RemediationMarkdown: cloudFormationEncryptSecretsRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.EKS.Clusters {

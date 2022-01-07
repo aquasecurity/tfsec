@@ -21,7 +21,13 @@ var CheckPgNoMinStatementLogging = rules.Register(
 		Links: []string{
 			"https://www.postgresql.org/docs/13/runtime-config-logging.html#GUC-LOG-MIN-DURATION-STATEMENT",
 		},
-		Severity: severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformPgNoMinStatementLoggingGoodExamples,
+            BadExamples:         terraformPgNoMinStatementLoggingBadExamples,
+            Links:               terraformPgNoMinStatementLoggingLinks,
+            RemediationMarkdown: terraformPgNoMinStatementLoggingRemediationMarkdown,
+        },
+        Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {

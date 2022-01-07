@@ -20,7 +20,19 @@ var CheckNoPublicIp = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicIpGoodExamples,
+            BadExamples:         terraformNoPublicIpBadExamples,
+            Links:               terraformNoPublicIpLinks,
+            RemediationMarkdown: terraformNoPublicIpRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationNoPublicIpGoodExamples,
+            BadExamples:         cloudFormationNoPublicIpBadExamples,
+            Links:               cloudFormationNoPublicIpLinks,
+            RemediationMarkdown: cloudFormationNoPublicIpRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, launchConfig := range s.AWS.Autoscaling.LaunchConfigurations {

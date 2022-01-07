@@ -21,7 +21,13 @@ var CheckNoSensitiveInfo = rules.Register(
 		Resolution:  "Don't use sensitive data in the user data section",
 		Explanation: `When creating instances, user data can be used during the initial configuration. User data must not contain sensitive information`,
 		Links:       []string{},
-		Severity:    severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoSensitiveInfoGoodExamples,
+            BadExamples:         terraformNoSensitiveInfoBadExamples,
+            Links:               terraformNoSensitiveInfoLinks,
+            RemediationMarkdown: terraformNoSensitiveInfoRemediationMarkdown,
+        },
+        Severity:    severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.CloudStack.Compute.Instances {

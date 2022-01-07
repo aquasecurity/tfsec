@@ -21,7 +21,13 @@ var CheckSshBlockedFromInternet = rules.Register(
 
 SSH access should not be permitted from the internet (*, 0.0.0.0, /0, internet, any)`,
 		Links:    []string{},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformSshBlockedFromInternetGoodExamples,
+            BadExamples:         terraformSshBlockedFromInternetBadExamples,
+            Links:               terraformSshBlockedFromInternetLinks,
+            RemediationMarkdown: terraformSshBlockedFromInternetRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.Azure.Network.SecurityGroups {

@@ -22,7 +22,13 @@ The default action should be set to Deny.`,
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/firewall/rule-processing",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformDefaultActionDenyGoodExamples,
+            BadExamples:         terraformDefaultActionDenyBadExamples,
+            Links:               terraformDefaultActionDenyLinks,
+            RemediationMarkdown: terraformDefaultActionDenyRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, account := range s.Azure.Storage.Accounts {

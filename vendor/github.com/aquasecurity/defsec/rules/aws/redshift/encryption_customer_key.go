@@ -20,7 +20,19 @@ var CheckEncryptionCustomerKey = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-db-encryption.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEncryptionCustomerKeyGoodExamples,
+            BadExamples:         terraformEncryptionCustomerKeyBadExamples,
+            Links:               terraformEncryptionCustomerKeyLinks,
+            RemediationMarkdown: terraformEncryptionCustomerKeyRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEncryptionCustomerKeyGoodExamples,
+            BadExamples:         cloudFormationEncryptionCustomerKeyBadExamples,
+            Links:               cloudFormationEncryptionCustomerKeyLinks,
+            RemediationMarkdown: cloudFormationEncryptionCustomerKeyRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.Redshift.Clusters {

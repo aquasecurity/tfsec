@@ -23,7 +23,13 @@ Where possible, segments should be broken into smaller subnets.`,
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/security/fundamentals/network-best-practices",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoPublicIngressGoodExamples,
+            BadExamples:         terraformNoPublicIngressBadExamples,
+            Links:               terraformNoPublicIngressLinks,
+            RemediationMarkdown: terraformNoPublicIngressRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.Azure.Network.SecurityGroups {

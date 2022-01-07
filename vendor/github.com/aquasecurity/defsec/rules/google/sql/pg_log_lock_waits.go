@@ -21,7 +21,13 @@ var CheckPgLogLockWaits = rules.Register(
 		Links: []string{
 			"https://www.postgresql.org/docs/13/runtime-config-logging.html#GUC-LOG-LOCK-WAITS",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformPgLogLockWaitsGoodExamples,
+            BadExamples:         terraformPgLogLockWaitsBadExamples,
+            Links:               terraformPgLogLockWaitsLinks,
+            RemediationMarkdown: terraformPgLogLockWaitsRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {

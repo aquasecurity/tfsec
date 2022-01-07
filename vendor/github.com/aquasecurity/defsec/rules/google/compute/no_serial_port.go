@@ -18,7 +18,13 @@ var CheckNoSerialPort = rules.Register(
 		Resolution:  "Disable serial port access",
 		Explanation: `When serial port access is enabled, the access is not governed by network security rules meaning the port can be exposed publicly.`,
 		Links:       []string{},
-		Severity:    severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoSerialPortGoodExamples,
+            BadExamples:         terraformNoSerialPortBadExamples,
+            Links:               terraformNoSerialPortLinks,
+            RemediationMarkdown: terraformNoSerialPortRemediationMarkdown,
+        },
+        Severity:    severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.Compute.Instances {

@@ -20,7 +20,19 @@ var CheckEnableBackupRetention = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-automatic.html",
 		},
-		Severity: severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableBackupRetentionGoodExamples,
+            BadExamples:         terraformEnableBackupRetentionBadExamples,
+            Links:               terraformEnableBackupRetentionLinks,
+            RemediationMarkdown: terraformEnableBackupRetentionRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationEnableBackupRetentionGoodExamples,
+            BadExamples:         cloudFormationEnableBackupRetentionBadExamples,
+            Links:               cloudFormationEnableBackupRetentionLinks,
+            RemediationMarkdown: cloudFormationEnableBackupRetentionRemediationMarkdown,
+        },
+        Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.ElastiCache.Clusters {

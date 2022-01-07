@@ -24,7 +24,19 @@ This ensures that the queue itself cannot be modified or deleted, and prevents p
 		Links: []string{
 			"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-security-best-practices.html",
 		},
-		Severity: severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoWildcardsInPolicyDocumentsGoodExamples,
+            BadExamples:         terraformNoWildcardsInPolicyDocumentsBadExamples,
+            Links:               terraformNoWildcardsInPolicyDocumentsLinks,
+            RemediationMarkdown: terraformNoWildcardsInPolicyDocumentsRemediationMarkdown,
+        },
+        CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationNoWildcardsInPolicyDocumentsGoodExamples,
+            BadExamples:         cloudFormationNoWildcardsInPolicyDocumentsBadExamples,
+            Links:               cloudFormationNoWildcardsInPolicyDocumentsLinks,
+            RemediationMarkdown: cloudFormationNoWildcardsInPolicyDocumentsRemediationMarkdown,
+        },
+        Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, queue := range s.AWS.SQS.Queues {

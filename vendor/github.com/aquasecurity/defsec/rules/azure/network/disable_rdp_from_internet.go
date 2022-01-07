@@ -26,7 +26,13 @@ RDP access should not be permitted from the internet (*, 0.0.0.0, /0, internet, 
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/bastion/tutorial-create-host-portal",
 		},
-		Severity: severity.Critical,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformDisableRdpFromInternetGoodExamples,
+            BadExamples:         terraformDisableRdpFromInternetBadExamples,
+            Links:               terraformDisableRdpFromInternetLinks,
+            RemediationMarkdown: terraformDisableRdpFromInternetRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.Azure.Network.SecurityGroups {

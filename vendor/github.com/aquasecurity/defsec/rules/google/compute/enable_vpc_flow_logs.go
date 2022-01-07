@@ -18,7 +18,13 @@ var CheckEnableVPCFlowLogs = rules.Register(
 		Resolution:  "Enable VPC flow logs",
 		Explanation: `VPC flow logs record information about all traffic, which is a vital tool in reviewing anomalous traffic.`,
 		Links:       []string{},
-		Severity:    severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableVpcFlowLogsGoodExamples,
+            BadExamples:         terraformEnableVpcFlowLogsBadExamples,
+            Links:               terraformEnableVpcFlowLogsLinks,
+            RemediationMarkdown: terraformEnableVpcFlowLogsRemediationMarkdown,
+        },
+        Severity:    severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, network := range s.Google.Compute.Networks {

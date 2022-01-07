@@ -22,7 +22,13 @@ Clients may specify the content type of a secret to assist in interpreting the s
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/key-vault/secrets/about-secrets",
 		},
-		Severity: severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformContentTypeForSecretGoodExamples,
+            BadExamples:         terraformContentTypeForSecretBadExamples,
+            Links:               terraformContentTypeForSecretLinks,
+            RemediationMarkdown: terraformContentTypeForSecretRemediationMarkdown,
+        },
+        Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, vault := range s.Azure.KeyVault.Vaults {

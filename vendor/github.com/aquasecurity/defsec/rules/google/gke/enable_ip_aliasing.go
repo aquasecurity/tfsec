@@ -18,7 +18,13 @@ var CheckEnableIpAliasing = rules.Register(
 		Resolution:  "Enable IP aliasing",
 		Explanation: `IP aliasing allows the reuse of public IPs internally, removing the need for a NAT gateway.`,
 		Links:       []string{},
-		Severity:    severity.Low,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformEnableIpAliasingGoodExamples,
+            BadExamples:         terraformEnableIpAliasingBadExamples,
+            Links:               terraformEnableIpAliasingLinks,
+            RemediationMarkdown: terraformEnableIpAliasingRemediationMarkdown,
+        },
+        Severity:    severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {

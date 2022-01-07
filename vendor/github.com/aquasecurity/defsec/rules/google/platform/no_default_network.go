@@ -18,7 +18,13 @@ var CheckNoDefaultNetwork = rules.Register(
 		Resolution:  "Disable automatic default network creation",
 		Explanation: `The default network which is provided for a project contains multiple insecure firewall rules which allow ingress to the project's infrastructure. Creation of this network should therefore be disabled.`,
 		Links:       []string{},
-		Severity:    severity.High,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformNoDefaultNetworkGoodExamples,
+            BadExamples:         terraformNoDefaultNetworkBadExamples,
+            Links:               terraformNoDefaultNetworkLinks,
+            RemediationMarkdown: terraformNoDefaultNetworkRemediationMarkdown,
+        },
+        Severity:    severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, project := range s.Google.Platform.AllProjects() {

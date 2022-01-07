@@ -18,7 +18,13 @@ var CheckDisableForceDestroy = rules.Register(
 		Resolution:  "Don't use force destroy on bucket configuration",
 		Explanation: `Enabling force destroy on a Spaces bucket means that the bucket can be deleted without the additional check that it is empty. This risks important data being accidentally deleted by a bucket removal process.`,
 		Links:       []string{},
-		Severity:    severity.Medium,
+		Terraform:   &rules.EngineMetadata{
+            GoodExamples:        terraformDisableForceDestroyGoodExamples,
+            BadExamples:         terraformDisableForceDestroyBadExamples,
+            Links:               terraformDisableForceDestroyLinks,
+            RemediationMarkdown: terraformDisableForceDestroyRemediationMarkdown,
+        },
+        Severity:    severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.DigitalOcean.Spaces.Buckets {

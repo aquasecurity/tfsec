@@ -21,7 +21,13 @@ resources in a VPC instead.`,
 		Links: []string{
 			"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-classic-platform.html",
 		},
-		Severity: severity.Critical,
+		CloudFormation:   &rules.EngineMetadata{
+            GoodExamples:        cloudFormationNoClassicResourcesGoodExamples,
+            BadExamples:         cloudFormationNoClassicResourcesBadExamples,
+            Links:               cloudFormationNoClassicResourcesLinks,
+            RemediationMarkdown: cloudFormationNoClassicResourcesRemediationMarkdown,
+        },
+        Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.AWS.Redshift.SecurityGroups {
