@@ -40,48 +40,44 @@ func adaptFirewalls(module block.Modules) []compute.Firewall {
 	var firewalls []compute.Firewall
 
 	for _, block := range module.GetResourcesByType("digitalocean_firewall") {
-		firewall := compute.Firewall{}
 		inboundRules := block.GetBlocks("inbound_rule")
 		outboundRules := block.GetBlocks("outbound_rule")
 
 		inboundFirewallRules := []compute.InboundFirewallRule{}
 		for _, inBoundRule := range inboundRules {
 			inboundFirewallRule := compute.InboundFirewallRule{}
-			ibSourceAddresses := inBoundRule.GetAttribute("source_addresses")
-			if ibSourceAddresses != nil {
+			if ibSourceAddresses := inBoundRule.GetAttribute("source_addresses"); ibSourceAddresses != nil {
 				inboundFirewallRule.SourceAddresses = []types.StringValue{}
 				for _, value := range ibSourceAddresses.ValueAsStrings() {
-					inboundFirewallRule.SourceAddresses = append(inboundFirewallRule.SourceAddresses, types.String(value, ibSourceAddresses.Metadata()))
+					inboundFirewallRule.SourceAddresses = append(inboundFirewallRule.SourceAddresses, types.String(value, inBoundRule.Metadata()))
 				}
 			}
 			inboundFirewallRules = append(inboundFirewallRules, inboundFirewallRule)
 		}
-		firewall.InboundRules = inboundFirewallRules
 
 		outboundFirewallRules := []compute.OutboundFirewallRule{}
 		for _, outBoundRule := range outboundRules {
 			outboundFirewallRule := compute.OutboundFirewallRule{}
-			obDestinationAddresses := outBoundRule.GetAttribute("destination_addresses")
-			if obDestinationAddresses != nil {
+			if obDestinationAddresses := outBoundRule.GetAttribute("destination_addresses"); obDestinationAddresses != nil {
 				outboundFirewallRule.DestinationAddresses = []types.StringValue{}
 				for _, value := range obDestinationAddresses.ValueAsStrings() {
-					outboundFirewallRule.DestinationAddresses = append(outboundFirewallRule.DestinationAddresses, types.String(value, *obDestinationAddresses.GetMetadata()))
+					outboundFirewallRule.DestinationAddresses = append(outboundFirewallRule.DestinationAddresses, types.String(value, outBoundRule.Metadata()))
 				}
 			}
 			outboundFirewallRules = append(outboundFirewallRules, outboundFirewallRule)
 		}
-		firewall.OutboundRules = outboundFirewallRules
-		firewalls = append(firewalls, firewall)
+		firewalls = append(firewalls, compute.Firewall{
+			InboundRules:  inboundFirewallRules,
+			OutboundRules: outboundFirewallRules,
+		})
 	}
 
 	return firewalls
 }
 
-func adaptLoadBalancers(module block.Modules) []compute.LoadBalancer {
-	var loadBalancers []compute.LoadBalancer
+func adaptLoadBalancers(module block.Modules) (loadBalancers []compute.LoadBalancer) {
 
 	for _, block := range module.GetResourcesByType("digitalocean_loadbalancer") {
-		loadBalancer := compute.LoadBalancer{}
 		forwardingRules := block.GetBlocks("forwarding_rule")
 		fRules := []compute.ForwardingRule{}
 
@@ -90,7 +86,9 @@ func adaptLoadBalancers(module block.Modules) []compute.LoadBalancer {
 			rule.EntryProtocol = fRule.GetAttribute("entry_protocol").AsStringValueOrDefault("", fRule)
 			fRules = append(fRules, rule)
 		}
-		loadBalancers = append(loadBalancers, loadBalancer)
+		loadBalancers = append(loadBalancers, compute.LoadBalancer{
+			ForwardingRules: fRules,
+		})
 	}
 
 	return loadBalancers
