@@ -31,6 +31,7 @@ For a richer experience, there are many additional command line arguments that y
 | `--ignore-hcl-errors`                                 |            | Stop and report an error if an HCL parse error is encountered                            |
 | `--include-ignored`                                   |            | Ignore comments with have no effect and all resources will be scanned                    |
 | `--include-passed`                                    |            | Resources that pass checks are included in the result output                             |
+| `--migrate-ignores`                                   |            | Migrate ignore codes to the new ID structure eg; AWS077 to aws-s3-enable-versioning      |
 | `--no-color`                                          |            | Disable colored output (American style!)                                                 |
 | `--no-colour`                                         |            | Disable coloured output                                                                  |
 | `--out [filepath to output to]`                       |            | Set output file                                                                          |

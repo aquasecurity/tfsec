@@ -67,7 +67,6 @@ func migrateFile(file string, legacyMapping map[string]string) (MigrationStatist
 	}
 
 	debug.Log("Running migrations for file: %s", file)
-
 	content, err := os.ReadFile(file)
 	if err != nil {
 		return nil, err
