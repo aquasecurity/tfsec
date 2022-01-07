@@ -55,6 +55,26 @@ func Test_AWSSensitiveAttributes(t *testing.T) {
  }`,
 			mustExcludeResultCode: expectedCode,
 		},
+		{
+			name: "avoid vault pki false positive",
+			source: `
+provider "vault" {
+  address = var.vault_address
+  token   = var.vault_token
+}
+
+resource "vault_pki_secret_backend_cert" "server_cert" {
+  backend     = var.vault_backend
+  name        = var.vault_name
+  common_name = var.server_name
+  format = "pem"
+  # this line is flagged
+  private_key_format = "pkcs8"
+}
+
+            `,
+			mustExcludeResultCode: expectedCode,
+		},
 	}
 
 	for _, test := range tests {
