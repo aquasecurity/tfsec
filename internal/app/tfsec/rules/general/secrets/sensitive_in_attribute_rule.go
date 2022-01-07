@@ -38,6 +38,10 @@ var sensitiveWhitelist = []struct {
 		Resource:  "google_secret_manager_secret",
 		Attribute: "secret_id",
 	},
+	{
+		Resource:  "vault_pki_secret_backend_cert",
+		Attribute: "private_key_format",
+	},
 }
 
 func init() {
