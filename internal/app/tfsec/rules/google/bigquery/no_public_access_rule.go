@@ -1,9 +1,7 @@
 package bigquery
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/bigquery"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -71,11 +69,5 @@ func init() {
 			"google_bigquery_dataset",
 		},
 		Base: bigquery.CheckNoPublicAccess,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if specialGroupAttr := resourceBlock.GetBlock("access").GetAttribute("special_group"); specialGroupAttr.Equals("allAuthenticatedUsers") {
-				results.Add("Resource has access.special_group set to allAuthenticatedUsers", resourceBlock)
-			}
-			return results
-		},
 	})
 }
