@@ -36,13 +36,28 @@ func isPrivate(ip net.IP) bool {
 	return false
 }
 
-func CountAddresses(inputCIDR string) int {
+// CountAddresses calculates the number of addresses within the given CIDR. If the given
+// CIDR is in fact an IP (includes no /), 1 will bne returned. If the number of addresses
+// overflows an unsigned 64-bit int, the maximum value of an unsigned 64-bit int will be
+// returned.
+func CountAddresses(inputCIDR string) uint64 {
+	if !strings.Contains(inputCIDR, "/") {
+		ip := net.ParseIP(inputCIDR)
+		if ip == nil {
+			return 0
+		}
+		return 1
+	}
 	_, network, err := net.ParseCIDR(inputCIDR)
 	if err != nil {
 		return 0
 	}
 	prefixLen, bits := network.Mask.Size()
-	return 1 << (uint64(bits) - uint64(prefixLen))
+	power := bits - prefixLen
+	if power >= 63 {
+		return 0xffffffffffffffff
+	}
+	return 1 << power
 }
 
 // IsPublic returns true if a provided IP is outside of the designated public ranges, or
