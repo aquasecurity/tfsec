@@ -1,9 +1,7 @@
 package athena
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/athena"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -60,27 +58,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_athena_workgroup"},
 		Base:           athena.CheckNoEncryptionOverride,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("configuration") {
-				results.Add("Resource is missing the configuration block.", resourceBlock)
-				return
-			}
-
-			configBlock := resourceBlock.GetBlock("configuration")
-
-			configBlock.HasChild("enforce_workgroup_configuration")
-			enforceWorkgroupConfigAttr := configBlock.GetAttribute("enforce_workgroup_configuration")
-
-			if enforceWorkgroupConfigAttr.IsNil() {
-				return
-			}
-
-			if enforceWorkgroupConfigAttr.IsFalse() {
-				results.Add("Resource has enforce_workgroup_configuration set to false.", enforceWorkgroupConfigAttr)
-			}
-
-			return results
-		},
 	})
 }

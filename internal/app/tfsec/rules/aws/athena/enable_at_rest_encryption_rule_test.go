@@ -93,7 +93,7 @@ func Test_AWSEnsureAthenaDbEncrypted(t *testing.T) {
    }
  }
  `,
-			mustExcludeResultCode: expectedCode,
+			mustIncludeResultCode: expectedCode,
 		},
 	}
 
