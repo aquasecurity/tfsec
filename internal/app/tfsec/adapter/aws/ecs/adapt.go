@@ -39,7 +39,7 @@ func adaptClusterSettings(resourceBlock block.Block) ecs.ClusterSettings {
 	}
 
 	return ecs.ClusterSettings{
-		ContainerInsightsEnabled: types.Bool(false, resourceBlock.Metadata()),
+		ContainerInsightsEnabled: types.BoolDefault(false, resourceBlock.Metadata()),
 	}
 }
 
@@ -87,6 +87,6 @@ func adaptEFSVolumeConfiguration(volumeBlock block.Block) ecs.EFSVolumeConfigura
 
 	return ecs.EFSVolumeConfiguration{
 		Metadata:                 volumeBlock.Metadata(),
-		TransitEncryptionEnabled: types.Bool(true, volumeBlock.Metadata()),
+		TransitEncryptionEnabled: types.BoolDefault(true, volumeBlock.Metadata()),
 	}
 }
