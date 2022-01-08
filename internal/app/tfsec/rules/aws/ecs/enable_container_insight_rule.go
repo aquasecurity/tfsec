@@ -1,9 +1,7 @@
 package ecs
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/ecs"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -32,21 +30,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecs_cluster"},
 		Base:           ecs.CheckEnableContainerInsight,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			settingsBlock := resourceBlock.GetBlocks("setting")
-			for _, setting := range settingsBlock {
-				if name := setting.GetAttribute("name"); name.IsNotNil() && name.Equals("containerinsights", block.IgnoreCase) {
-					if valueAttr := setting.GetAttribute("value"); valueAttr.IsNotNil() {
-						if !valueAttr.Equals("enabled", block.IgnoreCase) {
-							results.Add("Resource has containerInsights set to disabled", valueAttr)
-						}
-						return
-					}
-				}
-			}
-			results.Add("Resource does not have containerInsights enabled", resourceBlock)
-			return results
-		},
 	})
 }
