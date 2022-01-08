@@ -1,9 +1,7 @@
 package ecs
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/ecs"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -57,29 +55,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecs_task_definition"},
 		Base:           ecs.CheckEnableInTransitEncryption,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("volume") {
-				return
-			}
-
-			volumeBlocks := resourceBlock.GetBlocks("volume")
-			for _, v := range volumeBlocks {
-				if v.MissingChild("efs_volume_configuration") {
-					continue
-				}
-				efsConfigBlock := v.GetBlock("efs_volume_configuration")
-				if efsConfigBlock.MissingChild("transit_encryption") {
-					results.Add("Resource has efs configuration with in transit encryption implicitly disabled", efsConfigBlock)
-					continue
-				}
-				transitAttr := efsConfigBlock.GetAttribute("transit_encryption")
-				if transitAttr.Equals("disabled", block.IgnoreCase) {
-					results.Add("Resource has efs configuration with transit encryption explicitly disabled", transitAttr)
-				}
-			}
-
-			return results
-		},
 	})
 }
