@@ -1,9 +1,7 @@
 package config
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/config"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -37,25 +35,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_config_configuration_aggregator"},
 		Base:           config.CheckAggregateAllRegions,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			aggBlock := resourceBlock.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")
-			if aggBlock.IsNil() {
-				results.Add("Resource should have account aggregation sources set", resourceBlock)
-				return
-			}
-
-			if aggBlock.MissingChild("all_regions") {
-				results.Add("Resource should have account aggregation sources to all regions", aggBlock)
-				return
-			}
-
-			allRegionsAttr := aggBlock.GetAttribute("all_regions")
-			if allRegionsAttr.IsFalse() {
-				results.Add("Resource has all_regions set to false", allRegionsAttr)
-			}
-
-			return results
-		},
 	})
 }
