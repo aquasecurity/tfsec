@@ -1,9 +1,7 @@
 package ebs
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/ebs"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -42,13 +40,5 @@ func init() {
 			"aws_ebs_volume",
 		},
 		Base: ebs.CheckEnableVolumeEncryption,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if encryptedAttr := resourceBlock.GetAttribute("encrypted"); encryptedAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for encrypted", resourceBlock)
-			} else if encryptedAttr.IsFalse() {
-				results.Add("Resource does not have encrypted set to true", encryptedAttr)
-			}
-			return results
-		},
 	})
 }
