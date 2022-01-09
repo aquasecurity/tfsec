@@ -1,9 +1,7 @@
 package efs
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/efs"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -29,19 +27,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_efs_file_system"},
 		Base:           efs.CheckEnableAtRestEncryption,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			efsEnabledAttr := resourceBlock.GetAttribute("encrypted")
-			if efsEnabledAttr.IsNil() {
-				results.Add("Resource does not specify if encryption should be used.", resourceBlock)
-				return
-			}
-
-			if efsEnabledAttr.IsFalse() {
-				results.Add("Resource actively does not have encryption applied.", efsEnabledAttr)
-			}
-
-			return results
-		},
 	})
 }
