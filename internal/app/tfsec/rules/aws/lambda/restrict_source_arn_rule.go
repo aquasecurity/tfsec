@@ -1,9 +1,7 @@
 package lambda
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/lambda"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -34,17 +32,5 @@ resource "aws_lambda_permission" "good_example" {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_lambda_permission"},
 		Base:           lambda.CheckRestrictSourceArn,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.HasChild("principal") {
-				if principalAttr := resourceBlock.GetAttribute("principal"); principalAttr.EndsWith("amazonaws.com") {
-					if resourceBlock.MissingChild("source_arn") {
-						results.Add("Resource missing source ARN but has *.amazonaws.com principal.", principalAttr)
-					}
-				}
-			}
-
-			return results
-		},
 	})
 }
