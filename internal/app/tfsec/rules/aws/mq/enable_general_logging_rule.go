@@ -1,9 +1,7 @@
 package mq
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/mq"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -66,15 +64,5 @@ func init() {
 			"aws_mq_broker",
 		},
 		Base: mq.CheckEnableGeneralLogging,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if logsBlock := resourceBlock.GetBlock("logs"); logsBlock.IsNil() {
-				results.Add("Resource uses default value for logs.general", resourceBlock)
-			} else if generalAttr := logsBlock.GetAttribute("general"); generalAttr.IsNil() {
-				results.Add("Resource uses default value for logs.general", logsBlock)
-			} else if generalAttr.IsFalse() {
-				results.Add("Resource does not have logs.general set to true", generalAttr)
-			}
-			return results
-		},
 	})
 }
