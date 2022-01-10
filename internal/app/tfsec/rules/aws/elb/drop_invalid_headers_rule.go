@@ -1,9 +1,7 @@
 package elb
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/elb"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -47,25 +45,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_alb", "aws_lb"},
 		Base:           elb.CheckDropInvalidHeaders,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.GetAttribute("load_balancer_type").IsNil() {
-				return
-			}
-
-			if resourceBlock.GetAttribute("load_balancer_type").Equals("application", block.IgnoreCase) {
-				if resourceBlock.MissingChild("drop_invalid_header_fields") {
-					results.Add("Resource does not drop invalid header fields", resourceBlock)
-					return
-				}
-
-				attr := resourceBlock.GetAttribute("drop_invalid_header_fields")
-				if attr.IsFalse() {
-					results.Add("Resource sets the drop_invalid_header_fields to false", attr)
-				}
-
-			}
-			return results
-		},
 	})
 }

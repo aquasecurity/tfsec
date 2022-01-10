@@ -18,7 +18,11 @@ func Test_AWSOutdatedSSLPolicy(t *testing.T) {
 		{
 			name: "check aws_alb_listener with outdated policy",
 			source: `
+ resource "aws_alb" "front_end" {
+ }
+
  resource "aws_alb_listener" "my-resource" {
+	load_balancer_arn = aws_alb.front_end.arn
  	ssl_policy = "ELBSecurityPolicy-TLS-1-1-2017-01"
  	protocol = "HTTPS"
  }`,
@@ -27,7 +31,11 @@ func Test_AWSOutdatedSSLPolicy(t *testing.T) {
 		{
 			name: "check aws_lb_listener with outdated policy",
 			source: `
+ resource "aws_lb" "front_end" {
+ }
+
  resource "aws_lb_listener" "my-resource" {
+	load_balancer_arn = aws_lb.front_end.arn
  	ssl_policy = "ELBSecurityPolicy-TLS-1-1-2017-01"
  	protocol = "HTTPS"
  }`,
@@ -36,7 +44,11 @@ func Test_AWSOutdatedSSLPolicy(t *testing.T) {
 		{
 			name: "check aws_alb_listener with ok policy",
 			source: `
+ resource "aws_alb" "front_end" {
+ }
+
  resource "aws_alb_listener" "my-resource" {
+	load_balancer_arn = aws_alb.front_end.arn
  	ssl_policy = "ELBSecurityPolicy-TLS-1-2-2017-01"
  	protocol = "HTTPS"
  }`,
