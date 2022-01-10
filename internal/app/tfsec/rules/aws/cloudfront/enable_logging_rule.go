@@ -1,9 +1,7 @@
 package cloudfront
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/cloudfront"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -33,11 +31,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudfront_distribution"},
 		Base:           cloudfront.CheckEnableLogging,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if resourceBlock.MissingChild("logging_config") {
-				results.Add("Resource does not have Access Logging configured", resourceBlock)
-			}
-			return results
-		},
 	})
 }

@@ -1,9 +1,7 @@
 package cloudfront
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/cloudfront"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -82,14 +80,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudfront_distribution"},
 		Base:           cloudfront.CheckEnableWaf,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			wafAclIdBlock := resourceBlock.GetAttribute("web_acl_id")
-			if wafAclIdBlock.IsNil() {
-				results.Add("Resource does not have a WAF in front of it.", resourceBlock)
-			}
-
-			return results
-		},
 	})
 }

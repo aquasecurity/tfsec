@@ -31,6 +31,7 @@ func Test_AWSCloudfrontDistributionAccessLoggingEnabled(t *testing.T) {
  resource "aws_cloudfront_distribution" "good_example" {
  	// other config
  	logging_config {
+		 bucket = "mylogs.s3.amazonaws.com"
  	}
  }
  `,
