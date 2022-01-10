@@ -1,9 +1,7 @@
 package redshift
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/redshift"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -39,11 +37,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_redshift_cluster"},
 		Base:           redshift.CheckUsesVPC,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if resourceBlock.MissingChild("cluster_subnet_group_name") {
-				results.Add("Resource is being deployed outside of a VPC", resourceBlock)
-			}
-			return results
-		},
 	})
 }

@@ -1,9 +1,7 @@
 package redshift
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/redshift"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -43,24 +41,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_redshift_cluster"},
 		Base:           redshift.CheckEncryptionCustomerKey,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("encrypted") {
-				results.Add("Resource does not have encryption enabled", resourceBlock)
-				return
-			}
-
-			encryptedAttr := resourceBlock.GetAttribute("encrypted")
-			if encryptedAttr.IsFalse() {
-				results.Add("Resource has encryption explicitly disabled", encryptedAttr)
-				return
-			}
-
-			if resourceBlock.MissingChild("kms_key_id") {
-				results.Add("Resource does not have a customer managed key specified", resourceBlock)
-			}
-
-			return results
-		},
 	})
 }
