@@ -1,9 +1,7 @@
 package cloudtrail
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/cloudtrail"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -45,19 +43,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudtrail"},
 		Base:           cloudtrail.CheckEnableAllRegions,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("is_multi_region_trail") {
-				results.Add("Resource does not set multi region trail config.", resourceBlock)
-				return
-			}
-
-			multiRegionAttr := resourceBlock.GetAttribute("is_multi_region_trail")
-			if multiRegionAttr.IsFalse() {
-				results.Add("Resource does not enable multi region trail.", multiRegionAttr)
-			}
-
-			return results
-		},
 	})
 }
