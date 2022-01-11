@@ -1,9 +1,7 @@
 package elb
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/elb"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -19,13 +17,21 @@ func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		LegacyID: "AWS010",
 		BadExample: []string{`
+ resource "aws_alb" "front_end" {
+ }
+
  resource "aws_alb_listener" "bad_example" {
+	load_balancer_arn = aws_alb.front_end.arn
  	ssl_policy = "ELBSecurityPolicy-TLS-1-1-2017-01"
  	protocol = "HTTPS"
  }
  `},
 		GoodExample: []string{`
+ resource "aws_alb" "front_end" {
+ }
+
  resource "aws_alb_listener" "good_example" {
+	load_balancer_arn = aws_alb.front_end.arn
  	ssl_policy = "ELBSecurityPolicy-TLS-1-2-2017-01"
  	protocol = "HTTPS"
  }
@@ -36,17 +42,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_lb_listener", "aws_alb_listener"},
 		Base:           elb.CheckUseSecureTlsPolicy,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if sslPolicyAttr := resourceBlock.GetAttribute("ssl_policy"); sslPolicyAttr.IsString() {
-				for _, policy := range outdatedSSLPolicies {
-					if sslPolicyAttr.Equals(policy) {
-						results.Add("Resource is using an outdated SSL policy.", sslPolicyAttr)
-					}
-				}
-			}
-
-			return results
-		},
 	})
 }
