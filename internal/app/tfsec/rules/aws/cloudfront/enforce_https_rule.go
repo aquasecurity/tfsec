@@ -1,9 +1,7 @@
 package cloudfront
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/cloudfront"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -31,35 +29,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudfront_distribution"},
 		Base:           cloudfront.CheckEnforceHttps,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			defaultBehaviorBlock := resourceBlock.GetBlock("default_cache_behavior")
-			if defaultBehaviorBlock.IsNil() {
-				results.Add("Resource defines a CloudFront distribution that allows unencrypted communications (missing default_cache_behavior block).", resourceBlock)
-				return
-			}
-
-			protocolPolicyAttr := defaultBehaviorBlock.GetAttribute("viewer_protocol_policy")
-			if protocolPolicyAttr.IsNil() {
-				results.Add("Resource defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", defaultBehaviorBlock)
-				return
-			}
-			if protocolPolicyAttr.Equals("allow-all") {
-				results.Add("Resource defines a CloudFront distribution that allows unencrypted communications.", protocolPolicyAttr)
-				return
-			}
-
-			orderedBehaviorBlocks := resourceBlock.GetBlocks("ordered_cache_behavior")
-			for _, orderedBehaviorBlock := range orderedBehaviorBlocks {
-				orderedProtocolPolicyAttr := orderedBehaviorBlock.GetAttribute("viewer_protocol_policy")
-				if orderedProtocolPolicyAttr.IsNil() {
-					results.Add("Resource defines a CloudFront distribution that allows unencrypted communications (missing viewer_protocol_policy block).", orderedBehaviorBlock)
-				} else if orderedProtocolPolicyAttr.Equals("allow-all") {
-					results.Add("Resource defines a CloudFront distribution that allows unencrypted communications.", orderedProtocolPolicyAttr)
-				}
-			}
-
-			return results
-		},
 	})
 }

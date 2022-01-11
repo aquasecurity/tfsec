@@ -1,9 +1,7 @@
 package cloudfront
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/cloudfront"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -33,24 +31,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudfront_distribution"},
 		Base:           cloudfront.CheckUseSecureTlsPolicy,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			viewerCertificateBlock := resourceBlock.GetBlock("viewer_certificate")
-			if viewerCertificateBlock.IsNil() {
-				results.Add("Resource defines outdated SSL/TLS policies (missing viewer_certificate block)", resourceBlock)
-				return
-			}
-
-			minVersionAttr := viewerCertificateBlock.GetAttribute("minimum_protocol_version")
-			if minVersionAttr.IsNil() {
-				results.Add("Resource defines outdated SSL/TLS policies (missing minimum_protocol_version attribute)", viewerCertificateBlock)
-				return
-			}
-
-			if minVersionAttr.NotEqual("TLSv1.2_2021") {
-				results.Add("Resource defines outdated SSL/TLS policies (not using TLSv1.2_2021)", minVersionAttr)
-			}
-			return results
-		},
 	})
 }
