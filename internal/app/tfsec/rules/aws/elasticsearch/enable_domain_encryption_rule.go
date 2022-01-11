@@ -1,9 +1,7 @@
 package elasticsearch
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/elasticsearch"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -35,25 +33,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
 		Base:           elasticsearch.CheckEnableDomainEncryption,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			encryptionBlock := resourceBlock.GetBlock("encrypt_at_rest")
-			if encryptionBlock.IsNil() {
-				results.Add("Resource defines an unencrypted Elasticsearch domain (missing encrypt_at_rest block).", resourceBlock)
-				return
-			}
-
-			enabledAttr := encryptionBlock.GetAttribute("enabled")
-			if enabledAttr.IsNil() {
-				results.Add("Resource defines an unencrypted Elasticsearch domain (missing enabled attribute).", encryptionBlock)
-				return
-			}
-
-			if enabledAttr.IsFalse() {
-				results.Add("Resource defines an unencrypted Elasticsearch domain (enabled attribute set to false).", enabledAttr)
-			}
-
-			return results
-		},
 	})
 }

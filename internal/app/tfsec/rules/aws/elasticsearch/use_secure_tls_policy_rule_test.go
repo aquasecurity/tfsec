@@ -21,7 +21,7 @@ func Test_AWSOutdatedTLSPolicyElasticsearchDomainEndpoint(t *testing.T) {
  resource "aws_elasticsearch_domain" "my_elasticsearch_domain" {
  	
  }`,
-			mustExcludeResultCode: expectedCode,
+			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "check tls_security_policy for aws_elasticsearch_domain isn't the default",
