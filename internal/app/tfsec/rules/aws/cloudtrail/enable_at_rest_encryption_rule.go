@@ -1,9 +1,7 @@
 package cloudtrail
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/cloudtrail"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -49,19 +47,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_cloudtrail"},
 		Base:           cloudtrail.CheckEnableAtRestEncryption,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("kms_key_id") {
-				results.Add("Resource does not have a kms_key_id set.", resourceBlock)
-				return
-			}
-
-			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
-			if kmsKeyIdAttr.IsEmpty() {
-				results.Add("Resource has a kms_key_id but it is not set.", kmsKeyIdAttr)
-			}
-
-			return results
-		},
 	})
 }
