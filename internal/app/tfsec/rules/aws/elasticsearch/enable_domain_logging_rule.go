@@ -1,9 +1,7 @@
 package elasticsearch
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/elasticsearch"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -46,32 +44,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticsearch_domain"},
 		Base:           elasticsearch.CheckEnableDomainLogging,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("log_publishing_options") {
-				results.Add("Resource does not configure logging at rest on the domain.", resourceBlock)
-				return
-			}
-
-			logOptions := resourceBlock.GetBlocks("log_publishing_options")
-			for _, logOption := range logOptions {
-
-				if logTypeAttr := logOption.GetAttribute("log_type"); logTypeAttr.IsNil() || logTypeAttr.NotEqual("AUDIT_LOGS") {
-					continue
-				}
-
-				enabledAttr := logOption.GetAttribute("enabled")
-				if enabledAttr.IsNotNil() && enabledAttr.IsFalse() {
-					results.Add("Resource explicitly disables logging on the domain.", enabledAttr)
-					return
-				} else {
-					// we have audit logs enabled
-					return
-				}
-			}
-
-			results.Add("Audit logging is not enabled for the domain.", resourceBlock)
-			return results
-		},
 	})
 }
