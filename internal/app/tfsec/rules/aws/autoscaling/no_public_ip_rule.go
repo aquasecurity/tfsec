@@ -1,9 +1,7 @@
 package autoscaling
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/autoscaling"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -28,18 +26,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_launch_configuration", "aws_instance"},
 		Base:           autoscaling.CheckNoPublicIp,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("associate_public_ip_address") {
-				return
-			}
-
-			publicAttr := resourceBlock.GetAttribute("associate_public_ip_address")
-			if publicAttr.IsTrue() {
-				results.Add("Resource has a public IP address associated.", publicAttr)
-			}
-
-			return results
-		},
 	})
 }
