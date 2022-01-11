@@ -6,5 +6,27 @@ import (
 )
 
 func Adapt(modules []block.Module) efs.EFS {
-	return efs.EFS{}
+	return efs.EFS{
+		FileSystems: adaptFileSystems(modules),
+	}
+}
+
+func adaptFileSystems(modules []block.Module) []efs.FileSystem {
+	var filesystems []efs.FileSystem
+	for _, module := range modules {
+		for _, resource := range module.GetResourcesByType("aws_efs_file_system") {
+			filesystems = append(filesystems, adaptFileSystem(resource))
+		}
+	}
+	return filesystems
+}
+
+func adaptFileSystem(resource block.Block) efs.FileSystem {
+	encryptedAttr := resource.GetAttribute("encrypted")
+	encryptedVal := encryptedAttr.AsBoolValueOrDefault(false, resource)
+
+	return efs.FileSystem{
+		Metadata:  *resource.GetMetadata(),
+		Encrypted: encryptedVal,
+	}
 }
