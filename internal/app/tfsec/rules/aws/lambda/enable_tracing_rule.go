@@ -1,9 +1,7 @@
 package lambda
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/lambda"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -94,7 +92,7 @@ func init() {
      }
    }
    tracing_config {
-     mode = "something"
+     mode = "Active"
    }
  }
  `},
@@ -108,15 +106,5 @@ func init() {
 			"aws_lambda_function",
 		},
 		Base: lambda.CheckEnableTracing,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if configBlock := resourceBlock.GetBlock("tracing_config"); configBlock.IsNil() {
-				results.Add("Resource uses default value for tracing_config.mode", resourceBlock)
-			} else if modeAttr := configBlock.GetAttribute("mode"); modeAttr.IsNil() {
-				results.Add("Resource uses default value for tracing_config.mode", configBlock)
-			} else if modeAttr.IsEmpty() {
-				results.Add("Resource has tracing_config.mode set to ", modeAttr)
-			}
-			return results
-		},
 	})
 }
