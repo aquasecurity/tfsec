@@ -95,7 +95,7 @@ func adaptLaunchConfiguration(resource block.Block) autoscaling.LaunchConfigurat
 		userDataBase64Attr := resource.GetAttribute("user_data_base64")
 		encoded, err := base64.StdEncoding.DecodeString(userDataBase64Attr.Value().AsString())
 		if err == nil {
-			userDataVal = types.String(string(encoded), *resource.GetMetadata())
+			userDataVal = types.String(string(encoded), *userDataBase64Attr.GetMetadata())
 		}
 	}
 
