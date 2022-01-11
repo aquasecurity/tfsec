@@ -16,14 +16,17 @@ import (
 )
 
 type ExternalScanner struct {
-	paths           []string
-	internalOptions []scanner.Option
+	paths                     []string
+	internalOptions           []scanner.Option
+	processedCustomCheckFiles map[string]bool
 }
 
 const customChecksDir = ".tfsec"
 
 func NewExternalScanner(options ...Option) *ExternalScanner {
-	external := &ExternalScanner{}
+	external := &ExternalScanner{
+		processedCustomCheckFiles: make(map[string]bool),
+	}
 	for _, option := range options {
 		option(external)
 	}
@@ -35,12 +38,16 @@ func (t *ExternalScanner) AddPath(path string) error {
 	if err != nil {
 		return err
 	}
-	customCheckDir := filepath.Join(filepath.Dir(path), customChecksDir)
-	if err := custom.Load(customCheckDir); err != nil {
-		return err
-	}
 	t.paths = append(t.paths, abs)
-	return nil
+
+	customCheckDir := filepath.Join(filepath.Dir(path), customChecksDir)
+
+	if _, ok := t.processedCustomCheckFiles[customCheckDir]; ok {
+		return nil
+
+	}
+	t.processedCustomCheckFiles[customCheckDir] = true
+	return custom.Load(customCheckDir)
 }
 
 func (t *ExternalScanner) Scan() ([]rules.FlatResult, error) {
