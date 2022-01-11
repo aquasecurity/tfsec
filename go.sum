@@ -74,16 +74,6 @@ github.com/apparentlymart/go-textseg v1.0.0 h1:rRmlIsPEEhUTIKQb7T++Nz/A5Q6C9IuX2
 github.com/apparentlymart/go-textseg v1.0.0/go.mod h1:z96Txxhf3xSFMPmb5X/1W05FF/Nj9VFpLOpjS5yuumk=
 github.com/apparentlymart/go-textseg/v13 v13.0.0 h1:Y+KvPE1NYz0xl601PVImeQfFyEy6iT90AvPUL1NNfNw=
 github.com/apparentlymart/go-textseg/v13 v13.0.0/go.mod h1:ZK2fH7c4NqDTLtiYLvIkEghdlcqw7yxLeM89kiTRPUo=
-github.com/aquasecurity/defsec v0.2.13 h1:gyiCqQrlM5PcF3TqTaW3YjP8OfcrpKEIz4u19/snHWs=
-github.com/aquasecurity/defsec v0.2.13/go.mod h1:UxYfQXEX2Qd+SFOo+IFGQhYWfZzLHOb5Xxxv5oKdmYM=
-github.com/aquasecurity/defsec v0.2.14 h1:/qRJo9Aa/cV18ycnSOg8u+iEvX9i1NGgImyFr11/+xo=
-github.com/aquasecurity/defsec v0.2.14/go.mod h1:UxYfQXEX2Qd+SFOo+IFGQhYWfZzLHOb5Xxxv5oKdmYM=
-github.com/aquasecurity/defsec v0.3.2 h1:UgSp5bWO1t2V8dkczGAXATH6IHG/Qpemcs82oRygYC0=
-github.com/aquasecurity/defsec v0.3.2/go.mod h1:UxYfQXEX2Qd+SFOo+IFGQhYWfZzLHOb5Xxxv5oKdmYM=
-github.com/aquasecurity/defsec v0.3.3 h1:yH9+bKzOxt0jkORYb1AL/+/1mDr2fuQAvpX79rVw/KE=
-github.com/aquasecurity/defsec v0.3.3/go.mod h1:UxYfQXEX2Qd+SFOo+IFGQhYWfZzLHOb5Xxxv5oKdmYM=
-github.com/aquasecurity/defsec v0.3.4 h1:SwIfv9o+IyAVivn8ySkm9WfdQSRa5myzI8m0PrtH+2E=
-github.com/aquasecurity/defsec v0.3.4/go.mod h1:UxYfQXEX2Qd+SFOo+IFGQhYWfZzLHOb5Xxxv5oKdmYM=
 github.com/aquasecurity/defsec v0.3.5 h1:8aO8HYyo9PYX7Y3ewXdl7c5oo1lQEv1xlcg1akEPryU=
 github.com/aquasecurity/defsec v0.3.5/go.mod h1:UxYfQXEX2Qd+SFOo+IFGQhYWfZzLHOb5Xxxv5oKdmYM=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
@@ -290,8 +280,8 @@ github.com/hashicorp/go-uuid v1.0.0/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/b
 github.com/hashicorp/go-uuid v1.0.1/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/bN7x4byOro=
 github.com/hashicorp/go-uuid v1.0.2 h1:cfejS+Tpcp13yd5nYHWDI6qVCny6wyX2Mt5SGur2IGE=
 github.com/hashicorp/go-uuid v1.0.2/go.mod h1:6SBZvOh/SIDV7/2o3Jml5SYk/TvGqwFJ/bN7x4byOro=
-github.com/hashicorp/go-version v1.3.0 h1:McDWVJIU/y+u1BRV06dPaLfLCaT7fUTJLp5r04x7iNw=
-github.com/hashicorp/go-version v1.3.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09ZGVZPK5anwXA=
+github.com/hashicorp/go-version v1.4.0 h1:aAQzgqIrRKRa7w75CKpbBxYsmUoPjzVm1W59ca1L0J4=
+github.com/hashicorp/go-version v1.4.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09ZGVZPK5anwXA=
 github.com/hashicorp/go.net v0.0.1/go.mod h1:hjKkEWcCURg++eb33jQU7oqQcI9XDCnUzHA0oac0k90=
 github.com/hashicorp/golang-lru v0.5.0/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
 github.com/hashicorp/golang-lru v0.5.1/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
