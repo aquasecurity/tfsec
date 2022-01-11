@@ -1,11 +1,7 @@
 package athena
 
 import (
-	"strings"
-
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/athena"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -68,24 +64,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_athena_database", "aws_athena_workgroup"},
 		Base:           athena.CheckEnableAtRestEncryption,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if strings.EqualFold(resourceBlock.TypeLabel(), "aws_athena_workgroup") {
-				if !resourceBlock.HasChild("configuration") {
-					return
-				}
-				configBlock := resourceBlock.GetBlock("configuration")
-				if !configBlock.HasChild("result_configuration") {
-					return
-				}
-				resourceBlock = configBlock.GetBlock("result_configuration")
-			}
-
-			if resourceBlock.MissingChild("encryption_configuration") {
-				results.Add("Missing encryption configuration block.", resourceBlock)
-			}
-
-			return results
-		},
 	})
 }
