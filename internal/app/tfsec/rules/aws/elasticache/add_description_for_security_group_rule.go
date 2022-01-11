@@ -1,9 +1,7 @@
 package elasticache
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/elasticache"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -42,13 +40,5 @@ resource "aws_elasticache_security_group" "good_example" {
 			"aws_elasticache_security_group",
 		},
 		Base: elasticache.CheckAddDescriptionForSecurityGroup,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if descriptionAttr := resourceBlock.GetAttribute("description"); descriptionAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for description", resourceBlock)
-			} else if descriptionAttr.IsEmpty() {
-				results.Add("Resource has description set to ", descriptionAttr)
-			}
-			return results
-		},
 	})
 }

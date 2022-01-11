@@ -1,9 +1,7 @@
 package elasticache
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/elasticache"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -31,14 +29,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_elasticache_replication_group"},
 		Base:           elasticache.CheckEnableInTransitEncryption,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			encryptionAttr := resourceBlock.GetAttribute("transit_encryption_enabled")
-			if encryptionAttr.IsNil() {
-				results.Add("Resource defines an unencrypted Elasticache Replication Group (missing transit_encryption_enabled attribute).", resourceBlock)
-			} else if !encryptionAttr.IsTrue() {
-				results.Add("Resource defines an unencrypted Elasticache Replication Group (transit_encryption_enabled set to false).", encryptionAttr)
-			}
-			return results
-		},
 	})
 }
