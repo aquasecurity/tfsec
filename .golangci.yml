@@ -1,0 +1,41 @@
+
+linters:
+  disable-all: true
+  enable:
+    - deadcode
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - structcheck
+    - typecheck
+    - unused
+    - varcheck
+    - bodyclose
+    - contextcheck
+    - cyclop
+    - durationcheck
+    - errname
+    - errorlint
+    - exportloopref
+    - goimports
+    - gosec
+    - gocritic
+
+linters-settings: 
+  cyclop:
+    max-complexity: 15
+  gocritic:
+    disabled-checks:
+      - singleCaseSwitch
+
+issues:
+  exclude-rules:
+    - path: internal/app/tfsec/funcs/
+      linters:
+        - cyclop
+        - errorlint
+        - gocritic
+        - gosec
+

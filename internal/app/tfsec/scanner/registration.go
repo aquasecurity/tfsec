@@ -38,13 +38,13 @@ func GetRegisteredRules() []rule.Rule {
 	return registeredRules
 }
 
-func GetRuleById(ID string) (*rule.Rule, error) {
+func GetRuleById(id string) (*rule.Rule, error) {
 	for _, r := range registeredRules {
-		if r.ID() == ID {
+		if r.ID() == id {
 			return &r, nil
 		}
 	}
-	return nil, fmt.Errorf("could not find rule with ID '%s'", ID)
+	return nil, fmt.Errorf("could not find rule with ID '%s'", id)
 }
 
 func GetRuleByLegacyID(legacyID string) (*rule.Rule, error) {

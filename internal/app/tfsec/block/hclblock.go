@@ -9,7 +9,6 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/schema"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 )

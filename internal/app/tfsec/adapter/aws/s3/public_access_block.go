@@ -32,14 +32,15 @@ func getPublicAccessBlocks(modules block.Modules, buckets []s3.Bucket) []s3.Publ
 			references := bucketAttr.AllReferences(b)
 
 			for i, bucket := range buckets {
+				clone := bucket
 				if bucketName != "" && bucket.Name.EqualTo(bucketName) && buckets[i].PublicAccessBlock == nil {
-					pba.Bucket = &bucket
+					pba.Bucket = &clone
 					buckets[i].PublicAccessBlock = &pba
 					break
 				}
 				for _, ref := range references {
 					if ref.RefersTo(bucket.Reference()) || (strings.HasPrefix(bucket.Reference().String(), ref.String()) && buckets[i].PublicAccessBlock == nil) {
-						pba.Bucket = &bucket
+						pba.Bucket = &clone
 						buckets[i].PublicAccessBlock = &pba
 						break
 					}

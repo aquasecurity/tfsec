@@ -239,7 +239,7 @@ func createTestFile(filename, contents string) string {
 		panic(err)
 	}
 	path := filepath.Join(dir, filename)
-	if err := ioutil.WriteFile(path, []byte(contents), 0755); err != nil {
+	if err := ioutil.WriteFile(path, []byte(contents), 0600); err != nil {
 		panic(err)
 	}
 	return path
@@ -257,21 +257,21 @@ func createTestFileWithModule(contents string, moduleContents string, moduleName
 		modulePath = filepath.Join(modulePath, moduleName)
 	}
 
-	if err := os.Mkdir(rootPath, 0755); err != nil {
+	if err := os.Mkdir(rootPath, 0700); err != nil {
 		panic(err)
 	}
 
 	if modulePath != dir {
-		if err := os.Mkdir(modulePath, 0755); err != nil {
+		if err := os.Mkdir(modulePath, 0700); err != nil {
 			panic(err)
 		}
 	}
 
-	if err := ioutil.WriteFile(filepath.Join(rootPath, "main.tf"), []byte(contents), 0755); err != nil {
+	if err := ioutil.WriteFile(filepath.Join(rootPath, "main.tf"), []byte(contents), 0600); err != nil {
 		panic(err)
 	}
 
-	if err := ioutil.WriteFile(filepath.Join(modulePath, "main.tf"), []byte(moduleContents), 0755); err != nil {
+	if err := ioutil.WriteFile(filepath.Join(modulePath, "main.tf"), []byte(moduleContents), 0600); err != nil {
 		panic(err)
 	}
 

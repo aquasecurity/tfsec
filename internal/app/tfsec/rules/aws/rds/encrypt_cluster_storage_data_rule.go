@@ -33,6 +33,7 @@ func init() {
 			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
 			storageEncryptedAttr := resourceBlock.GetAttribute("storage_encrypted")
 
+			//nolint
 			if storageEncryptedAttr.IsNil() {
 				results.Add("Storage encryption is not enabled.", resourceBlock)
 			} else if storageEncryptedAttr.IsFalse() {

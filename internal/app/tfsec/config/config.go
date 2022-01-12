@@ -22,12 +22,12 @@ func LoadConfig(configFilePath string) (*Config, error) {
 	var config = &Config{}
 
 	if _, err := os.Stat(configFilePath); err != nil {
-		return nil, fmt.Errorf("failed to access config file '%s': %s", configFilePath, err)
+		return nil, fmt.Errorf("failed to access config file '%s': %w", configFilePath, err)
 	}
 
 	configFileContent, err := ioutil.ReadFile(configFilePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read config file '%s': %s", configFilePath, err)
+		return nil, fmt.Errorf("failed to read config file '%s': %w", configFilePath, err)
 	}
 
 	ext := filepath.Ext(configFilePath)
@@ -35,12 +35,12 @@ func LoadConfig(configFilePath string) (*Config, error) {
 	case ".json":
 		err = json.Unmarshal(configFileContent, config)
 		if err != nil {
-			return nil, fmt.Errorf("failed to load config file '%s': %s", configFilePath, err)
+			return nil, fmt.Errorf("failed to load config file '%s': %w", configFilePath, err)
 		}
 	case ".yaml", ".yml":
 		err = yaml.Unmarshal(configFileContent, config)
 		if err != nil {
-			return nil, fmt.Errorf("failed to load config file '%s': %s", configFilePath, err)
+			return nil, fmt.Errorf("failed to load config file '%s': %w", configFilePath, err)
 		}
 	default:
 		return nil, fmt.Errorf("couldn't process the file %s", configFilePath)
@@ -51,11 +51,8 @@ func LoadConfig(configFilePath string) (*Config, error) {
 	return config, nil
 }
 
-func rewriteSeverityOverrides(config *Config) error {
-
+func rewriteSeverityOverrides(config *Config) {
 	for k, s := range config.SeverityOverrides {
 		config.SeverityOverrides[k] = string(severity.StringToSeverity(s))
 	}
-
-	return nil
 }

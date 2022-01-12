@@ -65,8 +65,8 @@ func init() {
 					}
 				} else {
 					computeServiceAccounts := module.GetDatasByType("google_compute_default_service_account")
-					serviceAccounts := append(computeServiceAccounts, module.GetResourcesByType("google_app_engine_default_service_account")...)
-					for _, serviceAccount := range serviceAccounts {
+					computeServiceAccounts = append(computeServiceAccounts, module.GetResourcesByType("google_app_engine_default_service_account")...)
+					for _, serviceAccount := range computeServiceAccounts {
 						if memberAttr.References(serviceAccount.Reference()) {
 							results.Add("Resource assigns a role to a default service account.", memberAttr)
 						}
@@ -81,8 +81,8 @@ func init() {
 					}
 				}
 				computeServiceAccounts := module.GetDatasByType("google_compute_default_service_account")
-				serviceAccounts := append(computeServiceAccounts, module.GetResourcesByType("google_app_engine_default_service_account")...)
-				for _, serviceAccount := range serviceAccounts {
+				computeServiceAccounts = append(computeServiceAccounts, module.GetResourcesByType("google_app_engine_default_service_account")...)
+				for _, serviceAccount := range computeServiceAccounts {
 					if membersAttr.References(serviceAccount.Reference()) {
 						results.Add("Resource assigns a role to a default service account.", membersAttr)
 					}

@@ -16,8 +16,6 @@ var sensitiveAttributeTokens = []string{
 	"api_key",
 }
 
-var sensitiveAttributes = map[string]string{}
-
 var StringScanner = squealer.NewStringScanner()
 
 var whitelistTokens = []string{

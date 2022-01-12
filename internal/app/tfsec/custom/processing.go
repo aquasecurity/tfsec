@@ -161,12 +161,11 @@ func evalMatchSpec(b block.Block, spec *MatchSpec, module block.Module) bool {
 	}
 	var evalResult bool
 
-	if spec.PreConditions != nil {
-		for _, preCondition := range spec.PreConditions {
-			if !evalMatchSpec(b, &preCondition, module) {
-				// precondition not met
-				return true
-			}
+	for _, preCondition := range spec.PreConditions {
+		clone := preCondition
+		if !evalMatchSpec(b, &clone, module) {
+			// precondition not met
+			return true
 		}
 	}
 
@@ -206,7 +205,8 @@ func notifyPredicate(b block.Block, spec *MatchSpec, module block.Module) bool {
 
 func processOrPredicate(spec *MatchSpec, b block.Block, module block.Module) bool {
 	for _, childSpec := range spec.PredicateMatchSpec {
-		if evalMatchSpec(b, &childSpec, module) {
+		clone := childSpec
+		if evalMatchSpec(b, &clone, module) {
 			return true
 		}
 	}
@@ -217,7 +217,8 @@ func processAndPredicate(spec *MatchSpec, b block.Block, module block.Module) bo
 	set := make(map[bool]bool)
 
 	for _, childSpec := range spec.PredicateMatchSpec {
-		result := evalMatchSpec(b, &childSpec, module)
+		clone := childSpec
+		result := evalMatchSpec(b, &clone, module)
 		set[result] = true
 
 	}

@@ -47,22 +47,15 @@ tagger:
 	 git tag -a "$${TAG}" -m "$${TAG}"; \
 	 git push origin "$${TAG}"
 
-.PHONY: cyclo
-cyclo:
-	which gocyclo || go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
-	gocyclo -over 15 -ignore 'vendor/|funcs|cmd/tfsec-skeleton' .
-
-.PHONY: vet
-vet:
-	go vet ./...
-
 .PHONY: typos
 typos:
 	which codespell || pip install codespell
 	codespell -S vendor,funcs,.terraform,.git --ignore-words .codespellignore -f
 
 .PHONY: quality
-quality: cyclo vet
+quality:
+	which golangci-lint || go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.43.0
+	golangci-lint run
 
 .PHONY: fix-typos
 fix-typos:

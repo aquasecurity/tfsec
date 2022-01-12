@@ -42,19 +42,19 @@ func (statistics Statistics) PrintStatisticsTable() {
 	table.Render()
 }
 
-func AddStatisticsCount(StatisticsSlice Statistics, result rules.Result) Statistics {
-	for i, statistics := range StatisticsSlice {
-		if statistics.RuleID == result.Rule().LongID() {
-			StatisticsSlice[i].Count += 1
-			return StatisticsSlice
+func AddStatisticsCount(statistics Statistics, result rules.Result) Statistics {
+	for i, statistic := range statistics {
+		if statistic.RuleID == result.Rule().LongID() {
+			statistics[i].Count += 1
+			return statistics
 		}
 	}
-	StatisticsSlice = append(StatisticsSlice, StatisticsItem{
+	statistics = append(statistics, StatisticsItem{
 		RuleID:          result.Rule().LongID(),
 		RuleDescription: result.Rule().Summary,
 		Links:           result.Rule().Links,
 		Count:           1,
 	})
 
-	return StatisticsSlice
+	return statistics
 }

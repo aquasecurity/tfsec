@@ -32,7 +32,6 @@ func (l *linter) lint(check rule.Rule) {
 	if len(check.Links) == 0 {
 		fmt.Printf("%s: Found check with no terraform-specific links\n", check.ID())
 		errorFound = true
-		return
 	}
 
 	errorFound = errorFound || l.checkDocumentation(check)
