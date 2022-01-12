@@ -257,12 +257,12 @@ func createTestFileWithModule(contents string, moduleContents string, moduleName
 		modulePath = filepath.Join(modulePath, moduleName)
 	}
 
-	if err := os.Mkdir(rootPath, 0600); err != nil {
+	if err := os.Mkdir(rootPath, 0700); err != nil {
 		panic(err)
 	}
 
 	if modulePath != dir {
-		if err := os.Mkdir(modulePath, 0600); err != nil {
+		if err := os.Mkdir(modulePath, 0700); err != nil {
 			panic(err)
 		}
 	}
