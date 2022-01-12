@@ -48,26 +48,27 @@ func newReference(parts []string, parentKey string) (*Reference, error) {
 		if len(parts) > 1 {
 			ref.nameLabel = parts[1]
 		}
-	} else {
-		if len(parts) > 1 {
-			ref.typeLabel = parts[1]
-			if len(parts) > 2 {
-				ref.nameLabel = parts[2]
-			} else {
-				ref.nameLabel = ref.typeLabel
-				ref.typeLabel = ""
-			}
+	} else if len(parts) > 1 {
+		ref.typeLabel = parts[1]
+		if len(parts) > 2 {
+			ref.nameLabel = parts[2]
+		} else {
+			ref.nameLabel = ref.typeLabel
+			ref.typeLabel = ""
 		}
 	}
 
 	if strings.Contains(ref.nameLabel, "[") {
 		bits := strings.Split(ref.nameLabel, "[")
 		ref.nameLabel = bits[0]
-		keyRaw := strings.ReplaceAll(bits[1][:strings.Index(bits[1], "]")], "\"", "")
-		if i, err := strconv.Atoi(keyRaw); err == nil {
-			ref.key = cty.NumberIntVal(int64(i))
-		} else {
-			ref.key = cty.StringVal(keyRaw)
+		index := strings.Index(bits[1], "]")
+		if index > -1 {
+			keyRaw := strings.ReplaceAll(bits[1][:index], "\"", "")
+			if i, err := strconv.Atoi(keyRaw); err == nil {
+				ref.key = cty.NumberIntVal(int64(i))
+			} else {
+				ref.key = cty.StringVal(keyRaw)
+			}
 		}
 	}
 

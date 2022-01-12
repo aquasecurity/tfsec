@@ -17,7 +17,6 @@ type HCLAttribute struct {
 	hclAttribute *hcl.Attribute
 	module       string
 	ctx          *Context
-	forEachRefs  []*Reference
 	ref          *Reference
 }
 
@@ -50,7 +49,7 @@ func (a *HCLAttribute) GetRawValue() interface{} {
 		float, _ := a.Value().AsBigFloat().Float64()
 		return float
 	default:
-		switch true {
+		switch {
 		case typ.IsTupleType(), typ.IsListType():
 			values := a.Value().AsValueSlice()
 			if len(values) == 0 {

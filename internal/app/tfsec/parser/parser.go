@@ -3,17 +3,14 @@ package parser
 import (
 	"fmt"
 	"io/fs"
-	"strings"
-
-	"github.com/aquasecurity/defsec/metrics"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
+
+	"github.com/aquasecurity/defsec/metrics"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 )
 
 // Parser is a tool for parsing terraform templates at a given file system location

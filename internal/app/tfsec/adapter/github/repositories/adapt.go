@@ -22,7 +22,7 @@ func adaptRepositories(modules []block.Module) []github.Repository {
 
 func adaptRepository(resource block.Block) github.Repository {
 
-	//visibility overrides private
+	// visibility overrides private
 	visibilityAttr := resource.GetAttribute("visibility")
 	if visibilityAttr.Equals("private") || visibilityAttr.Equals("internal") {
 		return github.Repository{

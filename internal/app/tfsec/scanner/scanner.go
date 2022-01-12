@@ -61,7 +61,7 @@ func (scanner *Scanner) Scan(modules []block.Module) (rules.Results, error) {
 
 	threads := runtime.NumCPU()
 	if threads > 1 {
-		threads = threads - 1
+		threads--
 	}
 	if scanner.useSingleThread {
 		threads = 1

@@ -27,8 +27,7 @@ func Update() error {
 		return err
 	}
 
-	updateIfNewer(latestAvailable)
-	return nil
+	return updateIfNewer(latestAvailable)
 }
 
 func getLatestVersion() (string, error) {
@@ -71,12 +70,12 @@ func updateIfNewer(latest string) error {
 	if newer, err := isNewerVersion(latest); err != nil {
 		return err
 	} else if !newer {
-		return fmt.Errorf("current version is the latest version")
+		return nil
 	}
 
 	downloadUrl := resolveDownloadUrl(latest)
 	debug.Log("Downloading latest version from %s", downloadUrl)
-	resp, err := http.Get(downloadUrl)
+	resp, err := http.Get(downloadUrl) //nolint
 	if err != nil {
 		return err
 	}

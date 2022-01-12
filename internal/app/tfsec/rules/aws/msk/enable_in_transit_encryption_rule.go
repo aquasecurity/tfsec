@@ -52,6 +52,7 @@ func init() {
 			}
 
 			clientBrokerAttr := encryptionInTransit.GetAttribute("client_broker")
+			//nolint
 			if clientBrokerAttr.IsNil() {
 				results.Add("Resource defines a MSK cluster that allows plaintext as well as TLS encrypted data in transit (missing client_broker block).", encryptionInTransit)
 			} else if clientBrokerAttr.Value().AsString() == "PLAINTEXT" {

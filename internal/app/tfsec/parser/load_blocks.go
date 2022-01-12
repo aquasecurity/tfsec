@@ -8,7 +8,6 @@ import (
 	"github.com/aquasecurity/defsec/metrics"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/schema"
-
 	"github.com/hashicorp/hcl/v2"
 )
 

@@ -103,7 +103,7 @@ var rootCmd = &cobra.Command{
 	Use:   "tfsec [directory]",
 	Short: "tfsec is a terraform security scanner",
 	Long:  `tfsec is a simple tool to detect potential security vulnerabilities in your terraformed infrastructure.`,
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+	PersistentPreRun: func(_ *cobra.Command, args []string) {
 
 		// disable colour if running on windows - colour formatting doesn't work
 		if disableColours || runtime.GOOS == "windows" {
@@ -154,7 +154,7 @@ var rootCmd = &cobra.Command{
 			os.Exit(0)
 		}
 	},
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 
 		var dir string
 		var err error
@@ -304,7 +304,7 @@ var rootCmd = &cobra.Command{
 		debug.Log("Starting scanner...")
 		results, err := scanner.New(getScannerOptions()...).Scan(modules)
 		if err != nil {
-			return fmt.Errorf("fatal error during scan: %s", err)
+			return fmt.Errorf("fatal error during scan: %w", err)
 		}
 		results = updateResultSeverity(results)
 		results = removeExcludedResults(results, ignoreWarnings, excludeDownloaded)
@@ -343,7 +343,7 @@ var rootCmd = &cobra.Command{
 		for _, formatInfo := range outputFiles {
 			formatter := formatInfo.formatter
 			if formatter == nil {
-				return fmt.Errorf("Could not access formatter for file format '%s'", formatInfo.format)
+				return fmt.Errorf("could not access formatter for file format '%s'", formatInfo.format)
 			}
 
 			if err := (*formatter)(formatInfo.outputFile, results, dir, getFormatterOptions()...); err != nil {
@@ -493,9 +493,8 @@ func getScannerOptions() []scanner.Option {
 }
 
 func mergeWithoutDuplicates(left, right []string) []string {
-	all := append(left, right...)
 	var set = map[string]bool{}
-	for _, x := range all {
+	for _, x := range append(left, right...) {
 		set[x] = true
 	}
 	var results []string

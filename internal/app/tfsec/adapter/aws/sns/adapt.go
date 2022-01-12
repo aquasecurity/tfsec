@@ -23,7 +23,7 @@ func adaptTopics(modules []block.Module) []sns.Topic {
 
 func adaptTopic(resourceBlock block.Block) sns.Topic {
 	return sns.Topic{
-		Metadata: resourceBlock.Metadata(),
+		Metadata:   resourceBlock.Metadata(),
 		Encryption: adaptEncryption(resourceBlock),
 	}
 }

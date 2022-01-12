@@ -17,7 +17,7 @@ func LoadTFVars(filenames []string) (map[string]cty.Value, error) {
 	for _, filename := range filenames {
 		vars, err := loadTFVars(filename)
 		if err != nil {
-			return nil, fmt.Errorf("failed to load the tfvars. %s", err.Error())
+			return nil, fmt.Errorf("failed to load the tfvars. %w", err)
 		}
 		for k, v := range vars {
 			combinedVars[k] = v

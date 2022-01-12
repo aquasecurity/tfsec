@@ -10,6 +10,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil/filesystem"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestRequiredSourcesMatch(t *testing.T) {
@@ -175,10 +176,10 @@ module "custom_module" {
 				t.Fatal(err)
 			}
 
-			os.Chdir(fs.RealPath("/")) // change directory for relative path tests to work
+			require.NoError(t, os.Chdir(fs.RealPath("/"))) // change directory for relative path tests to work
 			result := test.rule.isRuleRequiredForBlock(modules[0].GetBlocks()[0])
 			assert.Equal(t, test.expected, result, "`IsRuleRequiredForBlock` match function evaluating incorrectly for requiredSources test.")
 		})
 	}
-	os.Chdir(wd)
+	require.NoError(t, os.Chdir(wd))
 }

@@ -1,9 +1,8 @@
 package athena
 
 import (
-	"github.com/aquasecurity/defsec/types"
-
 	"github.com/aquasecurity/defsec/provider/aws/athena"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 

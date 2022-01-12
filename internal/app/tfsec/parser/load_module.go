@@ -67,7 +67,8 @@ func (e *Evaluator) loadModules(stopOnHCLError bool) []*ModuleDefinition {
 		}
 		moduleDefinition, err := e.loadModule(moduleBlock, stopOnHCLError)
 		if err != nil {
-			if loadErr, ok := err.(*moduleLoadError); ok {
+			var loadErr *moduleLoadError
+			if errors.As(err, &loadErr) {
 				var found bool
 				for _, fm := range loadErrors {
 					if fm.source == loadErr.source {

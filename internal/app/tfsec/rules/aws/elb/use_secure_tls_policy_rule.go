@@ -6,13 +6,6 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
-var outdatedSSLPolicies = []string{
-	"ELBSecurityPolicy-2015-05",
-	"ELBSecurityPolicy-TLS-1-0-2015-04",
-	"ELBSecurityPolicy-2016-08",
-	"ELBSecurityPolicy-TLS-1-1-2017-01",
-}
-
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		LegacyID: "AWS010",

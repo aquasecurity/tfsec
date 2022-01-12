@@ -43,7 +43,7 @@ func LoadDirectory(fullPath string, stopOnHCLError bool) ([]File, error) {
 
 		var parseFunc func(filename string) (*hcl.File, hcl.Diagnostics)
 
-		switch true {
+		switch {
 		case strings.HasSuffix(info.Name(), ".tf"):
 			parseFunc = hclParser.ParseHCLFile
 		case strings.HasSuffix(info.Name(), ".tf.json"):

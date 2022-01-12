@@ -30,7 +30,7 @@ func Validate(checkFilePath string) error {
 					return errors.New("check json is not valid")
 				}
 				errorStrings := getErrorStrings(errs)
-				return fmt.Errorf("check failed with the following errors;\n\n - %s\n\n%s\n", errorStrings, jsonContent)
+				return fmt.Errorf("check failed with the following errors;\n\n - %s\n\n%s", errorStrings, jsonContent)
 			}
 			return nil
 		}(check); err != nil {
@@ -83,7 +83,8 @@ func validateMatchSpec(spec *MatchSpec, check *Check, checkErrors []error) []err
 	// if the check is one of `or`, `and`, then all PredicateMatchSpec's must also be valid
 	if spec.Action == "or" || spec.Action == "and" {
 		for _, predicateMatchSpec := range spec.PredicateMatchSpec {
-			checkErrors = append(checkErrors, validateMatchSpec(&predicateMatchSpec, check, checkErrors)...)
+			clone := predicateMatchSpec
+			checkErrors = append(checkErrors, validateMatchSpec(&clone, check, checkErrors)...)
 		}
 	}
 

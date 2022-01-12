@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"os"
 	"sort"
 	"strings"
 
-	"github.com/spf13/cobra"
-
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/spf13/cobra"
 )
 
 var (

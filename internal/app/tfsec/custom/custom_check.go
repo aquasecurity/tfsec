@@ -114,7 +114,7 @@ type MatchSpec struct {
 	IgnoreUnmatched    bool        `json:"ignoreUnmatched,omitempty" yaml:"ignoreUnmatched,omitempty"`
 }
 
-//Check specifies the check definition represented in json/yaml
+// Check specifies the check definition represented in json/yaml
 type Check struct {
 	Code            string            `json:"code" yaml:"code"`
 	Description     string            `json:"description" yaml:"description"`
