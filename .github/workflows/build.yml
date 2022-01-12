@@ -27,9 +27,6 @@ jobs:
     - name: Sanity
       run: make sanity
 
-    - name: Code Quality
-      run: make quality
-
     - name: Spelling
       uses: codespell-project/actions-codespell@master
       with:
