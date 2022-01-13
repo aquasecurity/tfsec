@@ -27,7 +27,7 @@ func Test_AWSSqsPolicyWildcardActions(t *testing.T) {
      {
        "Effect": "Allow",
        "Principal": "*",
-       "Action": ["sqs:SendMessage", "sqs:ReceiveMessage"],
+       "Action": ["sqs:SendMessage", "sqs:ReceiveMessage"]
      }
    ]
  }
