@@ -2,6 +2,7 @@ package dynamodb
 
 import (
 	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/provider/aws/dynamodb"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/defsec/state"
@@ -20,13 +21,13 @@ var CheckTableCustomerKey = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformTableCustomerKeyGoodExamples,
-            BadExamples:         terraformTableCustomerKeyBadExamples,
-            Links:               terraformTableCustomerKeyLinks,
-            RemediationMarkdown: terraformTableCustomerKeyRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformTableCustomerKeyGoodExamples,
+			BadExamples:         terraformTableCustomerKeyBadExamples,
+			Links:               terraformTableCustomerKeyLinks,
+			RemediationMarkdown: terraformTableCustomerKeyRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.DynamoDB.DAXClusters {
@@ -36,6 +37,11 @@ var CheckTableCustomerKey = rules.Register(
 			if cluster.ServerSideEncryption.KMSKeyID.IsEmpty() {
 				results.Add(
 					"Cluster encryption does not use a customer-managed KMS key.",
+					cluster.ServerSideEncryption.KMSKeyID,
+				)
+			} else if cluster.ServerSideEncryption.KMSKeyID.EqualTo(dynamodb.DefaultKMSKeyID) {
+				results.Add(
+					"Cluster encryption explicitly uses the default KMS key.",
 					cluster.ServerSideEncryption.KMSKeyID,
 				)
 			} else {

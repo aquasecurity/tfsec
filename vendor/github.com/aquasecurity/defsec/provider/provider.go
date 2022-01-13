@@ -30,6 +30,8 @@ func (p Provider) DisplayName() string {
 		return strings.ToUpper(string(p))
 	case "digitalocean":
 		return "Digital Ocean"
+	case "github":
+		return "GitHub"
 	case "openstack":
 		return "OpenStack"
 	case "cloudstack":

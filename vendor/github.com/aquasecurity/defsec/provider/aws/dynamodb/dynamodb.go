@@ -17,6 +17,8 @@ type ServerSideEncryption struct {
 	KMSKeyID types.StringValue
 }
 
+const DefaultKMSKeyID = "alias/aws/dynamodb"
+
 func (c *DAXCluster) GetMetadata() *types.Metadata {
 	return &c.Metadata
 }
