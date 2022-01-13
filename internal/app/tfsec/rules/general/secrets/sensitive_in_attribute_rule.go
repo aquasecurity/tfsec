@@ -42,6 +42,10 @@ var sensitiveWhitelist = []struct {
 		Resource:  "vault_pki_secret_backend_cert",
 		Attribute: "private_key_format",
 	},
+	{
+		Resource:  "kubernetes_service_account",
+		Attribute: "automount_service_account_token",
+	},
 }
 
 func init() {
@@ -63,7 +67,7 @@ func init() {
  }
  
  resource "evil_corp" "good_example" {
- 	root_password = var.passwordx
+ 	root_password = var.password
  }
  `},
 		Base: secrets.CheckNotExposed,
