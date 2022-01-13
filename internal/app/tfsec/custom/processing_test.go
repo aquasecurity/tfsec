@@ -122,6 +122,26 @@ var testPreConditionCheck = MatchSpec{
 	},
 }
 
+var testAssignVariableMatchSpec = MatchSpec{
+	Action: "and",
+	PredicateMatchSpec: []MatchSpec{
+		{
+			Name:   "bucket",
+			Action: "isPresent",
+			AssignVariable: "TFSEC_VAR_BUCKET_NAME",
+		},
+		{
+			Name:   "lifecycle_rule",
+			Action: "isPresent",
+			SubMatch: &MatchSpec{
+				Name:       "id",
+				Action:     "startsWith",
+				MatchValue: "TFSEC_VAR_BUCKET_NAME",
+			},
+		},
+	},
+}
+
 func TestRequiresPresenceWithResourcePresent(t *testing.T) {
 	scanResults := scanTerraform(t, `
 resource "aws_vpc" "main" {
@@ -219,8 +239,8 @@ resource "aws_ami" "example" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.predicateMatchSpec, nil)
-			assert.Equal(t, result, test.expected, "`Or` match function evaluating incorrectly.")
+			result := evalMatchSpec(block, &test.predicateMatchSpec, nil, nil)
+			assert.Equal(t, test.expected, result, "`Or` match function evaluating incorrectly.")
 		})
 	}
 }
@@ -266,8 +286,8 @@ resource "aws_ami" "example" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.predicateMatchSpec, nil)
-			assert.Equal(t, result, test.expected, "`And` match function evaluating incorrectly.")
+			result := evalMatchSpec(block, &test.predicateMatchSpec, nil, nil)
+			assert.Equal(t, test.expected, result, "`And` match function evaluating incorrectly.")
 		})
 	}
 }
@@ -317,8 +337,8 @@ resource "aws_ami" "example" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.predicateMatchSpec, nil)
-			assert.Equal(t, result, test.expected, "Nested match functions evaluating incorrectly.")
+			result := evalMatchSpec(block, &test.predicateMatchSpec, nil, nil)
+			assert.Equal(t, test.expected, result, "Nested match functions evaluating incorrectly.")
 		})
 	}
 }
@@ -344,8 +364,8 @@ resource "aws_ami" "example" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.matchSpec, nil)
-			assert.Equal(t, result, test.expected, "Not match functions evaluating incorrectly.")
+			result := evalMatchSpec(block, &test.matchSpec, nil, nil)
+			assert.Equal(t, test.expected, result, "Not match functions evaluating incorrectly.")
 		})
 	}
 }
@@ -394,8 +414,54 @@ resource "aws_ami" "testing" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.matchSpec, nil)
-			assert.Equal(t, result, test.expected, "precondition functions evaluating incorrectly.")
+			result := evalMatchSpec(block, &test.matchSpec, nil, nil)
+			assert.Equal(t, test.expected, result, "precondition functions evaluating incorrectly.")
+		})
+	}
+}
+
+func TestAssignVariable(t *testing.T) {
+	var tests = []struct {
+		name      string
+		source    string
+		matchSpec MatchSpec
+		expected  bool
+	}{
+		{
+			name: "check assignVariable handling in pass case",
+			source: `
+resource "aws_s3_bucket" "test-bucket" {
+  bucket = "test-bucket"
+
+  lifecycle_rule {
+    id = "test-bucket-rule-1"
+  }
+}
+`,
+			matchSpec: testAssignVariableMatchSpec,
+			expected:  true,
+		},
+		{
+			name: "check assignVariable handling in fail case",
+			source: `
+resource "aws_s3_bucket" "test-bucket" {
+  bucket = "test-bucket"
+
+  lifecycle_rule {
+    id = "not-bucket-name-rule-1"
+  }
+}
+`,
+			matchSpec: testAssignVariableMatchSpec,
+			expected:  false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.matchSpec, nil, nil)
+			assert.Equal(t, test.expected, result, "processing variable assignments incorrectly.")
 		})
 	}
 }
