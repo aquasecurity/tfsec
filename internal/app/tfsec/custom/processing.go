@@ -11,12 +11,12 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
-var matchFunctions = map[CheckAction]func(block.Block, *MatchSpec) bool{
-	IsPresent: func(block block.Block, spec *MatchSpec) bool {
+var matchFunctions = map[CheckAction]func(block.Block, *MatchSpec, block.Module) bool{
+	IsPresent: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		return block.HasChild(spec.Name) || spec.IgnoreUndefined
 	},
-	NotPresent: func(block block.Block, spec *MatchSpec) bool { return !block.HasChild(spec.Name) },
-	IsEmpty: func(block block.Block, spec *MatchSpec) bool {
+	NotPresent: func(block block.Block, spec *MatchSpec, module block.Module) bool { return !block.HasChild(spec.Name) },
+	IsEmpty: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		if block.MissingChild(spec.Name) {
 			return true
 		}
@@ -28,94 +28,95 @@ var matchFunctions = map[CheckAction]func(block.Block, *MatchSpec) bool{
 		childBlock := block.GetBlock(spec.Name)
 		return childBlock.IsEmpty()
 	},
-	StartsWith: func(block block.Block, spec *MatchSpec) bool {
+	StartsWith: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.StartsWith(spec.MatchValue)
 	},
-	EndsWith: func(block block.Block, spec *MatchSpec) bool {
+	EndsWith: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.EndsWith(spec.MatchValue)
 	},
-	Contains: func(b block.Block, spec *MatchSpec) bool {
+	Contains: func(b block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.Contains(spec.MatchValue, block.IgnoreCase)
 	},
-	NotContains: func(block block.Block, spec *MatchSpec) bool {
+	NotContains: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return !attribute.Contains(spec.MatchValue)
 	},
-	Equals: func(block block.Block, spec *MatchSpec) bool {
+	Equals: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.Equals(spec.MatchValue)
 	},
-	NotEqual: func(block block.Block, spec *MatchSpec) bool {
+	NotEqual: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.NotEqual(spec.MatchValue)
 	},
-	LessThan: func(block block.Block, spec *MatchSpec) bool {
+	LessThan: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThan(spec.MatchValue)
 	},
-	LessThanOrEqualTo: func(block block.Block, spec *MatchSpec) bool {
+	LessThanOrEqualTo: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThanOrEqualTo(spec.MatchValue)
 	},
-	GreaterThan: func(block block.Block, spec *MatchSpec) bool {
+	GreaterThan: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThan(spec.MatchValue)
 	},
-	GreaterThanOrEqualTo: func(block block.Block, spec *MatchSpec) bool {
+	GreaterThanOrEqualTo: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThanOrEqualTo(spec.MatchValue)
 	},
-	RegexMatches: func(block block.Block, spec *MatchSpec) bool {
+	RegexMatches: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.RegexMatches(spec.MatchValue)
 	},
-	IsAny: func(block block.Block, spec *MatchSpec) bool {
+	IsAny: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		return attribute != nil && attribute.IsAny(unpackInterfaceToInterfaceSlice(spec.MatchValue)...)
 	},
-	IsNone: func(block block.Block, spec *MatchSpec) bool {
+	IsNone: func(block block.Block, spec *MatchSpec, module block.Module) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.IsNone(unpackInterfaceToInterfaceSlice(spec.MatchValue)...)
 	},
+	RequiresPresence: func(block block.Block, spec *MatchSpec, module block.Module) bool { return resourceFound(spec, module) },
 }
 
 func processFoundChecks(checks ChecksFile) {
@@ -173,15 +174,13 @@ func evalMatchSpec(b block.Block, spec *MatchSpec, module block.Module) bool {
 	case InModule:
 		return b.InModule()
 	case RegexMatches:
-		if !matchFunctions[RegexMatches](b, spec) {
+		if !matchFunctions[RegexMatches](b, spec, module) {
 			return spec.IgnoreUnmatched
 		}
 	case HasTag:
 		return checkTags(b, spec, module)
 	case OfType:
 		return ofType(b, spec)
-	case RequiresPresence:
-		return resourceFound(spec, module)
 	case Not:
 		return notifyPredicate(b, spec, module)
 	case And:
@@ -189,11 +188,11 @@ func evalMatchSpec(b block.Block, spec *MatchSpec, module block.Module) bool {
 	case Or:
 		return processOrPredicate(spec, b, module)
 	default:
-		evalResult = matchFunctions[spec.Action](b, spec)
+		evalResult = matchFunctions[spec.Action](b, spec, module)
 	}
 
 	if spec.SubMatch != nil {
-		evalResult = processSubMatches(spec, b, evalResult)
+		evalResult = processSubMatches(spec, b, module, evalResult)
 	}
 
 	return evalResult
@@ -226,8 +225,15 @@ func processAndPredicate(spec *MatchSpec, b block.Block, module block.Module) bo
 	return len(set) == 1 && set[true]
 }
 
-func processSubMatches(spec *MatchSpec, b block.Block, evalResult bool) bool {
-	for _, b := range b.GetBlocks(spec.Name) {
+func processSubMatches(spec *MatchSpec, b block.Block, module block.Module, evalResult bool) bool {
+	var subMatchTargets []block.Block
+	switch spec.Action {
+	case RequiresPresence:
+		subMatchTargets = module.GetResourcesByType(spec.Name)
+	default:
+		subMatchTargets = b.GetBlocks(spec.Name)
+	}
+	for _, b := range subMatchTargets {
 		evalResult = evalMatchSpec(b, spec.SubMatch, nil)
 		if !evalResult {
 			break
