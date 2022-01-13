@@ -75,6 +75,19 @@ resource "vault_pki_secret_backend_cert" "server_cert" {
             `,
 			mustExcludeResultCode: expectedCode,
 		},
+		{
+			name: "kubernetes_service_account automount_service_account_token",
+			source: `
+resource "kubernetes_service_account" "rule_breaker" {
+  metadata {
+    name      = var.name
+    namespace = var.namespace
+  }
+  automount_service_account_token = "true"
+}
+            `,
+			mustExcludeResultCode: expectedCode,
+		},
 	}
 
 	for _, test := range tests {
