@@ -11,6 +11,8 @@ type Secret struct {
 	KMSKeyID types.StringValue
 }
 
+const DefaultKMSKeyID = "alias/aws/secretsmanager"
+
 func (v *Secret) GetMetadata() *types.Metadata {
 	return &v.Metadata
 }
