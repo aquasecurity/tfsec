@@ -176,6 +176,7 @@ func evalMatchSpec(b block.Block, spec *MatchSpec, module block.Module) bool {
 		if !matchFunctions[RegexMatches](b, spec) {
 			return spec.IgnoreUnmatched
 		}
+		evalResult = true
 	case HasTag:
 		return checkTags(b, spec, module)
 	case OfType:
