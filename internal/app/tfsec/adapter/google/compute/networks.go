@@ -138,11 +138,12 @@ func adaptFirewallRule(firewall *compute.Firewall, firewallBlock, ruleBlock bloc
 	}
 
 	disabledAttr := firewallBlock.GetAttribute("disabled")
-	if disabledAttr.IsNil() {
+	switch {
+	case disabledAttr.IsNil():
 		rule.Enforced = types.BoolDefault(true, firewallBlock.Metadata())
-	} else if disabledAttr.IsTrue() {
+	case disabledAttr.IsTrue():
 		rule.Enforced = types.Bool(false, disabledAttr.Metadata())
-	} else {
+	default:
 		rule.Enforced = types.Bool(true, disabledAttr.Metadata())
 	}
 
