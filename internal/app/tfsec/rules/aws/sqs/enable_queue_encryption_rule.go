@@ -1,9 +1,7 @@
 package sqs
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/sqs"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -27,16 +25,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_sqs_queue"},
 		Base:           sqs.CheckEnableQueueEncryption,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			kmsKeyIDAttr := resourceBlock.GetAttribute("kms_master_key_id")
-			if kmsKeyIDAttr.IsNil() {
-				results.Add("Resource defines an unencrypted SQS queue.", resourceBlock)
-			} else if kmsKeyIDAttr.IsEmpty() {
-				results.Add("Resource defines an unencrypted SQS queue.", kmsKeyIDAttr)
-			}
-
-			return results
-		},
 	})
 }
