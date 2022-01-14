@@ -18,6 +18,10 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check ssh access from * causes a failure",
 			source: `
+ resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+ }
+     
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -27,6 +31,7 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["22"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -34,6 +39,10 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check ssh access from * is ok when mode is deny",
 			source: `
+ resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+ }
+     
  resource "azurerm_network_security_rule" "example_deny" {
       name                        = "example_deny_security_rule"
       direction                   = "Inbound"
@@ -43,6 +52,7 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["22"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustExcludeResultCode: expectedCode,
@@ -50,6 +60,10 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check ssh access from 0.0.0.0 causes a failure",
 			source: `
+ resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+ }
+      
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -59,6 +73,7 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["22"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -66,6 +81,10 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check ssh access from /0 causes a failure",
 			source: `
+ resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+ }
+        
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -75,6 +94,7 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["22"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -82,6 +102,10 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check ssh access from internet causes a failure",
 			source: `
+ resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+ }
+    
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -91,6 +115,7 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["22"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -98,6 +123,10 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check ssh access from internet causes a failure",
 			source: `
+ resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+ }
+         
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -107,6 +136,7 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["22"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -176,6 +206,10 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check ssh is acceptable from a specific source",
 			source: `
+ resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+ }
+       
  resource "azurerm_network_security_rule" "good_example" {
       name                        = "good_example_security_rule"
       direction                   = "Inbound"
@@ -185,6 +219,7 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["22"]
       source_address_prefix       = "82.102.23.23"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustExcludeResultCode: expectedCode,

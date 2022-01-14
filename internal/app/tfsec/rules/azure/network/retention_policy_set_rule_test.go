@@ -66,7 +66,7 @@ func Test_AzureRetentionPeriodSet(t *testing.T) {
  
    retention_policy {
      enabled = true
-     days    = 90
+     days    = 365
    }
  }
  `,
