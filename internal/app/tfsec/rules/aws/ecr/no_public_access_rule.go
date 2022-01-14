@@ -1,14 +1,7 @@
 package ecr
 
 import (
-	"encoding/json"
-	"strings"
-
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/ecr"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/iam"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -101,38 +94,5 @@ func init() {
 			"aws_ecr_repository_policy",
 		},
 		Base: ecr.CheckNoPublicAccess,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			policyAttr := resourceBlock.GetAttribute("policy")
-			if policyAttr.IsNil() || !policyAttr.IsString() {
-				return
-			}
-
-			var document iam.PolicyDocument
-			if err := json.Unmarshal([]byte(policyAttr.Value().AsString()), &document); err != nil {
-				debug.Log("Error decoding IAM policy JSON at %s: %s", policyAttr.Range(), err)
-				return
-			}
-
-			for _, statement := range document.Statements {
-				var hasECRAction bool
-				for _, action := range statement.Action {
-					if strings.HasPrefix(action, "ecr:") {
-						hasECRAction = true
-						break
-					}
-				}
-				if !hasECRAction {
-					continue
-				}
-				for _, account := range statement.Principal.AWS {
-					if account == "*" {
-						results.Add("Resource provides public access to the ECR repository.", policyAttr)
-					}
-					return
-				}
-			}
-			return results
-		},
 	})
 }
