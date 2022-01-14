@@ -23,13 +23,13 @@ Where possible, segments should be broken into smaller subnets and avoid using t
 		Links: []string{
 			"https://cloud.google.com/vpc/docs/using-firewalls",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicIngressGoodExamples,
-            BadExamples:         terraformNoPublicIngressBadExamples,
-            Links:               terraformNoPublicIngressLinks,
-            RemediationMarkdown: terraformNoPublicIngressRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicIngressGoodExamples,
+			BadExamples:         terraformNoPublicIngressBadExamples,
+			Links:               terraformNoPublicIngressLinks,
+			RemediationMarkdown: terraformNoPublicIngressRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, network := range s.Google.Compute.Networks {
@@ -44,9 +44,9 @@ Where possible, segments should be broken into smaller subnets and avoid using t
 					continue
 				}
 				for _, source := range rule.SourceRanges {
-					if cidr.IsPublic(source.Value()) {
+					if cidr.IsPublic(source.Value()) && cidr.CountAddresses(source.Value()) > 1 {
 						results.Add(
-							"Firewall rule allows ingress traffic from a source on the public internet.",
+							"Firewall rule allows ingress traffic from multiple addresses on the public internet.",
 							source,
 						)
 					}

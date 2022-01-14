@@ -20,15 +20,25 @@ var CheckDiskEncryptionRequired = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/compute/docs/disks/customer-supplied-encryption",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformDiskEncryptionNoPlaintextKeyGoodExamples,
-            BadExamples:         terraformDiskEncryptionNoPlaintextKeyBadExamples,
-            Links:               terraformDiskEncryptionNoPlaintextKeyLinks,
-            RemediationMarkdown: terraformDiskEncryptionNoPlaintextKeyRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformDiskEncryptionNoPlaintextKeyGoodExamples,
+			BadExamples:         terraformDiskEncryptionNoPlaintextKeyBadExamples,
+			Links:               terraformDiskEncryptionNoPlaintextKeyLinks,
+			RemediationMarkdown: terraformDiskEncryptionNoPlaintextKeyRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
+		for _, instance := range s.Google.Compute.Instances {
+			for _, disk := range append(instance.BootDisks, instance.AttachedDisks...) {
+				if disk.Encryption.RawKey.Len() > 0 {
+					results.Add(
+						"Instance disk has encryption key provided in plaintext.",
+						disk.Encryption.RawKey,
+					)
+				}
+			}
+		}
 		for _, disk := range s.Google.Compute.Disks {
 			if disk.Encryption.RawKey.Len() > 0 {
 				results.Add(

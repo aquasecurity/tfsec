@@ -7,6 +7,7 @@ import (
 	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/schema"
+	"github.com/google/uuid"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/zclconf/go-cty/cty"
@@ -14,6 +15,7 @@ import (
 )
 
 type HCLBlock struct {
+	id          string
 	hclBlock    *hcl.Block
 	context     *Context
 	moduleBlock Block
@@ -44,6 +46,7 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
 	}
 
 	b := HCLBlock{
+		id:          uuid.New().String(),
 		context:     ctx,
 		hclBlock:    hclBlock,
 		moduleBlock: moduleBlock,
@@ -56,6 +59,10 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
 	}
 
 	return &b
+}
+
+func (b *HCLBlock) ID() string {
+	return b.id
 }
 
 func (b *HCLBlock) Metadata() types.Metadata {
@@ -378,10 +385,6 @@ func (b *HCLBlock) InModule() bool {
 
 func (b *HCLBlock) Label() string {
 	return strings.Join(b.hclBlock.Labels, ".")
-}
-
-func (b *HCLBlock) HasBlock(childElement string) bool {
-	return b.GetBlock(childElement).IsNil()
 }
 
 func (b *HCLBlock) IsResourceType(resourceType string) bool {

@@ -4,6 +4,7 @@ import "github.com/aquasecurity/defsec/types"
 
 type Firewall struct {
 	types.Metadata
+	Name         types.StringValue
 	IngressRules []IngressRule
 	EgressRules  []EgressRule
 }
@@ -12,6 +13,8 @@ type FirewallRule struct {
 	types.Metadata
 	Enforced types.BoolValue
 	IsAllow  types.BoolValue
+	Protocol types.StringValue
+	Ports    []types.IntValue
 }
 
 type IngressRule struct {
