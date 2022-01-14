@@ -151,9 +151,11 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
    
    security_rule {
  	 source_port_range           = "any"
-      destination_port_range      = ["22", "80", "443"]
-      source_address_prefix       = "*"
-      destination_address_prefix  = "*"
+     destination_port_range      = ["22", "80", "443"]
+     source_address_prefix       = "*"
+     destination_address_prefix  = "*"
+     direction           = "Inbound"
+     access              = "Allow"
    }
  }
  `,
@@ -169,6 +171,7 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
    
    security_rule {
       access                      = "Deny"
+      direction                   = "Inbound"
       source_port_range           = "any"
       destination_port_range      = ["22", "80", "443"]
       source_address_prefix       = "*"
@@ -187,17 +190,21 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
    resource_group_name = azurerm_resource_group.example.name
    
    security_rule {
+     direction           = "Inbound"
+     access              = "Allow"
  	 source_port_range           = "any"
-      destination_port_range      = ["22", "80", "443"]
-      source_address_prefix       = "82.102.32.32"
-      destination_address_prefix  = "*"
+     destination_port_range      = ["22", "80", "443"]
+     source_address_prefix       = "82.102.32.32"
+     destination_address_prefix  = "*"
    }
  
    security_rule {
+     direction           = "Inbound"
+     access              = "Allow"
  	 source_port_range           = "any"
-      destination_port_range      = ["22", "80", "443"]
-      source_address_prefix       = "internet"
-      destination_address_prefix  = "*"
+     destination_port_range      = ["22", "80", "443"]
+     source_address_prefix       = "internet"
+     destination_address_prefix  = "*"
    }
  }
  `,
@@ -233,10 +240,12 @@ func Test_AZUSSHAccessNotAllowedFromInternet(t *testing.T) {
    resource_group_name = azurerm_resource_group.example.name
    
    security_rule {
+     direction                   = "Inbound"
+     access                      = "Allow"
  	 source_port_range           = "any"
-      destination_port_range      = ["22"]
-      source_address_prefix       = "82.102.23.23"
-      destination_address_prefix  = "*"
+     destination_port_range      = ["22"]
+     source_address_prefix       = "82.102.23.23"
+     destination_address_prefix  = "*"
    }
  }
  `,

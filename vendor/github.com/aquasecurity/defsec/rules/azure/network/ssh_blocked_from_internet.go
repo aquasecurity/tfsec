@@ -20,14 +20,14 @@ var CheckSshBlockedFromInternet = rules.Register(
 		Explanation: `SSH access can be configured on either the network security group or in the network security group rule. 
 
 SSH access should not be permitted from the internet (*, 0.0.0.0, /0, internet, any)`,
-		Links:    []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformSshBlockedFromInternetGoodExamples,
-            BadExamples:         terraformSshBlockedFromInternetBadExamples,
-            Links:               terraformSshBlockedFromInternetLinks,
-            RemediationMarkdown: terraformSshBlockedFromInternetRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Links: []string{},
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformSshBlockedFromInternetGoodExamples,
+			BadExamples:         terraformSshBlockedFromInternetBadExamples,
+			Links:               terraformSshBlockedFromInternetLinks,
+			RemediationMarkdown: terraformSshBlockedFromInternetRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.Azure.Network.SecurityGroups {
@@ -35,9 +35,9 @@ SSH access should not be permitted from the internet (*, 0.0.0.0, /0, internet, 
 				for _, ports := range rule.DestinationPortRanges {
 					if portRangeContains(ports.Value(), 22) {
 						for _, ip := range rule.SourceAddresses {
-							if cidr.IsPublic(ip.Value()) {
+							if cidr.IsPublic(ip.Value()) && cidr.CountAddresses(ip.Value()) > 1 {
 								results.Add(
-									"Security group rule allows ingress to RDP port from public internet.",
+									"Security group rule allows ingress to SSH port from multiple public internet addresses.",
 									ip,
 								)
 							}
