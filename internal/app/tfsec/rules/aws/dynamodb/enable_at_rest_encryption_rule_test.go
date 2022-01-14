@@ -62,6 +62,37 @@ func Test_AWSDAXEncryptedAtRest(t *testing.T) {
  `,
 			mustExcludeResultCode: expectedCode,
 		},
+		{
+			name: "DynamoDB Table with disabled server side encryption fails check",
+			source: `
+ resource "aws_dynamodb_table" "bad_example" {
+ 	name             = "example"
+ 	hash_key         = "TestTableHashKey"
+ 	billing_mode     = "PAY_PER_REQUEST"
+ 	stream_enabled   = true
+ 	stream_view_type = "NEW_AND_OLD_IMAGES"
+   
+ 	attribute {
+ 	  name = "TestTableHashKey"
+ 	  type = "S"
+ 	}
+   
+ 	replica {
+ 	  region_name = "us-east-2"
+ 	}
+   
+ 	replica {
+ 	  region_name = "us-west-2"
+ 	}
+ 
+ 	server_side_encryption {
+ 		enabled     = false
+ 		kms_key_arn = aws_kms_key.dynamo_db_kms
+ 	}
+   }
+ `,
+			mustIncludeResultCode: expectedCode,
+		},
 	}
 
 	for _, test := range tests {
