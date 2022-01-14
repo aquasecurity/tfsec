@@ -1,9 +1,7 @@
 package dynamodb
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/dynamodb"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -49,24 +47,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_dynamodb_table"},
 		Base:           dynamodb.CheckEnableRecovery,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("point_in_time_recovery") {
-				results.Add("Resource doesn't have point in time recovery", resourceBlock)
-				return
-			}
-
-			pointBlock := resourceBlock.GetBlock("point_in_time_recovery")
-			if pointBlock.MissingChild("enabled") {
-				results.Add("Resource doesn't have point in time recovery enabled", pointBlock)
-				return
-			}
-			enabledAttr := pointBlock.GetAttribute("enabled")
-			if enabledAttr.IsFalse() {
-				results.Add("Resource doesn't have point in time recovery enabled", enabledAttr)
-			}
-
-			return results
-		},
 	})
 }
