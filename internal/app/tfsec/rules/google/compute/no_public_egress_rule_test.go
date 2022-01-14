@@ -28,6 +28,18 @@ func Test_GoogleOpenOutboundFirewallRule(t *testing.T) {
 			mustIncludeResultCode: expectedCode,
 		},
 		{
+			name: "check google_compute_firewall egress on default destinations",
+			source: `
+ resource "google_compute_firewall" "my-firewall" {
+    direction = "EGRESS"
+    allow {
+      protocol = "tcp"
+    }
+ 	destination_ranges = []
+ }`,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
 			name: "check google_compute_firewall egress on /32",
 			source: `
  resource "google_compute_firewall" "my-firewall" {
