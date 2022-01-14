@@ -1,9 +1,7 @@
 package dynamodb
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/dynamodb"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -70,27 +68,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_dynamodb_table"},
 		Base:           dynamodb.CheckTableCustomerKey,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("server_side_encryption") {
-				results.Add("Resource is not using KMS CMK for encryption", resourceBlock)
-				return
-			}
-
-			sseBlock := resourceBlock.GetBlock("server_side_encryption")
-			enabledAttr := sseBlock.GetAttribute("enabled")
-			if enabledAttr.IsFalse() {
-				results.Add("Resource has server side encryption configured but disabled", enabledAttr)
-			}
-
-			if sseBlock.HasChild("kms_key_arn") {
-				keyIdAttr := sseBlock.GetAttribute("kms_key_arn")
-				if keyIdAttr.Equals("alias/aws/dynamodb") {
-					results.Add("Resource has KMS encryption configured but is using the default aws key", keyIdAttr)
-				}
-			}
-
-			return results
-		},
 	})
 }
