@@ -9,7 +9,7 @@ import (
 
 var CheckNoFolderLevelServiceAccountImpersonation = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0005",
+		AVDID:       "AVD-GCP-0005",
 		Provider:    provider.GoogleProvider,
 		Service:     "platform",
 		ShortCode:   "no-folder-level-service-account-impersonation",

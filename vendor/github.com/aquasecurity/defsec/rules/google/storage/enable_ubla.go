@@ -9,7 +9,7 @@ import (
 
 var CheckEnableUbla = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0002",
+		AVDID:       "AVD-GCP-0002",
 		Provider:    provider.GoogleProvider,
 		Service:     "storage",
 		ShortCode:   "enable-ubla",

@@ -9,7 +9,7 @@ import (
 
 var CheckLogging = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0040",
+		AVDID:       "AVD-AZU-0040",
 		Provider:    provider.AzureProvider,
 		Service:     "container",
 		ShortCode:   "logging",

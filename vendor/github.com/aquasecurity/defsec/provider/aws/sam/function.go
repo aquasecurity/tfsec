@@ -18,7 +18,6 @@ const (
 	TracingModeActive      = "Active"
 )
 
-
 type Permission struct {
 	types.Metadata
 	Principal types.StringValue
@@ -32,7 +31,6 @@ func (c *Function) GetMetadata() *types.Metadata {
 func (c *Function) GetRawValue() interface{} {
 	return nil
 }
-
 
 func (c *Permission) GetMetadata() *types.Metadata {
 	return &c.Metadata

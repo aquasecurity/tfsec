@@ -9,7 +9,7 @@ import (
 
 var CheckNodeShieldingEnabled = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0055",
+		AVDID:      "AVD-GCP-0055",
 		Provider:   provider.GoogleProvider,
 		Service:    "gke",
 		ShortCode:  "node-shielding-enabled",

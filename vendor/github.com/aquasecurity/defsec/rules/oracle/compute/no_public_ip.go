@@ -9,7 +9,7 @@ import (
 
 var CheckNoPublicIp = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-OCI-0001",
+		AVDID:      "AVD-OCI-0001",
 		Provider:   provider.OracleProvider,
 		Service:    "compute",
 		ShortCode:  "no-public-ip",

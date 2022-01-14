@@ -10,7 +10,7 @@ import (
 
 var CheckPgLogConnections = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0016",
+		AVDID:       "AVD-GCP-0016",
 		Provider:    provider.GoogleProvider,
 		Service:     "sql",
 		ShortCode:   "pg-log-connections",

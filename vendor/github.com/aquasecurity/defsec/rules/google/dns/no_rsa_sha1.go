@@ -9,7 +9,7 @@ import (
 
 var CheckNoRsaSha1 = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0012",
+		AVDID:       "AVD-GCP-0012",
 		Provider:    provider.GoogleProvider,
 		Service:     "dns",
 		ShortCode:   "no-rsa-sha1",

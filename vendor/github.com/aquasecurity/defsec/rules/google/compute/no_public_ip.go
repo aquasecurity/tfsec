@@ -9,7 +9,7 @@ import (
 
 var CheckInstancesDoNotHavePublicIPs = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0031",
+		AVDID:       "AVD-GCP-0031",
 		Provider:    provider.GoogleProvider,
 		Service:     service,
 		ShortCode:   "no-public-ip",

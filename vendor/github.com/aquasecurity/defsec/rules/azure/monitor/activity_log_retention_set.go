@@ -9,7 +9,7 @@ import (
 
 var CheckActivityLogRetentionSet = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0031",
+		AVDID:       "AVD-AZU-0031",
 		Provider:    provider.AzureProvider,
 		Service:     "monitor",
 		ShortCode:   "activity-log-retention-set",

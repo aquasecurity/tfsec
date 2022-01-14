@@ -9,7 +9,7 @@ import (
 
 var CheckLimitAuthorizedIps = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0041",
+		AVDID:       "AVD-AZU-0041",
 		Provider:    provider.AzureProvider,
 		Service:     "container",
 		ShortCode:   "limit-authorized-ips",

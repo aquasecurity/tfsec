@@ -9,7 +9,7 @@ import (
 
 var CheckEnableHttp2 = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0005",
+		AVDID:       "AVD-AZU-0005",
 		Provider:    provider.AzureProvider,
 		Service:     "appservice",
 		ShortCode:   "enable-http2",

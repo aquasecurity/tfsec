@@ -9,7 +9,7 @@ import (
 
 var CheckEncryptInTransitData = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0015",
+		AVDID:       "AVD-GCP-0015",
 		Provider:    provider.GoogleProvider,
 		Service:     "sql",
 		ShortCode:   "encrypt-in-transit-data",

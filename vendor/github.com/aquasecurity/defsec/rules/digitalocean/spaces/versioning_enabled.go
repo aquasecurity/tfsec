@@ -9,7 +9,7 @@ import (
 
 var CheckVersioningEnabled = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-DIG-0007",
+		AVDID:       "AVD-DIG-0007",
 		Provider:    provider.DigitalOceanProvider,
 		Service:     "spaces",
 		ShortCode:   "versioning-enabled",

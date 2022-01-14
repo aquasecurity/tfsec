@@ -9,7 +9,7 @@ import (
 
 var CheckUseSecureTlsPolicy = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0006",
+		AVDID:       "AVD-AZU-0006",
 		Provider:    provider.AzureProvider,
 		Service:     "appservice",
 		ShortCode:   "use-secure-tls-policy",

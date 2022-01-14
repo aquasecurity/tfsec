@@ -36,10 +36,7 @@ func (c *Context) Inner() *hcl.EvalContext {
 
 func (c *Context) Root() *Context {
 	root := c
-	for {
-		if root.Parent() == nil {
-			break
-		}
+	for root.Parent() != nil {
 		root = root.Parent()
 	}
 	return root

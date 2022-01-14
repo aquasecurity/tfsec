@@ -9,7 +9,7 @@ import (
 
 var CheckNoOrgLevelDefaultServiceAccountAssignment = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0008",
+		AVDID:       "AVD-GCP-0008",
 		Provider:    provider.GoogleProvider,
 		Service:     "platform",
 		ShortCode:   "no-org-level-default-service-account-assignment",

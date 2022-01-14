@@ -9,7 +9,7 @@ import (
 
 var CheckRetentionPolicySet = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0049",
+		AVDID:      "AVD-AZU-0049",
 		Provider:   provider.AzureProvider,
 		Service:    "network",
 		ShortCode:  "retention-policy-set",

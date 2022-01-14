@@ -9,7 +9,7 @@ import (
 
 var CheckRotateKmsKeys = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0065",
+		AVDID:       "AVD-GCP-0065",
 		Provider:    provider.GoogleProvider,
 		Service:     "kms",
 		ShortCode:   "rotate-kms-keys",

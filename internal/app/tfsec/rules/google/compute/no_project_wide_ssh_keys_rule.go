@@ -1,12 +1,9 @@
 package compute
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/compute"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -104,25 +101,6 @@ func init() {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#",
 		},
-		RequiredTypes: []string{
-			"resource",
-		},
-		RequiredLabels: []string{
-			"google_compute_instance",
-		},
 		Base: compute.CheckNoProjectWideSshKeys,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			metadataAttr := resourceBlock.GetAttribute("metadata")
-			val := metadataAttr.MapValue("block-project-ssh-keys")
-			if val.Type() == cty.NilType {
-				results.Add("Resource'%s' allows the use of project-wide SSH keys by default", resourceBlock)
-				return
-			}
-			if val.Type() == cty.Bool && val.False() {
-				results.Add("Resource'%s' explicitly allows the use of project-wide SSH keys by default", resourceBlock)
-				return
-			}
-			return results
-		},
 	})
 }

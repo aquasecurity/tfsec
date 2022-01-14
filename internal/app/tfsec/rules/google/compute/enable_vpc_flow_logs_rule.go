@@ -1,9 +1,7 @@
 package compute
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/compute"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -50,18 +48,6 @@ resource "google_compute_network" "custom-test" {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork#enable_flow_logs",
 		},
-		RequiredTypes: []string{
-			"resource",
-		},
-		RequiredLabels: []string{
-			"google_compute_subnetwork",
-		},
 		Base: compute.CheckEnableVPCFlowLogs,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if resourceBlock.MissingChild("log_config") {
-				results.Add("Resource does not have flow logging enabled", resourceBlock)
-			}
-			return results
-		},
 	})
 }

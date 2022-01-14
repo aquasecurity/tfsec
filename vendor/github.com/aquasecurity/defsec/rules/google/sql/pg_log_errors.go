@@ -10,7 +10,7 @@ import (
 
 var CheckPgLogErrors = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0018",
+		AVDID:       "AVD-GCP-0018",
 		Provider:    provider.GoogleProvider,
 		Service:     "sql",
 		ShortCode:   "pg-log-errors",

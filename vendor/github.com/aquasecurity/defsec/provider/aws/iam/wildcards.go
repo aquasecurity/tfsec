@@ -16,7 +16,7 @@ func IsWildcardAllowed(actions ...string) bool {
 	return true
 }
 
-//see https://docs.aws.amazon.com/service-authorization/latest/reference/list_identityandaccessmanagement.html
+// see https://docs.aws.amazon.com/service-authorization/latest/reference/list_identityandaccessmanagement.html
 var allowedActionsForResourceWildcards = []string{
 	"account:DisableRegion",
 	"account:EnableRegion",
