@@ -9,7 +9,7 @@ import (
 
 var CheckUseServiceAccount = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0050",
+		AVDID:       "AVD-GCP-0050",
 		Provider:    provider.GoogleProvider,
 		Service:     "gke",
 		ShortCode:   "use-service-account",

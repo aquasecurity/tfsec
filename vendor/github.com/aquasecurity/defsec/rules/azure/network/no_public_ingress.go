@@ -10,7 +10,7 @@ import (
 
 var CheckNoPublicIngress = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0047",
+		AVDID:      "AVD-AZU-0047",
 		Provider:   provider.AzureProvider,
 		Service:    "network",
 		ShortCode:  "no-public-ingress",

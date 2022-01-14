@@ -9,7 +9,7 @@ import (
 
 var CheckEnableDnssec = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0013",
+		AVDID:       "AVD-GCP-0013",
 		Provider:    provider.GoogleProvider,
 		Service:     "dns",
 		ShortCode:   "enable-dnssec",

@@ -24,7 +24,26 @@ func init() {
      raw_key = "something"
    }
  }
- `},
+ `,
+			`
+resource "google_compute_instance" "default" {
+  name         = "test"
+  machine_type = "e2-medium"
+  zone         = "us-central1-a"
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-9"
+    }
+    disk_encryption_key_raw = "something"
+  }
+
+  scratch_disk {
+    interface = "SCSI"
+  }
+}
+ `,
+		},
 		GoodExample: []string{`
  resource "google_compute_disk" "good_example" {
    name  = "test-disk"
@@ -40,13 +59,7 @@ func init() {
 		Links: []string{
 			"https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk#raw_key",
 		},
-		RequiredTypes: []string{
-			"resource",
-		},
-		RequiredLabels: []string{
-			"google_compute_disk",
-		},
-		Base: compute.CheckNoPlaintextVmDiskKeys,
+		Base: compute.CheckDiskEncryptionRequired,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			if rawKeyAttr := resourceBlock.GetBlock("disk_encryption_key").GetAttribute("raw_key"); rawKeyAttr.IsResolvable() {
 				results.Add("Resource sets disk_encryption_key.raw_key", rawKeyAttr)

@@ -10,7 +10,7 @@ import (
 
 var CheckPgLogDisconnections = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0022",
+		AVDID:       "AVD-GCP-0022",
 		Provider:    provider.GoogleProvider,
 		Service:     "sql",
 		ShortCode:   "pg-log-disconnections",

@@ -9,7 +9,7 @@ import (
 
 var CheckNodePoolUsesCos = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0054",
+		AVDID:       "AVD-GCP-0054",
 		Provider:    provider.GoogleProvider,
 		Service:     "gke",
 		ShortCode:   "node-pool-uses-cos",

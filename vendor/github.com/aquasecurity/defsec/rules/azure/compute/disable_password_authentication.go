@@ -9,7 +9,7 @@ import (
 
 var CheckDisablePasswordAuthentication = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0039",
+		AVDID:       "AVD-AZU-0039",
 		Provider:    provider.AzureProvider,
 		Service:     "compute",
 		ShortCode:   "disable-password-authentication",

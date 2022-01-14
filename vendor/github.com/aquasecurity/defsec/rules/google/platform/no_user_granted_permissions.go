@@ -9,7 +9,7 @@ import (
 
 var CheckNoUserGrantedPermissions = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0003",
+		AVDID:      "AVD-GCP-0003",
 		Provider:   provider.GoogleProvider,
 		Service:    "platform",
 		ShortCode:  "no-user-granted-permissions",

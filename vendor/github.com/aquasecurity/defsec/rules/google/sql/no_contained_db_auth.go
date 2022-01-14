@@ -10,7 +10,7 @@ import (
 
 var CheckNoContainedDbAuth = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0023",
+		AVDID:       "AVD-GCP-0023",
 		Provider:    provider.GoogleProvider,
 		Service:     "sql",
 		ShortCode:   "no-contained-db-auth",

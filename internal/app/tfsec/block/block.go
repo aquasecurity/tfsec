@@ -10,6 +10,7 @@ type Block interface {
 	rules.MetadataProvider
 	Attributes() map[string]Attribute
 	OverrideContext(ctx *Context)
+	ID() string
 	Type() string
 	Labels() []string
 	Range() HCLRange
@@ -33,7 +34,6 @@ type Block interface {
 	MissingNestedChild(childElement string) bool
 	InModule() bool
 	Label() string
-	HasBlock(childElement string) bool
 	IsResourceType(resourceType string) bool
 	IsEmpty() bool
 	Values() cty.Value

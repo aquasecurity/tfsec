@@ -9,7 +9,7 @@ import (
 
 var CheckNoDefaultServiceAccount = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0044",
+		AVDID:       "AVD-GCP-0044",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "no-default-service-account",

@@ -10,7 +10,7 @@ import (
 
 var CheckNoCrossDbOwnershipChaining = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0019",
+		AVDID:       "AVD-GCP-0019",
 		Provider:    provider.GoogleProvider,
 		Service:     "sql",
 		ShortCode:   "no-cross-db-ownership-chaining",

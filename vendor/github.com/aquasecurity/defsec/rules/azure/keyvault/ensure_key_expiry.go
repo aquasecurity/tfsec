@@ -9,7 +9,7 @@ import (
 
 var CheckEnsureKeyExpiry = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0014",
+		AVDID:      "AVD-AZU-0014",
 		Provider:   provider.AzureProvider,
 		Service:    "keyvault",
 		ShortCode:  "ensure-key-expiry",

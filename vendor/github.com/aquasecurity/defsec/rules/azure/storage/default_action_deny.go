@@ -9,7 +9,7 @@ import (
 
 var CheckDefaultActionDeny = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0012",
+		AVDID:      "AVD-AZU-0012",
 		Provider:   provider.AzureProvider,
 		Service:    "storage",
 		ShortCode:  "default-action-deny",

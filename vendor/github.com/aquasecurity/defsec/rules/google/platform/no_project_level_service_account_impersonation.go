@@ -9,7 +9,7 @@ import (
 
 var CheckNoProjectLevelServiceAccountImpersonation = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0011",
+		AVDID:       "AVD-GCP-0011",
 		Provider:    provider.GoogleProvider,
 		Service:     "platform",
 		ShortCode:   "no-project-level-service-account-impersonation",

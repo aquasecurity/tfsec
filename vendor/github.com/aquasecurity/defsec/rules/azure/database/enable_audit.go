@@ -9,7 +9,7 @@ import (
 
 var CheckEnableAudit = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0027",
+		AVDID:       "AVD-AZU-0027",
 		Provider:    provider.AzureProvider,
 		Service:     "database",
 		ShortCode:   "enable-audit",

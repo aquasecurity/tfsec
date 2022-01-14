@@ -9,7 +9,7 @@ import (
 
 var CheckPostgresConfigurationLogConnectionThrottling = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0021",
+		AVDID:       "AVD-AZU-0021",
 		Provider:    provider.AzureProvider,
 		Service:     "database",
 		ShortCode:   "postgres-configuration-connection-throttling",

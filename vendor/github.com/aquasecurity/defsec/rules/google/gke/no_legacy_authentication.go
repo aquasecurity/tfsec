@@ -9,7 +9,7 @@ import (
 
 var CheckNoLegacyAuthentication = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0064",
+		AVDID:      "AVD-GCP-0064",
 		Provider:   provider.GoogleProvider,
 		Service:    "gke",
 		ShortCode:  "no-legacy-authentication",

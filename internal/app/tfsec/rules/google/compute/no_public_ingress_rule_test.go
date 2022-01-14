@@ -19,6 +19,9 @@ func Test_GoogleOpenInboundFirewallRule(t *testing.T) {
 			name: "check google_compute_firewall ingress on 0.0.0.0/0",
 			source: `
  resource "google_compute_firewall" "my-firewall" {
+    allow {
+        protocol = "tcp"
+    }
  	source_ranges = ["0.0.0.0/0"]
  }`,
 			mustIncludeResultCode: expectedCode,
@@ -27,7 +30,10 @@ func Test_GoogleOpenInboundFirewallRule(t *testing.T) {
 			name: "check google_compute_firewall ingress on /32",
 			source: `
  resource "google_compute_firewall" "my-firewall" {
- 	source_ranges = ["1.2.3.4/32"]
+    allow {
+        protocol = "tcp"
+    }
+ 	source_ranges = ["127.0.0.1/32"]
  }`,
 			mustExcludeResultCode: expectedCode,
 		},
