@@ -9,7 +9,7 @@ import (
 
 var CheckLimitRoleActions = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0030",
+		AVDID:       "AVD-AZU-0030",
 		Provider:    provider.AzureProvider,
 		Service:     "authorization",
 		ShortCode:   "limit-role-actions",

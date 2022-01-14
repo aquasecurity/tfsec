@@ -9,7 +9,7 @@ import (
 
 var CheckEnforcePodSecurityPolicy = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0047",
+		AVDID:      "AVD-GCP-0047",
 		Provider:   provider.GoogleProvider,
 		Service:    "gke",
 		ShortCode:  "enforce-pod-security-policy",

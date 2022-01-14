@@ -9,7 +9,7 @@ import (
 
 var CheckUseRbacPermissions = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0062",
+		AVDID:      "AVD-GCP-0062",
 		Provider:   provider.GoogleProvider,
 		Service:    "gke",
 		ShortCode:  "use-rbac-permissions",

@@ -9,7 +9,7 @@ import (
 
 var CheckEnforceHttps = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-DIG-0002",
+		AVDID:      "AVD-DIG-0002",
 		Provider:   provider.DigitalOceanProvider,
 		Service:    "compute",
 		ShortCode:  "enforce-https",

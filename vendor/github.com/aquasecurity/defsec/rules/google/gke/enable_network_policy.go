@@ -9,7 +9,7 @@ import (
 
 var CheckEnableNetworkPolicy = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0056",
+		AVDID:       "AVD-GCP-0056",
 		Provider:    provider.GoogleProvider,
 		Service:     "gke",
 		ShortCode:   "enable-network-policy",

@@ -21,7 +21,7 @@ func init() {
 	} {
 		_, block, err := net.ParseCIDR(cidr)
 		if err != nil {
-			panic(fmt.Errorf("parse error on %q: %v", cidr, err))
+			panic(fmt.Errorf("parse error on %q: `%w`", cidr, err))
 		}
 		privateIPBlocks = append(privateIPBlocks, block)
 	}
@@ -113,7 +113,7 @@ func highestAddress(network *net.IPNet) net.IP {
 	for i := 0; i < flip; i++ {
 		index := len(raw) - 1
 		index -= (i / 8)
-		raw[index] = raw[index] ^ (1 << (i % 8))
+		raw[index] ^= (1 << (i % 8))
 	}
 	return net.IP(raw)
 }

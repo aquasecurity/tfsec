@@ -10,7 +10,7 @@ import (
 
 var CheckNoPublicEgress = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-KUBE-0002",
+		AVDID:       "AVD-KUBE-0002",
 		Provider:    provider.KubernetesProvider,
 		Service:     "network",
 		ShortCode:   "no-public-egress",

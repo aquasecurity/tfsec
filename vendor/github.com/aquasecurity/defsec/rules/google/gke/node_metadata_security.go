@@ -9,7 +9,7 @@ import (
 
 var CheckNodeMetadataSecurity = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0057",
+		AVDID:      "AVD-GCP-0057",
 		Provider:   provider.GoogleProvider,
 		Service:    "gke",
 		ShortCode:  "node-metadata-security",

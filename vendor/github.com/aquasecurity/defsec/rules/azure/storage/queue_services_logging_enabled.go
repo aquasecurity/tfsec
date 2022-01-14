@@ -9,7 +9,7 @@ import (
 
 var CheckQueueServicesLoggingEnabled = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0009",
+		AVDID:      "AVD-AZU-0009",
 		Provider:   provider.AzureProvider,
 		Service:    "storage",
 		ShortCode:  "queue-services-logging-enabled",

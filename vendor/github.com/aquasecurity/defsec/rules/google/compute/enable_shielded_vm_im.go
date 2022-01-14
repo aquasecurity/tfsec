@@ -9,7 +9,7 @@ import (
 
 var CheckEnableShieldedVMIntegrityMonitoring = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0045",
+		AVDID:       "AVD-GCP-0045",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "enable-shielded-vm-im",

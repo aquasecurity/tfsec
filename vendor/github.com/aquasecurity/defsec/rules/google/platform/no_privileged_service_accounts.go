@@ -11,7 +11,7 @@ import (
 
 var CheckNoPrivilegedServiceAccounts = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0007",
+		AVDID:       "AVD-GCP-0007",
 		Provider:    provider.GoogleProvider,
 		Service:     "platform",
 		ShortCode:   "no-privileged-service-accounts",

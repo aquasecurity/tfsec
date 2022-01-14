@@ -12,7 +12,7 @@ import (
 
 var CheckCaptureAllActivities = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0033",
+		AVDID:       "AVD-AZU-0033",
 		Provider:    provider.AzureProvider,
 		Service:     "monitor",
 		ShortCode:   "capture-all-activities",

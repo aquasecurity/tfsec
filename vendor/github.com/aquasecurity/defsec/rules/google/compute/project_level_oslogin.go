@@ -9,7 +9,7 @@ import (
 
 var CheckProjectLevelOslogin = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0042",
+		AVDID:       "AVD-GCP-0042",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "project-level-oslogin",
