@@ -154,6 +154,9 @@ func adaptFirewallRule(firewall *compute.Firewall, firewallBlock, ruleBlock bloc
 				destinations = append(destinations, types.String(destination, destinationAttr.Metadata()))
 			}
 		}
+		if len(destinations) == 0 {
+			destinations = append(destinations, types.StringDefault("0.0.0.0/0", firewallBlock.Metadata()))
+		}
 		firewall.EgressRules = append(firewall.EgressRules, compute.EgressRule{
 			Metadata:          firewallBlock.Metadata(),
 			FirewallRule:      rule,
@@ -165,6 +168,9 @@ func adaptFirewallRule(firewall *compute.Firewall, firewallBlock, ruleBlock bloc
 			for _, source := range sourceAttr.ValueAsStrings() {
 				sources = append(sources, types.String(source, sourceAttr.Metadata()))
 			}
+		}
+		if len(sources) == 0 {
+			sources = append(sources, types.StringDefault("0.0.0.0/0", firewallBlock.Metadata()))
 		}
 		firewall.IngressRules = append(firewall.IngressRules, compute.IngressRule{
 			Metadata:     firewallBlock.Metadata(),

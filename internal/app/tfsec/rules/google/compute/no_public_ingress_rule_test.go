@@ -27,6 +27,17 @@ func Test_GoogleOpenInboundFirewallRule(t *testing.T) {
 			mustIncludeResultCode: expectedCode,
 		},
 		{
+			name: "check google_compute_firewall ingress on default sources",
+			source: `
+ resource "google_compute_firewall" "my-firewall" {
+    allow {
+        protocol = "tcp"
+    }
+ 	source_ranges = []
+ }`,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
 			name: "check google_compute_firewall ingress on /32",
 			source: `
  resource "google_compute_firewall" "my-firewall" {
