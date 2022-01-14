@@ -1,9 +1,7 @@
 package database
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/database"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -43,29 +41,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_sql_server", "azurerm_sql_server", "azurerm_mssql_database_extended_auditing_policy"},
 		Base:           database.CheckRetentionPeriodSet,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if !resourceBlock.IsResourceType("azurerm_mssql_database_extended_auditing_policy") {
-				if resourceBlock.MissingChild("extended_auditing_policy") {
-					return
-				}
-				resourceBlock = resourceBlock.GetBlock("extended_auditing_policy")
-			}
-
-			if resourceBlock.MissingChild("retention_in_days") {
-				// using default of unlimited
-				return
-			}
-
-			if resourceBlock.GetAttribute("retention_in_days").Equals(0) {
-				// using explicit unlimited
-				return
-			}
-
-			if resourceBlock.GetAttribute("retention_in_days").LessThan(90) {
-				results.Add("Resource specifies a retention period of less than 90 days.", resourceBlock)
-			}
-
-			return results
-		},
 	})
 }

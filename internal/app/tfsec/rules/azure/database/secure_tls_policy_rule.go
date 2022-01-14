@@ -1,11 +1,7 @@
 package database
 
 import (
-	"fmt"
-
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/database"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -58,34 +54,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_mssql_server", "azurerm_mysql_server", "azurerm_postgresql_server"},
 		Base:           database.CheckSecureTlsPolicy,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			var attribute string
-			var requiredValue string
-
-			switch resourceBlock.TypeLabel() {
-			case "azurerm_mssql_server":
-				attribute = "minimum_tls_version"
-				requiredValue = "1.2"
-			case "azurerm_postgresql_server", "azurerm_mysql_server":
-				attribute = "ssl_minimal_tls_version_enforced"
-				requiredValue = "TLS1_2"
-			}
-
-			if resourceBlock.MissingChild(attribute) {
-				if resourceBlock.TypeLabel() == "azurerm_mssql_server" {
-					return
-				}
-
-				results.Add(fmt.Sprintf("Resource does not have '%s' set", attribute), resourceBlock)
-				return
-			}
-
-			tlsMinimumAttr := resourceBlock.GetAttribute(attribute)
-			if tlsMinimumAttr.NotEqual(requiredValue) {
-				results.Add(fmt.Sprintf("Resource does not have a minimum TLS policy of '%s'", requiredValue), tlsMinimumAttr)
-			}
-			return results
-		},
 	})
 }

@@ -18,10 +18,14 @@ func Test_AzureNoPublicFirewallAccess(t *testing.T) {
 		{
 			name: "rule with open ip range fails check",
 			source: `
- resource "azurerm_postgresql_firewall_rule" "bad_example" {
+ resource "azurerm_mssql_server" "example" {
+	name                         = "myserver"
+ }
+
+ resource "azurerm_sql_firewall_rule" "bad_example" {
    name                = "bad_example"
    resource_group_name = azurerm_resource_group.example.name
-   server_name         = azurerm_postgresql_server.example.name
+   server_name         = azurerm_mssql_server.example.name
    start_ip_address    = "0.0.0.0"
    end_ip_address      = "255.255.255.255"
  }
@@ -31,6 +35,10 @@ func Test_AzureNoPublicFirewallAccess(t *testing.T) {
 		{
 			name: "postgresql rule with open ip range fails check",
 			source: `
+resource "azurerm_postgresql_server" "example" {
+	name                         = "myserver"
+}
+			
  resource "azurerm_postgresql_firewall_rule" "bad_example" {
    name                = "bad_example"
    resource_group_name = azurerm_resource_group.example.name
@@ -42,9 +50,13 @@ func Test_AzureNoPublicFirewallAccess(t *testing.T) {
 			mustIncludeResultCode: expectedCode,
 		},
 		{
-			name: "rule with specific Azure services start and end ip passes check",
+			name: "rule with public start and end ip fails check",
 			source: `
- resource "azurerm_sql_firewall_rule" "good_example" {
+ resource "azurerm_sql_server" "example" {
+	name                         = "mysqlserver"
+ }
+				
+ resource "azurerm_sql_firewall_rule" "bad_example" {
    name                = "good_rule"
    resource_group_name = azurerm_resource_group.example.name
    server_name         = azurerm_sql_server.example.name
@@ -52,11 +64,19 @@ func Test_AzureNoPublicFirewallAccess(t *testing.T) {
    end_ip_address      = "0.0.0.0"
  }
  `,
-			mustExcludeResultCode: expectedCode,
+			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "rule with specific Azure services start and end ip passes check",
 			source: `
+ resource "azurerm_sql_server" "example" {
+	name                         = "mysqlserver"
+ }
+
+ resource "azurerm_postgresql_server" "example" {
+	name                         = "myserver"
+ }
+ 
  resource "azurerm_sql_firewall_rule" "good_example" {
    name                = "good_rule"
    resource_group_name = azurerm_resource_group.example.name
@@ -68,7 +88,7 @@ func Test_AzureNoPublicFirewallAccess(t *testing.T) {
  resource "azurerm_postgresql_firewall_rule" "good_example" {
  	name                = "good_rule"
  	resource_group_name = azurerm_resource_group.example.name
- 	server_name         = azurerm_sql_server.example.name
+ 	server_name         = azurerm_postgresql_server.example.name
  	start_ip_address    = "10.0.2.0"
  	end_ip_address      = "10.0.2.240"
    }
