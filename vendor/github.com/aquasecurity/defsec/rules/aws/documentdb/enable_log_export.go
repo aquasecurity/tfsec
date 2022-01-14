@@ -21,19 +21,19 @@ var CheckEnableLogExport = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/documentdb/latest/developerguide/event-auditing.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableLogExportGoodExamples,
-            BadExamples:         terraformEnableLogExportBadExamples,
-            Links:               terraformEnableLogExportLinks,
-            RemediationMarkdown: terraformEnableLogExportRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableLogExportGoodExamples,
-            BadExamples:         cloudFormationEnableLogExportBadExamples,
-            Links:               cloudFormationEnableLogExportLinks,
-            RemediationMarkdown: cloudFormationEnableLogExportRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableLogExportGoodExamples,
+			BadExamples:         terraformEnableLogExportBadExamples,
+			Links:               terraformEnableLogExportLinks,
+			RemediationMarkdown: terraformEnableLogExportRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableLogExportGoodExamples,
+			BadExamples:         cloudFormationEnableLogExportBadExamples,
+			Links:               cloudFormationEnableLogExportLinks,
+			RemediationMarkdown: cloudFormationEnableLogExportRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.DocumentDB.Clusters {
@@ -48,17 +48,9 @@ var CheckEnableLogExport = rules.Register(
 					hasProfiler = true
 				}
 			}
-			if !hasAudit {
+			if !hasAudit && !hasProfiler {
 				results.Add(
-					"CloudWatch audit log exports are not enabled.",
-					cluster,
-				)
-			} else {
-				results.AddPassed(&cluster)
-			}
-			if !hasProfiler {
-				results.Add(
-					"CloudWatch profiler log exports are not enabled.",
+					"Neither CloudWatch audit nor profiler log exports are enabled.",
 					cluster,
 				)
 			} else {

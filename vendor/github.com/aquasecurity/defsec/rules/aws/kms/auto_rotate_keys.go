@@ -21,17 +21,17 @@ var CheckAutoRotateKeys = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/kms/latest/developerguide/rotate-keys.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformAutoRotateKeysGoodExamples,
-            BadExamples:         terraformAutoRotateKeysBadExamples,
-            Links:               terraformAutoRotateKeysLinks,
-            RemediationMarkdown: terraformAutoRotateKeysRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformAutoRotateKeysGoodExamples,
+			BadExamples:         terraformAutoRotateKeysBadExamples,
+			Links:               terraformAutoRotateKeysLinks,
+			RemediationMarkdown: terraformAutoRotateKeysRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, key := range s.AWS.KMS.Keys {
-			if key.Usage.NotEqualTo(kms.KeyUsageSignAndVerify) {
+			if key.Usage.EqualTo(kms.KeyUsageSignAndVerify) {
 				continue
 			}
 			if key.RotationEnabled.IsFalse() {
