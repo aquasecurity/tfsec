@@ -14,18 +14,18 @@ import (
 	"github.com/zclconf/go-cty/cty/gocty"
 )
 
-type HCLBlock struct {
+type Block struct {
 	id          string
 	hclBlock    *hcl.Block
 	context     *Context
-	moduleBlock Block
+	moduleBlock *Block
 	expanded    bool
 	cloneIndex  int
-	childBlocks []Block
-	attributes  []Attribute
+	childBlocks []*Block
+	attributes  []*Attribute
 }
 
-func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
+func NewBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock *Block) *Block {
 	if ctx == nil {
 		ctx = NewContext(&hcl.EvalContext{}, nil)
 	}
@@ -34,18 +34,18 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
 	switch body := hclBlock.Body.(type) {
 	case *hclsyntax.Body:
 		for _, b := range body.Blocks {
-			children = append(children, NewHCLBlock(b.AsHCLBlock(), ctx, moduleBlock))
+			children = append(children, NewBlock(b.AsHCLBlock(), ctx, moduleBlock))
 		}
 	default:
 		content, _, diag := hclBlock.Body.PartialContent(schema.TerraformSchema_0_12)
 		if diag == nil {
 			for _, hb := range content.Blocks {
-				children = append(children, NewHCLBlock(hb, ctx, moduleBlock))
+				children = append(children, NewBlock(hb, ctx, moduleBlock))
 			}
 		}
 	}
 
-	b := HCLBlock{
+	b := Block{
 		id:          uuid.New().String(),
 		context:     ctx,
 		hclBlock:    hclBlock,
@@ -61,41 +61,41 @@ func NewHCLBlock(hclBlock *hcl.Block, ctx *Context, moduleBlock Block) Block {
 	return &b
 }
 
-func (b *HCLBlock) ID() string {
+func (b *Block) ID() string {
 	return b.id
 }
 
-func (b *HCLBlock) Metadata() types.Metadata {
+func (b *Block) Metadata() types.Metadata {
 	return types.NewMetadata(b.Range(), b.Reference())
 }
 
-func (b *HCLBlock) GetMetadata() *types.Metadata {
+func (b *Block) GetMetadata() *types.Metadata {
 	m := b.Metadata()
 	return &m
 }
 
-func (b *HCLBlock) GetRawValue() interface{} {
+func (b *Block) GetRawValue() interface{} {
 	return nil
 }
 
-func (b *HCLBlock) InjectBlock(block Block, name string) {
-	block.(*HCLBlock).hclBlock.Labels = []string{}
-	block.(*HCLBlock).hclBlock.Type = name
+func (b *Block) InjectBlock(block *Block, name string) {
+	block.hclBlock.Labels = []string{}
+	block.hclBlock.Type = name
 	for attrName, attr := range block.Attributes() {
 		b.context.Root().SetByDot(attr.Value(), fmt.Sprintf("%s.%s.%s", b.Reference().String(), name, attrName))
 	}
 	b.childBlocks = append(b.childBlocks, block)
 }
 
-func (b *HCLBlock) markCountExpanded() {
+func (b *Block) markCountExpanded() {
 	b.expanded = true
 }
 
-func (b *HCLBlock) IsCountExpanded() bool {
+func (b *Block) IsCountExpanded() bool {
 	return b.expanded
 }
 
-func (b *HCLBlock) Clone(index cty.Value) Block {
+func (b *Block) Clone(index cty.Value) *Block {
 	var childCtx *Context
 	if b.context != nil {
 		childCtx = b.context.NewChild()
@@ -105,7 +105,7 @@ func (b *HCLBlock) Clone(index cty.Value) Block {
 
 	cloneHCL := *b.hclBlock
 
-	clone := NewHCLBlock(&cloneHCL, childCtx, b.moduleBlock).(*HCLBlock)
+	clone := NewBlock(&cloneHCL, childCtx, b.moduleBlock)
 	if len(clone.hclBlock.Labels) > 0 {
 		position := len(clone.hclBlock.Labels) - 1
 		labels := make([]string, len(clone.hclBlock.Labels))
@@ -135,29 +135,29 @@ func (b *HCLBlock) Clone(index cty.Value) Block {
 	return clone
 }
 
-func (b *HCLBlock) Context() *Context {
+func (b *Block) Context() *Context {
 	return b.context
 }
 
-func (b *HCLBlock) OverrideContext(ctx *Context) {
+func (b *Block) OverrideContext(ctx *Context) {
 	b.context = ctx
 	for _, block := range b.childBlocks {
 		block.OverrideContext(ctx.NewChild())
 	}
 	for _, attr := range b.attributes {
-		attr.(*HCLAttribute).ctx = ctx
+		attr.ctx = ctx
 	}
 }
 
-func (b *HCLBlock) Type() string {
+func (b *Block) Type() string {
 	return b.hclBlock.Type
 }
 
-func (b *HCLBlock) Labels() []string {
+func (b *Block) Labels() []string {
 	return b.hclBlock.Labels
 }
 
-func (b *HCLBlock) Range() HCLRange {
+func (b *Block) Range() HCLRange {
 	if b == nil || b.hclBlock == nil {
 		return HCLRange{}
 	}
@@ -181,8 +181,8 @@ func (b *HCLBlock) Range() HCLRange {
 	)
 }
 
-func (b *HCLBlock) GetFirstMatchingBlock(names ...string) Block {
-	var returnBlock *HCLBlock
+func (b *Block) GetFirstMatchingBlock(names ...string) *Block {
+	var returnBlock *Block
 	for _, name := range names {
 		childBlock := b.GetBlock(name)
 		if childBlock.IsNotNil() {
@@ -192,7 +192,7 @@ func (b *HCLBlock) GetFirstMatchingBlock(names ...string) Block {
 	return returnBlock
 }
 
-func (b *HCLBlock) createAttributes() hcl.Attributes {
+func (b *Block) createAttributes() hcl.Attributes {
 	switch body := b.hclBlock.Body.(type) {
 	case *hclsyntax.Body:
 		attributes := make(hcl.Attributes)
@@ -213,8 +213,8 @@ func (b *HCLBlock) createAttributes() hcl.Attributes {
 	}
 }
 
-func (b *HCLBlock) GetBlock(name string) Block {
-	var returnBlock *HCLBlock
+func (b *Block) GetBlock(name string) *Block {
+	var returnBlock *Block
 	if b == nil || b.hclBlock == nil {
 		return returnBlock
 	}
@@ -226,18 +226,18 @@ func (b *HCLBlock) GetBlock(name string) Block {
 	return returnBlock
 }
 
-func (b *HCLBlock) AllBlocks() Blocks {
+func (b *Block) AllBlocks() Blocks {
 	if b == nil || b.hclBlock == nil {
 		return nil
 	}
 	return b.childBlocks
 }
 
-func (b *HCLBlock) GetBlocks(name string) Blocks {
+func (b *Block) GetBlocks(name string) Blocks {
 	if b == nil || b.hclBlock == nil {
 		return nil
 	}
-	var results []Block
+	var results []*Block
 	for _, child := range b.childBlocks {
 		if child.Type() == name {
 			results = append(results, child)
@@ -246,37 +246,35 @@ func (b *HCLBlock) GetBlocks(name string) Blocks {
 	return results
 }
 
-func (b *HCLBlock) GetAttributes() []Attribute {
+func (b *Block) GetAttributes() []*Attribute {
 	if b == nil {
 		return nil
 	}
 	return b.attributes
 }
 
-func (b *HCLBlock) GetAttribute(name string) Attribute {
-	var attr *HCLAttribute
+func (b *Block) GetAttribute(name string) *Attribute {
 	if b == nil || b.hclBlock == nil {
-		return attr
+		return nil
 	}
 	for _, attr := range b.attributes {
 		if attr.Name() == name {
 			return attr
 		}
 	}
-	return attr
+	return nil
 }
 
-func (b *HCLBlock) GetNestedAttribute(name string) Attribute {
+func (b *Block) GetNestedAttribute(name string) *Attribute {
 
-	var returnAttr *HCLAttribute
 	parts := strings.Split(name, ".")
 	blocks := parts[:len(parts)-1]
 	attrName := parts[len(parts)-1]
 
-	var working Block = b
+	working := b
 	for _, subBlock := range blocks {
 		if checkBlock := working.GetBlock(subBlock); checkBlock == nil {
-			return returnAttr
+			return nil
 		} else {
 			working = checkBlock
 		}
@@ -286,10 +284,10 @@ func (b *HCLBlock) GetNestedAttribute(name string) Attribute {
 		return working.GetAttribute(attrName)
 	}
 
-	return returnAttr
+	return nil
 }
 
-func (b *HCLBlock) Reference() *Reference {
+func (b *Block) Reference() *Reference {
 
 	var parts []string
 	if b.Type() != "resource" {
@@ -305,11 +303,11 @@ func (b *HCLBlock) Reference() *Reference {
 }
 
 // LocalName is the name relative to the current module
-func (b *HCLBlock) LocalName() string {
+func (b *Block) LocalName() string {
 	return b.Reference().String()
 }
 
-func (b *HCLBlock) FullName() string {
+func (b *Block) FullName() string {
 
 	if b.moduleBlock != nil {
 		return fmt.Sprintf(
@@ -322,32 +320,32 @@ func (b *HCLBlock) FullName() string {
 	return b.LocalName()
 }
 
-func (b *HCLBlock) UniqueName() string {
+func (b *Block) UniqueName() string {
 	if b.moduleBlock != nil {
 		return fmt.Sprintf("%s:%s:%s", b.FullName(), b.Range().GetFilename(), b.moduleBlock.UniqueName())
 	}
 	return fmt.Sprintf("%s:%s", b.FullName(), b.Range().GetFilename())
 }
 
-func (b *HCLBlock) TypeLabel() string {
+func (b *Block) TypeLabel() string {
 	if len(b.Labels()) > 0 {
 		return b.Labels()[0]
 	}
 	return ""
 }
 
-func (b *HCLBlock) NameLabel() string {
+func (b *Block) NameLabel() string {
 	if len(b.Labels()) > 1 {
 		return b.Labels()[1]
 	}
 	return ""
 }
 
-func (b *HCLBlock) HasChild(childElement string) bool {
+func (b *Block) HasChild(childElement string) bool {
 	return b.GetAttribute(childElement).IsNotNil() || b.GetBlock(childElement).IsNotNil()
 }
 
-func (b *HCLBlock) MissingChild(childElement string) bool {
+func (b *Block) MissingChild(childElement string) bool {
 	if b == nil {
 		return true
 	}
@@ -355,7 +353,7 @@ func (b *HCLBlock) MissingChild(childElement string) bool {
 	return !b.HasChild(childElement)
 }
 
-func (b *HCLBlock) MissingNestedChild(name string) bool {
+func (b *Block) MissingNestedChild(name string) bool {
 	if b == nil {
 		return true
 	}
@@ -364,7 +362,7 @@ func (b *HCLBlock) MissingNestedChild(name string) bool {
 	blocks := parts[:len(parts)-1]
 	last := parts[len(parts)-1]
 
-	var working Block = b
+	working := b
 	for _, subBlock := range blocks {
 		if checkBlock := working.GetBlock(subBlock); checkBlock == nil {
 			return true
@@ -376,34 +374,34 @@ func (b *HCLBlock) MissingNestedChild(name string) bool {
 
 }
 
-func (b *HCLBlock) InModule() bool {
+func (b *Block) InModule() bool {
 	if b == nil {
 		return false
 	}
 	return b.moduleBlock != nil
 }
 
-func (b *HCLBlock) Label() string {
+func (b *Block) Label() string {
 	return strings.Join(b.hclBlock.Labels, ".")
 }
 
-func (b *HCLBlock) IsResourceType(resourceType string) bool {
+func (b *Block) IsResourceType(resourceType string) bool {
 	return b.TypeLabel() == resourceType
 }
 
-func (b *HCLBlock) IsEmpty() bool {
+func (b *Block) IsEmpty() bool {
 	return len(b.AllBlocks()) == 0 && len(b.GetAttributes()) == 0
 }
 
-func (b *HCLBlock) Attributes() map[string]Attribute {
-	attributes := make(map[string]Attribute)
+func (b *Block) Attributes() map[string]*Attribute {
+	attributes := make(map[string]*Attribute)
 	for _, attr := range b.GetAttributes() {
 		attributes[attr.Name()] = attr
 	}
 	return attributes
 }
 
-func (b *HCLBlock) Values() cty.Value {
+func (b *Block) Values() cty.Value {
 	values := make(map[string]cty.Value)
 	for _, attribute := range b.GetAttributes() {
 		values[attribute.Name()] = attribute.Value()
@@ -411,10 +409,10 @@ func (b *HCLBlock) Values() cty.Value {
 	return cty.ObjectVal(values)
 }
 
-func (b *HCLBlock) IsNil() bool {
+func (b *Block) IsNil() bool {
 	return b == nil
 }
 
-func (b *HCLBlock) IsNotNil() bool {
+func (b *Block) IsNotNil() bool {
 	return !b.IsNil()
 }

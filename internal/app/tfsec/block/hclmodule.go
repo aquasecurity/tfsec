@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type HCLModule struct {
+type Module struct {
 	blocks     Blocks
 	blockMap   map[string]Blocks
 	rootPath   string
@@ -13,7 +13,7 @@ type HCLModule struct {
 	ignores    Ignores
 }
 
-func NewHCLModule(rootPath string, modulePath string, blocks Blocks, ignores Ignores) Module {
+func NewHCLModule(rootPath string, modulePath string, blocks Blocks, ignores Ignores) *Module {
 
 	blockMap := make(map[string]Blocks)
 
@@ -23,7 +23,7 @@ func NewHCLModule(rootPath string, modulePath string, blocks Blocks, ignores Ign
 		}
 	}
 
-	return &HCLModule{
+	return &Module{
 		blocks:     blocks,
 		ignores:    ignores,
 		blockMap:   blockMap,
@@ -32,19 +32,19 @@ func NewHCLModule(rootPath string, modulePath string, blocks Blocks, ignores Ign
 	}
 }
 
-func (c *HCLModule) Ignores() Ignores {
+func (c *Module) Ignores() Ignores {
 	return c.ignores
 }
 
-func (c *HCLModule) GetBlocks() Blocks {
+func (c *Module) GetBlocks() Blocks {
 	return c.blocks
 }
 
-func (h *HCLModule) GetBlocksByTypeLabel(typeLabel string) Blocks {
+func (h *Module) GetBlocksByTypeLabel(typeLabel string) Blocks {
 	return h.blockMap[typeLabel]
 }
 
-func (c *HCLModule) getBlocksByType(blockType string, labels ...string) Blocks {
+func (c *Module) getBlocksByType(blockType string, labels ...string) Blocks {
 	if blockType == "module" {
 		return c.getModuleBlocks()
 	}
@@ -59,7 +59,7 @@ func (c *HCLModule) getBlocksByType(blockType string, labels ...string) Blocks {
 	return results
 }
 
-func (c *HCLModule) getModuleBlocks() Blocks {
+func (c *Module) getModuleBlocks() Blocks {
 	var results Blocks
 	for _, block := range c.blocks {
 		if block.Type() == "module" {
@@ -69,11 +69,11 @@ func (c *HCLModule) getModuleBlocks() Blocks {
 	return results
 }
 
-func (c *HCLModule) GetResourcesByType(labels ...string) Blocks {
+func (c *Module) GetResourcesByType(labels ...string) Blocks {
 	return c.getBlocksByType("resource", labels...)
 }
 
-func (c *HCLModule) GetResourcesByIDs(ids ...string) Blocks {
+func (c *Module) GetResourcesByIDs(ids ...string) Blocks {
 	var blocks Blocks
 
 	for _, id := range ids {
@@ -84,11 +84,11 @@ func (c *HCLModule) GetResourcesByIDs(ids ...string) Blocks {
 	return blocks
 }
 
-func (c *HCLModule) GetDatasByType(label string) Blocks {
+func (c *Module) GetDatasByType(label string) Blocks {
 	return c.getBlocksByType("data", label)
 }
 
-func (c *HCLModule) GetProviderBlocksByProvider(providerName string, alias string) Blocks {
+func (c *Module) GetProviderBlocksByProvider(providerName string, alias string) Blocks {
 	var results Blocks
 	for _, block := range c.blocks {
 		if block.Type() == "provider" && len(block.Labels()) > 0 && block.TypeLabel() == providerName {
@@ -105,7 +105,7 @@ func (c *HCLModule) GetProviderBlocksByProvider(providerName string, alias strin
 	return results
 }
 
-func (c *HCLModule) GetReferencedBlock(referringAttr Attribute, parentBlock Block) (Block, error) {
+func (c *Module) GetReferencedBlock(referringAttr *Attribute, parentBlock *Block) (*Block, error) {
 	for _, ref := range referringAttr.AllReferences() {
 		if ref.TypeLabel() == "each" {
 			if forEachAttr := parentBlock.GetAttribute("for_each"); forEachAttr.IsNotNil() {
@@ -128,11 +128,11 @@ func (c *HCLModule) GetReferencedBlock(referringAttr Attribute, parentBlock Bloc
 	return nil, fmt.Errorf("no referenced block found in '%s'", referringAttr.Name())
 }
 
-func (c *HCLModule) GetReferencingResources(originalBlock Block, referencingLabel string, referencingAttributeName string) Blocks {
-	return c.GetReferencingBlocks(originalBlock, "resource", referencingLabel, referencingAttributeName)
+func (c *Module) GetReferencingResources(originalBlock *Block, referencingLabel string, referencingAttributeName string) Blocks {
+	return c.getReferencingBlocks(originalBlock, "resource", referencingLabel, referencingAttributeName)
 }
 
-func (c *HCLModule) GetsModulesBySource(moduleSource string) (Blocks, error) {
+func (c *Module) GetsModulesBySource(moduleSource string) (Blocks, error) {
 	var results Blocks
 
 	modules := c.getModuleBlocks()
@@ -144,8 +144,7 @@ func (c *HCLModule) GetsModulesBySource(moduleSource string) (Blocks, error) {
 	return results, nil
 }
 
-func (c *HCLModule) GetReferencingBlocks(originalBlock Block, referencingType string, referencingLabel string, referencingAttributeName string) Blocks {
-
+func (c *Module) GetReferencingBlocks(originalBlock *Block, referencingType string, referencingLabel string, referencingAttributeName string) Blocks {
 	blocks := c.getBlocksByType(referencingType, referencingLabel)
 	var results Blocks
 	for _, block := range blocks {
