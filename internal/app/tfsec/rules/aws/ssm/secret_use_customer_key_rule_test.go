@@ -39,18 +39,17 @@ func Test_AWSSecretsManagerSecretEncryption(t *testing.T) {
 			mustIncludeResultCode: expectedCode,
 		},
 		{
-			name: "Secret with customer control CMK passes check",
+			name: "Secret without specified CMK fails check",
 			source: `
  					data "aws_kms_key" "by_alias" {
- 						key_id = "alias/aws/secretsmanager"
  					  }
  
- 		resource "aws_secretsmanager_secret" "good_example" {
+ 		resource "aws_secretsmanager_secret" "bad_example" {
  		  name       = "lambda_password"
- 		  kms_key_id = aws_kms_key.secrets.arn
+ 		  kms_key_id = data.aws_kms_key.by_alias.arn
  		}
  		`,
-			mustExcludeResultCode: expectedCode,
+			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Secret with customer control CMK passes check",
