@@ -1,9 +1,7 @@
 package compute
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/compute"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -47,13 +45,5 @@ func init() {
 			"google_compute_disk",
 		},
 		Base: compute.CheckDiskEncryptionCustomerKey,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if kmsKeySelfLinkAttr := resourceBlock.GetBlock("disk_encryption_key").GetAttribute("kms_key_self_link"); kmsKeySelfLinkAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for disk_encryption_key.kms_key_self_link", resourceBlock)
-			} else if kmsKeySelfLinkAttr.IsEmpty() {
-				results.Add("Resource does not set disk_encryption_key.kms_key_self_link", kmsKeySelfLinkAttr)
-			}
-			return results
-		},
 	})
 }

@@ -9,7 +9,7 @@ import (
 
 var CheckEnableDiskEncryption = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0038",
+		AVDID:       "AVD-AZU-0038",
 		Provider:    provider.AzureProvider,
 		Service:     "compute",
 		ShortCode:   "enable-disk-encryption",

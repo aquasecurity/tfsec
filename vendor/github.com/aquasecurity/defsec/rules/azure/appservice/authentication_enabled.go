@@ -9,7 +9,7 @@ import (
 
 var CheckAuthenticationEnabled = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0003",
+		AVDID:       "AVD-AZU-0003",
 		Provider:    provider.AzureProvider,
 		Service:     "appservice",
 		ShortCode:   "authentication-enabled",

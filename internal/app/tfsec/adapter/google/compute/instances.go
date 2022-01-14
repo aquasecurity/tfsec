@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func getInstances(modules block.Modules) (instances []compute.Instance) {
+func adaptInstances(modules block.Modules) (instances []compute.Instance) {
 
 	for _, instanceBlock := range modules.GetResourcesByType("google_compute_instance") {
 		var instance compute.Instance

@@ -9,7 +9,7 @@ import (
 
 var CheckNoDefaultNetwork = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0010",
+		AVDID:       "AVD-GCP-0010",
 		Provider:    provider.GoogleProvider,
 		Service:     "platform",
 		ShortCode:   "no-default-network",

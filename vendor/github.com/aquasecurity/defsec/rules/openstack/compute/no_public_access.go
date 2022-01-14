@@ -10,7 +10,7 @@ import (
 
 var CheckNoPublicAccess = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-OPNSTK-0002",
+		AVDID:       "AVD-OPNSTK-0002",
 		Provider:    provider.OpenStackProvider,
 		Service:     "compute",
 		ShortCode:   "no-public-access",

@@ -10,7 +10,7 @@ import (
 
 var CheckEnablePgTempFileLogging = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0014",
+		AVDID:       "AVD-GCP-0014",
 		Provider:    provider.GoogleProvider,
 		Service:     "sql",
 		ShortCode:   "enable-pg-temp-file-logging",

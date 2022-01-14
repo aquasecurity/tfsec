@@ -9,7 +9,7 @@ import (
 
 var CheckEnablePrivateCluster = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0059",
+		AVDID:       "AVD-GCP-0059",
 		Provider:    provider.GoogleProvider,
 		Service:     "gke",
 		ShortCode:   "enable-private-cluster",

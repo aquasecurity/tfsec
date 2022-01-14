@@ -10,7 +10,7 @@ import (
 
 var CheckMysqlNoLocalInfile = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0026",
+		AVDID:       "AVD-GCP-0026",
 		Provider:    provider.GoogleProvider,
 		Service:     "sql",
 		ShortCode:   "mysql-no-local-infile",

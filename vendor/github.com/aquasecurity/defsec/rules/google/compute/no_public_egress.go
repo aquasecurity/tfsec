@@ -10,7 +10,7 @@ import (
 
 var CheckNoPublicEgress = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0035",
+		AVDID:      "AVD-GCP-0035",
 		Provider:   provider.GoogleProvider,
 		Service:    "compute",
 		ShortCode:  "no-public-egress",

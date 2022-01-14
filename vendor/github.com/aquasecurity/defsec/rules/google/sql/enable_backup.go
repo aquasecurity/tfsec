@@ -9,7 +9,7 @@ import (
 
 var CheckEnableBackup = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0024",
+		AVDID:       "AVD-GCP-0024",
 		Provider:    provider.GoogleProvider,
 		Service:     "sql",
 		ShortCode:   "enable-backup",

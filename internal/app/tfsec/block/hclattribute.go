@@ -82,6 +82,19 @@ func (a *HCLAttribute) GetRawValue() interface{} {
 	return nil
 }
 
+func (attr *HCLAttribute) AsBytesValueOrDefault(defaultValue []byte, parent Block) types.BytesValue {
+	if attr.IsNil() {
+		return types.BytesDefault(defaultValue, parent.Metadata())
+	}
+	if attr.IsNotResolvable() || !attr.IsString() {
+		return types.BytesUnresolvable(attr.Metadata())
+	}
+	return types.BytesExplicit(
+		[]byte(attr.Value().AsString()),
+		*(attr.GetMetadata()),
+	)
+}
+
 func (attr *HCLAttribute) AsStringValueOrDefault(defaultValue string, parent Block) types.StringValue {
 	if attr.IsNil() {
 		return types.StringDefault(defaultValue, parent.Metadata())

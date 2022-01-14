@@ -9,7 +9,7 @@ import (
 
 var CheckNoProjectLevelDefaultServiceAccountAssignment = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0006",
+		AVDID:       "AVD-GCP-0006",
 		Provider:    provider.GoogleProvider,
 		Service:     "platform",
 		ShortCode:   "no-project-level-default-service-account-assignment",

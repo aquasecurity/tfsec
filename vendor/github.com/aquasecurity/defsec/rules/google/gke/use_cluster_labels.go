@@ -9,7 +9,7 @@ import (
 
 var CheckUseClusterLabels = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0051",
+		AVDID:       "AVD-GCP-0051",
 		Provider:    provider.GoogleProvider,
 		Service:     "gke",
 		ShortCode:   "use-cluster-labels",

@@ -83,9 +83,7 @@ func (value *awsIAMPolicyPrincipal) UnmarshalJSON(b []byte) error {
 			value.AWS = append(value.AWS, fmt.Sprintf("%v", item))
 		}
 	case []string:
-		for _, item := range v {
-			value.AWS = append(value.AWS, item)
-		}
+		value.AWS = append(value.AWS, v...)
 	default:
 		return fmt.Errorf("invalid %s value element: allowed is only string or []string", value)
 	}

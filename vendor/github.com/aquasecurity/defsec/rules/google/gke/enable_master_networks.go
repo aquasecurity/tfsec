@@ -9,7 +9,7 @@ import (
 
 var CheckEnableMasterNetworks = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0061",
+		AVDID:       "AVD-GCP-0061",
 		Provider:    provider.GoogleProvider,
 		Service:     "gke",
 		ShortCode:   "enable-master-networks",

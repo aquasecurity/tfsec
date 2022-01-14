@@ -9,7 +9,7 @@ import (
 
 var CheckNoPlaintextVmDiskKeys = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0040",
+		AVDID:       "AVD-GCP-0040",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "no-plaintext-vm-disk-keys",

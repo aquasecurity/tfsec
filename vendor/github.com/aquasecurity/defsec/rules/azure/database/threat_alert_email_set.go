@@ -9,7 +9,7 @@ import (
 
 var CheckThreatAlertEmailSet = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-AZU-0018",
+		AVDID:       "AVD-AZU-0018",
 		Provider:    provider.AzureProvider,
 		Service:     "database",
 		ShortCode:   "threat-alert-email-set",

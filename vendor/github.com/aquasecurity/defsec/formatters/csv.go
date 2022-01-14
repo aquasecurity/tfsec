@@ -42,7 +42,7 @@ func FormatCSV(w io.Writer, results []rules.Result, _ string, _ ...FormatterOpti
 
 	for _, record := range records {
 		if err := csvWriter.Write(record); err != nil {
-			return fmt.Errorf("error writing record to csv: %s", err)
+			return fmt.Errorf("error writing record to csv: `%w`", err)
 		}
 	}
 

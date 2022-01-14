@@ -10,7 +10,7 @@ import (
 
 var CheckNoPublicAccess = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0017",
+		AVDID:       "AVD-GCP-0017",
 		Provider:    provider.GoogleProvider,
 		Service:     "sql",
 		ShortCode:   "no-public-access",

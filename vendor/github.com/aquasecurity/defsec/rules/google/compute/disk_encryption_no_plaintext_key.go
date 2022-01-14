@@ -9,7 +9,7 @@ import (
 
 var CheckDiskEncryptionRequired = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0037",
+		AVDID:       "AVD-GCP-0037",
 		Provider:    provider.GoogleProvider,
 		Service:     "compute",
 		ShortCode:   "disk-encryption-no-plaintext-key",

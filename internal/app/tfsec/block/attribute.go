@@ -50,6 +50,7 @@ type Attribute interface {
 	IsIterable() bool
 	Each(f func(key cty.Value, val cty.Value))
 	AsStringValueOrDefault(defaultValue string, parent Block) types.StringValue
+	AsBytesValueOrDefault(defaultValue []byte, parent Block) types.BytesValue
 	AsBoolValueOrDefault(defaultValue bool, parent Block) types.BoolValue
 	AsIntValueOrDefault(defaultValue int, parent Block) types.IntValue
 	Metadata() types.Metadata

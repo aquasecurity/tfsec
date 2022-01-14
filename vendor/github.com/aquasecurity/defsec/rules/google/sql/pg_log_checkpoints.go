@@ -10,7 +10,7 @@ import (
 
 var CheckPgLogCheckpoints = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0025",
+		AVDID:       "AVD-GCP-0025",
 		Provider:    provider.GoogleProvider,
 		Service:     "sql",
 		ShortCode:   "pg-log-checkpoints",

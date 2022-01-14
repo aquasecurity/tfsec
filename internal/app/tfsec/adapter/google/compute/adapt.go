@@ -7,6 +7,7 @@ import (
 
 func Adapt(modules []block.Module) compute.Compute {
 	return compute.Compute{
-		Instances: getInstances(modules),
+		Instances: adaptInstances(modules),
+		Disks:     adaptDisks(modules),
 	}
 }

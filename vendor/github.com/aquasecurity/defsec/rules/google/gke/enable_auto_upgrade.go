@@ -9,7 +9,7 @@ import (
 
 var CheckEnableAutoUpgrade = rules.Register(
 	rules.Rule{
-                AVDID: "AVD-GCP-0058",
+		AVDID:       "AVD-GCP-0058",
 		Provider:    provider.GoogleProvider,
 		Service:     "gke",
 		ShortCode:   "enable-auto-upgrade",
