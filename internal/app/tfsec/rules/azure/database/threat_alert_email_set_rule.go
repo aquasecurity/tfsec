@@ -54,11 +54,5 @@ func init() {
 			"azurerm_mssql_server_security_alert_policy",
 		},
 		Base: database.CheckThreatAlertEmailSet,
-		// CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-		// 	if emailAddressesAttr := resourceBlock.GetAttribute("email_addresses"); emailAddressesAttr.IsNil() || emailAddressesAttr.IsEmpty() {
-		// 		results.Add("Resource does not specified emails_addresses for alerts", resourceBlock)
-		// 	}
-		// 	return results
-		// },
 	})
 }
