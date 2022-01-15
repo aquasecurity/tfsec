@@ -41,6 +41,9 @@ func isPrivate(ip net.IP) bool {
 // overflows an unsigned 64-bit int, the maximum value of an unsigned 64-bit int will be
 // returned.
 func CountAddresses(inputCIDR string) uint64 {
+	if inputCIDR == "*" || inputCIDR == "internet" || inputCIDR == "any" {
+		return 0xffffffffffffffff
+	}
 	if !strings.Contains(inputCIDR, "/") {
 		ip := net.ParseIP(inputCIDR)
 		if ip == nil {
