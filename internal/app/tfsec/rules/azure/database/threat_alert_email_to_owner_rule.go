@@ -1,9 +1,7 @@
 package database
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/database"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -11,6 +9,10 @@ import (
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		BadExample: []string{`
+ resource "azurerm_sql_server" "example" {
+	name                         = "mysqlserver"
+ }
+
  resource "azurerm_mssql_server_security_alert_policy" "bad_example" {
    resource_group_name        = azurerm_resource_group.example.name
    server_name                = azurerm_sql_server.example.name
@@ -23,6 +25,10 @@ func init() {
  }
  `},
 		GoodExample: []string{`
+ resource "azurerm_sql_server" "example" {
+	name                         = "mysqlserver"
+ }
+
  resource "azurerm_mssql_server_security_alert_policy" "good_example" {
    resource_group_name        = azurerm_resource_group.example.name
    server_name                = azurerm_sql_server.example.name
@@ -44,13 +50,5 @@ func init() {
 			"azurerm_mssql_server_security_alert_policy",
 		},
 		Base: database.CheckThreatAlertEmailToOwner,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if emailAccountAdminsAttr := resourceBlock.GetAttribute("email_account_admins"); emailAccountAdminsAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for email_account_admins", resourceBlock)
-			} else if emailAccountAdminsAttr.IsFalse() {
-				results.Add("Resource has attribute email_account_admins that is false", emailAccountAdminsAttr)
-			}
-			return results
-		},
 	})
 }

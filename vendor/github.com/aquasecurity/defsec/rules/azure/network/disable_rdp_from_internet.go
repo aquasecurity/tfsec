@@ -26,13 +26,13 @@ RDP access should not be permitted from the internet (*, 0.0.0.0, /0, internet, 
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/bastion/tutorial-create-host-portal",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformDisableRdpFromInternetGoodExamples,
-            BadExamples:         terraformDisableRdpFromInternetBadExamples,
-            Links:               terraformDisableRdpFromInternetLinks,
-            RemediationMarkdown: terraformDisableRdpFromInternetRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformDisableRdpFromInternetGoodExamples,
+			BadExamples:         terraformDisableRdpFromInternetBadExamples,
+			Links:               terraformDisableRdpFromInternetLinks,
+			RemediationMarkdown: terraformDisableRdpFromInternetRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.Azure.Network.SecurityGroups {
@@ -40,9 +40,9 @@ RDP access should not be permitted from the internet (*, 0.0.0.0, /0, internet, 
 				for _, ports := range rule.DestinationPortRanges {
 					if portRangeContains(ports.Value(), 3389) {
 						for _, ip := range rule.SourceAddresses {
-							if cidr.IsPublic(ip.Value()) {
+							if cidr.IsPublic(ip.Value()) && cidr.CountAddresses(ip.Value()) > 1 {
 								results.Add(
-									"Security group rule allows ingress to RDP port from public internet.",
+									"Security group rule allows ingress to RDP port from multiple public internet addresses.",
 									ip,
 								)
 							}

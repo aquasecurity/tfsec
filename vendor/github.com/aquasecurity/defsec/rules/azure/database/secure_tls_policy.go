@@ -18,17 +18,33 @@ var CheckSecureTlsPolicy = rules.Register(
 		Resolution:  "Use the most modern TLS policies available",
 		Explanation: `You should not use outdated/insecure TLS versions for encryption. You should be using TLS v1.2+.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformSecureTlsPolicyGoodExamples,
-            BadExamples:         terraformSecureTlsPolicyBadExamples,
-            Links:               terraformSecureTlsPolicyLinks,
-            RemediationMarkdown: terraformSecureTlsPolicyRemediationMarkdown,
-        },
-        Severity:    severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformSecureTlsPolicyGoodExamples,
+			BadExamples:         terraformSecureTlsPolicyBadExamples,
+			Links:               terraformSecureTlsPolicyLinks,
+			RemediationMarkdown: terraformSecureTlsPolicyRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
-		for _, server := range s.Azure.Database.MariaDBServers {
+		for _, server := range s.Azure.Database.MSSQLServers {
 			if server.MinimumTLSVersion.NotEqualTo("1.2") {
+				results.Add(
+					"Database server does not require a secure TLS version.",
+					server.MinimumTLSVersion,
+				)
+			}
+		}
+		for _, server := range s.Azure.Database.MySQLServers {
+			if server.MinimumTLSVersion.NotEqualTo("TLS1_2") {
+				results.Add(
+					"Database server does not require a secure TLS version.",
+					server.MinimumTLSVersion,
+				)
+			}
+		}
+		for _, server := range s.Azure.Database.PostgreSQLServers {
+			if server.MinimumTLSVersion.NotEqualTo("TLS1_2") {
 				results.Add(
 					"Database server does not require a secure TLS version.",
 					server.MinimumTLSVersion,
