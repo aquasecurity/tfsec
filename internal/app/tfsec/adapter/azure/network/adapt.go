@@ -50,109 +50,21 @@ func adaptSecurityGroup(resource block.Block, module block.Module) network.Secur
 	securityRuleBlocks = append(securityRuleBlocks, securityRuleRes...)
 
 	for _, ruleBlock := range securityRuleBlocks {
-		var sourceAddresses []types.StringValue
-		var sourcePortRanges []types.StringValue
-		var destinationAddresses []types.StringValue
-		var destinationPortRanges []types.StringValue
-
 		accessAttr := ruleBlock.GetAttribute("access")
 		directionAttr := ruleBlock.GetAttribute("direction")
 
-		sourceAddressAttr := ruleBlock.GetAttribute("source_address_prefix")
-		if sourceAddressAttr.IsNotEmpty() {
-			sourceAddresses = append(sourceAddresses, sourceAddressAttr.AsStringValueOrDefault("", ruleBlock))
-		}
-
-		sourceAddressPrefixesAttr := ruleBlock.GetAttribute("source_address_prefixes")
-		if sourceAddressPrefixesAttr.IsNotEmpty() {
-			values := sourceAddressPrefixesAttr.ValueAsStrings()
-			for _, value := range values {
-				sourceAddresses = append(sourceAddresses, types.String(value, *ruleBlock.GetMetadata()))
-			}
-		}
-
-		sourcePortRangeAttr := ruleBlock.GetAttribute("source_port_range")
-		if sourcePortRangeAttr.IsNotEmpty() {
-			if sourcePortRangeAttr.IsIterable() {
-				values := sourcePortRangeAttr.ValueAsStrings()
-				for _, value := range values {
-					sourcePortRanges = append(sourcePortRanges, types.String(value, *ruleBlock.GetMetadata()))
-
-				}
-			} else {
-				sourcePortRanges = append(sourcePortRanges, sourcePortRangeAttr.AsStringValueOrDefault("", ruleBlock))
-			}
-		}
-
-		sourcePortRangesAttr := ruleBlock.GetAttribute("source_port_ranges")
-		if sourcePortRangesAttr.IsNotEmpty() {
-			values := sourcePortRangesAttr.ValueAsStrings()
-			for _, value := range values {
-				sourcePortRanges = append(sourcePortRanges, types.String(value, *ruleBlock.GetMetadata()))
-			}
-		}
-
-		destinationAddressPrefixAttr := ruleBlock.GetAttribute("destination_address_prefix")
-		if destinationAddressPrefixAttr.IsNotEmpty() {
-			destinationAddresses = append(destinationAddresses, destinationAddressPrefixAttr.AsStringValueOrDefault("", ruleBlock))
-		}
-
-		destinationAddressPrefixesAttr := ruleBlock.GetAttribute("destination_address_prefixes")
-		if destinationAddressPrefixesAttr.IsNotEmpty() {
-			values := destinationAddressPrefixesAttr.ValueAsStrings()
-			for _, value := range values {
-				destinationAddresses = append(destinationAddresses, types.String(value, *ruleBlock.GetMetadata()))
-			}
-		}
-
-		destinationPortRangeAttr := ruleBlock.GetAttribute("destination_port_range")
-		if destinationPortRangeAttr.IsNotEmpty() {
-			if destinationPortRangeAttr.IsIterable() {
-				values := destinationPortRangeAttr.ValueAsStrings()
-				for _, value := range values {
-					destinationPortRanges = append(destinationPortRanges, types.String(value, *ruleBlock.GetMetadata()))
-				}
-			} else {
-				destinationPortRanges = append(destinationPortRanges, destinationPortRangeAttr.AsStringValueOrDefault("", ruleBlock))
-			}
-		}
-
-		destinationPortRangesAttr := ruleBlock.GetAttribute("destination_port_ranges")
-		if destinationPortRangesAttr.IsNotEmpty() {
-			values := destinationPortRangesAttr.ValueAsStrings()
-			for _, value := range values {
-				destinationPortRanges = append(destinationPortRanges, types.String(value, *ruleBlock.GetMetadata()))
-			}
-		}
-
 		if accessAttr.Equals("Allow") && directionAttr.Equals("Inbound") {
-			inboundAllowRules = append(inboundAllowRules, network.SecurityGroupRule{
-				SourceAddresses:       sourceAddresses,
-				SourcePortRanges:      sourcePortRanges,
-				DestinationAddresses:  destinationAddresses,
-				DestinationPortRanges: destinationPortRanges,
-			})
-		} else if accessAttr.Equals("Deny") && directionAttr.Equals("Inbound") {
-			inboundDenyRules = append(inboundDenyRules, network.SecurityGroupRule{
-				SourceAddresses:       sourceAddresses,
-				SourcePortRanges:      sourcePortRanges,
-				DestinationAddresses:  destinationAddresses,
-				DestinationPortRanges: destinationPortRanges,
-			})
-		} else if accessAttr.Equals("Allow") && directionAttr.Equals("Outbound") {
-			outboundAllowRules = append(outboundAllowRules, network.SecurityGroupRule{
-				SourceAddresses:       sourceAddresses,
-				SourcePortRanges:      sourcePortRanges,
-				DestinationAddresses:  destinationAddresses,
-				DestinationPortRanges: destinationPortRanges,
-			})
-		} else if accessAttr.Equals("Deny") && directionAttr.Equals("Outbound") {
-			outboundDenyRules = append(outboundDenyRules, network.SecurityGroupRule{
-				SourceAddresses:       sourceAddresses,
-				SourcePortRanges:      sourcePortRanges,
-				DestinationAddresses:  destinationAddresses,
-				DestinationPortRanges: destinationPortRanges,
-			})
+			inboundAllowRules = append(inboundAllowRules, adaptSGRule(ruleBlock))
+		}
+		if accessAttr.Equals("Deny") && directionAttr.Equals("Inbound") {
+			inboundDenyRules = append(inboundDenyRules, adaptSGRule(ruleBlock))
+
+		}
+		if accessAttr.Equals("Allow") && directionAttr.Equals("Outbound") {
+			outboundAllowRules = append(outboundAllowRules, adaptSGRule(ruleBlock))
+		}
+		if accessAttr.Equals("Deny") && directionAttr.Equals("Outbound") {
+			outboundDenyRules = append(outboundDenyRules, adaptSGRule(ruleBlock))
 		}
 	}
 
@@ -161,6 +73,71 @@ func adaptSecurityGroup(resource block.Block, module block.Module) network.Secur
 		InboundDenyRules:   inboundDenyRules,
 		OutboundAllowRules: outboundAllowRules,
 		OutboundDenyRules:  outboundDenyRules,
+	}
+}
+
+func adaptSGRule(resource block.Block) network.SecurityGroupRule {
+	var sourceAddresses []types.StringValue
+	var sourcePortRanges []types.StringValue
+	var destinationAddresses []types.StringValue
+	var destinationPortRanges []types.StringValue
+
+	sourceAddressAttr := resource.GetAttribute("source_address_prefix")
+	sourceAddresses = append(sourceAddresses, sourceAddressAttr.AsStringValueOrDefault("", resource))
+
+	sourceAddressPrefixesAttr := resource.GetAttribute("source_address_prefixes")
+	values := sourceAddressPrefixesAttr.ValueAsStrings()
+	for _, value := range values {
+		sourceAddresses = append(sourceAddresses, types.String(value, *resource.GetMetadata()))
+	}
+
+	sourcePortRangeAttr := resource.GetAttribute("source_port_range")
+	if sourcePortRangeAttr.IsIterable() {
+		values := sourcePortRangeAttr.ValueAsStrings()
+		for _, value := range values {
+			sourcePortRanges = append(sourcePortRanges, types.String(value, *resource.GetMetadata()))
+
+		}
+	} else {
+		sourcePortRanges = append(sourcePortRanges, sourcePortRangeAttr.AsStringValueOrDefault("", resource))
+	}
+
+	sourcePortRangesAttr := resource.GetAttribute("source_port_ranges")
+	sourcePortList := sourcePortRangesAttr.ValueAsStrings()
+	for _, sourcePort := range sourcePortList {
+		sourcePortRanges = append(sourcePortRanges, types.String(sourcePort, *resource.GetMetadata()))
+	}
+
+	destinationAddressPrefixAttr := resource.GetAttribute("destination_address_prefix")
+	destinationAddresses = append(destinationAddresses, destinationAddressPrefixAttr.AsStringValueOrDefault("", resource))
+
+	destinationAddressPrefixesAttr := resource.GetAttribute("destination_address_prefixes")
+	destinationAddList := destinationAddressPrefixesAttr.ValueAsStrings()
+	for _, destination := range destinationAddList {
+		destinationAddresses = append(destinationAddresses, types.String(destination, *resource.GetMetadata()))
+	}
+
+	destinationPortRangeAttr := resource.GetAttribute("destination_port_range")
+	if destinationPortRangeAttr.IsIterable() {
+		values := destinationPortRangeAttr.ValueAsStrings()
+		for _, value := range values {
+			destinationPortRanges = append(destinationPortRanges, types.String(value, *resource.GetMetadata()))
+		}
+	} else {
+		destinationPortRanges = append(destinationPortRanges, destinationPortRangeAttr.AsStringValueOrDefault("", resource))
+	}
+
+	destinationPortRangesAttr := resource.GetAttribute("destination_port_ranges")
+	destinationPortsList := destinationPortRangesAttr.ValueAsStrings()
+	for _, destination := range destinationPortsList {
+		destinationPortRanges = append(destinationPortRanges, types.String(destination, *resource.GetMetadata()))
+	}
+
+	return network.SecurityGroupRule{
+		SourceAddresses:       sourceAddresses,
+		SourcePortRanges:      sourcePortRanges,
+		DestinationAddresses:  destinationAddresses,
+		DestinationPortRanges: destinationPortRanges,
 	}
 }
 
