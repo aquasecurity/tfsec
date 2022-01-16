@@ -1,9 +1,7 @@
 package ecr
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/ecr"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -37,21 +35,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecr_repository"},
 		Base:           ecr.CheckEnableImageScans,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("image_scanning_configuration") {
-				results.Add("Resource defines a disabled ECR image scan.", resourceBlock)
-				return
-			}
-
-			ecrScanStatusAttr := resourceBlock.GetNestedAttribute("image_scanning_configuration.scan_on_push")
-			if ecrScanStatusAttr.IsNil() {
-				results.Add("Resource defines a disabled ECR image scan.", resourceBlock)
-			} else if ecrScanStatusAttr.IsFalse() {
-				results.Add("Resource defines a disabled ECR image scan.", ecrScanStatusAttr)
-			}
-
-			return results
-		},
 	})
 }

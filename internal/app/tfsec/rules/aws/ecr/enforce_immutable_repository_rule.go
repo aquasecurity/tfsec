@@ -1,9 +1,7 @@
 package ecr
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/ecr"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -37,19 +35,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_ecr_repository"},
 		Base:           ecr.CheckEnforceImmutableRepository,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			imageTagMutabilityAttr := resourceBlock.GetAttribute("image_tag_mutability")
-			if imageTagMutabilityAttr.IsNil() {
-				results.Add("Resource is missing `image_tag_mutability` attribute - it is required to make ecr image tag immutable.", resourceBlock)
-				return
-			}
-
-			if imageTagMutabilityAttr.NotEqual("IMMUTABLE") {
-				results.Add("Resource has `image_tag_mutability` attribute  not set to `IMMUTABLE`", imageTagMutabilityAttr)
-			}
-
-			return results
-		},
 	})
 }

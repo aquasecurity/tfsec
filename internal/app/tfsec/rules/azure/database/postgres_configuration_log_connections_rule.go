@@ -1,9 +1,7 @@
 package database
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/database"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -66,17 +64,5 @@ func init() {
 			"azurerm_postgresql_server",
 		},
 		Base: database.CheckPostgresConfigurationLogConnections,
-		CheckTerraform: func(resourceBlock block.Block, module block.Module) (results rules.Results) {
-			referencingBlocks := module.GetReferencingResources(resourceBlock, "azurerm_postgresql_configuration", "server_name")
-			for _, refBlock := range referencingBlocks {
-				if nameAttr := refBlock.GetAttribute("name"); nameAttr.IsNotNil() && nameAttr.Equals("log_connections") {
-					if valAttr := refBlock.GetAttribute("value"); valAttr.IsNotNil() && valAttr.Equals("on", block.IgnoreCase) {
-						return
-					}
-				}
-			}
-			results.Add("Resource does not have a corresponding log configuration enabling 'log_connections'", resourceBlock)
-			return results
-		},
 	})
 }

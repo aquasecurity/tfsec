@@ -1,9 +1,7 @@
 package database
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/database"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -11,6 +9,10 @@ import (
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		BadExample: []string{`
+ resource "azurerm_sql_server" "example" {
+   name                         = "mysqlserver"
+ }
+
  resource "azurerm_mssql_server_security_alert_policy" "bad_example" {
    resource_group_name        = azurerm_resource_group.example.name
    server_name                = azurerm_sql_server.example.name
@@ -25,6 +27,10 @@ func init() {
  }
  `},
 		GoodExample: []string{`
+ resource "azurerm_sql_server" "example" {
+	name                         = "mysqlserver"
+ }
+
  resource "azurerm_mssql_server_security_alert_policy" "good_example" {
    resource_group_name        = azurerm_resource_group.example.name
    server_name                = azurerm_sql_server.example.name
@@ -48,11 +54,5 @@ func init() {
 			"azurerm_mssql_server_security_alert_policy",
 		},
 		Base: database.CheckThreatAlertEmailSet,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if emailAddressesAttr := resourceBlock.GetAttribute("email_addresses"); emailAddressesAttr.IsNil() || emailAddressesAttr.IsEmpty() {
-				results.Add("Resource does not specified emails_addresses for alerts", resourceBlock)
-			}
-			return results
-		},
 	})
 }
