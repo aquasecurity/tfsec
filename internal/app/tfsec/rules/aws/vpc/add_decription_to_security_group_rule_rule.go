@@ -1,9 +1,7 @@
 package vpc
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/vpc"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -45,17 +43,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_security_group_rule"},
 		Base:           vpc.CheckAddDescriptionToSecurityGroupRule,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if resourceBlock.MissingChild("description") {
-				results.Add("Resource should include a description for auditing purposes.", resourceBlock)
-				return
-			}
-
-			descriptionAttr := resourceBlock.GetAttribute("description")
-			if descriptionAttr.IsEmpty() {
-				results.Add("Resource should include a non-empty description for auditing purposes.", descriptionAttr)
-			}
-			return results
-		},
 	})
 }

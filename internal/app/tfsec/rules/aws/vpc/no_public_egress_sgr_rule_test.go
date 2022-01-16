@@ -18,7 +18,11 @@ func Test_AWSOpenEgressSecurityGroupRule(t *testing.T) {
 		{
 			name: "check aws_security_group_rule egress on 0.0.0.0/0",
 			source: `
+ resource "aws_security_group" "my-group" {
+ }
+
  resource "aws_security_group_rule" "my-rule" {
+	security_group_id = aws_security_group.my-group.id
  	type = "egress"
  	cidr_blocks = ["0.0.0.0/0"]
  }`,
@@ -27,7 +31,11 @@ func Test_AWSOpenEgressSecurityGroupRule(t *testing.T) {
 		{
 			name: "check aws_security_group_rule egress on 0.0.0.0/0 in list",
 			source: `
+ resource "aws_security_group" "my-group" {
+ }
+		   
  resource "aws_security_group_rule" "my-rule" {
+	security_group_id = aws_security_group.my-group.id
  	type = "egress"
  	cidr_blocks = ["10.0.0.0/16", "0.0.0.0/0"]
  }`,
@@ -36,7 +44,11 @@ func Test_AWSOpenEgressSecurityGroupRule(t *testing.T) {
 		{
 			name: "check aws_security_group_rule egress on 10.0.0.0/16",
 			source: `
+ resource "aws_security_group" "my-group" {
+ }
+		   
  resource "aws_security_group_rule" "my-rule" {
+	security_group_id = aws_security_group.my-group.id
  	type = "egress"
  	cidr_blocks = ["10.0.0.0/16"]
  }`,
