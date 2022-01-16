@@ -1,9 +1,7 @@
 package msk
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/msk"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -150,40 +148,5 @@ func init() {
 			"aws_msk_cluster",
 		},
 		Base: msk.CheckEnableLogging,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			loggingBlock := resourceBlock.GetBlock("logging_info")
-			if loggingBlock.IsNil() {
-				results.Add("Resource does not have any broker logging enabled", resourceBlock)
-				return
-			}
-
-			brokerBlock := loggingBlock.GetBlock("broker_logs")
-			if brokerBlock.IsNil() {
-				results.Add("Resource does not have any broker logging enabled", loggingBlock)
-				return
-			}
-
-			if cloudwatchBlock := brokerBlock.GetBlock("cloudwatch_logs"); cloudwatchBlock.IsNotNil() {
-				if cloudwatchBlock.GetAttribute("enabled").IsTrue() {
-					return
-				}
-			}
-
-			if firehoseBlock := brokerBlock.GetBlock("firehose"); firehoseBlock.IsNotNil() {
-				if firehoseBlock.GetAttribute("enabled").IsTrue() {
-					return
-				}
-			}
-
-			if s3Block := brokerBlock.GetBlock("s3"); s3Block.IsNotNil() {
-				if s3Block.GetAttribute("enabled").IsTrue() {
-					return
-				}
-			}
-
-			results.Add("Resource does not have any broker logging enabled", brokerBlock)
-			return results
-		},
 	})
 }
