@@ -115,7 +115,7 @@ func Test_GoogleNoPublicAccess(t *testing.T) {
  		ip_configuration {
  			ipv4_enabled = false
  			authorized_networks {
- 				value           = "108.12.12.0/24"
+ 				value           = "172.16.12.0/24"
  				name            = "internal"
  			}
  		}

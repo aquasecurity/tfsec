@@ -1,9 +1,7 @@
 package sql
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/sql"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -42,28 +40,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_sql_database_instance"},
 		Base:           sql.CheckMysqlNoLocalInfile,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			// we only need to check this for MYSQL
-			if !resourceBlock.GetAttribute("database_version").StartsWith("MYSQL") {
-				return
-			}
-
-			settingsBlock := resourceBlock.GetBlock("settings")
-			if settingsBlock.IsNil() {
-				return
-			}
-
-			for _, dbFlagBlock := range settingsBlock.GetBlocks("database_flags") {
-				if nameAttr := dbFlagBlock.GetAttribute("name"); nameAttr.IsNotNil() && nameAttr.IsString() && nameAttr.Equals("local_infile") {
-					if valueAttr := dbFlagBlock.GetAttribute("value"); valueAttr.IsNotNil() && valueAttr.IsString() {
-						if valueAttr.Equals("on", block.IgnoreCase) {
-							results.Add("Resource has local file read access enabled.", valueAttr)
-						}
-					}
-				}
-			}
-			return results
-		},
 	})
 }
