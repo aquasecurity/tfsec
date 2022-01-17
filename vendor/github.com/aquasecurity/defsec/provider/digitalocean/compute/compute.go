@@ -3,14 +3,21 @@ package compute
 import "github.com/aquasecurity/defsec/types"
 
 type Compute struct {
-	Firewalls     []Firewall
-	LoadBalancers []LoadBalancer
-	Droplets      []Droplet
+	Firewalls          []Firewall
+	LoadBalancers      []LoadBalancer
+	Droplets           []Droplet
+	KubernetesClusters []KubernetesCluster
 }
 
 type Firewall struct {
 	OutboundRules []OutboundFirewallRule
 	InboundRules  []InboundFirewallRule
+}
+
+type KubernetesCluster struct {
+	types.Metadata
+	SurgeUpgrade types.BoolValue
+	AutoUpgrade  types.BoolValue
 }
 
 type LoadBalancer struct {
@@ -32,6 +39,10 @@ type InboundFirewallRule struct {
 type Droplet struct {
 	types.Metadata
 	SSHKeys []types.StringValue
+}
+
+func (kc KubernetesCluster) GetMetadata() *types.Metadata {
+	return &kc.Metadata
 }
 
 func (d Droplet) GetMetadata() *types.Metadata {

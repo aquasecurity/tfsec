@@ -92,6 +92,8 @@ github.com/aquasecurity/defsec v0.3.17 h1:crMKcMqc9mAQ7eFUTcT5lm24qECNG0VqiMO3U1
 github.com/aquasecurity/defsec v0.3.17/go.mod h1:+7iLruZRqRy54zcVCBcEw05YKOtOK6Dd+tEWQjfQPEM=
 github.com/aquasecurity/defsec v0.3.18 h1:dBU9I3WOMEjdMFnu2hgcn3ImHak4p/HKo681TDGH/xY=
 github.com/aquasecurity/defsec v0.3.18/go.mod h1:+7iLruZRqRy54zcVCBcEw05YKOtOK6Dd+tEWQjfQPEM=
+github.com/aquasecurity/defsec v0.3.20 h1:J0ye7AlX4e7dm+xfNt84pvxmzv0Oz7EptmwRg8A7fUQ=
+github.com/aquasecurity/defsec v0.3.20/go.mod h1:k69jht4X6WIpU4Q9py0o9hYHs4lnGTsBb64ncWCuQvE=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=
 github.com/armon/go-metrics v0.3.10/go.mod h1:4O98XIr/9W0sxpJ8UaYkvjk10Iff7SnFrb4QAOwNTFc=
@@ -360,6 +362,8 @@ github.com/liamg/clinch v1.5.6 h1:cgv8uUroVWW+d23Gfee3v0/bSOKy9d4vUWFlMeNoNS8=
 github.com/liamg/clinch v1.5.6/go.mod h1:IXM+nLBuZ5sOQAYYf9+G51nkaA0WY9cszxE5nPXexhE=
 github.com/liamg/gifwrap v0.0.6 h1:U6wiiwViOEPoIvivVzgeM3CsOi1vpvmcR1+l5vzyR1s=
 github.com/liamg/gifwrap v0.0.6/go.mod h1:oW1r2vIWLYyxW+U0io7YbpPSDIJ79FTlZ+hPnXFLW6E=
+github.com/liamg/iamgo v0.0.2 h1:XWAPL98zyXxdCfKlEv/IaZIPGnLhc6obJ9p6p09LwnI=
+github.com/liamg/iamgo v0.0.2/go.mod h1:qMGOfySmVFw77/NNCY1Lk5Ez2ER5Pwz0xizTLpIbC08=
 github.com/liamg/tml v0.3.0/go.mod h1:0h4EAV/zBOsqI91EWONedjRpO8O0itjGJVd+wG5eC+E=
 github.com/liamg/tml v0.4.0 h1:iZwysIBOaGz6MuaPT/+PCZgvkpgoqBu3ZI6cgApK0zc=
 github.com/liamg/tml v0.4.0/go.mod h1:0h4EAV/zBOsqI91EWONedjRpO8O0itjGJVd+wG5eC+E=

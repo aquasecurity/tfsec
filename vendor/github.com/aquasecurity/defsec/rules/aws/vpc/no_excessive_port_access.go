@@ -20,24 +20,24 @@ var CheckNoExcessivePortAccess = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoExcessivePortAccessGoodExamples,
-            BadExamples:         terraformNoExcessivePortAccessBadExamples,
-            Links:               terraformNoExcessivePortAccessLinks,
-            RemediationMarkdown: terraformNoExcessivePortAccessRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationNoExcessivePortAccessGoodExamples,
-            BadExamples:         cloudFormationNoExcessivePortAccessBadExamples,
-            Links:               cloudFormationNoExcessivePortAccessLinks,
-            RemediationMarkdown: cloudFormationNoExcessivePortAccessRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoExcessivePortAccessGoodExamples,
+			BadExamples:         terraformNoExcessivePortAccessBadExamples,
+			Links:               terraformNoExcessivePortAccessLinks,
+			RemediationMarkdown: terraformNoExcessivePortAccessRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationNoExcessivePortAccessGoodExamples,
+			BadExamples:         cloudFormationNoExcessivePortAccessBadExamples,
+			Links:               cloudFormationNoExcessivePortAccessLinks,
+			RemediationMarkdown: cloudFormationNoExcessivePortAccessRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, acl := range s.AWS.VPC.NetworkACLs {
 			for _, rule := range acl.Rules {
-				if rule.Protocol.EqualTo(-1) {
+				if rule.Protocol.EqualTo("-1") || rule.Protocol.EqualTo("all") {
 					results.Add(
 						"Network ACL rule allows access using ALL ports.",
 						&rule,

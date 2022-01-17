@@ -1,25 +1,37 @@
 package iam
 
+import "github.com/aquasecurity/defsec/types"
+
 type IAM struct {
 	PasswordPolicy PasswordPolicy
 	Policies       []Policy
-	GroupPolicies  []GroupPolicy
-	UserPolicies   []UserPolicy
-	RolePolicies   []RolePolicy
+	Groups         []Group
+	Users          []User
+	Roles          []Role
 }
 
 type Policy struct {
-	Document PolicyDocument
+	types.Metadata
+	Name     types.StringValue
+	Document types.StringValue
 }
 
-type GroupPolicy struct {
-	Document PolicyDocument
+type Group struct {
+	types.Metadata
+	Name     types.StringValue
+	Users    []User
+	Policies []Policy
 }
 
-type UserPolicy struct {
-	Document PolicyDocument
+type User struct {
+	types.Metadata
+	Name     types.StringValue
+	Groups   []Group
+	Policies []Policy
 }
 
-type RolePolicy struct {
-	Document PolicyDocument
+type Role struct {
+	types.Metadata
+	Name     types.StringValue
+	Policies []Policy
 }
