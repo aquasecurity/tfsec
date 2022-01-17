@@ -18,6 +18,9 @@ func Test_AZUKeyVaultKeyExpirationDate(t *testing.T) {
 		{
 			name: "check if expiration_date is not set, check fails",
 			source: `
+ resource "azurerm_key_vault" "example" {
+ }
+
  resource "azurerm_key_vault_key" "bad_example" {
    name         = "generated-certificate"
    key_vault_id = azurerm_key_vault.example.id
@@ -39,6 +42,9 @@ func Test_AZUKeyVaultKeyExpirationDate(t *testing.T) {
 		{
 			name: "check if expiration_date is set, check passes",
 			source: `
+ resource "azurerm_key_vault" "example" {
+ }
+
  resource "azurerm_key_vault_key" "good_example" {
    name         = "generated-certificate"
    key_vault_id = azurerm_key_vault.example.id

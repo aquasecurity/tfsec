@@ -1,9 +1,7 @@
 package keyvault
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/keyvault"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -34,22 +32,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_key_vault"},
 		Base:           keyvault.CheckNoPurge,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("purge_protection_enabled") {
-				results.Add("Resource should have purge protection enabled.", resourceBlock)
-				return
-			}
-			purgeProtectionAttr := resourceBlock.GetAttribute("purge_protection_enabled")
-			if purgeProtectionAttr.IsFalse() {
-				results.Add("Resource should have purge protection enabled.", purgeProtectionAttr)
-				return
-			}
-
-			if resourceBlock.MissingChild("soft_delete_retention_days") || resourceBlock.GetAttribute("soft_delete_retention_days").LessThan(1) {
-				results.Add("Resource should have soft_delete_retention_days set in order to enabled purge protection.", resourceBlock)
-			}
-			return results
-		},
 	})
 }

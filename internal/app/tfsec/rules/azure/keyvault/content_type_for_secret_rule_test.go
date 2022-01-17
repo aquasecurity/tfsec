@@ -18,6 +18,9 @@ func Test_AZUKeyVaultSecretContentType(t *testing.T) {
 		{
 			name: "check if content_type is not set, check fails",
 			source: `
+resource "azurerm_key_vault" "example" {
+}
+
  resource "azurerm_key_vault_secret" "bad_example" {
    name         = "secret-sauce"
    value        = "szechuan"
@@ -29,6 +32,9 @@ func Test_AZUKeyVaultSecretContentType(t *testing.T) {
 		{
 			name: "check if content_type is set, check passes",
 			source: `
+resource "azurerm_key_vault" "example" {
+}
+			
  resource "azurerm_key_vault_secret" "good_example" {
    name         = "secret-sauce"
    value        = "szechuan"
