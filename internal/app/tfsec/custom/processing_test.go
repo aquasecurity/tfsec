@@ -400,6 +400,74 @@ resource "aws_ami" "testing" {
 	}
 }
 
+func TestRegexMatches(t *testing.T) {
+	var tests = []struct {
+		name               string
+		source             string
+		predicateMatchSpec MatchSpec
+		expected           bool
+	}{
+		{
+			name: "check `regexMatches` in pass case",
+			source: `
+resource "google_compute_instance" "default" {
+  name         = "test_instance_name"
+  machine_type = "e2-medium"
+  region       = "europe-west3"
+  zone         = "europe-west3-a"
+}
+`,
+			predicateMatchSpec: MatchSpec{
+				Name:       "name",
+				Action:     "regexMatches",
+				MatchValue: "^test_.*$",
+			},
+			expected: true,
+		},
+		{
+			name: "check `regexMatches` in regex-not-matching fail case",
+			source: `
+resource "google_compute_instance" "default" {
+  name         = "wrong_test_instance_name"
+  machine_type = "e2-medium"
+  region       = "europe-west3"
+  zone         = "europe-west3-a"
+}
+`,
+			predicateMatchSpec: MatchSpec{
+				Name:       "name",
+				Action:     "regexMatches",
+				MatchValue: "^test_.*$",
+			},
+			expected: false,
+		},
+		{
+			name: "check `regexMatches` in attribute-not-found fail case",
+			source: `
+resource "google_compute_instance" "default" {
+  name         = "wrong_test_instance_name"
+  machine_type = "e2-medium"
+  region       = "europe-west3"
+  zone         = "europe-west3-a"
+}
+`,
+			predicateMatchSpec: MatchSpec{
+				Name:       "not-name",
+				Action:     "regexMatches",
+				MatchValue: "^test_.*$",
+			},
+			expected: false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.predicateMatchSpec, nil)
+			assert.Equal(t, result, test.expected, "`regexMatches` match function evaluating incorrectly.")
+		})
+	}
+}
+
 func givenCheck(jsonContent string) {
 	var checksfile ChecksFile
 	err := json.NewDecoder(strings.NewReader(jsonContent)).Decode(&checksfile)
