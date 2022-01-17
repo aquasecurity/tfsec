@@ -8,6 +8,8 @@ import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/defsec/state"
+	"github.com/aquasecurity/defsec/types"
+	"github.com/liamg/iamgo"
 )
 
 var CheckNoPolicyWildcards = rules.Register(
@@ -23,57 +25,66 @@ var CheckNoPolicyWildcards = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPolicyWildcardsGoodExamples,
-            BadExamples:         terraformNoPolicyWildcardsBadExamples,
-            Links:               terraformNoPolicyWildcardsLinks,
-            RemediationMarkdown: terraformNoPolicyWildcardsRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationNoPolicyWildcardsGoodExamples,
-            BadExamples:         cloudFormationNoPolicyWildcardsBadExamples,
-            Links:               cloudFormationNoPolicyWildcardsLinks,
-            RemediationMarkdown: cloudFormationNoPolicyWildcardsRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPolicyWildcardsGoodExamples,
+			BadExamples:         terraformNoPolicyWildcardsBadExamples,
+			Links:               terraformNoPolicyWildcardsLinks,
+			RemediationMarkdown: terraformNoPolicyWildcardsRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationNoPolicyWildcardsGoodExamples,
+			BadExamples:         cloudFormationNoPolicyWildcardsBadExamples,
+			Links:               cloudFormationNoPolicyWildcardsLinks,
+			RemediationMarkdown: cloudFormationNoPolicyWildcardsRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
-
-		var documents []iam.PolicyDocument
 		for _, policy := range s.AWS.IAM.Policies {
-			documents = append(documents, policy.Document)
+			results = checkPolicy(policy.Document, results)
 		}
-		for _, policy := range s.AWS.IAM.GroupPolicies {
-			documents = append(documents, policy.Document)
-		}
-		for _, policy := range s.AWS.IAM.UserPolicies {
-			documents = append(documents, policy.Document)
-		}
-		for _, policy := range s.AWS.IAM.RolePolicies {
-			documents = append(documents, policy.Document)
-		}
-
-		for _, document := range documents {
-			for _, statement := range document.Statements {
-				results = checkStatement(document, statement, results)
+		for _, group := range s.AWS.IAM.Groups {
+			for _, policy := range group.Policies {
+				results = checkPolicy(policy.Document, results)
 			}
 		}
-		return
+		for _, user := range s.AWS.IAM.Users {
+			for _, policy := range user.Policies {
+				results = checkPolicy(policy.Document, results)
+			}
+		}
+		for _, role := range s.AWS.IAM.Roles {
+			for _, policy := range role.Policies {
+				results = checkPolicy(policy.Document, results)
+			}
+		}
+		return results
 	},
 )
 
-func checkStatement(document iam.PolicyDocument, statement iam.PolicyDocumentStatement, results rules.Results) rules.Results {
-	if strings.ToLower(statement.Effect) == "deny" {
+func checkPolicy(src types.StringValue, results rules.Results) rules.Results {
+	policy, err := iamgo.ParseString(src.Value())
+	if err != nil {
+		return results
+	}
+	for _, statement := range policy.Statement {
+		results = checkStatement(src, statement, results)
+	}
+	return results
+}
+
+func checkStatement(src types.StringValue, statement iamgo.Statement, results rules.Results) rules.Results {
+	if statement.Effect != iamgo.EffectAllow {
 		return results
 	}
 	for _, action := range statement.Action {
 		if strings.Contains(action, "*") {
 			results.Add(
 				"IAM policy document uses wildcarded action.",
-				document,
+				src,
 			)
 		} else {
-			results.AddPassed(&document)
+			results.AddPassed(src)
 		}
 	}
 	for _, resource := range statement.Resource {
@@ -83,20 +94,26 @@ func checkStatement(document iam.PolicyDocument, statement iam.PolicyDocumentSta
 			}
 			results.Add(
 				"IAM policy document uses wildcarded resource for sensitive action(s).",
-				document,
+				src,
 			)
 		} else {
-			results.AddPassed(&document)
+			results.AddPassed(src)
 		}
+	}
+	if statement.Principal.All {
+		results.Add(
+			"IAM policy document uses wildcarded principal.",
+			src,
+		)
 	}
 	for _, principal := range statement.Principal.AWS {
 		if strings.Contains(principal, "*") {
 			results.Add(
 				"IAM policy document uses wildcarded principal.",
-				document,
+				src,
 			)
 		} else {
-			results.AddPassed(&document)
+			results.AddPassed(src)
 		}
 	}
 	return results
