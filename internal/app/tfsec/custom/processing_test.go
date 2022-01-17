@@ -32,7 +32,11 @@ func init() {
       "severity": "HIGH",
       "matchSpec": {
         "action": "requiresPresence",
-		"name": "aws_flow_log"
+		"name": "aws_flow_log",
+		"subMatch": {
+		  "action": "isPresent",
+		  "name": "log_destination"
+		}
       },
       "errorMessage": "VPCs should have an aws_flow_log associated with them",
       "relatedLinks": []
@@ -93,6 +97,7 @@ var testNestedMatchSpec = MatchSpec{
 		},
 	},
 }
+
 var testNotMatchSpec = MatchSpec{
 	Action: "not",
 	PredicateMatchSpec: []MatchSpec{
@@ -103,6 +108,7 @@ var testNotMatchSpec = MatchSpec{
 		},
 	},
 }
+
 var testPreConditionCheck = MatchSpec{
 	Action:     "equals",
 	Name:       "name",
@@ -136,6 +142,7 @@ resource "aws_flow_log" "example" {
 `)
 	assert.Len(t, scanResults, 0)
 }
+
 func TestRequiresPresenceWithResourceMissing(t *testing.T) {
 	scanResults := scanTerraform(t, `
 resource "aws_vpc" "main" {
@@ -145,6 +152,26 @@ resource "aws_vpc" "main" {
   tags = {
     Name = "main"
   }
+}
+`)
+	assert.Len(t, scanResults, 1)
+}
+
+func TestRequiresPresenceWithSubMatchFailing(t *testing.T) {
+	scanResults := scanTerraform(t, `
+resource "aws_vpc" "main" {
+  cidr_block       = "10.0.0.0/16"
+  instance_tenancy = "default"
+
+  tags = {
+    Name = "main"
+  }
+}
+
+resource "aws_flow_log" "example" {
+  iam_role_arn    = aws_iam_role.example.arn
+  traffic_type    = "ALL"
+  vpc_id          = aws_vpc.example.id
 }
 `)
 	assert.Len(t, scanResults, 1)
@@ -244,6 +271,7 @@ resource "aws_ami" "example" {
 		})
 	}
 }
+
 func TestNestedMatchFunction(t *testing.T) {
 	var tests = []struct {
 		name               string
