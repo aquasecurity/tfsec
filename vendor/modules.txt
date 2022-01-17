@@ -28,7 +28,7 @@ github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
 ## explicit; go 1.16
 github.com/apparentlymart/go-textseg/v13/textseg
-# github.com/aquasecurity/defsec v0.3.18
+# github.com/aquasecurity/defsec v0.3.20
 ## explicit; go 1.17
 github.com/aquasecurity/defsec/cidr
 github.com/aquasecurity/defsec/formatters
@@ -304,6 +304,9 @@ github.com/liamg/clinch/terminal
 # github.com/liamg/gifwrap v0.0.6
 ## explicit; go 1.16
 github.com/liamg/gifwrap/pkg/ascii
+# github.com/liamg/iamgo v0.0.2
+## explicit; go 1.17
+github.com/liamg/iamgo
 # github.com/liamg/tml v0.4.0
 ## explicit; go 1.12
 github.com/liamg/tml

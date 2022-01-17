@@ -44,7 +44,7 @@ type NetworkACLRule struct {
 	types.Metadata
 	Type     types.StringValue
 	Action   types.StringValue
-	Protocol types.IntValue
+	Protocol types.StringValue
 	CIDRs    []types.StringValue
 }
 

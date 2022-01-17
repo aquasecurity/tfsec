@@ -63,3 +63,11 @@ func (m *Metadata) IsManaged() bool {
 	}
 	return m.isManaged
 }
+
+// add this for structs built with composition
+func (m Metadata) GetMetadata() *Metadata {
+	return &m
+}
+func (m Metadata) GetRawValue() interface{} {
+	return nil
+}

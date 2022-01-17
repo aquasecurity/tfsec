@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/apparentlymart/go-cidr v1.1.0
-	github.com/aquasecurity/defsec v0.3.18
+	github.com/aquasecurity/defsec v0.3.20
 	github.com/bmatcuk/doublestar v1.3.4
 	github.com/google/go-cmp v0.5.6
 	github.com/google/uuid v1.3.0
@@ -42,6 +42,7 @@ require (
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/liamg/clinch v1.5.6 // indirect
 	github.com/liamg/gifwrap v0.0.6 // indirect
+	github.com/liamg/iamgo v0.0.2 // indirect
 	github.com/lucasb-eyer/go-colorful v1.0.3 // indirect
 	github.com/mattn/go-runewidth v0.0.12 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect

@@ -1,7 +1,6 @@
 package sam
 
 import (
-	"github.com/aquasecurity/defsec/provider/aws/iam"
 	"github.com/aquasecurity/defsec/types"
 )
 
@@ -10,7 +9,7 @@ type Function struct {
 	FunctionName    types.StringValue
 	Tracing         types.StringValue
 	ManagedPolicies []types.StringValue
-	Policies        []iam.PolicyDocument
+	Policies        []types.StringValue
 }
 
 const (
