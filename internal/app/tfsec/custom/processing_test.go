@@ -390,11 +390,11 @@ resource "google_compute_instance" "default" {
 }
 `,
 			predicateMatchSpec: MatchSpec{
-				Name: "name",
-				Action: "regexMatches",
+				Name:       "name",
+				Action:     "regexMatches",
 				MatchValue: "^test_.*$",
 			},
-			expected:           true,
+			expected: true,
 		},
 		{
 			name: "check `regexMatches` in regex-not-matching fail case",
@@ -407,11 +407,11 @@ resource "google_compute_instance" "default" {
 }
 `,
 			predicateMatchSpec: MatchSpec{
-				Name: "name",
-				Action: "regexMatches",
+				Name:       "name",
+				Action:     "regexMatches",
 				MatchValue: "^test_.*$",
 			},
-			expected:           false,
+			expected: false,
 		},
 		{
 			name: "check `regexMatches` in attribute-not-found fail case",
@@ -424,11 +424,11 @@ resource "google_compute_instance" "default" {
 }
 `,
 			predicateMatchSpec: MatchSpec{
-				Name: "not-name",
-				Action: "regexMatches",
+				Name:       "not-name",
+				Action:     "regexMatches",
 				MatchValue: "^test_.*$",
 			},
-			expected:           false,
+			expected: false,
 		},
 	}
 	for _, test := range tests {
