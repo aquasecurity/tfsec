@@ -2,10 +2,8 @@ package ecr
 
 import (
 	"github.com/aquasecurity/defsec/provider/aws/ecr"
-	"github.com/aquasecurity/defsec/provider/aws/iam"
 	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 )
 
 func Adapt(modules []block.Module) ecr.ECR {
@@ -31,7 +29,7 @@ func adaptRepository(resource block.Block, module block.Module) ecr.Repository {
 	encryptionTypeVal := types.StringDefault("AES256", *resource.GetMetadata())
 	kmsKeyVal := types.StringDefault("", *resource.GetMetadata())
 
-	var policyDoc iam.PolicyDocument
+	var policies []types.StringValue
 
 	if resource.HasChild("image_scanning_configuration") {
 		imageScanningBlock := resource.GetBlock("image_scanning_configuration")
@@ -50,14 +48,7 @@ func adaptRepository(resource block.Block, module block.Module) ecr.Repository {
 	for _, policyRes := range policyBlocks {
 		if policyRes.HasChild("policy") && policyRes.GetAttribute("policy").IsString() {
 			policyAttr := policyRes.GetAttribute("policy")
-			rawJSON := []byte(policyAttr.Value().AsString())
-			parsedPolicy, err := iam.ParsePolicyDocument(rawJSON, *policyAttr.GetMetadata())
-			if err != nil {
-				debug.Log("Error decoding IAM policy JSON at %s: %s", policyAttr.Range(), err)
-			}
-			if parsedPolicy != nil {
-				policyDoc = *parsedPolicy
-			}
+			policies = append(policies, policyAttr.AsStringValueOrDefault("", resource))
 		}
 	}
 
@@ -76,7 +67,7 @@ func adaptRepository(resource block.Block, module block.Module) ecr.Repository {
 			ScanOnPush: scanOnPushVal,
 		},
 		ImageTagsImmutable: tagsImmutable,
-		Policy:             policyDoc,
+		Policies:           policies,
 		Encryption: ecr.Encryption{
 			Type:     encryptionTypeVal,
 			KMSKeyID: kmsKeyVal,
