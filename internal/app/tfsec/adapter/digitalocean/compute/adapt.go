@@ -8,9 +8,10 @@ import (
 
 func Adapt(modules []block.Module) compute.Compute {
 	return compute.Compute{
-		Droplets:      adaptDroplets(modules),
-		Firewalls:     adaptFirewalls(modules),
-		LoadBalancers: adaptLoadBalancers(modules),
+		Droplets:           adaptDroplets(modules),
+		Firewalls:          adaptFirewalls(modules),
+		LoadBalancers:      adaptLoadBalancers(modules),
+		kubernetesClusters: adaptKubernetesClusters(modules),
 	}
 }
 
