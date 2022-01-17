@@ -18,6 +18,10 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check RDP access from * causes a failure",
 			source: `
+ resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+ }
+
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -27,6 +31,7 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["3389"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -34,6 +39,10 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check RDP access from * is ok when mode is deny",
 			source: `
+ resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+ }
+               
  resource "azurerm_network_security_rule" "example_deny" {
       name                        = "example_deny_security_rule"
       direction                   = "Inbound"
@@ -43,6 +52,7 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["3389"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustExcludeResultCode: expectedCode,
@@ -50,6 +60,10 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check RDP access from 0.0.0.0 causes a failure",
 			source: `
+resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+}
+
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -59,6 +73,7 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["3389"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -66,6 +81,10 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check RDP access from /0 causes a failure",
 			source: `
+resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+}
+                      
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -75,6 +94,7 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["3389"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -82,6 +102,10 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check RDP access from internet causes a failure",
 			source: `
+resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+}
+               
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -91,6 +115,7 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["3389"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -98,6 +123,10 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check RDP access from internet causes a failure",
 			source: `
+resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+}
+
  resource "azurerm_network_security_rule" "bad_example" {
       name                        = "bad_example_security_rule"
       direction                   = "Inbound"
@@ -107,6 +136,7 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["3389"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -120,6 +150,8 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
    resource_group_name = azurerm_resource_group.example.name
    
    security_rule {
+      access                      = "Allow"
+      direction                   = "Inbound"
  	 source_port_range           = "any"
       destination_port_range      = ["3389", "80", "443"]
       source_address_prefix       = "*"
@@ -139,6 +171,7 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
    
    security_rule {
       access                      = "Deny"
+      direction                   = "Inbound"
       source_port_range           = "any"
       destination_port_range      = ["3389", "80", "443"]
       source_address_prefix       = "*"
@@ -157,6 +190,8 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
    resource_group_name = azurerm_resource_group.example.name
    
    security_rule {
+      access                      = "Allow"
+      direction                   = "Inbound"
  	 source_port_range           = "any"
       destination_port_range      = ["3389", "80", "443"]
       source_address_prefix       = "4.53.160.75"
@@ -164,6 +199,8 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
    }
  
    security_rule {
+      access                      = "Allow"
+      direction                   = "Inbound"
  	 source_port_range           = "any"
       destination_port_range      = ["3389", "80", "443"]
       source_address_prefix       = "internet"
@@ -176,6 +213,10 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
 		{
 			name: "check RDP is acceptable from a specific source",
 			source: `
+resource "azurerm_network_security_group" "example" {
+     name                = "acceptanceTestSecurityGroup1"
+}
+
  resource "azurerm_network_security_rule" "good_example" {
       name                        = "good_example_security_rule"
       direction                   = "Inbound"
@@ -185,6 +226,7 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
       destination_port_range      = ["3389"]
       source_address_prefix       = "4.53.160.75"
       destination_address_prefix  = "*"
+      network_security_group_name = azurerm_network_security_group.example.name
  }
  `,
 			mustExcludeResultCode: expectedCode,
@@ -198,6 +240,8 @@ func Test_AZURDPAccessNotAllowedFromInternet(t *testing.T) {
    resource_group_name = azurerm_resource_group.example.name
    
    security_rule {
+      access                      = "Allow"
+      direction                   = "Inbound"
  	 source_port_range           = "any"
       destination_port_range      = ["3389"]
       source_address_prefix       = "4.53.160.75"
