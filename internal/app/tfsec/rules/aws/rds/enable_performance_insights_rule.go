@@ -1,9 +1,7 @@
 package rds
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/rds"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -32,20 +30,5 @@ resource "aws_rds_cluster_instance" "good_example" {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_rds_cluster_instance", "aws_db_instance"},
 		Base:           rds.CheckEnablePerformanceInsights,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.HasChild("performance_insights_enabled") && resourceBlock.GetAttribute("performance_insights_enabled").IsTrue() {
-				if resourceBlock.MissingChild("performance_insights_kms_key_id") {
-					results.Add("Resource defines Performance Insights without encryption key specified.", resourceBlock)
-					return
-				}
-
-				if keyAttr := resourceBlock.GetAttribute("performance_insights_kms_key_id"); keyAttr.IsEmpty() {
-					results.Add("Resource defines Performance Insights without encryption key specified.", keyAttr)
-				}
-			}
-
-			return results
-		},
 	})
 }

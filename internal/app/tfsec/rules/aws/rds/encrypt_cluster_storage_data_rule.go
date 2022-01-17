@@ -1,9 +1,7 @@
 package rds
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/rds"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -28,22 +26,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_rds_cluster"},
 		Base:           rds.CheckEncryptClusterStorageData,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			kmsKeyIdAttr := resourceBlock.GetAttribute("kms_key_id")
-			storageEncryptedAttr := resourceBlock.GetAttribute("storage_encrypted")
-
-			//nolint
-			if storageEncryptedAttr.IsNil() {
-				results.Add("Storage encryption is not enabled.", resourceBlock)
-			} else if storageEncryptedAttr.IsFalse() {
-				results.Add("Storage encryption is not enabled.", storageEncryptedAttr)
-			} else if kmsKeyIdAttr.IsNil() {
-				results.Add("Storage encryption does not use a customer-managed key.", resourceBlock)
-			} else if kmsKeyIdAttr.IsEmpty() {
-				results.Add("Storage encryption does not use a customer-managed key.", kmsKeyIdAttr)
-			}
-			return results
-		},
 	})
 }

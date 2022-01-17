@@ -1,9 +1,7 @@
 package rds
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/rds"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -69,22 +67,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_rds_cluster", "aws_db_instance"},
 		Base:           rds.CheckBackupRetentionSpecified,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if resourceBlock.HasChild("replicate_source_db") {
-				return
-			}
-
-			if resourceBlock.MissingChild("backup_retention_period") {
-				results.Add("Resource does not have backup retention explicitly set", resourceBlock)
-				return
-			}
-
-			retentionAttr := resourceBlock.GetAttribute("backup_retention_period")
-			if retentionAttr.LessThanOrEqualTo(1) {
-				results.Add("Resource has backup retention period set to a low value", retentionAttr)
-			}
-
-			return results
-		},
 	})
 }

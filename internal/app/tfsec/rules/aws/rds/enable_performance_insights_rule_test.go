@@ -18,10 +18,15 @@ func Test_AWSRDSPerformanceInsughtsEncryptionNotEnabled(t *testing.T) {
 		{
 			name: "Performance insights enabled but no kms key provided",
 			source: `
+resource "aws_rds_cluster" "cluster1" {
+
+}
+
  resource "aws_rds_cluster_instance" "foo" {
-   name                 = "bar"
-   performance_insights_enabled = true
+   name                            = "bar"
+   performance_insights_enabled    = true
    performance_insights_kms_key_id = ""
+   cluster_identifier              = aws_rds_cluster.cluster1.id
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -29,27 +34,43 @@ func Test_AWSRDSPerformanceInsughtsEncryptionNotEnabled(t *testing.T) {
 		{
 			name: "Performance insights disable",
 			source: `
+resource "aws_rds_cluster" "cluster1" {
+
+}
+
  resource "aws_rds_cluster_instance" "foo" {
-   name                 = "bar"
+   name                         = "bar"
    performance_insights_enabled = false
+   cluster_identifier           = aws_rds_cluster.cluster1.id
  
  }
  `,
-			mustExcludeResultCode: expectedCode,
+			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Performance insights not mentioned",
 			source: `
+resource "aws_rds_cluster" "cluster1" {
+
+}
+
  resource "aws_rds_cluster_instance" "foo" {
+	cluster_identifier   = aws_rds_cluster.cluster1.id
    
- }
+   
+}
  `,
-			mustExcludeResultCode: expectedCode,
+			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Performance insights enabled and kms key provided",
 			source: `
+resource "aws_rds_cluster" "cluster1" {
+
+}
+
  resource "aws_rds_cluster_instance" "foo" {
+   cluster_identifier   = aws_rds_cluster.cluster1.id
    name                 = "bar"
    performance_insights_enabled = true
    performance_insights_kms_key_id = "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
@@ -77,7 +98,7 @@ func Test_AWSRDSPerformanceInsughtsEncryptionNotEnabled(t *testing.T) {
  
  }
  `,
-			mustExcludeResultCode: expectedCode,
+			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Performance insights on aws_db_instance not mentioned",
@@ -86,7 +107,7 @@ func Test_AWSRDSPerformanceInsughtsEncryptionNotEnabled(t *testing.T) {
    
  }
  `,
-			mustExcludeResultCode: expectedCode,
+			mustIncludeResultCode: expectedCode,
 		},
 		{
 			name: "Performance insights enabled on aws_db_instance and kms key provided",
@@ -102,11 +123,15 @@ func Test_AWSRDSPerformanceInsughtsEncryptionNotEnabled(t *testing.T) {
 		{
 			name: "Testing issue 506: error when performance insights enabled and kms included",
 			source: `
+resource "aws_rds_cluster" "cluster1" {
+
+}
+
  resource "aws_rds_cluster_instance" "covidshield_server_instances" {
    count                        = 3
  
    identifier           = "${var.rds_server_db_name}-instance-${count.index}"
-   cluster_identifier   = aws_rds_cluster.covidshield_server.id
+   cluster_identifier   = aws_rds_cluster.cluster1.id
    instance_class       = var.rds_server_instance_class
    db_subnet_group_name = aws_db_subnet_group.covidshield.name
  
