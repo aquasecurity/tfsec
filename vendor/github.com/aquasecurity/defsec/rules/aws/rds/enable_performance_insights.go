@@ -22,39 +22,44 @@ The encryption key specified in ` + "`" + `performance_insights_kms_key_id` + "`
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.htm",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnablePerformanceInsightsGoodExamples,
-            BadExamples:         terraformEnablePerformanceInsightsBadExamples,
-            Links:               terraformEnablePerformanceInsightsLinks,
-            RemediationMarkdown: terraformEnablePerformanceInsightsRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnablePerformanceInsightsGoodExamples,
-            BadExamples:         cloudFormationEnablePerformanceInsightsBadExamples,
-            Links:               cloudFormationEnablePerformanceInsightsLinks,
-            RemediationMarkdown: cloudFormationEnablePerformanceInsightsRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnablePerformanceInsightsGoodExamples,
+			BadExamples:         terraformEnablePerformanceInsightsBadExamples,
+			Links:               terraformEnablePerformanceInsightsLinks,
+			RemediationMarkdown: terraformEnablePerformanceInsightsRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnablePerformanceInsightsGoodExamples,
+			BadExamples:         cloudFormationEnablePerformanceInsightsBadExamples,
+			Links:               cloudFormationEnablePerformanceInsightsLinks,
+			RemediationMarkdown: cloudFormationEnablePerformanceInsightsRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.RDS.Clusters {
 			if !cluster.IsManaged() {
 				continue
 			}
-			if cluster.PerformanceInsights.Enabled.IsFalse() {
-				results.Add(
-					"Cluster does not have performance insights enabled.",
-					&cluster,
-					cluster.PerformanceInsights.Enabled,
-				)
-			} else if cluster.PerformanceInsights.KMSKeyID.IsEmpty() {
-				results.Add(
-					"Cluster has performance insights enabled without encryption.",
-					&cluster,
-					cluster.PerformanceInsights.KMSKeyID,
-				)
-			} else {
-				results.AddPassed(&cluster)
+			for _, instance := range cluster.Instances {
+				if !instance.IsManaged() {
+					continue
+				}
+				if instance.PerformanceInsights.Enabled.IsFalse() {
+					results.Add(
+						"Instance does not have performance insights enabled.",
+						&instance,
+						instance.PerformanceInsights.Enabled,
+					)
+				} else if instance.PerformanceInsights.KMSKeyID.IsEmpty() {
+					results.Add(
+						"Instance has performance insights enabled without encryption.",
+						&instance,
+						instance.PerformanceInsights.KMSKeyID,
+					)
+				} else {
+					results.AddPassed(&instance)
+				}
 			}
 		}
 		for _, instance := range s.AWS.RDS.Instances {
