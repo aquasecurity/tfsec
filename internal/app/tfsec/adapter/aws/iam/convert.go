@@ -2,7 +2,7 @@ package iam
 
 import (
 	"encoding/json"
-    "strings"
+	"strings"
 
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/types"
@@ -23,18 +23,18 @@ func parsePolicyFromAttr(attr block.Attribute, owner block.Block, modules block.
 		if err != nil {
 			return nil, err
 		}
-		return types.String(unescapeVars(string(output)),  *documents[0].source.GetMetadata()), nil
+		return types.String(unescapeVars(string(output)), *documents[0].source.GetMetadata()), nil
 	}
 
-    if attr.IsString() {
-        return types.String(unescapeVars(attr.Value().AsString()), owner.Metadata()), nil
-    }
+	if attr.IsString() {
+		return types.String(unescapeVars(attr.Value().AsString()), owner.Metadata()), nil
+	}
 
 	return attr.AsStringValueOrDefault("", owner), nil
 }
 
 func unescapeVars(input string) string {
-    return strings.ReplaceAll(input, "&{", "${")
+	return strings.ReplaceAll(input, "&{", "${")
 }
 
 // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
@@ -110,7 +110,7 @@ func convertTerraformDocument(modules block.Modules, block block.Block) (*wrappe
 		}
 	}
 
-    return &wrappedDocument{document: document, source: block }, nil
+	return &wrappedDocument{document: document, source: block}, nil
 }
 
 func parseStatement(statementBlock block.Block) iamgo.Statement {
