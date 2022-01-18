@@ -1,4 +1,4 @@
-package elbv2
+package elb
 
 import (
 	"testing"
