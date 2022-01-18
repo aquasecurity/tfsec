@@ -75,9 +75,9 @@ EOF
 
 }
 
-resource aws_iam_policy_document attach {
+resource aws_iam_group_policy_attachment attach {
     group = aws_iam_group.support.name
-    policy_arn = aws_iam_policy.mfa
+    policy_arn = aws_iam_policy.mfa.id
 }
 
 `,

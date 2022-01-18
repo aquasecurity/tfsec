@@ -2,28 +2,43 @@ package iam
 
 import (
 	"encoding/json"
+    "strings"
 
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/liamg/iamgo"
 )
 
+type wrappedDocument struct {
+	source   rules.MetadataProvider
+	document iamgo.Document
+}
+
 func parsePolicyFromAttr(attr block.Attribute, owner block.Block, modules block.Modules) (types.StringValue, error) {
 
 	documents := findAllPolicies(modules, owner, attr)
 	if len(documents) > 0 {
-		output, err := json.Marshal(documents[0])
+		output, err := json.Marshal(documents[0].document)
 		if err != nil {
 			return nil, err
 		}
-		return types.String(string(output), owner.Metadata()), nil
+		return types.String(unescapeVars(string(output)),  *documents[0].source.GetMetadata()), nil
 	}
+
+    if attr.IsString() {
+        return types.String(unescapeVars(attr.Value().AsString()), owner.Metadata()), nil
+    }
 
 	return attr.AsStringValueOrDefault("", owner), nil
 }
 
+func unescapeVars(input string) string {
+    return strings.ReplaceAll(input, "&{", "${")
+}
+
 // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
-func convertTerraformDocument(modules block.Modules, block block.Block) (*iamgo.Document, error) {
+func convertTerraformDocument(modules block.Modules, block block.Block) (*wrappedDocument, error) {
 
 	var document iamgo.Document
 
@@ -38,7 +53,7 @@ func convertTerraformDocument(modules block.Modules, block block.Block) (*iamgo.
 	if sourceDocumentsAttr := block.GetAttribute("source_policy_documents"); sourceDocumentsAttr.IsIterable() {
 		docs := findAllPolicies(modules, block, sourceDocumentsAttr)
 		for _, doc := range docs {
-			document.Statement = append(document.Statement, doc.Statement...)
+			document.Statement = append(document.Statement, doc.document.Statement...)
 		}
 	}
 
@@ -76,7 +91,7 @@ func convertTerraformDocument(modules block.Modules, block block.Block) (*iamgo.
 	if overrideDocumentsAttr := block.GetAttribute("override_policy_documents"); overrideDocumentsAttr.IsIterable() {
 		docs := findAllPolicies(modules, block, overrideDocumentsAttr)
 		for _, doc := range docs {
-			for _, statement := range doc.Statement {
+			for _, statement := range doc.document.Statement {
 				var sidExists bool
 				for i, existing := range document.Statement {
 					if i >= sourceCount {
@@ -95,7 +110,7 @@ func convertTerraformDocument(modules block.Modules, block block.Block) (*iamgo.
 		}
 	}
 
-	return &document, nil
+    return &wrappedDocument{document: document, source: block }, nil
 }
 
 func parseStatement(statementBlock block.Block) iamgo.Statement {
@@ -134,7 +149,7 @@ func parseStatement(statementBlock block.Block) iamgo.Statement {
 			continue
 		}
 		valuesAttr := conditionBlock.GetAttribute("values")
-		if testAttr.IsNil() {
+		if valuesAttr.IsNil() || len(valuesAttr.ValueAsStrings()) == 0 {
 			continue
 		}
 		statement.Condition = append(statement.Condition, iamgo.Condition{
@@ -178,8 +193,8 @@ func readPrincipal(blocks block.Blocks) *iamgo.Principals {
 	return principals
 }
 
-func findAllPolicies(modules block.Modules, parentBlock block.Block, attr block.Attribute) []*iamgo.Document {
-	var documents []*iamgo.Document
+func findAllPolicies(modules block.Modules, parentBlock block.Block, attr block.Attribute) []wrappedDocument {
+	var documents []wrappedDocument
 	for _, ref := range attr.AllReferences() {
 		for _, block := range modules.GetBlocks() {
 			if block.Type() != "data" || block.TypeLabel() != "aws_iam_policy_document" {
@@ -190,7 +205,7 @@ func findAllPolicies(modules block.Modules, parentBlock block.Block, attr block.
 				if err != nil {
 					continue
 				}
-				documents = append(documents, document)
+				documents = append(documents, *document)
 				continue
 			}
 			kref := *ref
@@ -200,7 +215,7 @@ func findAllPolicies(modules block.Modules, parentBlock block.Block, attr block.
 				if err != nil {
 					continue
 				}
-				documents = append(documents, document)
+				documents = append(documents, *document)
 			}
 		}
 	}

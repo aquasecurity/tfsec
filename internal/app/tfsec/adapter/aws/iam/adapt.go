@@ -28,6 +28,7 @@ func adaptRoles(modules block.Modules) []iam.Role {
 		role.Name = roleBlock.GetAttribute("name").AsStringValueOrDefault("", roleBlock)
 		if inlineBlock := roleBlock.GetBlock("inline_policy"); inlineBlock.IsNotNil() {
 			var policy iam.Policy
+			policy.Metadata = inlineBlock.Metadata()
 			policy.Name = inlineBlock.GetAttribute("name").AsStringValueOrDefault("", inlineBlock)
 			policy.Document, err = parsePolicyFromAttr(inlineBlock.GetAttribute("policy"), inlineBlock, modules)
 			if err != nil {
@@ -43,6 +44,28 @@ func adaptRoles(modules block.Modules) []iam.Role {
 			if roleAttr := block.GetAttribute("role"); roleAttr.IsString() {
 				if roleAttr.Equals(role.Name.Value()) {
 					policy, err := parsePolicy(block, modules)
+					if err != nil {
+						continue
+					}
+					role.Policies = append(role.Policies, policy)
+					policyMap[block.ID()] = struct{}{}
+				}
+			}
+		}
+
+		for _, block := range modules.GetResourcesByType("aws_iam_role_policy_attachment") {
+			if !sameProvider(roleBlock, block) {
+				continue
+			}
+			if roleAttr := block.GetAttribute("role"); roleAttr.IsString() {
+				if roleAttr.Equals(role.Name.Value()) {
+					policyAttr := block.GetAttribute("policy_arn")
+
+					policyBlock, err := modules.GetReferencedBlock(policyAttr, block)
+					if err != nil {
+						continue
+					}
+					policy, err := parsePolicy(policyBlock, modules)
 					if err != nil {
 						continue
 					}
@@ -107,6 +130,28 @@ func adaptUsers(modules block.Modules) []iam.User {
 			}
 		}
 
+		for _, block := range modules.GetResourcesByType("aws_iam_user_policy_attachment") {
+			if !sameProvider(userBlock, block) {
+				continue
+			}
+			if userAttr := block.GetAttribute("user"); userAttr.IsString() {
+				if userAttr.Equals(user.Name.Value()) {
+					policyAttr := block.GetAttribute("policy_arn")
+
+					policyBlock, err := modules.GetReferencedBlock(policyAttr, block)
+					if err != nil {
+						continue
+					}
+					policy, err := parsePolicy(policyBlock, modules)
+					if err != nil {
+						continue
+					}
+					user.Policies = append(user.Policies, policy)
+					policyMap[block.ID()] = struct{}{}
+				}
+			}
+		}
+
 		userMap[userBlock.ID()] = user
 	}
 
@@ -156,6 +201,7 @@ func sameProvider(b1, b2 block.Block) bool {
 
 func parsePolicy(policyBlock block.Block, modules block.Modules) (iam.Policy, error) {
 	var policy iam.Policy
+	policy.Metadata = policyBlock.Metadata()
 	policy.Name = policyBlock.GetAttribute("name").AsStringValueOrDefault("", policyBlock)
 	var err error
 	policy.Document, err = parsePolicyFromAttr(policyBlock.GetAttribute("policy"), policyBlock, modules)
@@ -190,6 +236,28 @@ func adaptGroups(modules block.Modules) []iam.Group {
 			}
 		}
 
+		for _, block := range modules.GetResourcesByType("aws_iam_group_policy_attachment") {
+			if !sameProvider(groupBlock, block) {
+				continue
+			}
+			if groupAttr := block.GetAttribute("group"); groupAttr.IsString() {
+				if groupAttr.Equals(group.Name.Value()) {
+					policyAttr := block.GetAttribute("policy_arn")
+
+					policyBlock, err := modules.GetReferencedBlock(policyAttr, block)
+					if err != nil {
+						continue
+					}
+					policy, err := parsePolicy(policyBlock, modules)
+					if err != nil {
+						continue
+					}
+					group.Policies = append(group.Policies, policy)
+					policyMap[block.ID()] = struct{}{}
+				}
+			}
+		}
+
 		groupMap[groupBlock.ID()] = group
 	}
 
@@ -202,6 +270,32 @@ func adaptGroups(modules block.Modules) []iam.Group {
 			continue
 		}
 		groupBlock, err := modules.GetReferencedBlock(groupAttr, policyBlock)
+		if err != nil {
+			continue
+		}
+		policy, err := parsePolicy(policyBlock, modules)
+		if err != nil {
+			continue
+		}
+		group := groupMap[groupBlock.ID()]
+		group.Policies = append(group.Policies, policy)
+		groupMap[groupBlock.ID()] = group
+	}
+
+	for _, attachBlock := range modules.GetResourcesByType("aws_iam_group_policy_attachment") {
+		groupAttr := attachBlock.GetAttribute("group")
+		if groupAttr.IsNil() {
+			continue
+		}
+		groupBlock, err := modules.GetReferencedBlock(groupAttr, attachBlock)
+		if err != nil {
+			continue
+		}
+		policyAttr := attachBlock.GetAttribute("policy_arn")
+		if policyAttr.IsNil() {
+			continue
+		}
+		policyBlock, err := modules.GetReferencedBlock(policyAttr, attachBlock)
 		if err != nil {
 			continue
 		}
