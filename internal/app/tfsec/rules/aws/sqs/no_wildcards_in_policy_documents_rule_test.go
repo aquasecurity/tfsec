@@ -18,8 +18,12 @@ func Test_AWSSqsPolicyWildcardActions(t *testing.T) {
 		{
 			name: "check with actions defined as an array",
 			source: `
+ resource "aws_sqs_queue" "test" {
+    name = "good"
+ }
+
  resource "aws_sqs_queue_policy" "test" {
-   queue_url = aws_sqs_queue.q.id
+   queue_url = aws_sqs_queue.test.id
  
    policy = <<POLICY
  {
@@ -39,8 +43,12 @@ func Test_AWSSqsPolicyWildcardActions(t *testing.T) {
 		{
 			name: "check with prefixed wildcard action",
 			source: `
+ resource "aws_sqs_queue" "test" {
+    name = "bad"
+ }
+
  resource "aws_sqs_queue_policy" "test" {
-   queue_url = aws_sqs_queue.q.id
+   queue_url = aws_sqs_queue.test.id
  
    policy = <<POLICY
  {

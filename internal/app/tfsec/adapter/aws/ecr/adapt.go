@@ -29,8 +29,6 @@ func adaptRepository(resource block.Block, module block.Module) ecr.Repository {
 	encryptionTypeVal := types.StringDefault("AES256", *resource.GetMetadata())
 	kmsKeyVal := types.StringDefault("", *resource.GetMetadata())
 
-	var policies []types.StringValue
-
 	if resource.HasChild("image_scanning_configuration") {
 		imageScanningBlock := resource.GetBlock("image_scanning_configuration")
 		scanOnPushAttr := imageScanningBlock.GetAttribute("scan_on_push")
@@ -45,10 +43,11 @@ func adaptRepository(resource block.Block, module block.Module) ecr.Repository {
 	}
 
 	policyBlocks := module.GetReferencingResources(resource, "aws_ecr_repository_policy", "repository")
+	var policies []types.StringValue
 	for _, policyRes := range policyBlocks {
 		if policyRes.HasChild("policy") && policyRes.GetAttribute("policy").IsString() {
 			policyAttr := policyRes.GetAttribute("policy")
-			policies = append(policies, policyAttr.AsStringValueOrDefault("", resource))
+			policies = append(policies, policyAttr.AsStringValueOrDefault("", policyRes))
 		}
 	}
 
