@@ -46,6 +46,43 @@ EOF
 }
 `,
 			`
+
+resource "aws_iam_group" "support" {
+  name =  "support"
+}
+
+resource aws_iam_policy mfa {
+   
+    name = "something"
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": "ec2:*",
+      "Resource": "*",
+      "Condition": {
+          "Bool": {
+              "aws:MultiFactorAuthPresent": ["true"]
+          }
+      }
+    }
+  ]
+}
+EOF
+
+}
+
+resource aws_iam_policy_document attach {
+    group = aws_iam_group.support.name
+    policy_arn = aws_iam_policy.mfa
+}
+
+`,
+
+			`
 resource "aws_iam_group" "support" {
   name =  "support"
 }

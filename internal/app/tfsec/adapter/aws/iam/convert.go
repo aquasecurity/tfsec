@@ -8,9 +8,9 @@ import (
 	"github.com/liamg/iamgo"
 )
 
-func parsePolicyFromAttr(attr block.Attribute, owner block.Block, module block.Module) (types.StringValue, error) {
+func parsePolicyFromAttr(attr block.Attribute, owner block.Block, modules block.Modules) (types.StringValue, error) {
 
-	documents := findAllPolicies(module, owner, attr)
+	documents := findAllPolicies(modules, owner, attr)
 	if len(documents) > 0 {
 		output, err := json.Marshal(documents[0])
 		if err != nil {
@@ -23,7 +23,7 @@ func parsePolicyFromAttr(attr block.Attribute, owner block.Block, module block.M
 }
 
 // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
-func convertTerraformDocument(module block.Module, block block.Block) (*iamgo.Document, error) {
+func convertTerraformDocument(modules block.Modules, block block.Block) (*iamgo.Document, error) {
 
 	var document iamgo.Document
 
@@ -36,7 +36,7 @@ func convertTerraformDocument(module block.Module, block block.Block) (*iamgo.Do
 	}
 
 	if sourceDocumentsAttr := block.GetAttribute("source_policy_documents"); sourceDocumentsAttr.IsIterable() {
-		docs := findAllPolicies(module, block, sourceDocumentsAttr)
+		docs := findAllPolicies(modules, block, sourceDocumentsAttr)
 		for _, doc := range docs {
 			document.Statement = append(document.Statement, doc.Statement...)
 		}
@@ -74,7 +74,7 @@ func convertTerraformDocument(module block.Module, block block.Block) (*iamgo.Do
 	}
 
 	if overrideDocumentsAttr := block.GetAttribute("override_policy_documents"); overrideDocumentsAttr.IsIterable() {
-		docs := findAllPolicies(module, block, overrideDocumentsAttr)
+		docs := findAllPolicies(modules, block, overrideDocumentsAttr)
 		for _, doc := range docs {
 			for _, statement := range doc.Statement {
 				var sidExists bool
@@ -178,15 +178,15 @@ func readPrincipal(blocks block.Blocks) *iamgo.Principals {
 	return principals
 }
 
-func findAllPolicies(module block.Module, parentBlock block.Block, attr block.Attribute) []*iamgo.Document {
+func findAllPolicies(modules block.Modules, parentBlock block.Block, attr block.Attribute) []*iamgo.Document {
 	var documents []*iamgo.Document
 	for _, ref := range attr.AllReferences() {
-		for _, block := range module.GetBlocks() {
+		for _, block := range modules.GetBlocks() {
 			if block.Type() != "data" || block.TypeLabel() != "aws_iam_policy_document" {
 				continue
 			}
 			if ref.RefersTo(block.Reference()) {
-				document, err := convertTerraformDocument(module, block)
+				document, err := convertTerraformDocument(modules, block)
 				if err != nil {
 					continue
 				}
@@ -196,7 +196,7 @@ func findAllPolicies(module block.Module, parentBlock block.Block, attr block.At
 			kref := *ref
 			kref.SetKey(parentBlock.Reference().RawKey())
 			if kref.RefersTo(block.Reference()) {
-				document, err := convertTerraformDocument(module, block)
+				document, err := convertTerraformDocument(modules, block)
 				if err != nil {
 					continue
 				}
