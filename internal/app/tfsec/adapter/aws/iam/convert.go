@@ -67,37 +67,30 @@ func convertTerraformDocument(block block.Block) (types.StringValue, error) {
 		} else {
 			statement.Effect = iamgo.EffectAllow
 		}
-		//principals
-		for _, principalBlock := range statementBlock.GetBlocks("principals") {
 
-			typeAttr := principalBlock.GetAttribute("type")
-			if !typeAttr.IsString() {
+		statement.Principal = readPrincipal(statementBlock.GetBlocks("principals"))
+		statement.NotPrincipal = readPrincipal(statementBlock.GetBlocks("not_principals"))
+
+		for _, conditionBlock := range statementBlock.GetBlocks("condition") {
+			testAttr := conditionBlock.GetAttribute("test")
+			if !testAttr.IsString() {
 				continue
 			}
-			identifiersAttr := principalBlock.GetAttribute("identifiers")
-			if !identifiersAttr.IsIterable() {
+			variableAttr := conditionBlock.GetAttribute("variable")
+			if !variableAttr.IsString() {
 				continue
 			}
-
-			if statement.Principal == nil {
-				statement.Principal = &iamgo.Principals{}
+			valuesAttr := conditionBlock.GetAttribute("values")
+			if !testAttr.IsIterable() {
+				continue
 			}
-			switch typeAttr.Value().AsString() {
-			case "*":
-				statement.Principal.All = true
-			case "AWS":
-				statement.Principal.AWS = append(statement.Principal.AWS, identifiersAttr.ValueAsStrings()...)
-			case "Federated":
-				statement.Principal.Federated = append(statement.Principal.Federated, identifiersAttr.ValueAsStrings()...)
-			case "Service":
-				statement.Principal.Service = append(statement.Principal.Service, identifiersAttr.ValueAsStrings()...)
-			case "CanonicalUser":
-				statement.Principal.CanonicalUsers = append(statement.Principal.CanonicalUsers, identifiersAttr.ValueAsStrings()...)
-			}
-
+			statement.Condition = append(statement.Condition, iamgo.Condition{
+				Operator: testAttr.Value().AsString(),
+				Key:      variableAttr.Value().AsString(),
+				Value:    valuesAttr.ValueAsStrings(),
+			})
 		}
 
-		//condition
 		document.Statement = append(document.Statement, statement)
 	}
 
@@ -109,4 +102,36 @@ func convertTerraformDocument(block block.Block) (types.StringValue, error) {
 	fmt.Printf("\n\n%s\n\n", string(output))
 
 	return types.String(string(output), block.Metadata()), nil
+}
+
+func readPrincipal(blocks block.Blocks) *iamgo.Principals {
+	var principals *iamgo.Principals
+	for _, principalBlock := range blocks {
+
+		typeAttr := principalBlock.GetAttribute("type")
+		if !typeAttr.IsString() {
+			continue
+		}
+		identifiersAttr := principalBlock.GetAttribute("identifiers")
+		if !identifiersAttr.IsIterable() {
+			continue
+		}
+
+		if principals == nil {
+			principals = &iamgo.Principals{}
+		}
+		switch typeAttr.Value().AsString() {
+		case "*":
+			principals.All = true
+		case "AWS":
+			principals.AWS = append(principals.AWS, identifiersAttr.ValueAsStrings()...)
+		case "Federated":
+			principals.Federated = append(principals.Federated, identifiersAttr.ValueAsStrings()...)
+		case "Service":
+			principals.Service = append(principals.Service, identifiersAttr.ValueAsStrings()...)
+		case "CanonicalUser":
+			principals.CanonicalUsers = append(principals.CanonicalUsers, identifiersAttr.ValueAsStrings()...)
+		}
+	}
+	return principals
 }

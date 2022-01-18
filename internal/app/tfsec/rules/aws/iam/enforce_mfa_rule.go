@@ -1,9 +1,7 @@
 package iam
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/iam"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -69,23 +67,5 @@ module enforce_mfa {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"aws_iam_group"},
 		Base:           iam.CheckEnforceMFA,
-		CheckTerraform: func(resourceBlock block.Block, module block.Module) (results rules.Results) {
-			blocks, err := module.GetsModulesBySource("terraform-module/enforce-mfa/aws")
-			if err != nil || len(blocks) == 0 {
-				results.Add("Resource has no associated MFA enforcement block.", resourceBlock)
-			}
-
-			for _, moduleBlock := range blocks {
-				groupsAttr := moduleBlock.GetAttribute("groups")
-				if groupsAttr.IsNil() {
-					continue
-				}
-				if groupsAttr.ReferencesBlock(resourceBlock) {
-					return
-				}
-			}
-			results.Add("Resource has no associated MFA enforcement block.", resourceBlock)
-			return results
-		},
 	})
 }
