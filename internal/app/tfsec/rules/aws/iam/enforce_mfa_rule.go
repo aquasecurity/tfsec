@@ -11,53 +11,38 @@ func init() {
 		BadExample: []string{`
 data aws_caller_identity current {}
 
-resource aws_iam_group support {
-  name =  "support"
-}
-
 resource aws_iam_group developers {
   name =  "developers"
-}
-`, `
-data aws_caller_identity current {}
-
-resource aws_iam_group support {
-  name =  "support"
-}
-
-resource aws_iam_group developers {
-  name =  "developers"
-}
-
-module enforce_mfa {
-  source  = "terraform-module/enforce-mfa/aws"
-  version = "0.12.0"
-
-  policy_name                     = "managed-mfa-enforce"
-  account_id                      = data.aws_caller_identity.current.id
-  groups                          = [aws_iam_group.support.name]
-  manage_own_signing_certificates  = true
-  manage_own_ssh_public_keys      = true
-  manage_own_git_credentials      = true
 }
 `},
 		GoodExample: []string{`
-data aws_caller_identity current {}
 
-resource aws_iam_group support {
+resource "aws_iam_group" "support" {
   name =  "support"
 }
 
-module enforce_mfa {
-  source  = "terraform-module/enforce-mfa/aws"
-  version = "0.12.0"
+resource aws_iam_group_policy mfa {
+   
+    group = aws_iam_group.support.name
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": "ec2:*",
+      "Resource": "*",
+      "Condition": {
+          "Bool": {
+              "aws:MultiFactorAuthPresent": ["true"]
+          }
+      }
+    }
+  ]
+}
+EOF
 
-  policy_name                     = "managed-mfa-enforce"
-  account_id                      = data.aws_caller_identity.current.id
-  groups                          = [aws_iam_group.support.name]
-  manage_own_signing_certificates  = true
-  manage_own_ssh_public_keys      = true
-  manage_own_git_credentials      = true
 }
 `},
 		Links: []string{
