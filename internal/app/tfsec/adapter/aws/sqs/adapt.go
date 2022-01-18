@@ -1,7 +1,6 @@
 package sqs
 
 import (
-	"github.com/aquasecurity/defsec/provider/aws/iam"
 	"github.com/aquasecurity/defsec/provider/aws/sqs"
 
 	"github.com/aquasecurity/defsec/types"
@@ -17,10 +16,7 @@ func Adapt(modules []block.Module) sqs.SQS {
 func adaptQueues(modules []block.Module) []sqs.Queue {
 	var queues []sqs.Queue
 	for _, module := range modules {
-		for _, resource := range module.GetResourcesByType("aws_sqs_queue") {
-			queues = append(queues, adaptQueue(resource))
-		}
-		for _, resource := range module.GetResourcesByType("aws_sqs_queue_policy") {
+		for _, resource := range module.GetResourcesByType("aws_sqs_queue", "aws_sqs_queue_policy") {
 			queues = append(queues, adaptQueue(resource))
 		}
 	}
@@ -29,7 +25,7 @@ func adaptQueues(modules []block.Module) []sqs.Queue {
 
 func adaptQueue(resource block.Block) sqs.Queue {
 	kmsKeyIdVal := types.StringDefault("", *resource.GetMetadata())
-	var policy iam.PolicyDocument
+	var policies []types.StringValue
 
 	if resource.TypeLabel() == "aws_sqs_queue" {
 		kmsKeyIdAttr := resource.GetAttribute("kms_master_key_id")
@@ -38,11 +34,7 @@ func adaptQueue(resource block.Block) sqs.Queue {
 
 	if resource.HasChild("policy") && resource.GetAttribute("policy").IsString() {
 		policyAttr := resource.GetAttribute("policy")
-		rawJSON := []byte(policyAttr.Value().AsString())
-		parsedPolicy, err := iam.ParsePolicyDocument(rawJSON, *policyAttr.GetMetadata())
-		if parsedPolicy != nil && err == nil {
-			policy = *parsedPolicy
-		}
+		policies = append(policies, policyAttr.AsStringValueOrDefault("", resource))
 	}
 
 	return sqs.Queue{
@@ -50,6 +42,6 @@ func adaptQueue(resource block.Block) sqs.Queue {
 		Encryption: sqs.Encryption{
 			KMSKeyID: kmsKeyIdVal,
 		},
-		Policy: policy,
+		Policies: policies,
 	}
 }
