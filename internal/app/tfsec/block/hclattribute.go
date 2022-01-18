@@ -169,7 +169,7 @@ func (attr *HCLAttribute) IsIterable() bool {
 	if attr == nil {
 		return false
 	}
-	return attr.Value().Type().IsCollectionType() || attr.Value().Type().IsObjectType() || attr.Value().Type().IsMapType() || attr.Value().Type().IsListType() || attr.Value().Type().IsSetType() || attr.Value().Type().IsTupleType()
+	return attr.Value().Type().IsListType() || attr.Value().Type().IsCollectionType() || attr.Value().Type().IsObjectType() || attr.Value().Type().IsMapType() || attr.Value().Type().IsListType() || attr.Value().Type().IsSetType() || attr.Value().Type().IsTupleType()
 }
 
 func (attr *HCLAttribute) Each(f func(key cty.Value, val cty.Value)) {
