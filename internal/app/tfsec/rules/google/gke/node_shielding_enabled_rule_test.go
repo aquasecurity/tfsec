@@ -19,23 +19,23 @@ func Test_GkeShieldedNodesDisabled(t *testing.T) {
 			name: "check google_container_cluster with enable_shielded_nodes set to false",
 			source: `
  resource "google_container_cluster" "gke" {
- 	enable_shielded_nodes = "false"
+ 	enable_shielded_nodes = false
  
  }`,
 			mustIncludeResultCode: expectedCode,
 		},
 		{
-			name: "check google_container_cluster with enable_shielded_nodes not set",
+			name: "check google_container_cluster with enable_shielded_nodes not set (defaults to true)",
 			source: `
  resource "google_container_cluster" "gke" {
  }`,
-			mustIncludeResultCode: expectedCode,
+			mustExcludeResultCode: expectedCode,
 		},
 		{
 			name: "check google_container_cluster with enable_shielded_nodes set to true",
 			source: `
  resource "google_container_cluster" "gke" {
- 	enable_shielded_nodes = "true"
+ 	enable_shielded_nodes = true
  
  }`,
 			mustExcludeResultCode: expectedCode,

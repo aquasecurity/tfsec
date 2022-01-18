@@ -57,9 +57,13 @@ func Test_GCPGKENodeServiceAccount(t *testing.T) {
 		{
 			name: "does not define service account in container node pool",
 			source: `
+ resource "google_container_cluster" "my-cluster" {
+ }
+
  resource "google_container_node_pool" "my-np-cluster" {
  	node_config {
  	}
+	 cluster = google_container_cluster.my-cluster.id
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -67,7 +71,11 @@ func Test_GCPGKENodeServiceAccount(t *testing.T) {
 		{
 			name: "does not define node_config in container node pool",
 			source: `
+ resource "google_container_cluster" "my-cluster" {
+ }
+
  resource "google_container_node_pool" "my-np-cluster" {
+	cluster = google_container_cluster.my-cluster.id
  }
  `,
 			mustIncludeResultCode: expectedCode,
@@ -75,10 +83,14 @@ func Test_GCPGKENodeServiceAccount(t *testing.T) {
 		{
 			name: "defines service account in container node pool",
 			source: `
+ resource "google_container_cluster" "my-cluster" {
+ }
+
  resource "google_container_node_pool" "my-np-cluster" {
  	node_config {
  		service_account = "anything"
  	}
+	cluster = google_container_cluster.my-cluster.id
  }
  `,
 			mustExcludeResultCode: expectedCode,
@@ -86,10 +98,14 @@ func Test_GCPGKENodeServiceAccount(t *testing.T) {
 		{
 			name: "defines service account in container node pool using reference",
 			source: `
+ resource "google_container_cluster" "my-cluster" {
+ }
+
  resource "google_container_node_pool" "my-np-cluster" {
  	node_config {
  		service_account = google_service_account.service_account.email
  	}
+	cluster = google_container_cluster.my-cluster.id
  }
  `,
 			mustExcludeResultCode: expectedCode,

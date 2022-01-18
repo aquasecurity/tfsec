@@ -1,13 +1,9 @@
 package gke
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/gke"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/cidr"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/zclconf/go-cty/cty"
 )
 
 func init() {
@@ -104,38 +100,5 @@ func init() {
 			"google_container_cluster",
 		},
 		Base: gke.CheckNoPublicControlPlane,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			config := resourceBlock.GetAttribute("master_authorized_networks_config")
-			if config.IsNil() {
-				return
-			}
-			config.Each(func(key cty.Value, val cty.Value) {
-				if !val.Type().IsObjectType() {
-					return
-				}
-				m := val.AsValueMap()
-				blocks, ok := m["cidr_blocks"]
-				if !ok {
-					return
-				}
-				for _, block := range blocks.AsValueSlice() {
-					if !block.Type().IsObjectType() {
-						continue
-					}
-					blockObj := block.AsValueMap()
-					cidrBlock, ok := blockObj["cidr_block"]
-					if !ok {
-						continue
-					}
-					if cidrBlock.Type() != cty.String {
-						continue
-					}
-					if cidr.IsOpen(cidrBlock.AsString()) {
-						results.Add("Resource defines a cluster with an internet exposed control plane.", resourceBlock)
-					}
-				}
-			})
-			return results
-		},
 	})
 }

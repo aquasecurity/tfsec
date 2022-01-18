@@ -1,9 +1,7 @@
 package gke
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/gke"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -90,13 +88,5 @@ func init() {
 			"google_container_node_pool",
 		},
 		Base: gke.CheckNodePoolUsesCos,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if imageTypeAttr := resourceBlock.GetBlock("node_config").GetAttribute("image_type"); imageTypeAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for node_config.image_type", resourceBlock)
-			} else if imageTypeAttr.NotEqual("COS") {
-				results.Add("Resource does not have node_config.image_type set to COS", imageTypeAttr)
-			}
-			return results
-		},
 	})
 }

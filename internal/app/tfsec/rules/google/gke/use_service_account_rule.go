@@ -1,11 +1,7 @@
 package gke
 
 import (
-	"strings"
-
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/gke"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -32,28 +28,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"google_container_cluster", "google_container_node_pool"},
 		Base:           gke.CheckUseServiceAccount,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if strings.HasPrefix(resourceBlock.Label(), "google_container_cluster") {
-				attr := resourceBlock.GetAttribute("remove_default_node_pool")
-				if attr.IsNotNil() && attr.IsTrue() {
-					return
-				}
-			}
-
-			if resourceBlock.MissingChild("node_config") {
-				results.Add("Resource does not define the node config and does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock)
-				return
-			}
-
-			nodeConfigBlock := resourceBlock.GetBlock("node_config")
-			serviceAccount := nodeConfigBlock.GetAttribute("service_account")
-
-			if serviceAccount.IsNil() || serviceAccount.IsEmpty() {
-				results.Add("Resource does not override the default service account. It is recommended to use a minimally privileged service account to run your GKE cluster.", resourceBlock)
-			}
-
-			return results
-		},
 	})
 }

@@ -1,9 +1,7 @@
 package gke
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/gke"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -96,11 +94,5 @@ func init() {
 			"google_container_cluster",
 		},
 		Base: gke.CheckEnableMasterNetworks,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if resourceBlock.MissingChild("master_authorized_networks_config") {
-				results.Add("Resource does not have master authorized networks enabled.", resourceBlock)
-			}
-			return results
-		},
 	})
 }

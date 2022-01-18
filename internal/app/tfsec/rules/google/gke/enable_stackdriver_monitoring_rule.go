@@ -1,9 +1,7 @@
 package gke
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/gke"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -92,13 +90,5 @@ func init() {
 			"google_container_cluster",
 		},
 		Base: gke.CheckEnableStackdriverMonitoring,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if monitoringServiceAttr := resourceBlock.GetAttribute("monitoring_service"); monitoringServiceAttr.IsNil() {
-				results.Add("Resource does not have monitoring_service set to monitoring.googleapis.com/kubernetes", resourceBlock)
-			} else if monitoringServiceAttr.NotEqual("monitoring.googleapis.com/kubernetes") {
-				results.Add("Resource does not have monitoring_service set to monitoring.googleapis.com/kubernetes", monitoringServiceAttr)
-			}
-			return results
-		},
 	})
 }

@@ -1,9 +1,7 @@
 package gke
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/gke"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -96,13 +94,5 @@ func init() {
 			"google_container_cluster",
 		},
 		Base: gke.CheckEnablePrivateCluster,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if enablePrivateNodesAttr := resourceBlock.GetBlock("private_cluster_config").GetAttribute("enable_private_nodes"); enablePrivateNodesAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for private_cluster_config.enable_private_nodes", resourceBlock)
-			} else if enablePrivateNodesAttr.IsFalse() {
-				results.Add("Resource does not have private_cluster_config.enable_private_nodes set to true", enablePrivateNodesAttr)
-			}
-			return results
-		},
 	})
 }
