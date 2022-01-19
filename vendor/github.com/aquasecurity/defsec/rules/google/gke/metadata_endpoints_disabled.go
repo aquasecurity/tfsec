@@ -26,20 +26,20 @@ When setting the <code>metadata</code> block, the default value for <code>disabl
 		Links: []string{
 			"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#protect_node_metadata_default_for_112",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformMetadataEndpointsDisabledGoodExamples,
-            BadExamples:         terraformMetadataEndpointsDisabledBadExamples,
-            Links:               terraformMetadataEndpointsDisabledLinks,
-            RemediationMarkdown: terraformMetadataEndpointsDisabledRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformMetadataEndpointsDisabledGoodExamples,
+			BadExamples:         terraformMetadataEndpointsDisabledBadExamples,
+			Links:               terraformMetadataEndpointsDisabledLinks,
+			RemediationMarkdown: terraformMetadataEndpointsDisabledRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			if cluster.Metadata.EnableLegacyEndpoints.IsTrue() {
+			if cluster.ClusterMetadata.EnableLegacyEndpoints.IsTrue() {
 				results.Add(
 					"Cluster has legacy metadata endpoints enabled.",
-					cluster.Metadata.EnableLegacyEndpoints,
+					cluster.ClusterMetadata.EnableLegacyEndpoints,
 				)
 			}
 		}

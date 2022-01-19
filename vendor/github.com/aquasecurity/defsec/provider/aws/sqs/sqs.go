@@ -5,6 +5,7 @@ import (
 )
 
 type SQS struct {
+	types.Metadata
 	Queues []Queue
 }
 
@@ -15,6 +16,7 @@ type Queue struct {
 }
 
 type Encryption struct {
+	types.Metadata
 	KMSKeyID types.StringValue
 }
 
@@ -25,3 +27,21 @@ func (v *Queue) GetMetadata() *types.Metadata {
 func (v *Queue) GetRawValue() interface{} {
 	return nil
 }
+
+
+func (s *SQS) GetMetadata() *types.Metadata {
+	return &s.Metadata
+}
+
+func (s *SQS) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (e *Encryption) GetMetadata() *types.Metadata {
+	return &e.Metadata
+}
+
+func (e *Encryption) GetRawValue() interface{} {
+	return nil
+}    

@@ -3,6 +3,7 @@ package apigateway
 import "github.com/aquasecurity/defsec/types"
 
 type APIGateway struct {
+	types.Metadata
 	APIs        []API
 	DomainNames []DomainName
 }
@@ -38,6 +39,7 @@ type AccessLogging struct {
 }
 
 type RESTMethodSettings struct {
+	types.Metadata
 	CacheDataEncrypted types.BoolValue
 }
 
@@ -93,3 +95,30 @@ func (d *DomainName) GetMetadata() *types.Metadata {
 func (d *DomainName) GetRawValue() interface{} {
 	return nil
 }
+
+
+func (a *APIGateway) GetMetadata() *types.Metadata {
+	return &a.Metadata
+}
+
+func (a *APIGateway) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (a *AccessLogging) GetMetadata() *types.Metadata {
+	return &a.Metadata
+}
+
+func (a *AccessLogging) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (r *RESTMethodSettings) GetMetadata() *types.Metadata {
+	return &r.Metadata
+}
+
+func (r *RESTMethodSettings) GetRawValue() interface{} {
+	return nil
+}    

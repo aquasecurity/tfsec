@@ -7,6 +7,7 @@ import (
 )
 
 type SQL struct {
+	types.Metadata
 	Instances []DatabaseInstance
 }
 
@@ -32,16 +33,19 @@ const (
 )
 
 type DatabaseInstance struct {
+	types.Metadata
 	DatabaseVersion types.StringValue
 	Settings        Settings
 }
 
 type Settings struct {
+	types.Metadata
 	Flags           Flags
 	Backups         Backups
 	IPConfiguration IPConfiguration
 }
 type Flags struct {
+	types.Metadata
 	LogTempFileSize                 types.IntValue
 	LocalInFile                     types.BoolValue
 	ContainedDatabaseAuthentication types.BoolValue
@@ -55,10 +59,12 @@ type Flags struct {
 }
 
 type Backups struct {
+	types.Metadata
 	Enabled types.BoolValue
 }
 
 type IPConfiguration struct {
+	types.Metadata
 	RequireTLS         types.BoolValue
 	EnableIPv4         types.BoolValue
 	AuthorizedNetworks []struct {
@@ -70,3 +76,57 @@ type IPConfiguration struct {
 func (i *DatabaseInstance) DatabaseFamily() string {
 	return strings.Split(i.DatabaseVersion.Value(), "_")[0]
 }
+
+
+func (s *SQL) GetMetadata() *types.Metadata {
+	return &s.Metadata
+}
+
+func (s *SQL) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (d *DatabaseInstance) GetMetadata() *types.Metadata {
+	return &d.Metadata
+}
+
+func (d *DatabaseInstance) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (s *Settings) GetMetadata() *types.Metadata {
+	return &s.Metadata
+}
+
+func (s *Settings) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (f *Flags) GetMetadata() *types.Metadata {
+	return &f.Metadata
+}
+
+func (f *Flags) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (b *Backups) GetMetadata() *types.Metadata {
+	return &b.Metadata
+}
+
+func (b *Backups) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (i *IPConfiguration) GetMetadata() *types.Metadata {
+	return &i.Metadata
+}
+
+func (i *IPConfiguration) GetRawValue() interface{} {
+	return nil
+}    

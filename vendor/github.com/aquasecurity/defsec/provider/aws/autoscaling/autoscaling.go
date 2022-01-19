@@ -3,6 +3,7 @@ package autoscaling
 import "github.com/aquasecurity/defsec/types"
 
 type Autoscaling struct {
+	types.Metadata
 	LaunchConfigurations []LaunchConfiguration
 }
 
@@ -35,3 +36,12 @@ func (d *LaunchConfiguration) GetMetadata() *types.Metadata {
 func (d *LaunchConfiguration) GetRawValue() interface{} {
 	return nil
 }
+
+
+func (a *Autoscaling) GetMetadata() *types.Metadata {
+	return &a.Metadata
+}
+
+func (a *Autoscaling) GetRawValue() interface{} {
+	return nil
+}    

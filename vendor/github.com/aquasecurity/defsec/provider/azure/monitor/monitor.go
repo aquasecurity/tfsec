@@ -3,6 +3,7 @@ package monitor
 import "github.com/aquasecurity/defsec/types"
 
 type Monitor struct {
+	types.Metadata
 	LogProfiles []LogProfile
 }
 
@@ -13,15 +14,32 @@ type LogProfile struct {
 	Locations       []types.StringValue
 }
 
-func (p LogProfile) GetMetadata() *types.Metadata {
-	return &p.Metadata
+type RetentionPolicy struct {
+	types.Metadata
+	Enabled types.BoolValue
+	Days    types.IntValue
 }
 
-func (p LogProfile) GetRawValue() interface{} {
+func (m *Monitor) GetMetadata() *types.Metadata {
+	return &m.Metadata
+}
+
+func (m *Monitor) GetRawValue() interface{} {
 	return nil
 }
 
-type RetentionPolicy struct {
-	Enabled types.BoolValue
-	Days    types.IntValue
+func (l *LogProfile) GetMetadata() *types.Metadata {
+	return &l.Metadata
+}
+
+func (l *LogProfile) GetRawValue() interface{} {
+	return nil
+}
+
+func (r *RetentionPolicy) GetMetadata() *types.Metadata {
+	return &r.Metadata
+}
+
+func (r *RetentionPolicy) GetRawValue() interface{} {
+	return nil
 }

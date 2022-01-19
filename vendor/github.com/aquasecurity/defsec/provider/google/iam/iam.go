@@ -7,6 +7,7 @@ type IAM struct {
 }
 
 type Organization struct {
+	types.Metadata
 	Folders  []Folder
 	Projects []Project
 	Members  []Member
@@ -14,6 +15,7 @@ type Organization struct {
 }
 
 type Folder struct {
+	types.Metadata
 	Folders  []Folder
 	Projects []Project
 	Members  []Member
@@ -28,12 +30,14 @@ type Project struct {
 }
 
 type Binding struct {
+	types.Metadata
 	Members                       []types.StringValue
 	Role                          types.StringValue
 	IncludesDefaultServiceAccount types.BoolValue
 }
 
 type Member struct {
+	types.Metadata
 	Member                types.StringValue
 	Role                  types.StringValue
 	DefaultServiceAccount types.BoolValue
@@ -71,4 +75,20 @@ func (f *Folder) AllFolders() []Folder {
 		folders = append(folders, folder.AllFolders()...)
 	}
 	return folders
+}
+
+func (m *Member) GetMetadata() *types.Metadata {
+	return &m.Metadata
+}
+
+func (m *Member) GetRawValue() interface{} {
+	return nil
+}
+
+func (b *Binding) GetMetadata() *types.Metadata {
+	return &b.Metadata
+}
+
+func (b *Binding) GetRawValue() interface{} {
+	return nil
 }

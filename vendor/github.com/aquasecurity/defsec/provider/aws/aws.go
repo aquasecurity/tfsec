@@ -36,9 +36,11 @@ import (
 	"github.com/aquasecurity/defsec/provider/aws/ssm"
 	"github.com/aquasecurity/defsec/provider/aws/vpc"
 	"github.com/aquasecurity/defsec/provider/aws/workspaces"
+	"github.com/aquasecurity/defsec/types"
 )
 
 type AWS struct {
+	types.Metadata
 	APIGateway    apigateway.APIGateway
 	Athena        athena.Athena
 	Autoscaling   autoscaling.Autoscaling

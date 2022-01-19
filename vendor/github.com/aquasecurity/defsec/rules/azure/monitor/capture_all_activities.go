@@ -24,13 +24,13 @@ var CheckCaptureAllActivities = rules.Register(
 			"https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log",
 			"https://docs.microsoft.com/en-us/cli/azure/monitor/log-profiles?view=azure-cli-latest#az_monitor_log_profiles_create-required-parameters",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformCaptureAllActivitiesGoodExamples,
-            BadExamples:         terraformCaptureAllActivitiesBadExamples,
-            Links:               terraformCaptureAllActivitiesLinks,
-            RemediationMarkdown: terraformCaptureAllActivitiesRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformCaptureAllActivitiesGoodExamples,
+			BadExamples:         terraformCaptureAllActivitiesBadExamples,
+			Links:               terraformCaptureAllActivitiesLinks,
+			RemediationMarkdown: terraformCaptureAllActivitiesRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		required := []string{
@@ -41,7 +41,7 @@ var CheckCaptureAllActivities = rules.Register(
 				if !hasCategory(profile, cat) {
 					results.Add(
 						fmt.Sprintf("Log profile does not require the '%s' category.", cat),
-						profile,
+						&profile,
 					)
 				}
 			}

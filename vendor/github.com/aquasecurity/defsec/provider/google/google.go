@@ -9,9 +9,11 @@ import (
 	"github.com/aquasecurity/defsec/provider/google/kms"
 	"github.com/aquasecurity/defsec/provider/google/sql"
 	"github.com/aquasecurity/defsec/provider/google/storage"
+	"github.com/aquasecurity/defsec/types"
 )
 
 type Google struct {
+	types.Metadata
 	BigQuery bigquery.BigQuery
 	Compute  compute.Compute
 	DNS      dns.DNS

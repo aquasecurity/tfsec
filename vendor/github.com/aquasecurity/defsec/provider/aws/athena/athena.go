@@ -3,6 +3,7 @@ package athena
 import "github.com/aquasecurity/defsec/types"
 
 type Athena struct {
+	types.Metadata
 	Databases  []Database
 	Workgroups []Workgroup
 }
@@ -28,6 +29,7 @@ const (
 )
 
 type EncryptionConfiguration struct {
+	types.Metadata
 	Type types.StringValue
 }
 
@@ -46,3 +48,21 @@ func (d *Database) GetMetadata() *types.Metadata {
 func (d *Database) GetRawValue() interface{} {
 	return nil
 }
+
+
+func (a *Athena) GetMetadata() *types.Metadata {
+	return &a.Metadata
+}
+
+func (a *Athena) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (e *EncryptionConfiguration) GetMetadata() *types.Metadata {
+	return &e.Metadata
+}
+
+func (e *EncryptionConfiguration) GetRawValue() interface{} {
+	return nil
+}    

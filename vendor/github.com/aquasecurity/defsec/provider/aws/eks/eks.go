@@ -3,6 +3,7 @@ package eks
 import "github.com/aquasecurity/defsec/types"
 
 type EKS struct {
+	types.Metadata
 	Clusters []Cluster
 }
 
@@ -15,6 +16,7 @@ type Cluster struct {
 }
 
 type Logging struct {
+	types.Metadata
 	API               types.BoolValue
 	Audit             types.BoolValue
 	Authenticator     types.BoolValue
@@ -23,6 +25,7 @@ type Logging struct {
 }
 
 type Encryption struct {
+	types.Metadata
 	Secrets  types.BoolValue
 	KMSKeyID types.StringValue
 }
@@ -34,3 +37,30 @@ func (c *Cluster) GetMetadata() *types.Metadata {
 func (c *Cluster) GetRawValue() interface{} {
 	return nil
 }
+
+
+func (e *EKS) GetMetadata() *types.Metadata {
+	return &e.Metadata
+}
+
+func (e *EKS) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (l *Logging) GetMetadata() *types.Metadata {
+	return &l.Metadata
+}
+
+func (l *Logging) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (e *Encryption) GetMetadata() *types.Metadata {
+	return &e.Metadata
+}
+
+func (e *Encryption) GetRawValue() interface{} {
+	return nil
+}    

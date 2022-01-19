@@ -8,3 +8,12 @@ type SSLPolicy struct {
 	Profile           types.StringValue
 	MinimumTLSVersion types.StringValue
 }
+
+
+func (s *SSLPolicy) GetMetadata() *types.Metadata {
+	return &s.Metadata
+}
+
+func (s *SSLPolicy) GetRawValue() interface{} {
+	return nil
+}    

@@ -22,13 +22,13 @@ To help this type of service work as intended, allow the set of trusted Microsof
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/storage/common/storage-network-security#trusted-microsoft-services",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformAllowMicrosoftServiceBypassGoodExamples,
-            BadExamples:         terraformAllowMicrosoftServiceBypassBadExamples,
-            Links:               terraformAllowMicrosoftServiceBypassLinks,
-            RemediationMarkdown: terraformAllowMicrosoftServiceBypassRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformAllowMicrosoftServiceBypassGoodExamples,
+			BadExamples:         terraformAllowMicrosoftServiceBypassBadExamples,
+			Links:               terraformAllowMicrosoftServiceBypassLinks,
+			RemediationMarkdown: terraformAllowMicrosoftServiceBypassRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, account := range s.Azure.Storage.Accounts {
@@ -42,7 +42,7 @@ To help this type of service work as intended, allow the set of trusted Microsof
 				if !found {
 					results.Add(
 						"Network rules do not allow bypass for Microsoft Services.",
-						rule,
+						&rule,
 					)
 				}
 

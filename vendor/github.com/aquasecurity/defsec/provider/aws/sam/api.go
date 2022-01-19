@@ -66,3 +66,12 @@ func (a *RESTMethodSettings) GetMetadata() *types.Metadata {
 func (a *RESTMethodSettings) GetRawValue() interface{} {
 	return nil
 }
+
+
+func (a *ApiAuth) GetMetadata() *types.Metadata {
+	return &a.Metadata
+}
+
+func (a *ApiAuth) GetRawValue() interface{} {
+	return nil
+}    
