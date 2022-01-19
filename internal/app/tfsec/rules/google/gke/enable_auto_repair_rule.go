@@ -1,9 +1,7 @@
 package gke
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/google/gke"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -94,13 +92,5 @@ func init() {
 			"google_container_node_pool",
 		},
 		Base: gke.CheckEnableAutoRepair,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-			if autoRepairAttr := resourceBlock.GetBlock("management").GetAttribute("auto_repair"); autoRepairAttr.IsNil() { // alert on use of default value
-				results.Add("Resource uses default value for management.auto_repair", resourceBlock)
-			} else if autoRepairAttr.IsFalse() {
-				results.Add("Resource does not have management.auto_repair set to true", autoRepairAttr)
-			}
-			return results
-		},
 	})
 }

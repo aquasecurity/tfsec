@@ -20,7 +20,7 @@ func Test_GkeEnforcePSPTest(t *testing.T) {
 			source: `
  resource "google_container_cluster" "gke" {
  	pod_security_policy_config {
-     enabled = "false"
+     enabled = false
    }
  }`,
 			mustIncludeResultCode: expectedCode,
@@ -38,7 +38,7 @@ func Test_GkeEnforcePSPTest(t *testing.T) {
 			source: `
  resource "google_container_cluster" "gke" {
  	pod_security_policy_config {
-     enabled = "true"
+     enabled = true
    }
  }`,
 			mustExcludeResultCode: expectedCode,
