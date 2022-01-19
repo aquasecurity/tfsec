@@ -24,16 +24,19 @@ Microsoft recommends that you always require secure transfer for all of your sto
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnforceHttpsGoodExamples,
-            BadExamples:         terraformEnforceHttpsBadExamples,
-            Links:               terraformEnforceHttpsLinks,
-            RemediationMarkdown: terraformEnforceHttpsRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnforceHttpsGoodExamples,
+			BadExamples:         terraformEnforceHttpsBadExamples,
+			Links:               terraformEnforceHttpsLinks,
+			RemediationMarkdown: terraformEnforceHttpsRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, account := range s.Azure.Storage.Accounts {
+			if !account.IsManaged() {
+				continue
+			}
 			if account.EnforceHTTPS.IsFalse() {
 				results.Add(
 					"Account does not enforce HTTPS.",

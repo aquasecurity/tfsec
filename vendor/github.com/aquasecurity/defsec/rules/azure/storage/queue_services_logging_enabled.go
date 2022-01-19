@@ -24,16 +24,19 @@ Requests are logged on a best-effort basis.`,
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/storage/common/storage-analytics-logging?tabs=dotnet",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformQueueServicesLoggingEnabledGoodExamples,
-            BadExamples:         terraformQueueServicesLoggingEnabledBadExamples,
-            Links:               terraformQueueServicesLoggingEnabledLinks,
-            RemediationMarkdown: terraformQueueServicesLoggingEnabledRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformQueueServicesLoggingEnabledGoodExamples,
+			BadExamples:         terraformQueueServicesLoggingEnabledBadExamples,
+			Links:               terraformQueueServicesLoggingEnabledLinks,
+			RemediationMarkdown: terraformQueueServicesLoggingEnabledRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, account := range s.Azure.Storage.Accounts {
+			if !account.IsManaged() {
+				continue
+			}
 			if account.QueueProperties.EnableLogging.IsFalse() {
 				results.Add(
 					"Queue services storage account does not have logging enabled.",
