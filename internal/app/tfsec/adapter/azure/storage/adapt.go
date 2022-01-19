@@ -28,16 +28,6 @@ func adaptAccounts(modules []block.Module) []storage.Account {
 			}
 			accounts = append(accounts, account)
 		}
-
-		if len(module.GetResourcesByType("azurerm_storage_account")) == 0 {
-			for _, resource := range module.GetResourcesByType("azurerm_storage_account_network_rules") {
-				accounts = append(accounts, storage.Account{
-					NetworkRules: []storage.NetworkRule{
-						adaptNetworkRule(resource),
-					},
-				})
-			}
-		}
 	}
 
 	return accounts
