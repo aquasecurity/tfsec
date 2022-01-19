@@ -2,10 +2,23 @@ package custom
 
 import (
 	"github.com/aquasecurity/defsec/severity"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
 type MatchType string
 type CheckAction string
+
+type customCheckContext struct {
+	module    block.Module
+	variables map[string]string
+}
+
+func NewCustomCheckContext(module block.Module) *customCheckContext {
+	return &customCheckContext{
+		module:    module,
+		variables: make(map[string]string),
+	}
+}
 
 var ValidCheckActions = []CheckAction{
 	InModule,
