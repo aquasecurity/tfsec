@@ -8,22 +8,24 @@ import (
 
 func Adapt(modules []block.Module) iam.IAM {
 	return (&adapter{
-		orgs: make(map[string]iam.Organization),
-	}).Adapt(modules)
+		orgs:    make(map[string]iam.Organization),
+		modules: modules,
+	}).Adapt()
 }
 
 type adapter struct {
+	modules  block.Modules
 	orgs     map[string]iam.Organization
 	folders  []parentedFolder
 	projects []parentedProject
 }
 
-func (a *adapter) Adapt(modules block.Modules) iam.IAM {
-	a.adaptOrganizationIAM(modules)
-	a.adaptFolders(modules)
-	a.adaptFolderIAM(modules)
-	a.adaptProjects(modules)
-	a.adaptProjectIAM(modules)
+func (a *adapter) Adapt() iam.IAM {
+	a.adaptOrganizationIAM()
+	a.adaptFolders()
+	a.adaptFolderIAM()
+	a.adaptProjects()
+	a.adaptProjectIAM()
 	return a.merge()
 }
 

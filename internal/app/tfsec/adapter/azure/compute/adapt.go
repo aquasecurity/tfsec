@@ -65,10 +65,12 @@ func adaptLinuxVM(resource block.Block) compute.LinuxVirtualMachine {
 	workingBlock := resource
 
 	if resource.TypeLabel() == "azurerm_virtual_machine" {
-		workingBlock = resource.GetBlock("os_profile")
+		if b := resource.GetBlock("os_profile"); b.IsNotNil() {
+			workingBlock = b
+		}
 	}
 	customDataAttr := workingBlock.GetAttribute("custom_data")
-	var customDataVal types.StringValue
+	customDataVal := types.StringDefault("", workingBlock.Metadata())
 	if customDataAttr.IsResolvable() && customDataAttr.IsString() {
 		encoded, err := base64.StdEncoding.DecodeString(customDataAttr.Value().AsString())
 		if err != nil {
@@ -97,11 +99,13 @@ func adaptWindowsVM(resource block.Block) compute.WindowsVirtualMachine {
 	workingBlock := resource
 
 	if resource.TypeLabel() == "azurerm_virtual_machine" {
-		workingBlock = resource.GetBlock("os_profile")
+		if b := resource.GetBlock("os_profile"); b.IsNotNil() {
+			workingBlock = b
+		}
 	}
 
 	customDataAttr := workingBlock.GetAttribute("custom_data")
-	var customDataVal types.StringValue
+	customDataVal := types.StringDefault("", workingBlock.Metadata())
 
 	if customDataAttr.IsResolvable() && customDataAttr.IsString() {
 		encoded, err := base64.StdEncoding.DecodeString(customDataAttr.Value().AsString())

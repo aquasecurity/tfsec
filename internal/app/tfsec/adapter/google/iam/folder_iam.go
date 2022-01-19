@@ -2,21 +2,20 @@ package iam
 
 import (
 	"github.com/aquasecurity/defsec/provider/google/iam"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
 // see https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_folder_iam
 
-func (a *adapter) adaptFolderIAM(modules block.Modules) {
-	a.adaptFolderMembers(modules)
-	a.adaptFolderBindings(modules)
+func (a *adapter) adaptFolderIAM() {
+	a.adaptFolderMembers()
+	a.adaptFolderBindings()
 }
 
-func (a *adapter) adaptFolderMembers(modules block.Modules) {
-	for _, iamBlock := range modules.GetResourcesByType("google_folder_iam_member") {
+func (a *adapter) adaptFolderMembers() {
+	for _, iamBlock := range a.modules.GetResourcesByType("google_folder_iam_member") {
 		member := a.adaptMember(iamBlock)
 		folderAttr := iamBlock.GetAttribute("folder")
-		if refBlock, err := modules.GetReferencedBlock(folderAttr, iamBlock); err == nil {
+		if refBlock, err := a.modules.GetReferencedBlock(folderAttr, iamBlock); err == nil {
 			if refBlock.TypeLabel() == "google_folder" {
 				var foundFolder bool
 				for i, folder := range a.folders {
@@ -43,11 +42,11 @@ func (a *adapter) adaptFolderMembers(modules block.Modules) {
 	}
 }
 
-func (a *adapter) adaptFolderBindings(modules block.Modules) {
-	for _, iamBlock := range modules.GetResourcesByType("google_folder_iam_binding") {
+func (a *adapter) adaptFolderBindings() {
+	for _, iamBlock := range a.modules.GetResourcesByType("google_folder_iam_binding") {
 		binding := a.adaptBinding(iamBlock)
 		folderAttr := iamBlock.GetAttribute("folder")
-		if refBlock, err := modules.GetReferencedBlock(folderAttr, iamBlock); err == nil {
+		if refBlock, err := a.modules.GetReferencedBlock(folderAttr, iamBlock); err == nil {
 			if refBlock.TypeLabel() == "google_folder" {
 				var foundFolder bool
 				for i, folder := range a.folders {

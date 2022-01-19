@@ -1,6 +1,8 @@
 package iam
 
 import (
+	"strings"
+
 	"github.com/aquasecurity/defsec/provider/google/iam"
 	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
@@ -8,17 +10,25 @@ import (
 
 // see https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam
 
-func (a *adapter) adaptProjectIAM(modules block.Modules) {
-	a.adaptProjectMembers(modules)
-	a.adaptProjectBindings(modules)
+func (a *adapter) adaptProjectIAM() {
+	a.adaptProjectMembers()
+	a.adaptProjectBindings()
 }
 
 func (a *adapter) adaptMember(iamBlock block.Block) iam.Member {
 	var member iam.Member
 	roleAttr := iamBlock.GetAttribute("role")
-	memberAttr := iamBlock.GetAttribute("member")
 	member.Role = roleAttr.AsStringValueOrDefault("", iamBlock)
+
+	memberAttr := iamBlock.GetAttribute("member")
 	member.Member = memberAttr.AsStringValueOrDefault("", iamBlock)
+
+	if referencedBlock, err := a.modules.GetReferencedBlock(memberAttr, iamBlock); err == nil {
+		if strings.HasSuffix(referencedBlock.TypeLabel(), "_default_service_account") {
+			member.DefaultServiceAccount = types.Bool(true, memberAttr.Metadata())
+		}
+	}
+
 	return member
 }
 
@@ -38,9 +48,9 @@ var projectMemberResources = []string{
 	"google_storage_bucket_iam_member",
 }
 
-func (a *adapter) adaptProjectMembers(modules block.Modules) {
+func (a *adapter) adaptProjectMembers() {
 	for _, memberType := range projectMemberResources {
-		for _, iamBlock := range modules.GetResourcesByType(memberType) {
+		for _, iamBlock := range a.modules.GetResourcesByType(memberType) {
 			member := a.adaptMember(iamBlock)
 			projectAttr := iamBlock.GetAttribute("project")
 			if projectAttr.IsString() {
@@ -59,7 +69,7 @@ func (a *adapter) adaptProjectMembers(modules block.Modules) {
 				}
 			}
 
-			if refBlock, err := modules.GetReferencedBlock(projectAttr, iamBlock); err == nil {
+			if refBlock, err := a.modules.GetReferencedBlock(projectAttr, iamBlock); err == nil {
 				if refBlock.TypeLabel() == "google_project" {
 					var foundProject bool
 					for i, project := range a.projects {
@@ -96,6 +106,11 @@ func (a *adapter) adaptBinding(iamBlock block.Block) iam.Binding {
 	for _, member := range membersAttr.ValueAsStrings() {
 		binding.Members = append(binding.Members, types.String(member, membersAttr.Metadata()))
 	}
+	if referencedBlock, err := a.modules.GetReferencedBlock(membersAttr, iamBlock); err == nil {
+		if strings.HasSuffix(referencedBlock.TypeLabel(), "_default_service_account") {
+			binding.IncludesDefaultServiceAccount = types.Bool(true, membersAttr.Metadata())
+		}
+	}
 	return binding
 }
 
@@ -115,9 +130,9 @@ var projectBindingResources = []string{
 	"google_storage_bucket_iam_binding",
 }
 
-func (a *adapter) adaptProjectBindings(modules block.Modules) {
+func (a *adapter) adaptProjectBindings() {
 	for _, bindingType := range projectBindingResources {
-		for _, iamBlock := range modules.GetResourcesByType(bindingType) {
+		for _, iamBlock := range a.modules.GetResourcesByType(bindingType) {
 			binding := a.adaptBinding(iamBlock)
 			projectAttr := iamBlock.GetAttribute("project")
 			if projectAttr.IsString() {
@@ -136,7 +151,7 @@ func (a *adapter) adaptProjectBindings(modules block.Modules) {
 				}
 			}
 
-			if refBlock, err := modules.GetReferencedBlock(projectAttr, iamBlock); err == nil {
+			if refBlock, err := a.modules.GetReferencedBlock(projectAttr, iamBlock); err == nil {
 				if refBlock.TypeLabel() == "google_project" {
 					var foundProject bool
 					for i, project := range a.projects {

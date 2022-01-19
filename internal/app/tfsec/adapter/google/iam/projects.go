@@ -2,7 +2,6 @@ package iam
 
 import (
 	"github.com/aquasecurity/defsec/provider/google/iam"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
 type parentedProject struct {
@@ -15,8 +14,8 @@ type parentedProject struct {
 	project       iam.Project
 }
 
-func (a *adapter) adaptProjects(modules block.Modules) {
-	for _, projectBlock := range modules.GetResourcesByType("google_project") {
+func (a *adapter) adaptProjects() {
+	for _, projectBlock := range a.modules.GetResourcesByType("google_project") {
 		var project parentedProject
 		idAttr := projectBlock.GetAttribute("project_id")
 		if !idAttr.IsString() {
@@ -39,7 +38,7 @@ func (a *adapter) adaptProjects(modules block.Modules) {
 		project.project.AutoCreateNetwork = autoCreateNetworkAttr.AsBoolValueOrDefault(true, projectBlock)
 
 		if orgAttr.IsNotNil() {
-			if referencedBlock, err := modules.GetReferencedBlock(orgAttr, projectBlock); err == nil {
+			if referencedBlock, err := a.modules.GetReferencedBlock(orgAttr, projectBlock); err == nil {
 				if referencedBlock.TypeLabel() == "google_organization" {
 					project.orgBlockID = referencedBlock.ID()
 					a.addOrg(project.orgBlockID)
@@ -47,7 +46,7 @@ func (a *adapter) adaptProjects(modules block.Modules) {
 			}
 		}
 		if folderAttr.IsNotNil() {
-			if referencedBlock, err := modules.GetReferencedBlock(folderAttr, projectBlock); err == nil {
+			if referencedBlock, err := a.modules.GetReferencedBlock(folderAttr, projectBlock); err == nil {
 				if referencedBlock.TypeLabel() == "google_folder" {
 					project.folderBlockID = referencedBlock.ID()
 				}

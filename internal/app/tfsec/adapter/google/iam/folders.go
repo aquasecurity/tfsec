@@ -2,7 +2,6 @@ package iam
 
 import (
 	"github.com/aquasecurity/defsec/provider/google/iam"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
 type parentedFolder struct {
@@ -12,8 +11,8 @@ type parentedFolder struct {
 	folder        iam.Folder
 }
 
-func (a *adapter) adaptFolders(modules block.Modules) {
-	for _, folderBlock := range modules.GetResourcesByType("google_folder") {
+func (a *adapter) adaptFolders() {
+	for _, folderBlock := range a.modules.GetResourcesByType("google_folder") {
 		var folder parentedFolder
 		parentAttr := folderBlock.GetAttribute("parent")
 		if parentAttr.IsNil() {
@@ -25,7 +24,7 @@ func (a *adapter) adaptFolders(modules block.Modules) {
 			folder.parentRef = parentAttr.Value().AsString()
 		}
 
-		if referencedBlock, err := modules.GetReferencedBlock(parentAttr, folderBlock); err == nil {
+		if referencedBlock, err := a.modules.GetReferencedBlock(parentAttr, folderBlock); err == nil {
 			if referencedBlock.TypeLabel() == "google_folder" {
 				folder.parentBlockID = referencedBlock.ID()
 			}
