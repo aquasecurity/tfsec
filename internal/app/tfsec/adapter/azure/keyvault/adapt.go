@@ -1,7 +1,6 @@
 package keyvault
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/aquasecurity/defsec/provider/azure/keyvault"
@@ -88,7 +87,6 @@ func adaptSecret(resource block.Block) keyvault.Secret {
 func adaptKey(resource block.Block) keyvault.Key {
 	expiryDateAttr := resource.GetAttribute("expiration_date")
 	expiryDateVal := types.TimeDefault(time.Time{}, resource.GetMetadata())
-	fmt.Println(expiryDateVal.IsNever())
 
 	if expiryDateAttr.IsNotNil() {
 		expiryDateString := expiryDateAttr.Value().AsString()

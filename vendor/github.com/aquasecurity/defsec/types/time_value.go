@@ -47,7 +47,7 @@ func (b *timeValue) GetRawValue() interface{} {
 }
 
 func (b *timeValue) IsNever() bool {
-	return b.value == nil
+	return b.value.IsZero()
 }
 
 func (b *timeValue) LessThan(i time.Time) bool {
