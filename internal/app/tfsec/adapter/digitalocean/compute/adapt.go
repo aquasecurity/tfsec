@@ -11,7 +11,7 @@ func Adapt(modules []block.Module) compute.Compute {
 		Droplets:           adaptDroplets(modules),
 		Firewalls:          adaptFirewalls(modules),
 		LoadBalancers:      adaptLoadBalancers(modules),
-		kubernetesClusters: adaptKubernetesClusters(modules),
+		KubernetesClusters: adaptKubernetesClusters(modules),
 	}
 }
 
