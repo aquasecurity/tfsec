@@ -33,30 +33,37 @@ const (
 
 type DatabaseInstance struct {
 	DatabaseVersion types.StringValue
-	Settings        struct {
-		Flags struct {
-			LogTempFileSize                 types.IntValue
-			LocalInFile                     types.BoolValue
-			ContainedDatabaseAuthentication types.BoolValue
-			CrossDBOwnershipChaining        types.BoolValue
-			LogCheckpoints                  types.BoolValue
-			LogConnections                  types.BoolValue
-			LogDisconnections               types.BoolValue
-			LogLockWaits                    types.BoolValue
-			LogMinMessages                  types.StringValue // FATAL, PANIC, LOG, ERROR, WARN
-			LogMinDurationStatement         types.IntValue
-		}
-		Backups struct {
-			Enabled types.BoolValue
-		}
-		IPConfiguration struct {
-			RequireTLS         types.BoolValue
-			EnableIPv4         types.BoolValue
-			AuthorizedNetworks []struct {
-				Name types.StringValue
-				CIDR types.StringValue
-			}
-		}
+	Settings        Settings
+}
+
+type Settings struct {
+	Flags           Flags
+	Backups         Backups
+	IPConfiguration IPConfiguration
+}
+type Flags struct {
+	LogTempFileSize                 types.IntValue
+	LocalInFile                     types.BoolValue
+	ContainedDatabaseAuthentication types.BoolValue
+	CrossDBOwnershipChaining        types.BoolValue
+	LogCheckpoints                  types.BoolValue
+	LogConnections                  types.BoolValue
+	LogDisconnections               types.BoolValue
+	LogLockWaits                    types.BoolValue
+	LogMinMessages                  types.StringValue // FATAL, PANIC, LOG, ERROR, WARN
+	LogMinDurationStatement         types.IntValue
+}
+
+type Backups struct {
+	Enabled types.BoolValue
+}
+
+type IPConfiguration struct {
+	RequireTLS         types.BoolValue
+	EnableIPv4         types.BoolValue
+	AuthorizedNetworks []struct {
+		Name types.StringValue
+		CIDR types.StringValue
 	}
 }
 
