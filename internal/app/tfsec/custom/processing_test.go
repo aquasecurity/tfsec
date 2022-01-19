@@ -528,7 +528,7 @@ resource "google_compute_instance" "default" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.predicateMatchSpec, nil)
+			result := evalMatchSpec(block, &test.predicateMatchSpec, NewCustomCheckContext(nil))
 			assert.Equal(t, result, test.expected, "`regexMatches` match function evaluating incorrectly.")
 		})
 	}
