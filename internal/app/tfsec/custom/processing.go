@@ -12,14 +12,14 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
-var matchFunctions = map[CheckAction]func(block.Block, *MatchSpec, *customCheckContext) bool{
-	IsPresent: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+var matchFunctions = map[CheckAction]func(block.Block, *MatchSpec, *customContext) bool{
+	IsPresent: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		return block.HasChild(spec.Name) || spec.IgnoreUndefined
 	},
-	NotPresent: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	NotPresent: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		return !block.HasChild(spec.Name)
 	},
-	IsEmpty: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	IsEmpty: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		if block.MissingChild(spec.Name) {
 			return true
 		}
@@ -31,95 +31,95 @@ var matchFunctions = map[CheckAction]func(block.Block, *MatchSpec, *customCheckC
 		childBlock := block.GetBlock(spec.Name)
 		return childBlock.IsEmpty()
 	},
-	StartsWith: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	StartsWith: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.StartsWith(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	EndsWith: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	EndsWith: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.EndsWith(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	Contains: func(b block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	Contains: func(b block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.Contains(processMatchValueVariables(spec.MatchValue, customCtx.variables), block.IgnoreCase)
 	},
-	NotContains: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	NotContains: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return !attribute.Contains(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	Equals: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	Equals: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.Equals(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	NotEqual: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	NotEqual: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.NotEqual(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	LessThan: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	LessThan: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThan(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	LessThanOrEqualTo: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	LessThanOrEqualTo: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThanOrEqualTo(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	GreaterThan: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	GreaterThan: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThan(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	GreaterThanOrEqualTo: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	GreaterThanOrEqualTo: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThanOrEqualTo(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	RegexMatches: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	RegexMatches: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.RegexMatches(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	IsAny: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	IsAny: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		return attribute != nil && attribute.IsAny(unpackInterfaceToInterfaceSlice(processMatchValueVariables(spec.MatchValue, customCtx.variables))...)
 	},
-	IsNone: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	IsNone: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := block.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.IsNone(unpackInterfaceToInterfaceSlice(processMatchValueVariables(spec.MatchValue, customCtx.variables))...)
 	},
-	RequiresPresence: func(block block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+	RequiresPresence: func(block block.Block, spec *MatchSpec, customCtx *customContext) bool {
 		return resourceFound(spec, customCtx.module)
 	},
 }
@@ -148,7 +148,7 @@ func processFoundChecks(checks ChecksFile) {
 				RequiredSources: customCheck.RequiredSources,
 				CheckTerraform: func(rootBlock block.Block, module block.Module) (results rules.Results) {
 					matchSpec := customCheck.MatchSpec
-					if !evalMatchSpec(rootBlock, matchSpec, NewCustomCheckContext(module)) {
+					if !evalMatchSpec(rootBlock, matchSpec, NewCustomContext(module)) {
 						results.Add(
 							fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage),
 							rootBlock,
@@ -161,7 +161,7 @@ func processFoundChecks(checks ChecksFile) {
 	}
 }
 
-func evalMatchSpec(b block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+func evalMatchSpec(b block.Block, spec *MatchSpec, customCtx *customContext) bool {
 	if b.IsNil() {
 		return false
 	}
@@ -208,11 +208,11 @@ func evalMatchSpec(b block.Block, spec *MatchSpec, customCtx *customCheckContext
 	return evalResult
 }
 
-func notifyPredicate(b block.Block, spec *MatchSpec, customCtx *customCheckContext) bool {
+func notifyPredicate(b block.Block, spec *MatchSpec, customCtx *customContext) bool {
 	return !evalMatchSpec(b, &spec.PredicateMatchSpec[0], customCtx)
 }
 
-func processOrPredicate(spec *MatchSpec, b block.Block, customCtx *customCheckContext) bool {
+func processOrPredicate(spec *MatchSpec, b block.Block, customCtx *customContext) bool {
 	for _, childSpec := range spec.PredicateMatchSpec {
 		clone := childSpec
 		if evalMatchSpec(b, &clone, customCtx) {
@@ -222,7 +222,7 @@ func processOrPredicate(spec *MatchSpec, b block.Block, customCtx *customCheckCo
 	return false
 }
 
-func processAndPredicate(spec *MatchSpec, b block.Block, customCtx *customCheckContext) bool {
+func processAndPredicate(spec *MatchSpec, b block.Block, customCtx *customContext) bool {
 	set := make(map[bool]bool)
 
 	for _, childSpec := range spec.PredicateMatchSpec {
@@ -235,7 +235,7 @@ func processAndPredicate(spec *MatchSpec, b block.Block, customCtx *customCheckC
 	return len(set) == 1 && set[true]
 }
 
-func processSubMatches(spec *MatchSpec, b block.Block, customCtx *customCheckContext, evalResult bool) bool {
+func processSubMatches(spec *MatchSpec, b block.Block, customCtx *customContext, evalResult bool) bool {
 	var subMatchTargets []block.Block
 	switch spec.Action {
 	case RequiresPresence:

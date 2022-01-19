@@ -239,7 +239,7 @@ resource "aws_ami" "example" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.predicateMatchSpec, NewCustomCheckContext(nil))
+			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "`Or` match function evaluating incorrectly.")
 		})
 	}
@@ -286,7 +286,7 @@ resource "aws_ami" "example" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.predicateMatchSpec, NewCustomCheckContext(nil))
+			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "`And` match function evaluating incorrectly.")
 		})
 	}
@@ -337,7 +337,7 @@ resource "aws_ami" "example" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.predicateMatchSpec, NewCustomCheckContext(nil))
+			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "Nested match functions evaluating incorrectly.")
 		})
 	}
@@ -364,7 +364,7 @@ resource "aws_ami" "example" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.matchSpec, NewCustomCheckContext(nil))
+			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "Not match functions evaluating incorrectly.")
 		})
 	}
@@ -414,7 +414,7 @@ resource "aws_ami" "testing" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.matchSpec, NewCustomCheckContext(nil))
+			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "precondition functions evaluating incorrectly.")
 		})
 	}
@@ -460,7 +460,7 @@ resource "aws_s3_bucket" "test-bucket" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.matchSpec, NewCustomCheckContext(nil))
+			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "processing variable assignments incorrectly.")
 		})
 	}
@@ -528,7 +528,7 @@ resource "google_compute_instance" "default" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
-			result := evalMatchSpec(block, &test.predicateMatchSpec, NewCustomCheckContext(nil))
+			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
 			assert.Equal(t, result, test.expected, "`regexMatches` match function evaluating incorrectly.")
 		})
 	}
