@@ -21,6 +21,7 @@ type Folder struct {
 }
 
 type Project struct {
+	types.Metadata
 	AutoCreateNetwork types.BoolValue
 	Members           []Member
 	Bindings          []Binding

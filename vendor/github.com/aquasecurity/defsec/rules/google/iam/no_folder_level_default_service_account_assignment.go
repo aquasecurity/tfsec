@@ -33,7 +33,12 @@ var CheckNoFolderLevelDefaultServiceAccountAssignment = rules.Register(
 	func(s *state.State) (results rules.Results) {
 		for _, folder := range s.Google.IAM.AllFolders() {
 			for _, member := range folder.Members {
-				if isMemberDefaultServiceAccount(member.Member.Value()) {
+				if member.DefaultServiceAccount.IsTrue() {
+					results.Add(
+						"Role is assigned to a default service account at folder level.",
+						member.DefaultServiceAccount,
+					)
+				} else if isMemberDefaultServiceAccount(member.Member.Value()) {
 					results.Add(
 						"Role is assigned to a default service account at folder level.",
 						member.Member,
@@ -41,6 +46,13 @@ var CheckNoFolderLevelDefaultServiceAccountAssignment = rules.Register(
 				}
 			}
 			for _, binding := range folder.Bindings {
+				if binding.IncludesDefaultServiceAccount.IsTrue() {
+					results.Add(
+						"Role is assigned to a default service account at folder level.",
+						binding.IncludesDefaultServiceAccount,
+					)
+					continue
+				}
 				for _, member := range binding.Members {
 					if isMemberDefaultServiceAccount(member.Value()) {
 						results.Add(

@@ -27,16 +27,29 @@ func adaptManagedZones(modules []block.Module) []dns.ManagedZone {
 }
 
 func adaptManagedZone(resource block.Block) dns.ManagedZone {
-	enabled := types.Bool(false, *resource.GetMetadata())
+
+	zone := dns.ManagedZone{
+		DNSSec: dns.DNSSec{
+			Enabled: types.BoolDefault(false, resource.Metadata()),
+			DefaultKeySpecs: dns.KeySpecs{
+				KeySigningKey: dns.Key{
+					Algorithm: types.StringDefault("", resource.Metadata()),
+				},
+				ZoneSigningKey: dns.Key{
+					Algorithm: types.StringDefault("", resource.Metadata()),
+				},
+			},
+		},
+	}
 
 	if resource.HasChild("dnssec_config") {
 		DNSSecBlock := resource.GetBlock("dnssec_config")
 
 		stateAttr := DNSSecBlock.GetAttribute("state")
 		if stateAttr.Equals("on") {
-			enabled = types.Bool(true, *DNSSecBlock.GetMetadata())
+			zone.DNSSec.Enabled = types.Bool(true, *DNSSecBlock.GetMetadata())
 		} else if stateAttr.Equals("off") || stateAttr.Equals("transfer") {
-			enabled = types.Bool(false, *DNSSecBlock.GetMetadata())
+			zone.DNSSec.Enabled = types.Bool(false, *DNSSecBlock.GetMetadata())
 		}
 
 		if DNSSecBlock.HasChild("default_key_specs") {
@@ -47,36 +60,13 @@ func adaptManagedZone(resource block.Block) dns.ManagedZone {
 
 			keyTypeAttr := DefaultKeySpecsBlock.GetAttribute("key_type")
 			if keyTypeAttr.Equals("keySigning") {
-				return dns.ManagedZone{
-					DNSSec: dns.DNSSec{
-						Enabled: enabled,
-						DefaultKeySpecs: dns.KeySpecs{
-							KeySigningKey: dns.Key{
-								Algorithm: algorithmVal,
-							},
-						},
-					},
-				}
-			}
-			if keyTypeAttr.Equals("zoneSigning") {
-				return dns.ManagedZone{
-					DNSSec: dns.DNSSec{
-						Enabled: enabled,
-						DefaultKeySpecs: dns.KeySpecs{
-							ZoneSigningKey: dns.Key{
-								Algorithm: algorithmVal,
-							},
-						},
-					},
-				}
+				zone.DNSSec.DefaultKeySpecs.KeySigningKey.Algorithm = algorithmVal
+			} else if keyTypeAttr.Equals("zoneSigning") {
+				zone.DNSSec.DefaultKeySpecs.ZoneSigningKey.Algorithm = algorithmVal
 			}
 		}
 	}
-	return dns.ManagedZone{
-		DNSSec: dns.DNSSec{
-			Enabled: enabled,
-		},
-	}
+	return zone
 }
 
 func adaptKeySpecs(resource block.Block) dns.KeySpecs {

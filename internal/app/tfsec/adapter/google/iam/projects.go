@@ -17,6 +17,7 @@ type parentedProject struct {
 func (a *adapter) adaptProjects() {
 	for _, projectBlock := range a.modules.GetResourcesByType("google_project") {
 		var project parentedProject
+		project.project.Metadata = projectBlock.Metadata()
 		idAttr := projectBlock.GetAttribute("project_id")
 		if !idAttr.IsString() {
 			continue

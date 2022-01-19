@@ -26,10 +26,9 @@ func (a *adapter) adaptFolderMembers() {
 						break
 					}
 				}
-				if !foundFolder {
+				if foundFolder {
 					continue
 				}
-
 			}
 		}
 
@@ -57,7 +56,7 @@ func (a *adapter) adaptFolderBindings() {
 						break
 					}
 				}
-				if !foundFolder {
+				if foundFolder {
 					continue
 				}
 

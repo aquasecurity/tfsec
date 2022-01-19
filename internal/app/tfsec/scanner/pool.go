@@ -127,7 +127,14 @@ func (w *Worker) Start() {
 	defer w.mu.Unlock()
 	w.results = nil
 	for job := range w.incoming {
-		w.results = append(w.results, job.Run()...)
+		func() {
+			defer func() {
+				if err := recover(); err != nil {
+					w.panic = err
+				}
+			}()
+			w.results = append(w.results, job.Run()...)
+		}()
 	}
 }
 

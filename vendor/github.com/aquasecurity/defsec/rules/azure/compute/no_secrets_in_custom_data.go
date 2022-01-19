@@ -21,13 +21,13 @@ var CheckNoSecretsInCustomData = rules.Register(
 		Resolution:  "Don't use sensitive credentials in the VM custom_data",
 		Explanation: `When creating Azure Virtual Machines, custom_data is used to pass start up information into the EC2 instance. This custom_dat must not contain access key credentials.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoSecretsInCustomDataGoodExamples,
-            BadExamples:         terraformNoSecretsInCustomDataBadExamples,
-            Links:               terraformNoSecretsInCustomDataLinks,
-            RemediationMarkdown: terraformNoSecretsInCustomDataRemediationMarkdown,
-        },
-        Severity:    severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoSecretsInCustomDataGoodExamples,
+			BadExamples:         terraformNoSecretsInCustomDataBadExamples,
+			Links:               terraformNoSecretsInCustomDataLinks,
+			RemediationMarkdown: terraformNoSecretsInCustomDataRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, vm := range s.Azure.Compute.LinuxVirtualMachines {

@@ -47,7 +47,7 @@ func adaptCompute(modules []block.Module) compute.Compute {
 
 func adaptManagedDisk(resource block.Block) compute.ManagedDisk {
 	encryptionBlock := resource.GetBlock("encryption_settings")
-	enabledVal := types.BoolDefault(false, encryptionBlock.Metadata())
+	enabledVal := types.BoolDefault(false, resource.Metadata())
 
 	if encryptionBlock.IsNotNil() {
 		enabledAttr := encryptionBlock.GetAttribute("enabled")

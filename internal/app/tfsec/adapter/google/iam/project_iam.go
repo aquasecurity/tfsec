@@ -80,7 +80,7 @@ func (a *adapter) adaptProjectMembers() {
 							break
 						}
 					}
-					if !foundProject {
+					if foundProject {
 						continue
 					}
 
@@ -101,7 +101,7 @@ func (a *adapter) adaptProjectMembers() {
 func (a *adapter) adaptBinding(iamBlock block.Block) iam.Binding {
 	var binding iam.Binding
 	roleAttr := iamBlock.GetAttribute("role")
-	membersAttr := iamBlock.GetAttribute("member")
+	membersAttr := iamBlock.GetAttribute("members")
 	binding.Role = roleAttr.AsStringValueOrDefault("", iamBlock)
 	for _, member := range membersAttr.ValueAsStrings() {
 		binding.Members = append(binding.Members, types.String(member, membersAttr.Metadata()))
@@ -162,7 +162,7 @@ func (a *adapter) adaptProjectBindings() {
 							break
 						}
 					}
-					if !foundProject {
+					if foundProject {
 						continue
 					}
 
