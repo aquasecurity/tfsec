@@ -20,7 +20,6 @@ import (
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/elasticache"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/elasticsearch"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/elb"
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/elbv2"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/iam"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/kinesis"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules/aws/kms"

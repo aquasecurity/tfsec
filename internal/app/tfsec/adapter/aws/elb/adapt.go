@@ -21,6 +21,9 @@ func adaptLoadBalancers(modules []block.Module) []elb.LoadBalancer {
 		for _, resource := range module.GetResourcesByType("aws_alb") {
 			loadBalancers = append(loadBalancers, adaptLoadBalancer(resource, module))
 		}
+		for _, resource := range module.GetResourcesByType("aws_elb") {
+			loadBalancers = append(loadBalancers, adaptLoadBalancer(resource, module))
+		}
 	}
 	return loadBalancers
 }

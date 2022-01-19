@@ -1,4 +1,4 @@
-package elbv2
+package elb
 
 import (
 	"testing"
@@ -18,7 +18,12 @@ func Test_AWSPlainHTTP(t *testing.T) {
 		{
 			name: "check aws_alb_listener using plain HTTP",
 			source: `
- resource "aws_alb_listener" "my-listener" {
+resource "aws_lb" "my-lb" {
+
+}
+
+ resource "aws_lb_listener" "my-listener" {
+	load_balancer_arn = aws_lb.my-lb.arn
  	protocol = "HTTP"
  }`,
 			mustIncludeResultCode: expectedCode,
@@ -26,7 +31,12 @@ func Test_AWSPlainHTTP(t *testing.T) {
 		{
 			name: "check aws_lb_listener using plain HTTP",
 			source: `
+resource "aws_lb" "my-lb" {
+
+}
+
  resource "aws_lb_listener" "my-listener" {
+	load_balancer_arn = aws_lb.my-lb.arn
  	protocol = "HTTP"
  }`,
 			mustIncludeResultCode: expectedCode,
@@ -34,7 +44,12 @@ func Test_AWSPlainHTTP(t *testing.T) {
 		{
 			name: "check aws_alb_listener using plain HTTP (via non specification)",
 			source: `
- resource "aws_alb_listener" "my-listener" {
+ resource "aws_lb" "my-lb" {
+
+}
+
+ resource "aws_lb_listener" "my-listener" {
+	load_balancer_arn = aws_lb.my-lb.arn
  }`,
 			mustIncludeResultCode: expectedCode,
 		},
@@ -42,7 +57,6 @@ func Test_AWSPlainHTTP(t *testing.T) {
 			name: "check aws_alb_listeneer should continue checks if the referenced if a load balancer is not gateway",
 			source: `
  resource "aws_lb" "gwlb" {
- 
  	load_balancer_type = "application"
  
  }
