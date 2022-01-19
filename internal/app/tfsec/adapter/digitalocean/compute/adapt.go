@@ -8,9 +8,10 @@ import (
 
 func Adapt(modules []block.Module) compute.Compute {
 	return compute.Compute{
-		Droplets:      adaptDroplets(modules),
-		Firewalls:     adaptFirewalls(modules),
-		LoadBalancers: adaptLoadBalancers(modules),
+		Droplets:           adaptDroplets(modules),
+		Firewalls:          adaptFirewalls(modules),
+		LoadBalancers:      adaptLoadBalancers(modules),
+		KubernetesClusters: adaptKubernetesClusters(modules),
 	}
 }
 
@@ -92,4 +93,14 @@ func adaptLoadBalancers(module block.Modules) (loadBalancers []compute.LoadBalan
 	}
 
 	return loadBalancers
+}
+
+func adaptKubernetesClusters(module block.Modules) (kubernetesClusters []compute.KubernetesCluster) {
+	for _, block := range module.GetResourcesByType("digitalocean_kubernetes_cluster") {
+		kubernetesClusters = append(kubernetesClusters, compute.KubernetesCluster{
+			AutoUpgrade:  block.GetAttribute("auto_upgrade").AsBoolValueOrDefault(false, block),
+			SurgeUpgrade: block.GetAttribute("surge_upgrade").AsBoolValueOrDefault(false, block),
+		})
+	}
+	return kubernetesClusters
 }
