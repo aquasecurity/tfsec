@@ -9,10 +9,11 @@ type KeyVault struct {
 }
 
 type Vault struct {
-	Secrets               []Secret
-	Keys                  []Key
-	EnablePurgeProtection types.BoolValue
-	NetworkACLs           NetworkACLs
+	Secrets                 []Secret
+	Keys                    []Key
+	EnablePurgeProtection   types.BoolValue
+	SoftDeleteRetentionDays types.IntValue
+	NetworkACLs             NetworkACLs
 }
 
 type NetworkACLs struct {

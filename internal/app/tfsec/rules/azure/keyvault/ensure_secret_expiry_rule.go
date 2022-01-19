@@ -1,9 +1,7 @@
 package keyvault
 
 import (
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/azure/keyvault"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
@@ -32,12 +30,5 @@ func init() {
 		RequiredTypes:  []string{"resource"},
 		RequiredLabels: []string{"azurerm_key_vault_secret"},
 		Base:           keyvault.CheckEnsureSecretExpiry,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
-
-			if resourceBlock.MissingChild("expiration_date") {
-				results.Add("Resource should have an expiration date set.", resourceBlock)
-			}
-			return results
-		},
 	})
 }
