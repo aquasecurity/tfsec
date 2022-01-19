@@ -18,7 +18,12 @@ func Test_AWSMissingDescriptionForSecurityGroupRule(t *testing.T) {
 		{
 			name: "check aws_security_group_rule without description",
 			source: `
+ resource "aws_security_group" "my-group" {
+ }
+
  resource "aws_security_group_rule" "my-rule" {
+	type = "egress"
+	security_group_id = aws_security_group.my-group.id
  	
  }`,
 			mustIncludeResultCode: expectedCode,
@@ -26,7 +31,12 @@ func Test_AWSMissingDescriptionForSecurityGroupRule(t *testing.T) {
 		{
 			name: "check aws_security_group_rule with description",
 			source: `
+ resource "aws_security_group" "my-group" {
+ }
+
  resource "aws_security_group_rule" "my-rule" {
+	type = "ingress"
+	security_group_id = aws_security_group.my-group.id
  	description = "this is a group for allowing shiz"
  }`,
 			mustExcludeResultCode: expectedCode,

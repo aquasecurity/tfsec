@@ -18,7 +18,11 @@ func Test_AWSOpenAllIngressNetworkACLRule(t *testing.T) {
 		{
 			name: "check aws_network_acl_rule ingress on 0.0.0.0/0",
 			source: `
+ resource "aws_network_acl" "bar" {
+ }
+
  resource "aws_network_acl_rule" "my-rule" {
+   network_acl_id = aws_network_acl.bar.id
    egress         = false
    protocol       = "all"
    rule_action    = "allow"
@@ -28,7 +32,11 @@ func Test_AWSOpenAllIngressNetworkACLRule(t *testing.T) {
 		}, {
 			name: "check aws_network_acl_rule ingress on 0.0.0.0/0 implied egress",
 			source: `
+ resource "aws_network_acl" "bar" {
+ }
+		   
  resource "aws_network_acl_rule" "my-rule" {
+   network_acl_id = aws_network_acl.bar.id
    protocol       = "all"
    rule_action    = "allow"
    cidr_block     = "0.0.0.0/0"
@@ -38,7 +46,11 @@ func Test_AWSOpenAllIngressNetworkACLRule(t *testing.T) {
 		{
 			name: "check variable containing 0.0.0.0/0",
 			source: `
+ resource "aws_network_acl" "bar" {
+ }
+
  resource "aws_network_acl_rule" "my-rule" {
+   network_acl_id = aws_network_acl.bar.id
    egress         = false
    protocol       = "-1"
    rule_action    = "allow"
@@ -55,7 +67,11 @@ func Test_AWSOpenAllIngressNetworkACLRule(t *testing.T) {
 		{
 			name: "check aws_network_acl_rule ingress on ::/0",
 			source: `
+ resource "aws_network_acl" "bar" {
+ }
+		   
  resource "aws_network_acl_rule" "my-rule" {
+   network_acl_id = aws_network_acl.bar.id
    rule_number    = 200
    egress         = false
    protocol       = "all"
