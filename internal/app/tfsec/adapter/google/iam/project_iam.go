@@ -22,6 +22,7 @@ func (a *adapter) adaptMember(iamBlock block.Block) iam.Member {
 
 	memberAttr := iamBlock.GetAttribute("member")
 	member.Member = memberAttr.AsStringValueOrDefault("", iamBlock)
+	member.DefaultServiceAccount = types.BoolDefault(false, iamBlock.Metadata())
 
 	if referencedBlock, err := a.modules.GetReferencedBlock(memberAttr, iamBlock); err == nil {
 		if strings.HasSuffix(referencedBlock.TypeLabel(), "_default_service_account") {
@@ -106,6 +107,7 @@ func (a *adapter) adaptBinding(iamBlock block.Block) iam.Binding {
 	for _, member := range membersAttr.ValueAsStrings() {
 		binding.Members = append(binding.Members, types.String(member, membersAttr.Metadata()))
 	}
+	binding.IncludesDefaultServiceAccount = types.BoolDefault(false, iamBlock.Metadata())
 	if referencedBlock, err := a.modules.GetReferencedBlock(membersAttr, iamBlock); err == nil {
 		if strings.HasSuffix(referencedBlock.TypeLabel(), "_default_service_account") {
 			binding.IncludesDefaultServiceAccount = types.Bool(true, membersAttr.Metadata())

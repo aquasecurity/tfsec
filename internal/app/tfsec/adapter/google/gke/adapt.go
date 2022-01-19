@@ -176,7 +176,6 @@ func adaptNodePool(resource block.Block) gke.NodePool {
 
 	if resource.HasChild("node_config") {
 		nodeConfig = adaptNodeConfig(resource.GetBlock("node_config"))
-
 	}
 
 	return gke.NodePool{
@@ -186,7 +185,6 @@ func adaptNodePool(resource block.Block) gke.NodePool {
 		},
 		NodeConfig: nodeConfig,
 	}
-
 }
 
 func adaptNodeConfig(resource block.Block) gke.NodeConfig {

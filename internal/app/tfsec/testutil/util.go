@@ -23,6 +23,7 @@ func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) r
 	for _, opt := range additionalOptions {
 		opt(s)
 	}
+	scanner.OptionStopOnErrors()(s)
 	res, err := s.Scan(modules)
 	require.NoError(t, err)
 	for _, result := range res {
