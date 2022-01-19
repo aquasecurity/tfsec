@@ -112,6 +112,7 @@ type MatchSpec struct {
 	SubMatch           *MatchSpec  `json:"subMatch,omitempty" yaml:"subMatch,omitempty"`
 	IgnoreUndefined    bool        `json:"ignoreUndefined,omitempty" yaml:"ignoreUndefined,omitempty"`
 	IgnoreUnmatched    bool        `json:"ignoreUnmatched,omitempty" yaml:"ignoreUnmatched,omitempty"`
+	AssignVariable     string      `json:"assignVariable,omitempty" yaml:"assignVariable,omitempty"`
 }
 
 // Check specifies the check definition represented in json/yaml
