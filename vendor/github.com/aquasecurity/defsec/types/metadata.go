@@ -28,8 +28,8 @@ func NewMetadata(r Range, ref Reference) Metadata {
 	}
 }
 
-func NewUnmanagedMetadata(r Range, ref Reference) Metadata {
-	m := NewMetadata(r, ref)
+func NewUnmanagedMetadata() Metadata {
+	m := NewMetadata(NewRange("", 0, 0), &FakeReference{})
 	m.isManaged = false
 	return m
 }

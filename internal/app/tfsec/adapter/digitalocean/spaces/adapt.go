@@ -64,7 +64,7 @@ func adaptBuckets(modules []block.Module) []spaces.Bucket {
 				}
 			}
 			bucketMap[uuid.NewString()] = spaces.Bucket{
-				Metadata: types.NewUnmanagedMetadata(block.Range(), block.Reference()),
+				Metadata: types.NewUnmanagedMetadata(),
 				Objects: []spaces.Object{
 					object,
 				},

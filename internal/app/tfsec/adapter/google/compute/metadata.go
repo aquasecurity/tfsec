@@ -9,10 +9,7 @@ import (
 
 func adaptProjectMetadata(modules block.Modules) (metadata compute.ProjectMetadata) {
 	metadata.EnableOSLogin = types.BoolUnresolvable(
-		types.NewUnmanagedMetadata(
-			types.NewRange("default", 0, 0),
-			&types.FakeReference{},
-		),
+		types.NewUnmanagedMetadata(),
 	)
 	for _, metadataBlock := range modules.GetResourcesByType("google_compute_project_metadata") {
 		if metadataAttr := metadataBlock.GetAttribute("metadata"); metadataAttr.IsNotNil() {

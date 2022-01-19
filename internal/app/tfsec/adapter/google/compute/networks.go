@@ -45,7 +45,7 @@ func adaptNetworks(modules block.Modules) (networks []compute.Network) {
 			}
 
 			var placeholder compute.Network
-			placeholder.Metadata = types.NewUnmanagedMetadata(subnetworkBlock.Range(), subnetwork.Reference())
+			placeholder.Metadata = types.NewUnmanagedMetadata()
 			placeholder.Subnetworks = append(placeholder.Subnetworks, subnetwork)
 			networks = append(networks, placeholder)
 		}
@@ -75,7 +75,7 @@ func adaptNetworks(modules block.Modules) (networks []compute.Network) {
 			}
 
 			var placeholder compute.Network
-			placeholder.Metadata = types.NewUnmanagedMetadata(firewallBlock.Range(), firewall.Reference())
+			placeholder.Metadata = types.NewUnmanagedMetadata()
 			placeholder.Firewall = &firewall
 			networks = append(networks, placeholder)
 		}

@@ -141,7 +141,7 @@ func adaptCluster(resource block.Block, module block.Module) gke.Cluster {
 		PodSecurityPolicy: gke.PodSecurityPolicy{
 			Enabled: podSecurityEnabled,
 		},
-		Metadata: gke.Metadata{
+		ClusterMetadata: gke.Metadata{
 			EnableLegacyEndpoints: legacyEndpointsEnabled,
 		},
 		MasterAuth:            masterAuth,
