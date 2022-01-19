@@ -6,8 +6,8 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter/google/compute"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter/google/dns"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter/google/gke"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter/google/iam"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter/google/kms"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter/google/platform"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter/google/sql"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter/google/storage"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
@@ -20,7 +20,7 @@ func Adapt(modules []block.Module) google.Google {
 		DNS:      dns.Adapt(modules),
 		GKE:      gke.Adapt(modules),
 		KMS:      kms.Adapt(modules),
-		Platform: platform.Adapt(modules),
+		IAM:      iam.Adapt(modules),
 		SQL:      sql.Adapt(modules),
 		Storage:  storage.Adapt(modules),
 	}
