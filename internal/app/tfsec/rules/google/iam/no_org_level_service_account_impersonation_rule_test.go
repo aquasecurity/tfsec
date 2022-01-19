@@ -9,7 +9,7 @@ import (
 )
 
 func Test_GoogleNoOrganizationLevelServiceAccountAccess_FailureExamples(t *testing.T) {
-	expectedCode := "google-platform-no-org-level-service-account-impersonation"
+	expectedCode := "google-iam-no-org-level-service-account-impersonation"
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_GoogleNoOrganizationLevelServiceAccountAccess_FailureExamples(t *testi
 }
 
 func Test_GoogleNoOrganizationLevelServiceAccountAccess_SuccessExamples(t *testing.T) {
-	expectedCode := "google-platform-no-org-level-service-account-impersonation"
+	expectedCode := "google-iam-no-org-level-service-account-impersonation"
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

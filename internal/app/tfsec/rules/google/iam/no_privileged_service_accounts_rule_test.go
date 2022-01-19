@@ -7,7 +7,7 @@ import (
 )
 
 func Test_GoogleNoPrivilegedServiceAccounts(t *testing.T) {
-	expectedCode := "google-platform-no-privileged-service-accounts"
+	expectedCode := "google-iam-no-privileged-service-accounts"
 
 	var tests = []struct {
 		name                  string

@@ -9,7 +9,7 @@ import (
 )
 
 func Test_GoogleNoDefaultServiceAccountAtFolderAssignment_FailureExamples(t *testing.T) {
-	expectedCode := "google-platform-no-folder-level-default-service-account-assignment"
+	expectedCode := "google-iam-no-folder-level-default-service-account-assignment"
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_GoogleNoDefaultServiceAccountAtFolderAssignment_FailureExamples(t *tes
 }
 
 func Test_GoogleNoDefaultServiceAccountAtFolderAssignment_SuccessExamples(t *testing.T) {
-	expectedCode := "google-platform-no-folder-level-default-service-account-assignment"
+	expectedCode := "google-iam-no-folder-level-default-service-account-assignment"
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

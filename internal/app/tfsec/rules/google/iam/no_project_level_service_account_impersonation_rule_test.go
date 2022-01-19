@@ -9,7 +9,7 @@ import (
 )
 
 func Test_GoogleNoProjectLevelServiceAccountAccess_FailureExamples(t *testing.T) {
-	expectedCode := "google-platform-no-project-level-service-account-impersonation"
+	expectedCode := "google-iam-no-project-level-service-account-impersonation"
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_GoogleNoProjectLevelServiceAccountAccess_FailureExamples(t *testing.T)
 }
 
 func Test_GoogleNoProjectLevelServiceAccountAccess_SuccessExamples(t *testing.T) {
-	expectedCode := "google-platform-no-project-level-service-account-impersonation"
+	expectedCode := "google-iam-no-project-level-service-account-impersonation"
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

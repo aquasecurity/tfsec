@@ -9,7 +9,7 @@ import (
 )
 
 func Test_GoogleNoDefaultServiceAccountAtOrgAssignment_FailureExamples(t *testing.T) {
-	expectedCode := "google-platform-no-org-level-default-service-account-assignment"
+	expectedCode := "google-iam-no-org-level-default-service-account-assignment"
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_GoogleNoDefaultServiceAccountAtOrgAssignment_FailureExamples(t *testin
 }
 
 func Test_GoogleNoDefaultServiceAccountAtOrgAssignment_SuccessExamples(t *testing.T) {
-	expectedCode := "google-platform-no-org-level-default-service-account-assignment"
+	expectedCode := "google-iam-no-org-level-default-service-account-assignment"
 
 	check, err := scanner.GetRuleById(expectedCode)
 	if err != nil {

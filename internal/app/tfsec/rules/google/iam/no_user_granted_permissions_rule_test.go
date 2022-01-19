@@ -7,7 +7,7 @@ import (
 )
 
 func Test_GoogleUserIAMGrant(t *testing.T) {
-	expectedCode := "google-platform-no-user-granted-permissions"
+	expectedCode := "google-iam-no-user-granted-permissions"
 
 	var tests = []struct {
 		name                  string

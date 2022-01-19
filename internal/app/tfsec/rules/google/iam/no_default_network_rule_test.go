@@ -9,7 +9,7 @@ import (
 )
 
 func Test_GoogleNoDefaultNetwork_FailureExamples(t *testing.T) {
-	expectedCode := "google-platform-no-default-network"
+	expectedCode := "google-iam-no-default-network"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
@@ -31,7 +31,7 @@ func Test_GoogleNoDefaultNetwork_FailureExamples(t *testing.T) {
 }
 
 func Test_GoogleNoDefaultNetwork_SuccessExamples(t *testing.T) {
-	expectedCode := "google-platform-no-default-network"
+	expectedCode := "google-iam-no-default-network"
 
 	rule, err := scanner.GetRuleById(expectedCode)
 	if err != nil {
