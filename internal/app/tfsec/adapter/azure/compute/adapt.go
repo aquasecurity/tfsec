@@ -47,7 +47,8 @@ func adaptCompute(modules []block.Module) compute.Compute {
 
 func adaptManagedDisk(resource block.Block) compute.ManagedDisk {
 	encryptionBlock := resource.GetBlock("encryption_settings")
-	enabledVal := types.BoolDefault(false, resource.Metadata())
+	// encryption is enabled by default - https://github.com/hashicorp/terraform-provider-azurerm/blob/baf55926fe813011003ee4fb0e8e6134fcfcca87/internal/services/compute/managed_disk_resource.go#L288
+	enabledVal := types.BoolDefault(true, resource.Metadata())
 
 	if encryptionBlock.IsNotNil() {
 		enabledAttr := encryptionBlock.GetAttribute("enabled")

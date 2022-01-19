@@ -15,31 +15,31 @@ func Test_AZUTrustedMicrosoftServicesHaveStroageAccountAccess(t *testing.T) {
 		mustIncludeResultCode string
 		mustExcludeResultCode string
 	}{
-		// 		{
-		// 			name: "check storage account without MicrosoftServices causes failure",
-		// 			source: `
-		//  resource "azurerm_storage_account" "example" {
-		//    name                = "storageaccountname"
-		//    resource_group_name = azurerm_resource_group.example.name
+		{
+			name: "check storage account without MicrosoftServices causes failure",
+			source: `
+		 resource "azurerm_storage_account" "example" {
+		   name                = "storageaccountname"
+		   resource_group_name = azurerm_resource_group.example.name
 
-		//    location                 = azurerm_resource_group.example.location
-		//    account_tier             = "Standard"
-		//    account_replication_type = "LRS"
+		   location                 = azurerm_resource_group.example.location
+		   account_tier             = "Standard"
+		   account_replication_type = "LRS"
 
-		//    network_rules {
-		//      default_action             = "Deny"
-		//      ip_rules                   = ["100.0.0.1"]
-		//      virtual_network_subnet_ids = [azurerm_subnet.example.id]
-		//  	bypass                     = ["Metrics"]
-		//    }
+		   network_rules {
+		     default_action             = "Deny"
+		     ip_rules                   = ["100.0.0.1"]
+		     virtual_network_subnet_ids = [azurerm_subnet.example.id]
+		 	bypass                     = ["Metrics"]
+		   }
 
-		//    tags = {
-		//      environment = "staging"
-		//    }
-		//  }
-		//  `,
-		// 			mustIncludeResultCode: expectedCode,
-		// 		},
+		   tags = {
+		     environment = "staging"
+		   }
+		 }
+		 `,
+			mustIncludeResultCode: expectedCode,
+		},
 		{
 			name: "check storage account network rules without MicrosoftServices bypass causes failure",
 			source: `
@@ -55,79 +55,79 @@ func Test_AZUTrustedMicrosoftServicesHaveStroageAccountAccess(t *testing.T) {
  `,
 			mustIncludeResultCode: expectedCode,
 		},
-		// 		{
-		// 			name: "check storage account network rules with empty bypass fails",
-		// 			source: `
-		//  resource "azurerm_storage_account_network_rules" "test" {
-		//  resource_group_name  = azurerm_resource_group.test.name
-		//  storage_account_name = azurerm_storage_account.test.name
+		{
+			name: "check storage account network rules with empty bypass fails",
+			source: `
+		 resource "azurerm_storage_account_network_rules" "test" {
+		 resource_group_name  = azurerm_resource_group.test.name
+		 storage_account_name = azurerm_storage_account.test.name
 
-		//  	default_action             = "Allow"
-		//  	ip_rules                   = ["127.0.0.1"]
-		//  	virtual_network_subnet_ids = [azurerm_subnet.test.id]
-		//  	bypass                     = []
-		//  }
-		//  `,
-		// 			mustIncludeResultCode: expectedCode,
-		// 		},
-		// 		{
-		// 			name: "check storage account that has MicrosoftServices bypass passes",
-		// 			source: `
-		//  resource "azurerm_storage_account" "example" {
-		//    name                = "storageaccountname"
-		//    resource_group_name = azurerm_resource_group.example.name
+		 	default_action             = "Allow"
+		 	ip_rules                   = ["127.0.0.1"]
+		 	virtual_network_subnet_ids = [azurerm_subnet.test.id]
+		 	bypass                     = []
+		 }
+		 `,
+			mustIncludeResultCode: expectedCode,
+		},
+		{
+			name: "check storage account that has MicrosoftServices bypass passes",
+			source: `
+		 resource "azurerm_storage_account" "example" {
+		   name                = "storageaccountname"
+		   resource_group_name = azurerm_resource_group.example.name
 
-		//    location                 = azurerm_resource_group.example.location
-		//    account_tier             = "Standard"
-		//    account_replication_type = "LRS"
+		   location                 = azurerm_resource_group.example.location
+		   account_tier             = "Standard"
+		   account_replication_type = "LRS"
 
-		//    network_rules {
-		//      default_action             = "Deny"
-		//      ip_rules                   = ["100.0.0.1"]
-		//      virtual_network_subnet_ids = [azurerm_subnet.example.id]
-		//      bypass                     = ["Metrics", "AzureServices"]
-		//    }
+		   network_rules {
+		     default_action             = "Deny"
+		     ip_rules                   = ["100.0.0.1"]
+		     virtual_network_subnet_ids = [azurerm_subnet.example.id]
+		     bypass                     = ["Metrics", "AzureServices"]
+		   }
 
-		//    tags = {
-		//      environment = "staging"
-		//    }
-		//  }
-		//  `,
-		// 			mustExcludeResultCode: expectedCode,
-		// 		},
-		// 		{
-		// 			name: "check storage account with no network rules passes",
-		// 			source: `
-		//  resource "azurerm_storage_account" "example" {
-		//    name                = "storageaccountname"
-		//    resource_group_name = azurerm_resource_group.example.name
+		   tags = {
+		     environment = "staging"
+		   }
+		 }
+		 `,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check storage account with no network rules passes",
+			source: `
+		 resource "azurerm_storage_account" "example" {
+		   name                = "storageaccountname"
+		   resource_group_name = azurerm_resource_group.example.name
 
-		//    location                 = azurerm_resource_group.example.location
-		//    account_tier             = "Standard"
-		//    account_replication_type = "LRS"
+		   location                 = azurerm_resource_group.example.location
+		   account_tier             = "Standard"
+		   account_replication_type = "LRS"
 
-		//    tags = {
-		//      environment = "staging"
-		//    }
-		//  }
-		//  `,
-		// 			mustExcludeResultCode: expectedCode,
-		// 		},
-		// 		{
-		// 			name: "check storage account network rules that has MicrosoftServices bypass passes",
-		// 			source: `
-		//  resource "azurerm_storage_account_network_rules" "test" {
-		//  resource_group_name  = azurerm_resource_group.test.name
-		//  storage_account_name = azurerm_storage_account.test.name
+		   tags = {
+		     environment = "staging"
+		   }
+		 }
+		 `,
+			mustExcludeResultCode: expectedCode,
+		},
+		{
+			name: "check storage account network rules that has MicrosoftServices bypass passes",
+			source: `
+		 resource "azurerm_storage_account_network_rules" "test" {
+		 resource_group_name  = azurerm_resource_group.test.name
+		 storage_account_name = azurerm_storage_account.test.name
 
-		//  	default_action             = "Allow"
-		//  	ip_rules                   = ["127.0.0.1"]
-		//  	virtual_network_subnet_ids = [azurerm_subnet.test.id]
-		//  	bypass                     = ["Metrics", "AzureServices"]
-		//  }
-		//  `,
-		// 			mustExcludeResultCode: expectedCode,
-		// 		},
+		 	default_action             = "Allow"
+		 	ip_rules                   = ["127.0.0.1"]
+		 	virtual_network_subnet_ids = [azurerm_subnet.test.id]
+		 	bypass                     = ["Metrics", "AzureServices"]
+		 }
+		 `,
+			mustExcludeResultCode: expectedCode,
+		},
 	}
 
 	for _, test := range tests {

@@ -10,7 +10,7 @@ func Adapt(modules []block.Module) storage.Storage {
 	accounts, containers, networkRules := adaptAccounts(modules)
 
 	orphanAccount := &storage.Account{
-		Metadata:     types.NewUnmanagedMetadata(nil, nil),
+		Metadata:     types.NewUnmanagedMetadata(),
 		NetworkRules: adaptOrphanNetworkRules(modules, networkRules),
 		Containers:   adaptOrphanContainers(modules, containers),
 	}
@@ -107,6 +107,7 @@ func adaptAccount(resource block.Block) storage.Account {
 	minTLSVersionVal := minTLSVersionAttr.AsStringValueOrDefault("TLS1_0", resource)
 
 	return storage.Account{
+		Metadata:     resource.Metadata(),
 		NetworkRules: networkRules,
 		EnforceHTTPS: httpsOnlyVal,
 		QueueProperties: storage.QueueProperties{
