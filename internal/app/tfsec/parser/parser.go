@@ -65,7 +65,7 @@ func (parser *Parser) parseDirectoryFiles(files []File) (block.Blocks, block.Ign
 }
 
 // ParseDirectory parses all terraform files within a given directory
-func (parser *Parser) ParseDirectory() ([]block.Module, error) {
+func (parser *Parser) ParseDirectory() (block.Modules, error) {
 
 	debug.Log("Finding Terraform subdirectories...")
 	diskTimer := metrics.Timer("timings", "disk i/o")

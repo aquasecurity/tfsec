@@ -6,5 +6,11 @@ import (
 )
 
 func Adapt(modules []block.Module) iam.IAM {
-	return iam.IAM{}
+	return iam.IAM{
+		PasswordPolicy: adaptPasswordPolicy(modules),
+		Policies:       adaptPolicies(modules),
+		Groups:         adaptGroups(modules),
+		Users:          adaptUsers(modules),
+		Roles:          adaptRoles(modules),
+	}
 }

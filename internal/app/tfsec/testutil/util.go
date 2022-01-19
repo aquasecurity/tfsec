@@ -11,6 +11,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil/filesystem"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -22,7 +23,8 @@ func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) r
 	for _, opt := range additionalOptions {
 		opt(scanner)
 	}
-	res, _ := scanner.Scan(modules)
+	res, err := scanner.Scan(modules)
+	require.NoError(t, err)
 	for _, result := range res {
 		if result.NarrowestRange() == nil {
 			t.Errorf("result has no range specified: %#v", result)
@@ -65,10 +67,12 @@ func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 		t.FailNow()
 	}
 
+	var found []string
 	for _, res := range results {
 		if res.Status() == rules.StatusPassed {
 			continue
 		}
+		found = append(found, res.Rule().ShortCode)
 		if res.Rule().LongID() == excludeCode {
 			foundExclude = true
 			excludeText = res.Description()
@@ -80,7 +84,7 @@ func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, resul
 
 	assert.False(t, foundExclude, fmt.Sprintf("res with code '%s' was found but should not have been: %s", excludeCode, excludeText))
 	if includeCode != "" {
-		assert.True(t, foundInclude, fmt.Sprintf("res with code '%s' was not found but should have been", includeCode))
+		assert.True(t, foundInclude, fmt.Sprintf("res with code '%s' was not found but should have been - found [%s]", includeCode, strings.Join(found, ", ")))
 	}
 
 	if t.Failed() {

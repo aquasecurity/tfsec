@@ -9,6 +9,7 @@ import (
 
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules/aws/iam"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
@@ -490,4 +491,63 @@ resource "bad" "thing" {
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
 	testutil.AssertCheckCode(t, "", r1.ID(), results)
+}
+
+func Test_ReferencesPassedToNestedModule(t *testing.T) {
+
+	r := rule.Rule{
+		Base: iam.CheckEnforceMFA,
+	}
+
+	scanner.RegisterCheckRule(r)
+	defer scanner.DeregisterCheckRule(r)
+
+	fs, err := filesystem.New()
+	require.NoError(t, err)
+	defer fs.Close()
+
+	require.NoError(t, fs.WriteTextFile("project/main.tf", `
+
+resource "aws_iam_group" "developers" {
+    name = "developers"
+}
+
+module "something" {
+	source = "../modules/a"
+    group = aws_iam_group.developers.name
+}
+`))
+	require.NoError(t, fs.WriteTextFile("modules/a/main.tf", `
+
+variable "group" {
+    type = "string"
+}
+
+resource aws_iam_group_policy mfa {
+  group = var.group
+  policy = data.aws_iam_policy_document.policy.json
+}
+
+data "aws_iam_policy_document" "policy" {
+  statement {
+    sid    = "main"
+    effect = "Allow"
+
+    actions   = ["s3:*"]
+    resources = ["*"]
+    condition {
+        test = "Bool"
+        variable = "aws:MultiFactorAuthPresent"
+        values = ["true"]
+    }
+  }
+}
+
+`))
+
+	modules, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	require.NoError(t, err)
+	results, _ := scanner.New().Scan(modules)
+	testutil.AssertCheckCode(t, "", r.ID(), results)
+
 }

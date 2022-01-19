@@ -45,6 +45,9 @@ func (h *HCLModule) GetBlocksByTypeLabel(typeLabel string) Blocks {
 }
 
 func (c *HCLModule) getBlocksByType(blockType string, labels ...string) Blocks {
+	if blockType == "module" {
+		return c.getModuleBlocks()
+	}
 	var results Blocks
 	for _, label := range labels {
 		for _, block := range c.blockMap[label] {
@@ -115,7 +118,7 @@ func (c *HCLModule) GetReferencedBlock(referringAttr Attribute, parentBlock Bloc
 }
 
 func (c *HCLModule) GetReferencingResources(originalBlock Block, referencingLabel string, referencingAttributeName string) Blocks {
-	return c.getReferencingBlocks(originalBlock, "resource", referencingLabel, referencingAttributeName)
+	return c.GetReferencingBlocks(originalBlock, "resource", referencingLabel, referencingAttributeName)
 }
 
 func (c *HCLModule) GetsModulesBySource(moduleSource string) (Blocks, error) {
@@ -130,7 +133,8 @@ func (c *HCLModule) GetsModulesBySource(moduleSource string) (Blocks, error) {
 	return results, nil
 }
 
-func (c *HCLModule) getReferencingBlocks(originalBlock Block, referencingType string, referencingLabel string, referencingAttributeName string) Blocks {
+func (c *HCLModule) GetReferencingBlocks(originalBlock Block, referencingType string, referencingLabel string, referencingAttributeName string) Blocks {
+
 	blocks := c.getBlocksByType(referencingType, referencingLabel)
 	var results Blocks
 	for _, block := range blocks {

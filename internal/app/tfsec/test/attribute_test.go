@@ -294,13 +294,7 @@ resource "aws_security_group" "my-security_group" {
 }
 
 func Test_AttributeIsAny(t *testing.T) {
-	var tests []struct {
-		name           string
-		source         string
-		checkAttribute string
-		checkValue     []interface{}
-		expectedResult bool
-	} = []struct {
+	var tests = []struct {
 		name           string
 		source         string
 		checkAttribute string

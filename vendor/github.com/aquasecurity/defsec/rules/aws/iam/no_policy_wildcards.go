@@ -100,20 +100,22 @@ func checkStatement(src types.StringValue, statement iamgo.Statement, results ru
 			results.AddPassed(src)
 		}
 	}
-	if statement.Principal.All {
-		results.Add(
-			"IAM policy document uses wildcarded principal.",
-			src,
-		)
-	}
-	for _, principal := range statement.Principal.AWS {
-		if strings.Contains(principal, "*") {
+	if statement.Principal != nil {
+		if statement.Principal.All {
 			results.Add(
 				"IAM policy document uses wildcarded principal.",
 				src,
 			)
-		} else {
-			results.AddPassed(src)
+		}
+		for _, principal := range statement.Principal.AWS {
+			if strings.Contains(principal, "*") {
+				results.Add(
+					"IAM policy document uses wildcarded principal.",
+					src,
+				)
+			} else {
+				results.AddPassed(src)
+			}
 		}
 	}
 	return results
