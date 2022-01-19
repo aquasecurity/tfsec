@@ -71,46 +71,37 @@ func convertTerraformDocument(modules block.Modules, block block.Block) (*wrappe
 	for _, statementBlock := range block.GetBlocks("statement") {
 
 		statement := parseStatement(statementBlock)
-
-		var sidExists bool
-		for i, existing := range document.Statement {
-			if i >= sourceCount {
-				break
-			}
-			if existing.Sid == statement.Sid {
-				sidExists = true
-				document.Statement[i] = statement
-				break
-			}
-		}
-		if !sidExists {
-			document.Statement = append(document.Statement, statement)
-		}
+		mergeInStatement(&document, statement, sourceCount)
 	}
 
+	sourceCount = len(document.Statement)
 	if overrideDocumentsAttr := block.GetAttribute("override_policy_documents"); overrideDocumentsAttr.IsIterable() {
 		docs := findAllPolicies(modules, block, overrideDocumentsAttr)
 		for _, doc := range docs {
 			for _, statement := range doc.document.Statement {
-				var sidExists bool
-				for i, existing := range document.Statement {
-					if i >= sourceCount {
-						break
-					}
-					if existing.Sid == statement.Sid {
-						sidExists = true
-						document.Statement[i] = statement
-						break
-					}
-				}
-				if !sidExists {
-					document.Statement = append(document.Statement, statement)
-				}
+				mergeInStatement(&document, statement, sourceCount)
 			}
 		}
 	}
 
 	return &wrappedDocument{document: document, source: block}, nil
+}
+
+func mergeInStatement(document *iamgo.Document, statement iamgo.Statement, overrideToIndex int) {
+	var sidExists bool
+	for i, existing := range document.Statement {
+		if i >= overrideToIndex {
+			break
+		}
+		if existing.Sid == statement.Sid {
+			sidExists = true
+			document.Statement[i] = statement
+			break
+		}
+	}
+	if !sidExists {
+		document.Statement = append(document.Statement, statement)
+	}
 }
 
 func parseStatement(statementBlock block.Block) iamgo.Statement {
