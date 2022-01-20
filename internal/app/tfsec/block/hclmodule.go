@@ -73,6 +73,17 @@ func (c *HCLModule) GetResourcesByType(labels ...string) Blocks {
 	return c.getBlocksByType("resource", labels...)
 }
 
+func (c *HCLModule) GetResourcesByIDs(ids ...string) Blocks {
+	var blocks Blocks
+
+	for _, id := range ids {
+		if block := c.blocks.WithID(id); block != nil {
+			blocks = append(blocks, block)
+		}
+	}
+	return blocks
+}
+
 func (c *HCLModule) GetDatasByType(label string) Blocks {
 	return c.getBlocksByType("data", label)
 }

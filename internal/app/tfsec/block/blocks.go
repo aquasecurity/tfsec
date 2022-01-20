@@ -11,3 +11,12 @@ func (blocks Blocks) OfType(t string) Blocks {
 	}
 	return results
 }
+
+func (blocks Blocks) WithID(id string) Block {
+	for _, block := range blocks {
+		if block.ID() == id {
+			return block
+		}
+	}
+	return nil
+}

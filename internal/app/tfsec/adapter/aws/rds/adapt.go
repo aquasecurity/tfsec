@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) rds.RDS {
+func Adapt(modules block.Modules) rds.RDS {
 	return rds.RDS{
 		Instances: getInstances(modules),
 		Clusters:  getClusters(modules),
@@ -14,50 +14,40 @@ func Adapt(modules []block.Module) rds.RDS {
 	}
 }
 
-func getInstances(modules []block.Module) (instances []rds.Instance) {
-
-	for _, module := range modules {
-		for _, resource := range module.GetResourcesByType("aws_db_instance") {
-			instances = append(instances, adaptInstance(resource, module))
-		}
+func getInstances(modules block.Modules) (instances []rds.Instance) {
+	for _, resource := range modules.GetResourcesByType("aws_db_instance") {
+		instances = append(instances, adaptInstance(resource, modules))
 	}
 
 	return instances
 }
 
-func getClusters(modules []block.Module) (clusters []rds.Cluster) {
-	foundClustersInstances := make(map[string]bool)
-	for _, module := range modules {
-		for _, resource := range module.GetResourcesByType("aws_rds_cluster") {
-			cluster, instanceIDs := adaptCluster(resource, module)
-			for _, id := range instanceIDs {
-				foundClustersInstances[id] = true
-			}
-			clusters = append(clusters, cluster)
+func getClusters(modules block.Modules) (clusters []rds.Cluster) {
+
+	rdsInstanceMaps := modules.GetChildResourceIDMapByType("aws_rds_cluster_instance")
+	for _, resource := range modules.GetResourcesByType("aws_rds_cluster") {
+		cluster, instanceIDs := adaptCluster(resource, modules)
+		for _, id := range instanceIDs {
+			rdsInstanceMaps[id] = true
+		}
+		clusters = append(clusters, cluster)
+	}
+
+	var orphansID []string
+	for id, resolved := range rdsInstanceMaps {
+		if !resolved {
+			orphansID = append(orphansID, id)
 		}
 	}
 
-	type orphanBlock struct {
-		block  block.Block
-		module block.Module
-	}
+	orphanResources := modules.GetResourceByIDs(orphansID...)
 
-	var orphanInstances []orphanBlock
-	for _, module := range modules {
-		for _, ciInstance := range module.GetResourcesByType("aws_rds_cluster_instance") {
-			if _, ok := foundClustersInstances[ciInstance.ID()]; ok {
-				continue
-			}
-			orphanInstances = append(orphanInstances, orphanBlock{ciInstance, module})
-		}
-	}
-
-	if len(orphanInstances) > 0 {
+	if len(orphanResources) > 0 {
 		orphanCluster := rds.Cluster{
 			Metadata: types.NewUnmanagedMetadata(),
 		}
-		for _, instance := range orphanInstances {
-			orphanCluster.Instances = append(orphanCluster.Instances, adaptClusterInstance(instance.block, instance.module))
+		for _, orphan := range orphanResources {
+			orphanCluster.Instances = append(orphanCluster.Instances, adaptClusterInstance(orphan, modules))
 		}
 		clusters = append(clusters, orphanCluster)
 	}
@@ -65,26 +55,24 @@ func getClusters(modules []block.Module) (clusters []rds.Cluster) {
 	return clusters
 }
 
-func getClassic(modules []block.Module) (classic rds.Classic) {
+func getClassic(modules block.Modules) (classic rds.Classic) {
 
 	var classicSecurityGroups []rds.DBSecurityGroup
 
-	for _, module := range modules {
-		for _, resource := range module.GetResourcesByType("aws_db_security_group", "aws_redshift_security_group", "aws_elasticache_security_group") {
-			classicSecurityGroups = append(classicSecurityGroups, adaptClassicDBSecurityGroup(resource))
-		}
+	for _, resource := range modules.GetResourcesByType("aws_db_security_group", "aws_redshift_security_group", "aws_elasticache_security_group") {
+		classicSecurityGroups = append(classicSecurityGroups, adaptClassicDBSecurityGroup(resource))
 	}
 
 	classic.DBSecurityGroups = classicSecurityGroups
 	return classic
 }
 
-func adaptClusterInstance(resource block.Block, module block.Module) rds.ClusterInstance {
+func adaptClusterInstance(resource block.Block, modules block.Modules) rds.ClusterInstance {
 
 	return rds.ClusterInstance{
 		Metadata:          resource.Metadata(),
 		ClusterIdentifier: resource.GetAttribute("cluster_identfier").AsStringValueOrDefault("", resource),
-		Instance:          adaptInstance(resource, module),
+		Instance:          adaptInstance(resource, modules),
 	}
 }
 
@@ -94,11 +82,11 @@ func adaptClassicDBSecurityGroup(resource block.Block) rds.DBSecurityGroup {
 	}
 }
 
-func adaptInstance(resource block.Block, module block.Module) rds.Instance {
+func adaptInstance(resource block.Block, modules block.Modules) rds.Instance {
 	replicaSource := resource.GetAttribute("replicate_source_db")
 	replicaSourceValue := ""
 	if replicaSource.IsNotNil() {
-		if referenced, err := module.GetReferencedBlock(replicaSource, resource); err == nil {
+		if referenced, err := modules.GetReferencedBlock(replicaSource, resource); err == nil {
 			replicaSourceValue = referenced.ID()
 
 		}
@@ -113,9 +101,9 @@ func adaptInstance(resource block.Block, module block.Module) rds.Instance {
 	}
 }
 
-func adaptCluster(resource block.Block, module block.Module) (rds.Cluster, []string) {
+func adaptCluster(resource block.Block, modules block.Modules) (rds.Cluster, []string) {
 
-	clusterInstances, ids := getClusterInstances(resource, module)
+	clusterInstances, ids := getClusterInstances(resource, modules)
 
 	return rds.Cluster{
 		Metadata:                  *resource.GetMetadata(),
@@ -127,12 +115,12 @@ func adaptCluster(resource block.Block, module block.Module) (rds.Cluster, []str
 	}, ids
 }
 
-func getClusterInstances(resource block.Block, module block.Module) (clusterInstances []rds.ClusterInstance, instanceIDs []string) {
-	clusterInstanceResources := module.GetReferencingResources(resource, "aws_rds_cluster_instance", "cluster_identifier")
+func getClusterInstances(resource block.Block, modules block.Modules) (clusterInstances []rds.ClusterInstance, instanceIDs []string) {
+	clusterInstanceResources := modules.GetReferencingResources(resource, "aws_rds_cluster_instance", "cluster_identifier")
 
 	for _, ciResource := range clusterInstanceResources {
 		instanceIDs = append(instanceIDs, ciResource.ID())
-		clusterInstances = append(clusterInstances, adaptClusterInstance(ciResource, module))
+		clusterInstances = append(clusterInstances, adaptClusterInstance(ciResource, modules))
 	}
 	return clusterInstances, instanceIDs
 }

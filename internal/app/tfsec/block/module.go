@@ -7,6 +7,7 @@ type Module interface {
 	Ignores() Ignores
 	GetBlocksByTypeLabel(typeLabel string) Blocks
 	GetResourcesByType(labels ...string) Blocks
+	GetResourcesByIDs(ids ...string) Blocks
 	GetDatasByType(label string) Blocks
 	GetProviderBlocksByProvider(providerName string, alias string) Blocks
 	GetReferencedBlock(referringAttr Attribute, parentBlock Block) (Block, error)
@@ -16,13 +17,24 @@ type Module interface {
 
 type Modules []Module
 
-func (m Modules) GetResourcesByType(typeLabel string) Blocks {
+func (m Modules) GetResourcesByType(typeLabel ...string) Blocks {
 	var blocks Blocks
 	for _, module := range m {
-		blocks = append(blocks, module.GetResourcesByType(typeLabel)...)
+		blocks = append(blocks, module.GetResourcesByType(typeLabel...)...)
 	}
 
 	return blocks
+}
+
+func (m Modules) GetChildResourceIDMapByType(typeLabel string) map[string]bool {
+	blocks := m.GetResourcesByType(typeLabel)
+
+	idMap := make(map[string]bool)
+	for _, block := range blocks {
+		idMap[block.ID()] = false
+	}
+
+	return idMap
 }
 
 func (m Modules) GetReferencedBlock(referringAttr Attribute, parentBlock Block) (Block, error) {
@@ -35,10 +47,28 @@ func (m Modules) GetReferencedBlock(referringAttr Attribute, parentBlock Block) 
 	return nil, fmt.Errorf("block not found")
 }
 
+func (m Modules) GetReferencingResources(originalBlock Block, referencingLabel string, referencingAttributeName string) Blocks {
+	var blocks Blocks
+	for _, module := range m {
+		blocks = append(blocks, module.GetReferencingResources(originalBlock, referencingLabel, referencingAttributeName)...)
+	}
+
+	return blocks
+}
+
 func (m Modules) GetBlocks() Blocks {
 	var blocks Blocks
 	for _, module := range m {
 		blocks = append(blocks, module.GetBlocks()...)
 	}
+	return blocks
+}
+
+func (m Modules) GetResourceByIDs(id ...string) Blocks {
+	var blocks Blocks
+	for _, module := range m {
+		blocks = append(blocks, module.GetResourcesByIDs(id...)...)
+	}
+
 	return blocks
 }
