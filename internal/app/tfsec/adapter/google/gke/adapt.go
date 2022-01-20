@@ -7,13 +7,13 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-func Adapt(modules []block.Module) gke.GKE {
+func Adapt(modules block.Modules) gke.GKE {
 	return gke.GKE{
 		Clusters: adaptClusters(modules),
 	}
 }
 
-func adaptClusters(modules []block.Module) []gke.Cluster {
+func adaptClusters(modules block.Modules) []gke.Cluster {
 	var clusters []gke.Cluster
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("google_container_cluster") {

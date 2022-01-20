@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) neptune.Neptune {
+func Adapt(modules block.Modules) neptune.Neptune {
 	return neptune.Neptune{
 		Clusters: adaptClusters(modules),
 	}
 }
 
-func adaptClusters(modules []block.Module) []neptune.Cluster {
+func adaptClusters(modules block.Modules) []neptune.Cluster {
 	var clusters []neptune.Cluster
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_neptune_cluster") {

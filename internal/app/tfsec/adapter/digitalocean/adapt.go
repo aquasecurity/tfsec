@@ -7,7 +7,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) digitalocean.DigitalOcean {
+func Adapt(modules block.Modules) digitalocean.DigitalOcean {
 	return digitalocean.DigitalOcean{
 		Compute: compute.Adapt(modules),
 		Spaces:  spaces.Adapt(modules),

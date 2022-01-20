@@ -18,7 +18,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) azure.Azure {
+func Adapt(modules block.Modules) azure.Azure {
 	return azure.Azure{
 		AppService:     appservice.Adapt(modules),
 		Authorization:  authorization.Adapt(modules),

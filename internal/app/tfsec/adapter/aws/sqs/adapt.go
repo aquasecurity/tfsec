@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) sqs.SQS {
+func Adapt(modules block.Modules) sqs.SQS {
 	return sqs.SQS{
 		Queues: adaptQueues(modules),
 	}
 }
 
-func adaptQueues(modules []block.Module) []sqs.Queue {
+func adaptQueues(modules block.Modules) []sqs.Queue {
 	var queues []sqs.Queue
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_sqs_queue") {

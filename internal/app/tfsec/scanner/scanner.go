@@ -44,7 +44,7 @@ func checkInList(id string, legacyID string, list []string) bool {
 	return false
 }
 
-func (scanner *Scanner) Scan(modules []block.Module) (rules.Results, error) {
+func (scanner *Scanner) Scan(modules block.Modules) (rules.Results, error) {
 
 	adaptationTimer := metrics.Timer("timings", "adaptation")
 	adaptationTimer.Start()

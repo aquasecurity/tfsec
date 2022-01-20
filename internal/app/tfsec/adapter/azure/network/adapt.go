@@ -6,14 +6,14 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) network.Network {
+func Adapt(modules block.Modules) network.Network {
 	return network.Network{
 		SecurityGroups:         adaptSecurityGroups(modules),
 		NetworkWatcherFlowLogs: adaptWatcherLogs(modules),
 	}
 }
 
-func adaptSecurityGroups(modules []block.Module) []network.SecurityGroup {
+func adaptSecurityGroups(modules block.Modules) []network.SecurityGroup {
 	var securityGroups []network.SecurityGroup
 
 	for _, module := range modules {
@@ -24,7 +24,7 @@ func adaptSecurityGroups(modules []block.Module) []network.SecurityGroup {
 	return securityGroups
 }
 
-func adaptWatcherLogs(modules []block.Module) []network.NetworkWatcherFlowLog {
+func adaptWatcherLogs(modules block.Modules) []network.NetworkWatcherFlowLog {
 	var watcherLogs []network.NetworkWatcherFlowLog
 
 	for _, module := range modules {

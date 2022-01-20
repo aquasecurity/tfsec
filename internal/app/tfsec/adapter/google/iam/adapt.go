@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func Adapt(modules []block.Module) iam.IAM {
+func Adapt(modules block.Modules) iam.IAM {
 	return (&adapter{
 		orgs:    make(map[string]iam.Organization),
 		modules: modules,

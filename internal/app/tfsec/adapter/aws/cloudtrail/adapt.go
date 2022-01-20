@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) cloudtrail.CloudTrail {
+func Adapt(modules block.Modules) cloudtrail.CloudTrail {
 	return cloudtrail.CloudTrail{
 		Trails: adaptTrails(modules),
 	}
 }
 
-func adaptTrails(modules []block.Module) []cloudtrail.Trail {
+func adaptTrails(modules block.Modules) []cloudtrail.Trail {
 	var trails []cloudtrail.Trail
 
 	for _, module := range modules {

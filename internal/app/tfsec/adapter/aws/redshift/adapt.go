@@ -5,14 +5,14 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) redshift.Redshift {
+func Adapt(modules block.Modules) redshift.Redshift {
 	return redshift.Redshift{
 		Clusters:       adaptClusters(modules),
 		SecurityGroups: adaptSecurityGroups(modules),
 	}
 }
 
-func adaptClusters(modules []block.Module) []redshift.Cluster {
+func adaptClusters(modules block.Modules) []redshift.Cluster {
 	var clusters []redshift.Cluster
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_redshift_cluster") {
@@ -22,7 +22,7 @@ func adaptClusters(modules []block.Module) []redshift.Cluster {
 	return clusters
 }
 
-func adaptSecurityGroups(modules []block.Module) []redshift.SecurityGroup {
+func adaptSecurityGroups(modules block.Modules) []redshift.SecurityGroup {
 	var securityGroups []redshift.SecurityGroup
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_redshift_security_group") {

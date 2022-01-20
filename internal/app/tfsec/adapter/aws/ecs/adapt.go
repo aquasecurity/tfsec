@@ -6,14 +6,14 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) ecs.ECS {
+func Adapt(modules block.Modules) ecs.ECS {
 	return ecs.ECS{
 		Clusters:        adaptClusters(modules),
 		TaskDefinitions: adaptTaskDefinitions(modules),
 	}
 }
 
-func adaptClusters(modules []block.Module) []ecs.Cluster {
+func adaptClusters(modules block.Modules) []ecs.Cluster {
 	var clusters []ecs.Cluster
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_ecs_cluster") {
@@ -43,7 +43,7 @@ func adaptClusterSettings(resourceBlock block.Block) ecs.ClusterSettings {
 	}
 }
 
-func adaptTaskDefinitions(modules []block.Module) []ecs.TaskDefinition {
+func adaptTaskDefinitions(modules block.Modules) []ecs.TaskDefinition {
 	var taskDefinitions []ecs.TaskDefinition
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_ecs_task_definition") {

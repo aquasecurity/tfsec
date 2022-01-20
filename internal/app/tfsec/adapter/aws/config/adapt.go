@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) config.Config {
+func Adapt(modules block.Modules) config.Config {
 	return config.Config{
 		ConfigurationAggregrator: adaptConfigurationAggregrator(modules),
 	}
 }
 
-func adaptConfigurationAggregrator(modules []block.Module) config.ConfigurationAggregrator {
+func adaptConfigurationAggregrator(modules block.Modules) config.ConfigurationAggregrator {
 	var configurationAggregrator config.ConfigurationAggregrator
 
 	for _, module := range modules {

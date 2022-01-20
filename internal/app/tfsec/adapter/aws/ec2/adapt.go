@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) ec2.EC2 {
+func Adapt(modules block.Modules) ec2.EC2 {
 	return ec2.EC2{
 		Instances: getInstances(modules),
 	}

@@ -8,13 +8,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) compute.Compute {
+func Adapt(modules block.Modules) compute.Compute {
 	return compute.Compute{
 		Instances: adaptInstances(modules),
 	}
 }
 
-func adaptInstances(modules []block.Module) []compute.Instance {
+func adaptInstances(modules block.Modules) []compute.Instance {
 	var instances []compute.Instance
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("cloudstack_instance") {

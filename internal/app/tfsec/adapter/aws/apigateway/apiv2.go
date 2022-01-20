@@ -6,9 +6,10 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func adaptAPIsV2(modules []block.Module) []apigateway.API {
+func adaptAPIsV2(modules block.Modules) []apigateway.API {
 
 	var apis []apigateway.API
+	apiStageIDs := modules.GetChildResourceIDMapByType("aws_apigatewayv2_stage")
 
 	for _, module := range modules {
 		for _, apiBlock := range module.GetResourcesByType("aws_apigatewayv2_api") {
@@ -19,17 +20,9 @@ func adaptAPIsV2(modules []block.Module) []apigateway.API {
 			api.ProtocolType = apiBlock.GetAttribute("protocol_type").AsStringValueOrDefault("", apiBlock)
 
 			for _, stageBlock := range module.GetReferencingResources(apiBlock, "aws_apigatewayv2_stage", "api_id") {
-				var stage apigateway.Stage
-				stage.Metadata = stageBlock.Metadata()
-				stage.Version = types.IntExplicit(2, apiBlock.Metadata())
-				stage.Name = stageBlock.GetAttribute("name").AsStringValueOrDefault("", stageBlock)
-				if accessLogging := stageBlock.GetBlock("access_log_settings"); accessLogging.IsNotNil() {
-					stage.AccessLogging.Metadata = accessLogging.Metadata()
-					stage.AccessLogging.CloudwatchLogGroupARN = accessLogging.GetAttribute("destination_arn").AsStringValueOrDefault("", accessLogging)
-				} else {
-					stage.AccessLogging.Metadata = stageBlock.Metadata()
-					stage.AccessLogging.CloudwatchLogGroupARN = types.StringDefault("", stageBlock.Metadata())
-				}
+				apiStageIDs.Resolve(stageBlock.ID())
+
+				stage := adaptStageV2(stageBlock)
 
 				api.Stages = append(api.Stages, stage)
 			}
@@ -37,5 +30,32 @@ func adaptAPIsV2(modules []block.Module) []apigateway.API {
 			apis = append(apis, api)
 		}
 	}
+
+	orphanResources := modules.GetResourceByIDs(apiStageIDs.Orphans()...)
+	if len(orphanResources) > 0 {
+		orphanage := apigateway.API{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, stage := range orphanResources {
+			orphanage.Stages = append(orphanage.Stages, adaptStageV2(stage))
+		}
+		apis = append(apis, orphanage)
+	}
+
 	return apis
+}
+
+func adaptStageV2(stageBlock block.Block) apigateway.Stage {
+	var stage apigateway.Stage
+	stage.Metadata = stageBlock.Metadata()
+	stage.Version = types.IntExplicit(2, stageBlock.Metadata())
+	stage.Name = stageBlock.GetAttribute("name").AsStringValueOrDefault("", stageBlock)
+	if accessLogging := stageBlock.GetBlock("access_log_settings"); accessLogging.IsNotNil() {
+		stage.AccessLogging.Metadata = accessLogging.Metadata()
+		stage.AccessLogging.CloudwatchLogGroupARN = accessLogging.GetAttribute("destination_arn").AsStringValueOrDefault("", accessLogging)
+	} else {
+		stage.AccessLogging.Metadata = stageBlock.Metadata()
+		stage.AccessLogging.CloudwatchLogGroupARN = types.StringDefault("", stageBlock.Metadata())
+	}
+	return stage
 }

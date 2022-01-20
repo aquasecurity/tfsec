@@ -8,13 +8,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) keyvault.KeyVault {
+func Adapt(modules block.Modules) keyvault.KeyVault {
 	return keyvault.KeyVault{
 		Vaults: adaptVaults(modules),
 	}
 }
 
-func adaptVaults(modules []block.Module) []keyvault.Vault {
+func adaptVaults(modules block.Modules) []keyvault.Vault {
 	var vaults []keyvault.Vault
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("azurerm_key_vault") {

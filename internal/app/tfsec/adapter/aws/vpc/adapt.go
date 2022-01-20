@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) vpc.VPC {
+func Adapt(modules block.Modules) vpc.VPC {
 	return vpc.VPC{
 		DefaultVPCs:    adaptDefaultVPCs(modules),
 		SecurityGroups: adaptSecurityGroups(modules),
@@ -14,7 +14,7 @@ func Adapt(modules []block.Module) vpc.VPC {
 	}
 }
 
-func adaptDefaultVPCs(modules []block.Module) []vpc.DefaultVPC {
+func adaptDefaultVPCs(modules block.Modules) []vpc.DefaultVPC {
 	var defaultVPCs []vpc.DefaultVPC
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_default_vpc") {
@@ -26,7 +26,7 @@ func adaptDefaultVPCs(modules []block.Module) []vpc.DefaultVPC {
 	return defaultVPCs
 }
 
-func adaptSecurityGroups(modules []block.Module) []vpc.SecurityGroup {
+func adaptSecurityGroups(modules block.Modules) []vpc.SecurityGroup {
 	var securityGroups []vpc.SecurityGroup
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_security_group") {
@@ -36,7 +36,7 @@ func adaptSecurityGroups(modules []block.Module) []vpc.SecurityGroup {
 	return securityGroups
 }
 
-func adaptNetworkACLs(modules []block.Module) []vpc.NetworkACL {
+func adaptNetworkACLs(modules block.Modules) []vpc.NetworkACL {
 	var networkACLs []vpc.NetworkACL
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_network_acl") {

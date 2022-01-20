@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) storage.Storage {
+func Adapt(modules block.Modules) storage.Storage {
 	accounts, containers, networkRules := adaptAccounts(modules)
 
 	orphanAccount := &storage.Account{
@@ -59,7 +59,7 @@ func adaptOrphanNetworkRules(modules []block.Module, networkRules []string) (orp
 	return orphans
 }
 
-func adaptAccounts(modules []block.Module) ([]storage.Account, []string, []string) {
+func adaptAccounts(modules block.Modules) ([]storage.Account, []string, []string) {
 	var accounts []storage.Account
 	var accountedForContainers []string
 	var accountedForNetworkRules []string

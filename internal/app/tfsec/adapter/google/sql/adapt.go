@@ -8,13 +8,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) sql.SQL {
+func Adapt(modules block.Modules) sql.SQL {
 	return sql.SQL{
 		Instances: adaptInstances(modules),
 	}
 }
 
-func adaptInstances(modules []block.Module) []sql.DatabaseInstance {
+func adaptInstances(modules block.Modules) []sql.DatabaseInstance {
 	var instances []sql.DatabaseInstance
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("google_sql_database_instance") {

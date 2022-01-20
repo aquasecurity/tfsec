@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) database.Database {
+func Adapt(modules block.Modules) database.Database {
 	return database.Database{
 		MSSQLServers:      adaptMSSQLServers(modules),
 		MariaDBServers:    adaptMariaDBServers(modules),
@@ -15,7 +15,7 @@ func Adapt(modules []block.Module) database.Database {
 	}
 }
 
-func adaptMSSQLServers(modules []block.Module) []database.MSSQLServer {
+func adaptMSSQLServers(modules block.Modules) []database.MSSQLServer {
 	var MSSQLServers []database.MSSQLServer
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("azurerm_sql_server") {
@@ -27,7 +27,7 @@ func adaptMSSQLServers(modules []block.Module) []database.MSSQLServer {
 	}
 	return MSSQLServers
 }
-func adaptMySQLServers(modules []block.Module) []database.MySQLServer {
+func adaptMySQLServers(modules block.Modules) []database.MySQLServer {
 	var mySQLServers []database.MySQLServer
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("azurerm_mysql_server") {
@@ -37,7 +37,7 @@ func adaptMySQLServers(modules []block.Module) []database.MySQLServer {
 	return mySQLServers
 }
 
-func adaptMariaDBServers(modules []block.Module) []database.MariaDBServer {
+func adaptMariaDBServers(modules block.Modules) []database.MariaDBServer {
 	var mariaDBServers []database.MariaDBServer
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("azurerm_mariadb_server") {
@@ -47,7 +47,7 @@ func adaptMariaDBServers(modules []block.Module) []database.MariaDBServer {
 	return mariaDBServers
 }
 
-func adaptPostgreSQLServers(modules []block.Module) []database.PostgreSQLServer {
+func adaptPostgreSQLServers(modules block.Modules) []database.PostgreSQLServer {
 	var PostgreSQLServers []database.PostgreSQLServer
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("azurerm_postgresql_server") {

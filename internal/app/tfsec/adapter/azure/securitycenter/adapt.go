@@ -5,14 +5,14 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) securitycenter.SecurityCenter {
+func Adapt(modules block.Modules) securitycenter.SecurityCenter {
 	return securitycenter.SecurityCenter{
 		Contacts:      adaptContacts(modules),
 		Subscriptions: adaptSubscriptions(modules),
 	}
 }
 
-func adaptContacts(modules []block.Module) []securitycenter.Contact {
+func adaptContacts(modules block.Modules) []securitycenter.Contact {
 	var contacts []securitycenter.Contact
 
 	for _, module := range modules {
@@ -23,7 +23,7 @@ func adaptContacts(modules []block.Module) []securitycenter.Contact {
 	return contacts
 }
 
-func adaptSubscriptions(modules []block.Module) []securitycenter.SubscriptionPricing {
+func adaptSubscriptions(modules block.Modules) []securitycenter.SubscriptionPricing {
 	var subscriptions []securitycenter.SubscriptionPricing
 
 	for _, module := range modules {

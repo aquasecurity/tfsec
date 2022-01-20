@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) lambda.Lambda {
+func Adapt(modules block.Modules) lambda.Lambda {
 	return lambda.Lambda{
 		Functions: adaptFunctions(modules),
 	}
 }
 
-func adaptFunctions(modules []block.Module) []lambda.Function {
+func adaptFunctions(modules block.Modules) []lambda.Function {
 	var functions []lambda.Function
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_lambda_function") {

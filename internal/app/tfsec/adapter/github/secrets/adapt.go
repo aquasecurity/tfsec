@@ -5,11 +5,11 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) []github.EnvironmentSecret {
+func Adapt(modules block.Modules) []github.EnvironmentSecret {
 	return adaptSecrets(modules)
 }
 
-func adaptSecrets(modules []block.Module) []github.EnvironmentSecret {
+func adaptSecrets(modules block.Modules) []github.EnvironmentSecret {
 	var secrets []github.EnvironmentSecret
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("github_actions_environment_secret") {

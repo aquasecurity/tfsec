@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func adaptDomainNamesV1(modules []block.Module) []apigateway.DomainName {
+func adaptDomainNamesV1(modules block.Modules) []apigateway.DomainName {
 
 	var domainNames []apigateway.DomainName
 

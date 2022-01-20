@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) bigquery.BigQuery {
+func Adapt(modules block.Modules) bigquery.BigQuery {
 	return bigquery.BigQuery{
 		Datasets: adaptDatasets(modules),
 	}
 }
 
-func adaptDatasets(modules []block.Module) []bigquery.Dataset {
+func adaptDatasets(modules block.Modules) []bigquery.Dataset {
 	var datasets []bigquery.Dataset
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("google_bigquery_dataset") {

@@ -5,14 +5,14 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) elasticache.ElastiCache {
+func Adapt(modules block.Modules) elasticache.ElastiCache {
 	return elasticache.ElastiCache{
 		Clusters:          adaptClusters(modules),
 		ReplicationGroups: adaptReplicationGroups(modules),
 		SecurityGroups:    adaptSecurityGroups(modules),
 	}
 }
-func adaptClusters(modules []block.Module) []elasticache.Cluster {
+func adaptClusters(modules block.Modules) []elasticache.Cluster {
 	var clusters []elasticache.Cluster
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_elasticache_cluster") {
@@ -22,7 +22,7 @@ func adaptClusters(modules []block.Module) []elasticache.Cluster {
 	return clusters
 }
 
-func adaptReplicationGroups(modules []block.Module) []elasticache.ReplicationGroup {
+func adaptReplicationGroups(modules block.Modules) []elasticache.ReplicationGroup {
 	var replicationGroups []elasticache.ReplicationGroup
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_elasticache_replication_group") {
@@ -32,7 +32,7 @@ func adaptReplicationGroups(modules []block.Module) []elasticache.ReplicationGro
 	return replicationGroups
 }
 
-func adaptSecurityGroups(modules []block.Module) []elasticache.SecurityGroup {
+func adaptSecurityGroups(modules block.Modules) []elasticache.SecurityGroup {
 	var securityGroups []elasticache.SecurityGroup
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_elasticache_security_group") {

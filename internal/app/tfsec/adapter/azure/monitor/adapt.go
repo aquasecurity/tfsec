@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) monitor.Monitor {
+func Adapt(modules block.Modules) monitor.Monitor {
 	return monitor.Monitor{
 		LogProfiles: adaptLogProfiles(modules),
 	}
 }
 
-func adaptLogProfiles(modules []block.Module) []monitor.LogProfile {
+func adaptLogProfiles(modules block.Modules) []monitor.LogProfile {
 	var logProfiles []monitor.LogProfile
 
 	for _, module := range modules {

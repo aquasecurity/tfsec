@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) kinesis.Kinesis {
+func Adapt(modules block.Modules) kinesis.Kinesis {
 	return kinesis.Kinesis{
 		Streams: adaptStreams(modules),
 	}
 }
 
-func adaptStreams(modules []block.Module) []kinesis.Stream {
+func adaptStreams(modules block.Modules) []kinesis.Stream {
 	var streams []kinesis.Stream
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_kinesis_stream") {

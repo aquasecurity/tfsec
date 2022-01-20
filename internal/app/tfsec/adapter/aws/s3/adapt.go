@@ -5,7 +5,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) s3.S3 {
+func Adapt(modules block.Modules) s3.S3 {
 	buckets := getBuckets(modules)
 	publicAccessBlocks := getPublicAccessBlocks(modules, buckets)
 

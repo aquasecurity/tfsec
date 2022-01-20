@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) elasticsearch.Elasticsearch {
+func Adapt(modules block.Modules) elasticsearch.Elasticsearch {
 	return elasticsearch.Elasticsearch{
 		Domains: adaptDomains(modules),
 	}
 }
 
-func adaptDomains(modules []block.Module) []elasticsearch.Domain {
+func adaptDomains(modules block.Modules) []elasticsearch.Domain {
 	var domains []elasticsearch.Domain
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_elasticsearch_domain") {

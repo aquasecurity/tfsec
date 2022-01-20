@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) ebs.EBS {
+func Adapt(modules block.Modules) ebs.EBS {
 	return ebs.EBS{
 		Volumes: adaptVolumes(modules),
 	}
 }
 
-func adaptVolumes(modules []block.Module) []ebs.Volume {
+func adaptVolumes(modules block.Modules) []ebs.Volume {
 	var volumes []ebs.Volume
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_ebs_volume") {

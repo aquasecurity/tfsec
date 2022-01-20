@@ -33,23 +33,16 @@ func getClusters(modules block.Modules) (clusters []rds.Cluster) {
 		clusters = append(clusters, cluster)
 	}
 
-	var orphansID []string
-	for id, resolved := range rdsInstanceMaps {
-		if !resolved {
-			orphansID = append(orphansID, id)
-		}
-	}
-
-	orphanResources := modules.GetResourceByIDs(orphansID...)
+	orphanResources := modules.GetResourceByIDs(rdsInstanceMaps.Orphans()...)
 
 	if len(orphanResources) > 0 {
-		orphanCluster := rds.Cluster{
+		orphanage := rds.Cluster{
 			Metadata: types.NewUnmanagedMetadata(),
 		}
 		for _, orphan := range orphanResources {
-			orphanCluster.Instances = append(orphanCluster.Instances, adaptClusterInstance(orphan, modules))
+			orphanage.Instances = append(orphanage.Instances, adaptClusterInstance(orphan, modules))
 		}
-		clusters = append(clusters, orphanCluster)
+		clusters = append(clusters, orphanage)
 	}
 
 	return clusters

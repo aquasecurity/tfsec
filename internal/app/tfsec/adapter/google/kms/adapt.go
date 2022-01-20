@@ -8,13 +8,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) kms.KMS {
+func Adapt(modules block.Modules) kms.KMS {
 	return kms.KMS{
 		KeyRings: adaptKeyRings(modules),
 	}
 }
 
-func adaptKeyRings(modules []block.Module) []kms.KeyRing {
+func adaptKeyRings(modules block.Modules) []kms.KeyRing {
 	var keyRings []kms.KeyRing
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("google_kms_key_ring") {

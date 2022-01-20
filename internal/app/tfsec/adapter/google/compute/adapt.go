@@ -5,7 +5,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) compute.Compute {
+func Adapt(modules block.Modules) compute.Compute {
 	return compute.Compute{
 		ProjectMetadata: adaptProjectMetadata(modules),
 		Instances:       adaptInstances(modules),

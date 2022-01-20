@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) ecr.ECR {
+func Adapt(modules block.Modules) ecr.ECR {
 	return ecr.ECR{
 		Repositories: adaptRepositories(modules),
 	}
 }
 
-func adaptRepositories(modules []block.Module) []ecr.Repository {
+func adaptRepositories(modules block.Modules) []ecr.Repository {
 	var repositories []ecr.Repository
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_ecr_repository") {
