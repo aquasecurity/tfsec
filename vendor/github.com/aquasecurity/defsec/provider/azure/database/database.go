@@ -24,6 +24,7 @@ type PostgreSQLServer struct {
 }
 
 type PostgresSQLConfig struct {
+	types.Metadata
 	LogCheckpoints       types.BoolValue
 	ConnectionThrottling types.BoolValue
 	LogConnections       types.BoolValue
@@ -70,11 +71,51 @@ func (d *Database) GetRawValue() interface{} {
 	return nil
 }
 
+func (m *MariaDBServer) GetMetadata() *types.Metadata {
+	return &m.Metadata
+}
+
+func (m *MariaDBServer) GetRawValue() interface{} {
+	return nil
+}
+
+func (m *MySQLServer) GetMetadata() *types.Metadata {
+	return &m.Metadata
+}
+
+func (m *MySQLServer) GetRawValue() interface{} {
+	return nil
+}
+
+func (p *PostgreSQLServer) GetMetadata() *types.Metadata {
+	return &p.Metadata
+}
+
+func (p *PostgreSQLServer) GetRawValue() interface{} {
+	return nil
+}
+
+func (p *PostgresSQLConfig) GetMetadata() *types.Metadata {
+	return &p.Metadata
+}
+
+func (p *PostgresSQLConfig) GetRawValue() interface{} {
+	return nil
+}
+
 func (s *Server) GetMetadata() *types.Metadata {
 	return &s.Metadata
 }
 
 func (s *Server) GetRawValue() interface{} {
+	return nil
+}
+
+func (m *MSSQLServer) GetMetadata() *types.Metadata {
+	return &m.Metadata
+}
+
+func (m *MSSQLServer) GetRawValue() interface{} {
 	return nil
 }
 

@@ -132,9 +132,8 @@ func adaptMySQLServer(resource block.Block, module block.Module) database.MySQLS
 	}
 
 	return database.MySQLServer{
-		Metadata: resource.Metadata(),
 		Server: database.Server{
-			Metadata:                  *resource.GetMetadata(),
+			Metadata:                  resource.Metadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,
 			MinimumTLSVersion:         minTLSVersionVal,
 			EnablePublicNetworkAccess: publicAccessVal,
@@ -158,9 +157,8 @@ func adaptMariaDBServer(resource block.Block, module block.Module) database.Mari
 	}
 
 	return database.MariaDBServer{
-		Metadata: resource.Metadata(),
 		Server: database.Server{
-			Metadata:                  *resource.GetMetadata(),
+			Metadata:                  resource.Metadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,
 			EnablePublicNetworkAccess: publicAccessVal,
 			FirewallRules:             firewallRules,
@@ -197,9 +195,8 @@ func adaptPostgreSQLServer(resource block.Block, module block.Module) database.P
 	}
 
 	return database.PostgreSQLServer{
-		Metadata: resource.Metadata(),
 		Server: database.Server{
-			Metadata:                  *resource.GetMetadata(),
+			Metadata:                  resource.Metadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,
 			MinimumTLSVersion:         minTLSVersionVal,
 			EnablePublicNetworkAccess: publicAccessVal,
