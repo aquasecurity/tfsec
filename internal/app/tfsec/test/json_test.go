@@ -91,7 +91,12 @@ func TestScanningJSON(t *testing.T) {
 			} else {
 				exclude = r1.ID()
 			}
-			testutil.AssertCheckCode(t, include, exclude, results)
+			if include != "" {
+				testutil.AssertRuleFound(t, include, results, "false negative found")
+			}
+			if exclude != "" {
+				testutil.AssertRuleNotFound(t, exclude, results, "false positive found")
+			}
 		})
 	}
 }

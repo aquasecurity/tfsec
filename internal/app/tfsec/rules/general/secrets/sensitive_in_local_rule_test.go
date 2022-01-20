@@ -37,7 +37,12 @@ func Test_AWSSensitiveLocals(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 
 			results := testutil.ScanHCL(test.source, t)
-			testutil.AssertCheckCode(t, test.mustIncludeResultCode, test.mustExcludeResultCode, results)
+			if test.mustIncludeResultCode != "" {
+				testutil.AssertRuleFound(t, test.mustIncludeResultCode, results, "false negative found")
+			}
+			if test.mustExcludeResultCode != "" {
+				testutil.AssertRuleNotFound(t, test.mustExcludeResultCode, results, "false positive found")
+			}
 		})
 	}
 

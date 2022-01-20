@@ -42,6 +42,9 @@ func GetRegisteredRules() []rule.Rule {
 	combined := make([]rule.Rule, len(registeredRules))
 	copy(combined, registeredRules)
 	for _, defsecRule := range rules.GetRegistered() {
+		if defsecRule.Rule().Terraform == nil {
+			continue
+		}
 		combined = append(combined, rule.Rule{
 			Base: defsecRule,
 		})
@@ -51,7 +54,7 @@ func GetRegisteredRules() []rule.Rule {
 }
 
 func GetRuleById(id string) (*rule.Rule, error) {
-	for _, r := range registeredRules {
+	for _, r := range GetRegisteredRules() {
 		if r.ID() == id {
 			return &r, nil
 		}

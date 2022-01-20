@@ -184,7 +184,12 @@ variable "things" {
 				exclude = r1.ID()
 			}
 			assert.Equal(t, test.expectedResults, len(results))
-			testutil.AssertCheckCode(t, include, exclude, results)
+			if include != "" {
+				testutil.AssertRuleFound(t, include, results, "false negative found")
+			}
+			if exclude != "" {
+				testutil.AssertRuleNotFound(t, exclude, results, "false positive found")
+			}
 		})
 	}
 }

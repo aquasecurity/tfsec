@@ -1,9 +1,7 @@
 package testutil
 
 import (
-	"fmt"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/aquasecurity/defsec/rules"
@@ -57,40 +55,26 @@ func CreateModulesFromSource(source string, ext string, t *testing.T) []block.Mo
 	return modules
 }
 
-func AssertCheckCode(t *testing.T, includeCode string, excludeCode string, results []rules.Result, messages ...string) {
-	var foundInclude bool
-	var foundExclude bool
+func AssertRuleFound(t *testing.T, ruleID string, results []rules.Result, message string, args ...interface{}) {
+	found := ruleIDInResults(ruleID, results)
+	assert.True(t, found, append([]interface{}{message}, args...)...)
+}
 
-	var excludeText string
+func AssertRuleNotFound(t *testing.T, ruleID string, results []rules.Result, message string, args ...interface{}) {
+	found := ruleIDInResults(ruleID, results)
+	assert.False(t, found, append([]interface{}{message}, args...)...)
+}
 
-	if !validateCodes(includeCode, excludeCode) {
-		t.Logf("Either includeCode (%s) or excludeCode (%s) was invalid ", includeCode, excludeCode)
-		t.FailNow()
-	}
-
-	var found []string
+func ruleIDInResults(ruleID string, results []rules.Result) bool {
 	for _, res := range results {
 		if res.Status() == rules.StatusPassed {
 			continue
 		}
-		found = append(found, res.Rule().ShortCode)
-		if res.Rule().LongID() == excludeCode {
-			foundExclude = true
-			excludeText = res.Description()
-		}
-		if res.Rule().LongID() == includeCode {
-			foundInclude = true
+		if res.Rule().LongID() == ruleID {
+			return true
 		}
 	}
-
-	assert.False(t, foundExclude, fmt.Sprintf("res with code '%s' was found but should not have been: %s", excludeCode, excludeText))
-	if includeCode != "" {
-		assert.True(t, foundInclude, fmt.Sprintf("res with code '%s' was not found but should have been - found [%s]", includeCode, strings.Join(found, ", ")))
-	}
-
-	if t.Failed() {
-		t.Log(strings.ReplaceAll(t.Name(), "_", " "))
-	}
+	return false
 }
 
 func validateCodes(includeCode, excludeCode string) bool {
