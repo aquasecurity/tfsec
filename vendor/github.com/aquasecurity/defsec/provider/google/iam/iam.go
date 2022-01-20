@@ -6,8 +6,9 @@ type IAM struct {
 }
 
 type Member struct {
-	Member types.StringValue
-	Role   types.StringValue
+	Member                types.StringValue
+	Role                  types.StringValue
+	DefaultServiceAccount types.BoolValue
 }
 
 type Binding struct {
