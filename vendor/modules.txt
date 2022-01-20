@@ -32,6 +32,7 @@ github.com/apparentlymart/go-textseg/v13/textseg
 ## explicit; go 1.17
 github.com/aquasecurity/defsec/cidr
 github.com/aquasecurity/defsec/formatters
+github.com/aquasecurity/defsec/loader
 github.com/aquasecurity/defsec/metrics
 github.com/aquasecurity/defsec/provider
 github.com/aquasecurity/defsec/provider/aws
@@ -132,6 +133,7 @@ github.com/aquasecurity/defsec/rules/aws/neptune
 github.com/aquasecurity/defsec/rules/aws/rds
 github.com/aquasecurity/defsec/rules/aws/redshift
 github.com/aquasecurity/defsec/rules/aws/s3
+github.com/aquasecurity/defsec/rules/aws/sam
 github.com/aquasecurity/defsec/rules/aws/sns
 github.com/aquasecurity/defsec/rules/aws/sqs
 github.com/aquasecurity/defsec/rules/aws/ssm

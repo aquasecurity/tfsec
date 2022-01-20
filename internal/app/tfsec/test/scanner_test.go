@@ -20,7 +20,6 @@ import (
 )
 
 var panicRule = rule.Rule{
-	LegacyID: "EXA001",
 	Base: rules.Register(
 		rules.Rule{
 			Provider:  provider.AWSProvider,

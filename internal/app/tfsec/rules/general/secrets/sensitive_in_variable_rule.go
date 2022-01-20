@@ -16,31 +16,6 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID: "GEN001",
-		BadExample: []string{`
- variable "password" {
-   description = "The root password for our VM"
-   type        = string
-   default     = "p4ssw0rd"
- }
- 
- resource "evil_corp" "virtual_machine" {
- 	root_password = var.password
- }
- `},
-		GoodExample: []string{`
- variable "password" {
-   description = "The root password for our VM"
-   type        = string
- }
- 
- resource "evil_corp" "virtual_machine" {
- 	root_password = var.password
- }
- `},
-		Links: []string{
-			"https://www.terraform.io/docs/state/sensitive-data.html",
-		},
 		RequiredTypes: []string{"variable"},
 		Base:          secrets.CheckNotExposed,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {

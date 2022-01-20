@@ -16,9 +16,7 @@ import (
 func (r *Rule) CheckAgainstState(s *state.State) rules.Results {
 	results := r.Base.Evaluate(s)
 	if len(results) > 0 {
-		base := r.Base.Rule()
-		base.Links = append(r.Links, base.Links...)
-		results.SetRule(base)
+		results.SetRule(r.Base.Rule())
 	}
 	return results
 }
@@ -40,7 +38,6 @@ func (r *Rule) CheckAgainstBlock(b block.Block, m block.Module) rules.Results {
 	results := r.CheckTerraform(b, m)
 	if len(results) > 0 {
 		base := r.Base.Rule()
-		base.Links = append(r.Links, base.Links...)
 		results.SetRule(base)
 	}
 	for i, result := range results {

@@ -42,7 +42,7 @@ func (p *Pool) Run() (rules.Results, error) {
 	}
 
 	for _, module := range p.modules {
-		for _, r := range GetRegisteredRules() {
+		for _, r := range p.rules {
 			if r.CheckTerraform != nil {
 				// run local hcl rule
 				outgoing <- &hclModuleRuleJob{

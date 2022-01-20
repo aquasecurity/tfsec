@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/legacy"
 )
 
 type migrationStatistic struct {
@@ -22,7 +22,7 @@ type MigrationStatistics []*migrationStatistic
 
 func RunMigration(dir string) (MigrationStatistics, error) {
 
-	legacyMappings := getCodeMappings()
+	legacyMappings := legacy.IDs
 	file, err := os.Stat(dir)
 	if err != nil {
 		return nil, err
@@ -100,13 +100,3 @@ func migrateFile(file string, legacyMapping map[string]string) (MigrationStatist
 	return stats, nil
 }
 
-func getCodeMappings() map[string]string {
-	legacyMapping := make(map[string]string)
-	rules := scanner.GetRegisteredRules()
-	for _, r := range rules {
-		if r.LegacyID != "" {
-			legacyMapping[r.LegacyID] = r.Base.Rule().LongID()
-		}
-	}
-	return legacyMapping
-}

@@ -50,27 +50,8 @@ var sensitiveWhitelist = []struct {
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID: "GEN003",
-		Links: []string{
-			"https://www.terraform.io/docs/state/sensitive-data.html",
-		},
 		RequiredTypes: []string{"resource", "provider", "module"},
-		BadExample: []string{`
- resource "evil_corp" "bad_example" {
- 	root_password = "p4ssw0rd"
- }
- `},
-		GoodExample: []string{`
- variable "password" {
-   description = "The root password for our VM"
-   type        = string
- }
- 
- resource "evil_corp" "good_example" {
- 	root_password = var.password
- }
- `},
-		Base: secrets.CheckNotExposed,
+		Base:          secrets.CheckNotExposed,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 
 			attributes := resourceBlock.GetAttributes()

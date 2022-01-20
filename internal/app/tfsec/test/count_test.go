@@ -152,7 +152,6 @@ variable "things" {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			r1 := rule.Rule{
-				LegacyID: "ABC123",
 				Base: rules.Register(
 					rules.Rule{
 						Provider:  provider.AWSProvider,

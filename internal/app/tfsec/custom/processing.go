@@ -142,7 +142,6 @@ func processFoundChecks(checks ChecksFile) {
 					},
 					nil,
 				),
-				LegacyID:        customCheck.Code,
 				RequiredTypes:   customCheck.RequiredTypes,
 				RequiredLabels:  customCheck.RequiredLabels,
 				RequiredSources: customCheck.RequiredSources,

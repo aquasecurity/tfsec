@@ -9,6 +9,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/adapter"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/legacy"
 )
 
 // Scanner scans HCL blocks by running all registered rules against them
@@ -41,15 +42,6 @@ func checkInList(id string, legacyID string, list []string) bool {
 		}
 	}
 	return false
-}
-
-func FindLegacyID(longID string) string {
-	for _, rule := range GetRegisteredRules() {
-		if rule.ID() == longID {
-			return rule.LegacyID
-		}
-	}
-	return ""
 }
 
 func (scanner *Scanner) Scan(modules []block.Module) (rules.Results, error) {
@@ -87,7 +79,7 @@ func (scanner *Scanner) Scan(modules []block.Module) (rules.Results, error) {
 				result.NarrowestRange(),
 				scanner.workspaceName,
 				result.Rule().LongID(),
-				FindLegacyID(result.Rule().LongID()),
+				legacy.FindID(result.Rule().LongID()),
 			) != nil {
 				debug.Log("Ignoring '%s'", result.Rule().LongID())
 				continue
@@ -109,8 +101,8 @@ func (scanner *Scanner) filterResults(results []rules.Result) []rules.Result {
 	var filtered []rules.Result
 	excludeCounter := metrics.Counter("results", "excluded")
 	for _, result := range results {
-		if len(scanner.includedRuleIDs) == 0 || len(scanner.includedRuleIDs) > 0 && checkInList(result.Rule().LongID(), FindLegacyID(result.Rule().LongID()), scanner.includedRuleIDs) {
-			if !scanner.includeIgnored && checkInList(result.Rule().LongID(), FindLegacyID(result.Rule().LongID()), scanner.excludedRuleIDs) {
+		if len(scanner.includedRuleIDs) == 0 || len(scanner.includedRuleIDs) > 0 && checkInList(result.Rule().LongID(), legacy.FindID(result.Rule().LongID()), scanner.includedRuleIDs) {
+			if !scanner.includeIgnored && checkInList(result.Rule().LongID(), legacy.FindID(result.Rule().LongID()), scanner.excludedRuleIDs) {
 				excludeCounter.Increment(1)
 				debug.Log("Ignoring '%s'", result.Rule().LongID())
 			} else if scanner.includePassed || result.Status() != rules.StatusPassed {

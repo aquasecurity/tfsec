@@ -18,18 +18,6 @@ jobs:
         go-version: '1.17' # The Go version to download (if necessary) and use.
     - run: go version
 
-    - name: Run Documentation Linter
-      run: make lint-pr-checks
+    - name: Run pr-ready
+      run: make pr-ready
 
-    - name: Run test
-      run: make test
-
-    - name: Sanity
-      run: make sanity
-
-    - name: Spelling
-      uses: codespell-project/actions-codespell@master
-      with:
-        check_filenames: true
-        skip: vendor,funcs
-        ignore_words_file: .codespellignore

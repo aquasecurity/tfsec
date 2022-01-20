@@ -11,34 +11,6 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID: "GEN005",
-		BadExample: []string{`
- resource "aws_instance" "bad_example" {
- 	instance_type = "t2.small"
- 
- 	user_data = <<EOF
- 		Password = "something secret"
- EOF
- 
- }
- `},
-		GoodExample: []string{`
- variable "password" {
- 	type = string
- }
- 
- resource "aws_instance" "good_instance" {
- 	instance_type = "t2.small"
- 
- 	user_data = <<EOF
- 		export EDITOR=vimacs
- EOF
- 
- }
- `},
-		Links: []string{
-			"https://www.terraform.io/docs/state/sensitive-data.html",
-		},
 		RequiredTypes: []string{"resource", "provider", "module", "locals", "variable"},
 		Base:          secrets.CheckNotExposed,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {

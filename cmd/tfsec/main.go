@@ -15,6 +15,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/ignores"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/legacy"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -524,7 +525,7 @@ func updateResultSeverity(results []rules.Result) []rules.Result {
 	var overriddenResults []rules.Result
 	for _, res := range results {
 		for code, sev := range overrides {
-			if res.Rule().LongID() == code || scanner.FindLegacyID(res.Rule().LongID()) == code {
+			if res.Rule().LongID() == code || legacy.FindID(res.Rule().LongID()) == code {
 				overrides := rules.Results([]rules.Result{res})
 				override := res.Rule()
 				override.Severity = severity.Severity(sev)
