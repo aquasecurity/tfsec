@@ -5,13 +5,28 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules block.Modules) storage.Storage {
+func Adapt(modules []block.Module) storage.Storage {
 	return storage.Storage{
 		Buckets: (&adapter{modules: modules}).adaptBuckets(),
 	}
 }
 
-func adaptBuckets(modules block.Modules) []storage.Bucket {
+type adapter struct {
+	modules    block.Modules
+	bindings   []parentedBinding
+	members    []parentedMember
+	bindingMap block.ResourceIDResolutions
+	memberMap  block.ResourceIDResolutions
+}
+
+func (a *adapter) adaptBuckets() []storage.Bucket {
+
+	a.bindingMap = a.modules.GetChildResourceIDMapByType("google_storage_bucket_iam_binding", "google_storage_bucket_iam_policy")
+	a.memberMap = a.modules.GetChildResourceIDMapByType("google_storage_bucket_iam_member")
+
+	a.adaptMembers()
+	a.adaptBindings()
+
 	var buckets []storage.Bucket
 	for _, module := range a.modules {
 		for _, resource := range module.GetResourcesByType("google_storage_bucket") {
