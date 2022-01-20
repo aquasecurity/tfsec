@@ -6,6 +6,7 @@ import (
 
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/security"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/defsec/state"
 	"github.com/owenrumney/squealer/pkg/squealer"
@@ -25,19 +26,19 @@ var CheckNoPlaintextSecrets = rules.Register(
 			"https://docs.aws.amazon.com/systems-manager/latest/userguide/integration-ps-secretsmanager.html",
 			"https://www.vaultproject.io/",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPlaintextSecretsGoodExamples,
-            BadExamples:         terraformNoPlaintextSecretsBadExamples,
-            Links:               terraformNoPlaintextSecretsLinks,
-            RemediationMarkdown: terraformNoPlaintextSecretsRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationNoPlaintextSecretsGoodExamples,
-            BadExamples:         cloudFormationNoPlaintextSecretsBadExamples,
-            Links:               cloudFormationNoPlaintextSecretsLinks,
-            RemediationMarkdown: cloudFormationNoPlaintextSecretsRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPlaintextSecretsGoodExamples,
+			BadExamples:         terraformNoPlaintextSecretsBadExamples,
+			Links:               terraformNoPlaintextSecretsLinks,
+			RemediationMarkdown: terraformNoPlaintextSecretsRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationNoPlaintextSecretsGoodExamples,
+			BadExamples:         cloudFormationNoPlaintextSecretsBadExamples,
+			Links:               cloudFormationNoPlaintextSecretsLinks,
+			RemediationMarkdown: cloudFormationNoPlaintextSecretsRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 
@@ -49,7 +50,7 @@ var CheckNoPlaintextSecrets = rules.Register(
 				continue
 			}
 			for key, val := range vars {
-				if result := scanner.Scan(val); result.TransgressionFound {
+				if result := scanner.Scan(val); result.TransgressionFound || security.IsSensitiveAttribute(key) {
 					results.Add(
 						fmt.Sprintf("Container definition contains a potentially sensitive environment variable '%s': %s", key, result.Description),
 						&definition,

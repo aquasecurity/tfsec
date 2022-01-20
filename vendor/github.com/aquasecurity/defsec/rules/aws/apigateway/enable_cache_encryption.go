@@ -19,17 +19,17 @@ var CheckEnableCacheEncryption = rules.Register(
 		Resolution:  "Enable cache encryption",
 		Explanation: `Method cache encryption ensures that any sensitive data in the cache is not vulnerable to compromise in the event of interception`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableCacheEncryptionGoodExamples,
-            BadExamples:         terraformEnableCacheEncryptionBadExamples,
-            Links:               terraformEnableCacheEncryptionLinks,
-            RemediationMarkdown: terraformEnableCacheEncryptionRemediationMarkdown,
-        },
-        Severity:    severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableCacheEncryptionGoodExamples,
+			BadExamples:         terraformEnableCacheEncryptionBadExamples,
+			Links:               terraformEnableCacheEncryptionLinks,
+			RemediationMarkdown: terraformEnableCacheEncryptionRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, api := range s.AWS.APIGateway.APIs {
-			if !api.IsManaged() || api.ProtocolType.NotEqualTo(apigateway.ProtocolTypeREST) {
+			if api.ProtocolType.NotEqualTo(apigateway.ProtocolTypeREST) {
 				continue
 			}
 			for _, stage := range api.Stages {

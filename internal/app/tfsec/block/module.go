@@ -41,8 +41,8 @@ func (m Modules) GetResourcesByType(typeLabel ...string) Blocks {
 	return blocks
 }
 
-func (m Modules) GetChildResourceIDMapByType(typeLabel string) ResourceIDResolutions {
-	blocks := m.GetResourcesByType(typeLabel)
+func (m Modules) GetChildResourceIDMapByType(typeLabel ...string) ResourceIDResolutions {
+	blocks := m.GetResourcesByType(typeLabel...)
 
 	idMap := make(map[string]bool)
 	for _, block := range blocks {

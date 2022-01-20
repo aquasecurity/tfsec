@@ -19,17 +19,17 @@ var CheckEnableTracing = rules.Register(
 		Resolution:  "Enable tracing",
 		Explanation: `X-Ray tracing enables end-to-end debugging and analysis of all API Gateway HTTP requests.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableTracingGoodExamples,
-            BadExamples:         terraformEnableTracingBadExamples,
-            Links:               terraformEnableTracingLinks,
-            RemediationMarkdown: terraformEnableTracingRemediationMarkdown,
-        },
-        Severity:    severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableTracingGoodExamples,
+			BadExamples:         terraformEnableTracingBadExamples,
+			Links:               terraformEnableTracingLinks,
+			RemediationMarkdown: terraformEnableTracingRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, api := range s.AWS.APIGateway.APIs {
-			if !api.IsManaged() || api.ProtocolType.NotEqualTo(apigateway.ProtocolTypeREST) {
+			if api.ProtocolType.NotEqualTo(apigateway.ProtocolTypeREST) {
 				continue
 			}
 			for _, stage := range api.Stages {

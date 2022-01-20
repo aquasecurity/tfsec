@@ -21,13 +21,13 @@ var CheckEnforceHttps = rules.Register(
 			"https://docs.microsoft.com/en-us/azure/app-service/configure-ssl-bindings#enforce-https",
 			"https://docs.microsoft.com/en-us/azure/azure-functions/security-concepts",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnforceHttpsGoodExamples,
-            BadExamples:         terraformEnforceHttpsBadExamples,
-            Links:               terraformEnforceHttpsLinks,
-            RemediationMarkdown: terraformEnforceHttpsRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnforceHttpsGoodExamples,
+			BadExamples:         terraformEnforceHttpsBadExamples,
+			Links:               terraformEnforceHttpsLinks,
+			RemediationMarkdown: terraformEnforceHttpsRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, functionApp := range s.Azure.AppService.FunctionApps {
@@ -36,6 +36,8 @@ var CheckEnforceHttps = rules.Register(
 					"Function app does not have HTTPS enforced.",
 					functionApp.HTTPSOnly,
 				)
+			} else {
+				results.AddPassed(&functionApp)
 			}
 		}
 		return

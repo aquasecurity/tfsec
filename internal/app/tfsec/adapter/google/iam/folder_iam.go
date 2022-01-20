@@ -53,7 +53,7 @@ func (a *adapter) adaptFolderBindings() {
 		if err != nil {
 			continue
 		}
-		bindings := parsePolicyBlock(policyBlock)
+		bindings := ParsePolicyBlock(policyBlock)
 		folderAttr := iamBlock.GetAttribute("folder")
 
 		if refBlock, err := a.modules.GetReferencedBlock(folderAttr, iamBlock); err == nil {

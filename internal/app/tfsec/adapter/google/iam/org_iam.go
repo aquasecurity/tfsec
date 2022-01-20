@@ -49,7 +49,7 @@ func (a *adapter) adaptOrganizationBindings() {
 		if err != nil {
 			continue
 		}
-		bindings := parsePolicyBlock(policyBlock)
+		bindings := ParsePolicyBlock(policyBlock)
 		orgAttr := iamBlock.GetAttribute("organization")
 
 		if refBlock, err := a.modules.GetReferencedBlock(orgAttr, iamBlock); err == nil {
