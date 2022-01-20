@@ -23,16 +23,19 @@ Explicitly overriding publicAccess to anything other than off should be avoided.
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/storage/blobs/anonymous-read-access-configure?tabs=portal#set-the-public-access-level-for-a-container",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicAccessGoodExamples,
-            BadExamples:         terraformNoPublicAccessBadExamples,
-            Links:               terraformNoPublicAccessLinks,
-            RemediationMarkdown: terraformNoPublicAccessRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicAccessGoodExamples,
+			BadExamples:         terraformNoPublicAccessBadExamples,
+			Links:               terraformNoPublicAccessLinks,
+			RemediationMarkdown: terraformNoPublicAccessRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, account := range s.Azure.Storage.Accounts {
+			if !account.IsManaged() {
+				continue
+			}
 			for _, container := range account.Containers {
 				if container.PublicAccess.NotEqualTo(storage.PublicAccessOff) {
 					results.Add(

@@ -3,6 +3,7 @@ package neptune
 import "github.com/aquasecurity/defsec/types"
 
 type Neptune struct {
+	types.Metadata
 	Clusters []Cluster
 }
 
@@ -14,6 +15,7 @@ type Cluster struct {
 }
 
 type Logging struct {
+	types.Metadata
 	Audit types.BoolValue
 }
 
@@ -24,3 +26,21 @@ func (c *Cluster) GetMetadata() *types.Metadata {
 func (c *Cluster) GetRawValue() interface{} {
 	return nil
 }
+
+
+func (n *Neptune) GetMetadata() *types.Metadata {
+	return &n.Metadata
+}
+
+func (n *Neptune) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (l *Logging) GetMetadata() *types.Metadata {
+	return &l.Metadata
+}
+
+func (l *Logging) GetRawValue() interface{} {
+	return nil
+}    

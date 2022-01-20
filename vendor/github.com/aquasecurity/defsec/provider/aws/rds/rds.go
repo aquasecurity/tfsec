@@ -3,6 +3,7 @@ package rds
 import "github.com/aquasecurity/defsec/types"
 
 type RDS struct {
+	types.Metadata
 	Instances []Instance
 	Clusters  []Cluster
 	Classic   Classic
@@ -18,6 +19,7 @@ type Cluster struct {
 }
 
 type Encryption struct {
+	types.Metadata
 	EncryptStorage types.BoolValue
 	KMSKeyID       types.StringValue
 }
@@ -32,11 +34,13 @@ type Instance struct {
 }
 
 type ClusterInstance struct {
+	types.Metadata
 	Instance
 	ClusterIdentifier types.StringValue
 }
 
 type PerformanceInsights struct {
+	types.Metadata
 	Enabled  types.BoolValue
 	KMSKeyID types.StringValue
 }
@@ -64,3 +68,30 @@ func (i *ClusterInstance) GetMetadata() *types.Metadata {
 func (i *ClusterInstance) GetRawValue() interface{} {
 	return nil
 }
+
+
+func (r *RDS) GetMetadata() *types.Metadata {
+	return &r.Metadata
+}
+
+func (r *RDS) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (e *Encryption) GetMetadata() *types.Metadata {
+	return &e.Metadata
+}
+
+func (e *Encryption) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (p *PerformanceInsights) GetMetadata() *types.Metadata {
+	return &p.Metadata
+}
+
+func (p *PerformanceInsights) GetRawValue() interface{} {
+	return nil
+}    

@@ -52,7 +52,7 @@ IAM user accounts should be protected with multi factor authentication to add sa
 				}
 			}
 			if !mfaEnforced {
-				results.Add("Multi-Factor Authentication is not enforced for group", group)
+				results.Add("Multi-Factor Authentication is not enforced for group", &group)
 			}
 		}
 

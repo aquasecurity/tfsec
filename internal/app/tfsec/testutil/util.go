@@ -19,11 +19,12 @@ import (
 
 func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) rules.Results {
 	modules := CreateModulesFromSource(source, ".tf", t)
-	scanner := scanner.New()
+	s := scanner.New()
 	for _, opt := range additionalOptions {
-		opt(scanner)
+		opt(s)
 	}
-	res, err := scanner.Scan(modules)
+	scanner.OptionStopOnErrors()(s)
+	res, err := s.Scan(modules)
 	require.NoError(t, err)
 	for _, result := range res {
 		if result.NarrowestRange() == nil {

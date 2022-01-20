@@ -3,6 +3,7 @@ package codebuild
 import "github.com/aquasecurity/defsec/types"
 
 type CodeBuild struct {
+	types.Metadata
 	Projects []Project
 }
 
@@ -32,3 +33,12 @@ func (c *ArtifactSettings) GetMetadata() *types.Metadata {
 func (c *ArtifactSettings) GetRawValue() interface{} {
 	return nil
 }
+
+
+func (c *CodeBuild) GetMetadata() *types.Metadata {
+	return &c.Metadata
+}
+
+func (c *CodeBuild) GetRawValue() interface{} {
+	return nil
+}    

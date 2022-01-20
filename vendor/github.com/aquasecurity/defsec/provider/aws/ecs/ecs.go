@@ -3,6 +3,7 @@ package ecs
 import "github.com/aquasecurity/defsec/types"
 
 type ECS struct {
+	types.Metadata
 	Clusters        []Cluster
 	TaskDefinitions []TaskDefinition
 }
@@ -13,6 +14,7 @@ type Cluster struct {
 }
 
 type ClusterSettings struct {
+	types.Metadata
 	ContainerInsightsEnabled types.BoolValue
 }
 
@@ -63,3 +65,21 @@ func (td *EFSVolumeConfiguration) GetMetadata() *types.Metadata {
 func (td *EFSVolumeConfiguration) GetRawValue() interface{} {
 	return nil
 }
+
+
+func (e *ECS) GetMetadata() *types.Metadata {
+	return &e.Metadata
+}
+
+func (e *ECS) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (c *ClusterSettings) GetMetadata() *types.Metadata {
+	return &c.Metadata
+}
+
+func (c *ClusterSettings) GetRawValue() interface{} {
+	return nil
+}    

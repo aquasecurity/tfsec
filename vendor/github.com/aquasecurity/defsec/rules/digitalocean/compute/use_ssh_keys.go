@@ -33,7 +33,7 @@ var CheckUseSshKeys = rules.Register(
 			if len(droplet.SSHKeys) == 0 {
 				results.Add(
 					"Droplet does not have an SSH key specified.",
-					droplet,
+					&droplet,
 				)
 			}
 		}

@@ -52,6 +52,7 @@ func getClassic(modules []block.Module) (classic rds.Classic) {
 func adaptClusterInstance(resource block.Block, module block.Module) rds.ClusterInstance {
 
 	return rds.ClusterInstance{
+		Metadata:          resource.Metadata(),
 		ClusterIdentifier: resource.GetAttribute("cluster_identfier").AsStringValueOrDefault("", resource),
 		Instance:          adaptInstance(resource, module),
 	}

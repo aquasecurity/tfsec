@@ -47,7 +47,8 @@ func adaptCompute(modules []block.Module) compute.Compute {
 
 func adaptManagedDisk(resource block.Block) compute.ManagedDisk {
 	encryptionBlock := resource.GetBlock("encryption_settings")
-	var enabledVal types.BoolValue
+	// encryption is enabled by default - https://github.com/hashicorp/terraform-provider-azurerm/blob/baf55926fe813011003ee4fb0e8e6134fcfcca87/internal/services/compute/managed_disk_resource.go#L288
+	enabledVal := types.BoolDefault(true, resource.Metadata())
 
 	if encryptionBlock.IsNotNil() {
 		enabledAttr := encryptionBlock.GetAttribute("enabled")
@@ -65,10 +66,12 @@ func adaptLinuxVM(resource block.Block) compute.LinuxVirtualMachine {
 	workingBlock := resource
 
 	if resource.TypeLabel() == "azurerm_virtual_machine" {
-		workingBlock = resource.GetBlock("os_profile")
+		if b := resource.GetBlock("os_profile"); b.IsNotNil() {
+			workingBlock = b
+		}
 	}
 	customDataAttr := workingBlock.GetAttribute("custom_data")
-	var customDataVal types.StringValue
+	customDataVal := types.StringDefault("", workingBlock.Metadata())
 	if customDataAttr.IsResolvable() && customDataAttr.IsString() {
 		encoded, err := base64.StdEncoding.DecodeString(customDataAttr.Value().AsString())
 		if err != nil {
@@ -97,11 +100,13 @@ func adaptWindowsVM(resource block.Block) compute.WindowsVirtualMachine {
 	workingBlock := resource
 
 	if resource.TypeLabel() == "azurerm_virtual_machine" {
-		workingBlock = resource.GetBlock("os_profile")
+		if b := resource.GetBlock("os_profile"); b.IsNotNil() {
+			workingBlock = b
+		}
 	}
 
 	customDataAttr := workingBlock.GetAttribute("custom_data")
-	var customDataVal types.StringValue
+	customDataVal := types.StringDefault("", workingBlock.Metadata())
 
 	if customDataAttr.IsResolvable() && customDataAttr.IsString() {
 		encoded, err := base64.StdEncoding.DecodeString(customDataAttr.Value().AsString())

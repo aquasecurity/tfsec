@@ -26,7 +26,7 @@ func adaptClusters(modules []block.Module) []container.KubernetesCluster {
 func adaptCluster(resource block.Block) container.KubernetesCluster {
 
 	networkProfileBlock := resource.GetBlock("network_profile")
-	var networkPolicyVal types.StringValue
+	networkPolicyVal := types.StringDefault("", resource.Metadata())
 
 	if networkProfileBlock.IsNotNil() {
 		networkPolicyAttr := networkProfileBlock.GetAttribute("network_policy")

@@ -3,6 +3,7 @@ package redshift
 import "github.com/aquasecurity/defsec/types"
 
 type Redshift struct {
+	types.Metadata
 	Clusters       []Cluster
 	SecurityGroups []SecurityGroup
 }
@@ -19,6 +20,7 @@ type Cluster struct {
 }
 
 type Encryption struct {
+	types.Metadata
 	Enabled  types.BoolValue
 	KMSKeyID types.StringValue
 }
@@ -38,3 +40,21 @@ func (c *Cluster) GetMetadata() *types.Metadata {
 func (c *Cluster) GetRawValue() interface{} {
 	return nil
 }
+
+
+func (r *Redshift) GetMetadata() *types.Metadata {
+	return &r.Metadata
+}
+
+func (r *Redshift) GetRawValue() interface{} {
+	return nil
+}    
+
+
+func (e *Encryption) GetMetadata() *types.Metadata {
+	return &e.Metadata
+}
+
+func (e *Encryption) GetRawValue() interface{} {
+	return nil
+}    

@@ -14,9 +14,11 @@ import (
 	"github.com/aquasecurity/defsec/provider/azure/securitycenter"
 	"github.com/aquasecurity/defsec/provider/azure/storage"
 	"github.com/aquasecurity/defsec/provider/azure/synapse"
+	"github.com/aquasecurity/defsec/types"
 )
 
 type Azure struct {
+	types.Metadata
 	AppService     appservice.AppService
 	Authorization  authorization.Authorization
 	Compute        compute.Compute

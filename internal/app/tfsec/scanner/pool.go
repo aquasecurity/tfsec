@@ -2,6 +2,7 @@ package scanner
 
 import (
 	"fmt"
+	runtimeDebug "runtime/debug"
 	"sync"
 
 	"github.com/aquasecurity/defsec/rules"
@@ -130,7 +131,7 @@ func (w *Worker) Start() {
 		func() {
 			defer func() {
 				if err := recover(); err != nil {
-					w.panic = err
+					w.panic = fmt.Errorf("%s\n%s", err, string(runtimeDebug.Stack()))
 				}
 			}()
 			w.results = append(w.results, job.Run()...)

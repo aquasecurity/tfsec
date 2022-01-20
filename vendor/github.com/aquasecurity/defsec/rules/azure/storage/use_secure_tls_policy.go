@@ -24,16 +24,19 @@ This check will warn if the minimum TLS is not set to TLS1_2.`,
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/storage/common/transport-layer-security-configure-minimum-version",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformUseSecureTlsPolicyGoodExamples,
-            BadExamples:         terraformUseSecureTlsPolicyBadExamples,
-            Links:               terraformUseSecureTlsPolicyLinks,
-            RemediationMarkdown: terraformUseSecureTlsPolicyRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformUseSecureTlsPolicyGoodExamples,
+			BadExamples:         terraformUseSecureTlsPolicyBadExamples,
+			Links:               terraformUseSecureTlsPolicyLinks,
+			RemediationMarkdown: terraformUseSecureTlsPolicyRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, account := range s.Azure.Storage.Accounts {
+			if !account.IsManaged() {
+				continue
+			}
 			if account.MinimumTLSVersion.NotEqualTo("TLS1_2") {
 				results.Add(
 					"Storage account uses an insecure TLS version.",

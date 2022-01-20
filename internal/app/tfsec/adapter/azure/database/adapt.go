@@ -101,6 +101,7 @@ func adaptMSSQLServer(resource block.Block, module block.Module) database.MSSQLS
 	}
 
 	return database.MSSQLServer{
+		Metadata: resource.Metadata(),
 		Server: database.Server{
 			Metadata:                  *resource.GetMetadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,
@@ -132,7 +133,7 @@ func adaptMySQLServer(resource block.Block, module block.Module) database.MySQLS
 
 	return database.MySQLServer{
 		Server: database.Server{
-			Metadata:                  *resource.GetMetadata(),
+			Metadata:                  resource.Metadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,
 			MinimumTLSVersion:         minTLSVersionVal,
 			EnablePublicNetworkAccess: publicAccessVal,
@@ -157,7 +158,7 @@ func adaptMariaDBServer(resource block.Block, module block.Module) database.Mari
 
 	return database.MariaDBServer{
 		Server: database.Server{
-			Metadata:                  *resource.GetMetadata(),
+			Metadata:                  resource.Metadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,
 			EnablePublicNetworkAccess: publicAccessVal,
 			FirewallRules:             firewallRules,
@@ -195,7 +196,7 @@ func adaptPostgreSQLServer(resource block.Block, module block.Module) database.P
 
 	return database.PostgreSQLServer{
 		Server: database.Server{
-			Metadata:                  *resource.GetMetadata(),
+			Metadata:                  resource.Metadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,
 			MinimumTLSVersion:         minTLSVersionVal,
 			EnablePublicNetworkAccess: publicAccessVal,
@@ -252,7 +253,7 @@ func adaptMSSQLSecurityAlertPolicy(resource block.Block) database.SecurityAlertP
 	emailAccountAdminsVal := emailAccountAdminsAttr.AsBoolValueOrDefault(false, resource)
 
 	return database.SecurityAlertPolicy{
-		Metadata:           *resource.GetMetadata(),
+		Metadata:           resource.Metadata(),
 		EmailAddresses:     emailAddressesVal,
 		DisabledAlerts:     disabledAlertsVal,
 		EmailAccountAdmins: emailAccountAdminsVal,
@@ -277,6 +278,7 @@ func adaptMSSQLExtendedAuditingPolicy(resource block.Block) database.ExtendedAud
 	retentionInDaysVal := retentionInDaysAttr.AsIntValueOrDefault(0, resource)
 
 	return database.ExtendedAuditingPolicy{
+		Metadata:        resource.Metadata(),
 		RetentionInDays: retentionInDaysVal,
 	}
 }

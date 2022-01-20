@@ -10,7 +10,7 @@ type FakeReference struct {
 }
 
 func (f *FakeReference) String() string {
-	return "something"
+	return ""
 }
 
 func (f *FakeReference) RefersTo(r Reference) bool {
@@ -18,5 +18,5 @@ func (f *FakeReference) RefersTo(r Reference) bool {
 }
 
 func (f *FakeReference) LogicalID() string {
-	return "something"
+	return ""
 }
