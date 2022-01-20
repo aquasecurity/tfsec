@@ -26,10 +26,40 @@ func getInstances(modules []block.Module) (instances []rds.Instance) {
 }
 
 func getClusters(modules []block.Module) (clusters []rds.Cluster) {
+	foundClustersInstances := make(map[string]bool)
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_rds_cluster") {
-			clusters = append(clusters, adaptCluster(resource, module))
+			cluster, instanceIDs := adaptCluster(resource, module)
+			for _, id := range instanceIDs {
+				foundClustersInstances[id] = true
+			}
+			clusters = append(clusters, cluster)
 		}
+	}
+
+	type orphanBlock struct {
+		block  block.Block
+		module block.Module
+	}
+
+	var orphanInstances []orphanBlock
+	for _, module := range modules {
+		for _, ciInstance := range module.GetResourcesByType("aws_rds_cluster_instance") {
+			if _, ok := foundClustersInstances[ciInstance.ID()]; ok {
+				continue
+			}
+			orphanInstances = append(orphanInstances, orphanBlock{ciInstance, module})
+		}
+	}
+
+	if len(orphanInstances) > 0 {
+		orphanCluster := rds.Cluster{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, instance := range orphanInstances {
+			orphanCluster.Instances = append(orphanCluster.Instances, adaptClusterInstance(instance.block, instance.module))
+		}
+		clusters = append(clusters, orphanCluster)
 	}
 
 	return clusters
@@ -83,25 +113,28 @@ func adaptInstance(resource block.Block, module block.Module) rds.Instance {
 	}
 }
 
-func adaptCluster(resource block.Block, module block.Module) rds.Cluster {
+func adaptCluster(resource block.Block, module block.Module) (rds.Cluster, []string) {
+
+	clusterInstances, ids := getClusterInstances(resource, module)
 
 	return rds.Cluster{
 		Metadata:                  *resource.GetMetadata(),
 		BackupRetentionPeriodDays: resource.GetAttribute("backup_retention_period").AsIntValueOrDefault(0, resource),
 		ReplicationSourceARN:      resource.GetAttribute("replicate_source_db").AsStringValueOrDefault("", resource),
 		PerformanceInsights:       adaptPerformanceInsights(resource),
-		Instances:                 getClusterInstances(resource, module),
+		Instances:                 clusterInstances,
 		Encryption:                adaptEncryption(resource),
-	}
+	}, ids
 }
 
-func getClusterInstances(resource block.Block, module block.Module) (clusterInstances []rds.ClusterInstance) {
+func getClusterInstances(resource block.Block, module block.Module) (clusterInstances []rds.ClusterInstance, instanceIDs []string) {
 	clusterInstanceResources := module.GetReferencingResources(resource, "aws_rds_cluster_instance", "cluster_identifier")
 
 	for _, ciResource := range clusterInstanceResources {
+		instanceIDs = append(instanceIDs, ciResource.ID())
 		clusterInstances = append(clusterInstances, adaptClusterInstance(ciResource, module))
 	}
-	return clusterInstances
+	return clusterInstances, instanceIDs
 }
 
 func adaptPerformanceInsights(resource block.Block) rds.PerformanceInsights {

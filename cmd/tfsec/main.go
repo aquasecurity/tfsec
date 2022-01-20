@@ -149,7 +149,7 @@ var rootCmd = &cobra.Command{
 			}
 			if len(stats) > 0 {
 				for _, stat := range stats {
-					_ = tml.Printf("%s:%d migrated from %s => %s\n", stat.Filename, stat.LineNo, stat.FromCode, stat.ToCode)
+					_ = tml.Printf("%s migrated from %s => %s\n", stat.Filename, stat.FromCode, stat.ToCode)
 				}
 			}
 			os.Exit(0)
