@@ -29,7 +29,7 @@ var CheckEnableCacheEncryption = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, api := range s.AWS.APIGateway.APIs {
-			if api.ProtocolType.NotEqualTo(apigateway.ProtocolTypeREST) {
+			if !api.IsManaged() || api.ProtocolType.NotEqualTo(apigateway.ProtocolTypeREST) {
 				continue
 			}
 			for _, stage := range api.Stages {
