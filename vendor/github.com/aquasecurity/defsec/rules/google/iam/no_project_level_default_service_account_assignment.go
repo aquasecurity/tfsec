@@ -31,17 +31,29 @@ var CheckNoProjectLevelDefaultServiceAccountAssignment = rules.Register(
 	func(s *state.State) (results rules.Results) {
 		for _, project := range s.Google.IAM.AllProjects() {
 			for _, binding := range project.Bindings {
-				for _, member := range binding.Members {
-					if isMemberDefaultServiceAccount(member.Value()) {
-						results.Add(
-							"Role is assigned to a default service account at project level.",
-							member,
-						)
+				if binding.IncludesDefaultServiceAccount.IsTrue() {
+					results.Add(
+						"Role is assigned to a default service account at project level.",
+						binding.IncludesDefaultServiceAccount,
+					)
+				} else {
+					for _, member := range binding.Members {
+						if isMemberDefaultServiceAccount(member.Value()) {
+							results.Add(
+								"Role is assigned to a default service account at project level.",
+								member,
+							)
+						}
 					}
 				}
 			}
 			for _, member := range project.Members {
-				if isMemberDefaultServiceAccount(member.Member.Value()) {
+				if member.DefaultServiceAccount.IsTrue() {
+					results.Add(
+						"Role is assigned to a default service account at project level.",
+						member.DefaultServiceAccount,
+					)
+				} else if isMemberDefaultServiceAccount(member.Member.Value()) {
 					results.Add(
 						"Role is assigned to a default service account at project level.",
 						member.Member,

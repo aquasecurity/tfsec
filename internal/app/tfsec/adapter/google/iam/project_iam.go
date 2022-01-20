@@ -21,6 +21,7 @@ func (a *adapter) adaptMember(iamBlock block.Block) iam.Member {
 
 func AdaptMember(iamBlock block.Block, modules block.Modules) iam.Member {
 	var member iam.Member
+	member.Metadata = iamBlock.Metadata()
 	roleAttr := iamBlock.GetAttribute("role")
 	member.Role = roleAttr.AsStringValueOrDefault("", iamBlock)
 
@@ -44,7 +45,6 @@ var projectMemberResources = []string{
 	"google_compute_subnetwork_iam_member",
 	"google_data_catalog_entry_group_iam_member",
 	"google_folder_iam_member",
-	"google_project_iam_member",
 	"google_pubsub_subscription_iam_member",
 	"google_pubsub_topic_iam_member",
 	"google_sourcerepo_repository_iam_member",
@@ -110,6 +110,7 @@ func (a *adapter) adaptBinding(iamBlock block.Block) iam.Binding {
 
 func AdaptBinding(iamBlock block.Block, modules block.Modules) iam.Binding {
 	var binding iam.Binding
+	binding.Metadata = iamBlock.Metadata()
 	roleAttr := iamBlock.GetAttribute("role")
 	membersAttr := iamBlock.GetAttribute("members")
 	binding.Role = roleAttr.AsStringValueOrDefault("", iamBlock)
@@ -132,7 +133,6 @@ var projectBindingResources = []string{
 	"google_compute_subnetwork_iam_binding",
 	"google_data_catalog_entry_group_iam_binding",
 	"google_folder_iam_binding",
-	"google_project_iam_binding",
 	"google_pubsub_subscription_iam_binding",
 	"google_pubsub_topic_iam_binding",
 	"google_sourcerepo_repository_iam_binding",
