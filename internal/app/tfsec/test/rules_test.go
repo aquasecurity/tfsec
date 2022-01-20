@@ -45,15 +45,15 @@ func TestDefSecUsage(t *testing.T) {
 func TestRulesAgainstExampleCode(t *testing.T) {
 	for _, rule := range scanner.GetRegisteredRules() {
 		t.Run(rule.Base.Rule().LongID(), func(t *testing.T) {
-			t.Run("bad examples", func(t *testing.T) {
-				for i, example := range rule.Base.Rule().Terraform.BadExamples {
+			t.Run("good examples", func(t *testing.T) {
+				for i, example := range rule.Base.Rule().Terraform.GoodExamples {
 					t.Run(fmt.Sprintf("example %d", i), func(t *testing.T) {
 						results := testutil.ScanHCL(example, t)
 						testutil.AssertRuleNotFound(t, rule.ID(), results, "Rule %s was detected in good example #%d", rule.ID(), i)
 					})
 				}
 			})
-			t.Run("good examples", func(t *testing.T) {
+			t.Run("bad examples", func(t *testing.T) {
 				for i, example := range rule.Base.Rule().Terraform.BadExamples {
 					t.Run(fmt.Sprintf("example %d", i), func(t *testing.T) {
 						results := testutil.ScanHCL(example, t)
