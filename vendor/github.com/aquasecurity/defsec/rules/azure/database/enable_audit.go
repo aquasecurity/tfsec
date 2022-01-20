@@ -32,7 +32,7 @@ var CheckEnableAudit = rules.Register(
 		for _, server := range s.Azure.Database.MSSQLServers {
 			if len(server.ExtendedAuditingPolicies) == 0 {
 				results.Add(
-					"Server does not have an extended audit policty configured.",
+					"Server does not have an extended audit policy configured.",
 					&server,
 				)
 			}
