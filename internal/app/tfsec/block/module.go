@@ -23,6 +23,15 @@ func (r ResourceIDResolutions) Resolve(id string) {
 	r[id] = true
 }
 
+func (r ResourceIDResolutions) Orphans() (orphanIDs []string) {
+	for id, resolved := range r {
+		if !resolved {
+			orphanIDs = append(orphanIDs, id)
+		}
+	}
+	return orphanIDs
+}
+
 func (m Modules) GetResourcesByType(typeLabel ...string) Blocks {
 	var blocks Blocks
 	for _, module := range m {

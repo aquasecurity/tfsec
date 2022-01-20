@@ -18,9 +18,10 @@ func adaptAPIMethodsV1(module block.Module, apiBlock block.Block) []apigateway.R
 	return methods
 }
 
-func adaptAPIsV1(modules []block.Module) []apigateway.API {
+func adaptAPIsV1(modules block.Modules) []apigateway.API {
 
 	var apis []apigateway.API
+	apiStages := modules.GetChildResourceIDMapByType("aws_api_gateway_stage")
 
 	for _, module := range modules {
 
@@ -42,6 +43,7 @@ func adaptAPIsV1(modules []block.Module) []apigateway.API {
 			for _, stageBlock := range module.GetReferencingResources(apiBlock, "aws_api_gateway_stage", "rest_api_id") {
 				var stage apigateway.Stage
 				stage.Metadata = stageBlock.Metadata()
+				apiStages.Resolve(stageBlock.ID())
 				stage.Version = types.Int(1, apiBlock.Metadata())
 
 				stage.RESTMethodSettings.CacheDataEncrypted = defaultCacheEncryption
