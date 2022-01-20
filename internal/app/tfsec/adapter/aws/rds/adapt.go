@@ -28,7 +28,7 @@ func getClusters(modules block.Modules) (clusters []rds.Cluster) {
 	for _, resource := range modules.GetResourcesByType("aws_rds_cluster") {
 		cluster, instanceIDs := adaptCluster(resource, modules)
 		for _, id := range instanceIDs {
-			rdsInstanceMaps[id] = true
+			rdsInstanceMaps.Resolve(id)
 		}
 		clusters = append(clusters, cluster)
 	}

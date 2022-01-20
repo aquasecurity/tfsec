@@ -17,6 +17,12 @@ type Module interface {
 
 type Modules []Module
 
+type ResourceIDResolutions map[string]bool
+
+func (r ResourceIDResolutions) Resolve(id string) {
+	r[id] = true
+}
+
 func (m Modules) GetResourcesByType(typeLabel ...string) Blocks {
 	var blocks Blocks
 	for _, module := range m {
@@ -26,7 +32,7 @@ func (m Modules) GetResourcesByType(typeLabel ...string) Blocks {
 	return blocks
 }
 
-func (m Modules) GetChildResourceIDMapByType(typeLabel string) map[string]bool {
+func (m Modules) GetChildResourceIDMapByType(typeLabel string) ResourceIDResolutions {
 	blocks := m.GetResourcesByType(typeLabel)
 
 	idMap := make(map[string]bool)
