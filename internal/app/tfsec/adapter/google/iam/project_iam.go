@@ -50,6 +50,7 @@ var projectMemberResources = []string{
 }
 
 func (a *adapter) adaptProjectMembers() {
+
 	for _, memberType := range projectMemberResources {
 		for _, iamBlock := range a.modules.GetResourcesByType(memberType) {
 			member := a.adaptMember(iamBlock)
@@ -132,7 +133,68 @@ var projectBindingResources = []string{
 	"google_storage_bucket_iam_binding",
 }
 
+func (a *adapter) adaptProjectDataBindings() {
+	for _, iamBlock := range a.modules.GetResourcesByType("google_project_iam_policy") {
+
+		policyAttr := iamBlock.GetAttribute("policy_data")
+		if policyAttr.IsNil() {
+			continue
+		}
+		policyBlock, err := a.modules.GetReferencedBlock(policyAttr, iamBlock)
+		if err != nil {
+			continue
+		}
+		bindings := parsePolicyBlock(policyBlock)
+		projectAttr := iamBlock.GetAttribute("project")
+		if projectAttr.IsString() {
+			var foundProject bool
+			projectID := projectAttr.Value().AsString()
+			for i, project := range a.projects {
+				if project.id == projectID {
+					project.project.Bindings = append(project.project.Bindings, bindings...)
+					a.projects[i] = project
+					foundProject = true
+					break
+				}
+			}
+			if foundProject {
+				continue
+			}
+		}
+
+		if refBlock, err := a.modules.GetReferencedBlock(projectAttr, iamBlock); err == nil {
+			if refBlock.TypeLabel() == "google_project" {
+				var foundProject bool
+				for i, project := range a.projects {
+					if project.blockID == refBlock.ID() {
+						project.project.Bindings = append(project.project.Bindings, bindings...)
+						a.projects[i] = project
+						foundProject = true
+						break
+					}
+				}
+				if foundProject {
+					continue
+				}
+
+			}
+		}
+
+		// we didn't find the project - add an unmanaged one
+		a.projects = append(a.projects, parentedProject{
+			project: iam.Project{
+				AutoCreateNetwork: nil,
+				Bindings:          bindings,
+			},
+		})
+	}
+
+}
+
 func (a *adapter) adaptProjectBindings() {
+
+	a.adaptProjectDataBindings()
+
 	for _, bindingType := range projectBindingResources {
 		for _, iamBlock := range a.modules.GetResourcesByType(bindingType) {
 			binding := a.adaptBinding(iamBlock)

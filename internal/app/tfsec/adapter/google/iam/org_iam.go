@@ -38,6 +38,38 @@ func (a *adapter) adaptOrganizationMembers() {
 }
 
 func (a *adapter) adaptOrganizationBindings() {
+
+	for _, iamBlock := range a.modules.GetResourcesByType("google_organization_iam_policy") {
+
+		policyAttr := iamBlock.GetAttribute("policy_data")
+		if policyAttr.IsNil() {
+			continue
+		}
+		policyBlock, err := a.modules.GetReferencedBlock(policyAttr, iamBlock)
+		if err != nil {
+			continue
+		}
+		bindings := parsePolicyBlock(policyBlock)
+		orgAttr := iamBlock.GetAttribute("organization")
+
+		if refBlock, err := a.modules.GetReferencedBlock(orgAttr, iamBlock); err == nil {
+			if refBlock.TypeLabel() == "google_organization" {
+				if org, ok := a.orgs[refBlock.ID()]; ok {
+					org.Bindings = append(org.Bindings, bindings...)
+					a.orgs[refBlock.ID()] = org
+					continue
+				}
+			}
+		}
+
+		// we didn't find the organization - add an unmanaged one
+		placeholderID := uuid.NewString()
+		org := iam.Organization{
+			Bindings: bindings,
+		}
+		a.orgs[placeholderID] = org
+	}
+
 	for _, iamBlock := range a.modules.GetResourcesByType("google_organization_iam_binding") {
 		binding := a.adaptBinding(iamBlock)
 		organizationAttr := iamBlock.GetAttribute("organization")

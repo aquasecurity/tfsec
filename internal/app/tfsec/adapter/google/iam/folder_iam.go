@@ -42,6 +42,46 @@ func (a *adapter) adaptFolderMembers() {
 }
 
 func (a *adapter) adaptFolderBindings() {
+
+	for _, iamBlock := range a.modules.GetResourcesByType("google_folder_iam_policy") {
+
+		policyAttr := iamBlock.GetAttribute("policy_data")
+		if policyAttr.IsNil() {
+			continue
+		}
+		policyBlock, err := a.modules.GetReferencedBlock(policyAttr, iamBlock)
+		if err != nil {
+			continue
+		}
+		bindings := parsePolicyBlock(policyBlock)
+		folderAttr := iamBlock.GetAttribute("folder")
+
+		if refBlock, err := a.modules.GetReferencedBlock(folderAttr, iamBlock); err == nil {
+			if refBlock.TypeLabel() == "google_folder" {
+				var foundFolder bool
+				for i, folder := range a.folders {
+					if folder.blockID == refBlock.ID() {
+						folder.folder.Bindings = append(folder.folder.Bindings, bindings...)
+						a.folders[i] = folder
+						foundFolder = true
+						break
+					}
+				}
+				if foundFolder {
+					continue
+				}
+
+			}
+		}
+
+		// we didn't find the project - add an unmanaged one
+		a.folders = append(a.folders, parentedFolder{
+			folder: iam.Folder{
+				Bindings: bindings,
+			},
+		})
+	}
+
 	for _, iamBlock := range a.modules.GetResourcesByType("google_folder_iam_binding") {
 		binding := a.adaptBinding(iamBlock)
 		folderAttr := iamBlock.GetAttribute("folder")
