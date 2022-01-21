@@ -24,7 +24,7 @@ func adaptInstances(modules block.Modules) []sql.DatabaseInstance {
 	return instances
 }
 
-func adaptInstance(resource block.Block) sql.DatabaseInstance {
+func adaptInstance(resource *block.Block) sql.DatabaseInstance {
 
 	backupConfigEnabledVal := types.BoolDefault(false, *resource.GetMetadata())
 
@@ -77,7 +77,7 @@ func adaptInstance(resource block.Block) sql.DatabaseInstance {
 	}
 }
 
-func adaptFlags(resource block.Block) sql.Flags {
+func adaptFlags(resource *block.Block) sql.Flags {
 	nameAttr := resource.GetAttribute("name")
 	valueAttr := resource.GetAttribute("value")
 
@@ -134,7 +134,7 @@ func adaptFlags(resource block.Block) sql.Flags {
 	}
 }
 
-func adaptIPConfig(resource block.Block) sql.IPConfiguration {
+func adaptIPConfig(resource *block.Block) sql.IPConfiguration {
 	var authorizedNetworks []struct {
 		Name types.StringValue
 		CIDR types.StringValue

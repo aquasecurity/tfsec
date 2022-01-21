@@ -25,7 +25,7 @@ func adaptClusters(modules block.Modules) []dynamodb.DAXCluster {
 	return clusters
 }
 
-func adaptCluster(resource block.Block, module block.Module) dynamodb.DAXCluster {
+func adaptCluster(resource *block.Block, module *block.Module) dynamodb.DAXCluster {
 	sseEnabledVal := types.BoolDefault(false, *resource.GetMetadata())
 	kmsKeyIdVal := types.StringDefault("", *resource.GetMetadata())
 	recoveryEnabledVal := types.BoolDefault(false, *resource.GetMetadata())

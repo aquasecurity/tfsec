@@ -22,7 +22,7 @@ func adaptClusters(modules block.Modules) []documentdb.Cluster {
 	return clusters
 }
 
-func adaptCluster(resource block.Block, module block.Module) documentdb.Cluster {
+func adaptCluster(resource *block.Block, module *block.Module) documentdb.Cluster {
 	identifierAttr := resource.GetAttribute("cluster_identifier")
 	identifierVal := identifierAttr.AsStringValueOrDefault("", resource)
 

@@ -559,7 +559,7 @@ func scanTerraform(t *testing.T, mainTf string) []rules.Result {
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.
 // TODO: Extract into a testing utility package once the amount of duplication justifies introducing an extra package.
-func ParseFromSource(source string) []block.Module {
+func ParseFromSource(source string) block.Modules {
 	path := createTestFile("test.tf", source)
 	modules, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {

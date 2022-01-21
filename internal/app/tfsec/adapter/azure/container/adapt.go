@@ -23,7 +23,7 @@ func adaptClusters(modules block.Modules) []container.KubernetesCluster {
 	return clusters
 }
 
-func adaptCluster(resource block.Block) container.KubernetesCluster {
+func adaptCluster(resource *block.Block) container.KubernetesCluster {
 
 	networkProfileBlock := resource.GetBlock("network_profile")
 	networkPolicyVal := types.StringDefault("", resource.Metadata())

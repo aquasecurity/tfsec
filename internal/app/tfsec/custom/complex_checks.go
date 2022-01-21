@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func checkTags(block block.Block, spec *MatchSpec, module block.Module) bool {
+func checkTags(block *block.Block, spec *MatchSpec, module *block.Module) bool {
 	expectedTag := fmt.Sprintf("%v", spec.MatchValue)
 
 	if block.HasChild("tags") {
@@ -39,7 +39,7 @@ func checkTags(block block.Block, spec *MatchSpec, module block.Module) bool {
 	return false
 }
 
-func ofType(block block.Block, spec *MatchSpec) bool {
+func ofType(block *block.Block, spec *MatchSpec) bool {
 	switch value := spec.MatchValue.(type) {
 	case []interface{}:
 		for _, v := range value {

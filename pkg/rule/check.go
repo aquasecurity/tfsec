@@ -28,7 +28,7 @@ func (r *Rule) RecoverFromCheckPanic() {
 	}
 }
 
-func (r *Rule) CheckAgainstBlock(b block.Block, m block.Module) rules.Results {
+func (r *Rule) CheckAgainstBlock(b *block.Block, m *block.Module) rules.Results {
 	if r.CheckTerraform == nil {
 		return nil
 	}
@@ -52,7 +52,7 @@ func (r *Rule) CheckAgainstBlock(b block.Block, m block.Module) rules.Results {
 }
 
 // IsRuleRequiredForBlock returns true if the Rule should be applied to the given HCL block
-func (r *Rule) isRuleRequiredForBlock(b block.Block) bool {
+func (r *Rule) isRuleRequiredForBlock(b *block.Block) bool {
 
 	if len(r.RequiredTypes) > 0 {
 		if !r.checkRequiredTypesMatch(b) {
@@ -76,7 +76,7 @@ func (r *Rule) isRuleRequiredForBlock(b block.Block) bool {
 	return true
 }
 
-func (r *Rule) checkRequiredTypesMatch(b block.Block) bool {
+func (r *Rule) checkRequiredTypesMatch(b *block.Block) bool {
 	var found bool
 	for _, requiredType := range r.RequiredTypes {
 		if b.Type() == requiredType {
@@ -88,7 +88,7 @@ func (r *Rule) checkRequiredTypesMatch(b block.Block) bool {
 	return found
 }
 
-func (r *Rule) checkRequiredLabelsMatch(b block.Block) bool {
+func (r *Rule) checkRequiredLabelsMatch(b *block.Block) bool {
 	var found bool
 	for _, requiredLabel := range r.RequiredLabels {
 		if requiredLabel == "*" || (len(b.Labels()) > 0 && wildcardMatch(requiredLabel, b.TypeLabel())) {
@@ -100,7 +100,7 @@ func (r *Rule) checkRequiredLabelsMatch(b block.Block) bool {
 	return found
 }
 
-func (r *Rule) checkRequiredSourcesMatch(b block.Block) bool {
+func (r *Rule) checkRequiredSourcesMatch(b *block.Block) bool {
 	var found bool
 	if sourceAttr := b.GetAttribute("source"); sourceAttr.IsNotNil() {
 		sourcePath := sourceAttr.ValueAsStrings()[0]

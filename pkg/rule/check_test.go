@@ -15,7 +15,7 @@ import (
 
 func TestRequiredSourcesMatch(t *testing.T) {
 
-	var moduleSource string = `resource "simple" "very" {
+	var moduleSource = `resource "simple" "very" {
 		something = "1"
 	}`
 
@@ -31,7 +31,7 @@ func TestRequiredSourcesMatch(t *testing.T) {
 			rule: Rule{
 				RequiredTypes:  []string{"data"},
 				RequiredLabels: []string{"custom_module"},
-				CheckTerraform: func(block.Block, block.Module) rules.Results {
+				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
 					return nil
 				},
 			},
@@ -48,7 +48,7 @@ module "custom_module" {
 			rule: Rule{
 				RequiredTypes:  []string{"module"},
 				RequiredLabels: []string{"dont_match"},
-				CheckTerraform: func(block.Block, block.Module) rules.Results {
+				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
 					return nil
 				},
 			},
@@ -65,7 +65,7 @@ module "custom_module" {
 			rule: Rule{
 				RequiredTypes:  []string{"module"},
 				RequiredLabels: []string{"*"},
-				CheckTerraform: func(block.Block, block.Module) rules.Results {
+				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
 					return nil
 				},
 			},
@@ -83,7 +83,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"path_doesnt_match"},
-				CheckTerraform: func(block.Block, block.Module) rules.Results {
+				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
 					return nil
 				},
 			},
@@ -101,7 +101,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"github.com/hashicorp/example"},
-				CheckTerraform: func(block.Block, block.Module) rules.Results {
+				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
 					return nil
 				},
 			},
@@ -119,7 +119,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"*two/three"},
-				CheckTerraform: func(block.Block, block.Module) rules.Results {
+				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
 					return nil
 				},
 			},
@@ -137,7 +137,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"one/two/three"},
-				CheckTerraform: func(block.Block, block.Module) rules.Results {
+				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
 					return nil
 				},
 			},

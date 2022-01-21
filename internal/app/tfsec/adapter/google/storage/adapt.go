@@ -5,7 +5,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) storage.Storage {
+func Adapt(modules block.Modules,) storage.Storage {
 	return storage.Storage{
 		Buckets: (&adapter{modules: modules}).adaptBuckets(),
 	}
@@ -58,7 +58,7 @@ func (a *adapter) adaptBuckets() []storage.Bucket {
 	return buckets
 }
 
-func (a *adapter) adaptBucketResource(resourceBlock block.Block) storage.Bucket {
+func (a *adapter) adaptBucketResource(resourceBlock *block.Block) storage.Bucket {
 
 	nameAttr := resourceBlock.GetAttribute("name")
 	nameValue := nameAttr.AsStringValueOrDefault("", resourceBlock)

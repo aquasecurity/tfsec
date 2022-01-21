@@ -21,7 +21,7 @@ func adaptNetworkPolicies(modules block.Modules) []kubernetes.NetworkPolicy {
 	return networkPolicies
 }
 
-func adaptNetworkPolicy(resourceBlock block.Block) kubernetes.NetworkPolicy {
+func adaptNetworkPolicy(resourceBlock *block.Block) kubernetes.NetworkPolicy {
 
 	var spec kubernetes.Spec
 

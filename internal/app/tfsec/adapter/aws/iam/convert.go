@@ -15,7 +15,7 @@ type wrappedDocument struct {
 	Document iamgo.Document
 }
 
-func parsePolicyFromAttr(attr block.Attribute, owner block.Block, modules block.Modules) (types.StringValue, error) {
+func parsePolicyFromAttr(attr *block.Attribute, owner *block.Block, modules block.Modules) (types.StringValue, error) {
 
 	documents := findAllPolicies(modules, owner, attr)
 	if len(documents) > 0 {
@@ -38,7 +38,7 @@ func unescapeVars(input string) string {
 }
 
 // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
-func ConvertTerraformDocument(modules block.Modules, block block.Block) (*wrappedDocument, error) {
+func ConvertTerraformDocument(modules block.Modules, block *block.Block) (*wrappedDocument, error) {
 
 	var document iamgo.Document
 
@@ -104,7 +104,7 @@ func mergeInStatement(document *iamgo.Document, statement iamgo.Statement, overr
 	}
 }
 
-func parseStatement(statementBlock block.Block) iamgo.Statement {
+func parseStatement(statementBlock *block.Block) iamgo.Statement {
 	var statement iamgo.Statement
 	if sidAttr := statementBlock.GetAttribute("sid"); sidAttr.IsString() {
 		statement.Sid = sidAttr.Value().AsString()
@@ -184,7 +184,7 @@ func readPrincipal(blocks block.Blocks) *iamgo.Principals {
 	return principals
 }
 
-func findAllPolicies(modules block.Modules, parentBlock block.Block, attr block.Attribute) []wrappedDocument {
+func findAllPolicies(modules block.Modules, parentBlock *block.Block, attr *block.Attribute) []wrappedDocument {
 	var documents []wrappedDocument
 	for _, ref := range attr.AllReferences() {
 		for _, block := range modules.GetBlocks() {

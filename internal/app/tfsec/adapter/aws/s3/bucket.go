@@ -10,7 +10,7 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 	var buckets []s3.Bucket
 	blocks := modules.GetResourcesByType("aws_s3_bucket")
 	for _, b := range blocks {
-		func(block block.Block) {
+		func(block *block.Block) {
 			bucket := s3.Bucket{
 				Name:     b.GetAttribute("bucket").AsStringValueOrDefault("", b),
 				Metadata: block.Metadata(),
@@ -32,7 +32,7 @@ func getBuckets(modules block.Modules) []s3.Bucket {
 	return buckets
 }
 
-func isEncrypted(b block.Block) types.BoolValue {
+func isEncrypted(b *block.Block) types.BoolValue {
 	encryptionBlock := b.GetBlock("server_side_encryption_configuration")
 	if encryptionBlock.IsNil() {
 		return types.BoolDefault(false, b.Metadata())
@@ -55,7 +55,7 @@ func isEncrypted(b block.Block) types.BoolValue {
 	)
 }
 
-func hasLogging(b block.Block) types.BoolValue {
+func hasLogging(b *block.Block) types.BoolValue {
 	if loggingBlock := b.GetBlock("logging"); loggingBlock.IsNotNil() {
 		if targetAttr := loggingBlock.GetAttribute("target_bucket"); targetAttr.IsNotNil() && targetAttr.IsNotEmpty() {
 			return types.Bool(true, targetAttr.Metadata())
@@ -65,7 +65,7 @@ func hasLogging(b block.Block) types.BoolValue {
 	return types.BoolDefault(false, b.Metadata())
 }
 
-func isVersioned(b block.Block) types.BoolValue {
+func isVersioned(b *block.Block) types.BoolValue {
 	if versioningBlock := b.GetBlock("versioning"); versioningBlock.IsNotNil() {
 		return versioningBlock.GetAttribute("enabled").AsBoolValueOrDefault(true, versioningBlock)
 	}

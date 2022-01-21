@@ -31,7 +31,7 @@ var panicRule = rule.Rule{
 	),
 	RequiredTypes:  []string{"resource"},
 	RequiredLabels: []string{"problem"},
-	CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+	CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
 		if resourceBlock.GetAttribute("panic").IsTrue() {
 			panic("This is fine")
 		}

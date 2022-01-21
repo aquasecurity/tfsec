@@ -26,7 +26,7 @@ func adaptManagedZones(modules block.Modules) []dns.ManagedZone {
 	return managedZones
 }
 
-func adaptManagedZone(resource block.Block) dns.ManagedZone {
+func adaptManagedZone(resource *block.Block) dns.ManagedZone {
 
 	zone := dns.ManagedZone{
 		DNSSec: dns.DNSSec{
@@ -69,7 +69,7 @@ func adaptManagedZone(resource block.Block) dns.ManagedZone {
 	return zone
 }
 
-func adaptKeySpecs(resource block.Block) dns.KeySpecs {
+func adaptKeySpecs(resource *block.Block) dns.KeySpecs {
 	keyAlgorithm := types.String("", *resource.GetMetadata())
 	zoneAlgorithm := types.String("", *resource.GetMetadata())
 

@@ -10,7 +10,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 )
 
-func CreateModulesFromSource(source string, ext string, t *testing.T) []block.Module {
+func CreateModulesFromSource(source string, ext string, t *testing.T) block.Modules {
 	path := CreateTestFile("test"+ext, source)
 	modules, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
 	if err != nil {

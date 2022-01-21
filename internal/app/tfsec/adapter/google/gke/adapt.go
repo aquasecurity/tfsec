@@ -45,7 +45,7 @@ func (a *adapter) adaptClusters() []gke.Cluster {
 	return clusters
 }
 
-func (a *adapter) adaptCluster(resource block.Block, module block.Module) {
+func (a *adapter) adaptCluster(resource *block.Block, module *block.Module) {
 
 	ipAllocationEnabled := types.BoolDefault(false, *resource.GetMetadata())
 	networkPolicyEnabled := types.BoolDefault(false, *resource.GetMetadata())
@@ -173,7 +173,7 @@ func (a *adapter) adaptNodePools() {
 	}
 }
 
-func (a *adapter) adaptNodePool(resource block.Block) {
+func (a *adapter) adaptNodePool(resource *block.Block) {
 	autoRepair := types.BoolDefault(false, *resource.GetMetadata())
 	autoUpgrade := types.BoolDefault(false, *resource.GetMetadata())
 
@@ -222,7 +222,7 @@ func (a *adapter) adaptNodePool(resource block.Block) {
 	}
 }
 
-func adaptNodeConfig(resource block.Block) gke.NodeConfig {
+func adaptNodeConfig(resource *block.Block) gke.NodeConfig {
 	imageTypeAttr := resource.GetAttribute("image_type")
 	imageType := imageTypeAttr.AsStringValueOrDefault("", resource)
 
@@ -243,7 +243,7 @@ func adaptNodeConfig(resource block.Block) gke.NodeConfig {
 	}
 }
 
-func adaptMasterAuth(resource block.Block) gke.MasterAuth {
+func adaptMasterAuth(resource *block.Block) gke.MasterAuth {
 	issueClientCert := types.BoolDefault(false, *resource.GetMetadata())
 
 	if resource.HasChild("client_certificate_config") {
@@ -263,7 +263,7 @@ func adaptMasterAuth(resource block.Block) gke.MasterAuth {
 	}
 }
 
-func adaptMasterAuthNetworks(attribute block.Attribute) gke.MasterAuthorizedNetworks {
+func adaptMasterAuthNetworks(attribute *block.Attribute) gke.MasterAuthorizedNetworks {
 	var cidrs []types.StringValue
 
 	attribute.Each(func(_ cty.Value, val cty.Value) {

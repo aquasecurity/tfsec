@@ -22,7 +22,7 @@ func adaptRoleDefinitions(modules block.Modules) []authorization.RoleDefinition 
 	return roleDefinitions
 }
 
-func adaptRoleDefinition(resource block.Block) authorization.RoleDefinition {
+func adaptRoleDefinition(resource *block.Block) authorization.RoleDefinition {
 	permissionsBlocks := resource.GetBlocks("permissions")
 	var permissionsVal []authorization.Permission
 

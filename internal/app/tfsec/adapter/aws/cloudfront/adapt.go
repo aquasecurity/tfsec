@@ -22,7 +22,7 @@ func adaptDistributions(modules block.Modules) []cloudfront.Distribution {
 	return distributions
 }
 
-func adaptDistribution(resource block.Block) cloudfront.Distribution {
+func adaptDistribution(resource *block.Block) cloudfront.Distribution {
 	WAFIDAtrr := resource.GetAttribute("web_acl_id")
 	WAFIDAVal := WAFIDAtrr.AsStringValueOrDefault("", resource)
 

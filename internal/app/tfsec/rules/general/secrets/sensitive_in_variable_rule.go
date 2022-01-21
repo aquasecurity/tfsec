@@ -18,7 +18,7 @@ func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		RequiredTypes: []string{"variable"},
 		Base:          secrets.CheckNotExposed,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+		CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
 
 			if len(resourceBlock.Labels()) == 0 || !security.IsSensitiveAttribute(resourceBlock.TypeLabel()) {
 				return

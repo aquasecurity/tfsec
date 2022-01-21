@@ -82,7 +82,7 @@ func (a *Attribute) GetRawValue() interface{} {
 	return nil
 }
 
-func (attr *Attribute) AsBytesValueOrDefault(defaultValue []byte, parent Block) types.BytesValue {
+func (attr *Attribute) AsBytesValueOrDefault(defaultValue []byte, parent *Block) types.BytesValue {
 	if attr.IsNil() {
 		return types.BytesDefault(defaultValue, parent.Metadata())
 	}
@@ -95,7 +95,7 @@ func (attr *Attribute) AsBytesValueOrDefault(defaultValue []byte, parent Block) 
 	)
 }
 
-func (attr *Attribute) AsStringValueOrDefault(defaultValue string, parent Block) types.StringValue {
+func (attr *Attribute) AsStringValueOrDefault(defaultValue string, parent *Block) types.StringValue {
 	if attr.IsNil() {
 		return types.StringDefault(defaultValue, parent.Metadata())
 	}
@@ -108,7 +108,7 @@ func (attr *Attribute) AsStringValueOrDefault(defaultValue string, parent Block)
 	)
 }
 
-func (attr *Attribute) AsBoolValueOrDefault(defaultValue bool, parent Block) types.BoolValue {
+func (attr *Attribute) AsBoolValueOrDefault(defaultValue bool, parent *Block) types.BoolValue {
 	if attr.IsNil() {
 		return types.BoolDefault(defaultValue, parent.Metadata())
 	}
@@ -121,7 +121,7 @@ func (attr *Attribute) AsBoolValueOrDefault(defaultValue bool, parent Block) typ
 	)
 }
 
-func (attr *Attribute) AsIntValueOrDefault(defaultValue int, parent Block) types.IntValue {
+func (attr *Attribute) AsIntValueOrDefault(defaultValue int, parent *Block) types.IntValue {
 	if attr.IsNil() {
 		return types.IntDefault(defaultValue, parent.Metadata())
 	}
@@ -766,7 +766,7 @@ func (attr *Attribute) SingleReference() (*Reference, error) {
 	}
 }
 
-func (attr *Attribute) ReferencesBlock(b Block) bool {
+func (attr *Attribute) ReferencesBlock(b *Block) bool {
 	if attr == nil {
 		return false
 	}
@@ -778,7 +778,7 @@ func (attr *Attribute) ReferencesBlock(b Block) bool {
 	return false
 }
 
-func (attr *Attribute) AllReferences(blocks ...Block) []*Reference {
+func (attr *Attribute) AllReferences(blocks ...*Block) []*Reference {
 	if attr == nil {
 		return nil
 	}

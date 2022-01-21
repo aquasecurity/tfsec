@@ -21,7 +21,7 @@ func adaptLogGroups(modules block.Modules) []cloudwatch.LogGroup {
 	return logGroups
 }
 
-func adaptLogGroup(resource block.Block) cloudwatch.LogGroup {
+func adaptLogGroup(resource *block.Block) cloudwatch.LogGroup {
 	nameAttr := resource.GetAttribute("name")
 	nameVal := nameAttr.AsStringValueOrDefault("", resource)
 

@@ -32,7 +32,7 @@ func adaptKeyRings(modules block.Modules) []kms.KeyRing {
 	return keyRings
 }
 
-func adaptKey(resource block.Block) kms.Key {
+func adaptKey(resource *block.Block) kms.Key {
 	rotationPeriodAttr := resource.GetAttribute("rotation_period")
 	rotationStr := rotationPeriodAttr.Value().AsString()
 

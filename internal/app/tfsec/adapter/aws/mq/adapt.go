@@ -22,7 +22,7 @@ func adaptBrokers(modules block.Modules) []mq.Broker {
 	return brokers
 }
 
-func adaptBroker(resource block.Block) mq.Broker {
+func adaptBroker(resource *block.Block) mq.Broker {
 	publicAccessAttr := resource.GetAttribute("publicly_accessible")
 	publicAccessVal := publicAccessAttr.AsBoolValueOrDefault(false, resource)
 

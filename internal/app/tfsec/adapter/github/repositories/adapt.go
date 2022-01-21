@@ -20,7 +20,7 @@ func adaptRepositories(modules block.Modules) []github.Repository {
 	return repositories
 }
 
-func adaptRepository(resource block.Block) github.Repository {
+func adaptRepository(resource *block.Block) github.Repository {
 
 	// visibility overrides private
 	visibilityAttr := resource.GetAttribute("visibility")

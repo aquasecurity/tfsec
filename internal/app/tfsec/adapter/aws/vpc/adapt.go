@@ -83,7 +83,7 @@ func (a *naclAdapter) adaptNetworkACLs(modules block.Modules) []vpc.NetworkACL {
 	return networkACLs
 }
 
-func (a *sgAdapter) adaptSecurityGroup(resource block.Block, module block.Modules) vpc.SecurityGroup {
+func (a *sgAdapter) adaptSecurityGroup(resource *block.Block, module block.Modules) vpc.SecurityGroup {
 	var ingressRules []vpc.SecurityGroupRule
 	var egressRules []vpc.SecurityGroupRule
 
@@ -118,7 +118,7 @@ func (a *sgAdapter) adaptSecurityGroup(resource block.Block, module block.Module
 	}
 }
 
-func adaptSGRule(resource block.Block, modules block.Modules) vpc.SecurityGroupRule {
+func adaptSGRule(resource *block.Block, modules block.Modules) vpc.SecurityGroupRule {
 	ruleDescAttr := resource.GetAttribute("description")
 	ruleDescVal := ruleDescAttr.AsStringValueOrDefault("", resource)
 
@@ -162,7 +162,7 @@ func adaptSGRule(resource block.Block, modules block.Modules) vpc.SecurityGroupR
 	}
 }
 
-func (a *naclAdapter) adaptNetworkACL(resource block.Block, module block.Module) vpc.NetworkACL {
+func (a *naclAdapter) adaptNetworkACL(resource *block.Block, module *block.Module) vpc.NetworkACL {
 	var networkRules []vpc.NetworkACLRule
 	rulesBlocks := module.GetReferencingResources(resource, "aws_network_acl_rule", "network_acl_id")
 	for _, ruleBlock := range rulesBlocks {
@@ -175,7 +175,7 @@ func (a *naclAdapter) adaptNetworkACL(resource block.Block, module block.Module)
 	}
 }
 
-func adaptNetworkACLRule(resource block.Block) vpc.NetworkACLRule {
+func adaptNetworkACLRule(resource *block.Block) vpc.NetworkACLRule {
 	var cidrs []types.StringValue
 
 	typeVal := types.StringDefault("ingress", *resource.GetMetadata())

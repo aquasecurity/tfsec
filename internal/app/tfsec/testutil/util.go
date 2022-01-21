@@ -38,7 +38,7 @@ func ScanJSON(source string, t *testing.T) rules.Results {
 	return res
 }
 
-func CreateModulesFromSource(source string, ext string, t *testing.T) []block.Module {
+func CreateModulesFromSource(source string, ext string, t *testing.T) block.Modules {
 	fs, err := filesystem.New()
 	if err != nil {
 		t.Fatal(err)

@@ -73,7 +73,7 @@ func TestScanningJSON(t *testing.T) {
 					Severity:  severity.High,
 				}, nil),
 				RequiredLabels: []string{"bad"},
-				CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+				CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
 					if resourceBlock.GetAttribute("secure").IsTrue() {
 						return
 					}

@@ -22,7 +22,7 @@ func adaptSecrets(modules block.Modules) []ssm.Secret {
 	return secrets
 }
 
-func adaptSecret(resource block.Block, module block.Module) ssm.Secret {
+func adaptSecret(resource *block.Block, module *block.Module) ssm.Secret {
 	KMSKeyIDAttr := resource.GetAttribute("kms_key_id")
 	KMSKeyIDVal := KMSKeyIDAttr.AsStringValueOrDefault("alias/aws/secretsmanager", resource)
 

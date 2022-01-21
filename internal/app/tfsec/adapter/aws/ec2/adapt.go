@@ -32,7 +32,7 @@ func getInstances(modules block.Modules) []ec2.Instance {
 	return instances
 }
 
-func getMetadataOptions(b block.Block) ec2.MetadataOptions {
+func getMetadataOptions(b *block.Block) ec2.MetadataOptions {
 
 	if metadataOptions := b.GetBlock("metadata_options"); metadataOptions.IsNotNil() {
 		metaOpts := ec2.MetadataOptions{

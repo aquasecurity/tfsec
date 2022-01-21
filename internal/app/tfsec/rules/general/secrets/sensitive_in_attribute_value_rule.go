@@ -13,7 +13,7 @@ func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		RequiredTypes: []string{"resource", "provider", "module", "locals", "variable"},
 		Base:          secrets.CheckNotExposed,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+		CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
 			attributes := resourceBlock.GetAttributes()
 			for _, attribute := range attributes {
 				if attribute.IsString() {

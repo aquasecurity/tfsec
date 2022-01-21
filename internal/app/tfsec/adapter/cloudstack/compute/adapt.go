@@ -24,7 +24,7 @@ func adaptInstances(modules block.Modules) []compute.Instance {
 	return instances
 }
 
-func adaptInstance(resource block.Block) compute.Instance {
+func adaptInstance(resource *block.Block) compute.Instance {
 	userDataAttr := resource.GetAttribute("user_data")
 	var encoded []byte
 	var err error

@@ -15,7 +15,7 @@ func init() {
 	scanner.RegisterCheckRule(rule.Rule{
 		RequiredTypes: []string{"locals"},
 		Base:          secrets.CheckNotExposed,
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+		CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if security.IsSensitiveAttribute(attribute.Name()) {
 					if attribute.Type() == cty.String && attribute.IsResolvable() {

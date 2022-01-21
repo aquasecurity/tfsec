@@ -12,7 +12,7 @@ type Rule struct {
 	RequiredTypes   []string
 	RequiredLabels  []string
 	RequiredSources []string
-	CheckTerraform  func(block.Block, block.Module) rules.Results
+	CheckTerraform  func(*block.Block, *block.Module) rules.Results
 }
 
 func (r Rule) ID() string {

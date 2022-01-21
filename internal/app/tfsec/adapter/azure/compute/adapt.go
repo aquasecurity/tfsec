@@ -45,7 +45,7 @@ func adaptCompute(modules block.Modules) compute.Compute {
 	}
 }
 
-func adaptManagedDisk(resource block.Block) compute.ManagedDisk {
+func adaptManagedDisk(resource *block.Block) compute.ManagedDisk {
 	encryptionBlock := resource.GetBlock("encryption_settings")
 	// encryption is enabled by default - https://github.com/hashicorp/terraform-provider-azurerm/blob/baf55926fe813011003ee4fb0e8e6134fcfcca87/internal/services/compute/managed_disk_resource.go#L288
 	enabledVal := types.BoolDefault(true, resource.Metadata())
@@ -62,7 +62,7 @@ func adaptManagedDisk(resource block.Block) compute.ManagedDisk {
 	}
 }
 
-func adaptLinuxVM(resource block.Block) compute.LinuxVirtualMachine {
+func adaptLinuxVM(resource *block.Block) compute.LinuxVirtualMachine {
 	workingBlock := resource
 
 	if resource.TypeLabel() == "azurerm_virtual_machine" {
@@ -96,7 +96,7 @@ func adaptLinuxVM(resource block.Block) compute.LinuxVirtualMachine {
 	}
 }
 
-func adaptWindowsVM(resource block.Block) compute.WindowsVirtualMachine {
+func adaptWindowsVM(resource *block.Block) compute.WindowsVirtualMachine {
 	workingBlock := resource
 
 	if resource.TypeLabel() == "azurerm_virtual_machine" {

@@ -22,7 +22,7 @@ func adaptClusters(modules block.Modules) []msk.Cluster {
 	return clusters
 }
 
-func adaptCluster(resource block.Block) msk.Cluster {
+func adaptCluster(resource *block.Block) msk.Cluster {
 	clientBrokerVal := types.StringDefault("TLS_PLAINTEXT", *resource.GetMetadata())
 
 	s3enabled := types.BoolDefault(false, *resource.GetMetadata())
