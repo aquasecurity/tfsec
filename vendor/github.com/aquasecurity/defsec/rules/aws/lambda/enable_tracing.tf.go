@@ -1,7 +1,7 @@
 package lambda
 
 var terraformEnableTracingGoodExamples = []string{
-        `
+	`
  resource "aws_iam_role" "iam_for_lambda" {
    name = "iam_for_lambda"
  
@@ -41,14 +41,14 @@ var terraformEnableTracingGoodExamples = []string{
      }
    }
    tracing_config {
-     mode = "something"
+     mode = "Active"
    }
  }
  `,
 }
 
 var terraformEnableTracingBadExamples = []string{
-        `
+	`
  resource "aws_iam_role" "iam_for_lambda" {
    name = "iam_for_lambda"
  
@@ -88,14 +88,14 @@ var terraformEnableTracingBadExamples = []string{
      }
    }
    tracing_config {
-     mode = ""
+     mode = "Passthrough"
    }
  }
  `,
 }
 
 var terraformEnableTracingLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function#mode`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function#mode`,
 }
 
 var terraformEnableTracingRemediationMarkdown = ``
