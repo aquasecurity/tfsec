@@ -1,7 +1,7 @@
 package vpc
 
 var terraformAddDescriptionToSecurityGroupGoodExamples = []string{
-        `
+	`
  resource "aws_security_group" "good_example" {
    name        = "http"
    description = "Allow inbound HTTP traffic"
@@ -18,9 +18,10 @@ var terraformAddDescriptionToSecurityGroupGoodExamples = []string{
 }
 
 var terraformAddDescriptionToSecurityGroupBadExamples = []string{
-        `
+	`
  resource "aws_security_group" "bad_example" {
    name        = "http"
+   description = ""
  
    ingress {
      description = "HTTP from VPC"
@@ -34,7 +35,7 @@ var terraformAddDescriptionToSecurityGroupBadExamples = []string{
 }
 
 var terraformAddDescriptionToSecurityGroupLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group`,`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group`, `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule`,
 }
 
 var terraformAddDescriptionToSecurityGroupRemediationMarkdown = ``
