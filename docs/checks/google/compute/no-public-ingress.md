@@ -22,9 +22,12 @@ Set a more restrictive cidr range
 The following example will fail the google-compute-no-public-ingress check.
 ```terraform
 
- resource "google_compute_firewall" "bad_example" {
- 	source_ranges = ["0.0.0.0/0"]
- }
+resource "google_compute_firewall" "bad_example" {
+  source_ranges = ["0.0.0.0/0"]
+  allow {
+    protocol = "icmp"
+  }
+}
 ```
 
 
@@ -34,9 +37,12 @@ The following example will fail the google-compute-no-public-ingress check.
 The following example will pass the google-compute-no-public-ingress check.
 ```terraform
 
- resource "google_compute_firewall" "good_example" {
- 	source_ranges = ["1.2.3.4/32"]
- }
+resource "google_compute_firewall" "good_example" {
+  source_ranges = ["1.2.3.4/32"]
+  allow {
+    protocol = "icmp"
+  }
+}
 ```
 
 

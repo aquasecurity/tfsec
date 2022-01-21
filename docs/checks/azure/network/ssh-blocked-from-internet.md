@@ -28,22 +28,9 @@ The following example will fail the azure-network-ssh-blocked-from-internet chec
       access                      = "Allow"
       protocol                    = "TCP"
       source_port_range           = "*"
-      destination_port_range      = ["22"]
+      destination_port_range      = "22"
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
- }
- 
- resource "azurerm_network_security_group" "example" {
-   name                = "tf-appsecuritygroup"
-   location            = azurerm_resource_group.example.location
-   resource_group_name = azurerm_resource_group.example.name
-   
-   security_rule {
- 	 source_port_range           = "any"
-      destination_port_range      = ["22"]
-      source_address_prefix       = "*"
-      destination_address_prefix  = "*"
-   }
  }
  
 ```
@@ -61,22 +48,9 @@ The following example will pass the azure-network-ssh-blocked-from-internet chec
       access                      = "Allow"
       protocol                    = "TCP"
       source_port_range           = "*"
-      destination_port_range      = ["22"]
+      destination_port_range      = "22"
       source_address_prefix       = "82.102.23.23"
       destination_address_prefix  = "*"
- }
- 
- resource "azurerm_network_security_group" "example" {
-   name                = "tf-appsecuritygroup"
-   location            = azurerm_resource_group.example.location
-   resource_group_name = azurerm_resource_group.example.name
-   
-   security_rule {
- 	 source_port_range           = "any"
-      destination_port_range      = ["22"]
-      source_address_prefix       = "82.102.23.23"
-      destination_address_prefix  = "*"
-   }
  }
  
 ```

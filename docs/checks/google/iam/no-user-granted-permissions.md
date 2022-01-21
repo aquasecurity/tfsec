@@ -26,7 +26,7 @@ The following example will fail the google-iam-no-user-granted-permissions check
 
  resource "google_project_iam_binding" "bad_example" {
  	members = [
- 		"user:test@example.com",  
+ 		"user:test@example.com",
  		]
  }
  

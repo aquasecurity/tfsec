@@ -20,9 +20,14 @@ Remove plaintext secrets and encrypt them within a secrets manager instead.
 The following example will fail the general-secrets-no-plaintext-exposure check.
 ```terraform
 
- provider "aws" {
-   access_key = "AKIAABCD12ABCDEF1ABC"
-   secret_key = "s8d7ghas9dghd9ophgs9"
+ variable "password" {
+   description = "The root password for our VM"
+   type        = string
+   default     = "p4ssw0rd"
+ }
+ 
+ resource "evil_corp" "virtual_machine" {
+ 	root_password = var.password
  }
  
 ```
@@ -34,7 +39,13 @@ The following example will fail the general-secrets-no-plaintext-exposure check.
 The following example will pass the general-secrets-no-plaintext-exposure check.
 ```terraform
 
- provider "aws" {
+ variable "password" {
+   description = "The root password for our VM"
+   type        = string
+ }
+ 
+ resource "evil_corp" "virtual_machine" {
+ 	root_password = var.password
  }
  
 ```
@@ -44,7 +55,7 @@ The following example will pass the general-secrets-no-plaintext-exposure check.
 ### Links
 
 
-- [https://registry.terraform.io/providers/hashicorp/aws/latest/docs#argument-reference](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#argument-reference){:target="_blank" rel="nofollow noreferrer noopener"}
+- [https://www.terraform.io/docs/state/sensitive-data.html](https://www.terraform.io/docs/state/sensitive-data.html){:target="_blank" rel="nofollow noreferrer noopener"}
 
 
 

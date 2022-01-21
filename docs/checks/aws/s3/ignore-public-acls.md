@@ -22,6 +22,11 @@ Enable ignoring the application of public ACLs in PUT calls
 The following example will fail the aws-s3-ignore-public-acls check.
 ```terraform
 
+resource "aws_s3_bucket" "example" {
+	bucket = "bucket"
+}
+
+
  resource "aws_s3_bucket_public_access_block" "bad_example" {
  	bucket = aws_s3_bucket.example.id
  }
@@ -40,6 +45,10 @@ The following example will fail the aws-s3-ignore-public-acls check.
 
 The following example will pass the aws-s3-ignore-public-acls check.
 ```terraform
+
+resource "aws_s3_bucket" "example" {
+	bucket = "bucket"
+}
 
  resource "aws_s3_bucket_public_access_block" "good_example" {
  	bucket = aws_s3_bucket.example.id

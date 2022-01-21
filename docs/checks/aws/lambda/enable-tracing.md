@@ -59,7 +59,7 @@ The following example will fail the aws-lambda-enable-tracing check.
      }
    }
    tracing_config {
-     mode = ""
+     mode = "Passthrough"
    }
  }
  
@@ -111,7 +111,7 @@ The following example will pass the aws-lambda-enable-tracing check.
      }
    }
    tracing_config {
-     mode = "something"
+     mode = "Active"
    }
  }
  

@@ -23,11 +23,6 @@ The following example will fail the aws-iam-enforce-mfa check.
 ```terraform
 
 data aws_caller_identity current {}
-
-resource aws_iam_group support {
-  name =  "support"
-}
-
 resource aws_iam_group developers {
   name =  "developers"
 }
@@ -41,22 +36,30 @@ resource aws_iam_group developers {
 The following example will pass the aws-iam-enforce-mfa check.
 ```terraform
 
-data aws_caller_identity current {}
-
-resource aws_iam_group support {
+resource "aws_iam_group" "support" {
   name =  "support"
 }
-
-module enforce_mfa {
-  source  = "terraform-module/enforce-mfa/aws"
-  version = "0.12.0"
-
-  policy_name                     = "managed-mfa-enforce"
-  account_id                      = data.aws_caller_identity.current.id
-  groups                          = [aws_iam_group.support.name]
-  manage_own_signing_certificates  = true
-  manage_own_ssh_public_keys      = true
-  manage_own_git_credentials      = true
+resource aws_iam_group_policy mfa {
+   
+    group = aws_iam_group.support.name
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": "ec2:*",
+      "Resource": "*",
+      "Condition": {
+          "Bool": {
+              "aws:MultiFactorAuthPresent": ["true"]
+          }
+      }
+    }
+  ]
+}
+EOF
 }
 
 ```
