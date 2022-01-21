@@ -76,9 +76,6 @@ func (scanner *Scanner) Scan(modules block.Modules) (rules.Results, error) {
 		}
 
 		for _, result := range results {
-			if result.NarrowestRange() == nil {
-				fmt.Printf("\n%#v\n", result)
-			}
 			if !scanner.includeIgnored && ignores.Covering(
 				result.NarrowestRange(),
 				scanner.workspaceName,
