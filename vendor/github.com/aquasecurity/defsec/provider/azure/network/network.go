@@ -15,12 +15,12 @@ type SecurityGroup struct {
 
 type SecurityGroupRule struct {
 	types.Metadata
-	Outbound              types.BoolValue
-	Allow                 types.BoolValue
-	SourceAddresses       []types.StringValue
-	SourcePortRanges      []types.StringValue
-	DestinationAddresses  []types.StringValue
-	DestinationPortRanges []types.StringValue
+	Outbound             types.BoolValue
+	Allow                types.BoolValue
+	SourceAddresses      []types.StringValue
+	SourcePorts          []types.IntValue
+	DestinationAddresses []types.StringValue
+	DestinationPorts     []types.IntValue
 }
 
 type NetworkWatcherFlowLog struct {

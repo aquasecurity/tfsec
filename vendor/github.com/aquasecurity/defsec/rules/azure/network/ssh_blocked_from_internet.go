@@ -31,9 +31,12 @@ SSH access should not be permitted from the internet (*, 0.0.0.0, /0, internet, 
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.Azure.Network.SecurityGroups {
-			for _, rule := range group.InboundAllowRules {
-				for _, ports := range rule.DestinationPortRanges {
-					if portRangeContains(ports.Value(), 22) {
+			for _, rule := range group.Rules {
+				if rule.Allow.IsFalse() || rule.Outbound.IsTrue() {
+					continue
+				}
+				for _, port := range rule.DestinationPorts {
+					if port.EqualTo(22) {
 						for _, ip := range rule.SourceAddresses {
 							if cidr.IsPublic(ip.Value()) && cidr.CountAddresses(ip.Value()) > 1 {
 								results.Add(

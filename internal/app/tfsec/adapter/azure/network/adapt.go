@@ -1,26 +1,63 @@
 package network
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/aquasecurity/defsec/provider/azure/network"
 	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/google/uuid"
 )
 
 func Adapt(modules block.Modules) network.Network {
 	return network.Network{
-		SecurityGroups:         adaptSecurityGroups(modules),
+		SecurityGroups: (&adapter{
+			modules: modules,
+			groups:  make(map[string]network.SecurityGroup),
+		}).adaptSecurityGroups(),
 		NetworkWatcherFlowLogs: adaptWatcherLogs(modules),
 	}
 }
 
-func adaptSecurityGroups(modules block.Modules) []network.SecurityGroup {
-	var securityGroups []network.SecurityGroup
+type adapter struct {
+	modules block.Modules
+	groups  map[string]network.SecurityGroup
+}
 
-	for _, module := range modules {
+func (a *adapter) adaptSecurityGroups() []network.SecurityGroup {
+
+	for _, module := range a.modules {
 		for _, resource := range module.GetResourcesByType("azurerm_network_security_group") {
-			securityGroups = append(securityGroups, adaptSecurityGroup(resource, module))
+			a.adaptSecurityGroup(resource)
 		}
 	}
+
+	for _, ruleBlock := range a.modules.GetResourcesByType("azurerm_network_security_rule") {
+		rule := a.adaptSGRule(ruleBlock)
+
+		groupAttr := ruleBlock.GetAttribute("network_security_group_name")
+		if groupAttr.IsNotNil() {
+			if referencedBlock, err := a.modules.GetReferencedBlock(groupAttr, ruleBlock); err == nil {
+				if group, ok := a.groups[referencedBlock.ID()]; ok {
+					group.Rules = append(group.Rules, rule)
+					a.groups[referencedBlock.ID()] = group
+					continue
+				}
+			}
+
+		}
+
+		a.groups[uuid.NewString()] = network.SecurityGroup{
+			Rules: []network.SecurityGroupRule{rule},
+		}
+	}
+
+	var securityGroups []network.SecurityGroup
+	for _, group := range a.groups {
+		securityGroups = append(securityGroups, group)
+	}
+
 	return securityGroups
 }
 
@@ -35,110 +72,106 @@ func adaptWatcherLogs(modules block.Modules) []network.NetworkWatcherFlowLog {
 	return watcherLogs
 }
 
-func adaptSecurityGroup(resource block.Block, module block.Module) network.SecurityGroup {
-	var inboundAllowRules []network.SecurityGroupRule
-	var inboundDenyRules []network.SecurityGroupRule
-	var outboundAllowRules []network.SecurityGroupRule
-	var outboundDenyRules []network.SecurityGroupRule
-
-	var securityRuleBlocks block.Blocks
-	if resource.HasChild("security_rule") {
-		securityRuleBlocks = append(securityRuleBlocks, resource.GetBlocks("security_rule")...)
+func (a *adapter) adaptSecurityGroup(resource block.Block) {
+	var rules []network.SecurityGroupRule
+	for _, ruleBlock := range resource.GetBlocks("security_rule") {
+		rules = append(rules, a.adaptSGRule(ruleBlock))
 	}
-
-	securityRuleRes := module.GetReferencingResources(resource, "azurerm_network_security_rule", "network_security_group_name")
-	securityRuleBlocks = append(securityRuleBlocks, securityRuleRes...)
-
-	for _, ruleBlock := range securityRuleBlocks {
-		accessAttr := ruleBlock.GetAttribute("access")
-		directionAttr := ruleBlock.GetAttribute("direction")
-
-		if accessAttr.Equals("Allow") && directionAttr.Equals("Inbound") {
-			inboundAllowRules = append(inboundAllowRules, adaptSGRule(ruleBlock))
-		}
-		if accessAttr.Equals("Deny") && directionAttr.Equals("Inbound") {
-			inboundDenyRules = append(inboundDenyRules, adaptSGRule(ruleBlock))
-
-		}
-		if accessAttr.Equals("Allow") && directionAttr.Equals("Outbound") {
-			outboundAllowRules = append(outboundAllowRules, adaptSGRule(ruleBlock))
-		}
-		if accessAttr.Equals("Deny") && directionAttr.Equals("Outbound") {
-			outboundDenyRules = append(outboundDenyRules, adaptSGRule(ruleBlock))
-		}
-	}
-
-	return network.SecurityGroup{
-		InboundAllowRules:  inboundAllowRules,
-		InboundDenyRules:   inboundDenyRules,
-		OutboundAllowRules: outboundAllowRules,
-		OutboundDenyRules:  outboundDenyRules,
+	a.groups[resource.ID()] = network.SecurityGroup{
+		Rules: rules,
 	}
 }
 
-func adaptSGRule(resource block.Block) network.SecurityGroupRule {
-	var sourceAddresses []types.StringValue
-	var sourcePortRanges []types.StringValue
-	var destinationAddresses []types.StringValue
-	var destinationPortRanges []types.StringValue
+func (a *adapter) adaptSGRule(ruleBlock block.Block) network.SecurityGroupRule {
 
-	sourceAddressAttr := resource.GetAttribute("source_address_prefix")
-	sourceAddresses = append(sourceAddresses, sourceAddressAttr.AsStringValueOrDefault("", resource))
-
-	sourceAddressPrefixesAttr := resource.GetAttribute("source_address_prefixes")
-	values := sourceAddressPrefixesAttr.ValueAsStrings()
-	for _, value := range values {
-		sourceAddresses = append(sourceAddresses, types.String(value, *resource.GetMetadata()))
+	rule := network.SecurityGroupRule{
+		Metadata: ruleBlock.Metadata(),
+		Allow:    types.BoolDefault(true, ruleBlock.Metadata()),
+		Outbound: types.BoolDefault(false, ruleBlock.Metadata()),
 	}
 
-	sourcePortRangeAttr := resource.GetAttribute("source_port_range")
-	if sourcePortRangeAttr.IsIterable() {
-		values := sourcePortRangeAttr.ValueAsStrings()
-		for _, value := range values {
-			sourcePortRanges = append(sourcePortRanges, types.String(value, *resource.GetMetadata()))
+	accessAttr := ruleBlock.GetAttribute("access")
+	if accessAttr.Equals("Allow") {
+		rule.Allow = types.Bool(true, accessAttr.Metadata())
+	} else if accessAttr.Equals("Deny") {
+		rule.Allow = types.Bool(false, accessAttr.Metadata())
+	}
 
+	directionAttr := ruleBlock.GetAttribute("direction")
+	if directionAttr.Equals("Inbound") {
+		rule.Outbound = types.Bool(false, directionAttr.Metadata())
+	} else if directionAttr.Equals("Outbound") {
+		rule.Outbound = types.Bool(true, directionAttr.Metadata())
+	}
+
+	if sourceAddressAttr := ruleBlock.GetAttribute("source_address_prefix"); sourceAddressAttr.IsString() {
+		rule.SourceAddresses = append(rule.SourceAddresses, sourceAddressAttr.AsStringValueOrDefault("", ruleBlock))
+	} else if sourceAddressPrefixesAttr := ruleBlock.GetAttribute("source_address_prefixes"); sourceAddressPrefixesAttr.IsNotNil() {
+		for _, prefix := range sourceAddressPrefixesAttr.ValueAsStrings() {
+			rule.SourceAddresses = append(rule.SourceAddresses, types.String(prefix, sourceAddressPrefixesAttr.Metadata()))
 		}
-	} else {
-		sourcePortRanges = append(sourcePortRanges, sourcePortRangeAttr.AsStringValueOrDefault("", resource))
 	}
 
-	sourcePortRangesAttr := resource.GetAttribute("source_port_ranges")
-	sourcePortList := sourcePortRangesAttr.ValueAsStrings()
-	for _, sourcePort := range sourcePortList {
-		sourcePortRanges = append(sourcePortRanges, types.String(sourcePort, *resource.GetMetadata()))
-	}
-
-	destinationAddressPrefixAttr := resource.GetAttribute("destination_address_prefix")
-	destinationAddresses = append(destinationAddresses, destinationAddressPrefixAttr.AsStringValueOrDefault("", resource))
-
-	destinationAddressPrefixesAttr := resource.GetAttribute("destination_address_prefixes")
-	destinationAddList := destinationAddressPrefixesAttr.ValueAsStrings()
-	for _, destination := range destinationAddList {
-		destinationAddresses = append(destinationAddresses, types.String(destination, *resource.GetMetadata()))
-	}
-
-	destinationPortRangeAttr := resource.GetAttribute("destination_port_range")
-	if destinationPortRangeAttr.IsIterable() {
-		values := destinationPortRangeAttr.ValueAsStrings()
-		for _, value := range values {
-			destinationPortRanges = append(destinationPortRanges, types.String(value, *resource.GetMetadata()))
+	if sourcePortRangesAttr := ruleBlock.GetAttribute("source_port_ranges"); sourcePortRangesAttr.IsNotNil() {
+		for _, value := range sourcePortRangesAttr.ValueAsStrings() {
+			rule.SourcePorts = append(rule.SourcePorts, expandRange(value, sourcePortRangesAttr.Metadata())...)
 		}
-	} else {
-		destinationPortRanges = append(destinationPortRanges, destinationPortRangeAttr.AsStringValueOrDefault("", resource))
+	} else if sourcePortRangeAttr := ruleBlock.GetAttribute("source_port_range"); sourcePortRangeAttr.IsString() {
+		rule.SourcePorts = append(rule.SourcePorts, expandRange(sourcePortRangeAttr.Value().AsString(), sourcePortRangeAttr.Metadata())...)
+	} else if sourcePortRangeAttr := ruleBlock.GetAttribute("source_port_range"); sourcePortRangeAttr.IsNumber() {
+		bf := sourcePortRangeAttr.Value().AsBigFloat()
+		f, _ := bf.Float64()
+		rule.SourcePorts = append(rule.SourcePorts, types.Int(int(f), sourcePortRangeAttr.Metadata()))
 	}
 
-	destinationPortRangesAttr := resource.GetAttribute("destination_port_ranges")
-	destinationPortsList := destinationPortRangesAttr.ValueAsStrings()
-	for _, destination := range destinationPortsList {
-		destinationPortRanges = append(destinationPortRanges, types.String(destination, *resource.GetMetadata()))
+	if destAddressAttr := ruleBlock.GetAttribute("destination_address_prefix"); destAddressAttr.IsString() {
+		rule.DestinationAddresses = append(rule.DestinationAddresses, destAddressAttr.AsStringValueOrDefault("", ruleBlock))
+	} else if destAddressPrefixesAttr := ruleBlock.GetAttribute("destination_address_prefixes"); destAddressPrefixesAttr.IsNotNil() {
+		for _, prefix := range destAddressPrefixesAttr.ValueAsStrings() {
+			rule.DestinationAddresses = append(rule.DestinationAddresses, types.String(prefix, destAddressPrefixesAttr.Metadata()))
+		}
 	}
 
-	return network.SecurityGroupRule{
-		SourceAddresses:       sourceAddresses,
-		SourcePortRanges:      sourcePortRanges,
-		DestinationAddresses:  destinationAddresses,
-		DestinationPortRanges: destinationPortRanges,
+	if destPortRangesAttr := ruleBlock.GetAttribute("destination_port_ranges"); destPortRangesAttr.IsNotNil() {
+		for _, value := range destPortRangesAttr.ValueAsStrings() {
+			rule.DestinationPorts = append(rule.DestinationPorts, expandRange(value, destPortRangesAttr.Metadata())...)
+		}
+	} else if destPortRangeAttr := ruleBlock.GetAttribute("destination_port_range"); destPortRangeAttr.IsString() {
+		rule.DestinationPorts = append(rule.DestinationPorts, expandRange(destPortRangeAttr.Value().AsString(), destPortRangeAttr.Metadata())...)
+	} else if destPortRangeAttr := ruleBlock.GetAttribute("destination_port_range"); destPortRangeAttr.IsNumber() {
+		bf := destPortRangeAttr.Value().AsBigFloat()
+		f, _ := bf.Float64()
+		rule.DestinationPorts = append(rule.DestinationPorts, types.Int(int(f), destPortRangeAttr.Metadata()))
 	}
+
+	return rule
+}
+
+func expandRange(r string, m types.Metadata) []types.IntValue {
+	start := 0
+	end := 65535
+	switch {
+	case r == "*":
+	case strings.Contains(r, "-"):
+		if parts := strings.Split(r, "-"); len(parts) == 2 {
+			if p1, err := strconv.ParseInt(parts[0], 10, 32); err == nil {
+				start = int(p1)
+			}
+			if p2, err := strconv.ParseInt(parts[1], 10, 32); err == nil {
+				end = int(p2)
+			}
+		}
+	default:
+		if val, err := strconv.ParseInt(r, 10, 32); err == nil {
+			start = int(val)
+			end = int(val)
+		}
+	}
+	var ports []types.IntValue
+	for i := start; i <= end; i++ {
+		ports = append(ports, types.Int(i, m))
+	}
+	return ports
 }
 
 func adaptWatcherLog(resource block.Block) network.NetworkWatcherFlowLog {
