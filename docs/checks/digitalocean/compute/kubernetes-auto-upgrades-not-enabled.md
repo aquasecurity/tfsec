@@ -12,7 +12,7 @@ title: Kubernetes clusters should be auto-upgraded to ensure that they always co
 Not running the latest security patches on your Kubernetes cluster can make it a target for penetration.
 
 ### Suggested Resolution
-Set maintenace policy deterministically when auto upgrades are enabled
+Set maintenance policy deterministically when auto upgrades are enabled
 
 
 ### Insecure Example
