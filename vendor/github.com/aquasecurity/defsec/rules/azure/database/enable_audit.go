@@ -35,6 +35,8 @@ var CheckEnableAudit = rules.Register(
 					"Server does not have an extended audit policy configured.",
 					&server,
 				)
+			} else {
+				results.AddPassed(&server)
 			}
 		}
 		return

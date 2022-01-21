@@ -49,6 +49,8 @@ Where possible, segments should be broken into smaller subnets and avoid using t
 							"Firewall rule allows egress traffic to multiple addresses on the public internet.",
 							destination,
 						)
+					} else {
+						results.AddPassed(destination)
 					}
 				}
 			}

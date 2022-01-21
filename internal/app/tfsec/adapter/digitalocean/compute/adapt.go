@@ -21,7 +21,7 @@ func adaptDroplets(module block.Modules) []compute.Droplet {
 	for _, module := range module {
 		for _, block := range module.GetResourcesByType("digitalocean_droplet") {
 			droplet := compute.Droplet{
-				Metadata: *(block.GetMetadata()),
+				Metadata: block.Metadata(),
 			}
 			sshKeys := block.GetAttribute("ssh_keys")
 			if sshKeys != nil {
@@ -68,6 +68,7 @@ func adaptFirewalls(module block.Modules) []compute.Firewall {
 			outboundFirewallRules = append(outboundFirewallRules, outboundFirewallRule)
 		}
 		firewalls = append(firewalls, compute.Firewall{
+			Metadata:      block.Metadata(),
 			InboundRules:  inboundFirewallRules,
 			OutboundRules: outboundFirewallRules,
 		})
@@ -88,6 +89,7 @@ func adaptLoadBalancers(module block.Modules) (loadBalancers []compute.LoadBalan
 			fRules = append(fRules, rule)
 		}
 		loadBalancers = append(loadBalancers, compute.LoadBalancer{
+			Metadata:        block.Metadata(),
 			ForwardingRules: fRules,
 		})
 	}
@@ -98,6 +100,7 @@ func adaptLoadBalancers(module block.Modules) (loadBalancers []compute.LoadBalan
 func adaptKubernetesClusters(module block.Modules) (kubernetesClusters []compute.KubernetesCluster) {
 	for _, block := range module.GetResourcesByType("digitalocean_kubernetes_cluster") {
 		kubernetesClusters = append(kubernetesClusters, compute.KubernetesCluster{
+			Metadata:     block.Metadata(),
 			AutoUpgrade:  block.GetAttribute("auto_upgrade").AsBoolValueOrDefault(false, block),
 			SurgeUpgrade: block.GetAttribute("surge_upgrade").AsBoolValueOrDefault(false, block),
 		})

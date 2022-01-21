@@ -33,6 +33,7 @@ RDP access should not be permitted from the internet (*, 0.0.0.0, /0, internet, 
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.Azure.Network.SecurityGroups {
+			var failed bool
 			for _, rule := range group.Rules {
 				if rule.Allow.IsFalse() || rule.Outbound.IsTrue() {
 					continue
@@ -41,6 +42,7 @@ RDP access should not be permitted from the internet (*, 0.0.0.0, /0, internet, 
 					if ports.Includes(3389) {
 						for _, ip := range rule.SourceAddresses {
 							if cidr.IsPublic(ip.Value()) && cidr.CountAddresses(ip.Value()) > 1 {
+								failed = true
 								results.Add(
 									"Security group rule allows ingress to RDP port from multiple public internet addresses.",
 									ip,
@@ -48,6 +50,9 @@ RDP access should not be permitted from the internet (*, 0.0.0.0, /0, internet, 
 							}
 						}
 					}
+				}
+				if !failed {
+					results.AddPassed(&group)
 				}
 			}
 		}

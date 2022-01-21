@@ -36,6 +36,8 @@ var CheckDiskEncryptionRequired = rules.Register(
 						"Instance disk has encryption key provided in plaintext.",
 						disk.Encryption.RawKey,
 					)
+				} else {
+					results.AddPassed(&disk)
 				}
 			}
 		}
@@ -45,6 +47,8 @@ var CheckDiskEncryptionRequired = rules.Register(
 					"Disk encryption key is supplied in plaintext.",
 					disk.Encryption.RawKey,
 				)
+			} else {
+				results.AddPassed(&disk)
 			}
 		}
 		return

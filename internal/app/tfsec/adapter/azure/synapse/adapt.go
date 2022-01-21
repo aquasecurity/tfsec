@@ -26,6 +26,7 @@ func adaptWorkspace(resource *block.Block) synapse.Workspace {
 	enableManagedVNVal := enableManagedVNAttr.AsBoolValueOrDefault(false, resource)
 
 	return synapse.Workspace{
+		Metadata:                    resource.Metadata(),
 		EnableManagedVirtualNetwork: enableManagedVNVal,
 	}
 }

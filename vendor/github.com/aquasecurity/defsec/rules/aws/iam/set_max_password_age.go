@@ -32,7 +32,7 @@ The account password policy should be set to expire passwords after 90 days or l
 	},
 	func(s *state.State) (results rules.Results) {
 		policy := s.AWS.IAM.PasswordPolicy
-		if !policy.IsManaged() {
+		if policy.IsUnmanaged() {
 			return
 		}
 

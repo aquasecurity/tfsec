@@ -18,21 +18,26 @@ var CheckNoIpForwarding = rules.Register(
 		Resolution:  "Disable IP forwarding",
 		Explanation: `Disabling IP forwarding ensures the instance can only receive packets addressed to the instance and can only send packets with a source address of the instance.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoIpForwardingGoodExamples,
-            BadExamples:         terraformNoIpForwardingBadExamples,
-            Links:               terraformNoIpForwardingLinks,
-            RemediationMarkdown: terraformNoIpForwardingRemediationMarkdown,
-        },
-        Severity:    severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoIpForwardingGoodExamples,
+			BadExamples:         terraformNoIpForwardingBadExamples,
+			Links:               terraformNoIpForwardingLinks,
+			RemediationMarkdown: terraformNoIpForwardingRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.Compute.Instances {
+			if instance.IsUnmanaged() {
+				continue
+			}
 			if instance.CanIPForward.IsTrue() {
 				results.Add(
 					"Instance has IP forwarding allowed.",
 					instance.CanIPForward,
 				)
+			} else {
+				results.AddPassed(&instance)
 			}
 		}
 		return

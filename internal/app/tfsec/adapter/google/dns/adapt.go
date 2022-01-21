@@ -29,6 +29,7 @@ func adaptManagedZones(modules block.Modules) []dns.ManagedZone {
 func adaptManagedZone(resource *block.Block) dns.ManagedZone {
 
 	zone := dns.ManagedZone{
+		Metadata: resource.Metadata(),
 		DNSSec: dns.DNSSec{
 			Enabled: types.BoolDefault(false, resource.Metadata()),
 			DefaultKeySpecs: dns.KeySpecs{

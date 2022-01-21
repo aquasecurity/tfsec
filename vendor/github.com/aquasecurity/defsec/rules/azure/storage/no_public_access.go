@@ -39,6 +39,8 @@ Explicitly overriding publicAccess to anything other than off should be avoided.
 						"Container allows public access.",
 						container.PublicAccess,
 					)
+				} else {
+					results.AddPassed(&container)
 				}
 			}
 		}

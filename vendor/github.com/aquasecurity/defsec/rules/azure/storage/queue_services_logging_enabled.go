@@ -34,7 +34,7 @@ Requests are logged on a best-effort basis.`,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, account := range s.Azure.Storage.Accounts {
-			if !account.IsManaged() {
+			if account.IsUnmanaged() {
 				continue
 			}
 			if account.QueueProperties.EnableLogging.IsFalse() {
@@ -42,6 +42,8 @@ Requests are logged on a best-effort basis.`,
 					"Queue services storage account does not have logging enabled.",
 					account.QueueProperties.EnableLogging,
 				)
+			} else {
+				results.AddPassed(&account)
 			}
 		}
 		return

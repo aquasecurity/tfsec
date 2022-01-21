@@ -28,7 +28,7 @@ var CheckEnableIpAliasing = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			if !cluster.IsManaged() {
+			if cluster.IsUnmanaged() {
 				continue
 			}
 			if cluster.IPAllocationPolicy.Enabled.IsFalse() {
@@ -36,7 +36,10 @@ var CheckEnableIpAliasing = rules.Register(
 					"Cluster has IP aliasing disabled.",
 					cluster.IPAllocationPolicy.Enabled,
 				)
+			} else {
+				results.AddPassed(&cluster)
 			}
+
 		}
 		return
 	},

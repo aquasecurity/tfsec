@@ -64,6 +64,13 @@ func (m *Metadata) IsManaged() bool {
 	return m.isManaged
 }
 
+func (m *Metadata) IsUnmanaged() bool {
+	if m == nil {
+		return true
+	}
+	return !m.isManaged
+}
+
 // add this for structs built with composition
 func (m Metadata) GetMetadata() *Metadata {
 	return &m

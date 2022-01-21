@@ -30,11 +30,16 @@ var CheckAutoUpgrade = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, kc := range s.DigitalOcean.Compute.KubernetesClusters {
+			if kc.IsUnmanaged() {
+				continue
+			}
 			if kc.AutoUpgrade.IsFalse() {
 				results.Add(
 					"Kubernetes Cluster does not enable auto upgrades enabled",
 					kc.AutoUpgrade,
 				)
+			} else {
+				results.AddPassed(&kc)
 			}
 		}
 		return

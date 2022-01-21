@@ -36,7 +36,10 @@ var CheckNoFolderLevelServiceAccountImpersonation = rules.Register(
 						"Service account access is granted to a user at folder level.",
 						member.Role,
 					)
+				} else {
+					results.AddPassed(&member)
 				}
+
 			}
 			for _, binding := range folder.Bindings {
 				if binding.Role.IsOneOf("roles/iam.serviceAccountUser", "roles/iam.serviceAccountTokenCreator") {
@@ -44,7 +47,10 @@ var CheckNoFolderLevelServiceAccountImpersonation = rules.Register(
 						"Service account access is granted to a user at folder level.",
 						binding.Role,
 					)
+				} else {
+					results.AddPassed(&binding)
 				}
+
 			}
 		}
 		return

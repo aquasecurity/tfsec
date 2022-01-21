@@ -22,13 +22,13 @@ Set when the resource will be become inactive.`,
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/key-vault/secrets/about-secrets",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnsureSecretExpiryGoodExamples,
-            BadExamples:         terraformEnsureSecretExpiryBadExamples,
-            Links:               terraformEnsureSecretExpiryLinks,
-            RemediationMarkdown: terraformEnsureSecretExpiryRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnsureSecretExpiryGoodExamples,
+			BadExamples:         terraformEnsureSecretExpiryBadExamples,
+			Links:               terraformEnsureSecretExpiryLinks,
+			RemediationMarkdown: terraformEnsureSecretExpiryRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, vault := range s.Azure.KeyVault.Vaults {
@@ -38,6 +38,8 @@ Set when the resource will be become inactive.`,
 						"Secret should have an expiry date specified.",
 						secret.ExpiryDate,
 					)
+				} else {
+					results.AddPassed(&secret)
 				}
 			}
 		}

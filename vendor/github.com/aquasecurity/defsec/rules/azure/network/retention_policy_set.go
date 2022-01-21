@@ -33,6 +33,9 @@ Setting an retention policy will help ensure as much information is available fo
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, flowLog := range s.Azure.Network.NetworkWatcherFlowLogs {
+			if flowLog.IsUnmanaged() {
+				continue
+			}
 			if flowLog.RetentionPolicy.Enabled.IsFalse() {
 				results.Add(
 					"Flow log does not enable the log retention policy.",
@@ -43,6 +46,8 @@ Setting an retention policy will help ensure as much information is available fo
 					"Flow log has a log retention policy of less than 90 days.",
 					flowLog.RetentionPolicy.Days,
 				)
+			} else {
+				results.AddPassed(&flowLog)
 			}
 		}
 		return

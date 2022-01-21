@@ -21,21 +21,26 @@ Microsoft will notify the security contact directly in the event of a security i
 		Links: []string{
 			"https://azure.microsoft.com/en-us/services/security-center/",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformSetRequiredContactDetailsGoodExamples,
-            BadExamples:         terraformSetRequiredContactDetailsBadExamples,
-            Links:               terraformSetRequiredContactDetailsLinks,
-            RemediationMarkdown: terraformSetRequiredContactDetailsRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformSetRequiredContactDetailsGoodExamples,
+			BadExamples:         terraformSetRequiredContactDetailsBadExamples,
+			Links:               terraformSetRequiredContactDetailsLinks,
+			RemediationMarkdown: terraformSetRequiredContactDetailsRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, contact := range s.Azure.SecurityCenter.Contacts {
+			if contact.IsUnmanaged() {
+				continue
+			}
 			if contact.Phone.IsEmpty() {
 				results.Add(
 					"Security contact does not have a phone number listed.",
 					contact.Phone,
 				)
+			} else {
+				results.AddPassed(&contact)
 			}
 		}
 		return

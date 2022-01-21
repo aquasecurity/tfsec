@@ -22,16 +22,19 @@ var CheckPgLogErrors = rules.Register(
 			"https://postgresqlco.nf/doc/en/param/log_min_messages/",
 			"https://www.postgresql.org/docs/13/runtime-config-logging.html#GUC-LOG-MIN-MESSAGES",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformPgLogErrorsGoodExamples,
-            BadExamples:         terraformPgLogErrorsBadExamples,
-            Links:               terraformPgLogErrorsLinks,
-            RemediationMarkdown: terraformPgLogErrorsRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformPgLogErrorsGoodExamples,
+			BadExamples:         terraformPgLogErrorsBadExamples,
+			Links:               terraformPgLogErrorsLinks,
+			RemediationMarkdown: terraformPgLogErrorsRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {
+			if instance.IsUnmanaged() {
+				continue
+			}
 			if instance.DatabaseFamily() != sql.DatabaseFamilyPostgres {
 				continue
 			}
@@ -40,7 +43,10 @@ var CheckPgLogErrors = rules.Register(
 					"Database instance is not configured to log errors.",
 					instance.Settings.Flags.LogMinMessages,
 				)
+			} else {
+				results.AddPassed(&instance)
 			}
+
 		}
 		return
 	},

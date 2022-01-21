@@ -38,6 +38,8 @@ Clients may specify the content type of a secret to assist in interpreting the s
 						"Secret does not have a content-type specified.",
 						secret.ContentType,
 					)
+				} else {
+					results.AddPassed(&secret)
 				}
 			}
 		}

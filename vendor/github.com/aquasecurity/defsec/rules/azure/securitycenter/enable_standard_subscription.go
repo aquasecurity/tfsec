@@ -23,21 +23,26 @@ var CheckEnableStandardSubscription = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/security-center/security-center-pricing",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableStandardSubscriptionGoodExamples,
-            BadExamples:         terraformEnableStandardSubscriptionBadExamples,
-            Links:               terraformEnableStandardSubscriptionLinks,
-            RemediationMarkdown: terraformEnableStandardSubscriptionRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableStandardSubscriptionGoodExamples,
+			BadExamples:         terraformEnableStandardSubscriptionBadExamples,
+			Links:               terraformEnableStandardSubscriptionLinks,
+			RemediationMarkdown: terraformEnableStandardSubscriptionRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, sub := range s.Azure.SecurityCenter.Subscriptions {
+			if sub.IsUnmanaged() {
+				continue
+			}
 			if sub.Tier.EqualTo(securitycenter.TierFree) {
 				results.Add(
 					"Security center subscription uses the free tier.",
 					sub.Tier,
 				)
+			} else {
+				results.AddPassed(&sub)
 			}
 		}
 		return

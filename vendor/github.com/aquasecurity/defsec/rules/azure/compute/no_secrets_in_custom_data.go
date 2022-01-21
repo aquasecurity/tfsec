@@ -31,19 +31,29 @@ var CheckNoSecretsInCustomData = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, vm := range s.Azure.Compute.LinuxVirtualMachines {
+			if vm.IsUnmanaged() {
+				continue
+			}
 			if result := scanner.Scan(vm.CustomData.Value()); result.TransgressionFound {
 				results.Add(
 					"Virtual machine includes secret(s) in custom data.",
 					vm.CustomData,
 				)
+			} else {
+				results.AddPassed(&vm)
 			}
 		}
 		for _, vm := range s.Azure.Compute.WindowsVirtualMachines {
+			if vm.IsUnmanaged() {
+				continue
+			}
 			if result := scanner.Scan(vm.CustomData.Value()); result.TransgressionFound {
 				results.Add(
 					"Virtual machine includes secret(s) in custom data.",
 					vm.CustomData,
 				)
+			} else {
+				results.AddPassed(&vm)
 			}
 		}
 		return

@@ -31,15 +31,20 @@ var CheckNoPublicIngress = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, firewall := range s.DigitalOcean.Compute.Firewalls {
+			var failed bool
 			for _, rule := range firewall.InboundRules {
 				for _, address := range rule.SourceAddresses {
 					if cidr.IsPublic(address.Value()) && cidr.CountAddresses(address.Value()) > 1 {
+						failed = true
 						results.Add(
 							"Ingress rule allows access from multiple public addresses.",
 							address,
 						)
 					}
 				}
+			}
+			if !failed {
+				results.AddPassed(&firewall)
 			}
 		}
 		return

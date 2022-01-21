@@ -36,7 +36,7 @@ var CheckEnableQueueEncryption = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, queue := range s.AWS.SQS.Queues {
-			if !queue.IsManaged() {
+			if queue.IsUnmanaged() {
 				continue
 			}
 			if queue.Encryption.KMSKeyID.IsEmpty() || queue.Encryption.KMSKeyID.EqualTo("alias/aws/sqs") {

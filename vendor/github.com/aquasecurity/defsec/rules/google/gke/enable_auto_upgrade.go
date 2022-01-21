@@ -18,13 +18,13 @@ var CheckEnableAutoUpgrade = rules.Register(
 		Resolution:  "Enable automatic upgrades",
 		Explanation: `Automatic updates keep nodes updated with the latest cluster master version.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableAutoUpgradeGoodExamples,
-            BadExamples:         terraformEnableAutoUpgradeBadExamples,
-            Links:               terraformEnableAutoUpgradeLinks,
-            RemediationMarkdown: terraformEnableAutoUpgradeRemediationMarkdown,
-        },
-        Severity:    severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableAutoUpgradeGoodExamples,
+			BadExamples:         terraformEnableAutoUpgradeBadExamples,
+			Links:               terraformEnableAutoUpgradeLinks,
+			RemediationMarkdown: terraformEnableAutoUpgradeRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
@@ -34,7 +34,10 @@ var CheckEnableAutoUpgrade = rules.Register(
 						"Node pool does not have auto-upgraade enabled.",
 						nodePool.Management.EnableAutoUpgrade,
 					)
+				} else {
+					results.AddPassed(&nodePool)
 				}
+
 			}
 		}
 		return

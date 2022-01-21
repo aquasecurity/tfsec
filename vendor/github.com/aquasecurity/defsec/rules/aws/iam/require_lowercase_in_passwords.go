@@ -30,7 +30,7 @@ var CheckRequireLowercaseInPasswords = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		policy := s.AWS.IAM.PasswordPolicy
-		if !policy.IsManaged() {
+		if policy.IsUnmanaged() {
 			return
 		}
 

@@ -37,6 +37,7 @@ func adaptInstance(resource *block.Block) compute.Instance {
 	}
 
 	return compute.Instance{
+		Metadata: resource.Metadata(),
 		UserData: types.String(string(encoded), *resource.GetMetadata()),
 	}
 }

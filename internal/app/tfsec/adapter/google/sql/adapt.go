@@ -66,6 +66,7 @@ func adaptInstance(resource *block.Block) sql.DatabaseInstance {
 		}
 	}
 	return sql.DatabaseInstance{
+		Metadata:        resource.Metadata(),
 		DatabaseVersion: dbVersionVal,
 		Settings: sql.Settings{
 			Flags: flags,

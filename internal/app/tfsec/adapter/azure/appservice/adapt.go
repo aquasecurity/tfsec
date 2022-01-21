@@ -65,6 +65,7 @@ func adaptService(resource *block.Block) appservice.Service {
 	}
 
 	return appservice.Service{
+		Metadata:         resource.Metadata(),
 		EnableClientCert: enableClientCertVal,
 		Identity: struct{ Type types.StringValue }{
 			Type: typeVal,
@@ -87,6 +88,7 @@ func adaptFunctionApp(resource *block.Block) appservice.FunctionApp {
 	HTTPSOnlyVal := HTTPSOnlyAttr.AsBoolValueOrDefault(false, resource)
 
 	return appservice.FunctionApp{
+		Metadata:  resource.Metadata(),
 		HTTPSOnly: HTTPSOnlyVal,
 	}
 }

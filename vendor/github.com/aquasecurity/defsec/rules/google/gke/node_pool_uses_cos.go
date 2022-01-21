@@ -34,6 +34,8 @@ var CheckNodePoolUsesCos = rules.Register(
 						"Cluster is not configuring node pools to use the COS containerd image type by default.",
 						cluster.NodeConfig.ImageType,
 					)
+				} else {
+					results.AddPassed(&cluster)
 				}
 			}
 			for _, pool := range cluster.NodePools {
@@ -42,7 +44,10 @@ var CheckNodePoolUsesCos = rules.Register(
 						"Node pool is not using the COS containerd image type.",
 						pool.NodeConfig.ImageType,
 					)
+				} else {
+					results.AddPassed(&pool)
 				}
+
 			}
 		}
 		return

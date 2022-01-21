@@ -37,13 +37,22 @@ var CheckCaptureAllActivities = rules.Register(
 			"Action", "Write", "Delete",
 		}
 		for _, profile := range s.Azure.Monitor.LogProfiles {
+			if profile.IsUnmanaged() {
+				continue
+			}
+			var failed bool
 			for _, cat := range required {
 				if !hasCategory(profile, cat) {
+					failed = true
 					results.Add(
 						fmt.Sprintf("Log profile does not require the '%s' category.", cat),
 						&profile,
 					)
 				}
+			}
+
+			if !failed {
+				results.AddPassed(&profile)
 			}
 		}
 		return

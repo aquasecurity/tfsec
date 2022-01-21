@@ -42,6 +42,7 @@ func adaptContact(resource *block.Block) securitycenter.Contact {
 	phoneVal := phoneAttr.AsStringValueOrDefault("", resource)
 
 	return securitycenter.Contact{
+		Metadata:                 resource.Metadata(),
 		EnableAlertNotifications: enableAlertNotifVal,
 		Phone:                    phoneVal,
 	}
@@ -52,6 +53,7 @@ func adaptSubscription(resource *block.Block) securitycenter.SubscriptionPricing
 	tierVal := tierAttr.AsStringValueOrDefault("", resource)
 
 	return securitycenter.SubscriptionPricing{
-		Tier: tierVal,
+		Metadata: resource.Metadata(),
+		Tier:     tierVal,
 	}
 }

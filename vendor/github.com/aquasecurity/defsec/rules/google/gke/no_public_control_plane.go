@@ -29,7 +29,7 @@ var CheckNoPublicControlPlane = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			if !cluster.IsManaged() {
+			if cluster.IsUnmanaged() {
 				continue
 			}
 			for _, block := range cluster.MasterAuthorizedNetworks.CIDRs {
@@ -38,7 +38,10 @@ var CheckNoPublicControlPlane = rules.Register(
 						"Cluster exposes control plane to the public internet.",
 						block,
 					)
+				} else {
+					results.AddPassed(&cluster)
 				}
+
 			}
 		}
 		return

@@ -22,13 +22,13 @@ You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning 
 		Links: []string{
 			"https://docs.digitalocean.com/products/networking/load-balancers/",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnforceHttpsGoodExamples,
-            BadExamples:         terraformEnforceHttpsBadExamples,
-            Links:               terraformEnforceHttpsLinks,
-            RemediationMarkdown: terraformEnforceHttpsRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnforceHttpsGoodExamples,
+			BadExamples:         terraformEnforceHttpsBadExamples,
+			Links:               terraformEnforceHttpsLinks,
+			RemediationMarkdown: terraformEnforceHttpsRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, lb := range s.DigitalOcean.Compute.LoadBalancers {
@@ -38,6 +38,8 @@ You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning 
 						"Load balancer has aforwarding rule which uses HTTP instead of HTTPS.",
 						rule.EntryProtocol,
 					)
+				} else {
+					results.AddPassed(&rule)
 				}
 			}
 		}

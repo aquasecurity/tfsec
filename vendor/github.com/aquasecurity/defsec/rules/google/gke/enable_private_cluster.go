@@ -28,7 +28,7 @@ var CheckEnablePrivateCluster = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			if !cluster.IsManaged() {
+			if cluster.IsUnmanaged() {
 				continue
 			}
 			if cluster.PrivateCluster.EnablePrivateNodes.IsFalse() {
@@ -36,7 +36,10 @@ var CheckEnablePrivateCluster = rules.Register(
 					"Cluster does not have private nodes.",
 					cluster.PrivateCluster.EnablePrivateNodes,
 				)
+			} else {
+				results.AddPassed(&cluster)
 			}
+
 		}
 		return
 	},

@@ -31,6 +31,9 @@ var CheckEnforceHttps = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, functionApp := range s.Azure.AppService.FunctionApps {
+			if functionApp.IsUnmanaged() {
+				continue
+			}
 			if functionApp.HTTPSOnly.IsFalse() {
 				results.Add(
 					"Function app does not have HTTPS enforced.",

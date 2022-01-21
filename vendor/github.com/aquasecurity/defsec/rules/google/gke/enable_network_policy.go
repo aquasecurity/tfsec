@@ -28,7 +28,7 @@ var CheckEnableNetworkPolicy = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			if !cluster.IsManaged() {
+			if cluster.IsUnmanaged() {
 				continue
 			}
 			if cluster.NetworkPolicy.Enabled.IsFalse() {
@@ -36,7 +36,10 @@ var CheckEnableNetworkPolicy = rules.Register(
 					"Cluster does not have a network policy enabled.",
 					cluster.NetworkPolicy.Enabled,
 				)
+			} else {
+				results.AddPassed(&cluster)
 			}
+
 		}
 		return
 	},

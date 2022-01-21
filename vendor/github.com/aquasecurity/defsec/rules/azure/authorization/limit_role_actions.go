@@ -18,13 +18,13 @@ var CheckLimitRoleActions = rules.Register(
 		Resolution:  "Use targeted permissions for roles",
 		Explanation: `The permissions granted to a role should be kept to the minimum required to be able to do the task. Wildcard permissions must not be used.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformLimitRoleActionsGoodExamples,
-            BadExamples:         terraformLimitRoleActionsBadExamples,
-            Links:               terraformLimitRoleActionsLinks,
-            RemediationMarkdown: terraformLimitRoleActionsRemediationMarkdown,
-        },
-        Severity:    severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformLimitRoleActionsGoodExamples,
+			BadExamples:         terraformLimitRoleActionsBadExamples,
+			Links:               terraformLimitRoleActionsLinks,
+			RemediationMarkdown: terraformLimitRoleActionsRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, roleDef := range s.Azure.Authorization.RoleDefinitions {
@@ -37,6 +37,8 @@ var CheckLimitRoleActions = rules.Register(
 									"Role definition uses wildcard action with all scopes.",
 									action,
 								)
+							} else {
+								results.AddPassed(&perm)
 							}
 						}
 

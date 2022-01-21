@@ -43,6 +43,8 @@ var CheckCaptureAllRegions = rules.Register(
 					fmt.Sprintf("Log profile does not log to all regions (%s).", details),
 					&profile,
 				)
+			} else {
+				results.AddPassed(&profile)
 			}
 		}
 		return

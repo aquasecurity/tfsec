@@ -20,16 +20,19 @@ var CheckActivityLogRetentionSet = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/platform-logs-overview",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformActivityLogRetentionSetGoodExamples,
-            BadExamples:         terraformActivityLogRetentionSetBadExamples,
-            Links:               terraformActivityLogRetentionSetLinks,
-            RemediationMarkdown: terraformActivityLogRetentionSetRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformActivityLogRetentionSetGoodExamples,
+			BadExamples:         terraformActivityLogRetentionSetBadExamples,
+			Links:               terraformActivityLogRetentionSetLinks,
+			RemediationMarkdown: terraformActivityLogRetentionSetRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, profile := range s.Azure.Monitor.LogProfiles {
+			if profile.IsUnmanaged() {
+				continue
+			}
 			if profile.RetentionPolicy.Enabled.IsFalse() {
 				results.Add(
 					"Profile does not enable the log retention policy.",
@@ -40,6 +43,8 @@ var CheckActivityLogRetentionSet = rules.Register(
 					"Profile has a log retention policy of less than 1 year.",
 					profile.RetentionPolicy.Days,
 				)
+			} else {
+				results.AddPassed(&profile)
 			}
 		}
 		return

@@ -32,7 +32,7 @@ var CheckNoStateMachinePolicyWildcards = rules.Register(
 	func(s *state.State) (results rules.Results) {
 
 		for _, stateMachine := range s.AWS.SAM.StateMachines {
-			if !stateMachine.IsManaged() {
+			if stateMachine.IsUnmanaged() {
 				continue
 			}
 

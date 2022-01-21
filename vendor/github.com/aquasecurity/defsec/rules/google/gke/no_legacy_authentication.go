@@ -32,7 +32,7 @@ Basic authentication should be disabled by explicitly unsetting the <code>userna
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			if !cluster.IsManaged() {
+			if cluster.IsUnmanaged() {
 				continue
 			}
 			if cluster.MasterAuth.ClientCertificate.IssueCertificate.IsTrue() {
@@ -40,13 +40,15 @@ Basic authentication should be disabled by explicitly unsetting the <code>userna
 					"Cluster allows the use of certificates for master authentication.",
 					cluster.MasterAuth.ClientCertificate.IssueCertificate,
 				)
-			}
-			if cluster.MasterAuth.Username.NotEqualTo("") {
+			} else if cluster.MasterAuth.Username.NotEqualTo("") {
 				results.Add(
 					"Cluster allows the use of basic auth for master authentication.",
 					cluster.MasterAuth.Username,
 				)
+			} else {
+				results.AddPassed(&cluster)
 			}
+
 		}
 		return
 	},

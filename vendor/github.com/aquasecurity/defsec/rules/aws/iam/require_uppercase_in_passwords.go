@@ -31,7 +31,7 @@ IAM account password policies should ensure that passwords content including at 
 	},
 	func(s *state.State) (results rules.Results) {
 		policy := s.AWS.IAM.PasswordPolicy
-		if !policy.IsManaged() {
+		if policy.IsUnmanaged() {
 			return
 		}
 

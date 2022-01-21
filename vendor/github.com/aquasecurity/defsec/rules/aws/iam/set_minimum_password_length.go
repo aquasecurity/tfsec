@@ -32,7 +32,7 @@ The account password policy should be set to enforce minimum password length of 
 	},
 	func(s *state.State) (results rules.Results) {
 		policy := s.AWS.IAM.PasswordPolicy
-		if !policy.IsManaged() {
+		if policy.IsUnmanaged() {
 			return
 		}
 

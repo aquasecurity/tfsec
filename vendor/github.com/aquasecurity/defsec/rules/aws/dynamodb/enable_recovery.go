@@ -32,7 +32,7 @@ By enabling point-in-time-recovery you can restore to a known point in the event
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.DynamoDB.DAXClusters {
-			if !cluster.IsManaged() {
+			if cluster.IsUnmanaged() {
 				continue
 			}
 			if cluster.PointInTimeRecovery.IsFalse() {

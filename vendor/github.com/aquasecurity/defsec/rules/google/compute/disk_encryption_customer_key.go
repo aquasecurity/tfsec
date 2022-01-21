@@ -18,21 +18,26 @@ var CheckDiskEncryptionCustomerKey = rules.Register(
 		Resolution:  "Use managed keys to encrypt disks.",
 		Explanation: `Using unmanaged keys makes rotation and general management difficult.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformDiskEncryptionCustomerKeyGoodExamples,
-            BadExamples:         terraformDiskEncryptionCustomerKeyBadExamples,
-            Links:               terraformDiskEncryptionCustomerKeyLinks,
-            RemediationMarkdown: terraformDiskEncryptionCustomerKeyRemediationMarkdown,
-        },
-        Severity:    severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformDiskEncryptionCustomerKeyGoodExamples,
+			BadExamples:         terraformDiskEncryptionCustomerKeyBadExamples,
+			Links:               terraformDiskEncryptionCustomerKeyLinks,
+			RemediationMarkdown: terraformDiskEncryptionCustomerKeyRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, disk := range s.Google.Compute.Disks {
+			if disk.IsUnmanaged() {
+				continue
+			}
 			if disk.Encryption.KMSKeyLink.IsEmpty() {
 				results.Add(
 					"Disk is not encrypted with a customer managed key.",
 					disk.Encryption.KMSKeyLink,
 				)
+			} else {
+				results.AddPassed(&disk)
 			}
 		}
 		return

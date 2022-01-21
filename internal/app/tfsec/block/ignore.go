@@ -33,18 +33,19 @@ func (ignore Ignore) Covering(r types.Range, workspace string, ids ...string) bo
 		return false
 	}
 	idMatch := ignore.RuleID == "*" || len(ids) == 0
-	if !idMatch {
-		for _, id := range ids {
-			if id == ignore.RuleID {
-				idMatch = true
-				break
-			}
+	for _, id := range ids {
+		if id == ignore.RuleID {
+			idMatch = true
+			break
 		}
 	}
 	if !idMatch {
 		return false
 	}
-	rng := r.(HCLRange)
+	rng, ok := r.(HCLRange)
+	if !ok {
+		return false
+	}
 	if ignore.ModuleKey != "" && ignore.ModuleKey == rng.GetModule() {
 		return true
 	}

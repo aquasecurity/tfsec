@@ -29,7 +29,7 @@ var CheckNoDefaultNetwork = rules.Register(
 	func(s *state.State) (results rules.Results) {
 		// TODO: check constraints before auto_create_network
 		for _, project := range s.Google.IAM.AllProjects() {
-			if !project.IsManaged() {
+			if project.IsUnmanaged() {
 				continue
 			}
 			if project.AutoCreateNetwork.IsTrue() {
@@ -37,6 +37,8 @@ var CheckNoDefaultNetwork = rules.Register(
 					"Project has automatic network creation enabled.",
 					project.AutoCreateNetwork,
 				)
+			} else {
+				results.AddPassed(project)
 			}
 		}
 		return

@@ -28,7 +28,7 @@ var CheckDisableForceDestroy = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.DigitalOcean.Spaces.Buckets {
-			if !bucket.IsManaged() {
+			if bucket.IsUnmanaged() {
 				continue
 			}
 			if bucket.ForceDestroy.IsTrue() {
@@ -36,6 +36,8 @@ var CheckDisableForceDestroy = rules.Register(
 					"Bucket has force-destroy enabled.",
 					bucket.ForceDestroy,
 				)
+			} else {
+				results.AddPassed(&bucket)
 			}
 		}
 		return

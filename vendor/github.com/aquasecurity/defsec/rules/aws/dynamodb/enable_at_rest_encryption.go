@@ -37,7 +37,7 @@ var CheckEnableAtRestEncryption = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.DynamoDB.DAXClusters {
-			if !cluster.IsManaged() {
+			if cluster.IsUnmanaged() {
 				continue
 			}
 			if cluster.ServerSideEncryption.Enabled.IsFalse() {

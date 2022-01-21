@@ -20,21 +20,26 @@ var CheckLogging = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/azure-monitor/insights/container-insights-onboard",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformLoggingGoodExamples,
-            BadExamples:         terraformLoggingBadExamples,
-            Links:               terraformLoggingLinks,
-            RemediationMarkdown: terraformLoggingRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformLoggingGoodExamples,
+			BadExamples:         terraformLoggingBadExamples,
+			Links:               terraformLoggingLinks,
+			RemediationMarkdown: terraformLoggingRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Azure.Container.KubernetesClusters {
+			if cluster.IsUnmanaged() {
+				continue
+			}
 			if cluster.AddonProfile.OMSAgent.Enabled.IsFalse() {
 				results.Add(
 					"Cluster does not have logging enabled via OMS Agent.",
 					cluster.AddonProfile.OMSAgent.Enabled,
 				)
+			} else {
+				results.AddPassed(&cluster)
 			}
 		}
 		return

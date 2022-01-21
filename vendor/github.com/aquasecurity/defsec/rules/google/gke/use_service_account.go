@@ -38,6 +38,8 @@ var CheckUseServiceAccount = rules.Register(
 							cluster.NodeConfig.ServiceAccount,
 						)
 					}
+				} else {
+					results.AddPassed(&cluster)
 				}
 			}
 			for _, pool := range cluster.NodePools {
@@ -46,8 +48,9 @@ var CheckUseServiceAccount = rules.Register(
 						"Node pool does not override the default service account.",
 						pool.NodeConfig.ServiceAccount,
 					)
+				} else {
+					results.AddPassed(&pool)
 				}
-
 			}
 		}
 		return
