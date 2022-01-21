@@ -18,16 +18,19 @@ var CheckUseClusterLabels = rules.Register(
 		Resolution:  "Set cluster resource labels",
 		Explanation: `Labels make it easier to manage assets and differentiate between clusters and environments, allowing the mapping of computational resources to the wider organisational structure.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformUseClusterLabelsGoodExamples,
-            BadExamples:         terraformUseClusterLabelsBadExamples,
-            Links:               terraformUseClusterLabelsLinks,
-            RemediationMarkdown: terraformUseClusterLabelsRemediationMarkdown,
-        },
-        Severity:    severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformUseClusterLabelsGoodExamples,
+			BadExamples:         terraformUseClusterLabelsBadExamples,
+			Links:               terraformUseClusterLabelsLinks,
+			RemediationMarkdown: terraformUseClusterLabelsRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
+			if !cluster.IsManaged() {
+				continue
+			}
 			if cluster.ResourceLabels.Len() == 0 {
 				results.Add(
 					"Cluster does not use GCE resource labels.",

@@ -18,16 +18,19 @@ var CheckEnableMasterNetworks = rules.Register(
 		Resolution:  "Enable master authorized networks",
 		Explanation: `Enabling authorized networks means you can restrict master access to a fixed set of CIDR ranges`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableMasterNetworksGoodExamples,
-            BadExamples:         terraformEnableMasterNetworksBadExamples,
-            Links:               terraformEnableMasterNetworksLinks,
-            RemediationMarkdown: terraformEnableMasterNetworksRemediationMarkdown,
-        },
-        Severity:    severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableMasterNetworksGoodExamples,
+			BadExamples:         terraformEnableMasterNetworksBadExamples,
+			Links:               terraformEnableMasterNetworksLinks,
+			RemediationMarkdown: terraformEnableMasterNetworksRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
+			if !cluster.IsManaged() {
+				continue
+			}
 			if cluster.MasterAuthorizedNetworks.Enabled.IsFalse() {
 				results.Add(
 					"Cluster does not have master authorized networks enabled.",

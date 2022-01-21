@@ -18,21 +18,23 @@ var CheckNodePoolUsesCos = rules.Register(
 		Resolution:  "Use the COS image type",
 		Explanation: `GKE supports several OS image types but COS is the recommended OS image to use on cluster nodes for enhanced security`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNodePoolUsesCosGoodExamples,
-            BadExamples:         terraformNodePoolUsesCosBadExamples,
-            Links:               terraformNodePoolUsesCosLinks,
-            RemediationMarkdown: terraformNodePoolUsesCosRemediationMarkdown,
-        },
-        Severity:    severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNodePoolUsesCosGoodExamples,
+			BadExamples:         terraformNodePoolUsesCosBadExamples,
+			Links:               terraformNodePoolUsesCosLinks,
+			RemediationMarkdown: terraformNodePoolUsesCosRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			if cluster.NodeConfig.ImageType.NotEqualTo("") && cluster.NodeConfig.ImageType.NotEqualTo("COS_CONTAINERD") && cluster.NodeConfig.ImageType.NotEqualTo("COS") {
-				results.Add(
-					"Cluster is not configuring node pools to use the COS containerd image type by default.",
-					cluster.NodeConfig.ImageType,
-				)
+			if cluster.IsManaged() {
+				if cluster.NodeConfig.ImageType.NotEqualTo("") && cluster.NodeConfig.ImageType.NotEqualTo("COS_CONTAINERD") && cluster.NodeConfig.ImageType.NotEqualTo("COS") {
+					results.Add(
+						"Cluster is not configuring node pools to use the COS containerd image type by default.",
+						cluster.NodeConfig.ImageType,
+					)
+				}
 			}
 			for _, pool := range cluster.NodePools {
 				if pool.NodeConfig.ImageType.NotEqualTo("COS_CONTAINERD") && pool.NodeConfig.ImageType.NotEqualTo("COS") {

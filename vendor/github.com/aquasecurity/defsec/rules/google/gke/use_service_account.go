@@ -20,22 +20,24 @@ var CheckUseServiceAccount = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#use_least_privilege_sa",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformUseServiceAccountGoodExamples,
-            BadExamples:         terraformUseServiceAccountBadExamples,
-            Links:               terraformUseServiceAccountLinks,
-            RemediationMarkdown: terraformUseServiceAccountRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformUseServiceAccountGoodExamples,
+			BadExamples:         terraformUseServiceAccountBadExamples,
+			Links:               terraformUseServiceAccountLinks,
+			RemediationMarkdown: terraformUseServiceAccountRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			if cluster.RemoveDefaultNodePool.IsFalse() {
-				if cluster.NodeConfig.ServiceAccount.IsEmpty() {
-					results.Add(
-						"Cluster does not override the default service account.",
-						cluster.NodeConfig.ServiceAccount,
-					)
+			if cluster.IsManaged() {
+				if cluster.RemoveDefaultNodePool.IsFalse() {
+					if cluster.NodeConfig.ServiceAccount.IsEmpty() {
+						results.Add(
+							"Cluster does not override the default service account.",
+							cluster.NodeConfig.ServiceAccount,
+						)
+					}
 				}
 			}
 			for _, pool := range cluster.NodePools {

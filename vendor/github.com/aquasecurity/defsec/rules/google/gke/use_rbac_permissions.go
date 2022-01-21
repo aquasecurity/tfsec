@@ -22,16 +22,19 @@ RBAC has significant security advantages and is now stable in Kubernetes, so itâ
 		Links: []string{
 			"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#leave_abac_disabled_default_for_110",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformUseRbacPermissionsGoodExamples,
-            BadExamples:         terraformUseRbacPermissionsBadExamples,
-            Links:               terraformUseRbacPermissionsLinks,
-            RemediationMarkdown: terraformUseRbacPermissionsRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformUseRbacPermissionsGoodExamples,
+			BadExamples:         terraformUseRbacPermissionsBadExamples,
+			Links:               terraformUseRbacPermissionsLinks,
+			RemediationMarkdown: terraformUseRbacPermissionsRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
+			if !cluster.IsManaged() {
+				continue
+			}
 			if cluster.EnableLegacyABAC.IsTrue() {
 				results.Add(
 					"Cluster has legacy ABAC enabled.",

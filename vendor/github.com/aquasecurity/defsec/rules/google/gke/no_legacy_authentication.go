@@ -22,16 +22,19 @@ Basic authentication should be disabled by explicitly unsetting the <code>userna
 		Links: []string{
 			"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#restrict_authn_methods",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoLegacyAuthenticationGoodExamples,
-            BadExamples:         terraformNoLegacyAuthenticationBadExamples,
-            Links:               terraformNoLegacyAuthenticationLinks,
-            RemediationMarkdown: terraformNoLegacyAuthenticationRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoLegacyAuthenticationGoodExamples,
+			BadExamples:         terraformNoLegacyAuthenticationBadExamples,
+			Links:               terraformNoLegacyAuthenticationLinks,
+			RemediationMarkdown: terraformNoLegacyAuthenticationRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
+			if !cluster.IsManaged() {
+				continue
+			}
 			if cluster.MasterAuth.ClientCertificate.IssueCertificate.IsTrue() {
 				results.Add(
 					"Cluster allows the use of certificates for master authentication.",

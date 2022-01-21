@@ -36,6 +36,9 @@ When setting the <code>metadata</code> block, the default value for <code>disabl
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
+			if !cluster.IsManaged() {
+				continue
+			}
 			if cluster.ClusterMetadata.EnableLegacyEndpoints.IsTrue() {
 				results.Add(
 					"Cluster has legacy metadata endpoints enabled.",

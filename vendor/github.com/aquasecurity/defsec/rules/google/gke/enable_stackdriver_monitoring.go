@@ -18,16 +18,19 @@ var CheckEnableStackdriverMonitoring = rules.Register(
 		Resolution:  "Enable StackDriver monitoring",
 		Explanation: `StackDriver monitoring aggregates logs, events, and metrics from your Kubernetes environment on GKE to help you understand your application's behavior in production.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableStackdriverMonitoringGoodExamples,
-            BadExamples:         terraformEnableStackdriverMonitoringBadExamples,
-            Links:               terraformEnableStackdriverMonitoringLinks,
-            RemediationMarkdown: terraformEnableStackdriverMonitoringRemediationMarkdown,
-        },
-        Severity:    severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableStackdriverMonitoringGoodExamples,
+			BadExamples:         terraformEnableStackdriverMonitoringBadExamples,
+			Links:               terraformEnableStackdriverMonitoringLinks,
+			RemediationMarkdown: terraformEnableStackdriverMonitoringRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
+			if !cluster.IsManaged() {
+				continue
+			}
 			if cluster.MonitoringService.NotEqualTo("monitoring.googleapis.com/kubernetes") {
 				results.Add(
 					"Cluster does not use the monitoring.googleapis.com/kubernetes StackDriver monitoring service.",
