@@ -15,6 +15,8 @@ func adaptPasswordPolicy(modules block.Modules) (policy iam.PasswordPolicy) {
 	// aws only allows a single password policy resource
 	policyBlock := passwordPolicies[0]
 
+	policy.Metadata = policyBlock.Metadata()
+
 	if attr := policyBlock.GetAttribute("require_lowercase_characters"); attr.IsNotNil() {
 		policy.RequireLowercase = types.BoolExplicit(attr.IsTrue(), attr.Metadata())
 	} else {
