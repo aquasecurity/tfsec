@@ -5,7 +5,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules block.Modules,) storage.Storage {
+func Adapt(modules block.Modules) storage.Storage {
 	return storage.Storage{
 		Buckets: (&adapter{modules: modules}).adaptBuckets(),
 	}

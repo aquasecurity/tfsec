@@ -45,7 +45,7 @@ func (a *adapter) adaptFunctions(modules block.Modules) []lambda.Function {
 	return functions
 }
 
-func (a *adapter) adaptFunction(function *block.Block, modules block.Modules,) lambda.Function {
+func (a *adapter) adaptFunction(function *block.Block, modules block.Modules) lambda.Function {
 	return lambda.Function{
 		Metadata:    function.Metadata(),
 		Tracing:     a.adaptTracing(function),
@@ -65,7 +65,7 @@ func (a *adapter) adaptTracing(function *block.Block) lambda.Tracing {
 	}
 }
 
-func (a *adapter) adaptPermissions(modules block.Modules,) []lambda.Permission {
+func (a *adapter) adaptPermissions(modules block.Modules) []lambda.Permission {
 	var permissions []lambda.Permission
 	for _, module := range modules {
 		for _, p := range module.GetResourcesByType("aws_lambda_permission") {
