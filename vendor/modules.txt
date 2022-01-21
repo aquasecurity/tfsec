@@ -28,7 +28,7 @@ github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
 ## explicit; go 1.16
 github.com/apparentlymart/go-textseg/v13/textseg
-# github.com/aquasecurity/defsec v0.3.27-0.20220121124013-72c205065c1f
+# github.com/aquasecurity/defsec v0.3.27-0.20220121124958-3bfe7e12c42c
 ## explicit; go 1.17
 github.com/aquasecurity/defsec/cidr
 github.com/aquasecurity/defsec/formatters

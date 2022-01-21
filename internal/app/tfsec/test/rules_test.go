@@ -42,7 +42,7 @@ func TestDefSecUsage(t *testing.T) {
 	}
 }
 
-func TestRulesAgainstExampleCode(t *testing.T) {
+func  TestRulesAgainstExampleCode(t *testing.T) {
 	for _, rule := range scanner.GetRegisteredRules() {
 		t.Run(rule.Base.Rule().LongID(), func(t *testing.T) {
 			t.Run("good examples", func(t *testing.T) {
