@@ -7,27 +7,33 @@ import (
 )
 
 func Adapt(modules block.Modules) elb.ELB {
+
+	adapter := adapter{
+		listenerIDs: modules.GetChildResourceIDMapByType("aws_lb_listener", "aws_alb_listener"),
+	}
+
 	return elb.ELB{
-		LoadBalancers: adaptLoadBalancers(modules),
+		LoadBalancers: adapter.adaptLoadBalancers(modules),
 	}
 }
 
-func adaptLoadBalancers(modules block.Modules) []elb.LoadBalancer {
+type adapter struct {
+	listenerIDs block.ResourceIDResolutions
+}
+
+func (a *adapter) adaptLoadBalancers(modules block.Modules) []elb.LoadBalancer {
 	var loadBalancers []elb.LoadBalancer
-
-	listenerIDs := modules.GetChildResourceIDMapByType("aws_lb_listener", "aws_alb_listener")
-
 	for _, resource := range modules.GetResourcesByType("aws_lb") {
-		loadBalancers = append(loadBalancers, adaptLoadBalancer(resource, modules))
+		loadBalancers = append(loadBalancers, a.adaptLoadBalancer(resource, modules))
 	}
 	for _, resource := range modules.GetResourcesByType("aws_alb") {
-		loadBalancers = append(loadBalancers, adaptLoadBalancer(resource, modules))
+		loadBalancers = append(loadBalancers, a.adaptLoadBalancer(resource, modules))
 	}
 	for _, resource := range modules.GetResourcesByType("aws_elb") {
-		loadBalancers = append(loadBalancers, adaptLoadBalancer(resource, modules))
+		loadBalancers = append(loadBalancers, a.adaptLoadBalancer(resource, modules))
 	}
 
-	orphanResources := modules.GetResourceByIDs(listenerIDs.Orphans()...)
+	orphanResources := modules.GetResourceByIDs(a.listenerIDs.Orphans()...)
 	if len(orphanResources) > 0 {
 		orphanage := elb.LoadBalancer{
 			Metadata: types.NewUnmanagedMetadata(),
@@ -42,7 +48,7 @@ func adaptLoadBalancers(modules block.Modules) []elb.LoadBalancer {
 	return loadBalancers
 }
 
-func adaptLoadBalancer(resource block.Block, module block.Modules) elb.LoadBalancer {
+func (a *adapter) adaptLoadBalancer(resource block.Block, module block.Modules) elb.LoadBalancer {
 	var listeners []elb.Listener
 
 	typeAttr := resource.GetAttribute("load_balancer_type")
@@ -58,6 +64,7 @@ func adaptLoadBalancer(resource block.Block, module block.Modules) elb.LoadBalan
 	listenerBlocks = append(listenerBlocks, module.GetReferencingResources(resource, "aws_alb_listener", "load_balancer_arn")...)
 
 	for _, listenerBlock := range listenerBlocks {
+		a.listenerIDs.Resolve(listenerBlock.ID())
 		listeners = append(listeners, adaptListener(listenerBlock, typeVal.Value()))
 	}
 	return elb.LoadBalancer{
