@@ -28,7 +28,7 @@ var CheckNoPublicAccess = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.MariaDBServers {
-			if !server.IsManaged() {
+			if server.IsUnmanaged() {
 				continue
 			}
 			if server.EnablePublicNetworkAccess.IsTrue() {
@@ -36,10 +36,12 @@ var CheckNoPublicAccess = rules.Register(
 					"Database server has public network access enabled.",
 					server.EnablePublicNetworkAccess,
 				)
+			} else {
+				results.AddPassed(&server)
 			}
 		}
 		for _, server := range s.Azure.Database.MSSQLServers {
-			if !server.IsManaged() {
+			if server.IsUnmanaged() {
 				continue
 			}
 			if server.EnablePublicNetworkAccess.IsTrue() {
@@ -47,10 +49,12 @@ var CheckNoPublicAccess = rules.Register(
 					"Database server has public network access enabled.",
 					server.EnablePublicNetworkAccess,
 				)
+			} else {
+				results.AddPassed(&server)
 			}
 		}
 		for _, server := range s.Azure.Database.MySQLServers {
-			if !server.IsManaged() {
+			if server.IsUnmanaged() {
 				continue
 			}
 			if server.EnablePublicNetworkAccess.IsTrue() {
@@ -58,10 +62,12 @@ var CheckNoPublicAccess = rules.Register(
 					"Database server has public network access enabled.",
 					server.EnablePublicNetworkAccess,
 				)
+			} else {
+				results.AddPassed(&server)
 			}
 		}
 		for _, server := range s.Azure.Database.PostgreSQLServers {
-			if !server.IsManaged() {
+			if server.IsUnmanaged() {
 				continue
 			}
 			if server.EnablePublicNetworkAccess.IsTrue() {
@@ -69,6 +75,8 @@ var CheckNoPublicAccess = rules.Register(
 					"Database server has public network access enabled.",
 					server.EnablePublicNetworkAccess,
 				)
+			} else {
+				results.AddPassed(&server)
 			}
 		}
 		return

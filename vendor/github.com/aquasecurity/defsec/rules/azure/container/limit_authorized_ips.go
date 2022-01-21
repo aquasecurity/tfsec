@@ -20,16 +20,19 @@ var CheckLimitAuthorizedIps = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/aks/api-server-authorized-ip-ranges",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformLimitAuthorizedIpsGoodExamples,
-            BadExamples:         terraformLimitAuthorizedIpsBadExamples,
-            Links:               terraformLimitAuthorizedIpsLinks,
-            RemediationMarkdown: terraformLimitAuthorizedIpsRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformLimitAuthorizedIpsGoodExamples,
+			BadExamples:         terraformLimitAuthorizedIpsBadExamples,
+			Links:               terraformLimitAuthorizedIpsLinks,
+			RemediationMarkdown: terraformLimitAuthorizedIpsRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Azure.Container.KubernetesClusters {
+			if cluster.IsUnmanaged() {
+				continue
+			}
 			if cluster.EnablePrivateCluster.IsTrue() {
 				continue
 			}
@@ -38,6 +41,8 @@ var CheckLimitAuthorizedIps = rules.Register(
 					"Cluster does not limit API access to specific IP addresses.",
 					cluster.EnablePrivateCluster,
 				)
+			} else {
+				results.AddPassed(&cluster)
 			}
 		}
 		return

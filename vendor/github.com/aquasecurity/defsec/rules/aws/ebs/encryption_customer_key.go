@@ -34,7 +34,7 @@ var CheckEncryptionCustomerKey = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, volume := range s.AWS.EBS.Volumes {
-			if !volume.IsManaged() {
+			if volume.IsUnmanaged() {
 				continue
 			}
 			if volume.Encryption.KMSKeyID.IsEmpty() {

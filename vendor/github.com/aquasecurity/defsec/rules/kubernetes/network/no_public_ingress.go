@@ -19,22 +19,27 @@ var CheckNoPublicIngress = rules.Register(
 		Resolution:  "Remove public access except where explicitly required",
 		Explanation: `You should not expose infrastructure to the public internet except where explicitly required`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicIngressGoodExamples,
-            BadExamples:         terraformNoPublicIngressBadExamples,
-            Links:               terraformNoPublicIngressLinks,
-            RemediationMarkdown: terraformNoPublicIngressRemediationMarkdown,
-        },
-        Severity:    severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicIngressGoodExamples,
+			BadExamples:         terraformNoPublicIngressBadExamples,
+			Links:               terraformNoPublicIngressLinks,
+			RemediationMarkdown: terraformNoPublicIngressRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, policy := range s.Kubernetes.NetworkPolicies {
+			if policy.IsUnmanaged() {
+				continue
+			}
 			for _, source := range policy.Spec.Ingress.SourceCIDRs {
 				if cidr.IsPublic(source.Value()) {
 					results.Add(
 						"Network policy allows ingress from the public internet.",
 						source,
 					)
+				} else {
+					results.AddPassed(source)
 				}
 			}
 		}

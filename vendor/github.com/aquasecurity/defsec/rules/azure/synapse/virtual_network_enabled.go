@@ -24,21 +24,26 @@ Managed private endpoints are private endpoints created in a Managed Virtual Net
 			"https://docs.microsoft.com/en-us/azure/synapse-analytics/security/synapse-workspace-managed-private-endpoints",
 			"https://docs.microsoft.com/en-us/azure/synapse-analytics/security/synapse-workspace-managed-vnet",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformVirtualNetworkEnabledGoodExamples,
-            BadExamples:         terraformVirtualNetworkEnabledBadExamples,
-            Links:               terraformVirtualNetworkEnabledLinks,
-            RemediationMarkdown: terraformVirtualNetworkEnabledRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformVirtualNetworkEnabledGoodExamples,
+			BadExamples:         terraformVirtualNetworkEnabledBadExamples,
+			Links:               terraformVirtualNetworkEnabledLinks,
+			RemediationMarkdown: terraformVirtualNetworkEnabledRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, workspace := range s.Azure.Synapse.Workspaces {
+			if workspace.IsUnmanaged() {
+				continue
+			}
 			if workspace.EnableManagedVirtualNetwork.IsFalse() {
 				results.Add(
 					"Workspace does not have a managed virtual network enabled.",
 					workspace.EnableManagedVirtualNetwork,
 				)
+			} else {
+				results.AddPassed(&workspace)
 			}
 		}
 		return

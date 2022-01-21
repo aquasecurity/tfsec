@@ -18,13 +18,13 @@ var CheckAllThreatAlertsEnabled = rules.Register(
 		Resolution:  "Use all provided threat alerts",
 		Explanation: `SQL Server can alert for security issues including SQL Injection, vulnerabilities, access anomalies and data exfiltration. Ensure none of these are disabled to benefit from the best protection`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformAllThreatAlertsEnabledGoodExamples,
-            BadExamples:         terraformAllThreatAlertsEnabledBadExamples,
-            Links:               terraformAllThreatAlertsEnabledLinks,
-            RemediationMarkdown: terraformAllThreatAlertsEnabledRemediationMarkdown,
-        },
-        Severity:    severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformAllThreatAlertsEnabledGoodExamples,
+			BadExamples:         terraformAllThreatAlertsEnabledBadExamples,
+			Links:               terraformAllThreatAlertsEnabledLinks,
+			RemediationMarkdown: terraformAllThreatAlertsEnabledRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.MSSQLServers {
@@ -34,6 +34,8 @@ var CheckAllThreatAlertsEnabled = rules.Register(
 						"Server has a security alert policy which disables alerts.",
 						policy.DisabledAlerts[0],
 					)
+				} else {
+					results.AddPassed(&policy)
 				}
 			}
 		}

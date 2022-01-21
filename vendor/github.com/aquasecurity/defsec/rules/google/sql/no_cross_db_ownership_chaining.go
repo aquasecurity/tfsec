@@ -21,16 +21,19 @@ var CheckNoCrossDbOwnershipChaining = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/cross-db-ownership-chaining-server-configuration-option?view=sql-server-ver15",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoCrossDbOwnershipChainingGoodExamples,
-            BadExamples:         terraformNoCrossDbOwnershipChainingBadExamples,
-            Links:               terraformNoCrossDbOwnershipChainingLinks,
-            RemediationMarkdown: terraformNoCrossDbOwnershipChainingRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoCrossDbOwnershipChainingGoodExamples,
+			BadExamples:         terraformNoCrossDbOwnershipChainingBadExamples,
+			Links:               terraformNoCrossDbOwnershipChainingLinks,
+			RemediationMarkdown: terraformNoCrossDbOwnershipChainingRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {
+			if instance.IsUnmanaged() {
+				continue
+			}
 			if instance.DatabaseFamily() != sql.DatabaseFamilySQLServer {
 				continue
 			}
@@ -39,7 +42,10 @@ var CheckNoCrossDbOwnershipChaining = rules.Register(
 					"Database instance has cross database ownership chaining enabled.",
 					instance.Settings.Flags.CrossDBOwnershipChaining,
 				)
+			} else {
+				results.AddPassed(&instance)
 			}
+
 		}
 		return
 	},

@@ -31,7 +31,7 @@ var CheckEnableUbla = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.Google.Storage.Buckets {
-			if !bucket.IsManaged() {
+			if bucket.IsUnmanaged() {
 				continue
 			}
 			if bucket.EnableUniformBucketLevelAccess.IsFalse() {
@@ -39,6 +39,8 @@ var CheckEnableUbla = rules.Register(
 					"Bucket has uniform bucket level access disabled.",
 					bucket.EnableUniformBucketLevelAccess,
 				)
+			} else {
+				results.AddPassed(&bucket)
 			}
 		}
 		return

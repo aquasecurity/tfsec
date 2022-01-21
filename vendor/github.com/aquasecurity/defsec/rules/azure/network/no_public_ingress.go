@@ -33,18 +33,23 @@ Where possible, segments should be broken into smaller subnets.`,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.Azure.Network.SecurityGroups {
+			var failed bool
 			for _, rule := range group.Rules {
 				if rule.Outbound.IsTrue() || rule.Allow.IsFalse() {
 					continue
 				}
 				for _, ip := range rule.SourceAddresses {
 					if cidr.IsPublic(ip.Value()) {
+						failed = true
 						results.Add(
 							"Security group rule allows ingress from public internet.",
 							ip,
 						)
 					}
 				}
+			}
+			if !failed {
+				results.AddPassed(&group)
 			}
 		}
 		return

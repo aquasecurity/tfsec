@@ -30,7 +30,7 @@ var CheckEnableHttpApiAccessLogging = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, api := range s.AWS.SAM.HttpAPIs {
-			if !api.IsManaged() {
+			if api.IsUnmanaged() {
 				continue
 			}
 

@@ -30,11 +30,16 @@ var CheckUseSshKeys = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, droplet := range s.DigitalOcean.Compute.Droplets {
+			if droplet.IsUnmanaged() {
+				continue
+			}
 			if len(droplet.SSHKeys) == 0 {
 				results.Add(
 					"Droplet does not have an SSH key specified.",
 					&droplet,
 				)
+			} else {
+				results.AddPassed(&droplet)
 			}
 		}
 		return

@@ -28,7 +28,7 @@ var CheckEnableStackdriverLogging = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			if !cluster.IsManaged() {
+			if cluster.IsUnmanaged() {
 				continue
 			}
 			if cluster.LoggingService.NotEqualTo("logging.googleapis.com/kubernetes") {
@@ -36,7 +36,10 @@ var CheckEnableStackdriverLogging = rules.Register(
 					"Cluster does not use the logging.googleapis.com/kubernetes StackDriver logging service.",
 					cluster.LoggingService,
 				)
+			} else {
+				results.AddPassed(&cluster)
 			}
+
 		}
 		return
 	},

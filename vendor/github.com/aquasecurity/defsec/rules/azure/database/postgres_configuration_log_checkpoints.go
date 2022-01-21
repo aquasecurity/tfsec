@@ -30,7 +30,7 @@ var CheckPostgresConfigurationLogCheckpoints = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.PostgreSQLServers {
-			if !server.IsManaged() {
+			if server.IsUnmanaged() {
 				continue
 			}
 			if server.Config.LogCheckpoints.IsFalse() {
@@ -38,6 +38,8 @@ var CheckPostgresConfigurationLogCheckpoints = rules.Register(
 					"Database server is not configured to log checkpoints.",
 					server.Config.LogCheckpoints,
 				)
+			} else {
+				results.AddPassed(&server.Config)
 			}
 		}
 		return

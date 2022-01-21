@@ -21,20 +21,25 @@ var CheckNoPlainTextActionEnvironmentSecrets = rules.Register(
 			"https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_environment_secret",
 			"https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPlainTextActionSecretsGoodExamples,
-            BadExamples:         terraformNoPlainTextActionSecretsBadExamples,
-            Links:               terraformNoPlainTextActionSecretsLinks,
-            RemediationMarkdown: terraformNoPlainTextActionSecretsRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPlainTextActionSecretsGoodExamples,
+			BadExamples:         terraformNoPlainTextActionSecretsBadExamples,
+			Links:               terraformNoPlainTextActionSecretsLinks,
+			RemediationMarkdown: terraformNoPlainTextActionSecretsRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, environmentSecret := range s.GitHub.EnvironmentSecrets {
+			if environmentSecret.IsUnmanaged() {
+				continue
+			}
 			if environmentSecret.PlainTextValue.IsNotEmpty() {
 				results.Add("Secret has plain text value",
 					&environmentSecret,
 					environmentSecret.PlainTextValue)
+			} else {
+				results.AddPassed(&environmentSecret)
 			}
 		}
 		return results

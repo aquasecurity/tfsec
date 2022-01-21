@@ -22,13 +22,13 @@ Set when the resource will be become inactive.`,
 		Links: []string{
 			"https://docs.microsoft.com/en-us/powershell/module/az.keyvault/update-azkeyvaultkey?view=azps-5.8.0#example-1--modify-a-key-to-enable-it--and-set-the-expiration-date-and-tags",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnsureKeyExpiryGoodExamples,
-            BadExamples:         terraformEnsureKeyExpiryBadExamples,
-            Links:               terraformEnsureKeyExpiryLinks,
-            RemediationMarkdown: terraformEnsureKeyExpiryRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnsureKeyExpiryGoodExamples,
+			BadExamples:         terraformEnsureKeyExpiryBadExamples,
+			Links:               terraformEnsureKeyExpiryLinks,
+			RemediationMarkdown: terraformEnsureKeyExpiryRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, vault := range s.Azure.KeyVault.Vaults {
@@ -38,6 +38,8 @@ Set when the resource will be become inactive.`,
 						"Key should have an expiry date specified.",
 						key.ExpiryDate,
 					)
+				} else {
+					results.AddPassed(&key)
 				}
 			}
 		}

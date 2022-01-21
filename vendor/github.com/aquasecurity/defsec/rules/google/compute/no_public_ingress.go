@@ -49,6 +49,8 @@ Where possible, segments should be broken into smaller subnets and avoid using t
 							"Firewall rule allows ingress traffic from multiple addresses on the public internet.",
 							source,
 						)
+					} else {
+						results.AddPassed(source)
 					}
 				}
 			}

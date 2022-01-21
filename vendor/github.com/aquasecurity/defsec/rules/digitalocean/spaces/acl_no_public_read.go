@@ -30,20 +30,26 @@ var CheckAclNoPublicRead = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.DigitalOcean.Spaces.Buckets {
-			if bucket.IsManaged() {
-				if bucket.ACL.EqualTo("public-read") {
-					results.Add(
-						"Bucket is publicly exposed.",
-						bucket.ACL,
-					)
-				}
+			if bucket.IsUnmanaged() {
+				continue
 			}
+			if bucket.ACL.EqualTo("public-read") {
+				results.Add(
+					"Bucket is publicly exposed.",
+					bucket.ACL,
+				)
+			} else {
+				results.AddPassed(&bucket)
+			}
+
 			for _, object := range bucket.Objects {
 				if object.ACL.EqualTo("public-read") {
 					results.Add(
 						"Object is publicly exposed.",
 						object.ACL,
 					)
+				} else {
+					results.AddPassed(&object)
 				}
 			}
 		}

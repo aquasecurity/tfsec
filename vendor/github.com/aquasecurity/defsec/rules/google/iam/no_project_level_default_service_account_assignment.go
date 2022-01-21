@@ -43,7 +43,10 @@ var CheckNoProjectLevelDefaultServiceAccountAssignment = rules.Register(
 								"Role is assigned to a default service account at project level.",
 								member,
 							)
+						} else {
+							results.AddPassed(member)
 						}
+
 					}
 				}
 			}
@@ -58,7 +61,10 @@ var CheckNoProjectLevelDefaultServiceAccountAssignment = rules.Register(
 						"Role is assigned to a default service account at project level.",
 						member.Member,
 					)
+				} else {
+					results.AddPassed(&member)
 				}
+
 			}
 		}
 		return

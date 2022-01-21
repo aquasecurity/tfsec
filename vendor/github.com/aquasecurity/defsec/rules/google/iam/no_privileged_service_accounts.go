@@ -39,7 +39,10 @@ var CheckNoPrivilegedServiceAccounts = rules.Register(
 							"Service account is granted a privileged role.",
 							member.Role,
 						)
+					} else {
+						results.AddPassed(&member)
 					}
+
 				}
 			}
 			for _, binding := range project.Bindings {
@@ -50,7 +53,10 @@ var CheckNoPrivilegedServiceAccounts = rules.Register(
 								"Service account is granted a privileged role.",
 								binding.Role,
 							)
+						} else {
+							results.AddPassed(&binding)
 						}
+
 					}
 				}
 			}
@@ -63,7 +69,10 @@ var CheckNoPrivilegedServiceAccounts = rules.Register(
 							"Service account is granted a privileged role.",
 							member.Role,
 						)
+					} else {
+						results.AddPassed(&member)
 					}
+
 				}
 			}
 			for _, binding := range folder.Bindings {
@@ -74,7 +83,10 @@ var CheckNoPrivilegedServiceAccounts = rules.Register(
 								"Service account is granted a privileged role.",
 								binding.Role,
 							)
+						} else {
+							results.AddPassed(member)
 						}
+
 					}
 				}
 			}
@@ -89,7 +101,10 @@ var CheckNoPrivilegedServiceAccounts = rules.Register(
 							"Service account is granted a privileged role.",
 							member.Role,
 						)
+					} else {
+						results.AddPassed(&member)
 					}
+
 				}
 			}
 			for _, binding := range org.Bindings {
@@ -100,7 +115,10 @@ var CheckNoPrivilegedServiceAccounts = rules.Register(
 								"Service account is granted a privileged role.",
 								binding.Role,
 							)
+						} else {
+							results.AddPassed(member)
 						}
+
 					}
 				}
 			}

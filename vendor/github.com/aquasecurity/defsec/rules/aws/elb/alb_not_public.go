@@ -19,17 +19,17 @@ var CheckAlbNotPublic = rules.Register(
 		Resolution:  "Switch to an internal load balancer or add a tfsec ignore",
 		Explanation: `There are many scenarios in which you would want to expose a load balancer to the wider internet, but this check exists as a warning to prevent accidental exposure of internal assets. You should ensure that this resource should be exposed publicly.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformAlbNotPublicGoodExamples,
-            BadExamples:         terraformAlbNotPublicBadExamples,
-            Links:               terraformAlbNotPublicLinks,
-            RemediationMarkdown: terraformAlbNotPublicRemediationMarkdown,
-        },
-        Severity:    severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformAlbNotPublicGoodExamples,
+			BadExamples:         terraformAlbNotPublicBadExamples,
+			Links:               terraformAlbNotPublicLinks,
+			RemediationMarkdown: terraformAlbNotPublicRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, lb := range s.AWS.ELB.LoadBalancers {
-			if lb.Type.EqualTo(elb.TypeGateway) || !lb.IsManaged() {
+			if lb.IsUnmanaged() || lb.Type.EqualTo(elb.TypeGateway) {
 				continue
 			}
 			if lb.Internal.IsFalse() {

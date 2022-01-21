@@ -28,7 +28,7 @@ var CheckEnableMasterNetworks = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			if !cluster.IsManaged() {
+			if cluster.IsUnmanaged() {
 				continue
 			}
 			if cluster.MasterAuthorizedNetworks.Enabled.IsFalse() {
@@ -36,7 +36,10 @@ var CheckEnableMasterNetworks = rules.Register(
 					"Cluster does not have master authorized networks enabled.",
 					cluster.MasterAuthorizedNetworks.Enabled,
 				)
+			} else {
+				results.AddPassed(&cluster)
 			}
+
 		}
 		return
 	},

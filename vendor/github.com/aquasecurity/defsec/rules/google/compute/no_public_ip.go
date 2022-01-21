@@ -17,13 +17,13 @@ var CheckInstancesDoNotHavePublicIPs = rules.Register(
 		Impact:      "Direct exposure of an instance to the public internet",
 		Resolution:  "Remove public IP",
 		Explanation: `Instances should not be publicly exposed to the internet`,
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicIpGoodExamples,
-            BadExamples:         terraformNoPublicIpBadExamples,
-            Links:               terraformNoPublicIpLinks,
-            RemediationMarkdown: terraformNoPublicIpRemediationMarkdown,
-        },
-        Severity:    severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicIpGoodExamples,
+			BadExamples:         terraformNoPublicIpBadExamples,
+			Links:               terraformNoPublicIpLinks,
+			RemediationMarkdown: terraformNoPublicIpRemediationMarkdown,
+		},
+		Severity: severity.High,
 		Links: []string{
 			"https://cloud.google.com/compute/docs/ip-addresses#externaladdresses",
 		},
@@ -36,8 +36,11 @@ var CheckInstancesDoNotHavePublicIPs = rules.Register(
 						"Instance has a public IP allocated.",
 						networkInterface.HasPublicIP,
 					)
+				} else {
+					results.AddPassed(&networkInterface)
 				}
 			}
+
 		}
 		return results
 	},

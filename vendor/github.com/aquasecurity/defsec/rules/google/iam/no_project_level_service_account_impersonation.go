@@ -36,6 +36,8 @@ var CheckNoProjectLevelServiceAccountImpersonation = rules.Register(
 						"Service account access is granted to a user at project level.",
 						member.Role,
 					)
+				} else {
+					results.AddPassed(&member)
 				}
 			}
 			for _, binding := range project.Bindings {
@@ -44,7 +46,10 @@ var CheckNoProjectLevelServiceAccountImpersonation = rules.Register(
 						"Service account access is granted to a user at project level.",
 						binding.Role,
 					)
+				} else {
+					results.AddPassed(&binding)
 				}
+
 			}
 		}
 		return

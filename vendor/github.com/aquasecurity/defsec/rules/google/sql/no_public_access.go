@@ -21,16 +21,19 @@ var CheckNoPublicAccess = rules.Register(
 		Links: []string{
 			"https://www.cloudconformity.com/knowledge-base/gcp/CloudSQL/publicly-accessible-cloud-sql-instances.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicAccessGoodExamples,
-            BadExamples:         terraformNoPublicAccessBadExamples,
-            Links:               terraformNoPublicAccessLinks,
-            RemediationMarkdown: terraformNoPublicAccessRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicAccessGoodExamples,
+			BadExamples:         terraformNoPublicAccessBadExamples,
+			Links:               terraformNoPublicAccessLinks,
+			RemediationMarkdown: terraformNoPublicAccessRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {
+			if instance.IsUnmanaged() {
+				continue
+			}
 			if instance.Settings.IPConfiguration.EnableIPv4.IsTrue() {
 				results.Add(
 					"Database instance is granted a public internet address.",
@@ -43,6 +46,8 @@ var CheckNoPublicAccess = rules.Register(
 						"Database instance allows access from the public internet.",
 						network.CIDR,
 					)
+				} else {
+					results.AddPassed(&instance)
 				}
 			}
 		}

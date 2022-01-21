@@ -31,15 +31,20 @@ var CheckNoPublicEgress = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, firewall := range s.DigitalOcean.Compute.Firewalls {
+			var failed bool
 			for _, rule := range firewall.OutboundRules {
 				for _, address := range rule.DestinationAddresses {
 					if cidr.IsPublic(address.Value()) && cidr.CountAddresses(address.Value()) > 1 {
+						failed = true
 						results.Add(
 							"Egress rule allows access to multiple public addresses.",
 							address,
 						)
 					}
 				}
+			}
+			if !failed {
+				results.AddPassed(&firewall)
 			}
 		}
 		return

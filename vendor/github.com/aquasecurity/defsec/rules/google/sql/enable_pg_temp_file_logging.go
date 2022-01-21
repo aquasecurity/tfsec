@@ -21,16 +21,19 @@ var CheckEnablePgTempFileLogging = rules.Register(
 		Links: []string{
 			"https://postgresqlco.nf/doc/en/param/log_temp_files/",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnablePgTempFileLoggingGoodExamples,
-            BadExamples:         terraformEnablePgTempFileLoggingBadExamples,
-            Links:               terraformEnablePgTempFileLoggingLinks,
-            RemediationMarkdown: terraformEnablePgTempFileLoggingRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnablePgTempFileLoggingGoodExamples,
+			BadExamples:         terraformEnablePgTempFileLoggingBadExamples,
+			Links:               terraformEnablePgTempFileLoggingLinks,
+			RemediationMarkdown: terraformEnablePgTempFileLoggingRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {
+			if instance.IsUnmanaged() {
+				continue
+			}
 			if instance.DatabaseFamily() != sql.DatabaseFamilyPostgres {
 				continue
 			}
@@ -44,6 +47,8 @@ var CheckEnablePgTempFileLogging = rules.Register(
 					"Database instance has temporary file logging disabled for files of certain sizes.",
 					instance.Settings.Flags.LogTempFileSize,
 				)
+			} else {
+				results.AddPassed(&instance)
 			}
 		}
 		return

@@ -43,7 +43,10 @@ var CheckNoOrgLevelDefaultServiceAccountAssignment = rules.Register(
 								"Role is assigned to a default service account at organisation level.",
 								member,
 							)
+						} else {
+							results.AddPassed(member)
 						}
+
 					}
 				}
 			}
@@ -58,7 +61,10 @@ var CheckNoOrgLevelDefaultServiceAccountAssignment = rules.Register(
 						"Role is assigned to a default service account at organisation level.",
 						member.DefaultServiceAccount,
 					)
+				} else {
+					results.AddPassed(&member)
 				}
+
 			}
 		}
 		return

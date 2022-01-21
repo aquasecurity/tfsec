@@ -21,21 +21,26 @@ Microsoft will notify the security contact directly in the event of a security i
 		Links: []string{
 			"https://azure.microsoft.com/en-us/services/security-center/",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformAlertOnSevereNotificationsGoodExamples,
-            BadExamples:         terraformAlertOnSevereNotificationsBadExamples,
-            Links:               terraformAlertOnSevereNotificationsLinks,
-            RemediationMarkdown: terraformAlertOnSevereNotificationsRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformAlertOnSevereNotificationsGoodExamples,
+			BadExamples:         terraformAlertOnSevereNotificationsBadExamples,
+			Links:               terraformAlertOnSevereNotificationsLinks,
+			RemediationMarkdown: terraformAlertOnSevereNotificationsRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, contact := range s.Azure.SecurityCenter.Contacts {
+			if contact.IsUnmanaged() {
+				continue
+			}
 			if contact.EnableAlertNotifications.IsFalse() {
 				results.Add(
 					"Security contact has alert notifications disabled.",
 					contact.EnableAlertNotifications,
 				)
+			} else {
+				results.AddPassed(&contact)
 			}
 		}
 		return

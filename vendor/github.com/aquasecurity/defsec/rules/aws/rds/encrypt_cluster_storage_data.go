@@ -38,7 +38,7 @@ When enabling encryption by setting the kms_key_id, the storage_encrypted must a
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.RDS.Clusters {
-			if !cluster.IsManaged() {
+			if cluster.IsUnmanaged() {
 				continue
 			}
 			if cluster.Encryption.EncryptStorage.IsFalse() {

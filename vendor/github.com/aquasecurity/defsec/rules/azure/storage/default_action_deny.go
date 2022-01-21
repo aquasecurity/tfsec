@@ -38,6 +38,8 @@ The default action should be set to Deny.`,
 						"Network rules allow access by default.",
 						rule.AllowByDefault,
 					)
+				} else {
+					results.AddPassed(&rule)
 				}
 			}
 		}

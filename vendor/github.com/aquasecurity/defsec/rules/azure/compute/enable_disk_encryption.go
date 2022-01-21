@@ -20,21 +20,26 @@ var CheckEnableDiskEncryption = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableDiskEncryptionGoodExamples,
-            BadExamples:         terraformEnableDiskEncryptionBadExamples,
-            Links:               terraformEnableDiskEncryptionLinks,
-            RemediationMarkdown: terraformEnableDiskEncryptionRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableDiskEncryptionGoodExamples,
+			BadExamples:         terraformEnableDiskEncryptionBadExamples,
+			Links:               terraformEnableDiskEncryptionLinks,
+			RemediationMarkdown: terraformEnableDiskEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, disk := range s.Azure.Compute.ManagedDisks {
+			if disk.IsUnmanaged() {
+				continue
+			}
 			if disk.Encryption.Enabled.IsFalse() {
 				results.Add(
 					"Managed disk is not encrypted.",
 					disk.Encryption.Enabled,
 				)
+			} else {
+				results.AddPassed(&disk)
 			}
 		}
 		return

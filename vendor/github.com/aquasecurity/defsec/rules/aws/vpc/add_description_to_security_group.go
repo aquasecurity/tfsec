@@ -38,7 +38,7 @@ Simplifies auditing, debugging, and managing security groups.`,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.AWS.VPC.SecurityGroups {
-			if !group.IsManaged() {
+			if group.IsUnmanaged() {
 				continue
 			}
 			if group.Description.IsEmpty() {

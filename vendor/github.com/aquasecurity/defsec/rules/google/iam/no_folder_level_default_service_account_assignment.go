@@ -43,7 +43,10 @@ var CheckNoFolderLevelDefaultServiceAccountAssignment = rules.Register(
 						"Role is assigned to a default service account at folder level.",
 						member.Member,
 					)
+				} else {
+					results.AddPassed(&member)
 				}
+
 			}
 			for _, binding := range folder.Bindings {
 				if binding.IncludesDefaultServiceAccount.IsTrue() {
@@ -59,6 +62,8 @@ var CheckNoFolderLevelDefaultServiceAccountAssignment = rules.Register(
 							"Role is assigned to a default service account at folder level.",
 							member,
 						)
+					} else {
+						results.AddPassed(member)
 					}
 				}
 			}

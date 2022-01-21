@@ -20,21 +20,26 @@ var CheckEncryptInTransitData = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/sql/docs/mysql/configure-ssl-instance",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEncryptInTransitDataGoodExamples,
-            BadExamples:         terraformEncryptInTransitDataBadExamples,
-            Links:               terraformEncryptInTransitDataLinks,
-            RemediationMarkdown: terraformEncryptInTransitDataRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEncryptInTransitDataGoodExamples,
+			BadExamples:         terraformEncryptInTransitDataBadExamples,
+			Links:               terraformEncryptInTransitDataLinks,
+			RemediationMarkdown: terraformEncryptInTransitDataRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {
+			if instance.IsUnmanaged() {
+				continue
+			}
 			if instance.Settings.IPConfiguration.RequireTLS.IsFalse() {
 				results.Add(
 					"Database instance does not require TLS for all connections.",
 					instance.Settings.IPConfiguration.RequireTLS,
 				)
+			} else {
+				results.AddPassed(&instance)
 			}
 		}
 		return

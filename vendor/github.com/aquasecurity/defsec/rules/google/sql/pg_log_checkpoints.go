@@ -21,16 +21,19 @@ var CheckPgLogCheckpoints = rules.Register(
 		Links: []string{
 			"https://www.postgresql.org/docs/13/runtime-config-logging.html#GUC-LOG-CHECKPOINTS",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformPgLogCheckpointsGoodExamples,
-            BadExamples:         terraformPgLogCheckpointsBadExamples,
-            Links:               terraformPgLogCheckpointsLinks,
-            RemediationMarkdown: terraformPgLogCheckpointsRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformPgLogCheckpointsGoodExamples,
+			BadExamples:         terraformPgLogCheckpointsBadExamples,
+			Links:               terraformPgLogCheckpointsLinks,
+			RemediationMarkdown: terraformPgLogCheckpointsRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {
+			if instance.IsUnmanaged() {
+				continue
+			}
 			if instance.DatabaseFamily() != sql.DatabaseFamilyPostgres {
 				continue
 			}
@@ -39,6 +42,8 @@ var CheckPgLogCheckpoints = rules.Register(
 					"Database instance is not configured to log checkpoints.",
 					instance.Settings.Flags.LogCheckpoints,
 				)
+			} else {
+				results.AddPassed(&instance)
 			}
 		}
 		return

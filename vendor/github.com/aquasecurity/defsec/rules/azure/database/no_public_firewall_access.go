@@ -46,6 +46,8 @@ var CheckNoPublicFirewallAccess = rules.Register(
 						"Firewall rule allows public internet access to a database server.",
 						rule.EndIP,
 					)
+				} else {
+					results.AddPassed(&rule)
 				}
 			}
 		}
@@ -64,6 +66,8 @@ var CheckNoPublicFirewallAccess = rules.Register(
 						"Firewall rule allows public internet access to a database server.",
 						rule.EndIP,
 					)
+				} else {
+					results.AddPassed(&rule)
 				}
 			}
 		}
@@ -82,6 +86,8 @@ var CheckNoPublicFirewallAccess = rules.Register(
 						"Firewall rule allows public internet access to a database server.",
 						rule.EndIP,
 					)
+				} else {
+					results.AddPassed(&rule)
 				}
 			}
 		}
@@ -100,6 +106,8 @@ var CheckNoPublicFirewallAccess = rules.Register(
 						"Firewall rule allows public internet access to a database server.",
 						rule.EndIP,
 					)
+				} else {
+					results.AddPassed(&rule)
 				}
 			}
 		}

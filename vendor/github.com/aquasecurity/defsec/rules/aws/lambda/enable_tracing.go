@@ -37,7 +37,7 @@ var CheckEnableTracing = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, function := range s.AWS.Lambda.Functions {
-			if !function.IsManaged() {
+			if function.IsUnmanaged() {
 				continue
 			}
 			if function.Tracing.Mode.NotEqualTo(lambda.TracingModeActive) && function.Tracing.Mode.NotEqualTo(lambda.TracingModePassThrough) {

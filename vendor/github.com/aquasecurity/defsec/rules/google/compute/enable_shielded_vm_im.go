@@ -20,21 +20,26 @@ var CheckEnableShieldedVMIntegrityMonitoring = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/security/shielded-cloud/shielded-vm#integrity-monitoring",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableShieldedVmImGoodExamples,
-            BadExamples:         terraformEnableShieldedVmImBadExamples,
-            Links:               terraformEnableShieldedVmImLinks,
-            RemediationMarkdown: terraformEnableShieldedVmImRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableShieldedVmImGoodExamples,
+			BadExamples:         terraformEnableShieldedVmImBadExamples,
+			Links:               terraformEnableShieldedVmImLinks,
+			RemediationMarkdown: terraformEnableShieldedVmImRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.Compute.Instances {
+			if instance.IsUnmanaged() {
+				continue
+			}
 			if instance.ShieldedVM.IntegrityMonitoringEnabled.IsFalse() {
 				results.Add(
 					"Instance does not have shielded VM integrity monitoring enabled.",
 					instance.ShieldedVM.IntegrityMonitoringEnabled,
 				)
+			} else {
+				results.AddPassed(&instance)
 			}
 		}
 		return

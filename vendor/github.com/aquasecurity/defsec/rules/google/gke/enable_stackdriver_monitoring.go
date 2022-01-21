@@ -28,7 +28,7 @@ var CheckEnableStackdriverMonitoring = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			if !cluster.IsManaged() {
+			if cluster.IsUnmanaged() {
 				continue
 			}
 			if cluster.MonitoringService.NotEqualTo("monitoring.googleapis.com/kubernetes") {
@@ -36,7 +36,10 @@ var CheckEnableStackdriverMonitoring = rules.Register(
 					"Cluster does not use the monitoring.googleapis.com/kubernetes StackDriver monitoring service.",
 					cluster.MonitoringService,
 				)
+			} else {
+				results.AddPassed(&cluster)
 			}
+
 		}
 		return
 	},

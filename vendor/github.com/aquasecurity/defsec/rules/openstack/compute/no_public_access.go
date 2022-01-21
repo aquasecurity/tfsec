@@ -19,16 +19,19 @@ var CheckNoPublicAccess = rules.Register(
 		Resolution:  "Employ more restrictive firewall rules",
 		Explanation: `Opening up ports to the public internet is generally to be avoided. You should restrict access to IP addresses or ranges that explicitly require it where possible.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicAccessGoodExamples,
-            BadExamples:         terraformNoPublicAccessBadExamples,
-            Links:               terraformNoPublicAccessLinks,
-            RemediationMarkdown: terraformNoPublicAccessRemediationMarkdown,
-        },
-        Severity:    severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicAccessGoodExamples,
+			BadExamples:         terraformNoPublicAccessBadExamples,
+			Links:               terraformNoPublicAccessLinks,
+			RemediationMarkdown: terraformNoPublicAccessRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, rule := range s.OpenStack.Compute.Firewall.AllowRules {
+			if rule.IsUnmanaged() {
+				continue
+			}
 			if rule.Enabled.IsFalse() {
 				continue
 			}
@@ -42,8 +45,7 @@ var CheckNoPublicAccess = rules.Register(
 					"Firewall rule allows public egress.",
 					rule.Destination,
 				)
-			}
-			if rule.Source.IsEmpty() {
+			} else if rule.Source.IsEmpty() {
 				results.Add(
 					"Firewall rule does not restrict source address internally.",
 					rule.Source,
@@ -53,6 +55,8 @@ var CheckNoPublicAccess = rules.Register(
 					"Firewall rule allows public ingress.",
 					rule.Source,
 				)
+			} else {
+				results.AddPassed(rule)
 			}
 
 		}

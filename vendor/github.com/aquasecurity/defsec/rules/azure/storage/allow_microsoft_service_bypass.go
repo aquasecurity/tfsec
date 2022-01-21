@@ -44,6 +44,8 @@ To help this type of service work as intended, allow the set of trusted Microsof
 						"Network rules do not allow bypass for Microsoft Services.",
 						&rule,
 					)
+				} else {
+					results.AddPassed(&rule)
 				}
 
 			}

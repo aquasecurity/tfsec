@@ -34,6 +34,8 @@ var CheckThreatAlertEmailSet = rules.Register(
 						"Security alert policy does not include any email addresses for notification.",
 						&policy,
 					)
+				} else {
+					results.AddPassed(&policy)
 				}
 			}
 		}

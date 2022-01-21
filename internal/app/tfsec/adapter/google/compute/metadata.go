@@ -8,6 +8,7 @@ import (
 )
 
 func adaptProjectMetadata(modules block.Modules) (metadata compute.ProjectMetadata) {
+	metadata.Metadata = types.NewUnmanagedMetadata()
 	metadata.EnableOSLogin = types.BoolUnresolvable(
 		types.NewUnmanagedMetadata(),
 	)

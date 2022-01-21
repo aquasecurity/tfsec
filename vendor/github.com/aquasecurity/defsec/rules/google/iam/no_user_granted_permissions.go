@@ -41,7 +41,10 @@ Permissions should be granted on roles, groups, services accounts instead.`,
 						"Permissions are granted directly to a user.",
 						member.Role,
 					)
+				} else {
+					results.AddPassed(&member)
 				}
+
 			}
 			for _, binding := range project.Bindings {
 				for _, member := range binding.Members {
@@ -50,7 +53,10 @@ Permissions should be granted on roles, groups, services accounts instead.`,
 							"Permissions are granted directly to a user.",
 							binding.Role,
 						)
+					} else {
+						results.AddPassed(member)
 					}
+
 				}
 			}
 		}
@@ -62,7 +68,10 @@ Permissions should be granted on roles, groups, services accounts instead.`,
 						"Permissions are granted directly to a user.",
 						member.Role,
 					)
+				} else {
+					results.AddPassed(&member)
 				}
+
 			}
 			for _, binding := range folder.Bindings {
 				for _, member := range binding.Members {
@@ -71,7 +80,10 @@ Permissions should be granted on roles, groups, services accounts instead.`,
 							"Permissions are granted directly to a user.",
 							binding.Role,
 						)
+					} else {
+						results.AddPassed(member)
 					}
+
 				}
 			}
 		}
@@ -83,7 +95,10 @@ Permissions should be granted on roles, groups, services accounts instead.`,
 						"Permissions are granted directly to a user.",
 						member.Role,
 					)
+				} else {
+					results.AddPassed(&member)
 				}
+
 			}
 			for _, binding := range org.Bindings {
 				for _, member := range binding.Members {
@@ -92,7 +107,10 @@ Permissions should be granted on roles, groups, services accounts instead.`,
 							"Permissions are granted directly to a user.",
 							binding.Role,
 						)
+					} else {
+						results.AddPassed(member)
 					}
+
 				}
 			}
 		}

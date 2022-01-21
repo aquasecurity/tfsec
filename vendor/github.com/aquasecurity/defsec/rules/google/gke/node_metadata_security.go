@@ -39,7 +39,10 @@ The attribute should be set to <code>SECURE</code> to use metadata concealment, 
 						"Cluster exposes node metadata of pools by default.",
 						metadata,
 					)
+				} else {
+					results.AddPassed(&cluster)
 				}
+
 			}
 			for _, pool := range cluster.NodePools {
 				metadata := pool.NodeConfig.WorkloadMetadataConfig.NodeMetadata
@@ -48,7 +51,10 @@ The attribute should be set to <code>SECURE</code> to use metadata concealment, 
 						"Node pool exposes node metadata.",
 						metadata,
 					)
+				} else {
+					results.AddPassed(&pool)
 				}
+
 			}
 		}
 		return

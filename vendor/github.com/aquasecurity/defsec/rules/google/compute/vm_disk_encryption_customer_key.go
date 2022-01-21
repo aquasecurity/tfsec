@@ -18,13 +18,13 @@ var CheckVmDiskEncryptionCustomerKey = rules.Register(
 		Resolution:  "Use managed keys ",
 		Explanation: `Using unmanaged keys makes rotation and general management difficult.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformVmDiskEncryptionCustomerKeyGoodExamples,
-            BadExamples:         terraformVmDiskEncryptionCustomerKeyBadExamples,
-            Links:               terraformVmDiskEncryptionCustomerKeyLinks,
-            RemediationMarkdown: terraformVmDiskEncryptionCustomerKeyRemediationMarkdown,
-        },
-        Severity:    severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformVmDiskEncryptionCustomerKeyGoodExamples,
+			BadExamples:         terraformVmDiskEncryptionCustomerKeyBadExamples,
+			Links:               terraformVmDiskEncryptionCustomerKeyLinks,
+			RemediationMarkdown: terraformVmDiskEncryptionCustomerKeyRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.Compute.Instances {
@@ -34,6 +34,8 @@ var CheckVmDiskEncryptionCustomerKey = rules.Register(
 						"Instance disk encryption does not use a customer managed key.",
 						disk.Encryption.KMSKeyLink,
 					)
+				} else {
+					results.AddPassed(&disk)
 				}
 			}
 		}

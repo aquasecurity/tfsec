@@ -20,22 +20,28 @@ var CheckEnableBackup = rules.Register(
 		Links: []string{
 			"https://cloud.google.com/sql/docs/mysql/backup-recovery/backups",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableBackupGoodExamples,
-            BadExamples:         terraformEnableBackupBadExamples,
-            Links:               terraformEnableBackupLinks,
-            RemediationMarkdown: terraformEnableBackupRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableBackupGoodExamples,
+			BadExamples:         terraformEnableBackupBadExamples,
+			Links:               terraformEnableBackupLinks,
+			RemediationMarkdown: terraformEnableBackupRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.Google.SQL.Instances {
+			if instance.IsUnmanaged() {
+				continue
+			}
 			if instance.Settings.Backups.Enabled.IsFalse() {
 				results.Add(
 					"Database instance does not have backups enabled.",
 					instance.Settings.Backups.Enabled,
 				)
+			} else {
+				results.AddPassed(&instance)
 			}
+
 		}
 		return
 	},
