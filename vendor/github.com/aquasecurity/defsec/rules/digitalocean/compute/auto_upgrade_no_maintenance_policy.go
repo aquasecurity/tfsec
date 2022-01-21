@@ -15,7 +15,7 @@ var CheckAutoUpgrade = rules.Register(
 		ShortCode:   "kubernetes-auto-upgrades-not-enabled",
 		Summary:     "Kubernetes clusters should be auto-upgraded to ensure that they always contain the latest security patches.",
 		Impact:      "Not running the latest security patches on your Kubernetes cluster can make it a target for penetration.",
-		Resolution:  "Set maintenace policy deterministically when auto upgrades are enabled",
+		Resolution:  "Set maintenance policy deterministically when auto upgrades are enabled",
 		Explanation: ``,
 		Links: []string{
 			"https://docs.digitalocean.com/products/kubernetes/resources/best-practices/",
