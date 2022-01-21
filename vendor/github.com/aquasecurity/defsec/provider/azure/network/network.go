@@ -10,14 +10,13 @@ type Network struct {
 
 type SecurityGroup struct {
 	types.Metadata
-	InboundAllowRules  []SecurityGroupRule
-	InboundDenyRules   []SecurityGroupRule
-	OutboundAllowRules []SecurityGroupRule
-	OutboundDenyRules  []SecurityGroupRule
+	Rules []SecurityGroupRule
 }
 
 type SecurityGroupRule struct {
 	types.Metadata
+	Outbound              types.BoolValue
+	Allow                 types.BoolValue
 	SourceAddresses       []types.StringValue
 	SourcePortRanges      []types.StringValue
 	DestinationAddresses  []types.StringValue
@@ -35,15 +34,13 @@ type RetentionPolicy struct {
 	Days    types.IntValue
 }
 
-
 func (n *Network) GetMetadata() *types.Metadata {
 	return &n.Metadata
 }
 
 func (n *Network) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (s *SecurityGroup) GetMetadata() *types.Metadata {
 	return &s.Metadata
@@ -51,8 +48,7 @@ func (s *SecurityGroup) GetMetadata() *types.Metadata {
 
 func (s *SecurityGroup) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (s *SecurityGroupRule) GetMetadata() *types.Metadata {
 	return &s.Metadata
@@ -60,8 +56,7 @@ func (s *SecurityGroupRule) GetMetadata() *types.Metadata {
 
 func (s *SecurityGroupRule) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (n *NetworkWatcherFlowLog) GetMetadata() *types.Metadata {
 	return &n.Metadata
@@ -69,8 +64,7 @@ func (n *NetworkWatcherFlowLog) GetMetadata() *types.Metadata {
 
 func (n *NetworkWatcherFlowLog) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (r *RetentionPolicy) GetMetadata() *types.Metadata {
 	return &r.Metadata
@@ -78,4 +72,4 @@ func (r *RetentionPolicy) GetMetadata() *types.Metadata {
 
 func (r *RetentionPolicy) GetRawValue() interface{} {
 	return nil
-}    
+}
