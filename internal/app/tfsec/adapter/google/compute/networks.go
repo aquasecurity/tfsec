@@ -11,78 +11,75 @@ import (
 
 func adaptNetworks(modules block.Modules) (networks []compute.Network) {
 
-	for _, module := range modules {
+	networkMap := make(map[string]compute.Network)
 
-		networkMap := make(map[string]compute.Network)
+	for _, networkBlock := range modules.GetResourcesByType("google_compute_network") {
+		var network compute.Network
+		network.Metadata = networkBlock.Metadata()
+		networkMap[networkBlock.ID()] = network
+	}
 
-		for _, networkBlock := range module.GetResourcesByType("google_compute_network") {
-			var network compute.Network
-			network.Metadata = networkBlock.Metadata()
-			networkMap[networkBlock.ID()] = network
+	for _, subnetworkBlock := range modules.GetResourcesByType("google_compute_subnetwork") {
+
+		var subnetwork compute.SubNetwork
+		subnetwork.Metadata = subnetworkBlock.Metadata()
+
+		// logging
+		if logConfigBlock := subnetworkBlock.GetBlock("log_config"); logConfigBlock.IsNotNil() {
+			subnetwork.EnableFlowLogs = types.BoolExplicit(true, subnetworkBlock.GetBlock("log_config").Metadata())
+		} else {
+			subnetwork.EnableFlowLogs = types.BoolDefault(false, subnetworkBlock.Metadata())
 		}
 
-		for _, subnetworkBlock := range module.GetResourcesByType("google_compute_subnetwork") {
-
-			var subnetwork compute.SubNetwork
-			subnetwork.Metadata = subnetworkBlock.Metadata()
-
-			// logging
-			if logConfigBlock := subnetworkBlock.GetBlock("log_config"); logConfigBlock.IsNotNil() {
-				subnetwork.EnableFlowLogs = types.BoolExplicit(true, subnetworkBlock.GetBlock("log_config").Metadata())
-			} else {
-				subnetwork.EnableFlowLogs = types.BoolDefault(false, subnetworkBlock.Metadata())
-			}
-
-			nwAttr := subnetworkBlock.GetAttribute("network")
-			if nwAttr.IsNotNil() {
-				if nwblock, err := module.GetReferencedBlock(nwAttr, subnetworkBlock); err == nil {
-					if network, ok := networkMap[nwblock.ID()]; ok {
-						network.Subnetworks = append(network.Subnetworks, subnetwork)
-						networkMap[nwblock.ID()] = network
-						continue
-					}
+		nwAttr := subnetworkBlock.GetAttribute("network")
+		if nwAttr.IsNotNil() {
+			if nwblock, err := modules.GetReferencedBlock(nwAttr, subnetworkBlock); err == nil {
+				if network, ok := networkMap[nwblock.ID()]; ok {
+					network.Subnetworks = append(network.Subnetworks, subnetwork)
+					networkMap[nwblock.ID()] = network
+					continue
 				}
 			}
-
-			var placeholder compute.Network
-			placeholder.Metadata = types.NewUnmanagedMetadata()
-			placeholder.Subnetworks = append(placeholder.Subnetworks, subnetwork)
-			networks = append(networks, placeholder)
 		}
 
-		for _, firewallBlock := range module.GetResourcesByType("google_compute_firewall") {
+		var placeholder compute.Network
+		placeholder.Metadata = types.NewUnmanagedMetadata()
+		placeholder.Subnetworks = append(placeholder.Subnetworks, subnetwork)
+		networks = append(networks, placeholder)
+	}
 
-			var firewall compute.Firewall
-			firewall.Metadata = firewallBlock.Metadata()
-			firewall.Name = firewallBlock.GetAttribute("name").AsStringValueOrDefault("", firewallBlock)
+	for _, firewallBlock := range modules.GetResourcesByType("google_compute_firewall") {
 
-			for _, allowBlock := range firewallBlock.GetBlocks("allow") {
-				adaptFirewallRule(&firewall, firewallBlock, allowBlock, true)
-			}
-			for _, denyBlock := range firewallBlock.GetBlocks("deny") {
-				adaptFirewallRule(&firewall, firewallBlock, denyBlock, false)
-			}
+		var firewall compute.Firewall
+		firewall.Metadata = firewallBlock.Metadata()
+		firewall.Name = firewallBlock.GetAttribute("name").AsStringValueOrDefault("", firewallBlock)
 
-			nwAttr := firewallBlock.GetAttribute("network")
-			if nwAttr.IsNotNil() {
-				if nwblock, err := module.GetReferencedBlock(nwAttr, firewallBlock); err == nil {
-					if network, ok := networkMap[nwblock.ID()]; ok {
-						network.Firewall = &firewall
-						networkMap[nwblock.ID()] = network
-						continue
-					}
+		for _, allowBlock := range firewallBlock.GetBlocks("allow") {
+			adaptFirewallRule(&firewall, firewallBlock, allowBlock, true)
+		}
+		for _, denyBlock := range firewallBlock.GetBlocks("deny") {
+			adaptFirewallRule(&firewall, firewallBlock, denyBlock, false)
+		}
+
+		nwAttr := firewallBlock.GetAttribute("network")
+		if nwAttr.IsNotNil() {
+			if nwblock, err := modules.GetReferencedBlock(nwAttr, firewallBlock); err == nil {
+				if network, ok := networkMap[nwblock.ID()]; ok {
+					network.Firewall = &firewall
+					networkMap[nwblock.ID()] = network
+					continue
 				}
 			}
-
-			var placeholder compute.Network
-			placeholder.Metadata = types.NewUnmanagedMetadata()
-			placeholder.Firewall = &firewall
-			networks = append(networks, placeholder)
 		}
 
-		for _, nw := range networkMap {
-			networks = append(networks, nw)
-		}
+		var placeholder compute.Network
+		placeholder.Metadata = types.NewUnmanagedMetadata()
+		placeholder.Firewall = &firewall
+		networks = append(networks, placeholder)
+	}
+
+	for _, nw := range networkMap {
+		networks = append(networks, nw)
 	}
 
 	return networks
