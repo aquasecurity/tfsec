@@ -29,6 +29,9 @@ var CheckEnableTracing = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, api := range s.AWS.APIGateway.APIs {
+			if api.IsUnmanaged() {
+				continue
+			}
 			if api.ProtocolType.NotEqualTo(apigateway.ProtocolTypeREST) {
 				continue
 			}

@@ -19,9 +19,9 @@ func adaptCompute(modules block.Modules) oracle.Compute {
 
 			addressPoolAttr := resource.GetAttribute("ip_address_pool")
 			addressPoolVal := addressPoolAttr.AsStringValueOrDefault("", resource)
-
 			compute.AddressReservations = append(compute.AddressReservations, oracle.AddressReservation{
-				Pool: addressPoolVal,
+				Metadata: resource.Metadata(),
+				Pool:     addressPoolVal,
 			})
 		}
 	}

@@ -29,6 +29,7 @@ func adaptInstance(resourceBlock *block.Block) openstack.Instance {
 	adminPassVal := adminPassAttr.AsStringValueOrDefault("", resourceBlock)
 
 	return openstack.Instance{
+		Metadata:      resourceBlock.Metadata(),
 		AdminPassword: adminPassVal,
 	}
 }
@@ -56,6 +57,7 @@ func adaptFirewall(modules block.Modules) openstack.Firewall {
 
 			if resource.GetAttribute("action").Equals("allow") {
 				firewall.AllowRules = append(firewall.AllowRules, openstack.Rule{
+					Metadata:        resource.Metadata(),
 					Source:          sourceVal,
 					Destination:     destinationVal,
 					SourcePort:      sourcePortVal,
@@ -64,6 +66,7 @@ func adaptFirewall(modules block.Modules) openstack.Firewall {
 				})
 			} else if resource.GetAttribute("action").Equals("deny") {
 				firewall.DenyRules = append(firewall.DenyRules, openstack.Rule{
+					Metadata:        resource.Metadata(),
 					Source:          sourceVal,
 					Destination:     destinationVal,
 					SourcePort:      sourcePortVal,

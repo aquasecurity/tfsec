@@ -61,6 +61,7 @@ func adaptCluster(resource *block.Block) container.KubernetesCluster {
 		rbEnabledVal = rbEnabledAttr.AsBoolValueOrDefault(false, roleBasedAccessControlBlock)
 	}
 	return container.KubernetesCluster{
+		Metadata: resource.Metadata(),
 		NetworkProfile: container.NetworkProfile{
 			NetworkPolicy: networkPolicyVal,
 		},

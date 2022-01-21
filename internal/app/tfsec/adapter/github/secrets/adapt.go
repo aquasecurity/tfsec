@@ -21,6 +21,7 @@ func adaptSecrets(modules block.Modules) []github.EnvironmentSecret {
 
 func adaptSecret(resource *block.Block) github.EnvironmentSecret {
 	var secret github.EnvironmentSecret
+	secret.Metadata = resource.Metadata()
 	secret.SecretName = resource.GetAttribute("secret_name").AsStringValueOrDefault("", resource)
 	secret.PlainTextValue = resource.GetAttribute("plaintext_value").AsStringValueOrDefault("", resource)
 	secret.Environment = resource.GetAttribute("environment").AsStringValueOrDefault("", resource)

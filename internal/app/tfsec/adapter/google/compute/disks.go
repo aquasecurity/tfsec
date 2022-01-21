@@ -10,6 +10,7 @@ func adaptDisks(modules block.Modules) (disks []compute.Disk) {
 
 	for _, diskBlock := range modules.GetResourcesByType("google_compute_disk") {
 		var disk compute.Disk
+		disk.Metadata = diskBlock.Metadata()
 		if encBlock := diskBlock.GetBlock("disk_encryption_key"); encBlock.IsNotNil() {
 			disk.Encryption.KMSKeyLink = encBlock.GetAttribute("kms_key_self_link").AsStringValueOrDefault("", encBlock)
 			disk.Encryption.RawKey = encBlock.GetAttribute("raw_key").AsBytesValueOrDefault(nil, encBlock)

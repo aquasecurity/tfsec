@@ -78,7 +78,8 @@ func (a *adapter) adaptSecurityGroup(resource *block.Block) {
 		rules = append(rules, a.adaptSGRule(ruleBlock))
 	}
 	a.groups[resource.ID()] = network.SecurityGroup{
-		Rules: rules,
+		Metadata: resource.Metadata(),
+		Rules:    rules,
 	}
 }
 
@@ -200,6 +201,7 @@ func adaptWatcherLog(resource *block.Block) network.NetworkWatcherFlowLog {
 	daysVal := daysAttr.AsIntValueOrDefault(0, retentionPolicyBlock)
 
 	return network.NetworkWatcherFlowLog{
+		Metadata: resource.Metadata(),
 		RetentionPolicy: network.RetentionPolicy{
 			Enabled: enabledVal,
 			Days:    daysVal,

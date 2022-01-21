@@ -69,6 +69,7 @@ func adaptNetworkPolicy(resourceBlock *block.Block) kubernetes.NetworkPolicy {
 	}
 
 	return kubernetes.NetworkPolicy{
-		Spec: spec,
+		Metadata: resourceBlock.Metadata(),
+		Spec:     spec,
 	}
 }

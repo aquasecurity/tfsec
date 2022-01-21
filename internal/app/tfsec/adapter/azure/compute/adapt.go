@@ -56,6 +56,7 @@ func adaptManagedDisk(resource *block.Block) compute.ManagedDisk {
 	}
 
 	return compute.ManagedDisk{
+		Metadata: resource.Metadata(),
 		Encryption: compute.Encryption{
 			Enabled: enabledVal,
 		},
@@ -87,6 +88,7 @@ func adaptLinuxVM(resource *block.Block) compute.LinuxVirtualMachine {
 	disablePasswordAuthVal := disablePasswordAuthAttr.AsBoolValueOrDefault(true, workingBlock)
 
 	return compute.LinuxVirtualMachine{
+		Metadata: resource.Metadata(),
 		VirtualMachine: compute.VirtualMachine{
 			CustomData: customDataVal,
 		},
@@ -117,6 +119,7 @@ func adaptWindowsVM(resource *block.Block) compute.WindowsVirtualMachine {
 	}
 
 	return compute.WindowsVirtualMachine{
+		Metadata: resource.Metadata(),
 		VirtualMachine: compute.VirtualMachine{
 			CustomData: customDataVal,
 		},
