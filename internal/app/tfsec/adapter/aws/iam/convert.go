@@ -12,14 +12,14 @@ import (
 
 type wrappedDocument struct {
 	source   rules.MetadataProvider
-	document iamgo.Document
+	Document iamgo.Document
 }
 
 func parsePolicyFromAttr(attr block.Attribute, owner block.Block, modules block.Modules) (types.StringValue, error) {
 
 	documents := findAllPolicies(modules, owner, attr)
 	if len(documents) > 0 {
-		output, err := json.Marshal(documents[0].document)
+		output, err := json.Marshal(documents[0].Document)
 		if err != nil {
 			return nil, err
 		}
@@ -38,7 +38,7 @@ func unescapeVars(input string) string {
 }
 
 // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
-func convertTerraformDocument(modules block.Modules, block block.Block) (*wrappedDocument, error) {
+func ConvertTerraformDocument(modules block.Modules, block block.Block) (*wrappedDocument, error) {
 
 	var document iamgo.Document
 
@@ -53,7 +53,7 @@ func convertTerraformDocument(modules block.Modules, block block.Block) (*wrappe
 	if sourceDocumentsAttr := block.GetAttribute("source_policy_documents"); sourceDocumentsAttr.IsIterable() {
 		docs := findAllPolicies(modules, block, sourceDocumentsAttr)
 		for _, doc := range docs {
-			document.Statement = append(document.Statement, doc.document.Statement...)
+			document.Statement = append(document.Statement, doc.Document.Statement...)
 		}
 	}
 
@@ -78,13 +78,13 @@ func convertTerraformDocument(modules block.Modules, block block.Block) (*wrappe
 	if overrideDocumentsAttr := block.GetAttribute("override_policy_documents"); overrideDocumentsAttr.IsIterable() {
 		docs := findAllPolicies(modules, block, overrideDocumentsAttr)
 		for _, doc := range docs {
-			for _, statement := range doc.document.Statement {
+			for _, statement := range doc.Document.Statement {
 				mergeInStatement(&document, statement, sourceCount)
 			}
 		}
 	}
 
-	return &wrappedDocument{document: document, source: block}, nil
+	return &wrappedDocument{Document: document, source: block}, nil
 }
 
 func mergeInStatement(document *iamgo.Document, statement iamgo.Statement, overrideToIndex int) {
@@ -192,7 +192,7 @@ func findAllPolicies(modules block.Modules, parentBlock block.Block, attr block.
 				continue
 			}
 			if ref.RefersTo(block.Reference()) {
-				document, err := convertTerraformDocument(modules, block)
+				document, err := ConvertTerraformDocument(modules, block)
 				if err != nil {
 					continue
 				}
@@ -202,7 +202,7 @@ func findAllPolicies(modules block.Modules, parentBlock block.Block, attr block.
 			kref := *ref
 			kref.SetKey(parentBlock.Reference().RawKey())
 			if kref.RefersTo(block.Reference()) {
-				document, err := convertTerraformDocument(modules, block)
+				document, err := ConvertTerraformDocument(modules, block)
 				if err != nil {
 					continue
 				}
