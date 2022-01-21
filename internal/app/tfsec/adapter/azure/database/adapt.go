@@ -176,7 +176,7 @@ func (a *postgresqlAdapter) adaptPostgreSQLServers(modules block.Modules) []data
 	return postgreSQLServers
 }
 
-func (a *mssqlAdapter) adaptMSSQLServer(resource block.Block, module block.Module) database.MSSQLServer {
+func (a *mssqlAdapter) adaptMSSQLServer(resource *block.Block, module *block.Module) database.MSSQLServer {
 	minTLSVersionVal := types.StringDefault("", *resource.GetMetadata())
 	publicAccessVal := types.BoolDefault(true, *resource.GetMetadata())
 	enableSSLEnforcementVal := types.BoolDefault(false, *resource.GetMetadata())
@@ -235,7 +235,7 @@ func (a *mssqlAdapter) adaptMSSQLServer(resource block.Block, module block.Modul
 	}
 }
 
-func (a *mysqlAdapter) adaptMySQLServer(resource block.Block, module block.Module) database.MySQLServer {
+func (a *mysqlAdapter) adaptMySQLServer(resource *block.Block, module *block.Module) database.MySQLServer {
 	var firewallRules []database.FirewallRule
 
 	enableSSLEnforcementAttr := resource.GetAttribute("ssl_enforcement_enabled")
@@ -265,7 +265,7 @@ func (a *mysqlAdapter) adaptMySQLServer(resource block.Block, module block.Modul
 	}
 }
 
-func (a *mariaDBAdapter) adaptMariaDBServer(resource block.Block, module block.Module) database.MariaDBServer {
+func (a *mariaDBAdapter) adaptMariaDBServer(resource *block.Block, module *block.Module) database.MariaDBServer {
 	var firewallRules []database.FirewallRule
 
 	enableSSLEnforcementAttr := resource.GetAttribute("ssl_enforcement_enabled")
@@ -291,7 +291,7 @@ func (a *mariaDBAdapter) adaptMariaDBServer(resource block.Block, module block.M
 	}
 }
 
-func (a *postgresqlAdapter) adaptPostgreSQLServer(resource block.Block, module block.Module) database.PostgreSQLServer {
+func (a *postgresqlAdapter) adaptPostgreSQLServer(resource *block.Block, module *block.Module) database.PostgreSQLServer {
 	var firewallRules []database.FirewallRule
 
 	config := database.PostgresSQLConfig{
@@ -333,7 +333,7 @@ func (a *postgresqlAdapter) adaptPostgreSQLServer(resource block.Block, module b
 	}
 }
 
-func adaptPostgreSQLConfig(resource block.Block) database.PostgresSQLConfig {
+func adaptPostgreSQLConfig(resource *block.Block) database.PostgresSQLConfig {
 	nameAttr := resource.GetAttribute("name")
 	valAttr := resource.GetAttribute("value")
 
@@ -360,7 +360,7 @@ func adaptPostgreSQLConfig(resource block.Block) database.PostgresSQLConfig {
 	}
 }
 
-func adaptMSSQLSecurityAlertPolicy(resource block.Block) database.SecurityAlertPolicy {
+func adaptMSSQLSecurityAlertPolicy(resource *block.Block) database.SecurityAlertPolicy {
 	var emailAddressesVal []types.StringValue
 	var disabledAlertsVal []types.StringValue
 
@@ -387,7 +387,7 @@ func adaptMSSQLSecurityAlertPolicy(resource block.Block) database.SecurityAlertP
 	}
 }
 
-func adaptFirewallRule(resource block.Block) database.FirewallRule {
+func adaptFirewallRule(resource *block.Block) database.FirewallRule {
 	startIPAttr := resource.GetAttribute("start_ip_address")
 	startIPVal := startIPAttr.AsStringValueOrDefault("", resource)
 
@@ -400,7 +400,7 @@ func adaptFirewallRule(resource block.Block) database.FirewallRule {
 	}
 }
 
-func adaptMSSQLExtendedAuditingPolicy(resource block.Block) database.ExtendedAuditingPolicy {
+func adaptMSSQLExtendedAuditingPolicy(resource *block.Block) database.ExtendedAuditingPolicy {
 	retentionInDaysAttr := resource.GetAttribute("retention_in_days")
 	retentionInDaysVal := retentionInDaysAttr.AsIntValueOrDefault(0, resource)
 

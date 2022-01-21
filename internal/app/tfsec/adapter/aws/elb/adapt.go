@@ -48,7 +48,7 @@ func (a *adapter) adaptLoadBalancers(modules block.Modules) []elb.LoadBalancer {
 	return loadBalancers
 }
 
-func (a *adapter) adaptLoadBalancer(resource block.Block, module block.Modules) elb.LoadBalancer {
+func (a *adapter) adaptLoadBalancer(resource *block.Block, module block.Modules) elb.LoadBalancer {
 	var listeners []elb.Listener
 
 	typeAttr := resource.GetAttribute("load_balancer_type")
@@ -76,7 +76,7 @@ func (a *adapter) adaptLoadBalancer(resource block.Block, module block.Modules) 
 	}
 }
 
-func adaptListener(listenerBlock block.Block, typeVal string) elb.Listener {
+func adaptListener(listenerBlock *block.Block, typeVal string) elb.Listener {
 	protocolAttr := listenerBlock.GetAttribute("protocol")
 	protocolVal := protocolAttr.AsStringValueOrDefault("", listenerBlock)
 	if typeVal == "application" {

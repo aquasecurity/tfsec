@@ -22,7 +22,7 @@ func Adapt(modules block.Modules) storage.Storage {
 	}
 }
 
-func adaptOrphanContainers(modules []block.Module, containers []string) (orphans []storage.Container) {
+func adaptOrphanContainers(modules block.Modules, containers []string) (orphans []storage.Container) {
 	accountedFor := make(map[string]bool)
 	for _, container := range containers {
 		accountedFor[container] = true
@@ -40,7 +40,7 @@ func adaptOrphanContainers(modules []block.Module, containers []string) (orphans
 	return orphans
 }
 
-func adaptOrphanNetworkRules(modules []block.Module, networkRules []string) (orphans []storage.NetworkRule) {
+func adaptOrphanNetworkRules(modules block.Modules, networkRules []string) (orphans []storage.NetworkRule) {
 	accountedFor := make(map[string]bool)
 	for _, networkRule := range networkRules {
 		accountedFor[networkRule] = true
@@ -84,7 +84,7 @@ func adaptAccounts(modules block.Modules) ([]storage.Account, []string, []string
 	return accounts, accountedForContainers, accountedForNetworkRules
 }
 
-func adaptAccount(resource block.Block) storage.Account {
+func adaptAccount(resource *block.Block) storage.Account {
 	var networkRules []storage.NetworkRule
 	networkRulesBlocks := resource.GetBlocks("network_rules")
 	for _, networkBlock := range networkRulesBlocks {
@@ -117,7 +117,7 @@ func adaptAccount(resource block.Block) storage.Account {
 	}
 }
 
-func adaptContainer(resource block.Block) storage.Container {
+func adaptContainer(resource *block.Block) storage.Container {
 	accessTypeAttr := resource.GetAttribute("container_access_type")
 	publicAccess := types.String(storage.PublicAccessOff, *resource.GetMetadata())
 
@@ -132,7 +132,7 @@ func adaptContainer(resource block.Block) storage.Container {
 	}
 }
 
-func adaptNetworkRule(resource block.Block) storage.NetworkRule {
+func adaptNetworkRule(resource *block.Block) storage.NetworkRule {
 	var allowByDefault types.BoolValue
 	var bypass []types.StringValue
 

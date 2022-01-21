@@ -31,7 +31,7 @@ var exampleRule = rule.Rule{
 		Severity:  severity.High,
 	}, nil),
 	RequiredLabels: []string{"bad"},
-	CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+	CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
 		attr := resourceBlock.GetAttribute("secure")
 		if attr.IsNil() {
 			results.Add("example problem", resourceBlock)
@@ -119,7 +119,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 			Severity:  severity.High,
 		}, nil),
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+		CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
 			results.Add(
 				"example problem",
 				resourceBlock,

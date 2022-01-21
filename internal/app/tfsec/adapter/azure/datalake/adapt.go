@@ -23,7 +23,7 @@ func adaptStores(modules block.Modules) []datalake.Store {
 	return stores
 }
 
-func adaptStore(resource block.Block) datalake.Store {
+func adaptStore(resource *block.Block) datalake.Store {
 	encryptionStateAttr := resource.GetAttribute("encryption_state")
 
 	if encryptionStateAttr.Equals("Disabled") {

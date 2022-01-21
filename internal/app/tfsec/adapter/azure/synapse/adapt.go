@@ -21,7 +21,7 @@ func adaptWorkspaces(modules block.Modules) []synapse.Workspace {
 	return workspaces
 }
 
-func adaptWorkspace(resource block.Block) synapse.Workspace {
+func adaptWorkspace(resource *block.Block) synapse.Workspace {
 	enableManagedVNAttr := resource.GetAttribute("managed_virtual_network_enabled")
 	enableManagedVNVal := enableManagedVNAttr.AsBoolValueOrDefault(false, resource)
 

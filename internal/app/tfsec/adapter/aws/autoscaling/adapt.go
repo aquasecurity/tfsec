@@ -48,7 +48,7 @@ func adaptLaunchConfigurations(modules block.Modules) []autoscaling.LaunchConfig
 	return launchConfigurations
 }
 
-func adaptLaunchConfiguration(resource block.Block) autoscaling.LaunchConfiguration {
+func adaptLaunchConfiguration(resource *block.Block) autoscaling.LaunchConfiguration {
 	nameVal := types.String("", *resource.GetMetadata())
 
 	if resource.TypeLabel() == "aws_launch_configuration" {
@@ -60,7 +60,7 @@ func adaptLaunchConfiguration(resource block.Block) autoscaling.LaunchConfigurat
 	associatePublicIPAddressVal := associatePublicIPAddressAttr.AsBoolValueOrDefault(false, resource)
 
 	rootEncryptedVal := types.BoolDefault(false, *resource.GetMetadata())
-	var rootBlockDeviceBlock block.Block
+	var rootBlockDeviceBlock *block.Block
 	rootBlockDevice := autoscaling.BlockDevice{
 		Metadata:  *resource.GetMetadata(),
 		Encrypted: rootEncryptedVal,

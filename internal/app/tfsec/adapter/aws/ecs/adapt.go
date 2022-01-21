@@ -23,14 +23,14 @@ func adaptClusters(modules block.Modules) []ecs.Cluster {
 	return clusters
 }
 
-func adaptClusterResource(resourceBlock block.Block) ecs.Cluster {
+func adaptClusterResource(resourceBlock *block.Block) ecs.Cluster {
 	return ecs.Cluster{
 		Metadata: resourceBlock.Metadata(),
 		Settings: adaptClusterSettings(resourceBlock),
 	}
 }
 
-func adaptClusterSettings(resourceBlock block.Block) ecs.ClusterSettings {
+func adaptClusterSettings(resourceBlock *block.Block) ecs.ClusterSettings {
 	if settingBlock := resourceBlock.GetBlock("setting"); settingBlock.IsNotNil() && settingBlock.GetAttribute("name").Equals("containerInsights") {
 		containerInsightsEnabled := settingBlock.GetAttribute("value").Equals("enabled")
 		return ecs.ClusterSettings{
@@ -53,7 +53,7 @@ func adaptTaskDefinitions(modules block.Modules) []ecs.TaskDefinition {
 	return taskDefinitions
 }
 
-func adaptTaskDefinitionResource(resourceBlock block.Block) ecs.TaskDefinition {
+func adaptTaskDefinitionResource(resourceBlock *block.Block) ecs.TaskDefinition {
 	return ecs.TaskDefinition{
 		Metadata:             resourceBlock.Metadata(),
 		Volumes:              adaptVolumes(resourceBlock),
@@ -61,7 +61,7 @@ func adaptTaskDefinitionResource(resourceBlock block.Block) ecs.TaskDefinition {
 	}
 }
 
-func adaptVolumes(resourceBlock block.Block) []ecs.Volume {
+func adaptVolumes(resourceBlock *block.Block) []ecs.Volume {
 	if volumeBlocks := resourceBlock.GetBlocks("volume"); len(volumeBlocks) > 0 {
 		var volumes []ecs.Volume
 		for _, volumeBlock := range volumeBlocks {
@@ -76,7 +76,7 @@ func adaptVolumes(resourceBlock block.Block) []ecs.Volume {
 	return []ecs.Volume{}
 }
 
-func adaptEFSVolumeConfiguration(volumeBlock block.Block) ecs.EFSVolumeConfiguration {
+func adaptEFSVolumeConfiguration(volumeBlock *block.Block) ecs.EFSVolumeConfiguration {
 	if EFSConfigBlock := volumeBlock.GetBlock("efs_volume_configuration"); EFSConfigBlock.IsNotNil() {
 		transitEncryptionEnabled := EFSConfigBlock.GetAttribute("transit_encryption").Equals("ENABLED")
 		return ecs.EFSVolumeConfiguration{

@@ -24,7 +24,7 @@ func adaptCompute(modules block.Modules) openstack.Compute {
 	return compute
 }
 
-func adaptInstance(resourceBlock block.Block) openstack.Instance {
+func adaptInstance(resourceBlock *block.Block) openstack.Instance {
 	adminPassAttr := resourceBlock.GetAttribute("admin_pass")
 	adminPassVal := adminPassAttr.AsStringValueOrDefault("", resourceBlock)
 

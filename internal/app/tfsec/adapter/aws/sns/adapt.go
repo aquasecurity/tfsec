@@ -21,14 +21,14 @@ func adaptTopics(modules block.Modules) []sns.Topic {
 	return topics
 }
 
-func adaptTopic(resourceBlock block.Block) sns.Topic {
+func adaptTopic(resourceBlock *block.Block) sns.Topic {
 	return sns.Topic{
 		Metadata:   resourceBlock.Metadata(),
 		Encryption: adaptEncryption(resourceBlock),
 	}
 }
 
-func adaptEncryption(resourceBlock block.Block) sns.Encryption {
+func adaptEncryption(resourceBlock *block.Block) sns.Encryption {
 	return sns.Encryption{
 		KMSKeyID: resourceBlock.GetAttribute("kms_master_key_id").AsStringValueOrDefault("alias/aws/sns", resourceBlock),
 	}

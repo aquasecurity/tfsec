@@ -22,7 +22,7 @@ func adaptDomains(modules block.Modules) []elasticsearch.Domain {
 	return domains
 }
 
-func adaptDomain(resource block.Block) elasticsearch.Domain {
+func adaptDomain(resource *block.Block) elasticsearch.Domain {
 	nameAttr := resource.GetAttribute("domain_name")
 	nameVal := nameAttr.AsStringValueOrDefault("", resource)
 

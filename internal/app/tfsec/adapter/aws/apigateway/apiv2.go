@@ -45,7 +45,7 @@ func adaptAPIsV2(modules block.Modules) []apigateway.API {
 	return apis
 }
 
-func adaptStageV2(stageBlock block.Block) apigateway.Stage {
+func adaptStageV2(stageBlock *block.Block) apigateway.Stage {
 	var stage apigateway.Stage
 	stage.Metadata = stageBlock.Metadata()
 	stage.Version = types.IntExplicit(2, stageBlock.Metadata())

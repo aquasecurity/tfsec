@@ -21,7 +21,7 @@ func adaptKeys(modules block.Modules) []kms.Key {
 	return keys
 }
 
-func adaptKey(resource block.Block) kms.Key {
+func adaptKey(resource *block.Block) kms.Key {
 	usageAttr := resource.GetAttribute("key_usage")
 	usageVal := usageAttr.AsStringValueOrDefault("ENCRYPT_DECRYPT", resource)
 

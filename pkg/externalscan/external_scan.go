@@ -52,7 +52,7 @@ func (t *ExternalScanner) AddPath(path string) error {
 
 func (t *ExternalScanner) Scan() ([]rules.FlatResult, error) {
 
-	projectModules := make(map[string][]block.Module)
+	projectModules := make(map[string]block.Modules)
 
 	dirs, err := findTFRootModules(t.paths)
 	if err != nil {

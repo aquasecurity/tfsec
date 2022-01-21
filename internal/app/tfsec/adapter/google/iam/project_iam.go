@@ -15,11 +15,11 @@ func (a *adapter) adaptProjectIAM() {
 	a.adaptProjectBindings()
 }
 
-func (a *adapter) adaptMember(iamBlock block.Block) iam.Member {
+func (a *adapter) adaptMember(iamBlock *block.Block) iam.Member {
 	return AdaptMember(iamBlock, a.modules)
 }
 
-func AdaptMember(iamBlock block.Block, modules block.Modules) iam.Member {
+func AdaptMember(iamBlock *block.Block, modules block.Modules) iam.Member {
 	var member iam.Member
 	member.Metadata = iamBlock.Metadata()
 	roleAttr := iamBlock.GetAttribute("role")
@@ -104,11 +104,11 @@ func (a *adapter) adaptProjectMembers() {
 	}
 }
 
-func (a *adapter) adaptBinding(iamBlock block.Block) iam.Binding {
+func (a *adapter) adaptBinding(iamBlock *block.Block) iam.Binding {
 	return AdaptBinding(iamBlock, a.modules)
 }
 
-func AdaptBinding(iamBlock block.Block, modules block.Modules) iam.Binding {
+func AdaptBinding(iamBlock *block.Block, modules block.Modules) iam.Binding {
 	var binding iam.Binding
 	binding.Metadata = iamBlock.Metadata()
 	roleAttr := iamBlock.GetAttribute("role")

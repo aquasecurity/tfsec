@@ -66,7 +66,7 @@ func (a *adapter) adaptQueues() []sqs.Queue {
 	return queues
 }
 
-func (a *adapter) adaptQueue(resource block.Block) {
+func (a *adapter) adaptQueue(resource *block.Block) {
 
 	kmsKeyIdAttr := resource.GetAttribute("kms_master_key_id")
 	kmsKeyIdVal := kmsKeyIdAttr.AsStringValueOrDefault("", resource)

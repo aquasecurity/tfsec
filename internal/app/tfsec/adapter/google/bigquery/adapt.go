@@ -21,7 +21,7 @@ func adaptDatasets(modules block.Modules) []bigquery.Dataset {
 	return datasets
 }
 
-func adaptDataset(resource block.Block) bigquery.Dataset {
+func adaptDataset(resource *block.Block) bigquery.Dataset {
 	IDAttr := resource.GetAttribute("dataset_id")
 	IDVal := IDAttr.AsStringValueOrDefault("", resource)
 

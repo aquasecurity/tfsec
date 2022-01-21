@@ -30,7 +30,7 @@ var badRule = rule.Rule{
 	}, nil),
 	RequiredTypes:  []string{"resource"},
 	RequiredLabels: []string{"problem"},
-	CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+	CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
 		if attr := resourceBlock.GetAttribute("bad"); attr.IsTrue() {
 			results.Add("bad", attr)
 		}
@@ -414,7 +414,7 @@ resource "bad" "thing" {
 			Severity:  severity.High,
 		}, nil),
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+		CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
 			if resourceBlock.GetAttribute("secure").IsTrue() {
 				return
 			}
@@ -462,7 +462,7 @@ resource "bad" "thing" {
 			Severity:  severity.High,
 		}, nil),
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+		CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
 			if resourceBlock.GetAttribute("secure").IsTrue() {
 				return
 			}

@@ -19,7 +19,7 @@ type Pool struct {
 	ignoreErrors bool
 }
 
-func NewPool(size int, rules []rule.Rule, modules []block.Module, state *state.State, ignoreErrors bool) *Pool {
+func NewPool(size int, rules []rule.Rule, modules block.Modules, state *state.State, ignoreErrors bool) *Pool {
 	return &Pool{
 		size:         size,
 		rules:        rules,
@@ -86,7 +86,7 @@ type infraRuleJob struct {
 }
 
 type hclModuleRuleJob struct {
-	module       block.Module
+	module       *block.Module
 	rule         rule.Rule
 	ignoreErrors bool
 }

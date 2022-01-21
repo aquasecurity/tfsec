@@ -32,7 +32,7 @@ func adaptSecurityGroups(modules block.Modules) []redshift.SecurityGroup {
 	return securityGroups
 }
 
-func adaptCluster(resource block.Block) redshift.Cluster {
+func adaptCluster(resource *block.Block) redshift.Cluster {
 	encryptedAttr := resource.GetAttribute("encrypted")
 	encryptedVal := encryptedAttr.AsBoolValueOrDefault(false, resource)
 
@@ -52,7 +52,7 @@ func adaptCluster(resource block.Block) redshift.Cluster {
 	}
 }
 
-func adaptSecurityGroup(resource block.Block) redshift.SecurityGroup {
+func adaptSecurityGroup(resource *block.Block) redshift.SecurityGroup {
 	descriptionAttr := resource.GetAttribute("description")
 	descriptionVal := descriptionAttr.AsStringValueOrDefault("Managed by Terraform", resource)
 

@@ -7,7 +7,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func sameProvider(b1, b2 block.Block) bool {
+func sameProvider(b1, b2 *block.Block) bool {
 
 	if b1.HasChild("provider") != b2.HasChild("provider") {
 		return false
@@ -23,7 +23,7 @@ func sameProvider(b1, b2 block.Block) bool {
 	return strings.EqualFold(provider1, provider2)
 }
 
-func parsePolicy(policyBlock block.Block, modules block.Modules) (iam.Policy, error) {
+func parsePolicy(policyBlock *block.Block, modules block.Modules) (iam.Policy, error) {
 	var policy iam.Policy
 	policy.Metadata = policyBlock.Metadata()
 	policy.Name = policyBlock.GetAttribute("name").AsStringValueOrDefault("", policyBlock)

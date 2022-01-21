@@ -85,7 +85,7 @@ func adaptNetworks(modules block.Modules) (networks []compute.Network) {
 	return networks
 }
 
-func expandRange(ports string, attr block.Attribute) []types.IntValue {
+func expandRange(ports string, attr *block.Attribute) []types.IntValue {
 	ports = strings.ReplaceAll(ports, " ", "")
 	if !strings.Contains(ports, "-") {
 		i, err := strconv.Atoi(ports)
@@ -115,7 +115,7 @@ func expandRange(ports string, attr block.Attribute) []types.IntValue {
 	return output
 }
 
-func adaptFirewallRule(firewall *compute.Firewall, firewallBlock, ruleBlock block.Block, allow bool) {
+func adaptFirewallRule(firewall *compute.Firewall, firewallBlock, ruleBlock *block.Block, allow bool) {
 	protocolAttr := ruleBlock.GetAttribute("protocol")
 	portsAttr := ruleBlock.GetAttribute("ports")
 

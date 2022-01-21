@@ -61,7 +61,7 @@ func (a *adapter) adaptVaults(modules block.Modules) []keyvault.Vault {
 	return vaults
 }
 
-func (a *adapter) adaptVault(resource block.Block, module block.Module) keyvault.Vault {
+func (a *adapter) adaptVault(resource *block.Block, module *block.Module) keyvault.Vault {
 	var keys []keyvault.Key
 	var secrets []keyvault.Secret
 
@@ -102,7 +102,7 @@ func (a *adapter) adaptVault(resource block.Block, module block.Module) keyvault
 	}
 }
 
-func adaptSecret(resource block.Block) keyvault.Secret {
+func adaptSecret(resource *block.Block) keyvault.Secret {
 	contentTypeAttr := resource.GetAttribute("content_type")
 	contentTypeVal := contentTypeAttr.AsStringValueOrDefault("", resource)
 
@@ -123,7 +123,7 @@ func adaptSecret(resource block.Block) keyvault.Secret {
 	}
 }
 
-func adaptKey(resource block.Block) keyvault.Key {
+func adaptKey(resource *block.Block) keyvault.Key {
 	expiryDateAttr := resource.GetAttribute("expiration_date")
 	expiryDateVal := types.TimeDefault(time.Time{}, resource.GetMetadata())
 

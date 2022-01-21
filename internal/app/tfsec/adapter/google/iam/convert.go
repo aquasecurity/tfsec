@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func ParsePolicyBlock(block block.Block) []iam.Binding {
+func ParsePolicyBlock(block *block.Block) []iam.Binding {
 	var bindings []iam.Binding
 	for _, bindingBlock := range block.GetBlocks("binding") {
 		var binding iam.Binding

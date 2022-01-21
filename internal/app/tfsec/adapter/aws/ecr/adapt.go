@@ -22,7 +22,7 @@ func adaptRepositories(modules block.Modules) []ecr.Repository {
 	return repositories
 }
 
-func adaptRepository(resource block.Block, module block.Module) ecr.Repository {
+func adaptRepository(resource *block.Block, module *block.Module) ecr.Repository {
 
 	scanOnPushVal := types.BoolDefault(false, *resource.GetMetadata())
 	tagsImmutable := types.BoolDefault(false, *resource.GetMetadata())

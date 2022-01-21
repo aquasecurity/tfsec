@@ -27,8 +27,8 @@ func (m *moduleLoadError) Error() string {
 type ModuleDefinition struct {
 	Name       string
 	Path       string
-	Definition block.Block
-	Modules    []block.Module
+	Definition *block.Block
+	Modules    []*block.Module
 }
 
 // getModuleKeyName constructs the module keyname from the block label and the modulename
@@ -98,7 +98,7 @@ func (e *Evaluator) loadModules(stopOnHCLError bool) []*ModuleDefinition {
 }
 
 // takes in a module "x" {} block and loads resources etc. into e.moduleBlocks - additionally returns variables to add to ["module.x.*"] variables
-func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefinition, error) {
+func (e *Evaluator) loadModule(b *block.Block, stopOnHCLError bool) (*ModuleDefinition, error) {
 
 	if b.Label() == "" {
 		return nil, fmt.Errorf("module without label at %s", b.Range())
@@ -166,11 +166,11 @@ func (e *Evaluator) loadModule(b block.Block, stopOnHCLError bool) (*ModuleDefin
 		Name:       b.Label(),
 		Path:       modulePath,
 		Definition: b,
-		Modules:    []block.Module{block.NewHCLModule(e.projectRootPath, modulePath, blocks, ignores)},
+		Modules:    block.Modules{block.NewHCLModule(e.projectRootPath, modulePath, blocks, ignores)},
 	}, nil
 }
 
-func getModuleBlocks(b block.Block, modulePath string, moduleName string, stopOnHCLError bool) (block.Blocks, []block.Ignore, error) {
+func getModuleBlocks(b *block.Block, modulePath string, moduleName string, stopOnHCLError bool) (block.Blocks, []block.Ignore, error) {
 	moduleFiles, err := LoadDirectory(modulePath, stopOnHCLError)
 	if err != nil {
 		return nil, nil, err
@@ -193,7 +193,7 @@ func getModuleBlocks(b block.Block, modulePath string, moduleName string, stopOn
 			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 		}
 		for _, fileBlock := range fileBlocks {
-			blocks = append(blocks, block.NewHCLBlock(fileBlock, moduleCtx, b))
+			blocks = append(blocks, block.New(fileBlock, moduleCtx, b))
 		}
 		ignores = append(ignores, fileIgnores...)
 	}

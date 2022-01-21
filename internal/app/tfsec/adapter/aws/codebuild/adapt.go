@@ -22,7 +22,7 @@ func adaptProjects(modules block.Modules) []codebuild.Project {
 	return projects
 }
 
-func adaptProject(resource block.Block) codebuild.Project {
+func adaptProject(resource *block.Block) codebuild.Project {
 	artifactsBlock := resource.GetBlock("artifacts")
 	encryptionEnabled := types.BoolDefault(true, *resource.GetMetadata())
 

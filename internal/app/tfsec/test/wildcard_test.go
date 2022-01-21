@@ -64,7 +64,7 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 			}, nil),
 			RequiredTypes:  []string{"resource"},
 			RequiredLabels: []string{test.pattern},
-			CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
+			CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
 				results.Add("Custom check failed for resource.", resourceBlock)
 				return
 			},

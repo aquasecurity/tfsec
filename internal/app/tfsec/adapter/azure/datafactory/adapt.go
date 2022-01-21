@@ -22,7 +22,7 @@ func adaptFactories(modules block.Modules) []datafactory.Factory {
 	return factories
 }
 
-func adaptFactory(resource block.Block) datafactory.Factory {
+func adaptFactory(resource *block.Block) datafactory.Factory {
 	enablePublicNetworkAttr := resource.GetAttribute("public_network_enabled")
 	enablePublicNetworkVal := enablePublicNetworkAttr.AsBoolValueOrDefault(true, resource)
 

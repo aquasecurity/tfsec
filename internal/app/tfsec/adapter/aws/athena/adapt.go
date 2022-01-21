@@ -33,7 +33,7 @@ func adaptWorkgroups(modules block.Modules) []athena.Workgroup {
 	return workgroups
 }
 
-func adaptDatabase(resource block.Block) athena.Database {
+func adaptDatabase(resource *block.Block) athena.Database {
 	nameAttr := resource.GetAttribute("name")
 	nameVal := nameAttr.AsStringValueOrDefault("", resource)
 
@@ -54,7 +54,7 @@ func adaptDatabase(resource block.Block) athena.Database {
 	}
 }
 
-func adaptWorkgroup(resource block.Block) athena.Workgroup {
+func adaptWorkgroup(resource *block.Block) athena.Workgroup {
 	nameAttr := resource.GetAttribute("name")
 	nameVal := nameAttr.AsStringValueOrDefault("", resource)
 

@@ -21,7 +21,7 @@ func adaptVolumes(modules block.Modules) []ebs.Volume {
 	return volumes
 }
 
-func adaptVolume(resource block.Block) ebs.Volume {
+func adaptVolume(resource *block.Block) ebs.Volume {
 	encryptedAttr := resource.GetAttribute("encrypted")
 	encryptedVal := encryptedAttr.AsBoolValueOrDefault(false, resource)
 

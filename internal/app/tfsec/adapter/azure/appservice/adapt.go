@@ -35,7 +35,7 @@ func adaptFunctionApps(modules block.Modules) []appservice.FunctionApp {
 	return functionApps
 }
 
-func adaptService(resource block.Block) appservice.Service {
+func adaptService(resource *block.Block) appservice.Service {
 	enableClientCertAttr := resource.GetAttribute("client_cert_enabled")
 	enableClientCertVal := enableClientCertAttr.AsBoolValueOrDefault(false, resource)
 
@@ -82,7 +82,7 @@ func adaptService(resource block.Block) appservice.Service {
 	}
 }
 
-func adaptFunctionApp(resource block.Block) appservice.FunctionApp {
+func adaptFunctionApp(resource *block.Block) appservice.FunctionApp {
 	HTTPSOnlyAttr := resource.GetAttribute("https_only")
 	HTTPSOnlyVal := HTTPSOnlyAttr.AsBoolValueOrDefault(false, resource)
 

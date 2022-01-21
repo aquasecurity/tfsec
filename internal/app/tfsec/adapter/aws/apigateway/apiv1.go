@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func adaptAPIMethodsV1(modules block.Modules, apiBlock block.Block) []apigateway.RESTMethod {
+func adaptAPIMethodsV1(modules block.Modules, apiBlock *block.Block) []apigateway.RESTMethod {
 	var methods []apigateway.RESTMethod
 	for _, methodBlock := range modules.GetReferencingResources(apiBlock, "aws_api_gateway_method", "rest_api_id") {
 		var method apigateway.RESTMethod
@@ -63,7 +63,7 @@ func adaptAPIsV1(modules block.Modules) []apigateway.API {
 	return apis
 }
 
-func adaptStageV1(stageBlock block.Block, defaultCacheEncryption types.BoolValue, modules block.Modules) apigateway.Stage {
+func adaptStageV1(stageBlock *block.Block, defaultCacheEncryption types.BoolValue, modules block.Modules) apigateway.Stage {
 	var stage apigateway.Stage
 	stage.Metadata = stageBlock.Metadata()
 	stage.Version = types.Int(1, stageBlock.Metadata())

@@ -42,7 +42,7 @@ func adaptSecurityGroups(modules block.Modules) []elasticache.SecurityGroup {
 	return securityGroups
 }
 
-func adaptCluster(resource block.Block) elasticache.Cluster {
+func adaptCluster(resource *block.Block) elasticache.Cluster {
 	engineAttr := resource.GetAttribute("engine")
 	engineVal := engineAttr.AsStringValueOrDefault("", resource)
 
@@ -60,7 +60,7 @@ func adaptCluster(resource block.Block) elasticache.Cluster {
 	}
 }
 
-func adaptReplicationGroup(resource block.Block) elasticache.ReplicationGroup {
+func adaptReplicationGroup(resource *block.Block) elasticache.ReplicationGroup {
 	transitEncryptionAttr := resource.GetAttribute("transit_encryption_enabled")
 	transitEncryptionVal := transitEncryptionAttr.AsBoolValueOrDefault(false, resource)
 
@@ -74,7 +74,7 @@ func adaptReplicationGroup(resource block.Block) elasticache.ReplicationGroup {
 	}
 }
 
-func adaptSecurityGroup(resource block.Block) elasticache.SecurityGroup {
+func adaptSecurityGroup(resource *block.Block) elasticache.SecurityGroup {
 	descriptionAttr := resource.GetAttribute("description")
 	descriptionVal := descriptionAttr.AsStringValueOrDefault("Managed by Terraform", resource)
 

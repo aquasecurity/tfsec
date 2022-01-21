@@ -21,7 +21,7 @@ func adaptStreams(modules block.Modules) []kinesis.Stream {
 	return streams
 }
 
-func adaptStream(resource block.Block) kinesis.Stream {
+func adaptStream(resource *block.Block) kinesis.Stream {
 	encryptionTypeAttr := resource.GetAttribute("encryption_type")
 	encryptionTypeVal := encryptionTypeAttr.AsStringValueOrDefault("NONE", resource)
 

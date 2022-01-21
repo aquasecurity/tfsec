@@ -22,7 +22,7 @@ func adaptClusters(modules block.Modules) []eks.Cluster {
 	return clusters
 }
 
-func adaptCluster(resource block.Block) eks.Cluster {
+func adaptCluster(resource *block.Block) eks.Cluster {
 	logging := eks.Logging{
 		API:               types.BoolDefault(false, *resource.GetMetadata()),
 		Audit:             types.BoolDefault(false, *resource.GetMetadata()),

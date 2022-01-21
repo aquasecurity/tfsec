@@ -56,7 +56,7 @@ func (parser *Parser) parseDirectoryFiles(files []File) (block.Blocks, block.Ign
 			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 		}
 		for _, fileBlock := range fileBlocks {
-			blocks = append(blocks, block.NewHCLBlock(fileBlock, nil, nil))
+			blocks = append(blocks, block.New(fileBlock, nil, nil))
 		}
 		ignores = append(ignores, fileIgnores...)
 	}

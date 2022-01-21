@@ -23,7 +23,7 @@ func adaptLogProfiles(modules block.Modules) []monitor.LogProfile {
 	return logProfiles
 }
 
-func adaptLogProfile(resource block.Block) monitor.LogProfile {
+func adaptLogProfile(resource *block.Block) monitor.LogProfile {
 	retentionPolicyBlock := resource.GetBlock("retention_policy")
 
 	enabledAttr := retentionPolicyBlock.GetAttribute("enabled")

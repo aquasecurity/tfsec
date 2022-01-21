@@ -60,7 +60,7 @@ func getClassic(modules block.Modules) (classic rds.Classic) {
 	return classic
 }
 
-func adaptClusterInstance(resource block.Block, modules block.Modules) rds.ClusterInstance {
+func adaptClusterInstance(resource *block.Block, modules block.Modules) rds.ClusterInstance {
 
 	return rds.ClusterInstance{
 		Metadata:          resource.Metadata(),
@@ -69,13 +69,13 @@ func adaptClusterInstance(resource block.Block, modules block.Modules) rds.Clust
 	}
 }
 
-func adaptClassicDBSecurityGroup(resource block.Block) rds.DBSecurityGroup {
+func adaptClassicDBSecurityGroup(resource *block.Block) rds.DBSecurityGroup {
 	return rds.DBSecurityGroup{
 		Metadata: *resource.GetMetadata(),
 	}
 }
 
-func adaptInstance(resource block.Block, modules block.Modules) rds.Instance {
+func adaptInstance(resource *block.Block, modules block.Modules) rds.Instance {
 	replicaSource := resource.GetAttribute("replicate_source_db")
 	replicaSourceValue := ""
 	if replicaSource.IsNotNil() {
@@ -94,7 +94,7 @@ func adaptInstance(resource block.Block, modules block.Modules) rds.Instance {
 	}
 }
 
-func adaptCluster(resource block.Block, modules block.Modules) (rds.Cluster, []string) {
+func adaptCluster(resource *block.Block, modules block.Modules) (rds.Cluster, []string) {
 
 	clusterInstances, ids := getClusterInstances(resource, modules)
 
@@ -108,7 +108,7 @@ func adaptCluster(resource block.Block, modules block.Modules) (rds.Cluster, []s
 	}, ids
 }
 
-func getClusterInstances(resource block.Block, modules block.Modules) (clusterInstances []rds.ClusterInstance, instanceIDs []string) {
+func getClusterInstances(resource *block.Block, modules block.Modules) (clusterInstances []rds.ClusterInstance, instanceIDs []string) {
 	clusterInstanceResources := modules.GetReferencingResources(resource, "aws_rds_cluster_instance", "cluster_identifier")
 
 	for _, ciResource := range clusterInstanceResources {
@@ -118,14 +118,14 @@ func getClusterInstances(resource block.Block, modules block.Modules) (clusterIn
 	return clusterInstances, instanceIDs
 }
 
-func adaptPerformanceInsights(resource block.Block) rds.PerformanceInsights {
+func adaptPerformanceInsights(resource *block.Block) rds.PerformanceInsights {
 	return rds.PerformanceInsights{
 		Enabled:  resource.GetAttribute("performance_insights_enabled").AsBoolValueOrDefault(false, resource),
 		KMSKeyID: resource.GetAttribute("performance_insights_kms_key_id").AsStringValueOrDefault("", resource),
 	}
 }
 
-func adaptEncryption(resource block.Block) rds.Encryption {
+func adaptEncryption(resource *block.Block) rds.Encryption {
 	return rds.Encryption{
 		EncryptStorage: resource.GetAttribute("storage_encrypted").AsBoolValueOrDefault(false, resource),
 		KMSKeyID:       resource.GetAttribute("kms_key_id").AsStringValueOrDefault("", resource),

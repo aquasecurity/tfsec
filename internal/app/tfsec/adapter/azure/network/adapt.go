@@ -72,7 +72,7 @@ func adaptWatcherLogs(modules block.Modules) []network.NetworkWatcherFlowLog {
 	return watcherLogs
 }
 
-func (a *adapter) adaptSecurityGroup(resource block.Block) {
+func (a *adapter) adaptSecurityGroup(resource *block.Block) {
 	var rules []network.SecurityGroupRule
 	for _, ruleBlock := range resource.GetBlocks("security_rule") {
 		rules = append(rules, a.adaptSGRule(ruleBlock))
@@ -82,7 +82,7 @@ func (a *adapter) adaptSecurityGroup(resource block.Block) {
 	}
 }
 
-func (a *adapter) adaptSGRule(ruleBlock block.Block) network.SecurityGroupRule {
+func (a *adapter) adaptSGRule(ruleBlock *block.Block) network.SecurityGroupRule {
 
 	rule := network.SecurityGroupRule{
 		Metadata: ruleBlock.Metadata(),
@@ -110,7 +110,7 @@ func (a *adapter) adaptSGRule(ruleBlock block.Block) network.SecurityGroupRule {
 	return rule
 }
 
-func (a *adapter) adaptSource(ruleBlock block.Block, rule *network.SecurityGroupRule) {
+func (a *adapter) adaptSource(ruleBlock *block.Block, rule *network.SecurityGroupRule) {
 	if sourceAddressAttr := ruleBlock.GetAttribute("source_address_prefix"); sourceAddressAttr.IsString() {
 		rule.SourceAddresses = append(rule.SourceAddresses, sourceAddressAttr.AsStringValueOrDefault("", ruleBlock))
 	} else if sourceAddressPrefixesAttr := ruleBlock.GetAttribute("source_address_prefixes"); sourceAddressPrefixesAttr.IsNotNil() {
@@ -136,7 +136,7 @@ func (a *adapter) adaptSource(ruleBlock block.Block, rule *network.SecurityGroup
 	}
 }
 
-func (a *adapter) adaptDestination(ruleBlock block.Block, rule *network.SecurityGroupRule) {
+func (a *adapter) adaptDestination(ruleBlock *block.Block, rule *network.SecurityGroupRule) {
 	if destAddressAttr := ruleBlock.GetAttribute("destination_address_prefix"); destAddressAttr.IsString() {
 		rule.DestinationAddresses = append(rule.DestinationAddresses, destAddressAttr.AsStringValueOrDefault("", ruleBlock))
 	} else if destAddressPrefixesAttr := ruleBlock.GetAttribute("destination_address_prefixes"); destAddressPrefixesAttr.IsNotNil() {
@@ -190,7 +190,7 @@ func expandRange(r string, m types.Metadata) network.PortRange {
 	}
 }
 
-func adaptWatcherLog(resource block.Block) network.NetworkWatcherFlowLog {
+func adaptWatcherLog(resource *block.Block) network.NetworkWatcherFlowLog {
 	retentionPolicyBlock := resource.GetBlock("retention_policy")
 
 	enabledAttr := retentionPolicyBlock.GetAttribute("enabled")

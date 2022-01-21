@@ -19,7 +19,7 @@ func adaptSecrets(modules block.Modules) []github.EnvironmentSecret {
 	return secrets
 }
 
-func adaptSecret(resource block.Block) github.EnvironmentSecret {
+func adaptSecret(resource *block.Block) github.EnvironmentSecret {
 	var secret github.EnvironmentSecret
 	secret.SecretName = resource.GetAttribute("secret_name").AsStringValueOrDefault("", resource)
 	secret.PlainTextValue = resource.GetAttribute("plaintext_value").AsStringValueOrDefault("", resource)

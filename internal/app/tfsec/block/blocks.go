@@ -1,9 +1,9 @@
 package block
 
-type Blocks []Block
+type Blocks []*Block
 
 func (blocks Blocks) OfType(t string) Blocks {
-	var results []Block
+	var results []*Block
 	for _, block := range blocks {
 		if block.Type() == t {
 			results = append(results, block)
@@ -12,7 +12,7 @@ func (blocks Blocks) OfType(t string) Blocks {
 	return results
 }
 
-func (blocks Blocks) WithID(id string) Block {
+func (blocks Blocks) WithID(id string) *Block {
 	for _, block := range blocks {
 		if block.ID() == id {
 			return block

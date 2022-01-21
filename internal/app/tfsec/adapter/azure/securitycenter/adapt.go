@@ -34,7 +34,7 @@ func adaptSubscriptions(modules block.Modules) []securitycenter.SubscriptionPric
 	return subscriptions
 }
 
-func adaptContact(resource block.Block) securitycenter.Contact {
+func adaptContact(resource *block.Block) securitycenter.Contact {
 	enableAlertNotifAttr := resource.GetAttribute("alert_notifications")
 	enableAlertNotifVal := enableAlertNotifAttr.AsBoolValueOrDefault(false, resource)
 
@@ -47,7 +47,7 @@ func adaptContact(resource block.Block) securitycenter.Contact {
 	}
 }
 
-func adaptSubscription(resource block.Block) securitycenter.SubscriptionPricing {
+func adaptSubscription(resource *block.Block) securitycenter.SubscriptionPricing {
 	tierAttr := resource.GetAttribute("tier")
 	tierVal := tierAttr.AsStringValueOrDefault("", resource)
 

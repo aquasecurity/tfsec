@@ -21,7 +21,7 @@ func adaptFileSystems(modules block.Modules) []efs.FileSystem {
 	return filesystems
 }
 
-func adaptFileSystem(resource block.Block) efs.FileSystem {
+func adaptFileSystem(resource *block.Block) efs.FileSystem {
 	encryptedAttr := resource.GetAttribute("encrypted")
 	encryptedVal := encryptedAttr.AsBoolValueOrDefault(false, resource)
 

@@ -22,7 +22,7 @@ func adaptTrails(modules block.Modules) []cloudtrail.Trail {
 	return trails
 }
 
-func adaptTrail(resource block.Block) cloudtrail.Trail {
+func adaptTrail(resource *block.Block) cloudtrail.Trail {
 	nameAttr := resource.GetAttribute("name")
 	nameVal := nameAttr.AsStringValueOrDefault("", resource)
 

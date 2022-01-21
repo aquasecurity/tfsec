@@ -21,7 +21,7 @@ func adaptWorkspaces(modules block.Modules) []workspaces.WorkSpace {
 	return workspaces
 }
 
-func adaptWorkspace(resource block.Block) workspaces.WorkSpace {
+func adaptWorkspace(resource *block.Block) workspaces.WorkSpace {
 	rootVolumeEncryptAttr := resource.GetAttribute("root_volume_encryption_enabled")
 	rootVolumeEncryptVal := rootVolumeEncryptAttr.AsBoolValueOrDefault(false, resource)
 
