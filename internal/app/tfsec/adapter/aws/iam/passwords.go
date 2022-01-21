@@ -4,6 +4,7 @@ import (
 	"github.com/aquasecurity/defsec/provider/aws/iam"
 	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"math"
 )
 
 func adaptPasswordPolicy(modules block.Modules) (policy iam.PasswordPolicy) {
@@ -47,7 +48,7 @@ func adaptPasswordPolicy(modules block.Modules) (policy iam.PasswordPolicy) {
 		value, _ := attr.Value().AsBigFloat().Float64()
 		policy.MaxAgeDays = types.IntExplicit(int(value), attr.Metadata())
 	} else {
-		policy.MaxAgeDays = types.IntDefault(0, policyBlock.Metadata())
+		policy.MaxAgeDays = types.IntDefault(math.MaxInt, policyBlock.Metadata())
 	}
 	if attr := policyBlock.GetAttribute("minimum_password_length"); attr.IsNumber() {
 		value, _ := attr.Value().AsBigFloat().Float64()
