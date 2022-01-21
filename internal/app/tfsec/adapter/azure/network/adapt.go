@@ -175,6 +175,7 @@ func expandRange(r string, m types.Metadata) network.PortRange {
 			end = int(val)
 		}
 	}
+
 	return network.PortRange{
 		Metadata: m,
 		Start:    start,

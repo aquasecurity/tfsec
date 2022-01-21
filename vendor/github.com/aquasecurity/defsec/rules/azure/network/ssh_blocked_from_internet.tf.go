@@ -8,7 +8,7 @@ var terraformSshBlockedFromInternetGoodExamples = []string{
       access                      = "Allow"
       protocol                    = "TCP"
       source_port_range           = "*"
-      destination_port_range      = ["22"]
+      destination_port_range      = "22"
       source_address_prefix       = "82.102.23.23"
       destination_address_prefix  = "*"
  }
@@ -23,7 +23,7 @@ var terraformSshBlockedFromInternetBadExamples = []string{
       access                      = "Allow"
       protocol                    = "TCP"
       source_port_range           = "*"
-      destination_port_range      = ["22"]
+      destination_port_range      = "22"
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
  }

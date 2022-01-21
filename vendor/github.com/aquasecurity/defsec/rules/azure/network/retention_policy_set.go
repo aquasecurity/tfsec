@@ -23,13 +23,13 @@ Setting an retention policy will help ensure as much information is available fo
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/network-watcher/network-watcher-monitoring-overview",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformRetentionPolicySetGoodExamples,
-            BadExamples:         terraformRetentionPolicySetBadExamples,
-            Links:               terraformRetentionPolicySetLinks,
-            RemediationMarkdown: terraformRetentionPolicySetRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformRetentionPolicySetGoodExamples,
+			BadExamples:         terraformRetentionPolicySetBadExamples,
+			Links:               terraformRetentionPolicySetLinks,
+			RemediationMarkdown: terraformRetentionPolicySetRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, flowLog := range s.Azure.Network.NetworkWatcherFlowLogs {
@@ -38,9 +38,9 @@ Setting an retention policy will help ensure as much information is available fo
 					"Flow log does not enable the log retention policy.",
 					flowLog.RetentionPolicy.Enabled,
 				)
-			} else if flowLog.RetentionPolicy.Days.LessThan(365) {
+			} else if flowLog.RetentionPolicy.Days.LessThan(90) {
 				results.Add(
-					"Flow log has a log retention policy of less than 1 year.",
+					"Flow log has a log retention policy of less than 90 days.",
 					flowLog.RetentionPolicy.Days,
 				)
 			}
