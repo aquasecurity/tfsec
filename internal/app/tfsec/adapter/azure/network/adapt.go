@@ -104,6 +104,13 @@ func (a *adapter) adaptSGRule(ruleBlock block.Block) network.SecurityGroupRule {
 		rule.Outbound = types.Bool(true, directionAttr.Metadata())
 	}
 
+	a.adaptSource(ruleBlock, rule)
+	a.adaptDestination(ruleBlock, rule)
+
+	return rule
+}
+
+func (a *adapter) adaptSource(ruleBlock block.Block, rule network.SecurityGroupRule) {
 	if sourceAddressAttr := ruleBlock.GetAttribute("source_address_prefix"); sourceAddressAttr.IsString() {
 		rule.SourceAddresses = append(rule.SourceAddresses, sourceAddressAttr.AsStringValueOrDefault("", ruleBlock))
 	} else if sourceAddressPrefixesAttr := ruleBlock.GetAttribute("source_address_prefixes"); sourceAddressPrefixesAttr.IsNotNil() {
@@ -127,7 +134,9 @@ func (a *adapter) adaptSGRule(ruleBlock block.Block) network.SecurityGroupRule {
 			End:      int(f),
 		})
 	}
+}
 
+func (a *adapter) adaptDestination(ruleBlock block.Block, rule network.SecurityGroupRule) {
 	if destAddressAttr := ruleBlock.GetAttribute("destination_address_prefix"); destAddressAttr.IsString() {
 		rule.DestinationAddresses = append(rule.DestinationAddresses, destAddressAttr.AsStringValueOrDefault("", ruleBlock))
 	} else if destAddressPrefixesAttr := ruleBlock.GetAttribute("destination_address_prefixes"); destAddressPrefixesAttr.IsNotNil() {
@@ -151,8 +160,6 @@ func (a *adapter) adaptSGRule(ruleBlock block.Block) network.SecurityGroupRule {
 			End:      int(f),
 		})
 	}
-
-	return rule
 }
 
 func expandRange(r string, m types.Metadata) network.PortRange {

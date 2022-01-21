@@ -1,10 +1,11 @@
 package iam
 
 import (
+	"math"
+
 	"github.com/aquasecurity/defsec/provider/aws/iam"
 	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"math"
 )
 
 func adaptPasswordPolicy(modules block.Modules) (policy iam.PasswordPolicy) {

@@ -43,7 +43,7 @@ func CreateModulesFromSource(source string, ext string, t *testing.T) []block.Mo
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 	if err := fs.WriteTextFile("test"+ext, source); err != nil {
 		t.Fatal(err)
 	}
@@ -75,19 +75,4 @@ func ruleIDInResults(ruleID string, results []rules.Result) bool {
 		}
 	}
 	return false
-}
-
-func validateCodes(includeCode, excludeCode string) bool {
-	if includeCode != "" {
-		if _, err := scanner.GetRuleById(includeCode); err != nil {
-			return false
-		}
-	}
-
-	if excludeCode != "" {
-		if _, err := scanner.GetRuleById(excludeCode); err != nil {
-			return false
-		}
-	}
-	return true
 }

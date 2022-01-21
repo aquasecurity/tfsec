@@ -1,9 +1,10 @@
 package custom
 
 import (
+	"testing"
+
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/pkg/provider"
-	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
