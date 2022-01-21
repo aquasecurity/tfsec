@@ -7,11 +7,23 @@ import (
 )
 
 func Adapt(modules block.Modules) vpc.VPC {
+
+	naclAdapter := naclAdapter{naclRuleIDs: modules.GetChildResourceIDMapByType("aws_network_acl_rule")}
+	sgAdapter := sgAdapter{sgRuleIDs: modules.GetChildResourceIDMapByType("aws_security_group_rule")}
+
 	return vpc.VPC{
 		DefaultVPCs:    adaptDefaultVPCs(modules),
-		SecurityGroups: adaptSecurityGroups(modules),
-		NetworkACLs:    adaptNetworkACLs(modules),
+		SecurityGroups: sgAdapter.adaptSecurityGroups(modules),
+		NetworkACLs:    naclAdapter.adaptNetworkACLs(modules),
 	}
+}
+
+type naclAdapter struct {
+	naclRuleIDs block.ResourceIDResolutions
+}
+
+type sgAdapter struct {
+	sgRuleIDs block.ResourceIDResolutions
 }
 
 func adaptDefaultVPCs(modules block.Modules) []vpc.DefaultVPC {
@@ -26,27 +38,52 @@ func adaptDefaultVPCs(modules block.Modules) []vpc.DefaultVPC {
 	return defaultVPCs
 }
 
-func adaptSecurityGroups(modules block.Modules) []vpc.SecurityGroup {
+func (a *sgAdapter) adaptSecurityGroups(modules block.Modules) []vpc.SecurityGroup {
 	var securityGroups []vpc.SecurityGroup
-	for _, module := range modules {
-		for _, resource := range module.GetResourcesByType("aws_security_group") {
-			securityGroups = append(securityGroups, adaptSecurityGroup(resource, module))
-		}
+	for _, resource := range modules.GetResourcesByType("aws_security_group") {
+		securityGroups = append(securityGroups, a.adaptSecurityGroup(resource, modules))
 	}
+	orphanResources := modules.GetResourceByIDs(a.sgRuleIDs.Orphans()...)
+	if len(orphanResources) > 0 {
+		orphanage := vpc.SecurityGroup{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, sgRule := range orphanResources {
+			if sgRule.GetAttribute("type").Equals("ingress") {
+				orphanage.IngressRules = append(orphanage.IngressRules, adaptSGRule(sgRule, modules))
+			} else if sgRule.GetAttribute("type").Equals("egress") {
+				orphanage.EgressRules = append(orphanage.EgressRules, adaptSGRule(sgRule, modules))
+			}
+		}
+		securityGroups = append(securityGroups, orphanage)
+	}
+
 	return securityGroups
 }
 
-func adaptNetworkACLs(modules block.Modules) []vpc.NetworkACL {
+func (a *naclAdapter) adaptNetworkACLs(modules block.Modules) []vpc.NetworkACL {
 	var networkACLs []vpc.NetworkACL
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_network_acl") {
-			networkACLs = append(networkACLs, adaptNetworkACL(resource, module))
+			networkACLs = append(networkACLs, a.adaptNetworkACL(resource, module))
 		}
 	}
+
+	orphanResources := modules.GetResourceByIDs(a.naclRuleIDs.Orphans()...)
+	if len(orphanResources) > 0 {
+		orphanage := vpc.NetworkACL{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, naclRule := range orphanResources {
+			orphanage.Rules = append(orphanage.Rules, adaptNetworkACLRule(naclRule))
+		}
+		networkACLs = append(networkACLs, orphanage)
+	}
+
 	return networkACLs
 }
 
-func adaptSecurityGroup(resource block.Block, module block.Module) vpc.SecurityGroup {
+func (a *sgAdapter) adaptSecurityGroup(resource block.Block, module block.Modules) vpc.SecurityGroup {
 	var ingressRules []vpc.SecurityGroupRule
 	var egressRules []vpc.SecurityGroupRule
 
@@ -65,6 +102,7 @@ func adaptSecurityGroup(resource block.Block, module block.Module) vpc.SecurityG
 
 	rulesBlocks := module.GetReferencingResources(resource, "aws_security_group_rule", "security_group_id")
 	for _, ruleBlock := range rulesBlocks {
+		a.sgRuleIDs.Resolve(ruleBlock.ID())
 		if ruleBlock.GetAttribute("type").Equals("ingress") {
 			ingressRules = append(ingressRules, adaptSGRule(ruleBlock, module))
 		} else if ruleBlock.GetAttribute("type").Equals("egress") {
@@ -80,7 +118,7 @@ func adaptSecurityGroup(resource block.Block, module block.Module) vpc.SecurityG
 	}
 }
 
-func adaptSGRule(resource block.Block, module block.Module) vpc.SecurityGroupRule {
+func adaptSGRule(resource block.Block, modules block.Modules) vpc.SecurityGroupRule {
 	ruleDescAttr := resource.GetAttribute("description")
 	ruleDescVal := ruleDescAttr.AsStringValueOrDefault("", resource)
 
@@ -88,7 +126,7 @@ func adaptSGRule(resource block.Block, module block.Module) vpc.SecurityGroupRul
 
 	cidrBlocks := resource.GetAttribute("cidr_blocks")
 	ipv6cidrBlocks := resource.GetAttribute("ipv6_cidr_blocks")
-	varBlocks := module.GetBlocks().OfType("variable")
+	varBlocks := modules.GetBlocks().OfType("variable")
 
 	for _, vb := range varBlocks {
 		if cidrBlocks.IsNotNil() && cidrBlocks.ReferencesBlock(vb) {
@@ -124,10 +162,11 @@ func adaptSGRule(resource block.Block, module block.Module) vpc.SecurityGroupRul
 	}
 }
 
-func adaptNetworkACL(resource block.Block, module block.Module) vpc.NetworkACL {
+func (a *naclAdapter) adaptNetworkACL(resource block.Block, module block.Module) vpc.NetworkACL {
 	var networkRules []vpc.NetworkACLRule
 	rulesBlocks := module.GetReferencingResources(resource, "aws_network_acl_rule", "network_acl_id")
 	for _, ruleBlock := range rulesBlocks {
+		a.naclRuleIDs.Resolve(ruleBlock.ID())
 		networkRules = append(networkRules, adaptNetworkACLRule(ruleBlock))
 	}
 	return vpc.NetworkACL{

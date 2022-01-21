@@ -80,6 +80,8 @@ github.com/aquasecurity/defsec v0.3.27-0.20220121103240-9157d9cee02e h1:4/UQNA/8
 github.com/aquasecurity/defsec v0.3.27-0.20220121103240-9157d9cee02e/go.mod h1:k69jht4X6WIpU4Q9py0o9hYHs4lnGTsBb64ncWCuQvE=
 github.com/aquasecurity/defsec v0.3.27-0.20220121103401-fb4e8e7e6570 h1:V0HUfUtgL/G3iMWIN5ItZLkwORU7X5RA25NBw6x2aOA=
 github.com/aquasecurity/defsec v0.3.27-0.20220121103401-fb4e8e7e6570/go.mod h1:k69jht4X6WIpU4Q9py0o9hYHs4lnGTsBb64ncWCuQvE=
+github.com/aquasecurity/defsec v0.3.27-0.20220121104030-926282aec508 h1:HZFpYsAaE9Hvl/Q5w/qBESaITW1LTDHIt/Eh2cUPeus=
+github.com/aquasecurity/defsec v0.3.27-0.20220121104030-926282aec508/go.mod h1:k69jht4X6WIpU4Q9py0o9hYHs4lnGTsBb64ncWCuQvE=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=
 github.com/armon/go-metrics v0.3.10/go.mod h1:4O98XIr/9W0sxpJ8UaYkvjk10Iff7SnFrb4QAOwNTFc=

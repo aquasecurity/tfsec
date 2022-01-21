@@ -21,29 +21,29 @@ var CheckNoPublicEgressSgr = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/whitepapers/latest/building-scalable-secure-multi-vpc-network-infrastructure/centralized-egress-to-internet.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicEgressSgrGoodExamples,
-            BadExamples:         terraformNoPublicEgressSgrBadExamples,
-            Links:               terraformNoPublicEgressSgrLinks,
-            RemediationMarkdown: terraformNoPublicEgressSgrRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationNoPublicEgressSgrGoodExamples,
-            BadExamples:         cloudFormationNoPublicEgressSgrBadExamples,
-            Links:               cloudFormationNoPublicEgressSgrLinks,
-            RemediationMarkdown: cloudFormationNoPublicEgressSgrRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicEgressSgrGoodExamples,
+			BadExamples:         terraformNoPublicEgressSgrBadExamples,
+			Links:               terraformNoPublicEgressSgrLinks,
+			RemediationMarkdown: terraformNoPublicEgressSgrRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationNoPublicEgressSgrGoodExamples,
+			BadExamples:         cloudFormationNoPublicEgressSgrBadExamples,
+			Links:               cloudFormationNoPublicEgressSgrLinks,
+			RemediationMarkdown: cloudFormationNoPublicEgressSgrRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.AWS.VPC.SecurityGroups {
 			for _, rule := range group.EgressRules {
 				var fail bool
 				for _, block := range rule.CIDRs {
-					if cidr.IsPublic(block.Value()) {
+					if cidr.IsPublic(block.Value()) && cidr.CountAddresses(block.Value()) > 1 {
 						fail = true
 						results.Add(
-							"Security group rule allows egress to public internet.",
+							"Security group rule allows egress to multiple public internet addresses.",
 							&group,
 							block,
 						)
