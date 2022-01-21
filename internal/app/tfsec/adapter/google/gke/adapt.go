@@ -266,7 +266,7 @@ func adaptMasterAuth(resource block.Block) gke.MasterAuth {
 func adaptMasterAuthNetworks(attribute block.Attribute) gke.MasterAuthorizedNetworks {
 	var cidrs []types.StringValue
 
-	attribute.Each(func(key cty.Value, val cty.Value) {
+	attribute.Each(func(_ cty.Value, val cty.Value) {
 		m := val.AsValueMap()
 		blocks, ok := m["cidr_blocks"]
 		if !ok {

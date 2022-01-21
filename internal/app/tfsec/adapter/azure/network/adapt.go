@@ -114,14 +114,18 @@ func (a *adapter) adaptSGRule(ruleBlock block.Block) network.SecurityGroupRule {
 
 	if sourcePortRangesAttr := ruleBlock.GetAttribute("source_port_ranges"); sourcePortRangesAttr.IsNotNil() {
 		for _, value := range sourcePortRangesAttr.ValueAsStrings() {
-			rule.SourcePorts = append(rule.SourcePorts, expandRange(value, sourcePortRangesAttr.Metadata())...)
+			rule.SourcePorts = append(rule.SourcePorts, expandRange(value, sourcePortRangesAttr.Metadata()))
 		}
 	} else if sourcePortRangeAttr := ruleBlock.GetAttribute("source_port_range"); sourcePortRangeAttr.IsString() {
-		rule.SourcePorts = append(rule.SourcePorts, expandRange(sourcePortRangeAttr.Value().AsString(), sourcePortRangeAttr.Metadata())...)
+		rule.SourcePorts = append(rule.SourcePorts, expandRange(sourcePortRangeAttr.Value().AsString(), sourcePortRangeAttr.Metadata()))
 	} else if sourcePortRangeAttr := ruleBlock.GetAttribute("source_port_range"); sourcePortRangeAttr.IsNumber() {
 		bf := sourcePortRangeAttr.Value().AsBigFloat()
 		f, _ := bf.Float64()
-		rule.SourcePorts = append(rule.SourcePorts, types.Int(int(f), sourcePortRangeAttr.Metadata()))
+		rule.SourcePorts = append(rule.SourcePorts, network.PortRange{
+			Metadata: sourcePortRangeAttr.Metadata(),
+			Start:    int(f),
+			End:      int(f),
+		})
 	}
 
 	if destAddressAttr := ruleBlock.GetAttribute("destination_address_prefix"); destAddressAttr.IsString() {
@@ -134,20 +138,24 @@ func (a *adapter) adaptSGRule(ruleBlock block.Block) network.SecurityGroupRule {
 
 	if destPortRangesAttr := ruleBlock.GetAttribute("destination_port_ranges"); destPortRangesAttr.IsNotNil() {
 		for _, value := range destPortRangesAttr.ValueAsStrings() {
-			rule.DestinationPorts = append(rule.DestinationPorts, expandRange(value, destPortRangesAttr.Metadata())...)
+			rule.DestinationPorts = append(rule.DestinationPorts, expandRange(value, destPortRangesAttr.Metadata()))
 		}
 	} else if destPortRangeAttr := ruleBlock.GetAttribute("destination_port_range"); destPortRangeAttr.IsString() {
-		rule.DestinationPorts = append(rule.DestinationPorts, expandRange(destPortRangeAttr.Value().AsString(), destPortRangeAttr.Metadata())...)
+		rule.DestinationPorts = append(rule.DestinationPorts, expandRange(destPortRangeAttr.Value().AsString(), destPortRangeAttr.Metadata()))
 	} else if destPortRangeAttr := ruleBlock.GetAttribute("destination_port_range"); destPortRangeAttr.IsNumber() {
 		bf := destPortRangeAttr.Value().AsBigFloat()
 		f, _ := bf.Float64()
-		rule.DestinationPorts = append(rule.DestinationPorts, types.Int(int(f), destPortRangeAttr.Metadata()))
+		rule.DestinationPorts = append(rule.DestinationPorts, network.PortRange{
+			Metadata: destPortRangeAttr.Metadata(),
+			Start:    int(f),
+			End:      int(f),
+		})
 	}
 
 	return rule
 }
 
-func expandRange(r string, m types.Metadata) []types.IntValue {
+func expandRange(r string, m types.Metadata) network.PortRange {
 	start := 0
 	end := 65535
 	switch {
@@ -167,11 +175,11 @@ func expandRange(r string, m types.Metadata) []types.IntValue {
 			end = int(val)
 		}
 	}
-	var ports []types.IntValue
-	for i := start; i <= end; i++ {
-		ports = append(ports, types.Int(i, m))
+	return network.PortRange{
+		Metadata: m,
+		Start:    start,
+		End:      end,
 	}
-	return ports
 }
 
 func adaptWatcherLog(resource block.Block) network.NetworkWatcherFlowLog {

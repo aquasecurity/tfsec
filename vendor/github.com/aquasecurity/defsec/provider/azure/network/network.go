@@ -18,9 +18,19 @@ type SecurityGroupRule struct {
 	Outbound             types.BoolValue
 	Allow                types.BoolValue
 	SourceAddresses      []types.StringValue
-	SourcePorts          []types.IntValue
+	SourcePorts          []PortRange
 	DestinationAddresses []types.StringValue
-	DestinationPorts     []types.IntValue
+	DestinationPorts     []PortRange
+}
+
+type PortRange struct {
+	types.Metadata
+	Start int
+	End   int
+}
+
+func (r PortRange) Includes(port int) bool {
+	return port >= r.Start && port <= r.End
 }
 
 type NetworkWatcherFlowLog struct {

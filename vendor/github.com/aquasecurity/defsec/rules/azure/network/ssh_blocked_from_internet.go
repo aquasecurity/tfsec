@@ -35,8 +35,8 @@ SSH access should not be permitted from the internet (*, 0.0.0.0, /0, internet, 
 				if rule.Allow.IsFalse() || rule.Outbound.IsTrue() {
 					continue
 				}
-				for _, port := range rule.DestinationPorts {
-					if port.EqualTo(22) {
+				for _, ports := range rule.DestinationPorts {
+					if ports.Includes(22) {
 						for _, ip := range rule.SourceAddresses {
 							if cidr.IsPublic(ip.Value()) && cidr.CountAddresses(ip.Value()) > 1 {
 								results.Add(
