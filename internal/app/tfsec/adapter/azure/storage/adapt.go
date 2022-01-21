@@ -9,13 +9,13 @@ import (
 func Adapt(modules block.Modules) storage.Storage {
 	accounts, containers, networkRules := adaptAccounts(modules)
 
-	orphanAccount := &storage.Account{
+	orphanAccount := storage.Account{
 		Metadata:     types.NewUnmanagedMetadata(),
 		NetworkRules: adaptOrphanNetworkRules(modules, networkRules),
 		Containers:   adaptOrphanContainers(modules, containers),
 	}
 
-	accounts = append(accounts, *orphanAccount)
+	accounts = append(accounts, orphanAccount)
 
 	return storage.Storage{
 		Accounts: accounts,

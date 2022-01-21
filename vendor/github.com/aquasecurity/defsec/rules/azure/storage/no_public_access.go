@@ -33,9 +33,6 @@ Explicitly overriding publicAccess to anything other than off should be avoided.
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, account := range s.Azure.Storage.Accounts {
-			if !account.IsManaged() {
-				continue
-			}
 			for _, container := range account.Containers {
 				if container.PublicAccess.NotEqualTo(storage.PublicAccessOff) {
 					results.Add(
