@@ -201,7 +201,15 @@ func (attr *HCLAttribute) IsBool() bool {
 	if attr == nil {
 		return false
 	}
-	return !attr.Value().IsNull() && attr.Value().IsKnown() && attr.Value().Type() == cty.Bool
+	switch attr.Value().Type() {
+	case cty.Bool, cty.Number:
+		return true
+	case cty.String:
+		val := attr.Value().AsString()
+		val = strings.Trim(val, "\"")
+		return strings.EqualFold(val, "false") || strings.EqualFold(val, "true")
+	}
+	return false
 }
 
 func (attr *HCLAttribute) Value() (ctyVal cty.Value) {
@@ -551,6 +559,10 @@ func (attr *HCLAttribute) IsFalse() bool {
 		val := attr.Value().AsString()
 		val = strings.Trim(val, "\"")
 		return strings.ToLower(val) == "false"
+	case cty.Number:
+		val := attr.Value().AsBigFloat()
+		f, _ := val.Float64()
+		return f == 0
 	}
 	return false
 }
