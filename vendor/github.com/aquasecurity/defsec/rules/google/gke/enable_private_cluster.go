@@ -18,16 +18,19 @@ var CheckEnablePrivateCluster = rules.Register(
 		Resolution:  "Enable private cluster",
 		Explanation: `Enabling private nodes on a cluster ensures the nodes are only available internally as they will only be assigned internal addresses.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnablePrivateClusterGoodExamples,
-            BadExamples:         terraformEnablePrivateClusterBadExamples,
-            Links:               terraformEnablePrivateClusterLinks,
-            RemediationMarkdown: terraformEnablePrivateClusterRemediationMarkdown,
-        },
-        Severity:    severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnablePrivateClusterGoodExamples,
+			BadExamples:         terraformEnablePrivateClusterBadExamples,
+			Links:               terraformEnablePrivateClusterLinks,
+			RemediationMarkdown: terraformEnablePrivateClusterRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
+			if !cluster.IsManaged() {
+				continue
+			}
 			if cluster.PrivateCluster.EnablePrivateNodes.IsFalse() {
 				results.Add(
 					"Cluster does not have private nodes.",

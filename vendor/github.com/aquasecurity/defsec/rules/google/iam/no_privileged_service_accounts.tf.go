@@ -5,6 +5,7 @@ var terraformNoPrivilegedServiceAccountsGoodExamples = []string{
  resource "google_service_account" "test" {
  	account_id   = "account123"
  	display_name = "account123"
+    email        = "jim@tfsec.dev"
  }
  
  resource "google_project_iam_member" "project" {
@@ -20,6 +21,7 @@ var terraformNoPrivilegedServiceAccountsBadExamples = []string{
  resource "google_service_account" "test" {
    account_id   = "account123"
    display_name = "account123"
+   email        = "jim@tfsec.dev"
  }
  
  resource "google_project_iam_member" "project" {

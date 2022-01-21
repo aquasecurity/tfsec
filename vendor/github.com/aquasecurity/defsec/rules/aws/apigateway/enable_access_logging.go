@@ -20,25 +20,22 @@ var CheckEnableAccessLogging = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-logging.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableAccessLoggingGoodExamples,
-            BadExamples:         terraformEnableAccessLoggingBadExamples,
-            Links:               terraformEnableAccessLoggingLinks,
-            RemediationMarkdown: terraformEnableAccessLoggingRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableAccessLoggingGoodExamples,
-            BadExamples:         cloudFormationEnableAccessLoggingBadExamples,
-            Links:               cloudFormationEnableAccessLoggingLinks,
-            RemediationMarkdown: cloudFormationEnableAccessLoggingRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableAccessLoggingGoodExamples,
+			BadExamples:         terraformEnableAccessLoggingBadExamples,
+			Links:               terraformEnableAccessLoggingLinks,
+			RemediationMarkdown: terraformEnableAccessLoggingRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableAccessLoggingGoodExamples,
+			BadExamples:         cloudFormationEnableAccessLoggingBadExamples,
+			Links:               cloudFormationEnableAccessLoggingLinks,
+			RemediationMarkdown: cloudFormationEnableAccessLoggingRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, api := range s.AWS.APIGateway.APIs {
-			if !api.IsManaged() {
-				continue
-			}
 			for _, stage := range api.Stages {
 				if !stage.IsManaged() {
 					continue

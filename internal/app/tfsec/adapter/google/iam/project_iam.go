@@ -16,7 +16,12 @@ func (a *adapter) adaptProjectIAM() {
 }
 
 func (a *adapter) adaptMember(iamBlock block.Block) iam.Member {
+	return AdaptMember(iamBlock, a.modules)
+}
+
+func AdaptMember(iamBlock block.Block, modules block.Modules) iam.Member {
 	var member iam.Member
+	member.Metadata = iamBlock.Metadata()
 	roleAttr := iamBlock.GetAttribute("role")
 	member.Role = roleAttr.AsStringValueOrDefault("", iamBlock)
 
@@ -24,7 +29,7 @@ func (a *adapter) adaptMember(iamBlock block.Block) iam.Member {
 	member.Member = memberAttr.AsStringValueOrDefault("", iamBlock)
 	member.DefaultServiceAccount = types.BoolDefault(false, iamBlock.Metadata())
 
-	if referencedBlock, err := a.modules.GetReferencedBlock(memberAttr, iamBlock); err == nil {
+	if referencedBlock, err := modules.GetReferencedBlock(memberAttr, iamBlock); err == nil {
 		if strings.HasSuffix(referencedBlock.TypeLabel(), "_default_service_account") {
 			member.DefaultServiceAccount = types.Bool(true, memberAttr.Metadata())
 		}
@@ -40,7 +45,6 @@ var projectMemberResources = []string{
 	"google_compute_subnetwork_iam_member",
 	"google_data_catalog_entry_group_iam_member",
 	"google_folder_iam_member",
-	"google_project_iam_member",
 	"google_pubsub_subscription_iam_member",
 	"google_pubsub_topic_iam_member",
 	"google_sourcerepo_repository_iam_member",
@@ -101,7 +105,12 @@ func (a *adapter) adaptProjectMembers() {
 }
 
 func (a *adapter) adaptBinding(iamBlock block.Block) iam.Binding {
+	return AdaptBinding(iamBlock, a.modules)
+}
+
+func AdaptBinding(iamBlock block.Block, modules block.Modules) iam.Binding {
 	var binding iam.Binding
+	binding.Metadata = iamBlock.Metadata()
 	roleAttr := iamBlock.GetAttribute("role")
 	membersAttr := iamBlock.GetAttribute("members")
 	binding.Role = roleAttr.AsStringValueOrDefault("", iamBlock)
@@ -109,7 +118,7 @@ func (a *adapter) adaptBinding(iamBlock block.Block) iam.Binding {
 		binding.Members = append(binding.Members, types.String(member, membersAttr.Metadata()))
 	}
 	binding.IncludesDefaultServiceAccount = types.BoolDefault(false, iamBlock.Metadata())
-	if referencedBlock, err := a.modules.GetReferencedBlock(membersAttr, iamBlock); err == nil {
+	if referencedBlock, err := modules.GetReferencedBlock(membersAttr, iamBlock); err == nil {
 		if strings.HasSuffix(referencedBlock.TypeLabel(), "_default_service_account") {
 			binding.IncludesDefaultServiceAccount = types.Bool(true, membersAttr.Metadata())
 		}
@@ -124,7 +133,6 @@ var projectBindingResources = []string{
 	"google_compute_subnetwork_iam_binding",
 	"google_data_catalog_entry_group_iam_binding",
 	"google_folder_iam_binding",
-	"google_project_iam_binding",
 	"google_pubsub_subscription_iam_binding",
 	"google_pubsub_topic_iam_binding",
 	"google_sourcerepo_repository_iam_binding",
@@ -144,7 +152,7 @@ func (a *adapter) adaptProjectDataBindings() {
 		if err != nil {
 			continue
 		}
-		bindings := parsePolicyBlock(policyBlock)
+		bindings := ParsePolicyBlock(policyBlock)
 		projectAttr := iamBlock.GetAttribute("project")
 		if projectAttr.IsString() {
 			var foundProject bool

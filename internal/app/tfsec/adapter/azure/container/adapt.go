@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) container.Container {
+func Adapt(modules block.Modules) container.Container {
 	return container.Container{
 		KubernetesClusters: adaptClusters(modules),
 	}
 }
 
-func adaptClusters(modules []block.Module) []container.KubernetesCluster {
+func adaptClusters(modules block.Modules) []container.KubernetesCluster {
 	var clusters []container.KubernetesCluster
 
 	for _, module := range modules {

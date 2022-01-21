@@ -1,9 +1,6 @@
 package network
 
 import (
-	"strconv"
-	"strings"
-
 	"github.com/aquasecurity/defsec/cidr"
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
@@ -36,9 +33,12 @@ RDP access should not be permitted from the internet (*, 0.0.0.0, /0, internet, 
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.Azure.Network.SecurityGroups {
-			for _, rule := range group.InboundAllowRules {
-				for _, ports := range rule.DestinationPortRanges {
-					if portRangeContains(ports.Value(), 3389) {
+			for _, rule := range group.Rules {
+				if rule.Allow.IsFalse() || rule.Outbound.IsTrue() {
+					continue
+				}
+				for _, ports := range rule.DestinationPorts {
+					if ports.Includes(3389) {
 						for _, ip := range rule.SourceAddresses {
 							if cidr.IsPublic(ip.Value()) && cidr.CountAddresses(ip.Value()) > 1 {
 								results.Add(
@@ -54,24 +54,3 @@ RDP access should not be permitted from the internet (*, 0.0.0.0, /0, internet, 
 		return
 	},
 )
-
-func portRangeContains(r string, port int64) bool {
-	if strings.Contains(r, "-") {
-		parts := strings.Split(r, "-")
-		start, err := strconv.ParseInt(parts[0], 10, 64)
-		if err != nil {
-			return false
-		}
-		end, err := strconv.ParseInt(parts[0], 10, 64)
-		if err != nil {
-			return false
-		}
-		return port >= start && port <= end
-	}
-
-	single, err := strconv.ParseInt(r, 10, 64)
-	if err != nil {
-		return false
-	}
-	return single == port
-}

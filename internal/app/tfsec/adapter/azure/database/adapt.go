@@ -6,58 +6,177 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) database.Database {
+func Adapt(modules block.Modules) database.Database {
+
+	mssqlAdapter := mssqlAdapter{
+		alertPolicyIDs:    modules.GetChildResourceIDMapByType("azurerm_mssql_server_security_alert_policy"),
+		auditingPolicyIDs: modules.GetChildResourceIDMapByType("azurerm_mssql_server_extended_auditing_policy", "azurerm_mssql_database_extended_auditing_policy"),
+		firewallIDs:       modules.GetChildResourceIDMapByType("azurerm_sql_firewall_rule"),
+	}
+
+	mysqlAdapter := mysqlAdapter{
+		firewallIDs: modules.GetChildResourceIDMapByType("azurerm_mysql_firewall_rule"),
+	}
+
+	mariaDBAdapter := mariaDBAdapter{
+		firewallIDs: modules.GetChildResourceIDMapByType("azurerm_mariadb_firewall_rule"),
+	}
+
+	postgresqlAdapter := postgresqlAdapter{
+		firewallIDs: modules.GetChildResourceIDMapByType("azurerm_postgresql_firewall_rule"),
+	}
+
 	return database.Database{
-		MSSQLServers:      adaptMSSQLServers(modules),
-		MariaDBServers:    adaptMariaDBServers(modules),
-		MySQLServers:      adaptMySQLServers(modules),
-		PostgreSQLServers: adaptPostgreSQLServers(modules),
+		MSSQLServers:      mssqlAdapter.adaptMSSQLServers(modules),
+		MariaDBServers:    mariaDBAdapter.adaptMariaDBServers(modules),
+		MySQLServers:      mysqlAdapter.adaptMySQLServers(modules),
+		PostgreSQLServers: postgresqlAdapter.adaptPostgreSQLServers(modules),
 	}
 }
 
-func adaptMSSQLServers(modules []block.Module) []database.MSSQLServer {
-	var MSSQLServers []database.MSSQLServer
+type mssqlAdapter struct {
+	alertPolicyIDs    block.ResourceIDResolutions
+	auditingPolicyIDs block.ResourceIDResolutions
+	firewallIDs       block.ResourceIDResolutions
+}
+
+type mysqlAdapter struct {
+	firewallIDs block.ResourceIDResolutions
+}
+
+type mariaDBAdapter struct {
+	firewallIDs block.ResourceIDResolutions
+}
+
+type postgresqlAdapter struct {
+	firewallIDs block.ResourceIDResolutions
+}
+
+func (a *mssqlAdapter) adaptMSSQLServers(modules block.Modules) []database.MSSQLServer {
+	var mssqlServers []database.MSSQLServer
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("azurerm_sql_server") {
-			MSSQLServers = append(MSSQLServers, adaptMSSQLServer(resource, module))
+			mssqlServers = append(mssqlServers, a.adaptMSSQLServer(resource, module))
 		}
 		for _, resource := range module.GetResourcesByType("azurerm_mssql_server") {
-			MSSQLServers = append(MSSQLServers, adaptMSSQLServer(resource, module))
+			mssqlServers = append(mssqlServers, a.adaptMSSQLServer(resource, module))
 		}
 	}
-	return MSSQLServers
+
+	orphanResources := modules.GetResourceByIDs(a.alertPolicyIDs.Orphans()...)
+
+	if len(orphanResources) > 0 {
+		orphanage := database.MSSQLServer{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, policy := range orphanResources {
+			orphanage.SecurityAlertPolicies = append(orphanage.SecurityAlertPolicies, adaptMSSQLSecurityAlertPolicy(policy))
+		}
+		mssqlServers = append(mssqlServers, orphanage)
+
+	}
+
+	orphanResources = modules.GetResourceByIDs(a.auditingPolicyIDs.Orphans()...)
+
+	if len(orphanResources) > 0 {
+		orphanage := database.MSSQLServer{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, policy := range orphanResources {
+			orphanage.ExtendedAuditingPolicies = append(orphanage.ExtendedAuditingPolicies, adaptMSSQLExtendedAuditingPolicy(policy))
+		}
+		mssqlServers = append(mssqlServers, orphanage)
+
+	}
+
+	orphanResources = modules.GetResourceByIDs(a.firewallIDs.Orphans()...)
+
+	if len(orphanResources) > 0 {
+		orphanage := database.MSSQLServer{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, policy := range orphanResources {
+			orphanage.FirewallRules = append(orphanage.FirewallRules, adaptFirewallRule(policy))
+		}
+		mssqlServers = append(mssqlServers, orphanage)
+
+	}
+
+	return mssqlServers
 }
-func adaptMySQLServers(modules []block.Module) []database.MySQLServer {
+func (a *mysqlAdapter) adaptMySQLServers(modules block.Modules) []database.MySQLServer {
 	var mySQLServers []database.MySQLServer
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("azurerm_mysql_server") {
-			mySQLServers = append(mySQLServers, adaptMySQLServer(resource, module))
+			mySQLServers = append(mySQLServers, a.adaptMySQLServer(resource, module))
 		}
 	}
+
+	orphanResources := modules.GetResourceByIDs(a.firewallIDs.Orphans()...)
+
+	if len(orphanResources) > 0 {
+		orphanage := database.MySQLServer{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, policy := range orphanResources {
+			orphanage.FirewallRules = append(orphanage.FirewallRules, adaptFirewallRule(policy))
+		}
+		mySQLServers = append(mySQLServers, orphanage)
+
+	}
+
 	return mySQLServers
 }
 
-func adaptMariaDBServers(modules []block.Module) []database.MariaDBServer {
+func (a *mariaDBAdapter) adaptMariaDBServers(modules block.Modules) []database.MariaDBServer {
 	var mariaDBServers []database.MariaDBServer
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("azurerm_mariadb_server") {
-			mariaDBServers = append(mariaDBServers, adaptMariaDBServer(resource, module))
+			mariaDBServers = append(mariaDBServers, a.adaptMariaDBServer(resource, module))
 		}
 	}
+
+	orphanResources := modules.GetResourceByIDs(a.firewallIDs.Orphans()...)
+
+	if len(orphanResources) > 0 {
+		orphanage := database.MariaDBServer{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, policy := range orphanResources {
+			orphanage.FirewallRules = append(orphanage.FirewallRules, adaptFirewallRule(policy))
+		}
+		mariaDBServers = append(mariaDBServers, orphanage)
+
+	}
+
 	return mariaDBServers
 }
 
-func adaptPostgreSQLServers(modules []block.Module) []database.PostgreSQLServer {
-	var PostgreSQLServers []database.PostgreSQLServer
+func (a *postgresqlAdapter) adaptPostgreSQLServers(modules block.Modules) []database.PostgreSQLServer {
+	var postgreSQLServers []database.PostgreSQLServer
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("azurerm_postgresql_server") {
-			PostgreSQLServers = append(PostgreSQLServers, adaptPostgreSQLServer(resource, module))
+			postgreSQLServers = append(postgreSQLServers, a.adaptPostgreSQLServer(resource, module))
 		}
 	}
-	return PostgreSQLServers
+
+	orphanResources := modules.GetResourceByIDs(a.firewallIDs.Orphans()...)
+
+	if len(orphanResources) > 0 {
+		orphanage := database.PostgreSQLServer{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, policy := range orphanResources {
+			orphanage.FirewallRules = append(orphanage.FirewallRules, adaptFirewallRule(policy))
+		}
+		postgreSQLServers = append(postgreSQLServers, orphanage)
+
+	}
+
+	return postgreSQLServers
 }
 
-func adaptMSSQLServer(resource block.Block, module block.Module) database.MSSQLServer {
+func (a *mssqlAdapter) adaptMSSQLServer(resource block.Block, module block.Module) database.MSSQLServer {
 	minTLSVersionVal := types.StringDefault("", *resource.GetMetadata())
 	publicAccessVal := types.BoolDefault(true, *resource.GetMetadata())
 	enableSSLEnforcementVal := types.BoolDefault(false, *resource.GetMetadata())
@@ -77,6 +196,7 @@ func adaptMSSQLServer(resource block.Block, module block.Module) database.MSSQLS
 
 	alertPolicyBlocks := module.GetReferencingResources(resource, "azurerm_mssql_server_security_alert_policy", "server_name")
 	for _, alertBlock := range alertPolicyBlocks {
+		a.alertPolicyIDs.Resolve(alertBlock.ID())
 		alertPolicies = append(alertPolicies, adaptMSSQLSecurityAlertPolicy(alertBlock))
 	}
 
@@ -92,6 +212,7 @@ func adaptMSSQLServer(resource block.Block, module block.Module) database.MSSQLS
 	}
 
 	for _, auditBlock := range auditingPoliciesBlocks {
+		a.auditingPolicyIDs.Resolve(auditBlock.ID())
 		auditingPolicies = append(auditingPolicies, adaptMSSQLExtendedAuditingPolicy(auditBlock))
 	}
 
@@ -114,7 +235,7 @@ func adaptMSSQLServer(resource block.Block, module block.Module) database.MSSQLS
 	}
 }
 
-func adaptMySQLServer(resource block.Block, module block.Module) database.MySQLServer {
+func (a *mysqlAdapter) adaptMySQLServer(resource block.Block, module block.Module) database.MySQLServer {
 	var firewallRules []database.FirewallRule
 
 	enableSSLEnforcementAttr := resource.GetAttribute("ssl_enforcement_enabled")
@@ -128,10 +249,12 @@ func adaptMySQLServer(resource block.Block, module block.Module) database.MySQLS
 
 	firewallRuleBlocks := module.GetReferencingResources(resource, "azurerm_mysql_firewall_rule", "server_name")
 	for _, firewallBlock := range firewallRuleBlocks {
+		a.firewallIDs.Resolve(firewallBlock.ID())
 		firewallRules = append(firewallRules, adaptFirewallRule(firewallBlock))
 	}
 
 	return database.MySQLServer{
+		Metadata: resource.Metadata(),
 		Server: database.Server{
 			Metadata:                  resource.Metadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,
@@ -142,7 +265,7 @@ func adaptMySQLServer(resource block.Block, module block.Module) database.MySQLS
 	}
 }
 
-func adaptMariaDBServer(resource block.Block, module block.Module) database.MariaDBServer {
+func (a *mariaDBAdapter) adaptMariaDBServer(resource block.Block, module block.Module) database.MariaDBServer {
 	var firewallRules []database.FirewallRule
 
 	enableSSLEnforcementAttr := resource.GetAttribute("ssl_enforcement_enabled")
@@ -153,10 +276,12 @@ func adaptMariaDBServer(resource block.Block, module block.Module) database.Mari
 
 	firewallRuleBlocks := module.GetReferencingResources(resource, "azurerm_mariadb_firewall_rule", "server_name")
 	for _, firewallBlock := range firewallRuleBlocks {
+		a.firewallIDs.Resolve(firewallBlock.ID())
 		firewallRules = append(firewallRules, adaptFirewallRule(firewallBlock))
 	}
 
 	return database.MariaDBServer{
+		Metadata: resource.Metadata(),
 		Server: database.Server{
 			Metadata:                  resource.Metadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,
@@ -166,7 +291,7 @@ func adaptMariaDBServer(resource block.Block, module block.Module) database.Mari
 	}
 }
 
-func adaptPostgreSQLServer(resource block.Block, module block.Module) database.PostgreSQLServer {
+func (a *postgresqlAdapter) adaptPostgreSQLServer(resource block.Block, module block.Module) database.PostgreSQLServer {
 	var firewallRules []database.FirewallRule
 
 	config := database.PostgresSQLConfig{
@@ -186,6 +311,7 @@ func adaptPostgreSQLServer(resource block.Block, module block.Module) database.P
 
 	firewallRuleBlocks := module.GetReferencingResources(resource, "azurerm_postgresql_firewall_rule", "server_name")
 	for _, firewallBlock := range firewallRuleBlocks {
+		a.firewallIDs.Resolve(firewallBlock.ID())
 		firewallRules = append(firewallRules, adaptFirewallRule(firewallBlock))
 	}
 
@@ -195,6 +321,7 @@ func adaptPostgreSQLServer(resource block.Block, module block.Module) database.P
 	}
 
 	return database.PostgreSQLServer{
+		Metadata: resource.Metadata(),
 		Server: database.Server{
 			Metadata:                  resource.Metadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,

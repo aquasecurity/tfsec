@@ -61,7 +61,7 @@ The following example will pass the google-sql-no-public-access check.
  		ip_configuration {
  			ipv4_enabled = false
  			authorized_networks {
- 				value           = "108.12.12.0/24"
+ 				value           = "10.0.0.1/24"
  				name            = "internal"
  			}
  		}

@@ -39,7 +39,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) aws.AWS {
+func Adapt(modules block.Modules) aws.AWS {
 	return aws.AWS{
 		APIGateway:    apigateway.Adapt(modules),
 		Athena:        athena.Adapt(modules),

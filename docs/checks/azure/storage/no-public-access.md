@@ -22,7 +22,7 @@ Disable public access to storage containers
 The following example will fail the azure-storage-no-public-access check.
 ```terraform
 
- resource "azure_storage_container" "bad_example" {
+ resource "azurerm_storage_container" "bad_example" {
  	name                  = "terraform-container-storage"
  	container_access_type = "blob"
  	
@@ -40,13 +40,9 @@ The following example will fail the azure-storage-no-public-access check.
 The following example will pass the azure-storage-no-public-access check.
 ```terraform
 
- resource "azure_storage_container" "good_example" {
+ resource "azurerm_storage_container" "good_example" {
  	name                  = "terraform-container-storage"
- 	container_access_type = "blob"
- 	
- 	properties = {
- 		"publicAccess" = "off"
- 	}
+ 	container_access_type = "private"
  }
  
 ```

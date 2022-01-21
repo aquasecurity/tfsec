@@ -20,19 +20,19 @@ var CheckEnableStorageEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/neptune/latest/userguide/encrypt.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableStorageEncryptionGoodExamples,
-            BadExamples:         terraformEnableStorageEncryptionBadExamples,
-            Links:               terraformEnableStorageEncryptionLinks,
-            RemediationMarkdown: terraformEnableStorageEncryptionRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableStorageEncryptionGoodExamples,
-            BadExamples:         cloudFormationEnableStorageEncryptionBadExamples,
-            Links:               cloudFormationEnableStorageEncryptionLinks,
-            RemediationMarkdown: cloudFormationEnableStorageEncryptionRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableStorageEncryptionGoodExamples,
+			BadExamples:         terraformEnableStorageEncryptionBadExamples,
+			Links:               terraformEnableStorageEncryptionLinks,
+			RemediationMarkdown: terraformEnableStorageEncryptionRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableStorageEncryptionGoodExamples,
+			BadExamples:         cloudFormationEnableStorageEncryptionBadExamples,
+			Links:               cloudFormationEnableStorageEncryptionLinks,
+			RemediationMarkdown: cloudFormationEnableStorageEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.Neptune.Clusters {
@@ -41,12 +41,6 @@ var CheckEnableStorageEncryption = rules.Register(
 					"Cluster does not have storage encryption enabled.",
 					&cluster,
 					cluster.StorageEncrypted,
-				)
-			} else if cluster.KMSKeyID.IsEmpty() {
-				results.Add(
-					"Cluster does not encrypt data with a customer managed key.",
-					&cluster,
-					cluster.KMSKeyID,
 				)
 			} else {
 				results.AddPassed(&cluster)

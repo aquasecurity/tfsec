@@ -20,16 +20,19 @@ var CheckPostgresConfigurationLogCheckpoints = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/postgresql/concepts-server-logs#configure-logging",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformPostgresConfigurationLogCheckpointsGoodExamples,
-            BadExamples:         terraformPostgresConfigurationLogCheckpointsBadExamples,
-            Links:               terraformPostgresConfigurationLogCheckpointsLinks,
-            RemediationMarkdown: terraformPostgresConfigurationLogCheckpointsRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformPostgresConfigurationLogCheckpointsGoodExamples,
+			BadExamples:         terraformPostgresConfigurationLogCheckpointsBadExamples,
+			Links:               terraformPostgresConfigurationLogCheckpointsLinks,
+			RemediationMarkdown: terraformPostgresConfigurationLogCheckpointsRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.PostgreSQLServers {
+			if !server.IsManaged() {
+				continue
+			}
 			if server.Config.LogCheckpoints.IsFalse() {
 				results.Add(
 					"Database server is not configured to log checkpoints.",

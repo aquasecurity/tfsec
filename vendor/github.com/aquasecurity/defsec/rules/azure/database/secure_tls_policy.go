@@ -28,6 +28,9 @@ var CheckSecureTlsPolicy = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.MSSQLServers {
+			if !server.IsManaged() {
+				continue
+			}
 			if server.MinimumTLSVersion.NotEqualTo("1.2") {
 				results.Add(
 					"Database server does not require a secure TLS version.",
@@ -36,6 +39,9 @@ var CheckSecureTlsPolicy = rules.Register(
 			}
 		}
 		for _, server := range s.Azure.Database.MySQLServers {
+			if !server.IsManaged() {
+				continue
+			}
 			if server.MinimumTLSVersion.NotEqualTo("TLS1_2") {
 				results.Add(
 					"Database server does not require a secure TLS version.",
@@ -44,6 +50,9 @@ var CheckSecureTlsPolicy = rules.Register(
 			}
 		}
 		for _, server := range s.Azure.Database.PostgreSQLServers {
+			if !server.IsManaged() {
+				continue
+			}
 			if server.MinimumTLSVersion.NotEqualTo("TLS1_2") {
 				results.Add(
 					"Database server does not require a secure TLS version.",

@@ -8,24 +8,60 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) keyvault.KeyVault {
+func Adapt(modules block.Modules) keyvault.KeyVault {
+	adapter := adapter{
+		vaultSecretIDs: modules.GetChildResourceIDMapByType("azurerm_key_vault_secret"),
+		vaultKeyIDs:    modules.GetChildResourceIDMapByType("azurerm_key_vault_key"),
+	}
+
 	return keyvault.KeyVault{
-		Vaults: adaptVaults(modules),
+		Vaults: adapter.adaptVaults(modules),
 	}
 }
 
-func adaptVaults(modules []block.Module) []keyvault.Vault {
+type adapter struct {
+	vaultSecretIDs block.ResourceIDResolutions
+	vaultKeyIDs    block.ResourceIDResolutions
+}
+
+func (a *adapter) adaptVaults(modules block.Modules) []keyvault.Vault {
+
 	var vaults []keyvault.Vault
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("azurerm_key_vault") {
-			vaults = append(vaults, adaptVault(resource, module))
+			vaults = append(vaults, a.adaptVault(resource, module))
 
 		}
 	}
+
+	orphanResources := modules.GetResourceByIDs(a.vaultSecretIDs.Orphans()...)
+
+	if len(orphanResources) > 0 {
+		orphanage := keyvault.Vault{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, secretResource := range orphanResources {
+			orphanage.Secrets = append(orphanage.Secrets, adaptSecret(secretResource))
+		}
+		vaults = append(vaults, orphanage)
+	}
+
+	orphanResources = modules.GetResourceByIDs(a.vaultKeyIDs.Orphans()...)
+
+	if len(orphanResources) > 0 {
+		orphanage := keyvault.Vault{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, secretResource := range orphanResources {
+			orphanage.Keys = append(orphanage.Keys, adaptKey(secretResource))
+		}
+		vaults = append(vaults, orphanage)
+	}
+
 	return vaults
 }
 
-func adaptVault(resource block.Block, module block.Module) keyvault.Vault {
+func (a *adapter) adaptVault(resource block.Block, module block.Module) keyvault.Vault {
 	var keys []keyvault.Key
 	var secrets []keyvault.Secret
 
@@ -33,11 +69,13 @@ func adaptVault(resource block.Block, module block.Module) keyvault.Vault {
 
 	secretBlocks := module.GetReferencingResources(resource, "azurerm_key_vault_secret", "key_vault_id")
 	for _, secretBlock := range secretBlocks {
+		a.vaultSecretIDs.Resolve(secretBlock.ID())
 		secrets = append(secrets, adaptSecret(secretBlock))
 	}
 
 	keyBlocks := module.GetReferencingResources(resource, "azurerm_key_vault_key", "key_vault_id")
 	for _, keyBlock := range keyBlocks {
+		a.vaultKeyIDs.Resolve(keyBlock.ID())
 		keys = append(keys, adaptKey(keyBlock))
 	}
 
@@ -53,6 +91,7 @@ func adaptVault(resource block.Block, module block.Module) keyvault.Vault {
 	}
 
 	return keyvault.Vault{
+		Metadata:                resource.Metadata(),
 		Secrets:                 secrets,
 		Keys:                    keys,
 		EnablePurgeProtection:   purgeProtectionVal,

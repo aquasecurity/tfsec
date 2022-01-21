@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) msk.MSK {
+func Adapt(modules block.Modules) msk.MSK {
 	return msk.MSK{
 		Clusters: adaptClusters(modules),
 	}
 }
 
-func adaptClusters(modules []block.Module) []msk.Cluster {
+func adaptClusters(modules block.Modules) []msk.Cluster {
 	var clusters []msk.Cluster
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_msk_cluster") {

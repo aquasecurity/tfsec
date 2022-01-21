@@ -21,16 +21,19 @@ var CheckEnableUbla = rules.Register(
 			"https://cloud.google.com/storage/docs/uniform-bucket-level-access",
 			"https://jbrojbrojbro.medium.com/you-make-the-rules-with-authentication-controls-for-cloud-storage-53c32543747b",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableUblaGoodExamples,
-            BadExamples:         terraformEnableUblaBadExamples,
-            Links:               terraformEnableUblaLinks,
-            RemediationMarkdown: terraformEnableUblaRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableUblaGoodExamples,
+			BadExamples:         terraformEnableUblaBadExamples,
+			Links:               terraformEnableUblaLinks,
+			RemediationMarkdown: terraformEnableUblaRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.Google.Storage.Buckets {
+			if !bucket.IsManaged() {
+				continue
+			}
 			if bucket.EnableUniformBucketLevelAccess.IsFalse() {
 				results.Add(
 					"Bucket has uniform bucket level access disabled.",

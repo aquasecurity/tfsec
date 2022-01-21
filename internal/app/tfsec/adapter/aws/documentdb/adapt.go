@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) documentdb.DocumentDB {
+func Adapt(modules block.Modules) documentdb.DocumentDB {
 	return documentdb.DocumentDB{
 		Clusters: adaptClusters(modules),
 	}
 }
 
-func adaptClusters(modules []block.Module) []documentdb.Cluster {
+func adaptClusters(modules block.Modules) []documentdb.Cluster {
 	var clusters []documentdb.Cluster
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_docdb_cluster") {

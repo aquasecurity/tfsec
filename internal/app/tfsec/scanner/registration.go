@@ -5,6 +5,9 @@ import (
 	"sort"
 	"sync"
 
+	_ "github.com/aquasecurity/defsec/loader"
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/legacy"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
@@ -35,11 +38,23 @@ func GetRegisteredRules() []rule.Rule {
 	sort.Slice(registeredRules, func(i, j int) bool {
 		return registeredRules[i].ID() < registeredRules[j].ID()
 	})
-	return registeredRules
+
+	combined := make([]rule.Rule, len(registeredRules))
+	copy(combined, registeredRules)
+	for _, defsecRule := range rules.GetRegistered() {
+		if defsecRule.Rule().Terraform == nil {
+			continue
+		}
+		combined = append(combined, rule.Rule{
+			Base: defsecRule,
+		})
+	}
+
+	return combined
 }
 
 func GetRuleById(id string) (*rule.Rule, error) {
-	for _, r := range registeredRules {
+	for _, r := range GetRegisteredRules() {
 		if r.ID() == id {
 			return &r, nil
 		}
@@ -48,8 +63,9 @@ func GetRuleById(id string) (*rule.Rule, error) {
 }
 
 func GetRuleByLegacyID(legacyID string) (*rule.Rule, error) {
+	modern := legacy.IDs[legacyID]
 	for _, r := range registeredRules {
-		if r.LegacyID == legacyID {
+		if r.Base.Rule().LongID() == modern {
 			return &r, nil
 		}
 	}

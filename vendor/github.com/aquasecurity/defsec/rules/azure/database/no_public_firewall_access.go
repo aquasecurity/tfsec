@@ -3,6 +3,7 @@ package database
 import (
 	"github.com/aquasecurity/defsec/cidr"
 	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/provider/azure/database"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/defsec/state"
@@ -21,17 +22,20 @@ var CheckNoPublicFirewallAccess = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/rest/api/sql/2021-02-01-preview/firewall-rules/create-or-update",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicFirewallAccessGoodExamples,
-            BadExamples:         terraformNoPublicFirewallAccessBadExamples,
-            Links:               terraformNoPublicFirewallAccessLinks,
-            RemediationMarkdown: terraformNoPublicFirewallAccessRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicFirewallAccessGoodExamples,
+			BadExamples:         terraformNoPublicFirewallAccessBadExamples,
+			Links:               terraformNoPublicFirewallAccessLinks,
+			RemediationMarkdown: terraformNoPublicFirewallAccessRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.MariaDBServers {
 			for _, rule := range server.FirewallRules {
+				if allowingAzureServices(rule) {
+					continue
+				}
 				if cidr.IsPublic(rule.StartIP.Value()) {
 					results.Add(
 						"Firewall rule allows public internet access to a database server.",
@@ -47,6 +51,9 @@ var CheckNoPublicFirewallAccess = rules.Register(
 		}
 		for _, server := range s.Azure.Database.MSSQLServers {
 			for _, rule := range server.FirewallRules {
+				if allowingAzureServices(rule) {
+					continue
+				}
 				if cidr.IsPublic(rule.StartIP.Value()) {
 					results.Add(
 						"Firewall rule allows public internet access to a database server.",
@@ -62,6 +69,9 @@ var CheckNoPublicFirewallAccess = rules.Register(
 		}
 		for _, server := range s.Azure.Database.MySQLServers {
 			for _, rule := range server.FirewallRules {
+				if allowingAzureServices(rule) {
+					continue
+				}
 				if cidr.IsPublic(rule.StartIP.Value()) {
 					results.Add(
 						"Firewall rule allows public internet access to a database server.",
@@ -77,6 +87,9 @@ var CheckNoPublicFirewallAccess = rules.Register(
 		}
 		for _, server := range s.Azure.Database.PostgreSQLServers {
 			for _, rule := range server.FirewallRules {
+				if allowingAzureServices(rule) {
+					continue
+				}
 				if cidr.IsPublic(rule.StartIP.Value()) {
 					results.Add(
 						"Firewall rule allows public internet access to a database server.",
@@ -93,3 +106,7 @@ var CheckNoPublicFirewallAccess = rules.Register(
 		return
 	},
 )
+
+func allowingAzureServices(rule database.FirewallRule) bool {
+	return rule.StartIP.EqualTo("0.0.0.0") && rule.EndIP.EqualTo("0.0.0.0")
+}

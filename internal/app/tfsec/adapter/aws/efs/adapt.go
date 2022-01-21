@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) efs.EFS {
+func Adapt(modules block.Modules) efs.EFS {
 	return efs.EFS{
 		FileSystems: adaptFileSystems(modules),
 	}
 }
 
-func adaptFileSystems(modules []block.Module) []efs.FileSystem {
+func adaptFileSystems(modules block.Modules) []efs.FileSystem {
 	var filesystems []efs.FileSystem
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_efs_file_system") {

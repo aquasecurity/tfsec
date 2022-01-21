@@ -36,6 +36,8 @@ func createBadBlocks(fs *filesystem.FileSystem) {
 		`)
 
 	for _, rule := range scanner.GetRegisteredRules() {
-		_ = fs.WriteTextFile(fmt.Sprintf("/modules/problem/%s.tf", rule.ID()), rule.BadExample[0])
+		for i, bad := range rule.Base.Rule().Terraform.BadExamples {
+			_ = fs.WriteTextFile(fmt.Sprintf("/modules/problem/%s-%d.tf", rule.ID(), i), bad)
+		}
 	}
 }

@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) kms.KMS {
+func Adapt(modules block.Modules) kms.KMS {
 	return kms.KMS{
 		Keys: adaptKeys(modules),
 	}
 }
 
-func adaptKeys(modules []block.Module) []kms.Key {
+func adaptKeys(modules block.Modules) []kms.Key {
 	var keys []kms.Key
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_kms_key") {

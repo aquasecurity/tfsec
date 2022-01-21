@@ -18,16 +18,19 @@ var CheckEnableSslEnforcement = rules.Register(
 		Resolution:  "Enable SSL enforcement",
 		Explanation: `SSL connections should be enforced were available to ensure secure transfer and reduce the risk of compromising data in flight.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableSslEnforcementGoodExamples,
-            BadExamples:         terraformEnableSslEnforcementBadExamples,
-            Links:               terraformEnableSslEnforcementLinks,
-            RemediationMarkdown: terraformEnableSslEnforcementRemediationMarkdown,
-        },
-        Severity:    severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableSslEnforcementGoodExamples,
+			BadExamples:         terraformEnableSslEnforcementBadExamples,
+			Links:               terraformEnableSslEnforcementLinks,
+			RemediationMarkdown: terraformEnableSslEnforcementRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.MariaDBServers {
+			if !server.IsManaged() {
+				continue
+			}
 			if server.EnableSSLEnforcement.IsFalse() {
 				results.Add(
 					"Database server does not have enforce SSL.",
@@ -36,6 +39,9 @@ var CheckEnableSslEnforcement = rules.Register(
 			}
 		}
 		for _, server := range s.Azure.Database.MySQLServers {
+			if !server.IsManaged() {
+				continue
+			}
 			if server.EnableSSLEnforcement.IsFalse() {
 				results.Add(
 					"Database server does not have enforce SSL.",
@@ -44,6 +50,9 @@ var CheckEnableSslEnforcement = rules.Register(
 			}
 		}
 		for _, server := range s.Azure.Database.PostgreSQLServers {
+			if !server.IsManaged() {
+				continue
+			}
 			if server.EnableSSLEnforcement.IsFalse() {
 				results.Add(
 					"Database server does not have enforce SSL.",

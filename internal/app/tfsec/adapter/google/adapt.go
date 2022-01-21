@@ -13,7 +13,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) google.Google {
+func Adapt(modules block.Modules) google.Google {
 	return google.Google{
 		BigQuery: bigquery.Adapt(modules),
 		Compute:  compute.Adapt(modules),

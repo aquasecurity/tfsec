@@ -3,46 +3,11 @@ package test
 import (
 	"fmt"
 	"regexp"
-	"strings"
 	"testing"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 )
-
-func TestExampleCode(t *testing.T) {
-	for _, rule := range scanner.GetRegisteredRules() {
-
-		t.Run(fmt.Sprintf("Rule explanation for %s", rule.ID()), func(t *testing.T) {
-			if strings.TrimSpace(rule.Base.Rule().Explanation) == "" {
-				t.Fatalf("No explanation found for %s", rule.ID())
-			}
-		})
-
-		t.Run(fmt.Sprintf("Rule impact for %s", rule.ID()), func(t *testing.T) {
-			if strings.TrimSpace(rule.Base.Rule().Impact) == "" {
-				t.Fatalf("No impact found for %s", rule.ID())
-			}
-		})
-
-		t.Run(fmt.Sprintf("Rule resolution for %s", rule.ID()), func(t *testing.T) {
-			if strings.TrimSpace(rule.Base.Rule().Resolution) == "" {
-				t.Fatalf("No resolution found for %s", rule.ID())
-			}
-		})
-
-		t.Run(fmt.Sprintf("Rule bad example(s) for %s", rule.ID()), func(t *testing.T) {
-			if len(rule.BadExample) == 0 {
-				t.Fatalf("No bad example found for %s", rule.ID())
-			}
-		})
-
-		t.Run(fmt.Sprintf("Rule good example(s) for %s", rule.ID()), func(t *testing.T) {
-			if len(rule.GoodExample) == 0 {
-				t.Fatalf("No good example found for %s", rule.ID())
-			}
-		})
-	}
-}
 
 func TestBlockTypes(t *testing.T) {
 	for _, rule := range scanner.GetRegisteredRules() {
@@ -73,6 +38,30 @@ func TestDefSecUsage(t *testing.T) {
 			if rule.Base.Rule().AVDID == "" {
 				t.Errorf("Rule is not ready for defsec: %#v", rule)
 			}
+		})
+	}
+}
+
+func TestRulesAgainstExampleCode(t *testing.T) {
+	for _, rule := range scanner.GetRegisteredRules() {
+		t.Run(rule.Base.Rule().LongID(), func(t *testing.T) {
+			t.Run("good examples", func(t *testing.T) {
+				for i, example := range rule.Base.Rule().Terraform.GoodExamples {
+					t.Run(fmt.Sprintf("example %d", i), func(t *testing.T) {
+						results := testutil.ScanHCL(example, t)
+						testutil.AssertRuleNotFound(t, rule.ID(), results, "Rule %s was detected in good example #%d:\n%s", rule.ID(), i, example)
+					})
+				}
+			})
+			t.Run("bad examples", func(t *testing.T) {
+				for i, example := range rule.Base.Rule().Terraform.BadExamples {
+					t.Run(fmt.Sprintf("example %d", i), func(t *testing.T) {
+						results := testutil.ScanHCL(example, t)
+						testutil.AssertRuleFound(t, rule.ID(), results, "Rule %s was not detected in bad example #%d:\n%s", rule.ID(), i, example)
+					})
+				}
+			})
+
 		})
 	}
 }

@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) mq.MQ {
+func Adapt(modules block.Modules) mq.MQ {
 	return mq.MQ{
 		Brokers: adaptBrokers(modules),
 	}
 }
 
-func adaptBrokers(modules []block.Module) []mq.Broker {
+func adaptBrokers(modules block.Modules) []mq.Broker {
 	var brokers []mq.Broker
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_mq_broker") {

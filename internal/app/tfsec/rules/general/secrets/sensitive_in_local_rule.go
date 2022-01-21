@@ -13,31 +13,8 @@ import (
 
 func init() {
 	scanner.RegisterCheckRule(rule.Rule{
-		LegacyID: "GEN002",
-		Links: []string{
-			"https://www.terraform.io/docs/state/sensitive-data.html",
-		},
 		RequiredTypes: []string{"locals"},
-		BadExample: []string{`
- locals {
-   password = "p4ssw0rd"
- }
- 
- resource "evil_corp" "bad_example" {
- 	root_password = local.password
- }
- `},
-		GoodExample: []string{`
- variable "password" {
-   description = "The root password for our VM"
-   type        = string
- }
- 
- resource "evil_corp" "good_example" {
- 	root_password = var.password
- }
- `},
-		Base: secrets.CheckNotExposed,
+		Base:          secrets.CheckNotExposed,
 		CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
 			for _, attribute := range resourceBlock.GetAttributes() {
 				if security.IsSensitiveAttribute(attribute.Name()) {

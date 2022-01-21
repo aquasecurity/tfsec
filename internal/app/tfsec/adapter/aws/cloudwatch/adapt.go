@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) cloudwatch.CloudWatch {
+func Adapt(modules block.Modules) cloudwatch.CloudWatch {
 	return cloudwatch.CloudWatch{
 		LogGroups: adaptLogGroups(modules),
 	}
 }
 
-func adaptLogGroups(modules []block.Module) []cloudwatch.LogGroup {
+func adaptLogGroups(modules block.Modules) []cloudwatch.LogGroup {
 	var logGroups []cloudwatch.LogGroup
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_cloudwatch_log_group") {

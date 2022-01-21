@@ -66,7 +66,6 @@ func TestScanningJSON(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			r1 := rule.Rule{
-				LegacyID: "ABC123",
 				Base: rules.Register(rules.Rule{
 					Provider:  provider.AWSProvider,
 					Service:   "service",
@@ -92,7 +91,12 @@ func TestScanningJSON(t *testing.T) {
 			} else {
 				exclude = r1.ID()
 			}
-			testutil.AssertCheckCode(t, include, exclude, results)
+			if include != "" {
+				testutil.AssertRuleFound(t, include, results, "false negative found")
+			}
+			if exclude != "" {
+				testutil.AssertRuleNotFound(t, exclude, results, "false positive found")
+			}
 		})
 	}
 }

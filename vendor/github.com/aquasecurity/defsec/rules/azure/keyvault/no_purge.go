@@ -32,6 +32,9 @@ Purge protection can only be enabled once soft-delete is enabled. It can be turn
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, vault := range s.Azure.KeyVault.Vaults {
+			if !vault.IsManaged() {
+				continue
+			}
 			if vault.EnablePurgeProtection.IsFalse() {
 				results.Add(
 					"Vault does not have purge protection enabled.",

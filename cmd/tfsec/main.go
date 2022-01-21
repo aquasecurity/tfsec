@@ -15,6 +15,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/ignores"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/legacy"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
 	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
@@ -148,7 +149,7 @@ var rootCmd = &cobra.Command{
 			}
 			if len(stats) > 0 {
 				for _, stat := range stats {
-					_ = tml.Printf("%s:%d migrated from %s => %s\n", stat.Filename, stat.LineNo, stat.FromCode, stat.ToCode)
+					_ = tml.Printf("%s migrated from %s => %s\n", stat.Filename, stat.FromCode, stat.ToCode)
 				}
 			}
 			os.Exit(0)
@@ -524,7 +525,7 @@ func updateResultSeverity(results []rules.Result) []rules.Result {
 	var overriddenResults []rules.Result
 	for _, res := range results {
 		for code, sev := range overrides {
-			if res.Rule().LongID() == code || scanner.FindLegacyID(res.Rule().LongID()) == code {
+			if res.Rule().LongID() == code || legacy.FindID(res.Rule().LongID()) == code {
 				overrides := rules.Results([]rules.Result{res})
 				override := res.Rule()
 				override.Severity = severity.Severity(sev)

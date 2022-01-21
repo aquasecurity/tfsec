@@ -20,16 +20,19 @@ var CheckPostgresConfigurationLogConnections = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/postgresql/concepts-server-logs#configure-logging",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformPostgresConfigurationLogConnectionsGoodExamples,
-            BadExamples:         terraformPostgresConfigurationLogConnectionsBadExamples,
-            Links:               terraformPostgresConfigurationLogConnectionsLinks,
-            RemediationMarkdown: terraformPostgresConfigurationLogConnectionsRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformPostgresConfigurationLogConnectionsGoodExamples,
+			BadExamples:         terraformPostgresConfigurationLogConnectionsBadExamples,
+			Links:               terraformPostgresConfigurationLogConnectionsLinks,
+			RemediationMarkdown: terraformPostgresConfigurationLogConnectionsRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.PostgreSQLServers {
+			if !server.IsManaged() {
+				continue
+			}
 			if server.Config.LogConnections.IsFalse() {
 				results.Add(
 					"Database server is not configured to log connections.",

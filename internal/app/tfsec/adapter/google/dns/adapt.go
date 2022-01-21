@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) dns.DNS {
+func Adapt(modules block.Modules) dns.DNS {
 	return dns.DNS{
 		ManagedZones: adaptManagedZones(modules),
 	}
 }
 
-func adaptManagedZones(modules []block.Module) []dns.ManagedZone {
+func adaptManagedZones(modules block.Modules) []dns.ManagedZone {
 	var managedZones []dns.ManagedZone
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("google_dns_managed_zone") {

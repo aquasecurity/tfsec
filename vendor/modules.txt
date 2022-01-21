@@ -28,10 +28,11 @@ github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
 ## explicit; go 1.16
 github.com/apparentlymart/go-textseg/v13/textseg
-# github.com/aquasecurity/defsec v0.3.26
+# github.com/aquasecurity/defsec v0.4.0
 ## explicit; go 1.17
 github.com/aquasecurity/defsec/cidr
 github.com/aquasecurity/defsec/formatters
+github.com/aquasecurity/defsec/loader
 github.com/aquasecurity/defsec/metrics
 github.com/aquasecurity/defsec/provider
 github.com/aquasecurity/defsec/provider/aws
@@ -132,6 +133,7 @@ github.com/aquasecurity/defsec/rules/aws/neptune
 github.com/aquasecurity/defsec/rules/aws/rds
 github.com/aquasecurity/defsec/rules/aws/redshift
 github.com/aquasecurity/defsec/rules/aws/s3
+github.com/aquasecurity/defsec/rules/aws/sam
 github.com/aquasecurity/defsec/rules/aws/sns
 github.com/aquasecurity/defsec/rules/aws/sqs
 github.com/aquasecurity/defsec/rules/aws/ssm
@@ -167,6 +169,7 @@ github.com/aquasecurity/defsec/rules/google/storage
 github.com/aquasecurity/defsec/rules/kubernetes/network
 github.com/aquasecurity/defsec/rules/openstack/compute
 github.com/aquasecurity/defsec/rules/oracle/compute
+github.com/aquasecurity/defsec/security
 github.com/aquasecurity/defsec/severity
 github.com/aquasecurity/defsec/state
 github.com/aquasecurity/defsec/types

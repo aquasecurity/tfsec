@@ -26,16 +26,19 @@ The policies you define should be specific to the needs of your application`,
 		Links: []string{
 			"https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#admission_controllers",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnforcePodSecurityPolicyGoodExamples,
-            BadExamples:         terraformEnforcePodSecurityPolicyBadExamples,
-            Links:               terraformEnforcePodSecurityPolicyLinks,
-            RemediationMarkdown: terraformEnforcePodSecurityPolicyRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnforcePodSecurityPolicyGoodExamples,
+			BadExamples:         terraformEnforcePodSecurityPolicyBadExamples,
+			Links:               terraformEnforcePodSecurityPolicyLinks,
+			RemediationMarkdown: terraformEnforcePodSecurityPolicyRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
+			if !cluster.IsManaged() {
+				continue
+			}
 			if cluster.PodSecurityPolicy.Enabled.IsFalse() {
 				results.Add(
 					"Cluster pod security policy is not enforced.",

@@ -22,22 +22,24 @@ The attribute should be set to <code>SECURE</code> to use metadata concealment, 
 		Links: []string{
 			"https://cloud.google.com/kubernetes-engine/docs/how-to/protecting-cluster-metadata#create-concealed",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNodeMetadataSecurityGoodExamples,
-            BadExamples:         terraformNodeMetadataSecurityBadExamples,
-            Links:               terraformNodeMetadataSecurityLinks,
-            RemediationMarkdown: terraformNodeMetadataSecurityRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNodeMetadataSecurityGoodExamples,
+			BadExamples:         terraformNodeMetadataSecurityBadExamples,
+			Links:               terraformNodeMetadataSecurityLinks,
+			RemediationMarkdown: terraformNodeMetadataSecurityRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
-			metadata := cluster.NodeConfig.WorkloadMetadataConfig.NodeMetadata
-			if metadata.EqualTo("UNSPECIFIED") || metadata.EqualTo("EXPOSE") {
-				results.Add(
-					"Cluster exposes node metadata of pools by default.",
-					metadata,
-				)
+			if cluster.IsManaged() {
+				metadata := cluster.NodeConfig.WorkloadMetadataConfig.NodeMetadata
+				if metadata.EqualTo("UNSPECIFIED") || metadata.EqualTo("EXPOSE") {
+					results.Add(
+						"Cluster exposes node metadata of pools by default.",
+						metadata,
+					)
+				}
 			}
 			for _, pool := range cluster.NodePools {
 				metadata := pool.NodeConfig.WorkloadMetadataConfig.NodeMetadata

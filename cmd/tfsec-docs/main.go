@@ -37,13 +37,8 @@ var rootCmd = &cobra.Command{
 	Use:   "tfsec-docs",
 	Short: "tfsec-docs generates documentation for the checks in tfsec",
 	Long:  `tfsec-docs generates the content for the root README and also can generate the missing base pages for the wiki`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-
+	RunE: func(_ *cobra.Command, _ []string) error {
 		fileContents := getSortedFileContents()
-		if err := generateExtensionCodeFile(fileContents); err != nil {
-			return err
-		}
-
 		return generateWebPages(fileContents)
 	},
 }
@@ -65,9 +60,9 @@ func getSortedFileContents() []*FileContent {
 			Explanation: r.Base.Rule().Explanation,
 			Impact:      r.Base.Rule().Impact,
 			Resolution:  r.Base.Rule().Resolution,
-			BadExample:  r.BadExample[0],
-			GoodExample: r.GoodExample[0],
-			Links:       append(r.Links, r.Base.Rule().Links...),
+			BadExample:  r.Base.Rule().Terraform.BadExamples[0],
+			GoodExample: r.Base.Rule().Terraform.GoodExamples[0],
+			Links:       append(r.Base.Rule().Terraform.Links, r.Base.Rule().Links...),
 		})
 	}
 

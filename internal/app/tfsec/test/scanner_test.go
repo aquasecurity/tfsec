@@ -20,7 +20,6 @@ import (
 )
 
 var panicRule = rule.Rule{
-	LegacyID: "EXA001",
 	Base: rules.Register(
 		rules.Rule{
 			Provider:  provider.AWSProvider,
@@ -58,7 +57,7 @@ resource "problem" "this" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, "", panicRule.ID(), results)
+	testutil.AssertRuleNotFound(t, panicRule.ID(), results, "")
 }
 
 func Test_PanicInCheckAllowed(t *testing.T) {
@@ -100,7 +99,7 @@ resource "problem" "this" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, "", panicRule.ID(), results)
+	testutil.AssertRuleNotFound(t, panicRule.ID(), results, "")
 }
 
 func Test_PanicNotInCheckNotIncludePassedStopOnError(t *testing.T) {

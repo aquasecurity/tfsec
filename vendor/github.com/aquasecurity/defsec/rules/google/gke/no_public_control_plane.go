@@ -19,16 +19,19 @@ var CheckNoPublicControlPlane = rules.Register(
 		Resolution:  "Use private nodes and master authorised networks to prevent exposure",
 		Explanation: `The GKE control plane is exposed to the public internet by default.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicControlPlaneGoodExamples,
-            BadExamples:         terraformNoPublicControlPlaneBadExamples,
-            Links:               terraformNoPublicControlPlaneLinks,
-            RemediationMarkdown: terraformNoPublicControlPlaneRemediationMarkdown,
-        },
-        Severity:    severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicControlPlaneGoodExamples,
+			BadExamples:         terraformNoPublicControlPlaneBadExamples,
+			Links:               terraformNoPublicControlPlaneLinks,
+			RemediationMarkdown: terraformNoPublicControlPlaneRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
+			if !cluster.IsManaged() {
+				continue
+			}
 			for _, block := range cluster.MasterAuthorizedNetworks.CIDRs {
 				if cidr.IsPublic(block.Value()) {
 					results.Add(

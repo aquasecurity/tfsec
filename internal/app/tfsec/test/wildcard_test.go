@@ -75,9 +75,9 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 		results := testutil.ScanHCL(test.input, t)
 
 		if test.expectedFailure {
-			testutil.AssertCheckCode(t, fmt.Sprintf("custom-service-%s", code), "", results)
+			testutil.AssertRuleFound(t, fmt.Sprintf("custom-service-%s", code), results, "")
 		} else {
-			testutil.AssertCheckCode(t, "", fmt.Sprintf("custom-service-%s", code), results)
+			testutil.AssertRuleNotFound(t, fmt.Sprintf("custom-service-%s", code), results, "")
 		}
 	}
 

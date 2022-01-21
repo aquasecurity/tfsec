@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) eks.EKS {
+func Adapt(modules block.Modules) eks.EKS {
 	return eks.EKS{
 		Clusters: adaptClusters(modules),
 	}
 }
 
-func adaptClusters(modules []block.Module) []eks.Cluster {
+func adaptClusters(modules block.Modules) []eks.Cluster {
 	var clusters []eks.Cluster
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_eks_cluster") {
@@ -72,7 +72,7 @@ func adaptCluster(resource block.Block) eks.Cluster {
 		publicAccessAttr := vpcBlock.GetAttribute("endpoint_public_access")
 		publicAccessVal = publicAccessAttr.AsBoolValueOrDefault(true, vpcBlock)
 
-		publicAccessCidrsAttr := resource.GetAttribute("public_access_cidrs")
+		publicAccessCidrsAttr := vpcBlock.GetAttribute("public_access_cidrs")
 		cidrsList := publicAccessCidrsAttr.ValueAsStrings()
 		for _, cidr := range cidrsList {
 			cidrs = append(cidrs, types.String(cidr, *publicAccessCidrsAttr.GetMetadata()))

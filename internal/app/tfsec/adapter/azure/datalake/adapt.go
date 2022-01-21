@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) datalake.DataLake {
+func Adapt(modules block.Modules) datalake.DataLake {
 	return datalake.DataLake{
 		Stores: adaptStores(modules),
 	}
 }
 
-func adaptStores(modules []block.Module) []datalake.Store {
+func adaptStores(modules block.Modules) []datalake.Store {
 	var stores []datalake.Store
 
 	for _, module := range modules {

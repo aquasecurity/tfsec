@@ -6,14 +6,14 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) appservice.AppService {
+func Adapt(modules block.Modules) appservice.AppService {
 	return appservice.AppService{
 		Services:     adaptServices(modules),
 		FunctionApps: adaptFunctionApps(modules),
 	}
 }
 
-func adaptServices(modules []block.Module) []appservice.Service {
+func adaptServices(modules block.Modules) []appservice.Service {
 	var services []appservice.Service
 
 	for _, module := range modules {
@@ -24,7 +24,7 @@ func adaptServices(modules []block.Module) []appservice.Service {
 	return services
 }
 
-func adaptFunctionApps(modules []block.Module) []appservice.FunctionApp {
+func adaptFunctionApps(modules block.Modules) []appservice.FunctionApp {
 	var functionApps []appservice.FunctionApp
 
 	for _, module := range modules {

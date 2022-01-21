@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) datafactory.DataFactory {
+func Adapt(modules block.Modules) datafactory.DataFactory {
 	return datafactory.DataFactory{
 		DataFactories: adaptFactories(modules),
 	}
 }
 
-func adaptFactories(modules []block.Module) []datafactory.Factory {
+func adaptFactories(modules block.Modules) []datafactory.Factory {
 	var factories []datafactory.Factory
 
 	for _, module := range modules {

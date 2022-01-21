@@ -1,19 +1,18 @@
 package ignores
 
 import (
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/legacy"
 )
 
 type migrationStatistic struct {
 	Filename string
-	LineNo   int
 	FromCode string
 	ToCode   string
 }
@@ -22,7 +21,7 @@ type MigrationStatistics []*migrationStatistic
 
 func RunMigration(dir string) (MigrationStatistics, error) {
 
-	legacyMappings := getCodeMappings()
+	legacyMappings := legacy.IDs
 	file, err := os.Stat(dir)
 	if err != nil {
 		return nil, err
@@ -66,6 +65,8 @@ func migrateFile(file string, legacyMapping map[string]string) (MigrationStatist
 		return nil, nil
 	}
 
+	legacyIgnoreRegex := regexp.MustCompile(`tfsec:ignore:([A-Z]{3}\d{3})`)
+
 	debug.Log("Running migrations for file: %s", file)
 	content, err := os.ReadFile(file)
 	if err != nil {
@@ -74,39 +75,23 @@ func migrateFile(file string, legacyMapping map[string]string) (MigrationStatist
 
 	contentString := string(content)
 	var stats MigrationStatistics
-	for legacyCode, newCode := range legacyMapping {
-		legacyIngore := fmt.Sprintf("ignore:%s", legacyCode)
-		if strings.Contains(contentString, legacyIngore) {
-			lines := strings.Split(contentString, "\n")
-			for i, l := range lines {
-				if strings.Contains(l, legacyIngore) {
-					debug.Log("Found %s, migrating to %s", legacyCode, newCode)
-					l = strings.ReplaceAll(l, legacyCode, newCode)
-					lines[i] = l
-					stats = append(stats, &migrationStatistic{
-						Filename: file,
-						LineNo:   i + 1,
-						FromCode: legacyCode,
-						ToCode:   newCode,
-					})
-				}
-			}
-			contentString = strings.Join(lines, "\n")
-		}
+
+	matches := legacyIgnoreRegex.FindAllStringSubmatch(contentString, -1)
+
+	for _, match := range matches {
+		legacyCode := match[1]
+		newCode := legacy.IDs[legacyCode]
+		debug.Log("Found %s, migrating to %s", legacyCode, newCode)
+		contentString = strings.ReplaceAll(contentString, legacyCode, newCode)
+		stats = append(stats, &migrationStatistic{
+			Filename: file,
+			FromCode: legacyCode,
+			ToCode:   newCode,
+		})
 	}
+
 	if err := os.WriteFile(file, []byte(contentString), fs.ModeAppend); err != nil {
 		return nil, err
 	}
 	return stats, nil
-}
-
-func getCodeMappings() map[string]string {
-	legacyMapping := make(map[string]string)
-	rules := scanner.GetRegisteredRules()
-	for _, r := range rules {
-		if r.LegacyID != "" {
-			legacyMapping[r.LegacyID] = r.Base.Rule().LongID()
-		}
-	}
-	return legacyMapping
 }

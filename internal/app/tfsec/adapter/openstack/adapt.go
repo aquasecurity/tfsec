@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) openstack.OpenStack {
+func Adapt(modules block.Modules) openstack.OpenStack {
 	return openstack.OpenStack{
 		Compute: adaptCompute(modules),
 	}
 }
 
-func adaptCompute(modules []block.Module) openstack.Compute {
+func adaptCompute(modules block.Modules) openstack.Compute {
 	var compute openstack.Compute
 
 	for _, module := range modules {
@@ -33,7 +33,7 @@ func adaptInstance(resourceBlock block.Block) openstack.Instance {
 	}
 }
 
-func adaptFirewall(modules []block.Module) openstack.Firewall {
+func adaptFirewall(modules block.Modules) openstack.Firewall {
 	var firewall openstack.Firewall
 
 	for _, module := range modules {

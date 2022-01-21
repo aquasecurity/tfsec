@@ -18,7 +18,6 @@ import (
 )
 
 var badRule = rule.Rule{
-	LegacyID: "EXA001",
 	Base: rules.Register(rules.Rule{
 		Provider:    provider.AWSProvider,
 		Service:     "service",
@@ -29,17 +28,6 @@ var badRule = rule.Rule{
 		Explanation: "Bad should not be set.",
 		Severity:    severity.High,
 	}, nil),
-	BadExample: []string{`
-resource "problem" "x" {
-bad = "1"
-}
-`},
-	GoodExample: []string{`
-resource "problem" "x" {
-
-}
-`},
-	Links:          nil,
 	RequiredTypes:  []string{"resource"},
 	RequiredLabels: []string{"problem"},
 	CheckTerraform: func(resourceBlock block.Block, _ block.Module) (results rules.Results) {
@@ -73,7 +61,7 @@ resource "problem" "uhoh" {
 	blocks, err := parser.New(fs.RealPath("/project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, badRule.ID(), "", results)
+	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
@@ -100,7 +88,7 @@ resource "problem" "uhoh" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, badRule.ID(), "", results)
+	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
@@ -127,7 +115,7 @@ resource "problem" "uhoh" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, badRule.ID(), "", results)
+	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
@@ -163,7 +151,7 @@ resource "problem" "uhoh" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, badRule.ID(), "", results)
+	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
@@ -200,7 +188,7 @@ resource "problem" "uhoh" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, badRule.ID(), "", results)
+	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
@@ -254,7 +242,7 @@ resource "problem" "uhoh" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, badRule.ID(), "", results)
+	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
@@ -300,7 +288,7 @@ resource "problem" "uhoh" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, badRule.ID(), "", results)
+	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 func Test_ProblemInReusedInitialisedModule(t *testing.T) {
@@ -337,7 +325,7 @@ resource "problem" "uhoh" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, badRule.ID(), "", results)
+	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
@@ -391,7 +379,7 @@ resource "problem" "uhoh" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, badRule.ID(), "", results)
+	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
@@ -419,7 +407,6 @@ resource "bad" "thing" {
 	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
 
 	r1 := rule.Rule{
-		LegacyID: "ABC123",
 		Base: rules.Register(rules.Rule{
 			Provider:  provider.AWSProvider,
 			Service:   "service",
@@ -441,7 +428,7 @@ resource "bad" "thing" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, r1.ID(), "", results)
+	testutil.AssertRuleFound(t, r1.ID(), results, "")
 }
 
 func Test_Dynamic_Variables_FalsePositive(t *testing.T) {
@@ -468,7 +455,6 @@ resource "bad" "thing" {
 	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
 
 	r1 := rule.Rule{
-		LegacyID: "ABC123",
 		Base: rules.Register(rules.Rule{
 			Provider:  provider.AWSProvider,
 			Service:   "service",
@@ -490,7 +476,7 @@ resource "bad" "thing" {
 	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(blocks)
-	testutil.AssertCheckCode(t, "", r1.ID(), results)
+	testutil.AssertRuleNotFound(t, r1.ID(), results, "")
 }
 
 func Test_ReferencesPassedToNestedModule(t *testing.T) {
@@ -548,6 +534,6 @@ data "aws_iam_policy_document" "policy" {
 	modules, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
 	require.NoError(t, err)
 	results, _ := scanner.New().Scan(modules)
-	testutil.AssertCheckCode(t, "", r.ID(), results)
+	testutil.AssertRuleNotFound(t, r.ID(), results, "")
 
 }

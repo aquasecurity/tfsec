@@ -24,6 +24,7 @@ The following example will fail the aws-vpc-add-description-to-security-group ch
 
  resource "aws_security_group" "bad_example" {
    name        = "http"
+   description = ""
  
    ingress {
      description = "HTTP from VPC"

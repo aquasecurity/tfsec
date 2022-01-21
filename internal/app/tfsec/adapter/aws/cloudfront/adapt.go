@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) cloudfront.Cloudfront {
+func Adapt(modules block.Modules) cloudfront.Cloudfront {
 	return cloudfront.Cloudfront{
 		Distributions: adaptDistributions(modules),
 	}
 }
 
-func adaptDistributions(modules []block.Module) []cloudfront.Distribution {
+func adaptDistributions(modules block.Modules) []cloudfront.Distribution {
 	var distributions []cloudfront.Distribution
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_cloudfront_distribution") {

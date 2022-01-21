@@ -28,7 +28,7 @@ The following example will fail the azure-network-disable-rdp-from-internet chec
       access                      = "Allow"
       protocol                    = "TCP"
       source_port_range           = "*"
-      destination_port_range      = ["3389"]
+      destination_port_ranges     = ["3389"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
  }
@@ -40,7 +40,7 @@ The following example will fail the azure-network-disable-rdp-from-internet chec
    
    security_rule {
  	 source_port_range           = "any"
-      destination_port_range      = ["3389"]
+      destination_port_ranges     = ["3389"]
       source_address_prefix       = "*"
       destination_address_prefix  = "*"
    }
@@ -61,7 +61,7 @@ The following example will pass the azure-network-disable-rdp-from-internet chec
       access                      = "Allow"
       protocol                    = "TCP"
       source_port_range           = "*"
-      destination_port_range      = ["3389"]
+      destination_port_ranges     = ["3389"]
       source_address_prefix       = "4.53.160.75"
       destination_address_prefix  = "*"
  }
@@ -73,7 +73,7 @@ The following example will pass the azure-network-disable-rdp-from-internet chec
    
    security_rule {
  	 source_port_range           = "any"
-      destination_port_range      = ["3389"]
+      destination_port_ranges     = ["3389"]
       source_address_prefix       = "4.53.160.75"
       destination_address_prefix  = "*"
    }

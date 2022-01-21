@@ -8,13 +8,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) autoscaling.Autoscaling {
+func Adapt(modules block.Modules) autoscaling.Autoscaling {
 	return autoscaling.Autoscaling{
 		LaunchConfigurations: adaptLaunchConfigurations(modules),
 	}
 }
 
-func adaptLaunchConfigurations(modules []block.Module) []autoscaling.LaunchConfiguration {
+func adaptLaunchConfigurations(modules block.Modules) []autoscaling.LaunchConfiguration {
 	var launchConfigurations []autoscaling.LaunchConfiguration
 
 	for _, module := range modules {

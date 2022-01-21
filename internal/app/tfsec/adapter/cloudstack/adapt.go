@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) cloudstack.CloudStack {
+func Adapt(modules block.Modules) cloudstack.CloudStack {
 	return cloudstack.CloudStack{
 		Compute: compute.Adapt(modules),
 	}

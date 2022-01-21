@@ -26,7 +26,6 @@ The following example will fail the aws-vpc-add-description-to-security-group-ru
    name        = "http"
  
    ingress {
-     description = "HTTP from VPC"
      from_port   = 80
      to_port     = 80
      protocol    = "tcp"

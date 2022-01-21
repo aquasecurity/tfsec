@@ -6,11 +6,11 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) []github.Repository {
+func Adapt(modules block.Modules) []github.Repository {
 	return adaptRepositories(modules)
 }
 
-func adaptRepositories(modules []block.Module) []github.Repository {
+func adaptRepositories(modules block.Modules) []github.Repository {
 	var repositories []github.Repository
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("github_repository") {

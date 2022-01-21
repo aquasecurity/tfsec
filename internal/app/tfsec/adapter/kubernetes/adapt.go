@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) kubernetes.Kubernetes {
+func Adapt(modules block.Modules) kubernetes.Kubernetes {
 	return kubernetes.Kubernetes{
 		NetworkPolicies: adaptNetworkPolicies(modules),
 	}
 }
 
-func adaptNetworkPolicies(modules []block.Module) []kubernetes.NetworkPolicy {
+func adaptNetworkPolicies(modules block.Modules) []kubernetes.NetworkPolicy {
 	var networkPolicies []kubernetes.NetworkPolicy
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("kubernetes_network_policy") {

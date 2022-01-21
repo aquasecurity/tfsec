@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) dynamodb.DynamoDB {
+func Adapt(modules block.Modules) dynamodb.DynamoDB {
 	return dynamodb.DynamoDB{
 		DAXClusters: adaptClusters(modules),
 	}
 }
 
-func adaptClusters(modules []block.Module) []dynamodb.DAXCluster {
+func adaptClusters(modules block.Modules) []dynamodb.DAXCluster {
 	var clusters []dynamodb.DAXCluster
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_dax_cluster") {

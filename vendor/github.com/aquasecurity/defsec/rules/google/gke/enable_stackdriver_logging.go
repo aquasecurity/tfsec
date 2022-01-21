@@ -18,16 +18,19 @@ var CheckEnableStackdriverLogging = rules.Register(
 		Resolution:  "Enable StackDriver logging",
 		Explanation: `StackDriver logging provides a useful interface to all of stdout/stderr for each container and should be enabled for moitoring, debugging, etc.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableStackdriverLoggingGoodExamples,
-            BadExamples:         terraformEnableStackdriverLoggingBadExamples,
-            Links:               terraformEnableStackdriverLoggingLinks,
-            RemediationMarkdown: terraformEnableStackdriverLoggingRemediationMarkdown,
-        },
-        Severity:    severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableStackdriverLoggingGoodExamples,
+			BadExamples:         terraformEnableStackdriverLoggingBadExamples,
+			Links:               terraformEnableStackdriverLoggingLinks,
+			RemediationMarkdown: terraformEnableStackdriverLoggingRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.Google.GKE.Clusters {
+			if !cluster.IsManaged() {
+				continue
+			}
 			if cluster.LoggingService.NotEqualTo("logging.googleapis.com/kubernetes") {
 				results.Add(
 					"Cluster does not use the logging.googleapis.com/kubernetes StackDriver logging service.",

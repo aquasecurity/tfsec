@@ -4,27 +4,48 @@ import (
 	"github.com/aquasecurity/defsec/provider/google/gke"
 	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/google/uuid"
 	"github.com/zclconf/go-cty/cty"
 )
 
-func Adapt(modules []block.Module) gke.GKE {
+func Adapt(modules block.Modules) gke.GKE {
 	return gke.GKE{
-		Clusters: adaptClusters(modules),
+		Clusters: (&adapter{
+			modules:    modules,
+			clusterMap: make(map[string]gke.Cluster),
+		}).adaptClusters(),
 	}
 }
 
-func adaptClusters(modules []block.Module) []gke.Cluster {
-	var clusters []gke.Cluster
-	for _, module := range modules {
+type adapter struct {
+	modules    block.Modules
+	clusterMap map[string]gke.Cluster
+}
+
+func (a *adapter) adaptClusters() []gke.Cluster {
+	for _, module := range a.modules {
 		for _, resource := range module.GetResourcesByType("google_container_cluster") {
-			clusters = append(clusters, adaptCluster(resource, module))
+			a.adaptCluster(resource, module)
 		}
+	}
+
+	a.adaptNodePools()
+
+	for id, cluster := range a.clusterMap {
+		if len(cluster.NodePools) > 0 {
+			cluster.NodeConfig = cluster.NodePools[0].NodeConfig
+			a.clusterMap[id] = cluster
+		}
+	}
+
+	var clusters []gke.Cluster
+	for _, cluster := range a.clusterMap {
+		clusters = append(clusters, cluster)
 	}
 	return clusters
 }
 
-func adaptCluster(resource block.Block, module block.Module) gke.Cluster {
-	var nodePools []gke.NodePool
+func (a *adapter) adaptCluster(resource block.Block, module block.Module) {
 
 	ipAllocationEnabled := types.BoolDefault(false, *resource.GetMetadata())
 	networkPolicyEnabled := types.BoolDefault(false, *resource.GetMetadata())
@@ -54,11 +75,6 @@ func adaptCluster(resource block.Block, module block.Module) gke.Cluster {
 	}
 
 	resourceLabelsVal := types.MapDefault(make(map[string]string), resource.GetMetadata())
-
-	nodePoolBlocks := module.GetReferencingResources(resource, "google_container_node_pool", "cluster")
-	for _, npb := range nodePoolBlocks {
-		nodePools = append(nodePools, adaptNodePool(npb))
-	}
 
 	if resource.HasChild("ip_allocation_policy") {
 		ipAllocationEnabled = types.Bool(true, *resource.GetMetadata())
@@ -103,8 +119,6 @@ func adaptCluster(resource block.Block, module block.Module) gke.Cluster {
 
 	if resource.HasChild("node_config") {
 		nodeConfig = adaptNodeConfig(resource.GetBlock("node_config"))
-	} else if len(nodePools) > 0 {
-		nodeConfig = nodePools[0].NodeConfig
 	}
 
 	enableShieldedNodes := resource.GetAttribute("enable_shielded_nodes").AsBoolValueOrDefault(true, resource)
@@ -124,8 +138,8 @@ func adaptCluster(resource block.Block, module block.Module) gke.Cluster {
 
 	removeDefaultNodePool := resource.GetAttribute("remove_default_node_pool").AsBoolValueOrDefault(false, resource)
 
-	return gke.Cluster{
-		NodePools: nodePools,
+	a.clusterMap[resource.ID()] = gke.Cluster{
+		Metadata: resource.Metadata(),
 		IPAllocationPolicy: gke.IPAllocationPolicy{
 			Enabled: ipAllocationEnabled,
 		},
@@ -151,10 +165,15 @@ func adaptCluster(resource block.Block, module block.Module) gke.Cluster {
 		ResourceLabels:        resourceLabelsVal,
 		RemoveDefaultNodePool: removeDefaultNodePool,
 	}
-
 }
 
-func adaptNodePool(resource block.Block) gke.NodePool {
+func (a *adapter) adaptNodePools() {
+	for _, nodePoolBlock := range a.modules.GetResourcesByType("google_container_node_pool") {
+		a.adaptNodePool(nodePoolBlock)
+	}
+}
+
+func (a *adapter) adaptNodePool(resource block.Block) {
 	autoRepair := types.BoolDefault(false, *resource.GetMetadata())
 	autoUpgrade := types.BoolDefault(false, *resource.GetMetadata())
 
@@ -178,12 +197,28 @@ func adaptNodePool(resource block.Block) gke.NodePool {
 		nodeConfig = adaptNodeConfig(resource.GetBlock("node_config"))
 	}
 
-	return gke.NodePool{
+	nodePool := gke.NodePool{
 		Management: gke.Management{
 			EnableAutoRepair:  autoRepair,
 			EnableAutoUpgrade: autoUpgrade,
 		},
 		NodeConfig: nodeConfig,
+	}
+
+	clusterAttr := resource.GetAttribute("cluster")
+	if referencedCluster, err := a.modules.GetReferencedBlock(clusterAttr, resource); err == nil {
+		if referencedCluster.TypeLabel() == "google_container_cluster" {
+			if cluster, ok := a.clusterMap[referencedCluster.ID()]; ok {
+				cluster.NodePools = append(cluster.NodePools, nodePool)
+				a.clusterMap[referencedCluster.ID()] = cluster
+				return
+			}
+		}
+	}
+
+	// we didn't find a cluster to put the nodepool in, so create a placeholder
+	a.clusterMap[uuid.NewString()] = gke.Cluster{
+		NodePools: []gke.NodePool{nodePool},
 	}
 }
 
@@ -231,7 +266,7 @@ func adaptMasterAuth(resource block.Block) gke.MasterAuth {
 func adaptMasterAuthNetworks(attribute block.Attribute) gke.MasterAuthorizedNetworks {
 	var cidrs []types.StringValue
 
-	attribute.Each(func(key cty.Value, val cty.Value) {
+	attribute.Each(func(_ cty.Value, val cty.Value) {
 		m := val.AsValueMap()
 		blocks, ok := m["cidr_blocks"]
 		if !ok {

@@ -5,7 +5,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) iam.IAM {
+func Adapt(modules block.Modules) iam.IAM {
 	return iam.IAM{
 		PasswordPolicy: adaptPasswordPolicy(modules),
 		Policies:       adaptPolicies(modules),

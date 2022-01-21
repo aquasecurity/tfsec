@@ -23,17 +23,20 @@ Where possible, segments should be broken into smaller subnets.`,
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/security/fundamentals/network-best-practices",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicEgressGoodExamples,
-            BadExamples:         terraformNoPublicEgressBadExamples,
-            Links:               terraformNoPublicEgressLinks,
-            RemediationMarkdown: terraformNoPublicEgressRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicEgressGoodExamples,
+			BadExamples:         terraformNoPublicEgressBadExamples,
+			Links:               terraformNoPublicEgressLinks,
+			RemediationMarkdown: terraformNoPublicEgressRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.Azure.Network.SecurityGroups {
-			for _, rule := range group.OutboundAllowRules {
+			for _, rule := range group.Rules {
+				if rule.Outbound.IsFalse() || rule.Allow.IsFalse() {
+					continue
+				}
 				for _, ip := range rule.DestinationAddresses {
 					if cidr.IsPublic(ip.Value()) {
 						results.Add(

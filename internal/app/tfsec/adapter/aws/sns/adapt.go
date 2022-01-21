@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) sns.SNS {
+func Adapt(modules block.Modules) sns.SNS {
 	return sns.SNS{
 		Topics: adaptTopics(modules),
 	}
 }
 
-func adaptTopics(modules []block.Module) []sns.Topic {
+func adaptTopics(modules block.Modules) []sns.Topic {
 	var topics []sns.Topic
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_sns_topic") {

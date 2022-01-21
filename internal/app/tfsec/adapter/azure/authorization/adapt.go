@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) authorization.Authorization {
+func Adapt(modules block.Modules) authorization.Authorization {
 	return authorization.Authorization{
 		RoleDefinitions: adaptRoleDefinitions(modules),
 	}
 }
 
-func adaptRoleDefinitions(modules []block.Module) []authorization.RoleDefinition {
+func adaptRoleDefinitions(modules block.Modules) []authorization.RoleDefinition {
 	var roleDefinitions []authorization.RoleDefinition
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("azurerm_role_definition") {

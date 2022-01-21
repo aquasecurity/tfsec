@@ -6,14 +6,14 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) athena.Athena {
+func Adapt(modules block.Modules) athena.Athena {
 	return athena.Athena{
 		Databases:  adaptDatabases(modules),
 		Workgroups: adaptWorkgroups(modules),
 	}
 }
 
-func adaptDatabases(modules []block.Module) []athena.Database {
+func adaptDatabases(modules block.Modules) []athena.Database {
 	var databases []athena.Database
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_athena_database") {
@@ -23,7 +23,7 @@ func adaptDatabases(modules []block.Module) []athena.Database {
 	return databases
 }
 
-func adaptWorkgroups(modules []block.Module) []athena.Workgroup {
+func adaptWorkgroups(modules block.Modules) []athena.Workgroup {
 	var workgroups []athena.Workgroup
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_athena_workgroup") {

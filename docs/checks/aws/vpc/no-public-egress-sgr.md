@@ -20,9 +20,10 @@ Set a more restrictive cidr range
 The following example will fail the aws-vpc-no-public-egress-sgr check.
 ```terraform
 
- resource "aws_security_group_rule" "bad_example" {
- 	type = "egress"
- 	cidr_blocks = ["0.0.0.0/0"]
+ resource "aws_security_group" "bad_example" {
+ 	egress {
+ 		cidr_blocks = ["0.0.0.0/0"]
+ 	}
  }
  
 ```
@@ -34,9 +35,10 @@ The following example will fail the aws-vpc-no-public-egress-sgr check.
 The following example will pass the aws-vpc-no-public-egress-sgr check.
 ```terraform
 
- resource "aws_security_group_rule" "good_example" {
- 	type = "egress"
- 	cidr_blocks = ["10.0.0.0/16"]
+ resource "aws_security_group" "good_example" {
+ 	egress {
+ 		cidr_blocks = ["1.2.3.4/32"]
+ 	}
  }
  
 ```
@@ -46,7 +48,7 @@ The following example will pass the aws-vpc-no-public-egress-sgr check.
 ### Links
 
 
-- [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule){:target="_blank" rel="nofollow noreferrer noopener"}
+- [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group){:target="_blank" rel="nofollow noreferrer noopener"}
 
 - [https://docs.aws.amazon.com/whitepapers/latest/building-scalable-secure-multi-vpc-network-infrastructure/centralized-egress-to-internet.html](https://docs.aws.amazon.com/whitepapers/latest/building-scalable-secure-multi-vpc-network-infrastructure/centralized-egress-to-internet.html){:target="_blank" rel="nofollow noreferrer noopener"}
 

@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) workspaces.WorkSpaces {
+func Adapt(modules block.Modules) workspaces.WorkSpaces {
 	return workspaces.WorkSpaces{
 		WorkSpaces: adaptWorkspaces(modules),
 	}
 }
 
-func adaptWorkspaces(modules []block.Module) []workspaces.WorkSpace {
+func adaptWorkspaces(modules block.Modules) []workspaces.WorkSpace {
 	var workspaces []workspaces.WorkSpace
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_workspaces_workspace") {

@@ -20,16 +20,19 @@ var CheckPostgresConfigurationLogConnectionThrottling = rules.Register(
 		Links: []string{
 			"https://docs.microsoft.com/en-us/azure/postgresql/concepts-server-logs#configure-logging",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformPostgresConfigurationConnectionThrottlingGoodExamples,
-            BadExamples:         terraformPostgresConfigurationConnectionThrottlingBadExamples,
-            Links:               terraformPostgresConfigurationConnectionThrottlingLinks,
-            RemediationMarkdown: terraformPostgresConfigurationConnectionThrottlingRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformPostgresConfigurationConnectionThrottlingGoodExamples,
+			BadExamples:         terraformPostgresConfigurationConnectionThrottlingBadExamples,
+			Links:               terraformPostgresConfigurationConnectionThrottlingLinks,
+			RemediationMarkdown: terraformPostgresConfigurationConnectionThrottlingRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.PostgreSQLServers {
+			if !server.IsManaged() {
+				continue
+			}
 			if server.Config.ConnectionThrottling.IsFalse() {
 				results.Add(
 					"Database server is not configured to throttle connections.",

@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) oracle.Oracle {
+func Adapt(modules block.Modules) oracle.Oracle {
 	return oracle.Oracle{
 		Compute: adaptCompute(modules),
 	}
 }
 
-func adaptCompute(modules []block.Module) oracle.Compute {
+func adaptCompute(modules block.Modules) oracle.Compute {
 	var compute oracle.Compute
 
 	for _, module := range modules {

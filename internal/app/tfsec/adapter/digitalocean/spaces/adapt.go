@@ -7,13 +7,13 @@ import (
 	"github.com/google/uuid"
 )
 
-func Adapt(modules []block.Module) spaces.Spaces {
+func Adapt(modules block.Modules) spaces.Spaces {
 	return spaces.Spaces{
 		Buckets: adaptBuckets(modules),
 	}
 }
 
-func adaptBuckets(modules []block.Module) []spaces.Bucket {
+func adaptBuckets(modules block.Modules) []spaces.Bucket {
 	bucketMap := make(map[string]spaces.Bucket)
 	for _, module := range modules {
 

@@ -3,6 +3,9 @@ package custom
 import (
 	"testing"
 
+	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/tfsec/pkg/provider"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -59,7 +62,8 @@ resource "aws_instance" "bastion" {
   }
 }
 `)
-	assert.Len(t, scanResults, 0)
+	customResults := filterCustomResults(scanResults)
+	assert.Len(t, customResults, 0)
 }
 
 func TestInstanceMetadataEndpointMissing(t *testing.T) {
@@ -67,7 +71,8 @@ func TestInstanceMetadataEndpointMissing(t *testing.T) {
 resource "aws_instance" "bastion" {
 }
 `)
-	assert.Len(t, scanResults, 1)
+	customResults := filterCustomResults(scanResults)
+	assert.Len(t, customResults, 1)
 }
 
 func TestOneSubmatchHasWrongValue(t *testing.T) {
@@ -80,5 +85,17 @@ resource "aws_instance" "bastion" {
   }
 }
 `)
-	assert.Len(t, scanResults, 1)
+
+	customResults := filterCustomResults(scanResults)
+	assert.Len(t, customResults, 1)
+}
+
+func filterCustomResults(scanResults []rules.Result) []rules.Result {
+	var customResults []rules.Result
+	for _, result := range scanResults {
+		if result.Rule().Provider.DisplayName() == provider.CustomProvider.DisplayName() {
+			customResults = append(customResults, result)
+		}
+	}
+	return customResults
 }

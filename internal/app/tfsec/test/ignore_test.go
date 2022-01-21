@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/aquasecurity/tfsec/internal/app/tfsec/legacy"
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil"
 
 	"github.com/aquasecurity/defsec/provider"
@@ -23,7 +24,6 @@ import (
 )
 
 var exampleRule = rule.Rule{
-	LegacyID: "ABC123",
 	Base: rules.Register(rules.Rule{
 		Provider:  provider.AWSProvider,
 		Service:   "service",
@@ -82,6 +82,7 @@ resource "bad" "my-rule" {
 func Test_IgnoreLineOnTheLine(t *testing.T) {
 	scanner.RegisterCheckRule(exampleRule)
 	defer scanner.DeregisterCheckRule(exampleRule)
+	legacy.InvertedIDs[exampleRule.Base.Rule().LongID()] = "ABC123"
 	results := testutil.ScanHCL(`
 resource "bad" "my-rule" {
     secure = false # tfsec:ignore:ABC123
@@ -94,6 +95,7 @@ func Test_IgnoreLineWithCarriageReturn(t *testing.T) {
 	scanner.RegisterCheckRule(exampleRule)
 	defer scanner.DeregisterCheckRule(exampleRule)
 
+	legacy.InvertedIDs[exampleRule.Base.Rule().LongID()] = "ABC123"
 	results := testutil.ScanHCL(strings.ReplaceAll(`
 resource "bad" "my-rule" {
     secure = false # tfsec:ignore:ABC123
@@ -104,11 +106,12 @@ resource "bad" "my-rule" {
 
 func Test_IgnoreSpecific(t *testing.T) {
 
+	legacy.InvertedIDs[exampleRule.Base.Rule().LongID()] = "ABC123"
+
 	scanner.RegisterCheckRule(exampleRule)
 	defer scanner.DeregisterCheckRule(exampleRule)
 
 	r2 := rule.Rule{
-		LegacyID: "DEF456",
 		Base: rules.Register(rules.Rule{
 			Provider:  provider.AWSProvider,
 			Service:   "service",
@@ -135,7 +138,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 `, t)
 	require.Len(t, results, 2)
 	assert.Equal(t, results[0].Rule().LongID(), "aws-service-def456")
-	assert.Equal(t, scanner.FindLegacyID(results[1].Rule().LongID()), "DEF456")
+	assert.Equal(t, results[1].Rule().LongID(), "aws-service-def456")
 
 }
 

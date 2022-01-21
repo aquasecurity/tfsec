@@ -6,13 +6,13 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) codebuild.CodeBuild {
+func Adapt(modules block.Modules) codebuild.CodeBuild {
 	return codebuild.CodeBuild{
 		Projects: adaptProjects(modules),
 	}
 }
 
-func adaptProjects(modules []block.Module) []codebuild.Project {
+func adaptProjects(modules block.Modules) []codebuild.Project {
 	var projects []codebuild.Project
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_codebuild_project") {

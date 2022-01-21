@@ -21,21 +21,9 @@ build:
 generate-docs:
 	@go run ./cmd/tfsec-docs
 
-.PHONY: generate-codes-json
-generate-codes-json:
-	@go run ./cmd/tfsec-codes
-
 .PHONY: publish-docs
 publish-docs: generate-docs
 	@python3 ./build_checks_nav.py
-
-.PHONY: new-check
-new-check:
-	@go run ./cmd/tfsec-skeleton
-
-.PHONY: lint-pr-checks
-lint-pr-checks:
-	@go run ./cmd/tfsec-pr-lint
 
 .PHONY: tagger
 tagger:
@@ -50,7 +38,7 @@ tagger:
 .PHONY: typos
 typos:
 	which codespell || pip install codespell
-	codespell -S vendor,funcs,.terraform,.git --ignore-words .codespellignore -f
+	codespell -S vendor,funcs,.terraform,.git,go.sum --ignore-words .codespellignore -f
 
 .PHONY: quality
 quality:
@@ -60,7 +48,7 @@ quality:
 .PHONY: fix-typos
 fix-typos:
 	which codespell || pip install codespell
-	codespell -S vendor,funcs,.terraform --ignore-words .codespellignore -f -w -i1
+	codespell -S vendor,funcs,.terraform,go.sum --ignore-words .codespellignore -f -w -i1
 
 .PHONY: clone-image-github
 clone-image-github:
@@ -74,12 +62,8 @@ clone-image-tfsec:
 sanity: test
 	go run ./cmd/tfsec -s -p --force-all-dirs ./example > /dev/null
 
-.PHONY: pr-lint
-pr-lint: 
-	go run ./cmd/tfsec-pr-lint
-
 .PHONY: pr-ready
-pr-ready: quality sanity pr-lint typos
+pr-ready: quality sanity typos
 
 .PHONY: bench
 bench:

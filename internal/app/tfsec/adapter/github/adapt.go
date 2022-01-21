@@ -7,7 +7,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) github.GitHub {
+func Adapt(modules block.Modules) github.GitHub {
 	return github.GitHub{
 		Repositories:       repositories.Adapt(modules),
 		EnvironmentSecrets: secrets.Adapt(modules),

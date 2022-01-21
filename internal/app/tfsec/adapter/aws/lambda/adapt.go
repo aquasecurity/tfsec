@@ -6,31 +6,54 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) lambda.Lambda {
+func Adapt(modules block.Modules) lambda.Lambda {
+
+	adapter := adapter{
+		permissionIDs: modules.GetChildResourceIDMapByType("aws_lambda_permission"),
+	}
+
 	return lambda.Lambda{
-		Functions: adaptFunctions(modules),
+		Functions: adapter.adaptFunctions(modules),
 	}
 }
 
-func adaptFunctions(modules []block.Module) []lambda.Function {
+type adapter struct {
+	permissionIDs block.ResourceIDResolutions
+}
+
+func (a *adapter) adaptFunctions(modules block.Modules) []lambda.Function {
+
 	var functions []lambda.Function
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_lambda_function") {
-			functions = append(functions, adaptFunction(resource, modules))
+			functions = append(functions, a.adaptFunction(resource, modules))
 		}
 	}
+
+	orphanResources := modules.GetResourceByIDs(a.permissionIDs.Orphans()...)
+
+	if len(orphanResources) > 0 {
+		orphanage := lambda.Function{
+			Metadata: types.NewUnmanagedMetadata(),
+		}
+		for _, permission := range orphanResources {
+			orphanage.Permissions = append(orphanage.Permissions, a.adaptPermission(permission))
+		}
+		functions = append(functions, orphanage)
+	}
+
 	return functions
 }
 
-func adaptFunction(function block.Block, modules []block.Module) lambda.Function {
+func (a *adapter) adaptFunction(function block.Block, modules []block.Module) lambda.Function {
 	return lambda.Function{
 		Metadata:    function.Metadata(),
-		Tracing:     adaptTracing(function),
-		Permissions: adaptPermissions(function, modules),
+		Tracing:     a.adaptTracing(function),
+		Permissions: a.adaptPermissions(modules),
 	}
 }
 
-func adaptTracing(function block.Block) lambda.Tracing {
+func (a *adapter) adaptTracing(function block.Block) lambda.Tracing {
 	if tracingConfig := function.GetBlock("tracing_config"); tracingConfig.IsNotNil() {
 		return lambda.Tracing{
 			Mode: tracingConfig.GetAttribute("mode").AsStringValueOrDefault("", tracingConfig),
@@ -42,19 +65,20 @@ func adaptTracing(function block.Block) lambda.Tracing {
 	}
 }
 
-func adaptPermissions(function block.Block, modules []block.Module) []lambda.Permission {
+func (a *adapter) adaptPermissions(modules []block.Module) []lambda.Permission {
 	var permissions []lambda.Permission
 	for _, module := range modules {
-		for _, permission := range module.GetResourcesByType("aws_lambda_permission") {
-			var functionName = function.GetAttribute("function_name").AsStringValueOrDefault("", function)
-			var permissionFunctionName = permission.GetAttribute("function_name").AsStringValueOrDefault("", permission)
-			if functionName.EqualTo(permissionFunctionName.Value()) {
-				permissions = append(permissions, lambda.Permission{
-					Principal: permission.GetAttribute("principal").AsStringValueOrDefault("", permission),
-					SourceARN: permission.GetAttribute("source_arn").AsStringValueOrDefault("", permission),
-				})
-			}
+		for _, p := range module.GetResourcesByType("aws_lambda_permission") {
+
+			permissions = append(permissions, a.adaptPermission(p))
 		}
 	}
 	return permissions
+}
+
+func (a *adapter) adaptPermission(permission block.Block) lambda.Permission {
+	return lambda.Permission{
+		Principal: permission.GetAttribute("principal").AsStringValueOrDefault("", permission),
+		SourceARN: permission.GetAttribute("source_arn").AsStringValueOrDefault("", permission),
+	}
 }

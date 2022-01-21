@@ -8,11 +8,11 @@ import (
 	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
 )
 
-func Adapt(modules []block.Module) compute.Compute {
+func Adapt(modules block.Modules) compute.Compute {
 	return adaptCompute(modules)
 }
 
-func adaptCompute(modules []block.Module) compute.Compute {
+func adaptCompute(modules block.Modules) compute.Compute {
 
 	var managedDisks []compute.ManagedDisk
 	var linuxVirtualMachines []compute.LinuxVirtualMachine
