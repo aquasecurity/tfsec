@@ -21,10 +21,8 @@ func output(baseFilename string, formats []string, dir string, results []rules.R
 	for i, format := range formats {
 		if filename, err := outputFormat(i, baseFilename, format, dir, results); err != nil {
 			return err
-		} else {
-			if filename != "" {
-				files = append(files, filename)
-			}
+		} else if filename != "" {
+			files = append(files, filename)
 		}
 	}
 
