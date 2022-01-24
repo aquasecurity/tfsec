@@ -1,11 +1,24 @@
 package formatters
 
 import (
-	"io"
-
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/liamg/gifwrap/pkg/ascii"
 )
 
-func FormatGif(w io.Writer, results []rules.Result, baseDir string, options ...FormatterOption) error {
-	return FormatDefault(w, results, baseDir, append(options, PassingGif)...)
+func outputGif(b configurableFormatter, results []rules.Result) error {
+
+	failCount := len(results) - countPassedResults(results)
+
+	gifSrc := "https://media.giphy.com/media/kyLYXonQYYfwYDIeZl/source.gif"
+
+	if failCount > 0 {
+		gifSrc = "https://i.giphy.com/media/A1SxC5HRrD3MY/source.gif"
+	}
+
+	if renderer, err := ascii.FromURL(gifSrc); err == nil {
+		renderer.SetFill(true)
+		_ = renderer.PlayOnce()
+	}
+
+	return outputDefault(b, results)
 }

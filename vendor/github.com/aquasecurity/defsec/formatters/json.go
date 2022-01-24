@@ -2,21 +2,20 @@ package formatters
 
 import (
 	"encoding/json"
-	"io"
 
 	"github.com/aquasecurity/defsec/rules"
 )
 
-type JSONOutput struct {
-	Results []rules.FlatResult `json:"results"`
-}
-
-func FormatJSON(w io.Writer, results []rules.Result, _ string, options ...FormatterOption) error {
-	jsonWriter := json.NewEncoder(w)
+func outputJSON(b configurableFormatter, results []rules.Result) error {
+	jsonWriter := json.NewEncoder(b.Writer())
 	jsonWriter.SetIndent("", "\t")
 	var flatResults []rules.FlatResult
 	for _, result := range results {
-		flatResults = append(flatResults, result.Flatten())
+		flat := result.Flatten()
+		flat.Links = b.GetLinks(result)
+		flatResults = append(flatResults, flat)
 	}
-	return jsonWriter.Encode(JSONOutput{flatResults})
+	return jsonWriter.Encode(struct {
+		Results []rules.FlatResult `json:"results"`
+	}{flatResults})
 }

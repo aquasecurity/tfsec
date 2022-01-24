@@ -21,19 +21,19 @@ var CheckNoPublicIngressSgr = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicIngressSgrGoodExamples,
-            BadExamples:         terraformNoPublicIngressSgrBadExamples,
-            Links:               terraformNoPublicIngressSgrLinks,
-            RemediationMarkdown: terraformNoPublicIngressSgrRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationNoPublicIngressSgrGoodExamples,
-            BadExamples:         cloudFormationNoPublicIngressSgrBadExamples,
-            Links:               cloudFormationNoPublicIngressSgrLinks,
-            RemediationMarkdown: cloudFormationNoPublicIngressSgrRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicIngressSgrGoodExamples,
+			BadExamples:         terraformNoPublicIngressSgrBadExamples,
+			Links:               terraformNoPublicIngressSgrLinks,
+			RemediationMarkdown: terraformNoPublicIngressSgrRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationNoPublicIngressSgrGoodExamples,
+			BadExamples:         cloudFormationNoPublicIngressSgrBadExamples,
+			Links:               cloudFormationNoPublicIngressSgrLinks,
+			RemediationMarkdown: cloudFormationNoPublicIngressSgrRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.AWS.VPC.SecurityGroups {
@@ -44,7 +44,7 @@ var CheckNoPublicIngressSgr = rules.Register(
 						failed = true
 						results.Add(
 							"Security group rule allows ingress from public internet.",
-							&group,
+							&rule,
 							block,
 						)
 					}
