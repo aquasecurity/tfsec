@@ -347,8 +347,9 @@ github.com/liamg/gifwrap v0.0.6/go.mod h1:oW1r2vIWLYyxW+U0io7YbpPSDIJ79FTlZ+hPnX
 github.com/liamg/iamgo v0.0.2 h1:XWAPL98zyXxdCfKlEv/IaZIPGnLhc6obJ9p6p09LwnI=
 github.com/liamg/iamgo v0.0.2/go.mod h1:qMGOfySmVFw77/NNCY1Lk5Ez2ER5Pwz0xizTLpIbC08=
 github.com/liamg/tml v0.3.0/go.mod h1:0h4EAV/zBOsqI91EWONedjRpO8O0itjGJVd+wG5eC+E=
-github.com/liamg/tml v0.4.0 h1:iZwysIBOaGz6MuaPT/+PCZgvkpgoqBu3ZI6cgApK0zc=
 github.com/liamg/tml v0.4.0/go.mod h1:0h4EAV/zBOsqI91EWONedjRpO8O0itjGJVd+wG5eC+E=
+github.com/liamg/tml v0.6.0 h1:yOC/Q9p9Io3J11U9LdYVIwpRTnTE1GPMNFLrygkmE2Y=
+github.com/liamg/tml v0.6.0/go.mod h1:0h4EAV/zBOsqI91EWONedjRpO8O0itjGJVd+wG5eC+E=
 github.com/lucasb-eyer/go-colorful v1.0.3 h1:QIbQXiugsb+q10B+MI+7DI1oQLdmnep86tWFlaaUAac=
 github.com/lucasb-eyer/go-colorful v1.0.3/go.mod h1:R4dSotOR9KMtayYi1e77YzuveK+i7ruzyGqttikkLy0=
 github.com/lyft/protoc-gen-star v0.5.3/go.mod h1:V0xaHgaf5oCCqmcxYcWiDfTiKsZsRc87/1qhoTACD8w=

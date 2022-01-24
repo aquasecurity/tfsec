@@ -309,7 +309,7 @@ github.com/liamg/gifwrap/pkg/ascii
 # github.com/liamg/iamgo v0.0.2
 ## explicit; go 1.17
 github.com/liamg/iamgo
-# github.com/liamg/tml v0.4.0
+# github.com/liamg/tml v0.6.0
 ## explicit; go 1.12
 github.com/liamg/tml
 # github.com/lucasb-eyer/go-colorful v1.0.3

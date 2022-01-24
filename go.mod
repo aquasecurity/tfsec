@@ -13,7 +13,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.11.1
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/liamg/iamgo v0.0.2
-	github.com/liamg/tml v0.4.0
+	github.com/liamg/tml v0.6.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/owenrumney/squealer v0.3.1
