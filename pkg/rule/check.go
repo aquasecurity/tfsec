@@ -9,8 +9,8 @@ import (
 
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/state"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
+	"github.com/aquasecurity/tfsec/internal/pkg/block"
+	"github.com/aquasecurity/tfsec/internal/pkg/debug"
 )
 
 func (r *Rule) CheckAgainstState(s *state.State) rules.Results {

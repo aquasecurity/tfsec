@@ -3,7 +3,6 @@ package formatters
 import (
 	"encoding/xml"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -15,35 +14,35 @@ import (
 // see https://github.com/windyroad/JUnit-Schema/blob/master/JUnit.xsd
 // tested with CircleCI
 
-// JUnitTestSuite is a single JUnit test suite which may contain many
+// jUnitTestSuite is a single JUnit test suite which may contain many
 // testcases.
-type JUnitTestSuite struct {
+type jUnitTestSuite struct {
 	XMLName   xml.Name        `xml:"testsuite"`
 	Name      string          `xml:"name,attr"`
 	Failures  string          `xml:"failures,attr"`
 	Tests     string          `xml:"tests,attr"`
-	TestCases []JUnitTestCase `xml:"testcase"`
+	TestCases []jUnitTestCase `xml:"testcase"`
 }
 
-// JUnitTestCase is a single test case with its result.
-type JUnitTestCase struct {
+// jUnitTestCase is a single test case with its result.
+type jUnitTestCase struct {
 	XMLName   xml.Name      `xml:"testcase"`
 	Classname string        `xml:"classname,attr"`
 	Name      string        `xml:"name,attr"`
 	Time      string        `xml:"time,attr"`
-	Failure   *JUnitFailure `xml:"failure,omitempty"`
+	Failure   *jUnitFailure `xml:"failure,omitempty"`
 }
 
-// JUnitFailure contains data related to a failed test.
-type JUnitFailure struct {
+// jUnitFailure contains data related to a failed test.
+type jUnitFailure struct {
 	Message  string `xml:"message,attr"`
 	Type     string `xml:"type,attr"`
 	Contents string `xml:",chardata"`
 }
 
-func FormatJUnit(w io.Writer, results []rules.Result, _ string, options ...FormatterOption) error {
+func outputJUnit(b configurableFormatter, results []rules.Result) error {
 
-	output := JUnitTestSuite{
+	output := jUnitTestSuite{
 		Name:     filepath.Base(os.Args[0]),
 		Failures: fmt.Sprintf("%d", len(results)-countPassedResults(results)),
 		Tests:    fmt.Sprintf("%d", len(results)),
@@ -52,20 +51,20 @@ func FormatJUnit(w io.Writer, results []rules.Result, _ string, options ...Forma
 	for _, res := range results {
 		rng := res.NarrowestRange()
 		output.TestCases = append(output.TestCases,
-			JUnitTestCase{
+			jUnitTestCase{
 				Classname: rng.GetFilename(),
 				Name:      fmt.Sprintf("[%s][%s] - %s", res.Rule().LongID(), res.Severity(), res.Description()),
 				Time:      "0",
-				Failure:   buildFailure(res),
+				Failure:   buildFailure(b, res),
 			},
 		)
 	}
 
-	if _, err := w.Write([]byte(xml.Header)); err != nil {
+	if _, err := b.Writer().Write([]byte(xml.Header)); err != nil {
 		return err
 	}
 
-	xmlEncoder := xml.NewEncoder(w)
+	xmlEncoder := xml.NewEncoder(b.Writer())
 	xmlEncoder.Indent("", "\t")
 
 	return xmlEncoder.Encode(output)
@@ -110,17 +109,18 @@ func highlightCodeJunit(res rules.Result) string {
 	return output
 }
 
-func buildFailure(res rules.Result) *JUnitFailure {
+func buildFailure(b configurableFormatter, res rules.Result) *jUnitFailure {
 	if res.Status() == rules.StatusPassed {
 		return nil
 	}
 
 	var link string
-	if len(res.Rule().Links) > 0 {
-		link = res.Rule().Links[0]
+	links := b.GetLinks(res)
+	if len(links) > 0 {
+		link = links[0]
 	}
 
-	return &JUnitFailure{
+	return &jUnitFailure{
 		Message: res.Description(),
 		Contents: fmt.Sprintf("%s\n%s\n%s",
 			res.NarrowestRange().String(),

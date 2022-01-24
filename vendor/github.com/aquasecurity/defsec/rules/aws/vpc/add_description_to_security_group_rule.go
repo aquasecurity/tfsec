@@ -22,19 +22,19 @@ Simplifies auditing, debugging, and managing security groups.`,
 		Links: []string{
 			"https://www.cloudconformity.com/knowledge-base/aws/EC2/security-group-rules-description.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformAddDescriptionToSecurityGroupRuleGoodExamples,
-            BadExamples:         terraformAddDescriptionToSecurityGroupRuleBadExamples,
-            Links:               terraformAddDescriptionToSecurityGroupRuleLinks,
-            RemediationMarkdown: terraformAddDescriptionToSecurityGroupRuleRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationAddDescriptionToSecurityGroupRuleGoodExamples,
-            BadExamples:         cloudFormationAddDescriptionToSecurityGroupRuleBadExamples,
-            Links:               cloudFormationAddDescriptionToSecurityGroupRuleLinks,
-            RemediationMarkdown: cloudFormationAddDescriptionToSecurityGroupRuleRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformAddDescriptionToSecurityGroupRuleGoodExamples,
+			BadExamples:         terraformAddDescriptionToSecurityGroupRuleBadExamples,
+			Links:               terraformAddDescriptionToSecurityGroupRuleLinks,
+			RemediationMarkdown: terraformAddDescriptionToSecurityGroupRuleRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationAddDescriptionToSecurityGroupRuleGoodExamples,
+			BadExamples:         cloudFormationAddDescriptionToSecurityGroupRuleBadExamples,
+			Links:               cloudFormationAddDescriptionToSecurityGroupRuleLinks,
+			RemediationMarkdown: cloudFormationAddDescriptionToSecurityGroupRuleRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.AWS.VPC.SecurityGroups {
@@ -42,8 +42,8 @@ Simplifies auditing, debugging, and managing security groups.`,
 				if rule.Description.IsEmpty() {
 					results.Add(
 						"Security group rule does not have a description.",
-						&group,
 						&rule,
+						rule.Description,
 					)
 				} else {
 					results.AddPassed(&rule)

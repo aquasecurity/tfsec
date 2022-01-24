@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	_ "github.com/aquasecurity/tfsec/internal/pkg/rules"
+	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
 	"github.com/spf13/cobra"
 )
 
