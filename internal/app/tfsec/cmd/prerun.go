@@ -49,7 +49,7 @@ func prerun(_ *cobra.Command, args []string) {
 			dir, err = os.Getwd()
 		}
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Directory was not provided, and tfsec encountered an error trying to determine currnt working directory: %s\n", err)
+			fmt.Fprintf(os.Stderr, "Directory was not provided, and tfsec encountered an error trying to determine the current working directory: %s\n", err)
 			os.Exit(1)
 		}
 

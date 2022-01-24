@@ -24,7 +24,7 @@ For a richer experience, there are many additional command line arguments that y
 | `--exclude-downloaded-modules`                           |            | Remove results for downloaded modules in .terraform folder                               |
 | `--filter-results [comma,separated,riles,to,check]`      |            | Filter results to return specific checks only (supports comma-delimited input).          |
 | `--force-all-dirs`                                       |            | Don't search for tf files, include everything below provided directory.                  |
-| `--format [default,json,csv,checkstyle,junit,sarif,gif]` | `-f`       | Select output format: default, json, csv, checkstyle, junit, sarif. To use multiple formats, seperate with a comma and specify a base output filename with --out. A file will be written for each type. The first format will additionally be written stdout. |
+| `--format [default,json,csv,checkstyle,junit,sarif,gif]` | `-f`       | Select output format: default, json, csv, checkstyle, junit, sarif. To use multiple formats, separate with a comma and specify a base output filename with --out. A file will be written for each type. The first format will additionally be written stdout. |
 | `--help`                                                 | `-h`       | help for tfsec                                                                           |
 | `--ignore-hcl-errors`                                    |            | Stop and report an error if an HCL parse error is encountered                            |
 | `--include-ignored`                                      |            | Ignore comments with have no effect and all resources will be scanned                    |
