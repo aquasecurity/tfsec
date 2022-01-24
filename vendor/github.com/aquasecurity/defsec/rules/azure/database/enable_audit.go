@@ -30,7 +30,7 @@ var CheckEnableAudit = rules.Register(
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, server := range s.Azure.Database.MSSQLServers {
-			if len(server.ExtendedAuditingPolicies) == 0 {
+			if len(server.ExtendedAuditingPolicies) == 0 && server.IsManaged() {
 				results.Add(
 					"Server does not have an extended audit policy configured.",
 					&server,

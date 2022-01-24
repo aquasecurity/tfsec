@@ -2,7 +2,7 @@ package rule
 
 import (
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
+	"github.com/aquasecurity/tfsec/internal/pkg/block"
 )
 
 // Rule is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.

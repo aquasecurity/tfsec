@@ -1,8 +1,8 @@
 package externalscan
 
 import (
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/debug"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/debug"
+	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
 )
 
 type Option func(e *ExternalScanner)
@@ -14,7 +14,7 @@ func OptionIncludePassed() Option {
 }
 
 func OptionDebugEnabled(debugEnabled bool) Option {
-	return func(e *ExternalScanner) {
+	return func(_ *ExternalScanner) {
 		debug.Enabled = debugEnabled
 	}
 }

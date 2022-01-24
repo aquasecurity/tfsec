@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/testutil/filesystem"
+	"github.com/aquasecurity/tfsec/internal/pkg/block"
+	"github.com/aquasecurity/tfsec/internal/pkg/parser"
+	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

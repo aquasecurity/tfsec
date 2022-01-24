@@ -32,7 +32,7 @@ linters-settings:
 
 issues:
   exclude-rules:
-    - path: internal/app/tfsec/funcs/
+    - path: internal/pkg/funcs/
       linters:
         - cyclop
         - errorlint

@@ -3,13 +3,12 @@ package formatters
 import (
 	"encoding/csv"
 	"fmt"
-	"io"
 	"strconv"
 
 	"github.com/aquasecurity/defsec/rules"
 )
 
-func FormatCSV(w io.Writer, results []rules.Result, _ string, _ ...FormatterOption) error {
+func outputCSV(b configurableFormatter, results []rules.Result) error {
 
 	records := [][]string{
 		{"file", "start_line", "end_line", "rule_id", "severity", "description", "link", "passed"},
@@ -17,8 +16,9 @@ func FormatCSV(w io.Writer, results []rules.Result, _ string, _ ...FormatterOpti
 
 	for _, res := range results {
 		var link string
-		if len(res.Rule().Links) > 0 {
-			link = res.Rule().Links[0]
+		links := b.GetLinks(res)
+		if len(links) > 0 {
+			link = links[0]
 		}
 
 		rng := res.CodeBlockMetadata().Range()
@@ -38,7 +38,7 @@ func FormatCSV(w io.Writer, results []rules.Result, _ string, _ ...FormatterOpti
 		})
 	}
 
-	csvWriter := csv.NewWriter(w)
+	csvWriter := csv.NewWriter(b.Writer())
 
 	for _, record := range records {
 		if err := csvWriter.Write(record); err != nil {

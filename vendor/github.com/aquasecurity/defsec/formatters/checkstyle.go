@@ -2,7 +2,6 @@ package formatters
 
 import (
 	"encoding/xml"
-	"io"
 
 	"github.com/aquasecurity/defsec/rules"
 )
@@ -26,7 +25,7 @@ type checkstyleOutput struct {
 	Files   []checkstyleFile `xml:"file"`
 }
 
-func FormatCheckStyle(w io.Writer, results []rules.Result, _ string, _ ...FormatterOption) error {
+func outputCheckStyle(b configurableFormatter, results []rules.Result) error {
 
 	output := checkstyleOutput{}
 
@@ -37,8 +36,9 @@ func FormatCheckStyle(w io.Writer, results []rules.Result, _ string, _ ...Format
 			continue
 		}
 		var link string
-		if len(res.Rule().Links) > 0 {
-			link = res.Rule().Links[0]
+		links := b.GetLinks(res)
+		if len(links) > 0 {
+			link = links[0]
 		}
 
 		rng := res.CodeBlockMetadata().Range()
@@ -69,11 +69,11 @@ func FormatCheckStyle(w io.Writer, results []rules.Result, _ string, _ ...Format
 		)
 	}
 
-	if _, err := w.Write([]byte(xml.Header)); err != nil {
+	if _, err := b.Writer().Write([]byte(xml.Header)); err != nil {
 		return err
 	}
 
-	xmlEncoder := xml.NewEncoder(w)
+	xmlEncoder := xml.NewEncoder(b.Writer())
 	xmlEncoder.Indent("", "\t")
 
 	return xmlEncoder.Encode(output)

@@ -1,7 +1,6 @@
 package formatters
 
 import (
-	"io"
 	"path/filepath"
 
 	"github.com/aquasecurity/defsec/rules"
@@ -10,7 +9,7 @@ import (
 	"github.com/owenrumney/go-sarif/v2/sarif"
 )
 
-func FormatSarif(w io.Writer, results []rules.Result, baseDir string, _ ...FormatterOption) error {
+func outputSARIF(b configurableFormatter, results []rules.Result) error {
 	report, err := sarif.New(sarif.Version210)
 	if err != nil {
 		return err
@@ -19,19 +18,21 @@ func FormatSarif(w io.Writer, results []rules.Result, baseDir string, _ ...Forma
 	run := sarif.NewRunWithInformationURI("tfsec", "https://tfsec.dev")
 	report.AddRun(run)
 
+	baseDir := b.BaseDir()
+
 	for _, res := range results {
 
 		if res.Status() == rules.StatusPassed {
 			continue
 		}
 
-		var link string
-		if len(res.Rule().Links) > 0 {
-			link = res.Rule().Links[0]
-		}
 		rule := run.AddRule(res.Rule().LongID()).
-			WithDescription(res.Rule().Summary).
-			WithHelpURI(link)
+			WithDescription(res.Rule().Summary)
+
+		links := b.GetLinks(res)
+		if len(links) > 0 {
+			rule.WithHelpURI(links[0])
+		}
 
 		rng := res.NarrowestRange()
 
@@ -68,5 +69,5 @@ func FormatSarif(w io.Writer, results []rules.Result, baseDir string, _ ...Forma
 			AddLocation(sarif.NewLocation().WithPhysicalLocation(location))
 	}
 
-	return report.PrettyWrite(w)
+	return report.PrettyWrite(b.Writer())
 }

@@ -8,11 +8,11 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/block"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/custom"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/parser"
-	_ "github.com/aquasecurity/tfsec/internal/app/tfsec/rules"
-	"github.com/aquasecurity/tfsec/internal/app/tfsec/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/block"
+	"github.com/aquasecurity/tfsec/internal/pkg/custom"
+	"github.com/aquasecurity/tfsec/internal/pkg/parser"
+	_ "github.com/aquasecurity/tfsec/internal/pkg/rules"
+	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
 )
 
 type ExternalScanner struct {
