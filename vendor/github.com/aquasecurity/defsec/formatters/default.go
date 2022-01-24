@@ -51,7 +51,6 @@ func outputDefault(b configurableFormatter, results []rules.Result) error {
 }
 
 const lineNoWidth = 7
-const severityWidth = 8
 
 var indent = strings.Repeat(" ", lineNoWidth+2)
 
@@ -65,21 +64,18 @@ func printResult(b configurableFormatter, res rules.Result, i int) {
 	}
 
 	width, _ := terminal.Size()
+	if width <= 0 {
+		width = 80
+	}
+
 	w := b.Writer()
 
-	maxDescLength := width - (len(fmt.Sprintf("%d", i)) + 5 + severityWidth)
-	description := res.Description()
-	if maxDescLength < 10 {
-		description = ""
-	} else if len(description) > maxDescLength {
-		description = description[:maxDescLength-3] + "..."
-	}
 	tml.Fprintf(
 		w,
 		" <italic>#%d</italic> %s <bold>%s</bold>\n",
 		i,
 		severityFormatted,
-		description,
+		res.Description(),
 	)
 
 	rng := res.CodeBlockMetadata().Range()
