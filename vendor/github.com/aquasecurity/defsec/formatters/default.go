@@ -73,7 +73,7 @@ func printResult(b configurableFormatter, res rules.Result, i int) {
 	tml.Fprintf(
 		w,
 		" <italic>#%d</italic> %s <bold>%s</bold>\n",
-		i,
+		i+1,
 		severityFormatted,
 		res.Description(),
 	)
