@@ -101,6 +101,9 @@ var rootCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "WARNING: A tfvars file was found but not automatically used. Did you mean to specify the --tfvars-file flag?\n")
 		}
 
+		totalTimer := metrics.Timer("timings", "total")
+		totalTimer.Start()
+
 		debug.Log("Starting parser...")
 		modules, err := parser.New(dir, getParserOptions()...).ParseDirectory()
 		if err != nil {
@@ -112,6 +115,9 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return fmt.Errorf("fatal error during scan: %w", err)
 		}
+
+		totalTimer.Stop()
+
 		results = updateResultSeverity(results)
 		results = removeExcludedResults(results, ignoreWarnings, excludeDownloaded)
 		if len(filterResultsList) > 0 {
