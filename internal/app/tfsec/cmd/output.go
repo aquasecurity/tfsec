@@ -9,6 +9,7 @@ import (
 	"github.com/aquasecurity/defsec/formatters"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/pkg/debug"
+	"github.com/aquasecurity/tfsec/version"
 	"github.com/liamg/tml"
 )
 
@@ -39,7 +40,19 @@ func outputFormat(i int, baseFilename string, format string, dir string, results
 		WithDebugEnabled(debug.Enabled).
 		WithColoursEnabled(!disableColours).
 		WithLinksFunc(func(result rules.Result) []string {
-			return result.Rule().Terraform.Links
+			v := version.Version
+			if v == "" {
+				v = "latest"
+			}
+			return append([]string{
+				fmt.Sprintf(
+					"https://aquasecurity.github.io/tfsec/%s/checks/%s/%s/%s/",
+					v,
+					result.Rule().Provider,
+					strings.ToLower(result.Rule().Service),
+					result.Rule().ShortCode,
+				),
+			}, result.Rule().Terraform.Links...)
 		}).
 		WithBaseDir(dir).
 		WithMetricsEnabled(!conciseOutput)
