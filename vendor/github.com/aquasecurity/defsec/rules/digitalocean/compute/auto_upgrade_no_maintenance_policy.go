@@ -24,7 +24,7 @@ var CheckAutoUpgrade = rules.Register(
 			GoodExamples:        terraformKubernetesClusterAutoUpgradeGoodExample,
 			BadExamples:         terraformKubernetesClusterAutoUpgradeBadExample,
 			Links:               terraformKubernetesClusterAutoUpgradeLinks,
-			RemediationMarkdown: terraformKubernetesAutoUpgradeMarkdown,
+			RemediationMarkdown: terraformEnforceHttpsRemediationMarkdown,
 		},
 		Severity: severity.Critical,
 	},

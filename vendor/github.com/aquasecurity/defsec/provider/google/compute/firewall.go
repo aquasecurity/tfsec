@@ -29,13 +29,15 @@ type EgressRule struct {
 	DestinationRanges []types.StringValue
 }
 
+
 func (f *Firewall) GetMetadata() *types.Metadata {
 	return &f.Metadata
 }
 
 func (f *Firewall) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (f *FirewallRule) GetMetadata() *types.Metadata {
 	return &f.Metadata
@@ -43,7 +45,8 @@ func (f *FirewallRule) GetMetadata() *types.Metadata {
 
 func (f *FirewallRule) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (i *IngressRule) GetMetadata() *types.Metadata {
 	return &i.Metadata
@@ -51,7 +54,8 @@ func (i *IngressRule) GetMetadata() *types.Metadata {
 
 func (i *IngressRule) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (e *EgressRule) GetMetadata() *types.Metadata {
 	return &e.Metadata
@@ -59,4 +63,4 @@ func (e *EgressRule) GetMetadata() *types.Metadata {
 
 func (e *EgressRule) GetRawValue() interface{} {
 	return nil
-}
+}    

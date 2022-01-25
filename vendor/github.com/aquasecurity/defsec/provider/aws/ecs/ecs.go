@@ -66,13 +66,15 @@ func (td *EFSVolumeConfiguration) GetRawValue() interface{} {
 	return nil
 }
 
+
 func (e *ECS) GetMetadata() *types.Metadata {
 	return &e.Metadata
 }
 
 func (e *ECS) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (c *ClusterSettings) GetMetadata() *types.Metadata {
 	return &c.Metadata
@@ -80,4 +82,4 @@ func (c *ClusterSettings) GetMetadata() *types.Metadata {
 
 func (c *ClusterSettings) GetRawValue() interface{} {
 	return nil
-}
+}    

@@ -13,13 +13,15 @@ type ConfigurationAggregrator struct {
 	IsDefined        bool
 }
 
+
 func (c *Config) GetMetadata() *types.Metadata {
 	return &c.Metadata
 }
 
 func (c *Config) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (c *ConfigurationAggregrator) GetMetadata() *types.Metadata {
 	return &c.Metadata
@@ -27,4 +29,4 @@ func (c *ConfigurationAggregrator) GetMetadata() *types.Metadata {
 
 func (c *ConfigurationAggregrator) GetRawValue() interface{} {
 	return nil
-}
+}    

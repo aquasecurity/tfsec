@@ -93,13 +93,15 @@ type Management struct {
 	EnableAutoUpgrade types.BoolValue
 }
 
+
 func (g *GKE) GetMetadata() *types.Metadata {
 	return &g.Metadata
 }
 
 func (g *GKE) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (c *Cluster) GetMetadata() *types.Metadata {
 	return &c.Metadata
@@ -107,7 +109,8 @@ func (c *Cluster) GetMetadata() *types.Metadata {
 
 func (c *Cluster) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (n *NodeConfig) GetMetadata() *types.Metadata {
 	return &n.Metadata
@@ -115,7 +118,8 @@ func (n *NodeConfig) GetMetadata() *types.Metadata {
 
 func (n *NodeConfig) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (w *WorkloadMetadataConfig) GetMetadata() *types.Metadata {
 	return &w.Metadata
@@ -123,7 +127,8 @@ func (w *WorkloadMetadataConfig) GetMetadata() *types.Metadata {
 
 func (w *WorkloadMetadataConfig) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (m *MasterAuth) GetMetadata() *types.Metadata {
 	return &m.Metadata
@@ -131,7 +136,8 @@ func (m *MasterAuth) GetMetadata() *types.Metadata {
 
 func (m *MasterAuth) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (c *ClientCertificate) GetMetadata() *types.Metadata {
 	return &c.Metadata
@@ -139,7 +145,8 @@ func (c *ClientCertificate) GetMetadata() *types.Metadata {
 
 func (c *ClientCertificate) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (m *Metadata) GetMetadata() *types.Metadata {
 	return &m.Metadata
@@ -147,7 +154,8 @@ func (m *Metadata) GetMetadata() *types.Metadata {
 
 func (m *Metadata) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (p *PodSecurityPolicy) GetMetadata() *types.Metadata {
 	return &p.Metadata
@@ -155,7 +163,8 @@ func (p *PodSecurityPolicy) GetMetadata() *types.Metadata {
 
 func (p *PodSecurityPolicy) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (p *PrivateCluster) GetMetadata() *types.Metadata {
 	return &p.Metadata
@@ -163,7 +172,8 @@ func (p *PrivateCluster) GetMetadata() *types.Metadata {
 
 func (p *PrivateCluster) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (n *NetworkPolicy) GetMetadata() *types.Metadata {
 	return &n.Metadata
@@ -171,7 +181,8 @@ func (n *NetworkPolicy) GetMetadata() *types.Metadata {
 
 func (n *NetworkPolicy) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (m *MasterAuthorizedNetworks) GetMetadata() *types.Metadata {
 	return &m.Metadata
@@ -179,7 +190,8 @@ func (m *MasterAuthorizedNetworks) GetMetadata() *types.Metadata {
 
 func (m *MasterAuthorizedNetworks) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (i *IPAllocationPolicy) GetMetadata() *types.Metadata {
 	return &i.Metadata
@@ -187,7 +199,8 @@ func (i *IPAllocationPolicy) GetMetadata() *types.Metadata {
 
 func (i *IPAllocationPolicy) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (n *NodePool) GetMetadata() *types.Metadata {
 	return &n.Metadata
@@ -195,7 +208,8 @@ func (n *NodePool) GetMetadata() *types.Metadata {
 
 func (n *NodePool) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (m *Management) GetMetadata() *types.Metadata {
 	return &m.Metadata
@@ -203,4 +217,4 @@ func (m *Management) GetMetadata() *types.Metadata {
 
 func (m *Management) GetRawValue() interface{} {
 	return nil
-}
+}    

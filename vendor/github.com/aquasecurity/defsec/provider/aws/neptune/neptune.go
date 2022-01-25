@@ -27,13 +27,15 @@ func (c *Cluster) GetRawValue() interface{} {
 	return nil
 }
 
+
 func (n *Neptune) GetMetadata() *types.Metadata {
 	return &n.Metadata
 }
 
 func (n *Neptune) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (l *Logging) GetMetadata() *types.Metadata {
 	return &l.Metadata
@@ -41,4 +43,4 @@ func (l *Logging) GetMetadata() *types.Metadata {
 
 func (l *Logging) GetRawValue() interface{} {
 	return nil
-}
+}    

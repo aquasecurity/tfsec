@@ -7,10 +7,11 @@ type EC2 struct {
 	Instances []Instance
 }
 
+
 func (e *EC2) GetMetadata() *types.Metadata {
 	return &e.Metadata
 }
 
 func (e *EC2) GetRawValue() interface{} {
 	return nil
-}
+}    

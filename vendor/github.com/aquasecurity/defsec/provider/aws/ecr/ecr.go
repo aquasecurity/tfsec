@@ -41,13 +41,15 @@ func (c *Repository) GetRawValue() interface{} {
 	return nil
 }
 
+
 func (e *ECR) GetMetadata() *types.Metadata {
 	return &e.Metadata
 }
 
 func (e *ECR) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (i *ImageScanning) GetMetadata() *types.Metadata {
 	return &i.Metadata
@@ -55,7 +57,8 @@ func (i *ImageScanning) GetMetadata() *types.Metadata {
 
 func (i *ImageScanning) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (e *Encryption) GetMetadata() *types.Metadata {
 	return &e.Metadata
@@ -63,4 +66,4 @@ func (e *Encryption) GetMetadata() *types.Metadata {
 
 func (e *Encryption) GetRawValue() interface{} {
 	return nil
-}
+}    

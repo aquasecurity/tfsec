@@ -37,13 +37,15 @@ type Role struct {
 	Policies []Policy
 }
 
+
 func (i *IAM) GetMetadata() *types.Metadata {
 	return &i.Metadata
 }
 
 func (i *IAM) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (p *Policy) GetMetadata() *types.Metadata {
 	return &p.Metadata
@@ -51,7 +53,8 @@ func (p *Policy) GetMetadata() *types.Metadata {
 
 func (p *Policy) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (g *Group) GetMetadata() *types.Metadata {
 	return &g.Metadata
@@ -59,7 +62,8 @@ func (g *Group) GetMetadata() *types.Metadata {
 
 func (g *Group) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (u *User) GetMetadata() *types.Metadata {
 	return &u.Metadata
@@ -67,7 +71,8 @@ func (u *User) GetMetadata() *types.Metadata {
 
 func (u *User) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (r *Role) GetMetadata() *types.Metadata {
 	return &r.Metadata
@@ -75,4 +80,4 @@ func (r *Role) GetMetadata() *types.Metadata {
 
 func (r *Role) GetRawValue() interface{} {
 	return nil
-}
+}    

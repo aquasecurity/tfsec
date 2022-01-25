@@ -37,13 +37,15 @@ func (c *Function) GetRawValue() interface{} {
 	return nil
 }
 
+
 func (l *Lambda) GetMetadata() *types.Metadata {
 	return &l.Metadata
 }
 
 func (l *Lambda) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (t *Tracing) GetMetadata() *types.Metadata {
 	return &t.Metadata
@@ -51,7 +53,8 @@ func (t *Tracing) GetMetadata() *types.Metadata {
 
 func (t *Tracing) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (p *Permission) GetMetadata() *types.Metadata {
 	return &p.Metadata
@@ -59,4 +62,4 @@ func (p *Permission) GetMetadata() *types.Metadata {
 
 func (p *Permission) GetRawValue() interface{} {
 	return nil
-}
+}    

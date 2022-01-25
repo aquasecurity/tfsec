@@ -59,13 +59,15 @@ func (c *Cluster) GetRawValue() interface{} {
 	return nil
 }
 
+
 func (m *MSK) GetMetadata() *types.Metadata {
 	return &m.Metadata
 }
 
 func (m *MSK) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (e *EncryptionInTransit) GetMetadata() *types.Metadata {
 	return &e.Metadata
@@ -73,7 +75,8 @@ func (e *EncryptionInTransit) GetMetadata() *types.Metadata {
 
 func (e *EncryptionInTransit) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (l *Logging) GetMetadata() *types.Metadata {
 	return &l.Metadata
@@ -81,7 +84,8 @@ func (l *Logging) GetMetadata() *types.Metadata {
 
 func (l *Logging) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (b *BrokerLogging) GetMetadata() *types.Metadata {
 	return &b.Metadata
@@ -89,7 +93,8 @@ func (b *BrokerLogging) GetMetadata() *types.Metadata {
 
 func (b *BrokerLogging) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (s *S3Logging) GetMetadata() *types.Metadata {
 	return &s.Metadata
@@ -97,7 +102,8 @@ func (s *S3Logging) GetMetadata() *types.Metadata {
 
 func (s *S3Logging) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (c *CloudwatchLogging) GetMetadata() *types.Metadata {
 	return &c.Metadata
@@ -105,7 +111,8 @@ func (c *CloudwatchLogging) GetMetadata() *types.Metadata {
 
 func (c *CloudwatchLogging) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (f *FirehoseLogging) GetMetadata() *types.Metadata {
 	return &f.Metadata
@@ -113,4 +120,4 @@ func (f *FirehoseLogging) GetMetadata() *types.Metadata {
 
 func (f *FirehoseLogging) GetRawValue() interface{} {
 	return nil
-}
+}    

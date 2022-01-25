@@ -19,10 +19,11 @@ func (g *DBSecurityGroup) GetRawValue() interface{} {
 	return nil
 }
 
+
 func (c *Classic) GetMetadata() *types.Metadata {
 	return &c.Metadata
 }
 
 func (c *Classic) GetRawValue() interface{} {
 	return nil
-}
+}    

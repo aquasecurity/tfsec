@@ -31,13 +31,15 @@ func (b *WorkSpace) GetRawValue() interface{} {
 	return nil
 }
 
+
 func (w *WorkSpaces) GetMetadata() *types.Metadata {
 	return &w.Metadata
 }
 
 func (w *WorkSpaces) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (v *Volume) GetMetadata() *types.Metadata {
 	return &v.Metadata
@@ -45,7 +47,8 @@ func (v *Volume) GetMetadata() *types.Metadata {
 
 func (v *Volume) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (e *Encryption) GetMetadata() *types.Metadata {
 	return &e.Metadata
@@ -53,4 +56,4 @@ func (e *Encryption) GetMetadata() *types.Metadata {
 
 func (e *Encryption) GetRawValue() interface{} {
 	return nil
-}
+}    

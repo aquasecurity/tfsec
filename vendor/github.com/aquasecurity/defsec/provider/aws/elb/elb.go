@@ -49,13 +49,15 @@ func (c *Listener) GetRawValue() interface{} {
 	return nil
 }
 
+
 func (e *ELB) GetMetadata() *types.Metadata {
 	return &e.Metadata
 }
 
 func (e *ELB) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (a *Action) GetMetadata() *types.Metadata {
 	return &a.Metadata
@@ -63,4 +65,4 @@ func (a *Action) GetMetadata() *types.Metadata {
 
 func (a *Action) GetRawValue() interface{} {
 	return nil
-}
+}    

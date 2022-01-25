@@ -57,13 +57,15 @@ func (c *CacheBehaviour) GetRawValue() interface{} {
 	return nil
 }
 
+
 func (c *Cloudfront) GetMetadata() *types.Metadata {
 	return &c.Metadata
 }
 
 func (c *Cloudfront) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (l *Logging) GetMetadata() *types.Metadata {
 	return &l.Metadata
@@ -71,7 +73,8 @@ func (l *Logging) GetMetadata() *types.Metadata {
 
 func (l *Logging) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (v *ViewerCertificate) GetMetadata() *types.Metadata {
 	return &v.Metadata
@@ -79,4 +82,4 @@ func (v *ViewerCertificate) GetMetadata() *types.Metadata {
 
 func (v *ViewerCertificate) GetRawValue() interface{} {
 	return nil
-}
+}    

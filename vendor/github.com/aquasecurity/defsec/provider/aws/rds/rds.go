@@ -69,13 +69,15 @@ func (i *ClusterInstance) GetRawValue() interface{} {
 	return nil
 }
 
+
 func (r *RDS) GetMetadata() *types.Metadata {
 	return &r.Metadata
 }
 
 func (r *RDS) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (e *Encryption) GetMetadata() *types.Metadata {
 	return &e.Metadata
@@ -83,7 +85,8 @@ func (e *Encryption) GetMetadata() *types.Metadata {
 
 func (e *Encryption) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (p *PerformanceInsights) GetMetadata() *types.Metadata {
 	return &p.Metadata
@@ -91,4 +94,4 @@ func (p *PerformanceInsights) GetMetadata() *types.Metadata {
 
 func (p *PerformanceInsights) GetRawValue() interface{} {
 	return nil
-}
+}    

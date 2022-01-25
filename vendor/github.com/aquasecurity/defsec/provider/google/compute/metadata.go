@@ -7,10 +7,11 @@ type ProjectMetadata struct {
 	EnableOSLogin types.BoolValue
 }
 
+
 func (p *ProjectMetadata) GetMetadata() *types.Metadata {
 	return &p.Metadata
 }
 
 func (p *ProjectMetadata) GetRawValue() interface{} {
 	return nil
-}
+}    

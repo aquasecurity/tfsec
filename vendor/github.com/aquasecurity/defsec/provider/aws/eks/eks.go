@@ -38,13 +38,15 @@ func (c *Cluster) GetRawValue() interface{} {
 	return nil
 }
 
+
 func (e *EKS) GetMetadata() *types.Metadata {
 	return &e.Metadata
 }
 
 func (e *EKS) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (l *Logging) GetMetadata() *types.Metadata {
 	return &l.Metadata
@@ -52,7 +54,8 @@ func (l *Logging) GetMetadata() *types.Metadata {
 
 func (l *Logging) GetRawValue() interface{} {
 	return nil
-}
+}    
+
 
 func (e *Encryption) GetMetadata() *types.Metadata {
 	return &e.Metadata
@@ -60,4 +63,4 @@ func (e *Encryption) GetMetadata() *types.Metadata {
 
 func (e *Encryption) GetRawValue() interface{} {
 	return nil
-}
+}    

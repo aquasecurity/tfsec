@@ -9,10 +9,11 @@ type SSLPolicy struct {
 	MinimumTLSVersion types.StringValue
 }
 
+
 func (s *SSLPolicy) GetMetadata() *types.Metadata {
 	return &s.Metadata
 }
 
 func (s *SSLPolicy) GetRawValue() interface{} {
 	return nil
-}
+}    

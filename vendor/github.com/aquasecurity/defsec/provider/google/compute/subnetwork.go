@@ -8,10 +8,11 @@ type SubNetwork struct {
 	EnableFlowLogs types.BoolValue
 }
 
+
 func (s *SubNetwork) GetMetadata() *types.Metadata {
 	return &s.Metadata
 }
 
 func (s *SubNetwork) GetRawValue() interface{} {
 	return nil
-}
+}    
