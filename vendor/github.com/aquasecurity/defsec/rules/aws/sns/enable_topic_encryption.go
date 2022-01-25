@@ -20,19 +20,19 @@ var CheckEnableTopicEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableTopicEncryptionGoodExamples,
-            BadExamples:         terraformEnableTopicEncryptionBadExamples,
-            Links:               terraformEnableTopicEncryptionLinks,
-            RemediationMarkdown: terraformEnableTopicEncryptionRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableTopicEncryptionGoodExamples,
-            BadExamples:         cloudFormationEnableTopicEncryptionBadExamples,
-            Links:               cloudFormationEnableTopicEncryptionLinks,
-            RemediationMarkdown: cloudFormationEnableTopicEncryptionRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableTopicEncryptionGoodExamples,
+			BadExamples:         terraformEnableTopicEncryptionBadExamples,
+			Links:               terraformEnableTopicEncryptionLinks,
+			RemediationMarkdown: terraformEnableTopicEncryptionRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableTopicEncryptionGoodExamples,
+			BadExamples:         cloudFormationEnableTopicEncryptionBadExamples,
+			Links:               cloudFormationEnableTopicEncryptionLinks,
+			RemediationMarkdown: cloudFormationEnableTopicEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, topic := range s.AWS.SNS.Topics {

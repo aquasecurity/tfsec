@@ -1,7 +1,7 @@
 package neptune
 
 var cloudFormationEnableLogExportGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example
 Resources:
@@ -16,7 +16,7 @@ Resources:
 }
 
 var cloudFormationEnableLogExportBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example
 Resources:

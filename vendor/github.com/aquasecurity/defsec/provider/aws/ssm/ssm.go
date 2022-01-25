@@ -22,11 +22,10 @@ func (v *Secret) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (s *SSM) GetMetadata() *types.Metadata {
 	return &s.Metadata
 }
 
 func (s *SSM) GetRawValue() interface{} {
 	return nil
-}    
+}

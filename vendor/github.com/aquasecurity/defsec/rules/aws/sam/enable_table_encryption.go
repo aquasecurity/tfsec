@@ -20,13 +20,13 @@ var CheckEnableTableEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-simpletable.html#sam-simpletable-ssespecification",
 		},
-		CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableTableEncryptionGoodExamples,
-            BadExamples:         cloudFormationEnableTableEncryptionBadExamples,
-            Links:               cloudFormationEnableTableEncryptionLinks,
-            RemediationMarkdown: cloudFormationEnableTableEncryptionRemediationMarkdown,
-        },
-        Severity: severity.High,
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableTableEncryptionGoodExamples,
+			BadExamples:         cloudFormationEnableTableEncryptionBadExamples,
+			Links:               cloudFormationEnableTableEncryptionLinks,
+			RemediationMarkdown: cloudFormationEnableTableEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, table := range s.AWS.SAM.SimpleTables {

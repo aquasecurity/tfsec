@@ -1,7 +1,7 @@
 package ec2
 
 var terraformNoSecretsInUserDataGoodExamples = []string{
-        `
+	`
  resource "aws_iam_instance_profile" "good_example" {
 		 // ...
  }
@@ -20,7 +20,7 @@ var terraformNoSecretsInUserDataGoodExamples = []string{
 }
 
 var terraformNoSecretsInUserDataBadExamples = []string{
-        `
+	`
  resource "aws_instance" "bad_example" {
  
 	 ami           = "ami-12345667"
@@ -36,7 +36,7 @@ var terraformNoSecretsInUserDataBadExamples = []string{
 }
 
 var terraformNoSecretsInUserDataLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#user_data`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#user_data`,
 }
 
 var terraformNoSecretsInUserDataRemediationMarkdown = ``

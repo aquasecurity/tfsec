@@ -12,15 +12,13 @@ type Instance struct {
 	UserData types.StringValue // not b64 encoded pls
 }
 
-
 func (c *Compute) GetMetadata() *types.Metadata {
 	return &c.Metadata
 }
 
 func (c *Compute) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (i *Instance) GetMetadata() *types.Metadata {
 	return &i.Metadata
@@ -28,4 +26,4 @@ func (i *Instance) GetMetadata() *types.Metadata {
 
 func (i *Instance) GetRawValue() interface{} {
 	return nil
-}    
+}

@@ -1,7 +1,7 @@
 package ec2
 
 var cloudFormationNoSecretsInUserDataGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::EC2::Instance
@@ -22,7 +22,7 @@ Resources:
 }
 
 var cloudFormationNoSecretsInUserDataBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::EC2::Instance

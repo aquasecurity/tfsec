@@ -26,13 +26,13 @@ To fully protect IMDS you need to enable session tokens by using <code>metadata_
 			"https://aws.amazon.com/blogs/security/defense-in-depth-open-firewalls-reverse-proxies-ssrf-vulnerabilities-ec2-instance-metadata-service",
 		},
 
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnforceHttpTokenImdsGoodExamples,
-            BadExamples:         terraformEnforceHttpTokenImdsBadExamples,
-            Links:               terraformEnforceHttpTokenImdsLinks,
-            RemediationMarkdown: terraformEnforceHttpTokenImdsRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnforceHttpTokenImdsGoodExamples,
+			BadExamples:         terraformEnforceHttpTokenImdsBadExamples,
+			Links:               terraformEnforceHttpTokenImdsLinks,
+			RemediationMarkdown: terraformEnforceHttpTokenImdsRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.AWS.EC2.Instances {

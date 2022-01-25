@@ -1,7 +1,7 @@
 package vpc
 
 var cloudFormationAddDescriptionToSecurityGroupGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good example of group description
 Resources:
@@ -16,7 +16,7 @@ Resources:
 }
 
 var cloudFormationAddDescriptionToSecurityGroupBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example of group description
 Resources:

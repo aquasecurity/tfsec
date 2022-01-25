@@ -1,7 +1,7 @@
 package sam
 
 var cloudFormationApiUseSecureTlsPolicyGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good Example of SAM API
 Resources:
@@ -17,7 +17,7 @@ Resources:
 }
 
 var cloudFormationApiUseSecureTlsPolicyBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad Example of SAM API
 Resources:

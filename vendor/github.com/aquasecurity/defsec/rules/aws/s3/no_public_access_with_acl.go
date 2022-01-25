@@ -25,19 +25,19 @@ Buckets should have logging enabled so that access can be audited.
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicAccessWithAclGoodExamples,
-            BadExamples:         terraformNoPublicAccessWithAclBadExamples,
-            Links:               terraformNoPublicAccessWithAclLinks,
-            RemediationMarkdown: terraformNoPublicAccessWithAclRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationNoPublicAccessWithAclGoodExamples,
-            BadExamples:         cloudFormationNoPublicAccessWithAclBadExamples,
-            Links:               cloudFormationNoPublicAccessWithAclLinks,
-            RemediationMarkdown: cloudFormationNoPublicAccessWithAclRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicAccessWithAclGoodExamples,
+			BadExamples:         terraformNoPublicAccessWithAclBadExamples,
+			Links:               terraformNoPublicAccessWithAclLinks,
+			RemediationMarkdown: terraformNoPublicAccessWithAclRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationNoPublicAccessWithAclGoodExamples,
+			BadExamples:         cloudFormationNoPublicAccessWithAclBadExamples,
+			Links:               cloudFormationNoPublicAccessWithAclLinks,
+			RemediationMarkdown: cloudFormationNoPublicAccessWithAclRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.AWS.S3.Buckets {

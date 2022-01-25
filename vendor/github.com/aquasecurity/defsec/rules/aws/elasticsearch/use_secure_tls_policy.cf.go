@@ -1,7 +1,7 @@
 package elasticsearch
 
 var cloudFormationUseSecureTlsPolicyGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::Elasticsearch::Domain
@@ -29,7 +29,7 @@ Resources:
 }
 
 var cloudFormationUseSecureTlsPolicyBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::Elasticsearch::Domain

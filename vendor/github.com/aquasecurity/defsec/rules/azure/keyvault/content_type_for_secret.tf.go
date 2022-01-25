@@ -1,7 +1,7 @@
 package keyvault
 
 var terraformContentTypeForSecretGoodExamples = []string{
-        `
+	`
  resource "azurerm_key_vault_secret" "good_example" {
    name         = "secret-sauce"
    value        = "szechuan"
@@ -12,7 +12,7 @@ var terraformContentTypeForSecretGoodExamples = []string{
 }
 
 var terraformContentTypeForSecretBadExamples = []string{
-        `
+	`
  resource "azurerm_key_vault_secret" "bad_example" {
    name         = "secret-sauce"
    value        = "szechuan"
@@ -22,7 +22,7 @@ var terraformContentTypeForSecretBadExamples = []string{
 }
 
 var terraformContentTypeForSecretLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret#content_type`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret#content_type`,
 }
 
 var terraformContentTypeForSecretRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package cloudfront
 
 var cloudFormationEnableLoggingGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Properties:
@@ -20,7 +20,7 @@ Resources:
 }
 
 var cloudFormationEnableLoggingBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Properties:

@@ -8,11 +8,10 @@ type S3 struct {
 	PublicAccessBlocks []PublicAccessBlock
 }
 
-
 func (s *S3) GetMetadata() *types.Metadata {
 	return &s.Metadata
 }
 
 func (s *S3) GetRawValue() interface{} {
 	return nil
-}    
+}

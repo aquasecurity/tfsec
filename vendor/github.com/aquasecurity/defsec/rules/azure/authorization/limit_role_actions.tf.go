@@ -1,7 +1,7 @@
 package authorization
 
 var terraformLimitRoleActionsGoodExamples = []string{
-        `
+	`
  data "azurerm_subscription" "primary" {
  }
  
@@ -23,7 +23,7 @@ var terraformLimitRoleActionsGoodExamples = []string{
 }
 
 var terraformLimitRoleActionsBadExamples = []string{
-        `
+	`
  data "azurerm_subscription" "primary" {
  }
  
@@ -45,7 +45,7 @@ var terraformLimitRoleActionsBadExamples = []string{
 }
 
 var terraformLimitRoleActionsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_definition#actions`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_definition#actions`,
 }
 
 var terraformLimitRoleActionsRemediationMarkdown = ``

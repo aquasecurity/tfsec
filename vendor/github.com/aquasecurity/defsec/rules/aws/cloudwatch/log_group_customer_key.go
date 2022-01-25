@@ -20,19 +20,19 @@ var CheckLogGroupCustomerKey = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformLogGroupCustomerKeyGoodExamples,
-            BadExamples:         terraformLogGroupCustomerKeyBadExamples,
-            Links:               terraformLogGroupCustomerKeyLinks,
-            RemediationMarkdown: terraformLogGroupCustomerKeyRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationLogGroupCustomerKeyGoodExamples,
-            BadExamples:         cloudFormationLogGroupCustomerKeyBadExamples,
-            Links:               cloudFormationLogGroupCustomerKeyLinks,
-            RemediationMarkdown: cloudFormationLogGroupCustomerKeyRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformLogGroupCustomerKeyGoodExamples,
+			BadExamples:         terraformLogGroupCustomerKeyBadExamples,
+			Links:               terraformLogGroupCustomerKeyLinks,
+			RemediationMarkdown: terraformLogGroupCustomerKeyRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationLogGroupCustomerKeyGoodExamples,
+			BadExamples:         cloudFormationLogGroupCustomerKeyBadExamples,
+			Links:               cloudFormationLogGroupCustomerKeyLinks,
+			RemediationMarkdown: cloudFormationLogGroupCustomerKeyRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.AWS.CloudWatch.LogGroups {

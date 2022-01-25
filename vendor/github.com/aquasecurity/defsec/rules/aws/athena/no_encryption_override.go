@@ -20,19 +20,19 @@ var CheckNoEncryptionOverride = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/athena/latest/ug/manage-queries-control-costs-with-workgroups.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoEncryptionOverrideGoodExamples,
-            BadExamples:         terraformNoEncryptionOverrideBadExamples,
-            Links:               terraformNoEncryptionOverrideLinks,
-            RemediationMarkdown: terraformNoEncryptionOverrideRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationNoEncryptionOverrideGoodExamples,
-            BadExamples:         cloudFormationNoEncryptionOverrideBadExamples,
-            Links:               cloudFormationNoEncryptionOverrideLinks,
-            RemediationMarkdown: cloudFormationNoEncryptionOverrideRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoEncryptionOverrideGoodExamples,
+			BadExamples:         terraformNoEncryptionOverrideBadExamples,
+			Links:               terraformNoEncryptionOverrideLinks,
+			RemediationMarkdown: terraformNoEncryptionOverrideRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationNoEncryptionOverrideGoodExamples,
+			BadExamples:         cloudFormationNoEncryptionOverrideBadExamples,
+			Links:               cloudFormationNoEncryptionOverrideLinks,
+			RemediationMarkdown: cloudFormationNoEncryptionOverrideRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, workgroup := range s.AWS.Athena.Workgroups {

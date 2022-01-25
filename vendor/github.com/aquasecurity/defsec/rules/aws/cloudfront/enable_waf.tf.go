@@ -1,7 +1,7 @@
 package cloudfront
 
 var terraformEnableWafGoodExamples = []string{
-        `
+	`
  resource "aws_cloudfront_distribution" "good_example" {
  
    origin {
@@ -32,7 +32,7 @@ var terraformEnableWafGoodExamples = []string{
 }
 
 var terraformEnableWafBadExamples = []string{
-        `
+	`
  resource "aws_cloudfront_distribution" "bad_example" {
    origin_group {
      origin_id = "groupS3"
@@ -72,7 +72,7 @@ var terraformEnableWafBadExamples = []string{
 }
 
 var terraformEnableWafLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#web_acl_id`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#web_acl_id`,
 }
 
 var terraformEnableWafRemediationMarkdown = ``

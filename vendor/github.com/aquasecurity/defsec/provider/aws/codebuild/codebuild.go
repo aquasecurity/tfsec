@@ -34,11 +34,10 @@ func (c *ArtifactSettings) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (c *CodeBuild) GetMetadata() *types.Metadata {
 	return &c.Metadata
 }
 
 func (c *CodeBuild) GetRawValue() interface{} {
 	return nil
-}    
+}

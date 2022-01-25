@@ -1,7 +1,7 @@
 package neptune
 
 var terraformEnableLogExportGoodExamples = []string{
-        `
+	`
  resource "aws_neptune_cluster" "good_example" {
    cluster_identifier                  = "neptune-cluster-demo"
    engine                              = "neptune"
@@ -16,7 +16,7 @@ var terraformEnableLogExportGoodExamples = []string{
 }
 
 var terraformEnableLogExportBadExamples = []string{
-        `
+	`
  resource "aws_neptune_cluster" "bad_example" {
    cluster_identifier                  = "neptune-cluster-demo"
    engine                              = "neptune"
@@ -31,7 +31,7 @@ var terraformEnableLogExportBadExamples = []string{
 }
 
 var terraformEnableLogExportLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/neptune_cluster#enable_cloudwatch_logs_exports`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/neptune_cluster#enable_cloudwatch_logs_exports`,
 }
 
 var terraformEnableLogExportRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package gke
 
 var terraformNoLegacyAuthenticationGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -39,7 +39,7 @@ var terraformNoLegacyAuthenticationGoodExamples = []string{
 }
 
 var terraformNoLegacyAuthenticationBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -82,7 +82,7 @@ var terraformNoLegacyAuthenticationBadExamples = []string{
 }
 
 var terraformNoLegacyAuthenticationLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#master_auth`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#master_auth`,
 }
 
 var terraformNoLegacyAuthenticationRemediationMarkdown = ``

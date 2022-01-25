@@ -18,13 +18,13 @@ var CheckNotExposed = rules.Register(
 		Resolution:  "Remove plaintext secrets and encrypt them within a secrets manager instead.",
 		Explanation: `Plaintext secrets kept in source code or similar media mean sensitive data is exposed to any users/systems with access to the source code.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPlaintextExposureGoodExamples,
-            BadExamples:         terraformNoPlaintextExposureBadExamples,
-            Links:               terraformNoPlaintextExposureLinks,
-            RemediationMarkdown: terraformNoPlaintextExposureRemediationMarkdown,
-        },
-        Severity:    severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPlaintextExposureGoodExamples,
+			BadExamples:         terraformNoPlaintextExposureBadExamples,
+			Links:               terraformNoPlaintextExposureLinks,
+			RemediationMarkdown: terraformNoPlaintextExposureRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		// (exposure detection is handled by individual tools e.g. tfsec)

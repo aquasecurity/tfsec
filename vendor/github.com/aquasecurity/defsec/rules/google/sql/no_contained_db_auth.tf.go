@@ -1,7 +1,7 @@
 package sql
 
 var terraformNoContainedDbAuthGoodExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "SQLSERVER_2017_STANDARD"
@@ -17,7 +17,7 @@ var terraformNoContainedDbAuthGoodExamples = []string{
 }
 
 var terraformNoContainedDbAuthBadExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "SQLSERVER_2017_STANDARD"
@@ -27,7 +27,7 @@ var terraformNoContainedDbAuthBadExamples = []string{
 }
 
 var terraformNoContainedDbAuthLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`,
 }
 
 var terraformNoContainedDbAuthRemediationMarkdown = ``

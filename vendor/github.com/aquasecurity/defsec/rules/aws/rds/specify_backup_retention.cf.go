@@ -1,7 +1,7 @@
 package rds
 
 var cloudFormationSpecifyBackupRetentionGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good example
 Resources:
@@ -14,7 +14,7 @@ Resources:
 }
 
 var cloudFormationSpecifyBackupRetentionBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example
 Resources:

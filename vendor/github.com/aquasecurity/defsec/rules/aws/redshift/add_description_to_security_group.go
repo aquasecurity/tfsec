@@ -22,13 +22,13 @@ Simplifies auditing, debugging, and managing security groups.`,
 		Links: []string{
 			"https://www.cloudconformity.com/knowledge-base/aws/EC2/security-group-rules-description.html",
 		},
-		CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationAddDescriptionToSecurityGroupGoodExamples,
-            BadExamples:         cloudFormationAddDescriptionToSecurityGroupBadExamples,
-            Links:               cloudFormationAddDescriptionToSecurityGroupLinks,
-            RemediationMarkdown: cloudFormationAddDescriptionToSecurityGroupRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationAddDescriptionToSecurityGroupGoodExamples,
+			BadExamples:         cloudFormationAddDescriptionToSecurityGroupBadExamples,
+			Links:               cloudFormationAddDescriptionToSecurityGroupLinks,
+			RemediationMarkdown: cloudFormationAddDescriptionToSecurityGroupRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.AWS.Redshift.SecurityGroups {

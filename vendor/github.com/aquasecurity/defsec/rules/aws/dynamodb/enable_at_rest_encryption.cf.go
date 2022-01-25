@@ -1,7 +1,7 @@
 package dynamodb
 
 var cloudFormationEnableAtRestEncryptionGoodExamples = []string{
-        `---
+	`---
 Resources:
   daxCluster:
     Type: AWS::DAX::Cluster
@@ -17,7 +17,7 @@ Resources:
 }
 
 var cloudFormationEnableAtRestEncryptionBadExamples = []string{
-        `---
+	`---
 Resources:
   daxCluster:
     Type: AWS::DAX::Cluster

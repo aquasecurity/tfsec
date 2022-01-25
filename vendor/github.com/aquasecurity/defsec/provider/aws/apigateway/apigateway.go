@@ -96,15 +96,13 @@ func (d *DomainName) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (a *APIGateway) GetMetadata() *types.Metadata {
 	return &a.Metadata
 }
 
 func (a *APIGateway) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (a *AccessLogging) GetMetadata() *types.Metadata {
 	return &a.Metadata
@@ -112,8 +110,7 @@ func (a *AccessLogging) GetMetadata() *types.Metadata {
 
 func (a *AccessLogging) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (r *RESTMethodSettings) GetMetadata() *types.Metadata {
 	return &r.Metadata
@@ -121,4 +118,4 @@ func (r *RESTMethodSettings) GetMetadata() *types.Metadata {
 
 func (r *RESTMethodSettings) GetRawValue() interface{} {
 	return nil
-}    
+}

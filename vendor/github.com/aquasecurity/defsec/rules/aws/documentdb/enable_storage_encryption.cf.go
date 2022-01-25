@@ -1,7 +1,7 @@
 package documentdb
 
 var cloudFormationEnableStorageEncryptionGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: "AWS::DocDB::DBCluster"
@@ -27,7 +27,7 @@ Resources:
 }
 
 var cloudFormationEnableStorageEncryptionBadExamples = []string{
-        `---
+	`---
  Resources:
   BadExample:
     Type: "AWS::DocDB::DBCluster"

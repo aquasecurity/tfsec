@@ -1,7 +1,7 @@
 package ecr
 
 var terraformRepositoryCustomerKeyGoodExamples = []string{
-        `
+	`
  resource "aws_kms_key" "ecr_kms" {
  	enable_key_rotation = true
  }
@@ -23,7 +23,7 @@ var terraformRepositoryCustomerKeyGoodExamples = []string{
 }
 
 var terraformRepositoryCustomerKeyBadExamples = []string{
-        `
+	`
  resource "aws_ecr_repository" "bad_example" {
  	name                 = "bar"
  	image_tag_mutability = "MUTABLE"
@@ -36,7 +36,7 @@ var terraformRepositoryCustomerKeyBadExamples = []string{
 }
 
 var terraformRepositoryCustomerKeyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository#encryption_configuration`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository#encryption_configuration`,
 }
 
 var terraformRepositoryCustomerKeyRemediationMarkdown = ``

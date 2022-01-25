@@ -1,7 +1,7 @@
 package mq
 
 var terraformEnableAuditLoggingGoodExamples = []string{
-        `
+	`
  resource "aws_mq_broker" "good_example" {
    broker_name = "example"
  
@@ -27,7 +27,7 @@ var terraformEnableAuditLoggingGoodExamples = []string{
 }
 
 var terraformEnableAuditLoggingBadExamples = []string{
-        `
+	`
  resource "aws_mq_broker" "bad_example" {
    broker_name = "example"
  
@@ -53,7 +53,7 @@ var terraformEnableAuditLoggingBadExamples = []string{
 }
 
 var terraformEnableAuditLoggingLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/mq_broker#audit`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/mq_broker#audit`,
 }
 
 var terraformEnableAuditLoggingRemediationMarkdown = ``

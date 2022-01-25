@@ -20,13 +20,13 @@ var CheckEnableApiAccessLogging = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-api.html#sam-api-accesslogsetting",
 		},
-		CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableApiAccessLoggingGoodExamples,
-            BadExamples:         cloudFormationEnableApiAccessLoggingBadExamples,
-            Links:               cloudFormationEnableApiAccessLoggingLinks,
-            RemediationMarkdown: cloudFormationEnableApiAccessLoggingRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableApiAccessLoggingGoodExamples,
+			BadExamples:         cloudFormationEnableApiAccessLoggingBadExamples,
+			Links:               cloudFormationEnableApiAccessLoggingLinks,
+			RemediationMarkdown: cloudFormationEnableApiAccessLoggingRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, api := range s.AWS.SAM.APIs {

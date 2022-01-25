@@ -20,19 +20,19 @@ var CheckEnableLogValidation = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-log-file-validation-intro.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableLogValidationGoodExamples,
-            BadExamples:         terraformEnableLogValidationBadExamples,
-            Links:               terraformEnableLogValidationLinks,
-            RemediationMarkdown: terraformEnableLogValidationRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableLogValidationGoodExamples,
-            BadExamples:         cloudFormationEnableLogValidationBadExamples,
-            Links:               cloudFormationEnableLogValidationLinks,
-            RemediationMarkdown: cloudFormationEnableLogValidationRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableLogValidationGoodExamples,
+			BadExamples:         terraformEnableLogValidationBadExamples,
+			Links:               terraformEnableLogValidationLinks,
+			RemediationMarkdown: terraformEnableLogValidationRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableLogValidationGoodExamples,
+			BadExamples:         cloudFormationEnableLogValidationBadExamples,
+			Links:               cloudFormationEnableLogValidationLinks,
+			RemediationMarkdown: cloudFormationEnableLogValidationRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, trail := range s.AWS.CloudTrail.Trails {

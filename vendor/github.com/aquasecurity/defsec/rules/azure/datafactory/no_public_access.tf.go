@@ -1,7 +1,7 @@
 package datafactory
 
 var terraformNoPublicAccessGoodExamples = []string{
-        `
+	`
  resource "azurerm_data_factory" "good_example" {
    name                = "example"
    location            = azurerm_resource_group.example.location
@@ -12,7 +12,7 @@ var terraformNoPublicAccessGoodExamples = []string{
 }
 
 var terraformNoPublicAccessBadExamples = []string{
-        `
+	`
  resource "azurerm_data_factory" "bad_example" {
    name                = "example"
    location            = azurerm_resource_group.example.location
@@ -22,7 +22,7 @@ var terraformNoPublicAccessBadExamples = []string{
 }
 
 var terraformNoPublicAccessLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/data_factory#public_network_enabled`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/data_factory#public_network_enabled`,
 }
 
 var terraformNoPublicAccessRemediationMarkdown = ``

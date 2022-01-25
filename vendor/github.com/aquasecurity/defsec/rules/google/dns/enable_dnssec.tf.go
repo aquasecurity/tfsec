@@ -1,7 +1,7 @@
 package dns
 
 var terraformEnableDnssecGoodExamples = []string{
-        `
+	`
  resource "google_dns_managed_zone" "good_example" {
    name        = "example-zone"
    dns_name    = "example-${random_id.rnd.hex}.com."
@@ -21,7 +21,7 @@ var terraformEnableDnssecGoodExamples = []string{
 }
 
 var terraformEnableDnssecBadExamples = []string{
-        `
+	`
  resource "google_dns_managed_zone" "bad_example" {
    name        = "example-zone"
    dns_name    = "example-${random_id.rnd.hex}.com."
@@ -41,7 +41,7 @@ var terraformEnableDnssecBadExamples = []string{
 }
 
 var terraformEnableDnssecLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_managed_zone#state`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_managed_zone#state`,
 }
 
 var terraformEnableDnssecRemediationMarkdown = ``

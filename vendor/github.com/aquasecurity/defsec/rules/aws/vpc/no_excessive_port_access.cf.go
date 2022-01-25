@@ -1,7 +1,7 @@
 package vpc
 
 var cloudFormationNoExcessivePortAccessGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Godd example of excessive ports
 Resources: 
@@ -19,7 +19,7 @@ Resources:
 }
 
 var cloudFormationNoExcessivePortAccessBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example of excessive ports
 Resources:

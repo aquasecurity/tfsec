@@ -1,7 +1,7 @@
 package athena
 
 var terraformEnableAtRestEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_athena_database" "good_example" {
    name   = "database_name"
    bucket = aws_s3_bucket.hoge.bucket
@@ -33,7 +33,7 @@ var terraformEnableAtRestEncryptionGoodExamples = []string{
 }
 
 var terraformEnableAtRestEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_athena_database" "bad_example" {
    name   = "database_name"
    bucket = aws_s3_bucket.hoge.bucket
@@ -55,7 +55,7 @@ var terraformEnableAtRestEncryptionBadExamples = []string{
 }
 
 var terraformEnableAtRestEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/athena_workgroup#encryption_configuration`,`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/athena_database#encryption_configuration`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/athena_workgroup#encryption_configuration`, `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/athena_database#encryption_configuration`,
 }
 
 var terraformEnableAtRestEncryptionRemediationMarkdown = ``

@@ -20,19 +20,19 @@ var CheckEnableLogging = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/msk/latest/developerguide/msk-logging.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableLoggingGoodExamples,
-            BadExamples:         terraformEnableLoggingBadExamples,
-            Links:               terraformEnableLoggingLinks,
-            RemediationMarkdown: terraformEnableLoggingRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableLoggingGoodExamples,
-            BadExamples:         cloudFormationEnableLoggingBadExamples,
-            Links:               cloudFormationEnableLoggingLinks,
-            RemediationMarkdown: cloudFormationEnableLoggingRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableLoggingGoodExamples,
+			BadExamples:         terraformEnableLoggingBadExamples,
+			Links:               terraformEnableLoggingLinks,
+			RemediationMarkdown: terraformEnableLoggingRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableLoggingGoodExamples,
+			BadExamples:         cloudFormationEnableLoggingBadExamples,
+			Links:               cloudFormationEnableLoggingLinks,
+			RemediationMarkdown: cloudFormationEnableLoggingRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.MSK.Clusters {

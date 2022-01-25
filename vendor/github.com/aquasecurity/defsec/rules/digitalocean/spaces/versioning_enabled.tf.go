@@ -1,7 +1,7 @@
 package spaces
 
 var terraformVersioningEnabledGoodExamples = []string{
-        `
+	`
  resource "digitalocean_spaces_bucket" "good_example" {
    name   = "foobar"
    region = "nyc3"
@@ -14,7 +14,7 @@ var terraformVersioningEnabledGoodExamples = []string{
 }
 
 var terraformVersioningEnabledBadExamples = []string{
-        `
+	`
  resource "digitalocean_spaces_bucket" "bad_example" {
    name   = "foobar"
    region = "nyc3"
@@ -32,7 +32,7 @@ var terraformVersioningEnabledBadExamples = []string{
 }
 
 var terraformVersioningEnabledLinks = []string{
-        `https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#versioning`,
+	`https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#versioning`,
 }
 
 var terraformVersioningEnabledRemediationMarkdown = ``

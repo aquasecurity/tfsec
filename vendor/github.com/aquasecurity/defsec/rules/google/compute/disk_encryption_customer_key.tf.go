@@ -1,7 +1,7 @@
 package compute
 
 var terraformDiskEncryptionCustomerKeyGoodExamples = []string{
-        `
+	`
  resource "google_compute_disk" "good_example" {
    name  = "test-disk"
    type  = "pd-ssd"
@@ -19,7 +19,7 @@ var terraformDiskEncryptionCustomerKeyGoodExamples = []string{
 }
 
 var terraformDiskEncryptionCustomerKeyBadExamples = []string{
-        `
+	`
  resource "google_compute_disk" "bad_example" {
    name  = "test-disk"
    type  = "pd-ssd"
@@ -34,7 +34,7 @@ var terraformDiskEncryptionCustomerKeyBadExamples = []string{
 }
 
 var terraformDiskEncryptionCustomerKeyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk#kms_key_self_link`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk#kms_key_self_link`,
 }
 
 var terraformDiskEncryptionCustomerKeyRemediationMarkdown = ``

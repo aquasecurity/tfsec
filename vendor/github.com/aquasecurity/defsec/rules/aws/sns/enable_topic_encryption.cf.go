@@ -1,7 +1,7 @@
 package sns
 
 var cloudFormationEnableTopicEncryptionGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good example of topic
 Resources:
@@ -15,7 +15,7 @@ Resources:
 }
 
 var cloudFormationEnableTopicEncryptionBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example of topic
 Resources:

@@ -20,11 +20,10 @@ func (f *FileSystem) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (e *EFS) GetMetadata() *types.Metadata {
 	return &e.Metadata
 }
 
 func (e *EFS) GetRawValue() interface{} {
 	return nil
-}    
+}

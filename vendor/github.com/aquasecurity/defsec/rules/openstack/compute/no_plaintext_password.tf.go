@@ -1,7 +1,7 @@
 package compute
 
 var terraformNoPlaintextPasswordGoodExamples = []string{
-        `
+	`
  resource "openstack_compute_instance_v2" "good_example" {
    name            = "basic"
    image_id        = "ad091b52-742f-469e-8f3c-fd81cadf0743"
@@ -17,7 +17,7 @@ var terraformNoPlaintextPasswordGoodExamples = []string{
 }
 
 var terraformNoPlaintextPasswordBadExamples = []string{
-        `
+	`
  resource "openstack_compute_instance_v2" "bad_example" {
    name            = "basic"
    image_id        = "ad091b52-742f-469e-8f3c-fd81cadf0743"
@@ -33,7 +33,7 @@ var terraformNoPlaintextPasswordBadExamples = []string{
 }
 
 var terraformNoPlaintextPasswordLinks = []string{
-        `https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_instance_v2#admin_pass`,
+	`https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_instance_v2#admin_pass`,
 }
 
 var terraformNoPlaintextPasswordRemediationMarkdown = ``

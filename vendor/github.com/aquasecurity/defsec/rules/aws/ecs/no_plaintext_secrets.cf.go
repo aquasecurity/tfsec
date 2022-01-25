@@ -1,7 +1,7 @@
 package ecs
 
 var cloudFormationNoPlaintextSecretsGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: 'AWS::ECS::Cluster'
@@ -41,7 +41,7 @@ Resources:
 }
 
 var cloudFormationNoPlaintextSecretsBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: 'AWS::ECS::Cluster'

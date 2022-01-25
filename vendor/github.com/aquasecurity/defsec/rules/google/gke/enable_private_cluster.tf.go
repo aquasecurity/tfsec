@@ -1,7 +1,7 @@
 package gke
 
 var terraformEnablePrivateClusterGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -42,7 +42,7 @@ var terraformEnablePrivateClusterGoodExamples = []string{
 }
 
 var terraformEnablePrivateClusterBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -83,7 +83,7 @@ var terraformEnablePrivateClusterBadExamples = []string{
 }
 
 var terraformEnablePrivateClusterLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#enable_private_nodes`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#enable_private_nodes`,
 }
 
 var terraformEnablePrivateClusterRemediationMarkdown = ``

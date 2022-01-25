@@ -1,7 +1,7 @@
 package athena
 
 var terraformNoEncryptionOverrideGoodExamples = []string{
-        `
+	`
  resource "aws_athena_workgroup" "good_example" {
    name = "example"
  
@@ -23,7 +23,7 @@ var terraformNoEncryptionOverrideGoodExamples = []string{
 }
 
 var terraformNoEncryptionOverrideBadExamples = []string{
-        `
+	`
  resource "aws_athena_workgroup" "bad_example" {
    name = "example"
  
@@ -50,7 +50,7 @@ var terraformNoEncryptionOverrideBadExamples = []string{
 }
 
 var terraformNoEncryptionOverrideLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/athena_workgroup#configuration`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/athena_workgroup#configuration`,
 }
 
 var terraformNoEncryptionOverrideRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package dynamodb
 
 var terraformEnableAtRestEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_dax_cluster" "good_example" {
  	// other DAX config
  
@@ -13,7 +13,7 @@ var terraformEnableAtRestEncryptionGoodExamples = []string{
 }
 
 var terraformEnableAtRestEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_dax_cluster" "bad_example" {
  	// no server side encryption at all
  }
@@ -37,7 +37,7 @@ var terraformEnableAtRestEncryptionBadExamples = []string{
 }
 
 var terraformEnableAtRestEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dax_cluster#server_side_encryption`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dax_cluster#server_side_encryption`,
 }
 
 var terraformEnableAtRestEncryptionRemediationMarkdown = ``

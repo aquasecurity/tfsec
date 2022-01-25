@@ -1,7 +1,7 @@
 package redshift
 
 var terraformUseVpcGoodExamples = []string{
-        `
+	`
  resource "aws_redshift_cluster" "good_example" {
  	cluster_identifier = "tf-redshift-cluster"
  	database_name      = "mydb"
@@ -16,7 +16,7 @@ var terraformUseVpcGoodExamples = []string{
 }
 
 var terraformUseVpcBadExamples = []string{
-        `
+	`
  resource "aws_redshift_cluster" "bad_example" {
  	cluster_identifier = "tf-redshift-cluster"
  	database_name      = "mydb"
@@ -29,7 +29,7 @@ var terraformUseVpcBadExamples = []string{
 }
 
 var terraformUseVpcLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster#cluster_subnet_group_name`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster#cluster_subnet_group_name`,
 }
 
 var terraformUseVpcRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package appservice
 
 var terraformEnforceHttpsGoodExamples = []string{
-        `
+	`
  resource "azurerm_function_app" "good_example" {
    name                       = "test-azure-functions"
    location                   = azurerm_resource_group.example.location
@@ -16,7 +16,7 @@ var terraformEnforceHttpsGoodExamples = []string{
 }
 
 var terraformEnforceHttpsBadExamples = []string{
-        `
+	`
  resource "azurerm_function_app" "bad_example" {
    name                       = "test-azure-functions"
    location                   = azurerm_resource_group.example.location
@@ -30,7 +30,7 @@ var terraformEnforceHttpsBadExamples = []string{
 }
 
 var terraformEnforceHttpsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app#https_only`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/function_app#https_only`,
 }
 
 var terraformEnforceHttpsRemediationMarkdown = ``

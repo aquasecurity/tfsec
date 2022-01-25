@@ -1,7 +1,7 @@
 package compute
 
 var terraformProjectLevelOsloginGoodExamples = []string{
-        `
+	`
  resource "google_compute_project_metadata" "default" {
    metadata = {
      enable-oslogin = true
@@ -11,7 +11,7 @@ var terraformProjectLevelOsloginGoodExamples = []string{
 }
 
 var terraformProjectLevelOsloginBadExamples = []string{
-        `
+	`
  resource "google_compute_project_metadata" "default" {
    metadata = {
  	enable-oslogin = false
@@ -21,7 +21,7 @@ var terraformProjectLevelOsloginBadExamples = []string{
 }
 
 var terraformProjectLevelOsloginLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_project_metadata#`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_project_metadata#`,
 }
 
 var terraformProjectLevelOsloginRemediationMarkdown = ``

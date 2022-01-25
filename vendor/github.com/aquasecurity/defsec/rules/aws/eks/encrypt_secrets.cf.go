@@ -1,7 +1,7 @@
 package eks
 
 var cloudFormationEncryptSecretsGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: 'AWS::EKS::Cluster'
@@ -25,7 +25,7 @@ Resources:
 }
 
 var cloudFormationEncryptSecretsBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: 'AWS::EKS::Cluster'

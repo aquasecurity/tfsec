@@ -1,7 +1,7 @@
 package database
 
 var terraformPostgresConfigurationLogConnectionsGoodExamples = []string{
-        `
+	`
  resource "azurerm_resource_group" "example" {
    name     = "example-resources"
    location = "West Europe"
@@ -31,7 +31,7 @@ var terraformPostgresConfigurationLogConnectionsGoodExamples = []string{
 }
 
 var terraformPostgresConfigurationLogConnectionsBadExamples = []string{
-        `
+	`
  resource "azurerm_resource_group" "example" {
    name     = "example-resources"
    location = "West Europe"
@@ -53,7 +53,7 @@ var terraformPostgresConfigurationLogConnectionsBadExamples = []string{
 }
 
 var terraformPostgresConfigurationLogConnectionsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_configuration`,`https://docs.microsoft.com/en-us/azure/postgresql/concepts-server-logs#configure-logging`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_configuration`, `https://docs.microsoft.com/en-us/azure/postgresql/concepts-server-logs#configure-logging`,
 }
 
 var terraformPostgresConfigurationLogConnectionsRemediationMarkdown = ``

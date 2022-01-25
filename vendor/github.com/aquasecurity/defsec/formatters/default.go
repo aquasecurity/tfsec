@@ -53,8 +53,6 @@ func outputDefault(b configurableFormatter, results []rules.Result) error {
 
 const lineNoWidth = 7
 
-var indent = strings.Repeat(" ", lineNoWidth+2)
-
 func printResult(b configurableFormatter, res rules.Result, i int) {
 
 	var severityFormatted string
@@ -213,52 +211,4 @@ func highlightCode(b configurableFormatter, result rules.Result) error {
 	}
 
 	return nil
-}
-
-func printResultLegacy(b configurableFormatter, res rules.Result, i int) {
-
-	resultHeader := fmt.Sprintf("  <underline>Result %d</underline>\n", i+1)
-
-	var severityFormatted string
-	if res.Status() == rules.StatusPassed {
-		terminal.PrintSuccessf(resultHeader)
-		severityFormatted = tml.Sprintf("<green>PASSED</green>")
-	} else {
-		terminal.PrintErrorf(resultHeader)
-		severityFormatted = severityFormat[res.Severity()]
-	}
-
-	rng := res.CodeBlockMetadata().Range()
-	if res.IssueBlockMetadata() != nil {
-		rng = res.IssueBlockMetadata().Range()
-	}
-
-	w := b.Writer()
-
-	_ = tml.Fprintf(w, `
-  <blue>[</blue>%s<blue>]</blue> %s
-  <blue>%s</blue>
-
-`, severityFormatted, res.Description(), rng)
-
-	if err := highlightCode(b, res); err != nil {
-		_ = tml.Fprintf(w, "<red>Failed to render source code: %s</red>\n", err)
-	}
-
-	_ = tml.Fprintf(w, "  <white>ID:         </white><blue>%s</blue>\n", res.Rule().LongID())
-	if res.Rule().Impact != "" {
-		_ = tml.Fprintf(w, "  <white>Impact:     </white><blue>%s</blue>\n", res.Rule().Impact)
-	}
-	if res.Rule().Resolution != "" {
-		_ = tml.Fprintf(w, "  <white>Resolution: </white><blue>%s</blue>\n", res.Rule().Resolution)
-	}
-
-	links := b.GetLinks(res)
-	if len(links) > 0 {
-		_ = tml.Fprintf(w, "\n  <white>More Info:</white>")
-	}
-	for _, link := range links {
-		_ = tml.Fprintf(w, "\n  -<blue> %s </blue>", link)
-	}
-	fmt.Fprintf(w, "\n\n")
 }

@@ -1,7 +1,7 @@
 package vpc
 
 var cloudFormationNoPublicIngressAclGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Godd example of excessive ports
 Resources: 
@@ -21,7 +21,7 @@ Resources:
 }
 
 var cloudFormationNoPublicIngressAclBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example of excessive ports
 Resources:

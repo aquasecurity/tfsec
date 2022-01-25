@@ -1,7 +1,7 @@
 package kinesis
 
 var cloudFormationEnableInTransitEncryptionGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::Kinesis::Stream
@@ -20,7 +20,7 @@ Resources:
 }
 
 var cloudFormationEnableInTransitEncryptionBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::Kinesis::Stream

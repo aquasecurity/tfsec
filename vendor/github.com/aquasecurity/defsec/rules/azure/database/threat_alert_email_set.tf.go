@@ -1,7 +1,7 @@
 package database
 
 var terraformThreatAlertEmailSetGoodExamples = []string{
-        `
+	`
  resource "azurerm_mssql_server_security_alert_policy" "good_example" {
    resource_group_name        = azurerm_resource_group.example.name
    server_name                = azurerm_sql_server.example.name
@@ -18,7 +18,7 @@ var terraformThreatAlertEmailSetGoodExamples = []string{
 }
 
 var terraformThreatAlertEmailSetBadExamples = []string{
-        `
+	`
  resource "azurerm_mssql_server_security_alert_policy" "bad_example" {
    resource_group_name        = azurerm_resource_group.example.name
    server_name                = azurerm_sql_server.example.name
@@ -35,7 +35,7 @@ var terraformThreatAlertEmailSetBadExamples = []string{
 }
 
 var terraformThreatAlertEmailSetLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server_security_alert_policy#email_addresses`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server_security_alert_policy#email_addresses`,
 }
 
 var terraformThreatAlertEmailSetRemediationMarkdown = ``

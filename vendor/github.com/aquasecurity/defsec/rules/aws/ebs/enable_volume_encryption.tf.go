@@ -1,7 +1,7 @@
 package ebs
 
 var terraformEnableVolumeEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_ebs_volume" "good_example" {
    availability_zone = "us-west-2a"
    size              = 40
@@ -15,7 +15,7 @@ var terraformEnableVolumeEncryptionGoodExamples = []string{
 }
 
 var terraformEnableVolumeEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_ebs_volume" "bad_example" {
    availability_zone = "us-west-2a"
    size              = 40
@@ -29,7 +29,7 @@ var terraformEnableVolumeEncryptionBadExamples = []string{
 }
 
 var terraformEnableVolumeEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume#encrypted`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume#encrypted`,
 }
 
 var terraformEnableVolumeEncryptionRemediationMarkdown = ``

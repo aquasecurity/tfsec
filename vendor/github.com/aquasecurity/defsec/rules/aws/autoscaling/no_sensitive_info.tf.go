@@ -1,7 +1,7 @@
 package autoscaling
 
 var terraformNoSensitiveInfoGoodExamples = []string{
-        `
+	`
  resource "aws_launch_configuration" "as_conf" {
    name          = "web_config"
    image_id      = data.aws_ami.ubuntu.id
@@ -10,7 +10,7 @@ var terraformNoSensitiveInfoGoodExamples = []string{
  export GREETING="Hello there"
  EOF
  }
- `,`
+ `, `
  resource "aws_launch_configuration" "as_conf" {
  	name             = "web_config"
  	image_id         = data.aws_ami.ubuntu.id
@@ -21,7 +21,7 @@ var terraformNoSensitiveInfoGoodExamples = []string{
 }
 
 var terraformNoSensitiveInfoBadExamples = []string{
-        `
+	`
  resource "aws_launch_configuration" "as_conf" {
    name          = "web_config"
    image_id      = data.aws_ami.ubuntu.id
@@ -30,7 +30,7 @@ var terraformNoSensitiveInfoBadExamples = []string{
  export DATABASE_PASSWORD=\"SomeSortOfPassword\"
  EOF
  }
- `,`
+ `, `
  resource "aws_launch_configuration" "as_conf" {
    name             = "web_config"
    image_id         = data.aws_ami.ubuntu.id
@@ -41,7 +41,7 @@ var terraformNoSensitiveInfoBadExamples = []string{
 }
 
 var terraformNoSensitiveInfoLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_configuration#user_data,user_data_base64`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_configuration#user_data,user_data_base64`,
 }
 
 var terraformNoSensitiveInfoRemediationMarkdown = ``

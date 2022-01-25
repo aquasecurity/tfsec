@@ -1,7 +1,7 @@
 package cloudtrail
 
 var terraformEnableAllRegionsGoodExamples = []string{
-        `
+	`
  resource "aws_cloudtrail" "good_example" {
    is_multi_region_trail = true
  
@@ -19,7 +19,7 @@ var terraformEnableAllRegionsGoodExamples = []string{
 }
 
 var terraformEnableAllRegionsBadExamples = []string{
-        `
+	`
  resource "aws_cloudtrail" "bad_example" {
    event_selector {
      read_write_type           = "All"
@@ -35,7 +35,7 @@ var terraformEnableAllRegionsBadExamples = []string{
 }
 
 var terraformEnableAllRegionsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#is_multi_region_trail`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#is_multi_region_trail`,
 }
 
 var terraformEnableAllRegionsRemediationMarkdown = ``

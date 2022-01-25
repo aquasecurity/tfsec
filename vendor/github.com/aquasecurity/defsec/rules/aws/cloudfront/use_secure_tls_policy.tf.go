@@ -1,7 +1,7 @@
 package cloudfront
 
 var terraformUseSecureTlsPolicyGoodExamples = []string{
-        `
+	`
  resource "aws_cloudfront_distribution" "good_example" {
    viewer_certificate {
      cloudfront_default_certificate = true
@@ -12,7 +12,7 @@ var terraformUseSecureTlsPolicyGoodExamples = []string{
 }
 
 var terraformUseSecureTlsPolicyBadExamples = []string{
-        `
+	`
  resource "aws_cloudfront_distribution" "bad_example" {
    viewer_certificate {
      cloudfront_default_certificate = true
@@ -23,7 +23,7 @@ var terraformUseSecureTlsPolicyBadExamples = []string{
 }
 
 var terraformUseSecureTlsPolicyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#minimum_protocol_version`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution#minimum_protocol_version`,
 }
 
 var terraformUseSecureTlsPolicyRemediationMarkdown = ``

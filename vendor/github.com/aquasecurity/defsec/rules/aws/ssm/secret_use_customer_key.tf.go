@@ -1,7 +1,7 @@
 package ssm
 
 var terraformSecretUseCustomerKeyGoodExamples = []string{
-        `
+	`
  resource "aws_kms_key" "secrets" {
  	enable_key_rotation = true
  }
@@ -14,7 +14,7 @@ var terraformSecretUseCustomerKeyGoodExamples = []string{
 }
 
 var terraformSecretUseCustomerKeyBadExamples = []string{
-        `
+	`
  resource "aws_secretsmanager_secret" "bad_example" {
    name       = "lambda_password"
  }
@@ -22,7 +22,7 @@ var terraformSecretUseCustomerKeyBadExamples = []string{
 }
 
 var terraformSecretUseCustomerKeyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret#kms_key_id`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret#kms_key_id`,
 }
 
 var terraformSecretUseCustomerKeyRemediationMarkdown = ``

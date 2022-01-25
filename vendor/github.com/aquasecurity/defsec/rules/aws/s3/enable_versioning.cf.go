@@ -1,7 +1,7 @@
 package s3
 
 var cloudFormationEnableVersioningGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Properties:
@@ -12,7 +12,7 @@ Resources:
 }
 
 var cloudFormationEnableVersioningBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::S3::Bucket

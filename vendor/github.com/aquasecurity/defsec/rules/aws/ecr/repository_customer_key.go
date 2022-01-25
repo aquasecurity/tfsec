@@ -21,19 +21,19 @@ var CheckRepositoryCustomerKey = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonECR/latest/userguide/encryption-at-rest.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformRepositoryCustomerKeyGoodExamples,
-            BadExamples:         terraformRepositoryCustomerKeyBadExamples,
-            Links:               terraformRepositoryCustomerKeyLinks,
-            RemediationMarkdown: terraformRepositoryCustomerKeyRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationRepositoryCustomerKeyGoodExamples,
-            BadExamples:         cloudFormationRepositoryCustomerKeyBadExamples,
-            Links:               cloudFormationRepositoryCustomerKeyLinks,
-            RemediationMarkdown: cloudFormationRepositoryCustomerKeyRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformRepositoryCustomerKeyGoodExamples,
+			BadExamples:         terraformRepositoryCustomerKeyBadExamples,
+			Links:               terraformRepositoryCustomerKeyLinks,
+			RemediationMarkdown: terraformRepositoryCustomerKeyRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationRepositoryCustomerKeyGoodExamples,
+			BadExamples:         cloudFormationRepositoryCustomerKeyBadExamples,
+			Links:               cloudFormationRepositoryCustomerKeyLinks,
+			RemediationMarkdown: cloudFormationRepositoryCustomerKeyRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, repo := range s.AWS.ECR.Repositories {

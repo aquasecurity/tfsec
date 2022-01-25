@@ -1,7 +1,7 @@
 package compute
 
 var terraformNoIpForwardingGoodExamples = []string{
-        `
+	`
  resource "google_compute_instance" "bad_example" {
    name         = "test"
    machine_type = "e2-medium"
@@ -24,7 +24,7 @@ var terraformNoIpForwardingGoodExamples = []string{
 }
 
 var terraformNoIpForwardingBadExamples = []string{
-        `
+	`
  resource "google_compute_instance" "bad_example" {
    name         = "test"
    machine_type = "e2-medium"
@@ -47,7 +47,7 @@ var terraformNoIpForwardingBadExamples = []string{
 }
 
 var terraformNoIpForwardingLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#can_ip_forward`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#can_ip_forward`,
 }
 
 var terraformNoIpForwardingRemediationMarkdown = ``

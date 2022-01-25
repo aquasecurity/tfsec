@@ -1,7 +1,7 @@
 package lambda
 
 var cloudFormationEnableTracingGoodExamples = []string{
-        `---
+	`---
 Resources:
   Function:
     Type: AWS::Lambda::Function
@@ -24,7 +24,7 @@ Resources:
 }
 
 var cloudFormationEnableTracingBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::Lambda::Function

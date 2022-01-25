@@ -12,15 +12,13 @@ type Workspace struct {
 	EnableManagedVirtualNetwork types.BoolValue
 }
 
-
 func (s *Synapse) GetMetadata() *types.Metadata {
 	return &s.Metadata
 }
 
 func (s *Synapse) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (w *Workspace) GetMetadata() *types.Metadata {
 	return &w.Metadata
@@ -28,4 +26,4 @@ func (w *Workspace) GetMetadata() *types.Metadata {
 
 func (w *Workspace) GetRawValue() interface{} {
 	return nil
-}    
+}

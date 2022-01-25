@@ -1,7 +1,7 @@
 package compute
 
 var terraformNoDefaultServiceAccountGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service_account_id"
    display_name = "Service Account"
@@ -49,7 +49,7 @@ var terraformNoDefaultServiceAccountGoodExamples = []string{
 }
 
 var terraformNoDefaultServiceAccountBadExamples = []string{
-        `
+	`
  resource "google_compute_instance" "default" {
    name         = "test"
    machine_type = "e2-medium"
@@ -78,7 +78,7 @@ var terraformNoDefaultServiceAccountBadExamples = []string{
 }
 
 var terraformNoDefaultServiceAccountLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#`,
 }
 
 var terraformNoDefaultServiceAccountRemediationMarkdown = ``

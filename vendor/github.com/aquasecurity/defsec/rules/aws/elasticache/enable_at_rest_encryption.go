@@ -20,13 +20,13 @@ var CheckEnableAtRestEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/at-rest-encryption.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableAtRestEncryptionGoodExamples,
-            BadExamples:         terraformEnableAtRestEncryptionBadExamples,
-            Links:               terraformEnableAtRestEncryptionLinks,
-            RemediationMarkdown: terraformEnableAtRestEncryptionRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableAtRestEncryptionGoodExamples,
+			BadExamples:         terraformEnableAtRestEncryptionBadExamples,
+			Links:               terraformEnableAtRestEncryptionLinks,
+			RemediationMarkdown: terraformEnableAtRestEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.AWS.ElastiCache.ReplicationGroups {

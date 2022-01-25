@@ -1,7 +1,7 @@
 package efs
 
 var terraformEnableAtRestEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_efs_file_system" "good_example" {
    name       = "bar"
    encrypted  = true
@@ -10,7 +10,7 @@ var terraformEnableAtRestEncryptionGoodExamples = []string{
 }
 
 var terraformEnableAtRestEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_efs_file_system" "bad_example" {
    name       = "bar"
    encrypted  = false
@@ -19,7 +19,7 @@ var terraformEnableAtRestEncryptionBadExamples = []string{
 }
 
 var terraformEnableAtRestEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system`,
 }
 
 var terraformEnableAtRestEncryptionRemediationMarkdown = ``

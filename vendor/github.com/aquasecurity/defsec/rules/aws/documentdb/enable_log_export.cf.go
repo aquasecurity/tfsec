@@ -1,7 +1,7 @@
 package documentdb
 
 var cloudFormationEnableLogExportGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: "AWS::DocDB::DBCluster"
@@ -26,7 +26,7 @@ Resources:
 }
 
 var cloudFormationEnableLogExportBadExamples = []string{
-        `---
+	`---
  Resources:
   BadExample:
     Type: "AWS::DocDB::DBCluster"

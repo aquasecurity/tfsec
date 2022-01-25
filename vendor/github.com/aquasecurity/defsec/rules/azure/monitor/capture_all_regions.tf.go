@@ -1,7 +1,7 @@
 package monitor
 
 var terraformCaptureAllRegionsGoodExamples = []string{
-        `
+	`
  resource "azurerm_monitor_log_profile" "bad_example" {
    name = "bad_example"
  
@@ -88,7 +88,7 @@ var terraformCaptureAllRegionsGoodExamples = []string{
 }
 
 var terraformCaptureAllRegionsBadExamples = []string{
-        `
+	`
  
  resource "azurerm_monitor_log_profile" "bad_example" {
    name = "bad_example"
@@ -109,7 +109,7 @@ var terraformCaptureAllRegionsBadExamples = []string{
 }
 
 var terraformCaptureAllRegionsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_log_profile#locations`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_log_profile#locations`,
 }
 
 var terraformCaptureAllRegionsRemediationMarkdown = ``

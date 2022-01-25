@@ -1,7 +1,7 @@
 package sam
 
 var cloudFormationEnableStateMachineTracingGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good Example of SAM API
 Resources:
@@ -22,7 +22,7 @@ Resources:
 }
 
 var cloudFormationEnableStateMachineTracingBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad Example of SAM API
 Resources:
@@ -39,7 +39,7 @@ Resources:
       Role: arn:aws:iam::123456123456:role/service-role/my-sample-role
       Tracing:
         Enabled: false
-`,`---
+`, `---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad Example of SAM API
 Resources:

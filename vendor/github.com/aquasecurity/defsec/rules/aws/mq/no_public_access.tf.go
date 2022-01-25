@@ -1,7 +1,7 @@
 package mq
 
 var terraformNoPublicAccessGoodExamples = []string{
-        `
+	`
  resource "aws_mq_broker" "good_example" {
    broker_name = "example"
  
@@ -25,7 +25,7 @@ var terraformNoPublicAccessGoodExamples = []string{
 }
 
 var terraformNoPublicAccessBadExamples = []string{
-        `
+	`
  resource "aws_mq_broker" "bad_example" {
    broker_name = "example"
  
@@ -49,7 +49,7 @@ var terraformNoPublicAccessBadExamples = []string{
 }
 
 var terraformNoPublicAccessLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/mq_broker#publicly_accessible`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/mq_broker#publicly_accessible`,
 }
 
 var terraformNoPublicAccessRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package rds
 
 var terraformEncryptInstanceStorageDataGoodExamples = []string{
-        `
+	`
  resource "aws_db_instance" "good_example" {
  	storage_encrypted  = true
  }
@@ -9,7 +9,7 @@ var terraformEncryptInstanceStorageDataGoodExamples = []string{
 }
 
 var terraformEncryptInstanceStorageDataBadExamples = []string{
-        `
+	`
  resource "aws_db_instance" "bad_example" {
  	
  }
@@ -17,7 +17,7 @@ var terraformEncryptInstanceStorageDataBadExamples = []string{
 }
 
 var terraformEncryptInstanceStorageDataLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance`,
 }
 
 var terraformEncryptInstanceStorageDataRemediationMarkdown = ``

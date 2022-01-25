@@ -1,7 +1,7 @@
 package documentdb
 
 var terraformEnableStorageEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_docdb_cluster" "good_example" {
    cluster_identifier      = "my-docdb-cluster"
    engine                  = "docdb"
@@ -16,7 +16,7 @@ var terraformEnableStorageEncryptionGoodExamples = []string{
 }
 
 var terraformEnableStorageEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_docdb_cluster" "bad_example" {
    cluster_identifier      = "my-docdb-cluster"
    engine                  = "docdb"
@@ -31,7 +31,7 @@ var terraformEnableStorageEncryptionBadExamples = []string{
 }
 
 var terraformEnableStorageEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/docdb_cluster#storage_encrypted`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/docdb_cluster#storage_encrypted`,
 }
 
 var terraformEnableStorageEncryptionRemediationMarkdown = ``

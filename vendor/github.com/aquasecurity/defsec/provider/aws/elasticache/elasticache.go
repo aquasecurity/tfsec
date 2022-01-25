@@ -51,11 +51,10 @@ func (r *ReplicationGroup) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (e *ElastiCache) GetMetadata() *types.Metadata {
 	return &e.Metadata
 }
 
 func (e *ElastiCache) GetRawValue() interface{} {
 	return nil
-}    
+}

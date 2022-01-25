@@ -1,7 +1,7 @@
 package redshift
 
 var cloudFormationEncryptionCustomerKeyGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example of redshift cluster
 Resources:
@@ -15,7 +15,7 @@ Resources:
 }
 
 var cloudFormationEncryptionCustomerKeyBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example of redshift cluster
 Resources:

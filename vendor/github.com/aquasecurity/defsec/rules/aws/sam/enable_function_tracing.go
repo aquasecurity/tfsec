@@ -21,13 +21,13 @@ var CheckEnableFunctionTracing = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-tracing",
 		},
-		CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableFunctionTracingGoodExamples,
-            BadExamples:         cloudFormationEnableFunctionTracingBadExamples,
-            Links:               cloudFormationEnableFunctionTracingLinks,
-            RemediationMarkdown: cloudFormationEnableFunctionTracingRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableFunctionTracingGoodExamples,
+			BadExamples:         cloudFormationEnableFunctionTracingBadExamples,
+			Links:               cloudFormationEnableFunctionTracingLinks,
+			RemediationMarkdown: cloudFormationEnableFunctionTracingRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, function := range s.AWS.SAM.Functions {

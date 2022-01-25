@@ -1,7 +1,7 @@
 package storage
 
 var terraformQueueServicesLoggingEnabledGoodExamples = []string{
-        `
+	`
  resource "azurerm_storage_account" "good_example" {
      name                     = "example"
      resource_group_name      = data.azurerm_resource_group.example.name
@@ -22,7 +22,7 @@ var terraformQueueServicesLoggingEnabledGoodExamples = []string{
 }
 
 var terraformQueueServicesLoggingEnabledBadExamples = []string{
-        `
+	`
  resource "azurerm_storage_account" "bad_example" {
      name                     = "example"
      resource_group_name      = data.azurerm_resource_group.example.name
@@ -36,7 +36,7 @@ var terraformQueueServicesLoggingEnabledBadExamples = []string{
 }
 
 var terraformQueueServicesLoggingEnabledLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account#logging`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account#logging`,
 }
 
 var terraformQueueServicesLoggingEnabledRemediationMarkdown = ``

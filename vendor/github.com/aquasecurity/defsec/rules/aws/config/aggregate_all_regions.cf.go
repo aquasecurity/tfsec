@@ -1,7 +1,7 @@
 package config
 
 var cloudFormationAggregateAllRegionsGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::Config::ConfigurationAggregator
@@ -9,7 +9,7 @@ Resources:
       AccountAggregationSources:
         - AllAwsRegions: true
       ConfigurationAggregatorName: "GoodAccountLevelAggregation"
-`,`---
+`, `---
 Resources:
   GoodExample:
     Type: AWS::Config::ConfigurationAggregator
@@ -21,7 +21,7 @@ Resources:
 }
 
 var cloudFormationAggregateAllRegionsBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::Config::ConfigurationAggregator

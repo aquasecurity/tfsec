@@ -1,7 +1,7 @@
 package secrets
 
 var terraformNoPlaintextExposureGoodExamples = []string{
-        `
+	`
  variable "password" {
    description = "The root password for our VM"
    type        = string
@@ -14,7 +14,7 @@ var terraformNoPlaintextExposureGoodExamples = []string{
 }
 
 var terraformNoPlaintextExposureBadExamples = []string{
-        `
+	`
  variable "password" {
    description = "The root password for our VM"
    type        = string
@@ -28,7 +28,7 @@ var terraformNoPlaintextExposureBadExamples = []string{
 }
 
 var terraformNoPlaintextExposureLinks = []string{
-        `https://www.terraform.io/docs/state/sensitive-data.html`,
+	`https://www.terraform.io/docs/state/sensitive-data.html`,
 }
 
 var terraformNoPlaintextExposureRemediationMarkdown = ``

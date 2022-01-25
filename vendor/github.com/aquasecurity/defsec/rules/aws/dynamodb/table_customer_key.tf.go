@@ -1,7 +1,7 @@
 package dynamodb
 
 var terraformTableCustomerKeyGoodExamples = []string{
-        `
+	`
  resource "aws_kms_key" "dynamo_db_kms" {
  	enable_key_rotation = true
  }
@@ -35,7 +35,7 @@ var terraformTableCustomerKeyGoodExamples = []string{
 }
 
 var terraformTableCustomerKeyBadExamples = []string{
-        `
+	`
  resource "aws_dynamodb_table" "bad_example" {
  	name             = "example"
  	hash_key         = "TestTableHashKey"
@@ -60,7 +60,7 @@ var terraformTableCustomerKeyBadExamples = []string{
 }
 
 var terraformTableCustomerKeyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#server_side_encryption`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#server_side_encryption`,
 }
 
 var terraformTableCustomerKeyRemediationMarkdown = ``
