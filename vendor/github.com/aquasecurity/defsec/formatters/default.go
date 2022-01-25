@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"path/filepath"
 	"strings"
 
 	"github.com/aquasecurity/defsec/rules"
@@ -44,7 +45,7 @@ func outputDefault(b configurableFormatter, results []rules.Result) error {
 	if passCount > 0 {
 		passInfo = fmt.Sprintf("%d passed, ", passCount)
 	}
-	tml.Fprintf(b.Writer(), "\n  <red><bold>%s%d potential problems detected.\n\n", passInfo, len(results)-countPassedResults(results))
+	tml.Fprintf(b.Writer(), "\n  <red><bold>%s%d potential problem(s) detected.\n\n", passInfo, len(results)-countPassedResults(results))
 
 	return nil
 
@@ -86,6 +87,10 @@ func printResult(b configurableFormatter, res rules.Result, i int) {
 	if rng.GetStartLine() < rng.GetEndLine() {
 		lineInfo = fmt.Sprintf("Lines %d-%d", rng.GetStartLine(), rng.GetEndLine())
 	}
+	filename := rng.GetFilename()
+	if relative, err := filepath.Rel(b.BaseDir(), filename); err == nil {
+		filename = relative
+	}
 
 	tml.Fprintf(
 		w,
@@ -95,7 +100,7 @@ func printResult(b configurableFormatter, res rules.Result, i int) {
 	tml.Fprintf(
 		w,
 		" <italic>%s <dim>%s\n",
-		rng.GetFilename(),
+		filename,
 		lineInfo,
 	)
 
