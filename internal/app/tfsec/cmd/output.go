@@ -20,7 +20,7 @@ func output(baseFilename string, formats []string, dir string, results []rules.R
 
 	var files []string
 	for i, format := range formats {
-		if filename, err := outputFormat(i, baseFilename, format, dir, results); err != nil {
+		if filename, err := outputFormat(i, len(formats) > 1, baseFilename, format, dir, results); err != nil {
 			return err
 		} else if filename != "" {
 			files = append(files, filename)
@@ -34,7 +34,7 @@ func output(baseFilename string, formats []string, dir string, results []rules.R
 	return nil
 }
 
-func outputFormat(i int, baseFilename string, format string, dir string, results []rules.Result) (string, error) {
+func outputFormat(i int, addExtension bool, baseFilename string, format string, dir string, results []rules.Result) (string, error) {
 
 	formatter := formatters.New().
 		WithDebugEnabled(debug.Enabled).
@@ -81,7 +81,11 @@ func outputFormat(i int, baseFilename string, format string, dir string, results
 
 	var outputPath string
 	if baseFilename != "" {
-		outputPath = fmt.Sprintf("%s%s", baseFilename, getExtensionForFormat(format))
+		if addExtension {
+			outputPath = fmt.Sprintf("%s%s", baseFilename, getExtensionForFormat(format))
+		} else {
+			outputPath = baseFilename
+		}
 		f, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
 		if err != nil {
 			return "", err
