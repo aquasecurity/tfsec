@@ -1,7 +1,7 @@
 package efs
 
 var cloudFormationEnableAtRestEncryptionGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::EFS::FileSystem
@@ -17,7 +17,7 @@ Resources:
 }
 
 var cloudFormationEnableAtRestEncryptionBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::EFS::FileSystem

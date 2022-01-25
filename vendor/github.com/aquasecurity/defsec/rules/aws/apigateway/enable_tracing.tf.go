@@ -1,7 +1,7 @@
 package apigateway
 
 var terraformEnableTracingGoodExamples = []string{
-        `
+	`
  resource "aws_api_gateway_rest_api" "test" {
 	
  }
@@ -16,7 +16,7 @@ var terraformEnableTracingGoodExamples = []string{
 }
 
 var terraformEnableTracingBadExamples = []string{
-        `
+	`
  resource "aws_api_gateway_rest_api" "test" {
 	
  }
@@ -31,7 +31,7 @@ var terraformEnableTracingBadExamples = []string{
 }
 
 var terraformEnableTracingLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_stage#xray_tracing_enabled`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_stage#xray_tracing_enabled`,
 }
 
 var terraformEnableTracingRemediationMarkdown = ``

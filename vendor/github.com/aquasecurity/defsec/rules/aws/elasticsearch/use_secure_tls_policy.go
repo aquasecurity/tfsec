@@ -20,19 +20,19 @@ var CheckUseSecureTlsPolicy = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-data-protection.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformUseSecureTlsPolicyGoodExamples,
-            BadExamples:         terraformUseSecureTlsPolicyBadExamples,
-            Links:               terraformUseSecureTlsPolicyLinks,
-            RemediationMarkdown: terraformUseSecureTlsPolicyRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationUseSecureTlsPolicyGoodExamples,
-            BadExamples:         cloudFormationUseSecureTlsPolicyBadExamples,
-            Links:               cloudFormationUseSecureTlsPolicyLinks,
-            RemediationMarkdown: cloudFormationUseSecureTlsPolicyRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformUseSecureTlsPolicyGoodExamples,
+			BadExamples:         terraformUseSecureTlsPolicyBadExamples,
+			Links:               terraformUseSecureTlsPolicyLinks,
+			RemediationMarkdown: terraformUseSecureTlsPolicyRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationUseSecureTlsPolicyGoodExamples,
+			BadExamples:         cloudFormationUseSecureTlsPolicyBadExamples,
+			Links:               cloudFormationUseSecureTlsPolicyLinks,
+			RemediationMarkdown: cloudFormationUseSecureTlsPolicyRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, domain := range s.AWS.Elasticsearch.Domains {

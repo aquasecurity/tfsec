@@ -1,7 +1,7 @@
 package gke
 
 var terraformEnableAutoUpgradeGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -41,7 +41,7 @@ var terraformEnableAutoUpgradeGoodExamples = []string{
 }
 
 var terraformEnableAutoUpgradeBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -81,7 +81,7 @@ var terraformEnableAutoUpgradeBadExamples = []string{
 }
 
 var terraformEnableAutoUpgradeLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_node_pool#auto_upgrade`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_node_pool#auto_upgrade`,
 }
 
 var terraformEnableAutoUpgradeRemediationMarkdown = ``

@@ -22,19 +22,19 @@ In order to benefit from the additional security features achieved with using an
 		Links: []string{
 			"https://docs.aws.amazon.com/redshift/latest/mgmt/managing-clusters-vpc.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformUseVpcGoodExamples,
-            BadExamples:         terraformUseVpcBadExamples,
-            Links:               terraformUseVpcLinks,
-            RemediationMarkdown: terraformUseVpcRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationUseVpcGoodExamples,
-            BadExamples:         cloudFormationUseVpcBadExamples,
-            Links:               cloudFormationUseVpcLinks,
-            RemediationMarkdown: cloudFormationUseVpcRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformUseVpcGoodExamples,
+			BadExamples:         terraformUseVpcBadExamples,
+			Links:               terraformUseVpcLinks,
+			RemediationMarkdown: terraformUseVpcRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationUseVpcGoodExamples,
+			BadExamples:         cloudFormationUseVpcBadExamples,
+			Links:               cloudFormationUseVpcLinks,
+			RemediationMarkdown: cloudFormationUseVpcRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.Redshift.Clusters {

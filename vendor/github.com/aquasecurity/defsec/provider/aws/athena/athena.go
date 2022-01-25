@@ -49,15 +49,13 @@ func (d *Database) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (a *Athena) GetMetadata() *types.Metadata {
 	return &a.Metadata
 }
 
 func (a *Athena) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (e *EncryptionConfiguration) GetMetadata() *types.Metadata {
 	return &e.Metadata
@@ -65,4 +63,4 @@ func (e *EncryptionConfiguration) GetMetadata() *types.Metadata {
 
 func (e *EncryptionConfiguration) GetRawValue() interface{} {
 	return nil
-}    
+}

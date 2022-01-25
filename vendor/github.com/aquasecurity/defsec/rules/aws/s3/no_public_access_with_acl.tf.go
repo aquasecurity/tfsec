@@ -1,7 +1,7 @@
 package s3
 
 var terraformNoPublicAccessWithAclGoodExamples = []string{
-        `
+	`
 resource "aws_s3_bucket" "good_example" {
 	acl = "private"
 }
@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "good_example" {
 }
 
 var terraformNoPublicAccessWithAclBadExamples = []string{
-        `
+	`
 resource "aws_s3_bucket" "bad_example" {
 	acl = "public-read"
 }
@@ -17,7 +17,7 @@ resource "aws_s3_bucket" "bad_example" {
 }
 
 var terraformNoPublicAccessWithAclLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket`,
 }
 
 var terraformNoPublicAccessWithAclRemediationMarkdown = ``

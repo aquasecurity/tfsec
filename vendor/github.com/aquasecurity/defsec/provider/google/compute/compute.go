@@ -11,11 +11,10 @@ type Compute struct {
 	Instances       []Instance
 }
 
-
 func (c *Compute) GetMetadata() *types.Metadata {
 	return &c.Metadata
 }
 
 func (c *Compute) GetRawValue() interface{} {
 	return nil
-}    
+}

@@ -1,7 +1,7 @@
 package storage
 
 var terraformEnableUblaGoodExamples = []string{
-        `
+	`
  resource "google_storage_bucket" "static-site" {
  	name          = "image-store.com"
  	location      = "EU"
@@ -24,7 +24,7 @@ var terraformEnableUblaGoodExamples = []string{
 }
 
 var terraformEnableUblaBadExamples = []string{
-        `
+	`
  resource "google_storage_bucket" "static-site" {
  	name          = "image-store.com"
  	location      = "EU"
@@ -47,7 +47,7 @@ var terraformEnableUblaBadExamples = []string{
 }
 
 var terraformEnableUblaLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket#uniform_bucket_level_access`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket#uniform_bucket_level_access`,
 }
 
 var terraformEnableUblaRemediationMarkdown = ``

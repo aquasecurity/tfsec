@@ -23,19 +23,19 @@ S3 Buckets should be encrypted with customer managed KMS keys and not default AW
 			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html",
 		},
 
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableBucketEncryptionGoodExamples,
-            BadExamples:         terraformEnableBucketEncryptionBadExamples,
-            Links:               terraformEnableBucketEncryptionLinks,
-            RemediationMarkdown: terraformEnableBucketEncryptionRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableBucketEncryptionGoodExamples,
-            BadExamples:         cloudFormationEnableBucketEncryptionBadExamples,
-            Links:               cloudFormationEnableBucketEncryptionLinks,
-            RemediationMarkdown: cloudFormationEnableBucketEncryptionRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableBucketEncryptionGoodExamples,
+			BadExamples:         terraformEnableBucketEncryptionBadExamples,
+			Links:               terraformEnableBucketEncryptionLinks,
+			RemediationMarkdown: terraformEnableBucketEncryptionRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableBucketEncryptionGoodExamples,
+			BadExamples:         cloudFormationEnableBucketEncryptionBadExamples,
+			Links:               cloudFormationEnableBucketEncryptionLinks,
+			RemediationMarkdown: cloudFormationEnableBucketEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.AWS.S3.Buckets {

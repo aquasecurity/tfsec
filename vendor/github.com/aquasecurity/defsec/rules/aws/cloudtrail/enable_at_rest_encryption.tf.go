@@ -1,7 +1,7 @@
 package cloudtrail
 
 var terraformEnableAtRestEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_cloudtrail" "good_example" {
    is_multi_region_trail = true
    enable_log_file_validation = true
@@ -21,7 +21,7 @@ var terraformEnableAtRestEncryptionGoodExamples = []string{
 }
 
 var terraformEnableAtRestEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_cloudtrail" "bad_example" {
    is_multi_region_trail = true
  
@@ -39,7 +39,7 @@ var terraformEnableAtRestEncryptionBadExamples = []string{
 }
 
 var terraformEnableAtRestEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#kms_key_id`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#kms_key_id`,
 }
 
 var terraformEnableAtRestEncryptionRemediationMarkdown = ``

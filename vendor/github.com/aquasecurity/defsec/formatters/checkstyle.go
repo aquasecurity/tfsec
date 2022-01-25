@@ -46,7 +46,7 @@ func outputCheckStyle(b configurableFormatter, results []rules.Result) error {
 			rng = res.IssueBlockMetadata().Range()
 		}
 
-		fileResults := append(
+		files[rng.GetFilename()] = append(
 			files[rng.GetFilename()],
 			checkstyleResult{
 				Rule:     res.Rule().LongID(),
@@ -56,7 +56,6 @@ func outputCheckStyle(b configurableFormatter, results []rules.Result) error {
 				Link:     link,
 			},
 		)
-		files[rng.GetFilename()] = fileResults
 	}
 
 	for name, fileResults := range files {

@@ -20,19 +20,19 @@ var CheckBucketsHavePublicAccessBlocks = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformSpecifyPublicAccessBlockGoodExamples,
-            BadExamples:         terraformSpecifyPublicAccessBlockBadExamples,
-            Links:               terraformSpecifyPublicAccessBlockLinks,
-            RemediationMarkdown: terraformSpecifyPublicAccessBlockRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationSpecifyPublicAccessBlockGoodExamples,
-            BadExamples:         cloudFormationSpecifyPublicAccessBlockBadExamples,
-            Links:               cloudFormationSpecifyPublicAccessBlockLinks,
-            RemediationMarkdown: cloudFormationSpecifyPublicAccessBlockRemediationMarkdown,
-        },
-        Severity: severity.Low,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformSpecifyPublicAccessBlockGoodExamples,
+			BadExamples:         terraformSpecifyPublicAccessBlockBadExamples,
+			Links:               terraformSpecifyPublicAccessBlockLinks,
+			RemediationMarkdown: terraformSpecifyPublicAccessBlockRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationSpecifyPublicAccessBlockGoodExamples,
+			BadExamples:         cloudFormationSpecifyPublicAccessBlockBadExamples,
+			Links:               cloudFormationSpecifyPublicAccessBlockLinks,
+			RemediationMarkdown: cloudFormationSpecifyPublicAccessBlockRemediationMarkdown,
+		},
+		Severity: severity.Low,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.AWS.S3.Buckets {

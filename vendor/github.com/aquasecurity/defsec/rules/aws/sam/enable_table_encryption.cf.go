@@ -1,7 +1,7 @@
 package sam
 
 var cloudFormationEnableTableEncryptionGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good Example of SAM Table
 Resources:
@@ -15,7 +15,7 @@ Resources:
 }
 
 var cloudFormationEnableTableEncryptionBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad Example of SAM Table
 Resources:
@@ -25,7 +25,7 @@ Resources:
       TableName: Bad Table
       SSESpecification:
         SSEEnabled: false
-`,`---
+`, `---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad Example of SAM Table
 Resources:

@@ -23,13 +23,13 @@ You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning 
 		Links: []string{
 			"https://www.cloudflare.com/en-gb/learning/ssl/why-is-http-not-secure/",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformHttpNotUsedGoodExamples,
-            BadExamples:         terraformHttpNotUsedBadExamples,
-            Links:               terraformHttpNotUsedLinks,
-            RemediationMarkdown: terraformHttpNotUsedRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformHttpNotUsedGoodExamples,
+			BadExamples:         terraformHttpNotUsedBadExamples,
+			Links:               terraformHttpNotUsedLinks,
+			RemediationMarkdown: terraformHttpNotUsedRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, lb := range s.AWS.ELB.LoadBalancers {

@@ -24,19 +24,19 @@ For S3, this should be the ARN of the S3 Bucket. For CloudWatch Events, this sho
 		Links: []string{
 			"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformRestrictSourceArnGoodExamples,
-            BadExamples:         terraformRestrictSourceArnBadExamples,
-            Links:               terraformRestrictSourceArnLinks,
-            RemediationMarkdown: terraformRestrictSourceArnRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationRestrictSourceArnGoodExamples,
-            BadExamples:         cloudFormationRestrictSourceArnBadExamples,
-            Links:               cloudFormationRestrictSourceArnLinks,
-            RemediationMarkdown: cloudFormationRestrictSourceArnRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformRestrictSourceArnGoodExamples,
+			BadExamples:         terraformRestrictSourceArnBadExamples,
+			Links:               terraformRestrictSourceArnLinks,
+			RemediationMarkdown: terraformRestrictSourceArnRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationRestrictSourceArnGoodExamples,
+			BadExamples:         cloudFormationRestrictSourceArnBadExamples,
+			Links:               cloudFormationRestrictSourceArnLinks,
+			RemediationMarkdown: cloudFormationRestrictSourceArnRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, function := range s.AWS.Lambda.Functions {

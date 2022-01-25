@@ -1,7 +1,7 @@
 package securitycenter
 
 var terraformSetRequiredContactDetailsGoodExamples = []string{
-        `
+	`
 		resource "azurerm_security_center_contact" "good_example" {
 		email = "good_contact@example.com"
 		phone = "+1-555-555-5555"
@@ -13,7 +13,7 @@ var terraformSetRequiredContactDetailsGoodExamples = []string{
 }
 
 var terraformSetRequiredContactDetailsBadExamples = []string{
-        `
+	`
 		resource "azurerm_security_center_contact" "bad_example" {
 		email = "bad_contact@example.com"
 		phone = ""
@@ -25,7 +25,7 @@ var terraformSetRequiredContactDetailsBadExamples = []string{
 }
 
 var terraformSetRequiredContactDetailsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/security_center_contact#phone`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/security_center_contact#phone`,
 }
 
 var terraformSetRequiredContactDetailsRemediationMarkdown = ``

@@ -8,11 +8,10 @@ type Network struct {
 	Subnetworks []SubNetwork
 }
 
-
 func (n *Network) GetMetadata() *types.Metadata {
 	return &n.Metadata
 }
 
 func (n *Network) GetRawValue() interface{} {
 	return nil
-}    
+}

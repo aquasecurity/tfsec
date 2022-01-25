@@ -1,7 +1,7 @@
 package appservice
 
 var terraformAuthenticationEnabledGoodExamples = []string{
-        `
+	`
  resource "azurerm_app_service" "good_example" {
    name                = "example-app-service"
    location            = azurerm_resource_group.example.location
@@ -16,7 +16,7 @@ var terraformAuthenticationEnabledGoodExamples = []string{
 }
 
 var terraformAuthenticationEnabledBadExamples = []string{
-        `
+	`
  resource "azurerm_app_service" "bad_example" {
    name                = "example-app-service"
    location            = azurerm_resource_group.example.location
@@ -27,7 +27,7 @@ var terraformAuthenticationEnabledBadExamples = []string{
 }
 
 var terraformAuthenticationEnabledLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service#enabled`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service#enabled`,
 }
 
 var terraformAuthenticationEnabledRemediationMarkdown = ``

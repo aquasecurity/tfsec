@@ -1,7 +1,7 @@
 package compute
 
 var terraformUseSecureTlsPolicyGoodExamples = []string{
-        `
+	`
  resource "google_compute_ssl_policy" "good_example" {
    name    = "production-ssl-policy"
    profile = "MODERN"
@@ -11,7 +11,7 @@ var terraformUseSecureTlsPolicyGoodExamples = []string{
 }
 
 var terraformUseSecureTlsPolicyBadExamples = []string{
-        `
+	`
  resource "google_compute_ssl_policy" "bad_example" {
    name    = "production-ssl-policy"
    profile = "MODERN"
@@ -22,7 +22,7 @@ var terraformUseSecureTlsPolicyBadExamples = []string{
 }
 
 var terraformUseSecureTlsPolicyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_ssl_policy#min_tls_version`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_ssl_policy#min_tls_version`,
 }
 
 var terraformUseSecureTlsPolicyRemediationMarkdown = ``

@@ -12,15 +12,13 @@ type Store struct {
 	EnableEncryption types.BoolValue
 }
 
-
 func (d *DataLake) GetMetadata() *types.Metadata {
 	return &d.Metadata
 }
 
 func (d *DataLake) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (s *Store) GetMetadata() *types.Metadata {
 	return &s.Metadata
@@ -28,4 +26,4 @@ func (s *Store) GetMetadata() *types.Metadata {
 
 func (s *Store) GetRawValue() interface{} {
 	return nil
-}    
+}

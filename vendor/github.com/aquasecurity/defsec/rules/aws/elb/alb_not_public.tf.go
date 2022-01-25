@@ -1,7 +1,7 @@
 package elb
 
 var terraformAlbNotPublicGoodExamples = []string{
-        `
+	`
  resource "aws_alb" "good_example" {
  	internal = true
  }
@@ -9,7 +9,7 @@ var terraformAlbNotPublicGoodExamples = []string{
 }
 
 var terraformAlbNotPublicBadExamples = []string{
-        `
+	`
  resource "aws_alb" "bad_example" {
  	internal = false
  }
@@ -17,7 +17,7 @@ var terraformAlbNotPublicBadExamples = []string{
 }
 
 var terraformAlbNotPublicLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb`,
 }
 
 var terraformAlbNotPublicRemediationMarkdown = ``

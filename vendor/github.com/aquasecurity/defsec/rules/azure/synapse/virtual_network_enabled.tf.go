@@ -1,7 +1,7 @@
 package synapse
 
 var terraformVirtualNetworkEnabledGoodExamples = []string{
-        `
+	`
  resource "azurerm_synapse_workspace" "good_example" {
    name                                 = "example"
    resource_group_name                  = azurerm_resource_group.example.name
@@ -24,7 +24,7 @@ var terraformVirtualNetworkEnabledGoodExamples = []string{
 }
 
 var terraformVirtualNetworkEnabledBadExamples = []string{
-        `
+	`
  resource "azurerm_synapse_workspace" "bad_example" {
    name                                 = "example"
    resource_group_name                  = azurerm_resource_group.example.name
@@ -47,7 +47,7 @@ var terraformVirtualNetworkEnabledBadExamples = []string{
 }
 
 var terraformVirtualNetworkEnabledLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/synapse_workspace#managed_virtual_network_enabled`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/synapse_workspace#managed_virtual_network_enabled`,
 }
 
 var terraformVirtualNetworkEnabledRemediationMarkdown = ``

@@ -22,13 +22,13 @@ The account password policy should be set to enforce minimum password length of 
 		Links: []string{
 			"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformSetMinimumPasswordLengthGoodExamples,
-            BadExamples:         terraformSetMinimumPasswordLengthBadExamples,
-            Links:               terraformSetMinimumPasswordLengthLinks,
-            RemediationMarkdown: terraformSetMinimumPasswordLengthRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformSetMinimumPasswordLengthGoodExamples,
+			BadExamples:         terraformSetMinimumPasswordLengthBadExamples,
+			Links:               terraformSetMinimumPasswordLengthLinks,
+			RemediationMarkdown: terraformSetMinimumPasswordLengthRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		policy := s.AWS.IAM.PasswordPolicy

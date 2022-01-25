@@ -1,7 +1,7 @@
 package sqs
 
 var terraformEnableQueueEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_sqs_queue" "good_example" {
  	kms_master_key_id = "/blah"
  }
@@ -9,7 +9,7 @@ var terraformEnableQueueEncryptionGoodExamples = []string{
 }
 
 var terraformEnableQueueEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_sqs_queue" "bad_example" {
  	# no key specified
  }
@@ -17,7 +17,7 @@ var terraformEnableQueueEncryptionBadExamples = []string{
 }
 
 var terraformEnableQueueEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue#server-side-encryption-sse`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue#server-side-encryption-sse`,
 }
 
 var terraformEnableQueueEncryptionRemediationMarkdown = ``

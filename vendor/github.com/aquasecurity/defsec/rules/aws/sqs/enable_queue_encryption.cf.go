@@ -1,7 +1,7 @@
 package sqs
 
 var cloudFormationEnableQueueEncryptionGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good example of queue
 Resources:
@@ -15,7 +15,7 @@ Resources:
 }
 
 var cloudFormationEnableQueueEncryptionBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example of queue
 Resources:

@@ -1,7 +1,7 @@
 package dynamodb
 
 var terraformEnableRecoveryGoodExamples = []string{
-        `
+	`
  resource "aws_dynamodb_table" "good_example" {
  	name             = "example"
  	hash_key         = "TestTableHashKey"
@@ -22,7 +22,7 @@ var terraformEnableRecoveryGoodExamples = []string{
 }
 
 var terraformEnableRecoveryBadExamples = []string{
-        `
+	`
  resource "aws_dynamodb_table" "bad_example" {
  	name             = "example"
  	hash_key         = "TestTableHashKey"
@@ -39,7 +39,7 @@ var terraformEnableRecoveryBadExamples = []string{
 }
 
 var terraformEnableRecoveryLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#point_in_time_recovery`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table#point_in_time_recovery`,
 }
 
 var terraformEnableRecoveryRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package gke
 
 var terraformEnableStackdriverMonitoringGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -40,7 +40,7 @@ var terraformEnableStackdriverMonitoringGoodExamples = []string{
 }
 
 var terraformEnableStackdriverMonitoringBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -79,7 +79,7 @@ var terraformEnableStackdriverMonitoringBadExamples = []string{
 }
 
 var terraformEnableStackdriverMonitoringLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#monitoring_service`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#monitoring_service`,
 }
 
 var terraformEnableStackdriverMonitoringRemediationMarkdown = ``

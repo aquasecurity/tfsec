@@ -1,7 +1,7 @@
 package workspaces
 
 var terraformEnableDiskEncryptionGoodExamples = []string{
-        `	
+	`	
  resource "aws_workspaces_workspace" "good_example" {
  		directory_id 				   = aws_workspaces_directory.test.id
  		bundle_id    				   = data.aws_workspaces_bundle.value_windows_10.id
@@ -21,7 +21,7 @@ var terraformEnableDiskEncryptionGoodExamples = []string{
 }
 
 var terraformEnableDiskEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_workspaces_workspace" "bad_example" {
  	directory_id = aws_workspaces_directory.test.id
  	bundle_id    = data.aws_workspaces_bundle.value_windows_10.id
@@ -39,7 +39,7 @@ var terraformEnableDiskEncryptionBadExamples = []string{
 }
 
 var terraformEnableDiskEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/workspaces_workspace#root_volume_encryption_enabled`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/workspaces_workspace#root_volume_encryption_enabled`,
 }
 
 var terraformEnableDiskEncryptionRemediationMarkdown = ``

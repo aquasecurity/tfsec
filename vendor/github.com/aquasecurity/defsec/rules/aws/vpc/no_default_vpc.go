@@ -20,13 +20,13 @@ var CheckNoDefaultVpc = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/vpc/latest/userguide/default-vpc.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoDefaultVpcGoodExamples,
-            BadExamples:         terraformNoDefaultVpcBadExamples,
-            Links:               terraformNoDefaultVpcLinks,
-            RemediationMarkdown: terraformNoDefaultVpcRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoDefaultVpcGoodExamples,
+			BadExamples:         terraformNoDefaultVpcBadExamples,
+			Links:               terraformNoDefaultVpcLinks,
+			RemediationMarkdown: terraformNoDefaultVpcRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, def := range s.AWS.VPC.DefaultVPCs {

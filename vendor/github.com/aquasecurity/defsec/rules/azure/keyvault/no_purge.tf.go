@@ -1,7 +1,7 @@
 package keyvault
 
 var terraformNoPurgeGoodExamples = []string{
-        `
+	`
  resource "azurerm_key_vault" "good_example" {
      name                        = "examplekeyvault"
      location                    = azurerm_resource_group.good_example.location
@@ -13,7 +13,7 @@ var terraformNoPurgeGoodExamples = []string{
 }
 
 var terraformNoPurgeBadExamples = []string{
-        `
+	`
  resource "azurerm_key_vault" "bad_example" {
      name                        = "examplekeyvault"
      location                    = azurerm_resource_group.bad_example.location
@@ -24,7 +24,7 @@ var terraformNoPurgeBadExamples = []string{
 }
 
 var terraformNoPurgeLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault#purge_protection_enabled`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault#purge_protection_enabled`,
 }
 
 var terraformNoPurgeRemediationMarkdown = ``

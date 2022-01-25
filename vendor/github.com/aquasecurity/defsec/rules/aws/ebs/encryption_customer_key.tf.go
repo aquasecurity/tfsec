@@ -1,7 +1,7 @@
 package ebs
 
 var terraformEncryptionCustomerKeyGoodExamples = []string{
-        `
+	`
  resource "aws_kms_key" "ebs_encryption" {
  	enable_key_rotation = true
  }
@@ -20,7 +20,7 @@ var terraformEncryptionCustomerKeyGoodExamples = []string{
 }
 
 var terraformEncryptionCustomerKeyBadExamples = []string{
-        `
+	`
  resource "aws_ebs_volume" "example" {
    availability_zone = "us-west-2a"
    size              = 40
@@ -33,7 +33,7 @@ var terraformEncryptionCustomerKeyBadExamples = []string{
 }
 
 var terraformEncryptionCustomerKeyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume#kms_key_id`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume#kms_key_id`,
 }
 
 var terraformEncryptionCustomerKeyRemediationMarkdown = ``

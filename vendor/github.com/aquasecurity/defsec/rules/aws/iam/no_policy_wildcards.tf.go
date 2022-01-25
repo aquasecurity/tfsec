@@ -1,7 +1,7 @@
 package iam
 
 var terraformNoPolicyWildcardsGoodExamples = []string{
-        `
+	`
  resource "aws_iam_role_policy" "test_policy" {
  	name = "test_policy"
  	role = aws_iam_role.test_role.id
@@ -40,7 +40,7 @@ var terraformNoPolicyWildcardsGoodExamples = []string{
 }
 
 var terraformNoPolicyWildcardsBadExamples = []string{
-        `
+	`
  resource "aws_iam_role_policy" "test_policy" {
  	name = "test_policy"
  	role = aws_iam_role.test_role.id
@@ -79,7 +79,7 @@ var terraformNoPolicyWildcardsBadExamples = []string{
 }
 
 var terraformNoPolicyWildcardsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document`,
 }
 
 var terraformNoPolicyWildcardsRemediationMarkdown = ``

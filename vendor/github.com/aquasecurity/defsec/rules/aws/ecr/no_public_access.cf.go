@@ -1,7 +1,7 @@
 package ecr
 
 var cloudFormationNoPublicAccessGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::ECR::Repository
@@ -34,7 +34,7 @@ Resources:
 }
 
 var cloudFormationNoPublicAccessBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::ECR::Repository

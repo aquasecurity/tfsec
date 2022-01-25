@@ -1,7 +1,7 @@
 package eks
 
 var terraformNoPublicClusterAccessGoodExamples = []string{
-        `
+	`
  resource "aws_eks_cluster" "good_example" {
      // other config 
  
@@ -15,7 +15,7 @@ var terraformNoPublicClusterAccessGoodExamples = []string{
 }
 
 var terraformNoPublicClusterAccessBadExamples = []string{
-        `
+	`
  resource "aws_eks_cluster" "bad_example" {
      // other config 
  
@@ -30,7 +30,7 @@ var terraformNoPublicClusterAccessBadExamples = []string{
 }
 
 var terraformNoPublicClusterAccessLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#endpoint_public_access`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#endpoint_public_access`,
 }
 
 var terraformNoPublicClusterAccessRemediationMarkdown = ``

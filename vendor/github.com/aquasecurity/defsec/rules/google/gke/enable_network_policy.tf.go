@@ -1,7 +1,7 @@
 package gke
 
 var terraformEnableNetworkPolicyGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -42,7 +42,7 @@ var terraformEnableNetworkPolicyGoodExamples = []string{
 }
 
 var terraformEnableNetworkPolicyBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -83,7 +83,7 @@ var terraformEnableNetworkPolicyBadExamples = []string{
 }
 
 var terraformEnableNetworkPolicyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#enabled`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#enabled`,
 }
 
 var terraformEnableNetworkPolicyRemediationMarkdown = ``

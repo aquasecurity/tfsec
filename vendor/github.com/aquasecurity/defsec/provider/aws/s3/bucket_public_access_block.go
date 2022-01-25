@@ -11,11 +11,10 @@ type PublicAccessBlock struct {
 	RestrictPublicBuckets types.BoolValue
 }
 
-
 func (p *PublicAccessBlock) GetMetadata() *types.Metadata {
 	return &p.Metadata
 }
 
 func (p *PublicAccessBlock) GetRawValue() interface{} {
 	return nil
-}    
+}

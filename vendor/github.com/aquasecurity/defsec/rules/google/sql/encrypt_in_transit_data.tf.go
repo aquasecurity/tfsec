@@ -1,7 +1,7 @@
 package sql
 
 var terraformEncryptInTransitDataGoodExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "postgres" {
  	name             = "postgres-instance-a"
  	database_version = "POSTGRES_11"
@@ -23,7 +23,7 @@ var terraformEncryptInTransitDataGoodExamples = []string{
 }
 
 var terraformEncryptInTransitDataBadExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "postgres" {
  	name             = "postgres-instance-a"
  	database_version = "POSTGRES_11"
@@ -45,7 +45,7 @@ var terraformEncryptInTransitDataBadExamples = []string{
 }
 
 var terraformEncryptInTransitDataLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`,
 }
 
 var terraformEncryptInTransitDataRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package cloudtrail
 
 var cloudFormationEnableAtRestEncryptionGoodExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::CloudTrail::Trail
@@ -16,7 +16,7 @@ Resources:
 }
 
 var cloudFormationEnableAtRestEncryptionBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::CloudTrail::Trail

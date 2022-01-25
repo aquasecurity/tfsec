@@ -1,7 +1,7 @@
 package repositories
 
 var terraformPrivateGoodExamples = []string{
-        `
+	`
  resource "github_repository" "good_example" {
    name        = "example"
    description = "My awesome codebase"
@@ -17,7 +17,7 @@ var terraformPrivateGoodExamples = []string{
 }
 
 var terraformPrivateBadExamples = []string{
-        `
+	`
  resource "github_repository" "bad_example" {
    name        = "example"
    description = "My awesome codebase"
@@ -33,7 +33,7 @@ var terraformPrivateBadExamples = []string{
 }
 
 var terraformPrivateLinks = []string{
-        `https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository`,
+	`https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository`,
 }
 
 var terraformPrivateRemediationMarkdown = ``

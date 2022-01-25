@@ -1,7 +1,7 @@
 package rds
 
 var cloudFormationEnablePerformanceInsightsGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good example
 Resources:
@@ -15,7 +15,7 @@ Resources:
 }
 
 var cloudFormationEnablePerformanceInsightsBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example
 Resources:

@@ -1,7 +1,7 @@
 package compute
 
 var terraformVmDiskEncryptionCustomerKeyGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service_account_id"
    display_name = "Service Account"
@@ -50,7 +50,7 @@ var terraformVmDiskEncryptionCustomerKeyGoodExamples = []string{
 }
 
 var terraformVmDiskEncryptionCustomerKeyBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service_account_id"
    display_name = "Service Account"
@@ -98,7 +98,7 @@ var terraformVmDiskEncryptionCustomerKeyBadExamples = []string{
 }
 
 var terraformVmDiskEncryptionCustomerKeyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#kms_key_self_link`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#kms_key_self_link`,
 }
 
 var terraformVmDiskEncryptionCustomerKeyRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package monitor
 
 var terraformCaptureAllActivitiesGoodExamples = []string{
-        `
+	`
  resource "azurerm_monitor_log_profile" "good_example" {
    name = "good_example"
  
@@ -20,7 +20,7 @@ var terraformCaptureAllActivitiesGoodExamples = []string{
 }
 
 var terraformCaptureAllActivitiesBadExamples = []string{
-        `
+	`
  resource "azurerm_monitor_log_profile" "bad_example" {
    name = "bad_example"
  
@@ -35,7 +35,7 @@ var terraformCaptureAllActivitiesBadExamples = []string{
 }
 
 var terraformCaptureAllActivitiesLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_log_profile#categories`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_log_profile#categories`,
 }
 
 var terraformCaptureAllActivitiesRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package codebuild
 
 var terraformEnableEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_codebuild_project" "good_example" {
  	// other config
  
@@ -37,7 +37,7 @@ var terraformEnableEncryptionGoodExamples = []string{
 }
 
 var terraformEnableEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_codebuild_project" "bad_example" {
  	// other config
  
@@ -67,7 +67,7 @@ var terraformEnableEncryptionBadExamples = []string{
 }
 
 var terraformEnableEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project#encryption_disabled`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/codebuild_project#encryption_disabled`,
 }
 
 var terraformEnableEncryptionRemediationMarkdown = ``

@@ -20,19 +20,19 @@ var CheckEnableDiskEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/workspaces/latest/adminguide/encrypt-workspaces.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableDiskEncryptionGoodExamples,
-            BadExamples:         terraformEnableDiskEncryptionBadExamples,
-            Links:               terraformEnableDiskEncryptionLinks,
-            RemediationMarkdown: terraformEnableDiskEncryptionRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableDiskEncryptionGoodExamples,
-            BadExamples:         cloudFormationEnableDiskEncryptionBadExamples,
-            Links:               cloudFormationEnableDiskEncryptionLinks,
-            RemediationMarkdown: cloudFormationEnableDiskEncryptionRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableDiskEncryptionGoodExamples,
+			BadExamples:         terraformEnableDiskEncryptionBadExamples,
+			Links:               terraformEnableDiskEncryptionLinks,
+			RemediationMarkdown: terraformEnableDiskEncryptionRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableDiskEncryptionGoodExamples,
+			BadExamples:         cloudFormationEnableDiskEncryptionBadExamples,
+			Links:               cloudFormationEnableDiskEncryptionLinks,
+			RemediationMarkdown: cloudFormationEnableDiskEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, workspace := range s.AWS.WorkSpaces.WorkSpaces {

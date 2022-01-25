@@ -1,7 +1,7 @@
 package cloudwatch
 
 var cloudFormationLogGroupCustomerKeyGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::Logs::LogGroup
@@ -13,7 +13,7 @@ Resources:
 }
 
 var cloudFormationLogGroupCustomerKeyBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::Logs::LogGroup

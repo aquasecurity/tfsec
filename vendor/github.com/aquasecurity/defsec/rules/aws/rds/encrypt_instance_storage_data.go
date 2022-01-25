@@ -22,19 +22,19 @@ When enabling encryption by setting the kms_key_id.`,
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEncryptInstanceStorageDataGoodExamples,
-            BadExamples:         terraformEncryptInstanceStorageDataBadExamples,
-            Links:               terraformEncryptInstanceStorageDataLinks,
-            RemediationMarkdown: terraformEncryptInstanceStorageDataRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEncryptInstanceStorageDataGoodExamples,
-            BadExamples:         cloudFormationEncryptInstanceStorageDataBadExamples,
-            Links:               cloudFormationEncryptInstanceStorageDataLinks,
-            RemediationMarkdown: cloudFormationEncryptInstanceStorageDataRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEncryptInstanceStorageDataGoodExamples,
+			BadExamples:         terraformEncryptInstanceStorageDataBadExamples,
+			Links:               terraformEncryptInstanceStorageDataLinks,
+			RemediationMarkdown: terraformEncryptInstanceStorageDataRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEncryptInstanceStorageDataGoodExamples,
+			BadExamples:         cloudFormationEncryptInstanceStorageDataBadExamples,
+			Links:               cloudFormationEncryptInstanceStorageDataLinks,
+			RemediationMarkdown: cloudFormationEncryptInstanceStorageDataRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, instance := range s.AWS.RDS.Instances {

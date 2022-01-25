@@ -1,7 +1,7 @@
 package kms
 
 var terraformRotateKmsKeysGoodExamples = []string{
-        `
+	`
  resource "google_kms_key_ring" "keyring" {
    name     = "keyring-example"
    location = "global"
@@ -20,7 +20,7 @@ var terraformRotateKmsKeysGoodExamples = []string{
 }
 
 var terraformRotateKmsKeysBadExamples = []string{
-        `
+	`
  resource "google_kms_key_ring" "keyring" {
    name     = "keyring-example"
    location = "global"
@@ -39,7 +39,7 @@ var terraformRotateKmsKeysBadExamples = []string{
 }
 
 var terraformRotateKmsKeysLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key#rotation_period`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key#rotation_period`,
 }
 
 var terraformRotateKmsKeysRemediationMarkdown = ``

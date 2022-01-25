@@ -1,7 +1,7 @@
 package ecs
 
 var cloudFormationEnableContainerInsightGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: 'AWS::ECS::Cluster'
@@ -14,7 +14,7 @@ Resources:
 }
 
 var cloudFormationEnableContainerInsightBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: 'AWS::ECS::Cluster'

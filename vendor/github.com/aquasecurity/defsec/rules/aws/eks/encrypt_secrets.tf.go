@@ -1,7 +1,7 @@
 package eks
 
 var terraformEncryptSecretsGoodExamples = []string{
-        `
+	`
  resource "aws_eks_cluster" "good_example" {
      encryption_config {
          resources = [ "secrets" ]
@@ -20,7 +20,7 @@ var terraformEncryptSecretsGoodExamples = []string{
 }
 
 var terraformEncryptSecretsBadExamples = []string{
-        `
+	`
  resource "aws_eks_cluster" "bad_example" {
      name = "bad_example_cluster"
  
@@ -33,7 +33,7 @@ var terraformEncryptSecretsBadExamples = []string{
 }
 
 var terraformEncryptSecretsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#encryption_config`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#encryption_config`,
 }
 
 var terraformEncryptSecretsRemediationMarkdown = ``

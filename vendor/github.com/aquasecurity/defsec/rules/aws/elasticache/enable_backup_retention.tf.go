@@ -1,7 +1,7 @@
 package elasticache
 
 var terraformEnableBackupRetentionGoodExamples = []string{
-        `
+	`
  resource "aws_elasticache_cluster" "good_example" {
  	cluster_id           = "cluster-example"
  	engine               = "redis"
@@ -17,7 +17,7 @@ var terraformEnableBackupRetentionGoodExamples = []string{
 }
 
 var terraformEnableBackupRetentionBadExamples = []string{
-        `
+	`
  resource "aws_elasticache_cluster" "bad_example" {
  	cluster_id           = "cluster-example"
  	engine               = "redis"
@@ -31,7 +31,7 @@ var terraformEnableBackupRetentionBadExamples = []string{
 }
 
 var terraformEnableBackupRetentionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_cluster#snapshot_retention_limit`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_cluster#snapshot_retention_limit`,
 }
 
 var terraformEnableBackupRetentionRemediationMarkdown = ``

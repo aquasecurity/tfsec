@@ -1,7 +1,7 @@
 package keyvault
 
 var terraformSpecifyNetworkAclGoodExamples = []string{
-        `
+	`
  resource "azurerm_key_vault" "good_example" {
      name                        = "examplekeyvault"
      location                    = azurerm_resource_group.good_example.location
@@ -18,7 +18,7 @@ var terraformSpecifyNetworkAclGoodExamples = []string{
 }
 
 var terraformSpecifyNetworkAclBadExamples = []string{
-        `
+	`
  resource "azurerm_key_vault" "bad_example" {
      name                        = "examplekeyvault"
      location                    = azurerm_resource_group.bad_example.location
@@ -30,7 +30,7 @@ var terraformSpecifyNetworkAclBadExamples = []string{
 }
 
 var terraformSpecifyNetworkAclLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault#network_acls`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault#network_acls`,
 }
 
 var terraformSpecifyNetworkAclRemediationMarkdown = ``

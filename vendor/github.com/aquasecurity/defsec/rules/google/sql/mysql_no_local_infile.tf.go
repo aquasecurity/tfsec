@@ -1,7 +1,7 @@
 package sql
 
 var terraformMysqlNoLocalInfileGoodExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "MYSQL_5_6"
@@ -17,7 +17,7 @@ var terraformMysqlNoLocalInfileGoodExamples = []string{
 }
 
 var terraformMysqlNoLocalInfileBadExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "MYSQL_5_6"
@@ -33,7 +33,7 @@ var terraformMysqlNoLocalInfileBadExamples = []string{
 }
 
 var terraformMysqlNoLocalInfileLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`,`https://dev.mysql.com/doc/refman/8.0/en/load-data-local-security.html`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`, `https://dev.mysql.com/doc/refman/8.0/en/load-data-local-security.html`,
 }
 
 var terraformMysqlNoLocalInfileRemediationMarkdown = ``

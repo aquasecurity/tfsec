@@ -18,19 +18,19 @@ var CheckEnableVolumeEncryption = rules.Register(
 		Resolution:  "Enable encryption of EBS volumes",
 		Explanation: `By enabling encryption on EBS volumes you protect the volume, the disk I/O and any derived snapshots from compromise if intercepted.`,
 		Links:       []string{"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html"},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableVolumeEncryptionGoodExamples,
-            BadExamples:         terraformEnableVolumeEncryptionBadExamples,
-            Links:               terraformEnableVolumeEncryptionLinks,
-            RemediationMarkdown: terraformEnableVolumeEncryptionRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableVolumeEncryptionGoodExamples,
-            BadExamples:         cloudFormationEnableVolumeEncryptionBadExamples,
-            Links:               cloudFormationEnableVolumeEncryptionLinks,
-            RemediationMarkdown: cloudFormationEnableVolumeEncryptionRemediationMarkdown,
-        },
-        Severity:    severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableVolumeEncryptionGoodExamples,
+			BadExamples:         terraformEnableVolumeEncryptionBadExamples,
+			Links:               terraformEnableVolumeEncryptionLinks,
+			RemediationMarkdown: terraformEnableVolumeEncryptionRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableVolumeEncryptionGoodExamples,
+			BadExamples:         cloudFormationEnableVolumeEncryptionBadExamples,
+			Links:               cloudFormationEnableVolumeEncryptionLinks,
+			RemediationMarkdown: cloudFormationEnableVolumeEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, volume := range s.AWS.EBS.Volumes {

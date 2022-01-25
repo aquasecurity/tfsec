@@ -1,7 +1,7 @@
 package gke
 
 var terraformUseClusterLabelsGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -42,7 +42,7 @@ var terraformUseClusterLabelsGoodExamples = []string{
 }
 
 var terraformUseClusterLabelsBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -80,7 +80,7 @@ var terraformUseClusterLabelsBadExamples = []string{
 }
 
 var terraformUseClusterLabelsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#resource_labels`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#resource_labels`,
 }
 
 var terraformUseClusterLabelsRemediationMarkdown = ``

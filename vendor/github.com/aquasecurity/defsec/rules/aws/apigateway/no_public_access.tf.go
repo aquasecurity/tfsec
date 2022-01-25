@@ -1,7 +1,7 @@
 package apigateway
 
 var terraformNoPublicAccessGoodExamples = []string{
-        `
+	`
  resource "aws_api_gateway_rest_api" "MyDemoAPI" {
 	
  }
@@ -12,7 +12,7 @@ var terraformNoPublicAccessGoodExamples = []string{
    http_method   = "GET"
    authorization = "AWS_IAM"
  }
- `,`
+ `, `
  resource "aws_api_gateway_rest_api" "MyDemoAPI" {
 	
  }
@@ -24,7 +24,7 @@ var terraformNoPublicAccessGoodExamples = []string{
    authorization    = "NONE"
    api_key_required = true
  }
- `,`
+ `, `
  resource "aws_api_gateway_rest_api" "MyDemoAPI" {
 	
  }
@@ -39,7 +39,7 @@ var terraformNoPublicAccessGoodExamples = []string{
 }
 
 var terraformNoPublicAccessBadExamples = []string{
-        `
+	`
  resource "aws_api_gateway_rest_api" "MyDemoAPI" {
 	
  }
@@ -54,7 +54,7 @@ var terraformNoPublicAccessBadExamples = []string{
 }
 
 var terraformNoPublicAccessLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_method#authorization`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_method#authorization`,
 }
 
 var terraformNoPublicAccessRemediationMarkdown = ``

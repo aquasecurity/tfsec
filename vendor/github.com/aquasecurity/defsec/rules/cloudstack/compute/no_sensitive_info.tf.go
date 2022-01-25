@@ -1,7 +1,7 @@
 package compute
 
 var terraformNoSensitiveInfoGoodExamples = []string{
-        `
+	`
  resource "cloudstack_instance" "web" {
    name             = "server-1"
    service_offering = "small"
@@ -12,7 +12,7 @@ var terraformNoSensitiveInfoGoodExamples = []string{
  export GREETING="Hello there"
  EOF
  }
- `,`
+ `, `
  resource "cloudstack_instance" "web" {
    name             = "server-1"
    service_offering = "small"
@@ -25,7 +25,7 @@ var terraformNoSensitiveInfoGoodExamples = []string{
 }
 
 var terraformNoSensitiveInfoBadExamples = []string{
-        `
+	`
  resource "cloudstack_instance" "web" {
    name             = "server-1"
    service_offering = "small"
@@ -36,7 +36,7 @@ var terraformNoSensitiveInfoBadExamples = []string{
  export DATABASE_PASSWORD=\"SomeSortOfPassword\"
  EOF
  }
- `,`
+ `, `
  resource "cloudstack_instance" "web" {
    name             = "server-1"
    service_offering = "small"
@@ -49,7 +49,7 @@ var terraformNoSensitiveInfoBadExamples = []string{
 }
 
 var terraformNoSensitiveInfoLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/cloudstack/latest/docs/resources/instance#`,
+	`https://registry.terraform.io/providers/hashicorp/cloudstack/latest/docs/resources/instance#`,
 }
 
 var terraformNoSensitiveInfoRemediationMarkdown = ``

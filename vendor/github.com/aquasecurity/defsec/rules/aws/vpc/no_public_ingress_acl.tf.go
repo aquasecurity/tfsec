@@ -1,7 +1,7 @@
 package vpc
 
 var terraformNoPublicIngressAclGoodExamples = []string{
-        `
+	`
  resource "aws_network_acl_rule" "good_example" {
    egress         = false
    protocol       = "tcp"
@@ -14,7 +14,7 @@ var terraformNoPublicIngressAclGoodExamples = []string{
 }
 
 var terraformNoPublicIngressAclBadExamples = []string{
-        `
+	`
  resource "aws_network_acl_rule" "bad_example" {
    egress         = false
    protocol       = "tcp"
@@ -27,7 +27,7 @@ var terraformNoPublicIngressAclBadExamples = []string{
 }
 
 var terraformNoPublicIngressAclLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl_rule#cidr_block`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl_rule#cidr_block`,
 }
 
 var terraformNoPublicIngressAclRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package elasticache
 
 var cloudFormationAddDescriptionForSecurityGroupGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExampleCacheGroup:
     Type: AWS::ElastiCache::SecurityGroup
@@ -21,7 +21,7 @@ Resources:
 }
 
 var cloudFormationAddDescriptionForSecurityGroupBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExampleCacheGroup:
     Type: AWS::ElastiCache::SecurityGroup

@@ -20,19 +20,19 @@ var CheckEnableInTransitEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/in-transit-encryption.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableInTransitEncryptionGoodExamples,
-            BadExamples:         terraformEnableInTransitEncryptionBadExamples,
-            Links:               terraformEnableInTransitEncryptionLinks,
-            RemediationMarkdown: terraformEnableInTransitEncryptionRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableInTransitEncryptionGoodExamples,
-            BadExamples:         cloudFormationEnableInTransitEncryptionBadExamples,
-            Links:               cloudFormationEnableInTransitEncryptionLinks,
-            RemediationMarkdown: cloudFormationEnableInTransitEncryptionRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableInTransitEncryptionGoodExamples,
+			BadExamples:         terraformEnableInTransitEncryptionBadExamples,
+			Links:               terraformEnableInTransitEncryptionLinks,
+			RemediationMarkdown: terraformEnableInTransitEncryptionRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableInTransitEncryptionGoodExamples,
+			BadExamples:         cloudFormationEnableInTransitEncryptionBadExamples,
+			Links:               cloudFormationEnableInTransitEncryptionLinks,
+			RemediationMarkdown: cloudFormationEnableInTransitEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, group := range s.AWS.ElastiCache.ReplicationGroups {

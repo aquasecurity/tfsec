@@ -1,7 +1,7 @@
 package vpc
 
 var terraformNoExcessivePortAccessGoodExamples = []string{
-        `
+	`
  resource "aws_network_acl_rule" "good_example" {
    egress         = false
    protocol       = "tcp"
@@ -14,7 +14,7 @@ var terraformNoExcessivePortAccessGoodExamples = []string{
 }
 
 var terraformNoExcessivePortAccessBadExamples = []string{
-        `
+	`
  resource "aws_network_acl_rule" "bad_example" {
    egress         = false
    protocol       = "all"
@@ -25,7 +25,7 @@ var terraformNoExcessivePortAccessBadExamples = []string{
 }
 
 var terraformNoExcessivePortAccessLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl_rule#to_port`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl_rule#to_port`,
 }
 
 var terraformNoExcessivePortAccessRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package spaces
 
 var terraformAclNoPublicReadGoodExamples = []string{
-        `
+	`
  resource "digitalocean_spaces_bucket" "good_example" {
    name   = "private_space"
    region = "nyc3"
@@ -19,7 +19,7 @@ var terraformAclNoPublicReadGoodExamples = []string{
 }
 
 var terraformAclNoPublicReadBadExamples = []string{
-        `
+	`
  resource "digitalocean_spaces_bucket" "bad_example" {
    name   = "public_space"
    region = "nyc3"
@@ -38,7 +38,7 @@ var terraformAclNoPublicReadBadExamples = []string{
 }
 
 var terraformAclNoPublicReadLinks = []string{
-        `https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#acl`,`https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket_object#acl`,
+	`https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket#acl`, `https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket_object#acl`,
 }
 
 var terraformAclNoPublicReadRemediationMarkdown = ``

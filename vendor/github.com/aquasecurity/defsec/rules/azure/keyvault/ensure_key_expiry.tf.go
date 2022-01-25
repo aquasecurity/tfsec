@@ -1,7 +1,7 @@
 package keyvault
 
 var terraformEnsureKeyExpiryGoodExamples = []string{
-        `
+	`
  resource "azurerm_key_vault_key" "good_example" {
    name         = "generated-certificate"
    key_vault_id = azurerm_key_vault.example.id
@@ -22,7 +22,7 @@ var terraformEnsureKeyExpiryGoodExamples = []string{
 }
 
 var terraformEnsureKeyExpiryBadExamples = []string{
-        `
+	`
  resource "azurerm_key_vault_key" "bad_example" {
    name         = "generated-certificate"
    key_vault_id = azurerm_key_vault.example.id
@@ -42,7 +42,7 @@ var terraformEnsureKeyExpiryBadExamples = []string{
 }
 
 var terraformEnsureKeyExpiryLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_key#expiration_date`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_key#expiration_date`,
 }
 
 var terraformEnsureKeyExpiryRemediationMarkdown = ``

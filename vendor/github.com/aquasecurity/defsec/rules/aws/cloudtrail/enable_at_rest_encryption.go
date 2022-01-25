@@ -20,19 +20,19 @@ var CheckEnableAtRestEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/encrypting-cloudtrail-log-files-with-aws-kms.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableAtRestEncryptionGoodExamples,
-            BadExamples:         terraformEnableAtRestEncryptionBadExamples,
-            Links:               terraformEnableAtRestEncryptionLinks,
-            RemediationMarkdown: terraformEnableAtRestEncryptionRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableAtRestEncryptionGoodExamples,
-            BadExamples:         cloudFormationEnableAtRestEncryptionBadExamples,
-            Links:               cloudFormationEnableAtRestEncryptionLinks,
-            RemediationMarkdown: cloudFormationEnableAtRestEncryptionRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableAtRestEncryptionGoodExamples,
+			BadExamples:         terraformEnableAtRestEncryptionBadExamples,
+			Links:               terraformEnableAtRestEncryptionLinks,
+			RemediationMarkdown: terraformEnableAtRestEncryptionRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableAtRestEncryptionGoodExamples,
+			BadExamples:         cloudFormationEnableAtRestEncryptionBadExamples,
+			Links:               cloudFormationEnableAtRestEncryptionLinks,
+			RemediationMarkdown: cloudFormationEnableAtRestEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, trail := range s.AWS.CloudTrail.Trails {

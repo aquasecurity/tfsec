@@ -1,7 +1,7 @@
 package msk
 
 var terraformEnableLoggingGoodExamples = []string{
-        `
+	`
  resource "aws_msk_cluster" "example" {
    cluster_name           = "example"
    kafka_version          = "2.4.1"
@@ -36,7 +36,7 @@ var terraformEnableLoggingGoodExamples = []string{
      foo = "bar"
    }
  }
- `,`
+ `, `
  resource "aws_msk_cluster" "example" {
    cluster_name           = "example"
    kafka_version          = "2.4.1"
@@ -70,7 +70,7 @@ var terraformEnableLoggingGoodExamples = []string{
      foo = "bar"
    }
  }
- `,`
+ `, `
  resource "aws_msk_cluster" "example" {
    cluster_name           = "example"
    kafka_version          = "2.4.1"
@@ -113,7 +113,7 @@ var terraformEnableLoggingGoodExamples = []string{
 }
 
 var terraformEnableLoggingBadExamples = []string{
-        `
+	`
  resource "aws_msk_cluster" "example" {
    cluster_name           = "example"
    kafka_version          = "2.4.1"
@@ -137,7 +137,7 @@ var terraformEnableLoggingBadExamples = []string{
 }
 
 var terraformEnableLoggingLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#`,
 }
 
 var terraformEnableLoggingRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package database
 
 var terraformSecureTlsPolicyGoodExamples = []string{
-        `
+	`
  resource "azurerm_mssql_server" "good_example" {
    name                         = "mssqlserver"
    resource_group_name          = azurerm_resource_group.example.name
@@ -23,7 +23,7 @@ var terraformSecureTlsPolicyGoodExamples = []string{
 }
 
 var terraformSecureTlsPolicyBadExamples = []string{
-        `
+	`
  resource "azurerm_mssql_server" "bad_example" {
    name                         = "mssqlserver"
    resource_group_name          = azurerm_resource_group.example.name
@@ -45,7 +45,7 @@ var terraformSecureTlsPolicyBadExamples = []string{
 }
 
 var terraformSecureTlsPolicyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server#minimum_tls_version`,`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mysql_server#ssl_minimal_tls_version_enforced`,`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_server#ssl_minimal_tls_version_enforced`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server#minimum_tls_version`, `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mysql_server#ssl_minimal_tls_version_enforced`, `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_server#ssl_minimal_tls_version_enforced`,
 }
 
 var terraformSecureTlsPolicyRemediationMarkdown = ``

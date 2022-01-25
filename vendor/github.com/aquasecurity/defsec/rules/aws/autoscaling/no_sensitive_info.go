@@ -21,13 +21,13 @@ var CheckNoSensitiveInfo = rules.Register(
 		Resolution:  "Don't use sensitive data in user data",
 		Explanation: `When creating Launch Configurations, user data can be used for the initial configuration of the instance. User data must not contain any sensitive data.`,
 		Links:       []string{},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoSensitiveInfoGoodExamples,
-            BadExamples:         terraformNoSensitiveInfoBadExamples,
-            Links:               terraformNoSensitiveInfoLinks,
-            RemediationMarkdown: terraformNoSensitiveInfoRemediationMarkdown,
-        },
-        Severity:    severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoSensitiveInfoGoodExamples,
+			BadExamples:         terraformNoSensitiveInfoBadExamples,
+			Links:               terraformNoSensitiveInfoLinks,
+			RemediationMarkdown: terraformNoSensitiveInfoRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		scanner := squealer.NewStringScanner()

@@ -1,7 +1,7 @@
 package msk
 
 var cloudFormationEnableLoggingGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good example
 Resources:
@@ -18,7 +18,7 @@ Resources:
 }
 
 var cloudFormationEnableLoggingBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example
 Resources:

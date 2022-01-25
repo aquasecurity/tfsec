@@ -20,13 +20,13 @@ var CheckApiUseSecureTlsPolicy = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-domainconfiguration.html#sam-api-domainconfiguration-securitypolicy",
 		},
-		CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationApiUseSecureTlsPolicyGoodExamples,
-            BadExamples:         cloudFormationApiUseSecureTlsPolicyBadExamples,
-            Links:               cloudFormationApiUseSecureTlsPolicyLinks,
-            RemediationMarkdown: cloudFormationApiUseSecureTlsPolicyRemediationMarkdown,
-        },
-        Severity: severity.High,
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationApiUseSecureTlsPolicyGoodExamples,
+			BadExamples:         cloudFormationApiUseSecureTlsPolicyBadExamples,
+			Links:               cloudFormationApiUseSecureTlsPolicyLinks,
+			RemediationMarkdown: cloudFormationApiUseSecureTlsPolicyRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, api := range s.AWS.SAM.APIs {

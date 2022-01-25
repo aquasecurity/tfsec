@@ -20,19 +20,19 @@ var CheckPublicBucketsAreRestricted = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonS3/latest/dev-retired/access-control-block-public-access.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicBucketsGoodExamples,
-            BadExamples:         terraformNoPublicBucketsBadExamples,
-            Links:               terraformNoPublicBucketsLinks,
-            RemediationMarkdown: terraformNoPublicBucketsRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationNoPublicBucketsGoodExamples,
-            BadExamples:         cloudFormationNoPublicBucketsBadExamples,
-            Links:               cloudFormationNoPublicBucketsLinks,
-            RemediationMarkdown: cloudFormationNoPublicBucketsRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicBucketsGoodExamples,
+			BadExamples:         terraformNoPublicBucketsBadExamples,
+			Links:               terraformNoPublicBucketsLinks,
+			RemediationMarkdown: terraformNoPublicBucketsRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationNoPublicBucketsGoodExamples,
+			BadExamples:         cloudFormationNoPublicBucketsBadExamples,
+			Links:               cloudFormationNoPublicBucketsLinks,
+			RemediationMarkdown: cloudFormationNoPublicBucketsRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.AWS.S3.Buckets {

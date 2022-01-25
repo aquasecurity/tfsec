@@ -20,19 +20,19 @@ var CheckEnableLogging = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableLoggingGoodExamples,
-            BadExamples:         terraformEnableLoggingBadExamples,
-            Links:               terraformEnableLoggingLinks,
-            RemediationMarkdown: terraformEnableLoggingRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableLoggingGoodExamples,
-            BadExamples:         cloudFormationEnableLoggingBadExamples,
-            Links:               cloudFormationEnableLoggingLinks,
-            RemediationMarkdown: cloudFormationEnableLoggingRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableLoggingGoodExamples,
+			BadExamples:         terraformEnableLoggingBadExamples,
+			Links:               terraformEnableLoggingLinks,
+			RemediationMarkdown: terraformEnableLoggingRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableLoggingGoodExamples,
+			BadExamples:         cloudFormationEnableLoggingBadExamples,
+			Links:               cloudFormationEnableLoggingLinks,
+			RemediationMarkdown: cloudFormationEnableLoggingRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, dist := range s.AWS.Cloudfront.Distributions {

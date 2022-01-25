@@ -1,7 +1,7 @@
 package msk
 
 var terraformEnableInTransitEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_msk_cluster" "good_example" {
  	encryption_info {
  		encryption_in_transit {
@@ -14,7 +14,7 @@ var terraformEnableInTransitEncryptionGoodExamples = []string{
 }
 
 var terraformEnableInTransitEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_msk_cluster" "bad_example" {
  	encryption_info {
  		encryption_in_transit {
@@ -27,7 +27,7 @@ var terraformEnableInTransitEncryptionBadExamples = []string{
 }
 
 var terraformEnableInTransitEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#encryption_info-argument-reference`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#encryption_info-argument-reference`,
 }
 
 var terraformEnableInTransitEncryptionRemediationMarkdown = ``

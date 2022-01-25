@@ -1,7 +1,7 @@
 package dns
 
 var terraformNoRsaSha1GoodExamples = []string{
-        `
+	`
  resource "google_dns_managed_zone" "foo" {
  	name     = "foobar"
  	dns_name = "foo.bar."
@@ -27,7 +27,7 @@ var terraformNoRsaSha1GoodExamples = []string{
 }
 
 var terraformNoRsaSha1BadExamples = []string{
-        `
+	`
  resource "google_dns_managed_zone" "foo" {
  	name     = "foobar"
  	dns_name = "foo.bar."
@@ -53,7 +53,7 @@ var terraformNoRsaSha1BadExamples = []string{
 }
 
 var terraformNoRsaSha1Links = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_managed_zone#algorithm`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_managed_zone#algorithm`,
 }
 
 var terraformNoRsaSha1RemediationMarkdown = ``

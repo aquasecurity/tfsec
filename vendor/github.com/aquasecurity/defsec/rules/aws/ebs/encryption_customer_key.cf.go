@@ -1,7 +1,7 @@
 package ebs
 
 var cloudFormationEncryptionCustomerKeyGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::EC2::Volume
@@ -14,7 +14,7 @@ Resources:
 }
 
 var cloudFormationEncryptionCustomerKeyBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::EC2::Volume

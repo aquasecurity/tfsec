@@ -80,15 +80,13 @@ func (v *NetworkACLRule) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (v *VPC) GetMetadata() *types.Metadata {
 	return &v.Metadata
 }
 
 func (v *VPC) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (n *NetworkACL) GetMetadata() *types.Metadata {
 	return &n.Metadata
@@ -96,4 +94,4 @@ func (n *NetworkACL) GetMetadata() *types.Metadata {
 
 func (n *NetworkACL) GetRawValue() interface{} {
 	return nil
-}    
+}

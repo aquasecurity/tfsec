@@ -21,19 +21,19 @@ var CheckEnableAtRestEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/athena/latest/ug/encryption.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableAtRestEncryptionGoodExamples,
-            BadExamples:         terraformEnableAtRestEncryptionBadExamples,
-            Links:               terraformEnableAtRestEncryptionLinks,
-            RemediationMarkdown: terraformEnableAtRestEncryptionRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableAtRestEncryptionGoodExamples,
-            BadExamples:         cloudFormationEnableAtRestEncryptionBadExamples,
-            Links:               cloudFormationEnableAtRestEncryptionLinks,
-            RemediationMarkdown: cloudFormationEnableAtRestEncryptionRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableAtRestEncryptionGoodExamples,
+			BadExamples:         terraformEnableAtRestEncryptionBadExamples,
+			Links:               terraformEnableAtRestEncryptionLinks,
+			RemediationMarkdown: terraformEnableAtRestEncryptionRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableAtRestEncryptionGoodExamples,
+			BadExamples:         cloudFormationEnableAtRestEncryptionBadExamples,
+			Links:               cloudFormationEnableAtRestEncryptionLinks,
+			RemediationMarkdown: cloudFormationEnableAtRestEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, workgroup := range s.AWS.Athena.Workgroups {

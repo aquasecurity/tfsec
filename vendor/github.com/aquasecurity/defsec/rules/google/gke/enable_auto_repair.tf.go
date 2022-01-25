@@ -1,7 +1,7 @@
 package gke
 
 var terraformEnableAutoRepairGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -41,7 +41,7 @@ var terraformEnableAutoRepairGoodExamples = []string{
 }
 
 var terraformEnableAutoRepairBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -81,7 +81,7 @@ var terraformEnableAutoRepairBadExamples = []string{
 }
 
 var terraformEnableAutoRepairLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_node_pool#auto_repair`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_node_pool#auto_repair`,
 }
 
 var terraformEnableAutoRepairRemediationMarkdown = ``

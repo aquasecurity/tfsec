@@ -1,7 +1,7 @@
 package s3
 
 var cloudFormationSpecifyPublicAccessBlockGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Properties:
@@ -16,7 +16,7 @@ Resources:
 }
 
 var cloudFormationSpecifyPublicAccessBlockBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Properties:

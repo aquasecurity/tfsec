@@ -1,7 +1,7 @@
 package s3
 
 var cloudFormationEnableBucketLoggingGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Properties:
@@ -13,7 +13,7 @@ Resources:
 }
 
 var cloudFormationEnableBucketLoggingBadExamples = []string{
-        `---
+	`---
 Resources:
   DisabledEncryptionBucket:
     Properties:

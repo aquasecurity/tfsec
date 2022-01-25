@@ -1,7 +1,7 @@
 package athena
 
 var cloudFormationEnableAtRestEncryptionGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Properties:
@@ -15,7 +15,7 @@ Resources:
 }
 
 var cloudFormationEnableAtRestEncryptionBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Properties:

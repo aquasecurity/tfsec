@@ -1,7 +1,7 @@
 package sam
 
 var cloudFormationEnableApiAccessLoggingGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good Example of SAM API
 Resources:
@@ -20,7 +20,7 @@ Resources:
 }
 
 var cloudFormationEnableApiAccessLoggingBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad Example of SAM API
 Resources:

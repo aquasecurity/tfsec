@@ -36,15 +36,13 @@ type NetworkProfile struct {
 	NetworkPolicy types.StringValue // "", "calico", "azure"
 }
 
-
 func (c *Container) GetMetadata() *types.Metadata {
 	return &c.Metadata
 }
 
 func (c *Container) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (k *KubernetesCluster) GetMetadata() *types.Metadata {
 	return &k.Metadata
@@ -52,8 +50,7 @@ func (k *KubernetesCluster) GetMetadata() *types.Metadata {
 
 func (k *KubernetesCluster) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (r *RoleBasedAccessControl) GetMetadata() *types.Metadata {
 	return &r.Metadata
@@ -61,8 +58,7 @@ func (r *RoleBasedAccessControl) GetMetadata() *types.Metadata {
 
 func (r *RoleBasedAccessControl) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (a *AddonProfile) GetMetadata() *types.Metadata {
 	return &a.Metadata
@@ -70,8 +66,7 @@ func (a *AddonProfile) GetMetadata() *types.Metadata {
 
 func (a *AddonProfile) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (o *OMSAgent) GetMetadata() *types.Metadata {
 	return &o.Metadata
@@ -79,8 +74,7 @@ func (o *OMSAgent) GetMetadata() *types.Metadata {
 
 func (o *OMSAgent) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (n *NetworkProfile) GetMetadata() *types.Metadata {
 	return &n.Metadata
@@ -88,4 +82,4 @@ func (n *NetworkProfile) GetMetadata() *types.Metadata {
 
 func (n *NetworkProfile) GetRawValue() interface{} {
 	return nil
-}    
+}

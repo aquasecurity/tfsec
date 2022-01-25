@@ -1,7 +1,7 @@
 package config
 
 var terraformAggregateAllRegionsGoodExamples = []string{
-        `
+	`
  resource "aws_config_configuration_aggregator" "good_example" {
  	name = "example"
  	  
@@ -14,7 +14,7 @@ var terraformAggregateAllRegionsGoodExamples = []string{
 }
 
 var terraformAggregateAllRegionsBadExamples = []string{
-        `
+	`
  resource "aws_config_configuration_aggregator" "bad_example" {
  	name = "example"
  	  
@@ -27,7 +27,7 @@ var terraformAggregateAllRegionsBadExamples = []string{
 }
 
 var terraformAggregateAllRegionsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/config_configuration_aggregator#all_regions`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/config_configuration_aggregator#all_regions`,
 }
 
 var terraformAggregateAllRegionsRemediationMarkdown = ``

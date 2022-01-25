@@ -1,7 +1,7 @@
 package elasticsearch
 
 var cloudFormationEnforceHttpsGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::Elasticsearch::Domain
@@ -30,7 +30,7 @@ Resources:
 }
 
 var cloudFormationEnforceHttpsBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::Elasticsearch::Domain

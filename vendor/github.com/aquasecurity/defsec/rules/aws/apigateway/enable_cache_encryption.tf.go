@@ -1,7 +1,7 @@
 package apigateway
 
 var terraformEnableCacheEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_api_gateway_rest_api" "example" {
 	
  }
@@ -25,7 +25,7 @@ var terraformEnableCacheEncryptionGoodExamples = []string{
 }
 
 var terraformEnableCacheEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_api_gateway_rest_api" "example" {
 	
  }
@@ -49,7 +49,7 @@ var terraformEnableCacheEncryptionBadExamples = []string{
 }
 
 var terraformEnableCacheEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_method_settings#cache_data_encrypted`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/api_gateway_method_settings#cache_data_encrypted`,
 }
 
 var terraformEnableCacheEncryptionRemediationMarkdown = ``

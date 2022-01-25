@@ -1,7 +1,7 @@
 package ecs
 
 var terraformNoPlaintextSecretsGoodExamples = []string{
-        `
+	`
  resource "aws_ecs_task_definition" "good_example" {
    container_definitions = <<EOF
  [
@@ -21,7 +21,7 @@ var terraformNoPlaintextSecretsGoodExamples = []string{
 }
 
 var terraformNoPlaintextSecretsBadExamples = []string{
-        `
+	`
  resource "aws_ecs_task_definition" "bad_example" {
    container_definitions = <<EOF
  [
@@ -42,7 +42,7 @@ var terraformNoPlaintextSecretsBadExamples = []string{
 }
 
 var terraformNoPlaintextSecretsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition`,
 }
 
 var terraformNoPlaintextSecretsRemediationMarkdown = ``

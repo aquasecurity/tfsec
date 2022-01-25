@@ -1,7 +1,7 @@
 package cloudfront
 
 var cloudFormationEnableWafGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Properties:
@@ -21,7 +21,7 @@ Resources:
 }
 
 var cloudFormationEnableWafBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Properties:

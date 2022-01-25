@@ -20,19 +20,19 @@ var CheckEnableDomainEncryption = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/encryption-at-rest.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableDomainEncryptionGoodExamples,
-            BadExamples:         terraformEnableDomainEncryptionBadExamples,
-            Links:               terraformEnableDomainEncryptionLinks,
-            RemediationMarkdown: terraformEnableDomainEncryptionRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableDomainEncryptionGoodExamples,
-            BadExamples:         cloudFormationEnableDomainEncryptionBadExamples,
-            Links:               cloudFormationEnableDomainEncryptionLinks,
-            RemediationMarkdown: cloudFormationEnableDomainEncryptionRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableDomainEncryptionGoodExamples,
+			BadExamples:         terraformEnableDomainEncryptionBadExamples,
+			Links:               terraformEnableDomainEncryptionLinks,
+			RemediationMarkdown: terraformEnableDomainEncryptionRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableDomainEncryptionGoodExamples,
+			BadExamples:         cloudFormationEnableDomainEncryptionBadExamples,
+			Links:               cloudFormationEnableDomainEncryptionLinks,
+			RemediationMarkdown: cloudFormationEnableDomainEncryptionRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, domain := range s.AWS.Elasticsearch.Domains {

@@ -1,7 +1,7 @@
 package codebuild
 
 var cloudFormationEnableEncryptionGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodProject:
     Type: AWS::CodeBuild::Project
@@ -30,7 +30,7 @@ Resources:
 }
 
 var cloudFormationEnableEncryptionBadExamples = []string{
-        `---
+	`---
 Resources:
   GoodProject:
     Type: AWS::CodeBuild::Project
@@ -55,7 +55,7 @@ Resources:
           Packaging: "String"
           Path: "String"
           Type: "String"
-`,`---
+`, `---
 Resources:
   GoodProject:
     Type: AWS::CodeBuild::Project

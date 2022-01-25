@@ -20,19 +20,19 @@ var CheckEnableImageScans = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableImageScansGoodExamples,
-            BadExamples:         terraformEnableImageScansBadExamples,
-            Links:               terraformEnableImageScansLinks,
-            RemediationMarkdown: terraformEnableImageScansRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableImageScansGoodExamples,
-            BadExamples:         cloudFormationEnableImageScansBadExamples,
-            Links:               cloudFormationEnableImageScansLinks,
-            RemediationMarkdown: cloudFormationEnableImageScansRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableImageScansGoodExamples,
+			BadExamples:         terraformEnableImageScansBadExamples,
+			Links:               terraformEnableImageScansLinks,
+			RemediationMarkdown: terraformEnableImageScansRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableImageScansGoodExamples,
+			BadExamples:         cloudFormationEnableImageScansBadExamples,
+			Links:               cloudFormationEnableImageScansLinks,
+			RemediationMarkdown: cloudFormationEnableImageScansRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, repo := range s.AWS.ECR.Repositories {
