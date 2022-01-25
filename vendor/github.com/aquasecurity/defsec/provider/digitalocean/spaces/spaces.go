@@ -34,15 +34,13 @@ func (b *Bucket) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (s *Spaces) GetMetadata() *types.Metadata {
 	return &s.Metadata
 }
 
 func (s *Spaces) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (v *Versioning) GetMetadata() *types.Metadata {
 	return &v.Metadata
@@ -50,8 +48,7 @@ func (v *Versioning) GetMetadata() *types.Metadata {
 
 func (v *Versioning) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (o *Object) GetMetadata() *types.Metadata {
 	return &o.Metadata
@@ -59,4 +56,4 @@ func (o *Object) GetMetadata() *types.Metadata {
 
 func (o *Object) GetRawValue() interface{} {
 	return nil
-}    
+}

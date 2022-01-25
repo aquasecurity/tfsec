@@ -20,19 +20,19 @@ var CheckLoggingIsEnabled = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformEnableBucketLoggingGoodExamples,
-            BadExamples:         terraformEnableBucketLoggingBadExamples,
-            Links:               terraformEnableBucketLoggingLinks,
-            RemediationMarkdown: terraformEnableBucketLoggingRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationEnableBucketLoggingGoodExamples,
-            BadExamples:         cloudFormationEnableBucketLoggingBadExamples,
-            Links:               cloudFormationEnableBucketLoggingLinks,
-            RemediationMarkdown: cloudFormationEnableBucketLoggingRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformEnableBucketLoggingGoodExamples,
+			BadExamples:         terraformEnableBucketLoggingBadExamples,
+			Links:               terraformEnableBucketLoggingLinks,
+			RemediationMarkdown: terraformEnableBucketLoggingRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationEnableBucketLoggingGoodExamples,
+			BadExamples:         cloudFormationEnableBucketLoggingBadExamples,
+			Links:               cloudFormationEnableBucketLoggingLinks,
+			RemediationMarkdown: cloudFormationEnableBucketLoggingRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, bucket := range s.AWS.S3.Buckets {

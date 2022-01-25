@@ -22,19 +22,19 @@ This will help limit the risk of any unmonitored configuration in regions that a
 		Links: []string{
 			"https://docs.aws.amazon.com/config/latest/developerguide/aggregate-data.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformAggregateAllRegionsGoodExamples,
-            BadExamples:         terraformAggregateAllRegionsBadExamples,
-            Links:               terraformAggregateAllRegionsLinks,
-            RemediationMarkdown: terraformAggregateAllRegionsRemediationMarkdown,
-        },
-        CloudFormation:   &rules.EngineMetadata{
-            GoodExamples:        cloudFormationAggregateAllRegionsGoodExamples,
-            BadExamples:         cloudFormationAggregateAllRegionsBadExamples,
-            Links:               cloudFormationAggregateAllRegionsLinks,
-            RemediationMarkdown: cloudFormationAggregateAllRegionsRemediationMarkdown,
-        },
-        Severity: severity.High,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformAggregateAllRegionsGoodExamples,
+			BadExamples:         terraformAggregateAllRegionsBadExamples,
+			Links:               terraformAggregateAllRegionsLinks,
+			RemediationMarkdown: terraformAggregateAllRegionsRemediationMarkdown,
+		},
+		CloudFormation: &rules.EngineMetadata{
+			GoodExamples:        cloudFormationAggregateAllRegionsGoodExamples,
+			BadExamples:         cloudFormationAggregateAllRegionsBadExamples,
+			Links:               cloudFormationAggregateAllRegionsLinks,
+			RemediationMarkdown: cloudFormationAggregateAllRegionsRemediationMarkdown,
+		},
+		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
 		if !s.AWS.Config.ConfigurationAggregrator.IsDefined {

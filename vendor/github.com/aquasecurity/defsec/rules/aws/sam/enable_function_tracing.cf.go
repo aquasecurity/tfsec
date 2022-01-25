@@ -1,7 +1,7 @@
 package sam
 
 var cloudFormationEnableFunctionTracingGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good Example of SAM Function
 Resources:
@@ -21,7 +21,7 @@ Resources:
 }
 
 var cloudFormationEnableFunctionTracingBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad Example of SAM Function
 Resources:

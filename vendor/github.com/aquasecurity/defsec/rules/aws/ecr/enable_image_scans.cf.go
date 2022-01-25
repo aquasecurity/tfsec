@@ -1,7 +1,7 @@
 package ecr
 
 var cloudFormationEnableImageScansGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::ECR::Repository
@@ -17,7 +17,7 @@ Resources:
 }
 
 var cloudFormationEnableImageScansBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::ECR::Repository

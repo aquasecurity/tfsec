@@ -1,7 +1,7 @@
 package redshift
 
 var cloudFormationUseVpcGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example of redshift cluster
 Resources:
@@ -14,7 +14,7 @@ Resources:
 }
 
 var cloudFormationUseVpcBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example of redshift cluster
 Resources:

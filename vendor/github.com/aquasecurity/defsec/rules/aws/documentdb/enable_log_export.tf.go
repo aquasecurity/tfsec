@@ -1,7 +1,7 @@
 package documentdb
 
 var terraformEnableLogExportGoodExamples = []string{
-        `
+	`
  resource "aws_docdb_cluster" "good_example" {
    cluster_identifier      = "my-docdb-cluster"
    engine                  = "docdb"
@@ -16,7 +16,7 @@ var terraformEnableLogExportGoodExamples = []string{
 }
 
 var terraformEnableLogExportBadExamples = []string{
-        `
+	`
  resource "aws_docdb_cluster" "bad_example" {
    cluster_identifier      = "my-docdb-cluster"
    engine                  = "docdb"
@@ -31,7 +31,7 @@ var terraformEnableLogExportBadExamples = []string{
 }
 
 var terraformEnableLogExportLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/docdb_cluster#enabled_cloudwatch_logs_exports`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/docdb_cluster#enabled_cloudwatch_logs_exports`,
 }
 
 var terraformEnableLogExportRemediationMarkdown = ``

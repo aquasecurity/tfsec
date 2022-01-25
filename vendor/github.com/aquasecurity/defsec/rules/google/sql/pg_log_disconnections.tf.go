@@ -1,7 +1,7 @@
 package sql
 
 var terraformPgLogDisconnectionsGoodExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "POSTGRES_12"
@@ -17,7 +17,7 @@ var terraformPgLogDisconnectionsGoodExamples = []string{
 }
 
 var terraformPgLogDisconnectionsBadExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "POSTGRES_12"
@@ -33,7 +33,7 @@ var terraformPgLogDisconnectionsBadExamples = []string{
 }
 
 var terraformPgLogDisconnectionsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`,
 }
 
 var terraformPgLogDisconnectionsRemediationMarkdown = ``

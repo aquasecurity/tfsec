@@ -1,7 +1,7 @@
 package elasticache
 
 var cloudFormationEnableInTransitEncryptionGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: 'AWS::ElastiCache::ReplicationGroup'
@@ -25,7 +25,7 @@ Resources:
 }
 
 var cloudFormationEnableInTransitEncryptionBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: 'AWS::ElastiCache::ReplicationGroup'

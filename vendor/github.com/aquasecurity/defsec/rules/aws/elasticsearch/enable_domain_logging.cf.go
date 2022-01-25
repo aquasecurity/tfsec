@@ -1,7 +1,7 @@
 package elasticsearch
 
 var cloudFormationEnableDomainLoggingGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::Elasticsearch::Domain
@@ -29,7 +29,7 @@ Resources:
 }
 
 var cloudFormationEnableDomainLoggingBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::Elasticsearch::Domain

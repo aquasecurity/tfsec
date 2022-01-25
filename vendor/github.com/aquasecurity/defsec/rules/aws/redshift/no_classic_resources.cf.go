@@ -1,7 +1,7 @@
 package redshift
 
 var cloudFormationNoClassicResourcesGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good example of redshift sgr
 Resources:
@@ -10,7 +10,7 @@ Resources:
 }
 
 var cloudFormationNoClassicResourcesBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example of redshift sgr
 Resources:

@@ -1,7 +1,7 @@
 package database
 
 var terraformEnableAuditGoodExamples = []string{
-        `
+	`
  resource "azurerm_sql_server" "good_example" {
    name                         = "mssqlserver"
    resource_group_name          = azurerm_resource_group.example.name
@@ -21,7 +21,7 @@ var terraformEnableAuditGoodExamples = []string{
 }
 
 var terraformEnableAuditBadExamples = []string{
-        `
+	`
  resource "azurerm_sql_server" "bad_example" {
    name                         = "mssqlserver"
    resource_group_name          = azurerm_resource_group.example.name
@@ -34,7 +34,7 @@ var terraformEnableAuditBadExamples = []string{
 }
 
 var terraformEnableAuditLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_server#extended_auditing_policy`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_server#extended_auditing_policy`,
 }
 
 var terraformEnableAuditRemediationMarkdown = ``

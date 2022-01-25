@@ -1,7 +1,7 @@
 package appservice
 
 var terraformUseSecureTlsPolicyGoodExamples = []string{
-        `
+	`
  resource "azurerm_app_service" "good_example" {
    name                = "example-app-service"
    location            = azurerm_resource_group.example.location
@@ -12,7 +12,7 @@ var terraformUseSecureTlsPolicyGoodExamples = []string{
 }
 
 var terraformUseSecureTlsPolicyBadExamples = []string{
-        `
+	`
  resource "azurerm_app_service" "bad_example" {
    name                = "example-app-service"
    location            = azurerm_resource_group.example.location
@@ -27,7 +27,7 @@ var terraformUseSecureTlsPolicyBadExamples = []string{
 }
 
 var terraformUseSecureTlsPolicyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service#min_tls_version`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service#min_tls_version`,
 }
 
 var terraformUseSecureTlsPolicyRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package elb
 
 var terraformHttpNotUsedGoodExamples = []string{
-        `
+	`
  resource "aws_alb_listener" "good_example" {
  	protocol = "HTTPS"
  }
@@ -9,7 +9,7 @@ var terraformHttpNotUsedGoodExamples = []string{
 }
 
 var terraformHttpNotUsedBadExamples = []string{
-        `
+	`
  resource "aws_alb_listener" "bad_example" {
  	protocol = "HTTP"
  }
@@ -17,7 +17,7 @@ var terraformHttpNotUsedBadExamples = []string{
 }
 
 var terraformHttpNotUsedLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener`,
 }
 
 var terraformHttpNotUsedRemediationMarkdown = ``

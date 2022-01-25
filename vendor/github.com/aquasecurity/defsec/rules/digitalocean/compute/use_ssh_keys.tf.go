@@ -1,7 +1,7 @@
 package compute
 
 var terraformUseSshKeysGoodExamples = []string{
-        `
+	`
  data "digitalocean_ssh_key" "terraform" {
  	name = "myKey"
    }
@@ -17,7 +17,7 @@ var terraformUseSshKeysGoodExamples = []string{
 }
 
 var terraformUseSshKeysBadExamples = []string{
-        `
+	`
  resource "digitalocean_droplet" "good_example" {
  	image    = "ubuntu-18-04-x64"
  	name     = "web-1"
@@ -28,7 +28,7 @@ var terraformUseSshKeysBadExamples = []string{
 }
 
 var terraformUseSshKeysLinks = []string{
-        `https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/droplet#ssh_keys`,
+	`https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/droplet#ssh_keys`,
 }
 
 var terraformUseSshKeysRemediationMarkdown = ``

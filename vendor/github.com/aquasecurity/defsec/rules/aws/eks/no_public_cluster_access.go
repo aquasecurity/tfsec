@@ -20,13 +20,13 @@ var CheckNoPublicClusterAccess = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformNoPublicClusterAccessGoodExamples,
-            BadExamples:         terraformNoPublicClusterAccessBadExamples,
-            Links:               terraformNoPublicClusterAccessLinks,
-            RemediationMarkdown: terraformNoPublicClusterAccessRemediationMarkdown,
-        },
-        Severity: severity.Critical,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformNoPublicClusterAccessGoodExamples,
+			BadExamples:         terraformNoPublicClusterAccessBadExamples,
+			Links:               terraformNoPublicClusterAccessLinks,
+			RemediationMarkdown: terraformNoPublicClusterAccessRemediationMarkdown,
+		},
+		Severity: severity.Critical,
 	},
 	func(s *state.State) (results rules.Results) {
 		for _, cluster := range s.AWS.EKS.Clusters {

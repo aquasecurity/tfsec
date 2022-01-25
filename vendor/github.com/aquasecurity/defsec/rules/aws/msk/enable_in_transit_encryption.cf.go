@@ -1,7 +1,7 @@
 package msk
 
 var cloudFormationEnableInTransitEncryptionGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good example
 Resources:
@@ -15,7 +15,7 @@ Resources:
 }
 
 var cloudFormationEnableInTransitEncryptionBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example
 Resources:

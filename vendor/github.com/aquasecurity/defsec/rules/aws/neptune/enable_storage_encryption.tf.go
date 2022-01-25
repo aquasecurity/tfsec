@@ -1,7 +1,7 @@
 package neptune
 
 var terraformEnableStorageEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_neptune_cluster" "good_example" {
    cluster_identifier                  = "neptune-cluster-demo"
    engine                              = "neptune"
@@ -16,7 +16,7 @@ var terraformEnableStorageEncryptionGoodExamples = []string{
 }
 
 var terraformEnableStorageEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_neptune_cluster" "bad_example" {
    cluster_identifier                  = "neptune-cluster-demo"
    engine                              = "neptune"
@@ -31,7 +31,7 @@ var terraformEnableStorageEncryptionBadExamples = []string{
 }
 
 var terraformEnableStorageEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/neptune_cluster#storage_encrypted`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/neptune_cluster#storage_encrypted`,
 }
 
 var terraformEnableStorageEncryptionRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package gke
 
 var terraformEnableIpAliasingGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -40,7 +40,7 @@ var terraformEnableIpAliasingGoodExamples = []string{
 }
 
 var terraformEnableIpAliasingBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -78,7 +78,7 @@ var terraformEnableIpAliasingBadExamples = []string{
 }
 
 var terraformEnableIpAliasingLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#ip_allocation_policy`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#ip_allocation_policy`,
 }
 
 var terraformEnableIpAliasingRemediationMarkdown = ``

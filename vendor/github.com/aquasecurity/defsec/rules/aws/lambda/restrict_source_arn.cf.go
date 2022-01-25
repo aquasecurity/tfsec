@@ -1,7 +1,7 @@
 package lambda
 
 var cloudFormationRestrictSourceArnGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::Lambda::Function
@@ -33,7 +33,7 @@ Resources:
 }
 
 var cloudFormationRestrictSourceArnBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::Lambda::Function

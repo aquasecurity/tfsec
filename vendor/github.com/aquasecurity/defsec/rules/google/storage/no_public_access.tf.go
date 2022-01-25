@@ -1,7 +1,7 @@
 package storage
 
 var terraformNoPublicAccessGoodExamples = []string{
-        `
+	`
  resource "google_storage_bucket_iam_binding" "binding" {
  	bucket = google_storage_bucket.default.name
  	role = "roles/storage.admin"
@@ -13,7 +13,7 @@ var terraformNoPublicAccessGoodExamples = []string{
 }
 
 var terraformNoPublicAccessBadExamples = []string{
-        `
+	`
  resource "google_storage_bucket_iam_binding" "binding" {
  	bucket = google_storage_bucket.default.name
  	role = "roles/storage.admin"
@@ -25,7 +25,7 @@ var terraformNoPublicAccessBadExamples = []string{
 }
 
 var terraformNoPublicAccessLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_iam#member/members`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_iam#member/members`,
 }
 
 var terraformNoPublicAccessRemediationMarkdown = ``

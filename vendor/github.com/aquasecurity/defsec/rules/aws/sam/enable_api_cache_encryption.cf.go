@@ -1,7 +1,7 @@
 package sam
 
 var cloudFormationEnableApiCacheEncryptionGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good Example of SAM API
 Resources:
@@ -19,7 +19,7 @@ Resources:
 }
 
 var cloudFormationEnableApiCacheEncryptionBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad Example of SAM API
 Resources:
@@ -29,7 +29,7 @@ Resources:
       Name: Bad SAM API example
       StageName: Prod
       TracingEnabled: false
-`,`---
+`, `---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad Example of SAM API
 Resources:

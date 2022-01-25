@@ -1,7 +1,7 @@
 package redshift
 
 var terraformEncryptionCustomerKeyGoodExamples = []string{
-        `
+	`
  resource "aws_kms_key" "redshift" {
  	enable_key_rotation = true
  }
@@ -20,7 +20,7 @@ var terraformEncryptionCustomerKeyGoodExamples = []string{
 }
 
 var terraformEncryptionCustomerKeyBadExamples = []string{
-        `
+	`
  resource "aws_redshift_cluster" "bad_example" {
    cluster_identifier = "tf-redshift-cluster"
    database_name      = "mydb"
@@ -33,7 +33,7 @@ var terraformEncryptionCustomerKeyBadExamples = []string{
 }
 
 var terraformEncryptionCustomerKeyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster#encrypted`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_cluster#encrypted`,
 }
 
 var terraformEncryptionCustomerKeyRemediationMarkdown = ``

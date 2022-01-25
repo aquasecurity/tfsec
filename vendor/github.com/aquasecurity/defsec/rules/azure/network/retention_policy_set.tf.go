@@ -1,7 +1,7 @@
 package network
 
 var terraformRetentionPolicySetGoodExamples = []string{
-        `
+	`
 resource "azurerm_network_watcher_flow_log" "good_watcher" {
 	network_watcher_name = "good_watcher"
 	resource_group_name = "resource-group"
@@ -19,7 +19,7 @@ resource "azurerm_network_watcher_flow_log" "good_watcher" {
 }
 
 var terraformRetentionPolicySetBadExamples = []string{
-        `
+	`
 resource "azurerm_network_watcher_flow_log" "bad_watcher" {
 	network_watcher_name = "bad_watcher"
 	resource_group_name = "resource-group"
@@ -37,7 +37,7 @@ resource "azurerm_network_watcher_flow_log" "bad_watcher" {
 }
 
 var terraformRetentionPolicySetLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_watcher_flow_log#retention_policy`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_watcher_flow_log#retention_policy`,
 }
 
 var terraformRetentionPolicySetRemediationMarkdown = ``

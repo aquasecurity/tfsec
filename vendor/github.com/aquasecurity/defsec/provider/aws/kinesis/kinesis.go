@@ -30,15 +30,13 @@ func (s *Stream) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (k *Kinesis) GetMetadata() *types.Metadata {
 	return &k.Metadata
 }
 
 func (k *Kinesis) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (e *Encryption) GetMetadata() *types.Metadata {
 	return &e.Metadata
@@ -46,4 +44,4 @@ func (e *Encryption) GetMetadata() *types.Metadata {
 
 func (e *Encryption) GetRawValue() interface{} {
 	return nil
-}    
+}

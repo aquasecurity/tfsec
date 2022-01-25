@@ -1,7 +1,7 @@
 package apigateway
 
 var cloudFormationEnableAccessLoggingGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good Example of ApiGateway
 Resources:
@@ -19,7 +19,7 @@ Resources:
 }
 
 var cloudFormationEnableAccessLoggingBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad Example of ApiGateway
 Resources:

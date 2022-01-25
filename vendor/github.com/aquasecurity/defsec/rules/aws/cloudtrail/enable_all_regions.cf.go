@@ -1,7 +1,7 @@
 package cloudtrail
 
 var cloudFormationEnableAllRegionsGoodExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::CloudTrail::Trail
@@ -15,7 +15,7 @@ Resources:
 }
 
 var cloudFormationEnableAllRegionsBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::CloudTrail::Trail

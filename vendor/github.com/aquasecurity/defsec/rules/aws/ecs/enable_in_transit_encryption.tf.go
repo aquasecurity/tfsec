@@ -1,7 +1,7 @@
 package ecs
 
 var terraformEnableInTransitEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_ecs_task_definition" "good_example" {
  	family                = "service"
  	container_definitions = file("task-definitions/service.json")
@@ -25,7 +25,7 @@ var terraformEnableInTransitEncryptionGoodExamples = []string{
 }
 
 var terraformEnableInTransitEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_ecs_task_definition" "bad_example" {
  	family                = "service"
  	container_definitions = file("task-definitions/service.json")
@@ -47,7 +47,7 @@ var terraformEnableInTransitEncryptionBadExamples = []string{
 }
 
 var terraformEnableInTransitEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition#transit_encryption`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition#transit_encryption`,
 }
 
 var terraformEnableInTransitEncryptionRemediationMarkdown = ``

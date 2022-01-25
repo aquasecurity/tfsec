@@ -1,7 +1,7 @@
 package appservice
 
 var terraformAccountIdentityRegisteredGoodExamples = []string{
-        `
+	`
  resource "azurerm_app_service" "good_example" {
    name                = "example-app-service"
    location            = azurerm_resource_group.example.location
@@ -17,7 +17,7 @@ var terraformAccountIdentityRegisteredGoodExamples = []string{
 }
 
 var terraformAccountIdentityRegisteredBadExamples = []string{
-        `
+	`
  resource "azurerm_app_service" "bad_example" {
    name                = "example-app-service"
    location            = azurerm_resource_group.example.location
@@ -28,7 +28,7 @@ var terraformAccountIdentityRegisteredBadExamples = []string{
 }
 
 var terraformAccountIdentityRegisteredLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service#identity`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service#identity`,
 }
 
 var terraformAccountIdentityRegisteredRemediationMarkdown = ``

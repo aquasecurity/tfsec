@@ -1,7 +1,7 @@
 package elasticache
 
 var cloudFormationEnableBackupRetentionGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::ElastiCache::CacheCluster
@@ -19,7 +19,7 @@ Resources:
 }
 
 var cloudFormationEnableBackupRetentionBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::ElastiCache::CacheCluster

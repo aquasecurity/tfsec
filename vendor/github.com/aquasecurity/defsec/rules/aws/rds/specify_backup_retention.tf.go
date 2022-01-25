@@ -1,7 +1,7 @@
 package rds
 
 var terraformSpecifyBackupRetentionGoodExamples = []string{
-        `
+	`
  resource "aws_rds_cluster" "good_example" {
  	cluster_identifier      = "aurora-cluster-demo"
  	engine                  = "aurora-mysql"
@@ -14,7 +14,7 @@ var terraformSpecifyBackupRetentionGoodExamples = []string{
  	preferred_backup_window = "07:00-09:00"
    }
  
-`,` 
+`, ` 
    resource "aws_db_instance" "good_example" {
  	allocated_storage    = 10
  	engine               = "mysql"
@@ -31,7 +31,7 @@ var terraformSpecifyBackupRetentionGoodExamples = []string{
 }
 
 var terraformSpecifyBackupRetentionBadExamples = []string{
-        `
+	`
  resource "aws_db_instance" "bad_example" {
  	allocated_storage    = 10
  	engine               = "mysql"
@@ -43,7 +43,7 @@ var terraformSpecifyBackupRetentionBadExamples = []string{
  	parameter_group_name = "default.mysql5.7"
  	skip_final_snapshot  = true
  }
-`,` 
+`, ` 
  resource "aws_rds_cluster" "bad_example" {
  	cluster_identifier      = "aurora-cluster-demo"
  	engine                  = "aurora-mysql"
@@ -58,7 +58,7 @@ var terraformSpecifyBackupRetentionBadExamples = []string{
 }
 
 var terraformSpecifyBackupRetentionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#backup_retention_period`,`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance#backup_retention_period`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#backup_retention_period`, `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance#backup_retention_period`,
 }
 
 var terraformSpecifyBackupRetentionRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package database
 
 var terraformPostgresConfigurationConnectionThrottlingGoodExamples = []string{
-        `
+	`
  resource "azurerm_resource_group" "example" {
    name     = "example-resources"
    location = "West Europe"
@@ -31,7 +31,7 @@ var terraformPostgresConfigurationConnectionThrottlingGoodExamples = []string{
 }
 
 var terraformPostgresConfigurationConnectionThrottlingBadExamples = []string{
-        `
+	`
  resource "azurerm_resource_group" "example" {
    name     = "example-resources"
    location = "West Europe"
@@ -53,7 +53,7 @@ var terraformPostgresConfigurationConnectionThrottlingBadExamples = []string{
 }
 
 var terraformPostgresConfigurationConnectionThrottlingLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_configuration`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_configuration`,
 }
 
 var terraformPostgresConfigurationConnectionThrottlingRemediationMarkdown = ``

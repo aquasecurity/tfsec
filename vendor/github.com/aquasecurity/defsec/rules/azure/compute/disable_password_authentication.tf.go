@@ -1,7 +1,7 @@
 package compute
 
 var terraformDisablePasswordAuthenticationGoodExamples = []string{
-        `
+	`
  resource "azurerm_linux_virtual_machine" "good_linux_example" {
    name                            = "good-linux-machine"
    resource_group_name             = azurerm_resource_group.example.name
@@ -37,7 +37,7 @@ var terraformDisablePasswordAuthenticationGoodExamples = []string{
 }
 
 var terraformDisablePasswordAuthenticationBadExamples = []string{
-        `
+	`
  resource "azurerm_linux_virtual_machine" "bad_linux_example" {
    name                            = "bad-linux-machine"
    resource_group_name             = azurerm_resource_group.example.name
@@ -70,7 +70,7 @@ var terraformDisablePasswordAuthenticationBadExamples = []string{
 }
 
 var terraformDisablePasswordAuthenticationLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine#disable_password_authentication`,`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine#disable_password_authentication`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine#disable_password_authentication`, `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine#disable_password_authentication`,
 }
 
 var terraformDisablePasswordAuthenticationRemediationMarkdown = ``

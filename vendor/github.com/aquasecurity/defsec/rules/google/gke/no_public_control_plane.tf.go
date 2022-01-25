@@ -1,7 +1,7 @@
 package gke
 
 var terraformNoPublicControlPlaneGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -45,7 +45,7 @@ var terraformNoPublicControlPlaneGoodExamples = []string{
 }
 
 var terraformNoPublicControlPlaneBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -89,7 +89,7 @@ var terraformNoPublicControlPlaneBadExamples = []string{
 }
 
 var terraformNoPublicControlPlaneLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#`,
 }
 
 var terraformNoPublicControlPlaneRemediationMarkdown = ``

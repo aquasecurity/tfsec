@@ -1,7 +1,7 @@
 package compute
 
 var terraformEnforceHttpsGoodExamples = []string{
-        `
+	`
  resource "digitalocean_loadbalancer" "bad_example" {
    name   = "bad_example-1"
    region = "nyc3"
@@ -20,7 +20,7 @@ var terraformEnforceHttpsGoodExamples = []string{
 }
 
 var terraformEnforceHttpsBadExamples = []string{
-        `
+	`
  resource "digitalocean_loadbalancer" "bad_example" {
    name   = "bad_example-1"
    region = "nyc3"
@@ -39,7 +39,7 @@ var terraformEnforceHttpsBadExamples = []string{
 }
 
 var terraformEnforceHttpsLinks = []string{
-        `https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/loadbalancer`,
+	`https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/loadbalancer`,
 }
 
 var terraformEnforceHttpsRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package container
 
 var terraformConfiguredNetworkPolicyGoodExamples = []string{
-        `
+	`
  resource "azurerm_kubernetes_cluster" "good_example" {
  	network_profile {
  	  network_policy = "calico"
@@ -11,7 +11,7 @@ var terraformConfiguredNetworkPolicyGoodExamples = []string{
 }
 
 var terraformConfiguredNetworkPolicyBadExamples = []string{
-        `
+	`
  resource "azurerm_kubernetes_cluster" "bad_example" {
  	network_profile {
  	  }
@@ -20,7 +20,7 @@ var terraformConfiguredNetworkPolicyBadExamples = []string{
 }
 
 var terraformConfiguredNetworkPolicyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#network_policy`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#network_policy`,
 }
 
 var terraformConfiguredNetworkPolicyRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package elasticsearch
 
 var terraformEnableDomainLoggingGoodExamples = []string{
-        `
+	`
  resource "aws_elasticsearch_domain" "good_example" {
    domain_name           = "example"
    elasticsearch_version = "1.5"
@@ -16,12 +16,12 @@ var terraformEnableDomainLoggingGoodExamples = []string{
 }
 
 var terraformEnableDomainLoggingBadExamples = []string{
-        `
+	`
  resource "aws_elasticsearch_domain" "bad_example" {
    domain_name           = "example"
    elasticsearch_version = "1.5"
  }
- `,`
+ `, `
  resource "aws_elasticsearch_domain" "bad_example" {
    domain_name           = "example"
    elasticsearch_version = "1.5"
@@ -36,7 +36,7 @@ var terraformEnableDomainLoggingBadExamples = []string{
 }
 
 var terraformEnableDomainLoggingLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#log_type`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#log_type`,
 }
 
 var terraformEnableDomainLoggingRemediationMarkdown = ``

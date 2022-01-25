@@ -1,7 +1,7 @@
 package sql
 
 var terraformPgLogErrorsGoodExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "POSTGRES_12"
@@ -17,7 +17,7 @@ var terraformPgLogErrorsGoodExamples = []string{
 }
 
 var terraformPgLogErrorsBadExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "POSTGRES_12"
@@ -33,7 +33,7 @@ var terraformPgLogErrorsBadExamples = []string{
 }
 
 var terraformPgLogErrorsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`,
 }
 
 var terraformPgLogErrorsRemediationMarkdown = ``

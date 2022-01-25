@@ -1,7 +1,7 @@
 package storage
 
 var terraformDefaultActionDenyGoodExamples = []string{
-        `
+	`
  resource "azurerm_storage_account_network_rules" "good_example" {
    
    default_action             = "Deny"
@@ -13,7 +13,7 @@ var terraformDefaultActionDenyGoodExamples = []string{
 }
 
 var terraformDefaultActionDenyBadExamples = []string{
-        `
+	`
  resource "azurerm_storage_account_network_rules" "bad_example" {
    
    default_action             = "Allow"
@@ -25,7 +25,7 @@ var terraformDefaultActionDenyBadExamples = []string{
 }
 
 var terraformDefaultActionDenyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account_network_rules#default_action`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account_network_rules#default_action`,
 }
 
 var terraformDefaultActionDenyRemediationMarkdown = ``

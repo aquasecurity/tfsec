@@ -40,11 +40,10 @@ func (c *Instance) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (m *MetadataOptions) GetMetadata() *types.Metadata {
 	return &m.Metadata
 }
 
 func (m *MetadataOptions) GetRawValue() interface{} {
 	return nil
-}    
+}

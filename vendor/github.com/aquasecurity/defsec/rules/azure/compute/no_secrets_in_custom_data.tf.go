@@ -1,7 +1,7 @@
 package compute
 
 var terraformNoSecretsInCustomDataGoodExamples = []string{
-        `
+	`
  resource "azurerm_virtual_machine" "good_example" {
  	name = "good_example"
 	os_profile_linux_config {
@@ -17,7 +17,7 @@ var terraformNoSecretsInCustomDataGoodExamples = []string{
 }
 
 var terraformNoSecretsInCustomDataBadExamples = []string{
-        `
+	`
  resource "azurerm_virtual_machine" "bad_example" {
  	name = "bad_example"
 	os_profile_linux_config {
@@ -33,7 +33,7 @@ var terraformNoSecretsInCustomDataBadExamples = []string{
 }
 
 var terraformNoSecretsInCustomDataLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine#custom_data`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine#custom_data`,
 }
 
 var terraformNoSecretsInCustomDataRemediationMarkdown = ``

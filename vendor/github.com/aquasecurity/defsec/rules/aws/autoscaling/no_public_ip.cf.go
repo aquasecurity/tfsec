@@ -1,7 +1,7 @@
 package autoscaling
 
 var cloudFormationNoPublicIpGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Properties:
@@ -12,7 +12,7 @@ Resources:
 }
 
 var cloudFormationNoPublicIpBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Properties:

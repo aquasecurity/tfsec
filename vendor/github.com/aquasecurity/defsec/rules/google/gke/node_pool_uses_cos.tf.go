@@ -1,7 +1,7 @@
 package gke
 
 var terraformNodePoolUsesCosGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -39,7 +39,7 @@ var terraformNodePoolUsesCosGoodExamples = []string{
 }
 
 var terraformNodePoolUsesCosBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service-account-id"
    display_name = "Service Account"
@@ -77,7 +77,7 @@ var terraformNodePoolUsesCosBadExamples = []string{
 }
 
 var terraformNodePoolUsesCosLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_node_pool#image_type`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_node_pool#image_type`,
 }
 
 var terraformNodePoolUsesCosRemediationMarkdown = ``

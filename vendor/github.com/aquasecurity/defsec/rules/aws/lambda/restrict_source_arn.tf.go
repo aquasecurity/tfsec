@@ -1,7 +1,7 @@
 package lambda
 
 var terraformRestrictSourceArnGoodExamples = []string{
-        `
+	`
 resource "aws_lambda_permission" "good_example" {
 	statement_id = "AllowExecutionFromSNS"
 	action = "lambda:InvokeFunction"
@@ -13,7 +13,7 @@ resource "aws_lambda_permission" "good_example" {
 }
 
 var terraformRestrictSourceArnBadExamples = []string{
-        `
+	`
 resource "aws_lambda_permission" "bad_example" {
 	statement_id = "AllowExecutionFromSNS"
 	action = "lambda:InvokeFunction"
@@ -24,7 +24,7 @@ resource "aws_lambda_permission" "bad_example" {
 }
 
 var terraformRestrictSourceArnLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission`,
 }
 
 var terraformRestrictSourceArnRemediationMarkdown = ``

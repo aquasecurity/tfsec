@@ -1,7 +1,7 @@
 package ecr
 
 var cloudFormationEnforceImmutableRepositoryGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::ECR::Repository
@@ -17,7 +17,7 @@ Resources:
 }
 
 var cloudFormationEnforceImmutableRepositoryBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::ECR::Repository

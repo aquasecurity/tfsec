@@ -1,7 +1,7 @@
 package actions
 
 var terraformNoPlainTextActionSecretsGoodExamples = []string{
-        `
+	`
 resource "github_actions_environment_secret" "good_example" {
 	repository       = "my repository name"
 	environment       = "my environment"
@@ -12,7 +12,7 @@ resource "github_actions_environment_secret" "good_example" {
 }
 
 var terraformNoPlainTextActionSecretsBadExamples = []string{
-        `
+	`
 resource "github_actions_environment_secret" "bad_example" {	 
 	repository       = "my repository name"
 	environment       = "my environment"
@@ -23,7 +23,7 @@ resource "github_actions_environment_secret" "bad_example" {
 }
 
 var terraformNoPlainTextActionSecretsLinks = []string{
-        `https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_environment_secret`,`https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions`,
+	`https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_environment_secret`, `https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions`,
 }
 
 var terraformNoPlainTextActionSecretsRemediationMarkdown = ``

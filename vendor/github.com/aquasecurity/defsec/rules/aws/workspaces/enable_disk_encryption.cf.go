@@ -1,7 +1,7 @@
 package workspaces
 
 var cloudFormationEnableDiskEncryptionGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::WorkSpaces::Workspace
@@ -9,7 +9,7 @@ Resources:
       RootVolumeEncryptionEnabled: true
       UserVolumeEncryptionEnabled: true
       UserName: "admin"
-`,`{
+`, `{
 		    "Resources": {
 		      "GoodExample": {
 		        "Type": "AWS::WorkSpaces::Workspace",
@@ -24,7 +24,7 @@ Resources:
 }
 
 var cloudFormationEnableDiskEncryptionBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::WorkSpaces::Workspace
@@ -32,7 +32,7 @@ Resources:
       RootVolumeEncryptionEnabled: false
       UserVolumeEncryptionEnabled: false
       UserName: "admin"
-`,`{
+`, `{
   "Resources": {
     "BadExample": {
       "Type": "AWS::WorkSpaces::Workspace",

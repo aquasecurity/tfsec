@@ -1,7 +1,7 @@
 package iam
 
 var terraformRequireSymbolsInPasswordsGoodExamples = []string{
-        `
+	`
  resource "aws_iam_account_password_policy" "good_example" {
  	# ...
  	require_symbols = true
@@ -11,7 +11,7 @@ var terraformRequireSymbolsInPasswordsGoodExamples = []string{
 }
 
 var terraformRequireSymbolsInPasswordsBadExamples = []string{
-        `
+	`
  resource "aws_iam_account_password_policy" "bad_example" {
  	# ...
  	# require_symbols not set
@@ -21,7 +21,7 @@ var terraformRequireSymbolsInPasswordsBadExamples = []string{
 }
 
 var terraformRequireSymbolsInPasswordsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy`,
 }
 
 var terraformRequireSymbolsInPasswordsRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package elb
 
 var terraformDropInvalidHeadersGoodExamples = []string{
-        `
+	`
  resource "aws_alb" "good_example" {
  	name               = "good_alb"
  	internal           = false
@@ -19,7 +19,7 @@ var terraformDropInvalidHeadersGoodExamples = []string{
 }
 
 var terraformDropInvalidHeadersBadExamples = []string{
-        `
+	`
  resource "aws_alb" "bad_example" {
  	name               = "bad_alb"
  	internal           = false
@@ -37,7 +37,7 @@ var terraformDropInvalidHeadersBadExamples = []string{
 }
 
 var terraformDropInvalidHeadersLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#drop_invalid_header_fields`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb#drop_invalid_header_fields`,
 }
 
 var terraformDropInvalidHeadersRemediationMarkdown = ``

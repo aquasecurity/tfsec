@@ -1,7 +1,7 @@
 package elasticache
 
 var terraformEnableInTransitEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_elasticache_replication_group" "good_example" {
          replication_group_id = "foo"
          replication_group_description = "my foo cluster"
@@ -11,7 +11,7 @@ var terraformEnableInTransitEncryptionGoodExamples = []string{
 }
 
 var terraformEnableInTransitEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_elasticache_replication_group" "bad_example" {
          replication_group_id = "foo"
          replication_group_description = "my foo cluster"
@@ -21,7 +21,7 @@ var terraformEnableInTransitEncryptionBadExamples = []string{
 }
 
 var terraformEnableInTransitEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_replication_group#transit_encryption_enabled`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_replication_group#transit_encryption_enabled`,
 }
 
 var terraformEnableInTransitEncryptionRemediationMarkdown = ``

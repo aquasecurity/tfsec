@@ -24,15 +24,13 @@ type AccessGrant struct {
 	SpecialGroup types.StringValue
 }
 
-
 func (b *BigQuery) GetMetadata() *types.Metadata {
 	return &b.Metadata
 }
 
 func (b *BigQuery) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (d *Dataset) GetMetadata() *types.Metadata {
 	return &d.Metadata
@@ -40,8 +38,7 @@ func (d *Dataset) GetMetadata() *types.Metadata {
 
 func (d *Dataset) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (a *AccessGrant) GetMetadata() *types.Metadata {
 	return &a.Metadata
@@ -49,4 +46,4 @@ func (a *AccessGrant) GetMetadata() *types.Metadata {
 
 func (a *AccessGrant) GetRawValue() interface{} {
 	return nil
-}    
+}

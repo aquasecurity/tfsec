@@ -1,7 +1,7 @@
 package cloudfront
 
 var cloudFormationUseSecureTlsPolicyGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Properties:
@@ -22,7 +22,7 @@ Resources:
 }
 
 var cloudFormationUseSecureTlsPolicyBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Properties:

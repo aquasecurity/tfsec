@@ -37,11 +37,10 @@ func (d *LaunchConfiguration) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (a *Autoscaling) GetMetadata() *types.Metadata {
 	return &a.Metadata
 }
 
 func (a *Autoscaling) GetRawValue() interface{} {
 	return nil
-}    
+}

@@ -1,7 +1,7 @@
 package network
 
 var terraformNoPublicEgressGoodExamples = []string{
-        `
+	`
  resource "kubernetes_network_policy" "good_example" {
    metadata {
      name      = "terraform-example-network-policy"
@@ -66,7 +66,7 @@ var terraformNoPublicEgressGoodExamples = []string{
 }
 
 var terraformNoPublicEgressBadExamples = []string{
-        `
+	`
  resource "kubernetes_network_policy" "bad_example" {
    metadata {
      name      = "terraform-example-network-policy"
@@ -131,7 +131,7 @@ var terraformNoPublicEgressBadExamples = []string{
 }
 
 var terraformNoPublicEgressLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/network_policy#spec.ingress.from.ip_block.cidr`,
+	`https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/network_policy#spec.ingress.from.ip_block.cidr`,
 }
 
 var terraformNoPublicEgressRemediationMarkdown = ``

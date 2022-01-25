@@ -1,7 +1,7 @@
 package database
 
 var terraformRetentionPeriodSetGoodExamples = []string{
-        `
+	`
  resource "azurerm_mssql_database_extended_auditing_policy" "good_example" {
    database_id                             = azurerm_mssql_database.example.id
    storage_endpoint                        = azurerm_storage_account.example.primary_blob_endpoint
@@ -20,7 +20,7 @@ var terraformRetentionPeriodSetGoodExamples = []string{
 }
 
 var terraformRetentionPeriodSetBadExamples = []string{
-        `
+	`
  resource "azurerm_mssql_database_extended_auditing_policy" "bad_example" {
    database_id                             = azurerm_mssql_database.example.id
    storage_endpoint                        = azurerm_storage_account.example.primary_blob_endpoint
@@ -32,7 +32,7 @@ var terraformRetentionPeriodSetBadExamples = []string{
 }
 
 var terraformRetentionPeriodSetLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy`,`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server#retention_in_days`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database_extended_auditing_policy`, `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server#retention_in_days`,
 }
 
 var terraformRetentionPeriodSetRemediationMarkdown = ``

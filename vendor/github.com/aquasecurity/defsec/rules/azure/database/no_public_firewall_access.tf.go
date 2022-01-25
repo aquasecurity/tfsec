@@ -1,7 +1,7 @@
 package database
 
 var terraformNoPublicFirewallAccessGoodExamples = []string{
-        `
+	`
  resource "azurerm_sql_firewall_rule" "good_example" {
    name                = "good_rule"
    resource_group_name = azurerm_resource_group.example.name
@@ -13,7 +13,7 @@ var terraformNoPublicFirewallAccessGoodExamples = []string{
 }
 
 var terraformNoPublicFirewallAccessBadExamples = []string{
-        `
+	`
  resource "azurerm_sql_firewall_rule" "bad_example" {
    name                = "bad_rule"
    resource_group_name = azurerm_resource_group.example.name
@@ -33,7 +33,7 @@ var terraformNoPublicFirewallAccessBadExamples = []string{
 }
 
 var terraformNoPublicFirewallAccessLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_firewall_rule#end_ip_address`,
+	`https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/sql_firewall_rule#end_ip_address`,
 }
 
 var terraformNoPublicFirewallAccessRemediationMarkdown = ``

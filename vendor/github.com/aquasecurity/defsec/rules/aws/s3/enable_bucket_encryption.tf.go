@@ -1,7 +1,7 @@
 package s3
 
 var terraformEnableBucketEncryptionGoodExamples = []string{
-        `
+	`
  resource "aws_s3_bucket" "good_example" {
    bucket = "mybucket"
  
@@ -18,7 +18,7 @@ var terraformEnableBucketEncryptionGoodExamples = []string{
 }
 
 var terraformEnableBucketEncryptionBadExamples = []string{
-        `
+	`
  resource "aws_s3_bucket" "bad_example" {
    bucket = "mybucket"
  }
@@ -26,7 +26,7 @@ var terraformEnableBucketEncryptionBadExamples = []string{
 }
 
 var terraformEnableBucketEncryptionLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#enable-default-server-side-encryption`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#enable-default-server-side-encryption`,
 }
 
 var terraformEnableBucketEncryptionRemediationMarkdown = ``

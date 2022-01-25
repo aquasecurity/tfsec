@@ -1,7 +1,7 @@
 package compute
 
 var terraformNoSerialPortGoodExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service_account_id"
    display_name = "Service Account"
@@ -49,7 +49,7 @@ var terraformNoSerialPortGoodExamples = []string{
 }
 
 var terraformNoSerialPortBadExamples = []string{
-        `
+	`
  resource "google_service_account" "default" {
    account_id   = "service_account_id"
    display_name = "Service Account"
@@ -97,7 +97,7 @@ var terraformNoSerialPortBadExamples = []string{
 }
 
 var terraformNoSerialPortLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#`,
 }
 
 var terraformNoSerialPortRemediationMarkdown = ``

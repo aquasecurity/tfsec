@@ -1,7 +1,7 @@
 package compute
 
 var terraformNoOsloginOverrideGoodExamples = []string{
-        `
+	`
  resource "google_compute_instance" "default" {
    name         = "test"
    machine_type = "e2-medium"
@@ -25,7 +25,7 @@ var terraformNoOsloginOverrideGoodExamples = []string{
 }
 
 var terraformNoOsloginOverrideBadExamples = []string{
-        `
+	`
  resource "google_compute_instance" "default" {
    name         = "test"
    machine_type = "e2-medium"
@@ -50,7 +50,7 @@ var terraformNoOsloginOverrideBadExamples = []string{
 }
 
 var terraformNoOsloginOverrideLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#`,
 }
 
 var terraformNoOsloginOverrideRemediationMarkdown = ``

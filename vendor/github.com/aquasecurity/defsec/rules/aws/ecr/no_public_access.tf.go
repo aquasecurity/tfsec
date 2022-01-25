@@ -1,7 +1,7 @@
 package ecr
 
 var terraformNoPublicAccessGoodExamples = []string{
-        `
+	`
  resource "aws_ecr_repository" "foo" {
    name = "bar"
  }
@@ -42,7 +42,7 @@ var terraformNoPublicAccessGoodExamples = []string{
 }
 
 var terraformNoPublicAccessBadExamples = []string{
-        `
+	`
  resource "aws_ecr_repository" "foo" {
    name = "bar"
  }
@@ -83,7 +83,7 @@ var terraformNoPublicAccessBadExamples = []string{
 }
 
 var terraformNoPublicAccessLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository_policy#policy`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository_policy#policy`,
 }
 
 var terraformNoPublicAccessRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package cloudtrail
 
 var terraformEnableLogValidationGoodExamples = []string{
-        `
+	`
  resource "aws_cloudtrail" "good_example" {
    is_multi_region_trail = true
    enable_log_file_validation = true
@@ -20,7 +20,7 @@ var terraformEnableLogValidationGoodExamples = []string{
 }
 
 var terraformEnableLogValidationBadExamples = []string{
-        `
+	`
  resource "aws_cloudtrail" "bad_example" {
    is_multi_region_trail = true
  
@@ -38,7 +38,7 @@ var terraformEnableLogValidationBadExamples = []string{
 }
 
 var terraformEnableLogValidationLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#enable_log_file_validation`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudtrail#enable_log_file_validation`,
 }
 
 var terraformEnableLogValidationRemediationMarkdown = ``

@@ -23,11 +23,10 @@ func (c *Trail) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (c *CloudTrail) GetMetadata() *types.Metadata {
 	return &c.Metadata
 }
 
 func (c *CloudTrail) GetRawValue() interface{} {
 	return nil
-}    
+}

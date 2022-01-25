@@ -28,15 +28,13 @@ type FunctionApp struct {
 	HTTPSOnly types.BoolValue
 }
 
-
 func (a *AppService) GetMetadata() *types.Metadata {
 	return &a.Metadata
 }
 
 func (a *AppService) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (s *Service) GetMetadata() *types.Metadata {
 	return &s.Metadata
@@ -44,8 +42,7 @@ func (s *Service) GetMetadata() *types.Metadata {
 
 func (s *Service) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (f *FunctionApp) GetMetadata() *types.Metadata {
 	return &f.Metadata
@@ -53,4 +50,4 @@ func (f *FunctionApp) GetMetadata() *types.Metadata {
 
 func (f *FunctionApp) GetRawValue() interface{} {
 	return nil
-}    
+}

@@ -1,7 +1,7 @@
 package compute
 
 var terraformEnableShieldedVmImGoodExamples = []string{
-        `
+	`
  resource "google_compute_instance" "bad_example" {
    name         = "test"
    machine_type = "e2-medium"
@@ -28,7 +28,7 @@ var terraformEnableShieldedVmImGoodExamples = []string{
 }
 
 var terraformEnableShieldedVmImBadExamples = []string{
-        `
+	`
  resource "google_compute_instance" "bad_example" {
    name         = "test"
    machine_type = "e2-medium"
@@ -55,7 +55,7 @@ var terraformEnableShieldedVmImBadExamples = []string{
 }
 
 var terraformEnableShieldedVmImLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#enable_vtpm`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#enable_vtpm`,
 }
 
 var terraformEnableShieldedVmImRemediationMarkdown = ``

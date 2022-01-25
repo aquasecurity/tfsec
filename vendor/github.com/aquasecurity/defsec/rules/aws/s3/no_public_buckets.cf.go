@@ -1,7 +1,7 @@
 package s3
 
 var cloudFormationNoPublicBucketsGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Properties:
@@ -15,7 +15,7 @@ Resources:
 }
 
 var cloudFormationNoPublicBucketsBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Properties:

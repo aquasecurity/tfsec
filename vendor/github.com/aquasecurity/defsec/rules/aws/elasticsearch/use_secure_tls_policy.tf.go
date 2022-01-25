@@ -1,7 +1,7 @@
 package elasticsearch
 
 var terraformUseSecureTlsPolicyGoodExamples = []string{
-        `
+	`
  resource "aws_elasticsearch_domain" "good_example" {
    domain_name = "domain-foo"
  
@@ -14,7 +14,7 @@ var terraformUseSecureTlsPolicyGoodExamples = []string{
 }
 
 var terraformUseSecureTlsPolicyBadExamples = []string{
-        `
+	`
  resource "aws_elasticsearch_domain" "bad_example" {
    domain_name = "domain-foo"
  
@@ -27,7 +27,7 @@ var terraformUseSecureTlsPolicyBadExamples = []string{
 }
 
 var terraformUseSecureTlsPolicyLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#tls_security_policy`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticsearch_domain#tls_security_policy`,
 }
 
 var terraformUseSecureTlsPolicyRemediationMarkdown = ``

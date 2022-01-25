@@ -1,7 +1,7 @@
 package cloudtrail
 
 var cloudFormationEnableLogValidationGoodExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::CloudTrail::Trail
@@ -16,7 +16,7 @@ Resources:
 }
 
 var cloudFormationEnableLogValidationBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::CloudTrail::Trail

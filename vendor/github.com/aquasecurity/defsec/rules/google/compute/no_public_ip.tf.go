@@ -1,7 +1,7 @@
 package compute
 
 var terraformNoPublicIpGoodExamples = []string{
-        `
+	`
  resource "google_compute_instance" "good_example" {
    name         = "test"
    machine_type = "e2-medium"
@@ -28,7 +28,7 @@ var terraformNoPublicIpGoodExamples = []string{
 }
 
 var terraformNoPublicIpBadExamples = []string{
-        `
+	`
  resource "google_compute_instance" "bad_example" {
    name         = "test"
    machine_type = "e2-medium"
@@ -59,7 +59,7 @@ var terraformNoPublicIpBadExamples = []string{
 }
 
 var terraformNoPublicIpLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#access_config`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#access_config`,
 }
 
 var terraformNoPublicIpRemediationMarkdown = ``

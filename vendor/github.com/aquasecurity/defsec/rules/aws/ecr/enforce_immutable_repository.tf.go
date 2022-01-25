@@ -1,7 +1,7 @@
 package ecr
 
 var terraformEnforceImmutableRepositoryGoodExamples = []string{
-        `
+	`
  resource "aws_ecr_repository" "good_example" {
    name                 = "bar"
    image_tag_mutability = "IMMUTABLE"
@@ -14,7 +14,7 @@ var terraformEnforceImmutableRepositoryGoodExamples = []string{
 }
 
 var terraformEnforceImmutableRepositoryBadExamples = []string{
-        `
+	`
  resource "aws_ecr_repository" "bad_example" {
    name                 = "bar"
    image_tag_mutability = "MUTABLE"
@@ -27,7 +27,7 @@ var terraformEnforceImmutableRepositoryBadExamples = []string{
 }
 
 var terraformEnforceImmutableRepositoryLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository`,
 }
 
 var terraformEnforceImmutableRepositoryRemediationMarkdown = ``

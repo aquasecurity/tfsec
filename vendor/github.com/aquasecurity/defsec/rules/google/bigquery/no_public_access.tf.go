@@ -1,7 +1,7 @@
 package bigquery
 
 var terraformNoPublicAccessGoodExamples = []string{
-        `
+	`
  resource "google_bigquery_dataset" "good_example" {
    dataset_id                  = "example_dataset"
    friendly_name               = "test"
@@ -31,7 +31,7 @@ var terraformNoPublicAccessGoodExamples = []string{
 }
 
 var terraformNoPublicAccessBadExamples = []string{
-        `
+	`
  resource "google_bigquery_dataset" "bad_example" {
    dataset_id                  = "example_dataset"
    friendly_name               = "test"
@@ -58,7 +58,7 @@ var terraformNoPublicAccessBadExamples = []string{
 }
 
 var terraformNoPublicAccessLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/bigquery_dataset#special_group`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/bigquery_dataset#special_group`,
 }
 
 var terraformNoPublicAccessRemediationMarkdown = ``

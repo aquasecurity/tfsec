@@ -1,7 +1,7 @@
 package compute
 
 var terraformEnableVpcFlowLogsGoodExamples = []string{
-        `
+	`
 resource "google_compute_subnetwork" "good_example" {
   name          = "test-subnetwork"
   ip_cidr_range = "10.2.0.0/16"
@@ -25,7 +25,7 @@ resource "google_compute_network" "custom-test" {
 }
 
 var terraformEnableVpcFlowLogsBadExamples = []string{
-        `
+	`
 resource "google_compute_subnetwork" "bad_example" {
   name          = "test-subnetwork"
   ip_cidr_range = "10.2.0.0/16"
@@ -44,7 +44,7 @@ resource "google_compute_network" "custom-test" {
 }
 
 var terraformEnableVpcFlowLogsLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork#enable_flow_logs`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork#enable_flow_logs`,
 }
 
 var terraformEnableVpcFlowLogsRemediationMarkdown = ``

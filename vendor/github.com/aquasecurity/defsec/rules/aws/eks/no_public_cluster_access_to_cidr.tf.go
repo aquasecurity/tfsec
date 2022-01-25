@@ -1,7 +1,7 @@
 package eks
 
 var terraformNoPublicClusterAccessToCidrGoodExamples = []string{
-        `
+	`
  resource "aws_eks_cluster" "good_example" {
      // other config 
  
@@ -16,7 +16,7 @@ var terraformNoPublicClusterAccessToCidrGoodExamples = []string{
 }
 
 var terraformNoPublicClusterAccessToCidrBadExamples = []string{
-        `
+	`
  resource "aws_eks_cluster" "bad_example" {
      // other config 
  
@@ -30,7 +30,7 @@ var terraformNoPublicClusterAccessToCidrBadExamples = []string{
 }
 
 var terraformNoPublicClusterAccessToCidrLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#vpc_config`,
+	`https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster#vpc_config`,
 }
 
 var terraformNoPublicClusterAccessToCidrRemediationMarkdown = ``

@@ -27,15 +27,13 @@ func (c *Broker) GetRawValue() interface{} {
 	return nil
 }
 
-
 func (m *MQ) GetMetadata() *types.Metadata {
 	return &m.Metadata
 }
 
 func (m *MQ) GetRawValue() interface{} {
 	return nil
-}    
-
+}
 
 func (l *Logging) GetMetadata() *types.Metadata {
 	return &l.Metadata
@@ -43,4 +41,4 @@ func (l *Logging) GetMetadata() *types.Metadata {
 
 func (l *Logging) GetRawValue() interface{} {
 	return nil
-}    
+}

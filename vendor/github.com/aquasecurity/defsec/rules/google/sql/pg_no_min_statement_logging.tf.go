@@ -1,7 +1,7 @@
 package sql
 
 var terraformPgNoMinStatementLoggingGoodExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "POSTGRES_12"
@@ -17,7 +17,7 @@ var terraformPgNoMinStatementLoggingGoodExamples = []string{
 }
 
 var terraformPgNoMinStatementLoggingBadExamples = []string{
-        `
+	`
  resource "google_sql_database_instance" "db" {
  	name             = "db"
  	database_version = "POSTGRES_12"
@@ -33,7 +33,7 @@ var terraformPgNoMinStatementLoggingBadExamples = []string{
 }
 
 var terraformPgNoMinStatementLoggingLinks = []string{
-        `https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`,
+	`https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance`,
 }
 
 var terraformPgNoMinStatementLoggingRemediationMarkdown = ``

@@ -1,7 +1,7 @@
 package s3
 
 var cloudFormationIgnorePublicAclsGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Properties:
@@ -16,7 +16,7 @@ Resources:
 }
 
 var cloudFormationIgnorePublicAclsBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Properties:

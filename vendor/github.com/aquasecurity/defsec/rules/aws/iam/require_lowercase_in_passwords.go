@@ -20,13 +20,13 @@ var CheckRequireLowercaseInPasswords = rules.Register(
 		Links: []string{
 			"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#password-policy-details",
 		},
-		Terraform:   &rules.EngineMetadata{
-            GoodExamples:        terraformRequireLowercaseInPasswordsGoodExamples,
-            BadExamples:         terraformRequireLowercaseInPasswordsBadExamples,
-            Links:               terraformRequireLowercaseInPasswordsLinks,
-            RemediationMarkdown: terraformRequireLowercaseInPasswordsRemediationMarkdown,
-        },
-        Severity: severity.Medium,
+		Terraform: &rules.EngineMetadata{
+			GoodExamples:        terraformRequireLowercaseInPasswordsGoodExamples,
+			BadExamples:         terraformRequireLowercaseInPasswordsBadExamples,
+			Links:               terraformRequireLowercaseInPasswordsLinks,
+			RemediationMarkdown: terraformRequireLowercaseInPasswordsRemediationMarkdown,
+		},
+		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
 		policy := s.AWS.IAM.PasswordPolicy

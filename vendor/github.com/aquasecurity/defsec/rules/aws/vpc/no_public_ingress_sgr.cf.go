@@ -1,7 +1,7 @@
 package vpc
 
 var cloudFormationNoPublicIngressSgrGoodExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Good example of ingress rule
 Resources:
@@ -16,7 +16,7 @@ Resources:
 }
 
 var cloudFormationNoPublicIngressSgrBadExamples = []string{
-        `---
+	`---
 AWSTemplateFormatVersion: 2010-09-09
 Description: Bad example of ingress rule
 Resources:

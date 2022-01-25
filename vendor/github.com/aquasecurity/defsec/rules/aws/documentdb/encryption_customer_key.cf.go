@@ -1,7 +1,7 @@
 package documentdb
 
 var cloudFormationEncryptionCustomerKeyGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: "AWS::DocDB::DBCluster"
@@ -26,7 +26,7 @@ Resources:
 }
 
 var cloudFormationEncryptionCustomerKeyBadExamples = []string{
-        `---
+	`---
  Resources:
   BadExample:
     Type: "AWS::DocDB::DBCluster"

@@ -1,7 +1,7 @@
 package elasticsearch
 
 var cloudFormationEnableDomainEncryptionGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Type: AWS::Elasticsearch::Domain
@@ -27,7 +27,7 @@ Resources:
 }
 
 var cloudFormationEnableDomainEncryptionBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Type: AWS::Elasticsearch::Domain

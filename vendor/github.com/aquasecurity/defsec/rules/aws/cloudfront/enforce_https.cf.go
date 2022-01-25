@@ -1,7 +1,7 @@
 package cloudfront
 
 var cloudFormationEnforceHttpsGoodExamples = []string{
-        `---
+	`---
 Resources:
   GoodExample:
     Properties:
@@ -21,7 +21,7 @@ Resources:
 }
 
 var cloudFormationEnforceHttpsBadExamples = []string{
-        `---
+	`---
 Resources:
   BadExample:
     Properties:
