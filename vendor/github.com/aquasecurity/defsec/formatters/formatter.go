@@ -85,7 +85,14 @@ func (b *base) PrintMetrics() {
 	for _, category := range categories {
 		tml.Fprintf(b.Writer(), "  <bold>%s</bold>\n  %s\n", category.Name(), strings.Repeat("─", 42))
 		for _, metric := range category.Metrics() {
-			_ = tml.Fprintf(b.Writer(), "  <dim>%-20s</dim> %s\n", metric.Name(), metric.Value())
+			if metric.Name() != "total" {
+				_ = tml.Fprintf(b.Writer(), "  <dim>%-20s</dim> %s\n", metric.Name(), metric.Value())
+			}
+		}
+		for _, metric := range category.Metrics() {
+			if metric.Name() == "total" {
+				_ = tml.Fprintf(b.Writer(), "  <dim>%-20s</dim> %s\n", metric.Name(), metric.Value())
+			}
 		}
 		fmt.Fprintf(b.Writer(), "\n")
 	}
