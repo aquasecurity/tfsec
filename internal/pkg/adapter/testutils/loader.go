@@ -1,6 +1,7 @@
 package testutils
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -8,6 +9,8 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/pkg/block"
 	"github.com/aquasecurity/tfsec/internal/pkg/parser"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func CreateModulesFromSource(source string, ext string, t *testing.T) block.Modules {
@@ -28,4 +31,12 @@ func CreateModulesFromSource(source string, ext string, t *testing.T) block.Modu
 		t.Errorf("parse error: %s", err)
 	}
 	return modules
+}
+
+func AssertDefsecEqual(t *testing.T, expected interface{}, actual interface{}) {
+	expectedJson, err := json.MarshalIndent(expected, "", "\t")
+	require.NoError(t, err)
+	actualJson, err := json.MarshalIndent(actual, "", "\t")
+	require.NoError(t, err)
+	assert.Equal(t, expectedJson, actualJson, "defsec adapted and expected values do not match")
 }
