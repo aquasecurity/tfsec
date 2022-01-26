@@ -40,9 +40,9 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 		WithDebugEnabled(debug.Enabled).
 		WithColoursEnabled(!disableColours).
 		WithLinksFunc(func(result rules.Result) []string {
-			v := version.Version
-			if v == "" {
-				v = "latest"
+			v := "latest"
+			if version.Version != "" {
+				v = fmt.Sprintf("v%s", version.Version)
 			}
 			return append([]string{
 				fmt.Sprintf(
