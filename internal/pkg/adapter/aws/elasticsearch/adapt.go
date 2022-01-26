@@ -32,11 +32,9 @@ func adaptDomain(resource *block.Block) elasticsearch.Domain {
 	enforceHTTPSVal := types.BoolDefault(false, *resource.GetMetadata())
 	TLSPolicyVal := types.StringDefault("", *resource.GetMetadata())
 
-	if resource.HasChild("log_publishing_options") {
-		logOptionsBlock := resource.GetBlock("log_publishing_options")
+	for _, logOptionsBlock := range resource.GetBlocks("log_publishing_options") {
 		enabledAttr := logOptionsBlock.GetAttribute("enabled")
 		enabledVal := enabledAttr.AsBoolValueOrDefault(true, logOptionsBlock)
-
 		logTypeAttr := logOptionsBlock.GetAttribute("log_type")
 		if logTypeAttr.Equals("AUDIT_LOGS") {
 			auditEnabled = enabledVal
