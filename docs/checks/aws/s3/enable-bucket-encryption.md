@@ -2,6 +2,8 @@
 title: Unencrypted S3 bucket.
 ---
 
+# Unencrypted S3 bucket.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

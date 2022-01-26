@@ -2,6 +2,8 @@
 title: S3 buckets should each define an aws_s3_bucket_public_access_block
 ---
 
+# S3 buckets should each define an aws_s3_bucket_public_access_block
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

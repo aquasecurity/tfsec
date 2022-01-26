@@ -2,6 +2,8 @@
 title: BigQuery datasets should only be accessible within the organisation
 ---
 
+# BigQuery datasets should only be accessible within the organisation
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: AWS best practice to not use the default VPC for workflows
 ---
 
+# AWS best practice to not use the default VPC for workflows
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

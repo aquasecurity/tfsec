@@ -2,6 +2,8 @@
 title: Ensure AKS logging to Azure Monitoring is Configured
 ---
 
+# Ensure AKS logging to Azure Monitoring is Configured
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

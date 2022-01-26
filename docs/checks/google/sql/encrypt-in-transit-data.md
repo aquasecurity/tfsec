@@ -2,6 +2,8 @@
 title: SSL connections to a SQL database instance should be enforced.
 ---
 
+# SSL connections to a SQL database instance should be enforced.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: IAM policy should avoid use of wildcards and instead apply the principle of least privilege
 ---
 
+# IAM policy should avoid use of wildcards and instead apply the principle of least privilege
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

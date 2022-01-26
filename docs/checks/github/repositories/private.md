@@ -2,6 +2,8 @@
 title: Github repository shouldn't be public.
 ---
 
+# Github repository shouldn't be public.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

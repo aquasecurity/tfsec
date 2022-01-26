@@ -2,6 +2,8 @@
 title: Auditing should be enabled on Azure SQL Databases
 ---
 
+# Auditing should be enabled on Azure SQL Databases
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

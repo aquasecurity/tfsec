@@ -2,6 +2,8 @@
 title: Ensure the activity retention log is set to at least a year
 ---
 
+# Ensure the activity retention log is set to at least a year
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Use of plain HTTP.
 ---
 
+# Use of plain HTTP.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

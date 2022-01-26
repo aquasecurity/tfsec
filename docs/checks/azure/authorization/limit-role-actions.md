@@ -2,6 +2,8 @@
 title: Roles limited to the required actions
 ---
 
+# Roles limited to the required actions
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

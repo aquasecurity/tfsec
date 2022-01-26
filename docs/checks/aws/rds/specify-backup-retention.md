@@ -2,6 +2,8 @@
 title: RDS Cluster and RDS instance should have backup retention longer than default 1 day
 ---
 
+# RDS Cluster and RDS instance should have backup retention longer than default 1 day
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

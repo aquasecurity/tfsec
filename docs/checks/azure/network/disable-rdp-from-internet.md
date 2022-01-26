@@ -2,6 +2,8 @@
 title: RDP access should not be accessible from the Internet, should be blocked on port 3389
 ---
 
+# RDP access should not be accessible from the Internet, should be blocked on port 3389
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

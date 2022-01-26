@@ -2,6 +2,8 @@
 title: Unencrypted data lake storage.
 ---
 
+# Unencrypted data lake storage.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

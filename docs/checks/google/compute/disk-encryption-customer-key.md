@@ -2,6 +2,8 @@
 title: Disks should be encrypted with customer managed encryption keys
 ---
 
+# Disks should be encrypted with customer managed encryption keys
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

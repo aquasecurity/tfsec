@@ -2,6 +2,8 @@
 title: Storage containers in blob storage mode should not have public access
 ---
 
+# Storage containers in blob storage mode should not have public access
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

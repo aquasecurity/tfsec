@@ -2,6 +2,8 @@
 title: ECS clusters should have container insights enabled
 ---
 
+# ECS clusters should have container insights enabled
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

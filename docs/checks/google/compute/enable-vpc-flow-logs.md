@@ -2,6 +2,8 @@
 title: VPC flow logs should be enabled for all subnetworks
 ---
 
+# VPC flow logs should be enabled for all subnetworks
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

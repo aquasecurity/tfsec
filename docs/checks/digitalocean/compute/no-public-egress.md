@@ -2,6 +2,8 @@
 title: The firewall has an outbound rule with open access
 ---
 
+# The firewall has an outbound rule with open access
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

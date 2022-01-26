@@ -403,6 +403,9 @@ plugins:
 - search
 - macros
 - include-markdown
+- exclude-search:
+    exclude:
+      - checks/*/home.md
 
 extra:
   generator: false

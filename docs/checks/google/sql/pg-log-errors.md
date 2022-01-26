@@ -2,6 +2,8 @@
 title: Ensure that Postgres errors are logged
 ---
 
+# Ensure that Postgres errors are logged
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

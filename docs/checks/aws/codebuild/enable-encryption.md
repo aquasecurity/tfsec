@@ -2,6 +2,8 @@
 title: CodeBuild Project artifacts encryption should not be disabled
 ---
 
+# CodeBuild Project artifacts encryption should not be disabled
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

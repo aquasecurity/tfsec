@@ -2,6 +2,8 @@
 title: Ensure AKS cluster has Network Policy configured
 ---
 
+# Ensure AKS cluster has Network Policy configured
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

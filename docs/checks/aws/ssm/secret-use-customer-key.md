@@ -2,6 +2,8 @@
 title: Secrets Manager should use customer managed keys
 ---
 
+# Secrets Manager should use customer managed keys
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

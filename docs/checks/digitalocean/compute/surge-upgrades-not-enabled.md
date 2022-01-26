@@ -2,6 +2,8 @@
 title: The Kubernetes cluster does not enable surge upgrades
 ---
 
+# The Kubernetes cluster does not enable surge upgrades
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

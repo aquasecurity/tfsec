@@ -2,6 +2,8 @@
 title: Encryption for RDS Performance Insights should be enabled.
 ---
 
+# Encryption for RDS Performance Insights should be enabled.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

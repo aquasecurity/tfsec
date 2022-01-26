@@ -2,6 +2,8 @@
 title: SSL policies should enforce secure versions of TLS
 ---
 
+# SSL policies should enforce secure versions of TLS
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

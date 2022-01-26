@@ -2,6 +2,8 @@
 title: At least one email address is set for threat alerts
 ---
 
+# At least one email address is set for threat alerts
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

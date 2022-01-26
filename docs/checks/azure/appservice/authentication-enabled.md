@@ -2,6 +2,8 @@
 title: App Service authentication is activated
 ---
 
+# App Service authentication is activated
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Trusted Microsoft Services should have bypass access to Storage accounts
 ---
 
+# Trusted Microsoft Services should have bypass access to Storage accounts
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

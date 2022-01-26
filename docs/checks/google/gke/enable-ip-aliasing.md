@@ -2,6 +2,8 @@
 title: Clusters should have IP aliasing enabled
 ---
 
+# Clusters should have IP aliasing enabled
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: S3 Access block should restrict public bucket to limit access
 ---
 
+# S3 Access block should restrict public bucket to limit access
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

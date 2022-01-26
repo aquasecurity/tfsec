@@ -2,6 +2,8 @@
 title: Ensure that Cloud Storage buckets have uniform bucket-level access enabled
 ---
 
+# Ensure that Cloud Storage buckets have uniform bucket-level access enabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

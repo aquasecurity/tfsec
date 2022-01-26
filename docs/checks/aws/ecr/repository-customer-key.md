@@ -2,6 +2,8 @@
 title: ECR Repository should use customer managed keys to allow more control
 ---
 
+# ECR Repository should use customer managed keys to allow more control
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

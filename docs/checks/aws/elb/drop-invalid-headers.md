@@ -2,6 +2,8 @@
 title: Load balancers should drop invalid headers
 ---
 
+# Load balancers should drop invalid headers
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

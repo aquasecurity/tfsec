@@ -2,6 +2,8 @@
 title: SSL should be enforced on database connections where applicable
 ---
 
+# SSL should be enforced on database connections where applicable
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

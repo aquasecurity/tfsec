@@ -2,6 +2,8 @@
 title: KMS keys should be rotated at least every 90 days
 ---
 
+# KMS keys should be rotated at least every 90 days
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

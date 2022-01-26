@@ -2,6 +2,8 @@
 title: Ensure the Function App can only be accessed via HTTPS. The default is false.
 ---
 
+# Ensure the Function App can only be accessed via HTTPS. The default is false.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

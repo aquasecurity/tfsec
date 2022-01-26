@@ -2,6 +2,8 @@
 title: Ensure RBAC is enabled on AKS clusters
 ---
 
+# Ensure RBAC is enabled on AKS clusters
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

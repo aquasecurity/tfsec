@@ -2,6 +2,8 @@
 title: CloudFront distribution allows unencrypted (HTTP) communications.
 ---
 
+# CloudFront distribution allows unencrypted (HTTP) communications.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

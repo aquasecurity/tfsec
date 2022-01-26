@@ -2,6 +2,8 @@
 title: Web App uses latest TLS version
 ---
 
+# Web App uses latest TLS version
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

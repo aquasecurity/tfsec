@@ -2,6 +2,8 @@
 title: EKS Clusters should have the public access disabled
 ---
 
+# EKS Clusters should have the public access disabled
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

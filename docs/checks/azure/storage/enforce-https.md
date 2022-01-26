@@ -2,6 +2,8 @@
 title: Storage accounts should be configured to only accept transfers that are over secure connections
 ---
 
+# Storage accounts should be configured to only accept transfers that are over secure connections
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

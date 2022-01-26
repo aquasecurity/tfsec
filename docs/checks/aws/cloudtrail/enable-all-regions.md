@@ -2,6 +2,8 @@
 title: Cloudtrail should be enabled in all regions regardless of where your AWS resources are generally homed
 ---
 
+# Cloudtrail should be enabled in all regions regardless of where your AWS resources are generally homed
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

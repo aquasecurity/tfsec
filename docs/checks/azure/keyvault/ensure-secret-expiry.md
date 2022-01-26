@@ -2,6 +2,8 @@
 title: Key Vault Secret should have an expiration date set
 ---
 
+# Key Vault Secret should have an expiration date set
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

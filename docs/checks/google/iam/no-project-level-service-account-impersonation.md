@@ -2,6 +2,8 @@
 title: Users should not be granted service account access at the project level
 ---
 
+# Users should not be granted service account access at the project level
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

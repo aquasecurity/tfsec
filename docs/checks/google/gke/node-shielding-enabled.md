@@ -2,6 +2,8 @@
 title: Shielded GKE nodes not enabled.
 ---
 
+# Shielded GKE nodes not enabled.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

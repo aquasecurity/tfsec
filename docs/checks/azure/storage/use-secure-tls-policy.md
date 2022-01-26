@@ -2,6 +2,8 @@
 title: The minimum TLS version for Storage Accounts should be TLS1_2
 ---
 
+# The minimum TLS version for Storage Accounts should be TLS1_2
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

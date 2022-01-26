@@ -2,6 +2,8 @@
 title: API Gateway must have cache enabled
 ---
 
+# API Gateway must have cache enabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

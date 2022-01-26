@@ -2,6 +2,8 @@
 title: Missing description for security group.
 ---
 
+# Missing description for security group.
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

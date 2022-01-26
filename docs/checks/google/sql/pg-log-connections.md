@@ -2,6 +2,8 @@
 title: Ensure that logging of connections is enabled.
 ---
 
+# Ensure that logging of connections is enabled.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

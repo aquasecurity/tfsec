@@ -2,6 +2,8 @@
 title: No unauthorized access to API Gateway methods
 ---
 
+# No unauthorized access to API Gateway methods
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

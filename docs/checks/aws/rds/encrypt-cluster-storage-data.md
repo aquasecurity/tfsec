@@ -2,6 +2,8 @@
 title: There is no encryption specified or encryption is disabled on the RDS Cluster.
 ---
 
+# There is no encryption specified or encryption is disabled on the RDS Cluster.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Kubernetes should have 'Automatic repair' enabled
 ---
 
+# Kubernetes should have 'Automatic repair' enabled
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

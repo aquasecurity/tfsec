@@ -2,6 +2,8 @@
 title: Node metadata value disables metadata concealment.
 ---
 
+# Node metadata value disables metadata concealment.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

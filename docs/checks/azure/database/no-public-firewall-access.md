@@ -2,6 +2,8 @@
 title: Ensure database firewalls do not permit public access
 ---
 
+# Ensure database firewalls do not permit public access
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

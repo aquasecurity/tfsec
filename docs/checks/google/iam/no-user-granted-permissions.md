@@ -2,6 +2,8 @@
 title: IAM granted directly to user.
 ---
 
+# IAM granted directly to user.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

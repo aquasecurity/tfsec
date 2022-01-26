@@ -2,6 +2,8 @@
 title: Ensure that lambda function permission has a source arn specified
 ---
 
+# Ensure that lambda function permission has a source arn specified
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: A database resource is marked as publicly accessible.
 ---
 
+# A database resource is marked as publicly accessible.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

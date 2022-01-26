@@ -2,6 +2,8 @@
 title: Athena databases and workgroup configurations are created unencrypted at rest by default, they should be encrypted
 ---
 
+# Athena databases and workgroup configurations are created unencrypted at rest by default, they should be encrypted
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

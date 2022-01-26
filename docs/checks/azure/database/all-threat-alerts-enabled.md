@@ -2,6 +2,8 @@
 title: No threat detections are set
 ---
 
+# No threat detections are set
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

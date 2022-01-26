@@ -2,6 +2,8 @@
 title: Ensure MSK Cluster logging is enabled
 ---
 
+# Ensure MSK Cluster logging is enabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

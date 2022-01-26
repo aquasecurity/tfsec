@@ -2,6 +2,8 @@
 title: Stackdriver Logging should be enabled
 ---
 
+# Stackdriver Logging should be enabled
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

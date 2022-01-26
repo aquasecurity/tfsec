@@ -2,6 +2,8 @@
 title: EBS volume encryption should use Customer Managed Keys
 ---
 
+# EBS volume encryption should use Customer Managed Keys
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

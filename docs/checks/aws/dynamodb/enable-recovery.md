@@ -2,6 +2,8 @@
 title: Point in time recovery should be enabled to protect DynamoDB table
 ---
 
+# Point in time recovery should be enabled to protect DynamoDB table
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

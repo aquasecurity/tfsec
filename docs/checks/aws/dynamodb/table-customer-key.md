@@ -2,6 +2,8 @@
 title: DynamoDB tables should use at rest encryption with a Customer Managed Key
 ---
 
+# DynamoDB tables should use at rest encryption with a Customer Managed Key
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Clusters should be configured with Labels
 ---
 
+# Clusters should be configured with Labels
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

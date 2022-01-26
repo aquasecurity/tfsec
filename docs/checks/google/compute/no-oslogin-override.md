@@ -2,6 +2,8 @@
 title: Instances should not override the project setting for OS Login
 ---
 
+# Instances should not override the project setting for OS Login
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

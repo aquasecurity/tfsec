@@ -2,6 +2,8 @@
 title: A MSK cluster allows unencrypted data in transit.
 ---
 
+# A MSK cluster allows unencrypted data in transit.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

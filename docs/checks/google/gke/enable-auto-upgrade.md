@@ -2,6 +2,8 @@
 title: Kubernetes should have 'Automatic upgrade' enabled
 ---
 
+# Kubernetes should have 'Automatic upgrade' enabled
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

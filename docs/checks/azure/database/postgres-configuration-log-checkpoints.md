@@ -2,6 +2,8 @@
 title: Ensure server parameter 'log_checkpoints' is set to 'ON' for PostgreSQL Database Server
 ---
 
+# Ensure server parameter 'log_checkpoints' is set to 'ON' for PostgreSQL Database Server
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

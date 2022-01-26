@@ -2,6 +2,8 @@
 title: An inbound network security rule allows traffic from /0.
 ---
 
+# An inbound network security rule allows traffic from /0.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

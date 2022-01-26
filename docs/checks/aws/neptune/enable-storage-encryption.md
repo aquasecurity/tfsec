@@ -2,6 +2,8 @@
 title: Neptune storage must be encrypted at rest
 ---
 
+# Neptune storage must be encrypted at rest
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

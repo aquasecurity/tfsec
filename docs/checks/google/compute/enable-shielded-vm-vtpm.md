@@ -2,6 +2,8 @@
 title: Instances should have Shielded VM VTPM enabled
 ---
 
+# Instances should have Shielded VM VTPM enabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

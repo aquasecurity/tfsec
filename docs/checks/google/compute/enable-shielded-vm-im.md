@@ -2,6 +2,8 @@
 title: Instances should have Shielded VM integrity monitoring enabled
 ---
 
+# Instances should have Shielded VM integrity monitoring enabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: EKS cluster should not have open CIDR range for public access
 ---
 
+# EKS cluster should not have open CIDR range for public access
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

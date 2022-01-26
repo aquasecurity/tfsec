@@ -2,6 +2,8 @@
 title: The default action on Storage account network rules should be set to deny
 ---
 
+# The default action on Storage account network rules should be set to deny
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

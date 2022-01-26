@@ -2,6 +2,8 @@
 title: VM disks should be encrypted with Customer Supplied Encryption Keys
 ---
 
+# VM disks should be encrypted with Customer Supplied Encryption Keys
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: An ingress Network ACL rule allows specific ports from /0.
 ---
 
+# An ingress Network ACL rule allows specific ports from /0.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Pod security policy enforcement not defined.
 ---
 
+# Pod security policy enforcement not defined.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

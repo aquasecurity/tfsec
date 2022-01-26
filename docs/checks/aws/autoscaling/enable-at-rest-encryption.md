@@ -2,6 +2,8 @@
 title: Launch configuration with unencrypted block device.
 ---
 
+# Launch configuration with unencrypted block device.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation
