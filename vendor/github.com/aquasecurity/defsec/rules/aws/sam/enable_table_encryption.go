@@ -33,7 +33,6 @@ var CheckEnableTableEncryption = rules.Register(
 			if table.SSESpecification.Enabled.IsFalse() {
 				results.Add(
 					"Domain name is configured with an outdated TLS policy.",
-					&table,
 					table.SSESpecification.Enabled,
 				)
 			} else {

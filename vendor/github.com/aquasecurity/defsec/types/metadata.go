@@ -12,6 +12,7 @@ type Metadata struct {
 	isDefault      bool
 	isExplicit     bool
 	isUnresolvable bool
+	parent         *Metadata
 }
 
 func NewMetadata(r Range, ref Reference) Metadata {
@@ -26,6 +27,19 @@ func NewMetadata(r Range, ref Reference) Metadata {
 		ref:       ref,
 		isManaged: true,
 	}
+}
+
+func (m *Metadata) WithParent(p Metadata) Metadata {
+	m.parent = &p
+	return *m
+}
+
+func (m *Metadata) Parent() *Metadata {
+	return m.parent
+}
+
+func (m *Metadata) IsMultiLine() bool {
+	return m.rnge.GetStartLine() < m.rnge.GetEndLine()
 }
 
 func NewUnmanagedMetadata() Metadata {

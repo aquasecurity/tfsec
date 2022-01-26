@@ -1,31 +1,32 @@
 package block
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/aquasecurity/defsec/types"
 )
 
 type Ignore struct {
-	ModuleKey string //  whether the ignore applies to the whole module
-	Range     HCLRange
+	Range     types.Range
 	RuleID    string
 	Expiry    *time.Time
 	Workspace string
+	Block     bool
 }
 
 type Ignores []Ignore
 
-func (ignores Ignores) Covering(r types.Range, workspace string, ids ...string) *Ignore {
+func (ignores Ignores) Covering(m *types.Metadata, workspace string, ids ...string) *Ignore {
 	for _, ignore := range ignores {
-		if ignore.Covering(r, workspace, ids...) {
+		if ignore.Covering(m, workspace, ids...) {
 			return &ignore
 		}
 	}
 	return nil
 }
 
-func (ignore Ignore) Covering(r types.Range, workspace string, ids ...string) bool {
+func (ignore Ignore) Covering(m *types.Metadata, workspace string, ids ...string) bool {
 	if ignore.Expiry != nil && time.Now().After(*ignore.Expiry) {
 		return false
 	}
@@ -42,18 +43,18 @@ func (ignore Ignore) Covering(r types.Range, workspace string, ids ...string) bo
 	if !idMatch {
 		return false
 	}
-	rng, ok := r.(HCLRange)
-	if !ok {
-		return false
-	}
-	if ignore.ModuleKey != "" && ignore.ModuleKey == rng.GetModule() {
-		return true
-	}
-	if ignore.Range.GetFilename() != r.GetFilename() {
-		return false
-	}
-	if r.GetStartLine() == ignore.Range.GetStartLine()+1 || r.GetStartLine() == ignore.Range.GetStartLine() {
-		return true
+
+	for m != nil {
+		fmt.Printf("Actual: %s\nIgnore: %s\n", m, ignore.Range)
+
+		if ignore.Range.GetFilename() != m.Range().GetFilename() {
+			m = m.Parent()
+			continue
+		}
+		if m.Range().GetStartLine() == ignore.Range.GetStartLine()+1 || m.Range().GetStartLine() == ignore.Range.GetStartLine() {
+			return true
+		}
+		m = m.Parent()
 	}
 	return false
 

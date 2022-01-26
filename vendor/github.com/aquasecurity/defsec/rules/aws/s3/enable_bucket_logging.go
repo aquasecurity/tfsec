@@ -39,7 +39,6 @@ var CheckLoggingIsEnabled = rules.Register(
 			if !bucket.Logging.Enabled.IsTrue() && bucket.ACL.NotEqualTo("log-delivery-write") {
 				results.Add(
 					"Bucket does not have logging enabled",
-					&bucket,
 					bucket.Logging.Enabled,
 				)
 			} else {

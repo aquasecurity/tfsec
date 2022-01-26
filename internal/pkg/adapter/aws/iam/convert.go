@@ -187,12 +187,12 @@ func readPrincipal(blocks block.Blocks) *iamgo.Principals {
 func findAllPolicies(modules block.Modules, parentBlock *block.Block, attr *block.Attribute) []wrappedDocument {
 	var documents []wrappedDocument
 	for _, ref := range attr.AllReferences() {
-		for _, block := range modules.GetBlocks() {
-			if block.Type() != "data" || block.TypeLabel() != "aws_iam_policy_document" {
+		for _, b := range modules.GetBlocks() {
+			if b.Type() != "data" || b.TypeLabel() != "aws_iam_policy_document" {
 				continue
 			}
-			if ref.RefersTo(block.Reference()) {
-				document, err := ConvertTerraformDocument(modules, block)
+			if ref.RefersTo(b.GetMetadata().Reference()) {
+				document, err := ConvertTerraformDocument(modules, b)
 				if err != nil {
 					continue
 				}
@@ -200,9 +200,9 @@ func findAllPolicies(modules block.Modules, parentBlock *block.Block, attr *bloc
 				continue
 			}
 			kref := *ref
-			kref.SetKey(parentBlock.Reference().RawKey())
-			if kref.RefersTo(block.Reference()) {
-				document, err := ConvertTerraformDocument(modules, block)
+			kref.SetKey(parentBlock.GetMetadata().Reference().(*block.Reference).RawKey())
+			if kref.RefersTo(b.GetMetadata().Reference()) {
+				document, err := ConvertTerraformDocument(modules, b)
 				if err != nil {
 					continue
 				}

@@ -37,7 +37,6 @@ var CheckEnableApiAccessLogging = rules.Register(
 			if api.AccessLogging.CloudwatchLogGroupARN.IsEmpty() {
 				results.Add(
 					"Access logging is not configured.",
-					&api,
 					api.AccessLogging.CloudwatchLogGroupARN,
 				)
 			} else {

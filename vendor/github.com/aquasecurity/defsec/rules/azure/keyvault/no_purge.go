@@ -43,7 +43,7 @@ Purge protection can only be enabled once soft-delete is enabled. It can be turn
 			} else if vault.EnablePurgeProtection.IsTrue() && (vault.SoftDeleteRetentionDays.LessThan(7) || vault.SoftDeleteRetentionDays.GreaterThan(90)) {
 				results.Add(
 					"Resource should have soft_delete_retention_days set between 7 and 90 days in order to enable purge protection.",
-					vault.EnablePurgeProtection, vault.SoftDeleteRetentionDays,
+					vault.SoftDeleteRetentionDays,
 				)
 			} else {
 				results.AddPassed(&vault)

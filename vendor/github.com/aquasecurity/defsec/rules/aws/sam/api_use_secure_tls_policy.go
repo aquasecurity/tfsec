@@ -33,7 +33,6 @@ var CheckApiUseSecureTlsPolicy = rules.Register(
 			if api.DomainConfiguration.SecurityPolicy.NotEqualTo("TLS_1_2") {
 				results.Add(
 					"Domain name is configured with an outdated TLS policy.",
-					&api,
 					api.DomainConfiguration.SecurityPolicy,
 				)
 			} else {

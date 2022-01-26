@@ -107,7 +107,7 @@ func (e *Evaluator) evaluateModules() {
 	for _, module := range e.moduleDefinitions {
 		if visited := func(module *ModuleDefinition) bool {
 			for _, v := range e.visitedModules {
-				if v.name == module.Name && v.path == module.Path && module.Definition.Reference().String() == v.definitionReference {
+				if v.name == module.Name && v.path == module.Path && module.Definition.GetMetadata().Reference().String() == v.definitionReference {
 					debug.Log("Module [%s:%s:%s] has already been seen", v.name, v.path, v.definitionReference)
 					return true
 				}
@@ -117,16 +117,16 @@ func (e *Evaluator) evaluateModules() {
 			continue
 		}
 
-		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path, module.Definition.Reference().String()})
+		e.visitedModules = append(e.visitedModules, &visitedModule{module.Name, module.Path, module.Definition.GetMetadata().Reference().String()})
 
 		evalTimer := metrics.Timer("timings", "evaluation")
 		evalTimer.Start()
 		vars := module.Definition.Values().AsValueMap()
 
 		moduleIgnores := module.Modules[0].Ignores()
-		if ignore := e.ignores.Covering(module.Definition.Range(), e.workspace); ignore != nil {
+		metadata := module.Definition.Metadata()
+		if ignore := e.ignores.Covering(&metadata, e.workspace); ignore != nil {
 			moduleIgnore := *ignore
-			moduleIgnore.ModuleKey = module.Definition.FullName()
 			moduleIgnores = append(moduleIgnores, moduleIgnore)
 		}
 
@@ -266,16 +266,16 @@ func (e *Evaluator) expandBlockForEaches(blocks block.Blocks) block.Blocks {
 				ctx.Set(key, block.TypeLabel(), "key")
 				ctx.Set(val, block.TypeLabel(), "value")
 
-				debug.Log("Added %s from for_each", clone.Reference())
+				debug.Log("Added %s from for_each", clone.GetMetadata().Reference())
 				forEachFiltered = append(forEachFiltered, clone)
 
 				clones = append(clones, clone.Values())
-				e.ctx.SetByDot(clone.Values(), clone.Reference().String())
+				e.ctx.SetByDot(clone.Values(), clone.GetMetadata().Reference().String())
 			})
 			if len(clones) == 0 {
-				e.ctx.SetByDot(cty.EmptyTupleVal, block.Reference().String())
+				e.ctx.SetByDot(cty.EmptyTupleVal, block.GetMetadata().Reference().String())
 			} else {
-				e.ctx.SetByDot(cty.TupleVal(clones), block.Reference().String())
+				e.ctx.SetByDot(cty.TupleVal(clones), block.GetMetadata().Reference().String())
 			}
 		}
 	}
@@ -305,14 +305,14 @@ func (e *Evaluator) expandBlockCounts(blocks block.Blocks) block.Blocks {
 			clone := block.Clone(c)
 			clones = append(clones, clone.Values())
 			block.TypeLabel()
-			debug.Log("Added %s from count var", clone.Reference())
+			debug.Log("Added %s from count var", clone.GetMetadata().Reference())
 			countFiltered = append(countFiltered, clone)
-			e.ctx.SetByDot(clone.Values(), clone.Reference().String())
+			e.ctx.SetByDot(clone.Values(), clone.GetMetadata().Reference().String())
 		}
 		if len(clones) == 0 {
-			e.ctx.SetByDot(cty.EmptyTupleVal, block.Reference().String())
+			e.ctx.SetByDot(cty.EmptyTupleVal, block.GetMetadata().Reference().String())
 		} else {
-			e.ctx.SetByDot(cty.TupleVal(clones), block.Reference().String())
+			e.ctx.SetByDot(cty.TupleVal(clones), block.GetMetadata().Reference().String())
 		}
 
 	}

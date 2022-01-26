@@ -43,7 +43,6 @@ With versioning you can recover more easily from both unintended user actions an
 			if !bucket.Versioning.Enabled.IsTrue() {
 				results.Add(
 					"Bucket does not have versioning enabled",
-					&bucket,
 					bucket.Versioning.Enabled,
 				)
 			} else {

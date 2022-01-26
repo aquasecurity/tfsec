@@ -40,13 +40,11 @@ var CheckRepositoryCustomerKey = rules.Register(
 			if repo.Encryption.Type.NotEqualTo(ecr.EncryptionTypeKMS) {
 				results.Add(
 					"Repository is not encrypted using KMS.",
-					&repo,
 					repo.Encryption.Type,
 				)
 			} else if repo.Encryption.KMSKeyID.IsEmpty() {
 				results.Add(
 					"Repository encryption does not use a customer managed KMS key.",
-					&repo,
 					repo.Encryption.KMSKeyID,
 				)
 			} else {

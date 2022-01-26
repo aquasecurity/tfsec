@@ -23,11 +23,47 @@ type Block struct {
 	cloneIndex  int
 	childBlocks []*Block
 	attributes  []*Attribute
+	metadata    types.Metadata
 }
 
 func New(hclBlock *hcl.Block, ctx *Context, moduleBlock *Block) *Block {
 	if ctx == nil {
 		ctx = NewContext(&hcl.EvalContext{}, nil)
+	}
+
+	var r hcl.Range
+	switch body := hclBlock.Body.(type) {
+	case *hclsyntax.Body:
+		r = body.SrcRange
+	default:
+		r = hclBlock.DefRange
+		r.End = hclBlock.Body.MissingItemRange().End
+	}
+	moduleName := "root"
+	if moduleBlock != nil {
+		moduleName = moduleBlock.FullName()
+	}
+	rng := types.NewRange(
+		r.Filename,
+		r.Start.Line,
+		r.End.Line,
+	)
+
+	var parts []string
+	if hclBlock.Type != "resource" {
+		parts = append(parts, hclBlock.Type)
+	}
+	parts = append(parts, hclBlock.Labels...)
+	var parent string
+	if moduleBlock != nil {
+		parent = moduleBlock.FullName()
+	}
+	ref, _ := newReference(parts, parent)
+
+	metadata := types.NewMetadata(rng, ref)
+
+	if moduleBlock != nil {
+		metadata = metadata.WithParent(moduleBlock.Metadata())
 	}
 
 	var children Blocks
@@ -51,11 +87,11 @@ func New(hclBlock *hcl.Block, ctx *Context, moduleBlock *Block) *Block {
 		hclBlock:    hclBlock,
 		moduleBlock: moduleBlock,
 		childBlocks: children,
+		metadata:    metadata,
 	}
 
-	module := b.Range().module
 	for _, attr := range b.createAttributes() {
-		b.attributes = append(b.attributes, NewHCLAttribute(attr, ctx, module, b.Reference()))
+		b.attributes = append(b.attributes, NewAttribute(attr, ctx, moduleName, metadata, ref))
 	}
 
 	return &b
@@ -66,7 +102,7 @@ func (b *Block) ID() string {
 }
 
 func (b *Block) Metadata() types.Metadata {
-	return types.NewMetadata(b.Range(), b.Reference())
+	return b.metadata
 }
 
 func (b *Block) GetMetadata() *types.Metadata {
@@ -82,7 +118,7 @@ func (b *Block) InjectBlock(block *Block, name string) {
 	block.hclBlock.Labels = []string{}
 	block.hclBlock.Type = name
 	for attrName, attr := range block.Attributes() {
-		b.context.Root().SetByDot(attr.Value(), fmt.Sprintf("%s.%s.%s", b.Reference().String(), name, attrName))
+		b.context.Root().SetByDot(attr.Value(), fmt.Sprintf("%s.%s.%s", b.metadata.Reference().String(), name, attrName))
 	}
 	b.childBlocks = append(b.childBlocks, block)
 }
@@ -155,30 +191,6 @@ func (b *Block) Type() string {
 
 func (b *Block) Labels() []string {
 	return b.hclBlock.Labels
-}
-
-func (b *Block) Range() HCLRange {
-	if b == nil || b.hclBlock == nil {
-		return HCLRange{}
-	}
-	var r hcl.Range
-	switch body := b.hclBlock.Body.(type) {
-	case *hclsyntax.Body:
-		r = body.SrcRange
-	default:
-		r = b.hclBlock.DefRange
-		r.End = b.hclBlock.Body.MissingItemRange().End
-	}
-	moduleName := "root"
-	if b.moduleBlock != nil {
-		moduleName = b.moduleBlock.FullName()
-	}
-	return NewRange(
-		r.Filename,
-		r.Start.Line,
-		r.End.Line,
-		moduleName,
-	)
 }
 
 func (b *Block) GetFirstMatchingBlock(names ...string) *Block {
@@ -287,24 +299,9 @@ func (b *Block) GetNestedAttribute(name string) *Attribute {
 	return nil
 }
 
-func (b *Block) Reference() *Reference {
-
-	var parts []string
-	if b.Type() != "resource" {
-		parts = append(parts, b.Type())
-	}
-	parts = append(parts, b.Labels()...)
-	var parent string
-	if b.moduleBlock != nil {
-		parent = b.moduleBlock.FullName()
-	}
-	ref, _ := newReference(parts, parent)
-	return ref
-}
-
 // LocalName is the name relative to the current module
 func (b *Block) LocalName() string {
-	return b.Reference().String()
+	return b.metadata.Reference().String()
 }
 
 func (b *Block) FullName() string {
@@ -322,9 +319,9 @@ func (b *Block) FullName() string {
 
 func (b *Block) UniqueName() string {
 	if b.moduleBlock != nil {
-		return fmt.Sprintf("%s:%s:%s", b.FullName(), b.Range().GetFilename(), b.moduleBlock.UniqueName())
+		return fmt.Sprintf("%s:%s:%s", b.FullName(), b.metadata.Range().GetFilename(), b.moduleBlock.UniqueName())
 	}
-	return fmt.Sprintf("%s:%s", b.FullName(), b.Range().GetFilename())
+	return fmt.Sprintf("%s:%s", b.FullName(), b.metadata.Range().GetFilename())
 }
 
 func (b *Block) TypeLabel() string {

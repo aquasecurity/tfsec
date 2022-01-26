@@ -40,14 +40,6 @@ func (r *Rule) CheckAgainstBlock(b *block.Block, m *block.Module) rules.Results 
 		base := r.Base.Rule()
 		results.SetRule(base)
 	}
-	for i, result := range results {
-		if result.IssueBlockMetadata() == nil && *(result.CodeBlockMetadata()) != b.Metadata() {
-			result.OverrideIssueBlockMetadata(result.CodeBlockMetadata())
-			meta := b.Metadata()
-			result.OverrideCodeBlockMetadata(&meta)
-			results[i] = result
-		}
-	}
 	return results
 }
 
@@ -108,9 +100,9 @@ func (r *Rule) checkRequiredSourcesMatch(b *block.Block) bool {
 		// resolve module source path to path relative to cwd
 		if strings.HasPrefix(sourcePath, ".") {
 			var err error
-			sourcePath, err = cleanPathRelativeToWorkingDir(filepath.Dir(b.Range().GetFilename()), sourcePath)
+			sourcePath, err = cleanPathRelativeToWorkingDir(filepath.Dir(b.GetMetadata().Range().GetFilename()), sourcePath)
 			if err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "WARNING: did not clean path for module %s due to error(s): %s\n", fmt.Sprintf("%s:%s", b.FullName(), b.Range().GetFilename()), err)
+				_, _ = fmt.Fprintf(os.Stderr, "WARNING: did not clean path for module %s due to error(s): %s\n", fmt.Sprintf("%s:%s", b.FullName(), b.GetMetadata().Range().GetFilename()), err)
 			}
 		}
 

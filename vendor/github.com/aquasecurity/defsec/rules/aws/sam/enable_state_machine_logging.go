@@ -31,7 +31,6 @@ var CheckEnableStateMachineLogging = rules.Register(
 			if stateMachine.LoggingConfiguration.LoggingEnabled.IsFalse() {
 				results.Add(
 					"Logging is not enabled,",
-					&stateMachine,
 					stateMachine.LoggingConfiguration.LoggingEnabled,
 				)
 			} else {

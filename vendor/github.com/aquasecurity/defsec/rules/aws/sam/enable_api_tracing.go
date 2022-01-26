@@ -37,7 +37,6 @@ var CheckEnableApiTracing = rules.Register(
 			if api.TracingEnabled.IsFalse() {
 				results.Add(
 					"X-Ray tracing is not enabled,",
-					&api,
 					api.TracingEnabled,
 				)
 			} else {

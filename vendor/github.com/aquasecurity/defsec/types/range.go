@@ -7,6 +7,7 @@ type Range interface {
 	GetStartLine() int
 	GetEndLine() int
 	String() string
+	IsMultiLine() bool
 }
 
 func NewRange(filename string, startLine int, endLine int) baseRange {
@@ -33,6 +34,10 @@ func (r baseRange) GetStartLine() int {
 
 func (r baseRange) GetEndLine() int {
 	return r.endLine
+}
+
+func (r baseRange) IsMultiLine() bool {
+	return r.startLine < r.endLine
 }
 
 func (r baseRange) String() string {

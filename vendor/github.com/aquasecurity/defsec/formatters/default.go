@@ -77,15 +77,13 @@ func printResult(b configurableFormatter, res rules.Result, i int) {
 		res.Description(),
 	)
 
-	rng := res.CodeBlockMetadata().Range()
-	if res.IssueBlockMetadata() != nil {
-		rng = res.IssueBlockMetadata().Range()
+	innerRange := res.Metadata().Range()
+	lineInfo := fmt.Sprintf("Lines %d-%d", innerRange.GetStartLine(), innerRange.GetEndLine())
+	if !innerRange.IsMultiLine() {
+		lineInfo = fmt.Sprintf("Line %d", innerRange.GetStartLine())
 	}
-	lineInfo := fmt.Sprintf("Line %d", rng.GetStartLine())
-	if rng.GetStartLine() < rng.GetEndLine() {
-		lineInfo = fmt.Sprintf("Lines %d-%d", rng.GetStartLine(), rng.GetEndLine())
-	}
-	filename := rng.GetFilename()
+
+	filename := innerRange.GetFilename()
 	if relative, err := filepath.Rel(b.BaseDir(), filename); err == nil {
 		filename = relative
 	}
@@ -167,13 +165,15 @@ func printCodeLine(w io.Writer, i int, code string) {
 
 func highlightCode(b configurableFormatter, result rules.Result) error {
 
-	outerRange := result.CodeBlockMetadata().Range()
-	innerRange := outerRange
-	if result.IssueBlockMetadata() != nil {
-		innerRange = result.IssueBlockMetadata().Range()
+	innerRange := result.Range()
+	outerRange := innerRange
+	if !innerRange.IsMultiLine() {
+		if parent := result.Metadata().Parent(); parent != nil {
+			outerRange = parent.Range()
+		}
 	}
 
-	content, err := ioutil.ReadFile(outerRange.GetFilename())
+	content, err := ioutil.ReadFile(innerRange.GetFilename())
 	if err != nil {
 		return err
 	}

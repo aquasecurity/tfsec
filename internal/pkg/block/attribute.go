@@ -17,26 +17,31 @@ type Attribute struct {
 	hclAttribute *hcl.Attribute
 	module       string
 	ctx          *Context
-	ref          *Reference
+	metadata     types.Metadata
 }
 
-func NewHCLAttribute(attr *hcl.Attribute, ctx *Context, module string, parentRef *Reference) *Attribute {
+func NewAttribute(attr *hcl.Attribute, ctx *Context, module string, parent types.Metadata, parentRef *Reference) *Attribute {
+	rng := types.NewRange(
+		attr.Range.Filename,
+		attr.Range.Start.Line,
+		attr.Range.End.Line,
+	)
+	metadata := types.NewMetadata(rng, extendReference(parentRef, attr.Name))
 	return &Attribute{
 		hclAttribute: attr,
 		ctx:          ctx,
 		module:       module,
-		ref:          extendReference(parentRef, attr.Name),
+		metadata:     metadata.WithParent(parent),
 	}
 }
 
 func (a *Attribute) Metadata() types.Metadata {
-	return types.NewMetadata(a.Range(), a.Reference())
+	return a.metadata
 }
 
 func (a *Attribute) GetMetadata() *types.Metadata {
 	// this is hacky but we need to satisfy the upstream metadata provider interface...
-	m := a.Metadata()
-	return &m
+	return &a.metadata
 }
 
 func (a *Attribute) GetRawValue() interface{} {
@@ -136,10 +141,6 @@ func (attr *Attribute) AsIntValueOrDefault(defaultValue int, parent *Block) type
 	)
 }
 
-func (attr *Attribute) Reference() *Reference {
-	return attr.ref
-}
-
 func (attr *Attribute) IsLiteral() bool {
 	if attr == nil {
 		return false
@@ -226,18 +227,6 @@ func (attr *Attribute) Value() (ctyVal cty.Value) {
 		return cty.NilVal
 	}
 	return ctyVal
-}
-
-func (attr *Attribute) Range() HCLRange {
-	if attr == nil {
-		return HCLRange{}
-	}
-	return NewRange(
-		attr.hclAttribute.Range.Filename,
-		attr.hclAttribute.Range.Start.Line,
-		attr.hclAttribute.Range.End.Line,
-		attr.module,
-	)
 }
 
 func (attr *Attribute) Name() string {
@@ -771,7 +760,7 @@ func (attr *Attribute) ReferencesBlock(b *Block) bool {
 		return false
 	}
 	for _, ref := range attr.AllReferences() {
-		if ref.RefersTo(b.Reference()) {
+		if ref.RefersTo(b.GetMetadata().Reference()) {
 			return true
 		}
 	}

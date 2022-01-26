@@ -101,7 +101,7 @@ func (e *Evaluator) loadModules(stopOnHCLError bool) []*ModuleDefinition {
 func (e *Evaluator) loadModule(b *block.Block, stopOnHCLError bool) (*ModuleDefinition, error) {
 
 	if b.Label() == "" {
-		return nil, fmt.Errorf("module without label at %s", b.Range())
+		return nil, fmt.Errorf("module without label at %s", b.GetMetadata().Range())
 	}
 
 	evalTimer := metrics.Timer("timings", "evaluation")
@@ -121,7 +121,7 @@ func (e *Evaluator) loadModule(b *block.Block, stopOnHCLError bool) (*ModuleDefi
 	evalTimer.Stop()
 
 	if source == "" {
-		return nil, fmt.Errorf("could not read module source attribute at %s", b.Range().String())
+		return nil, fmt.Errorf("could not read module source attribute at %s", b.GetMetadata().Range().String())
 	}
 
 	var modulePath string
@@ -152,14 +152,14 @@ func (e *Evaluator) loadModule(b *block.Block, stopOnHCLError bool) (*ModuleDefi
 		modulePath = filepath.Join(e.modulePath, source)
 	}
 
-	blocks, ignores, err := getModuleBlocks(b, modulePath, e.moduleName, stopOnHCLError)
+	blocks, ignores, err := getModuleBlocks(b, modulePath, stopOnHCLError)
 	if err != nil {
 		return nil, &moduleLoadError{
 			source: source,
 			err:    err,
 		}
 	}
-	debug.Log("Loaded module '%s' (requested at %s)", modulePath, b.Range())
+	debug.Log("Loaded module '%s' (requested at %s)", modulePath, b.GetMetadata().Range())
 	metrics.Counter("counts", "modules").Increment(1)
 
 	return &ModuleDefinition{
@@ -170,7 +170,7 @@ func (e *Evaluator) loadModule(b *block.Block, stopOnHCLError bool) (*ModuleDefi
 	}, nil
 }
 
-func getModuleBlocks(b *block.Block, modulePath string, moduleName string, stopOnHCLError bool) (block.Blocks, []block.Ignore, error) {
+func getModuleBlocks(b *block.Block, modulePath string, stopOnHCLError bool) (block.Blocks, []block.Ignore, error) {
 	moduleFiles, err := LoadDirectory(modulePath, stopOnHCLError)
 	if err != nil {
 		return nil, nil, err
@@ -181,7 +181,7 @@ func getModuleBlocks(b *block.Block, modulePath string, moduleName string, stopO
 
 	moduleCtx := block.NewContext(&hcl.EvalContext{}, nil)
 	for _, file := range moduleFiles {
-		fileBlocks, fileIgnores, err := LoadBlocksFromFile(file, moduleName)
+		fileBlocks, fileIgnores, err := LoadBlocksFromFile(file)
 		if err != nil {
 			if stopOnHCLError {
 				return nil, nil, err

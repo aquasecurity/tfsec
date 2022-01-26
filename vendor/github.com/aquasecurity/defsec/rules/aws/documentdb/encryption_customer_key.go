@@ -37,7 +37,6 @@ var CheckEncryptionCustomerKey = rules.Register(
 			if cluster.IsManaged() && cluster.KMSKeyID.IsEmpty() {
 				results.Add(
 					"Cluster encryption does not use a customer-managed KMS key.",
-					&cluster,
 					cluster.KMSKeyID,
 				)
 			} else {
@@ -50,7 +49,6 @@ var CheckEncryptionCustomerKey = rules.Register(
 				if instance.KMSKeyID.IsEmpty() {
 					results.Add(
 						"Instance encryption does not use a customer-managed KMS key.",
-						&instance,
 						instance.KMSKeyID,
 					)
 				} else {

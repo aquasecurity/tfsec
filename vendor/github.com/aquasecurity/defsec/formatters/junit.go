@@ -49,7 +49,7 @@ func outputJUnit(b configurableFormatter, results []rules.Result) error {
 	}
 
 	for _, res := range results {
-		rng := res.NarrowestRange()
+		rng := res.Range()
 		output.TestCases = append(output.TestCases,
 			jUnitTestCase{
 				Classname: rng.GetFilename(),
@@ -73,14 +73,14 @@ func outputJUnit(b configurableFormatter, results []rules.Result) error {
 // highlight the lines of code which caused a problem, if available
 func highlightCodeJunit(res rules.Result) string {
 
-	data, err := ioutil.ReadFile(res.NarrowestRange().GetFilename())
+	data, err := ioutil.ReadFile(res.Range().GetFilename())
 	if err != nil {
 		return ""
 	}
 
 	lines := append([]string{""}, strings.Split(string(data), "\n")...)
 
-	rng := res.NarrowestRange()
+	rng := res.Range()
 
 	start := rng.GetStartLine() - 3
 	if start <= 0 {
@@ -123,7 +123,7 @@ func buildFailure(b configurableFormatter, res rules.Result) *jUnitFailure {
 	return &jUnitFailure{
 		Message: res.Description(),
 		Contents: fmt.Sprintf("%s\n%s\n%s",
-			res.NarrowestRange().String(),
+			res.Range().String(),
 			highlightCodeJunit(res),
 			link,
 		),

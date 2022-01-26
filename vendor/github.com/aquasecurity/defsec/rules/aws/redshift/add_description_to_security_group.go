@@ -35,7 +35,6 @@ Simplifies auditing, debugging, and managing security groups.`,
 			if group.Description.IsEmpty() {
 				results.Add(
 					"Security group has no description.",
-					&group,
 					group.Description,
 				)
 			} else {

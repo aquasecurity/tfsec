@@ -6,16 +6,19 @@ import (
 	"time"
 
 	"github.com/aquasecurity/defsec/metrics"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/pkg/block"
 	"github.com/aquasecurity/tfsec/internal/pkg/schema"
 	"github.com/hashicorp/hcl/v2"
 )
 
-func LoadBlocksFromFile(file File, moduleName string) (hcl.Blocks, []block.Ignore, error) {
+func LoadBlocksFromFile(file File) (hcl.Blocks, []block.Ignore, error) {
 
 	var ignores []block.Ignore
 	for _, ignore := range parseIgnores(file.file.Bytes) {
-		ignore.Range = block.NewRange(file.path, ignore.Range.GetStartLine(), ignore.Range.GetEndLine(), moduleName)
+		ignore.Range = types.NewRange(file.path, ignore.Range.GetStartLine(), ignore.Range.GetEndLine())
+
+		fmt.Println(ignore.Range)
 		ignores = append(ignores, ignore)
 	}
 
@@ -41,8 +44,22 @@ func parseIgnores(data []byte) []block.Ignore {
 		line = strings.TrimSpace(line)
 		lineIgnores := parseIgnoresFromLine(line)
 		for _, lineIgnore := range lineIgnores {
-			lineIgnore.Range = block.NewRange("", i+1, i+1, "")
+			lineIgnore.Range = types.NewRange("", i+1, i+1)
 			ignores = append(ignores, lineIgnore)
+		}
+	}
+	for a, ignoreA := range ignores {
+		if ignoreA.Block {
+			continue
+		}
+		for _, ignoreB := range ignores {
+			if ignoreB.Block {
+				continue
+			}
+			if ignoreA.Range.GetStartLine()+1 == ignoreB.Range.GetStartLine() {
+				ignoreA.Range = ignoreB.Range
+				ignores[a] = ignoreA
+			}
 		}
 	}
 	return ignores
@@ -53,8 +70,8 @@ func parseIgnoresFromLine(input string) []block.Ignore {
 
 	var ignores []block.Ignore
 
-	bits := strings.Split(input, " ")
-	for _, bit := range bits {
+	bits := strings.Split(strings.TrimSpace(input), " ")
+	for i, bit := range bits {
 		bit := strings.TrimSpace(bit)
 		bit = strings.TrimPrefix(bit, "#")
 		bit = strings.TrimPrefix(bit, "//")
@@ -65,6 +82,7 @@ func parseIgnoresFromLine(input string) []block.Ignore {
 			if err != nil {
 				continue
 			}
+			ignore.Block = i == 0
 			ignores = append(ignores, *ignore)
 		}
 	}

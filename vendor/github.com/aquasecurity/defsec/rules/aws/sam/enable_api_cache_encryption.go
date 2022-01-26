@@ -37,7 +37,6 @@ var CheckEnableApiCacheEncryption = rules.Register(
 			if api.RESTMethodSettings.CacheDataEncrypted.IsFalse() {
 				results.Add(
 					"Cache data is not encrypted.",
-					&api,
 					api.RESTMethodSettings.CacheDataEncrypted,
 				)
 			} else {

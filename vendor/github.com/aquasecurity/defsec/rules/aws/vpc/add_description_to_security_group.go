@@ -44,13 +44,11 @@ Simplifies auditing, debugging, and managing security groups.`,
 			if group.Description.IsEmpty() {
 				results.Add(
 					"Security group does not have a description.",
-					&group,
 					group.Description,
 				)
 			} else if group.Description.EqualTo("Managed by Terraform") {
 				results.Add(
 					"Security group explicitly uses the default description.",
-					&group,
 					group.Description,
 				)
 			} else {

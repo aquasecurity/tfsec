@@ -21,8 +21,7 @@ type Result struct {
 	description      string
 	annotation       string
 	status           Status
-	codeBlock        *types.Metadata
-	issueBlock       *types.Metadata
+	metadata         *types.Metadata
 	severityOverride *severity.Severity
 }
 
@@ -41,12 +40,8 @@ func (r *Result) OverrideDescription(description string) {
 	r.description = description
 }
 
-func (r *Result) OverrideIssueBlockMetadata(metadata *types.Metadata) {
-	r.issueBlock = metadata
-}
-
-func (r *Result) OverrideCodeBlockMetadata(metadata *types.Metadata) {
-	r.codeBlock = metadata
+func (r *Result) OverrideMetadata(metadata *types.Metadata) {
+	r.metadata = metadata
 }
 
 func (r *Result) OverrideAnnotation(annotation string) {
@@ -69,19 +64,12 @@ func (r Result) Annotation() string {
 	return r.annotation
 }
 
-func (r Result) IssueBlockMetadata() *types.Metadata {
-	return r.issueBlock
+func (r Result) Metadata() *types.Metadata {
+	return r.metadata
 }
 
-func (r Result) CodeBlockMetadata() *types.Metadata {
-	return r.codeBlock
-}
-
-func (r Result) NarrowestRange() types.Range {
-	if r.issueBlock != nil {
-		return r.issueBlock.Range()
-	}
-	return r.codeBlock.Range()
+func (r Result) Range() types.Range {
+	return r.metadata.Range()
 }
 
 type Results []Result
@@ -91,39 +79,30 @@ type MetadataProvider interface {
 	GetRawValue() interface{}
 }
 
-func (r *Results) Add(description string, source MetadataProvider, issueBlock ...MetadataProvider) {
+func (r *Results) Add(description string, source MetadataProvider) {
 	var annotationStr string
 
-	srcMeta := *(source.GetMetadata())
+	metadata := source.GetMetadata()
 
 	result := Result{
 		description: description,
-		codeBlock:   &srcMeta,
+		metadata:    metadata,
 	}
 
-	if len(issueBlock) > 0 {
-		metadata := issueBlock[0].GetMetadata()
-		if metadata != nil {
-			if metadata.IsExplicit() {
-				annotationStr = rawToString(issueBlock[0].GetRawValue())
-			}
-			result.annotation = annotationStr
-			literalMeta := *metadata
-			result.issueBlock = &literalMeta
-		}
+	if metadata.IsExplicit() {
+		annotationStr = rawToString(metadata.GetRawValue())
+		result.annotation = annotationStr
 	}
 
 	*r = append(*r, result)
 }
 
 func (r *Results) AddPassed(source MetadataProvider, descriptions ...string) {
-	metadata := source.GetMetadata()
-
 	*r = append(*r,
 		Result{
 			description: strings.Join(descriptions, " "),
 			status:      StatusPassed,
-			codeBlock:   metadata,
+			metadata:    source.GetMetadata(),
 		},
 	)
 }

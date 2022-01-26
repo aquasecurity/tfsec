@@ -42,7 +42,6 @@ var CheckEnableQueueEncryption = rules.Register(
 			if queue.Encryption.KMSKeyID.IsEmpty() || queue.Encryption.KMSKeyID.EqualTo("alias/aws/sqs") {
 				results.Add(
 					"Queue is not encrypted with a customer managed key.",
-					&queue,
 					queue.Encryption.KMSKeyID,
 				)
 			} else {

@@ -39,7 +39,6 @@ var CheckUseSecureTlsPolicy = rules.Register(
 			if domain.Endpoint.TLSPolicy.NotEqualTo("Policy-Min-TLS-1-2-2019-07") {
 				results.Add(
 					"Domain does not have a secure TLS policy.",
-					&domain,
 					domain.Endpoint.TLSPolicy,
 				)
 			} else {
