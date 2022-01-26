@@ -25,7 +25,7 @@ resource "digitalocean_kubernetes_cluster" "surge_upgrade_bad" {
 
 var terraformKubernetesClusterSurgeUpgradesGoodExamples = []string{
 	`
-resource "digitalocean_kubernetes_cluster" "surge_upgrade_bad" {
+resource "digitalocean_kubernetes_cluster" "surge_upgrade_good" {
 	name   = "foo"
 	region = "nyc1"
 	version = "1.20.2-do.0"

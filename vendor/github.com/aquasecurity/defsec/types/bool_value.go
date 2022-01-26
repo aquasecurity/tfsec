@@ -1,5 +1,7 @@
 package types
 
+import "encoding/json"
+
 type BoolValue interface {
 	metadataProvider
 	Value() bool
@@ -10,6 +12,10 @@ type BoolValue interface {
 type boolValue struct {
 	metadata Metadata
 	value    bool
+}
+
+func (b *boolValue) MarshalJSON() ([]byte, error) {
+	return json.Marshal(b.value)
 }
 
 func Bool(value bool, metadata Metadata) BoolValue {

@@ -1,5 +1,7 @@
 package types
 
+import "encoding/json"
+
 type MapValue interface {
 	metadataProvider
 	Value() map[string]string
@@ -10,6 +12,10 @@ type MapValue interface {
 type mapValue struct {
 	metadata *Metadata
 	value    map[string]string
+}
+
+func (v *mapValue) MarshalJSON() ([]byte, error) {
+	return json.Marshal(v.value)
 }
 
 func Map(value map[string]string, m *Metadata) MapValue {

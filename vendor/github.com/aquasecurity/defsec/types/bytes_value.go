@@ -1,5 +1,7 @@
 package types
 
+import "encoding/json"
+
 type BytesValue interface {
 	metadataProvider
 	Value() []byte
@@ -9,6 +11,10 @@ type BytesValue interface {
 type bytesValue struct {
 	metadata Metadata
 	value    []byte
+}
+
+func (b *bytesValue) MarshalJSON() ([]byte, error) {
+	return json.Marshal(b.value)
 }
 
 func (b *bytesValue) Value() []byte {

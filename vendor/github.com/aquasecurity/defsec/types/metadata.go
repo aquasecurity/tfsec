@@ -34,6 +34,10 @@ func NewUnmanagedMetadata() Metadata {
 	return m
 }
 
+func NewTestMetadata() Metadata {
+	return NewMetadata(NewRange("test.test", 123, 123), &FakeReference{})
+}
+
 func (m *Metadata) IsDefault() bool {
 	return m.isDefault
 }
