@@ -1,12 +1,19 @@
 package types
 
-import "strings"
+import (
+	"encoding/json"
+	"strings"
+)
 
 type StringEqualityOption int
 
 const (
 	IgnoreCase StringEqualityOption = iota
 )
+
+func (v *stringValue) MarshalJSON() ([]byte, error) {
+	return json.Marshal(v.value)
+}
 
 func String(str string, m Metadata) StringValue {
 	return &stringValue{
