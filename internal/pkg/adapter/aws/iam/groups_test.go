@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/defsec/provider/aws/iam"
-	"github.com/aquasecurity/tfsec/internal/pkg/adapter/testutils"
+	"github.com/aquasecurity/tfsec/internal/pkg/adapter/testutil"
 )
 
 func Test_adaptGroups(t *testing.T) {
@@ -27,9 +27,9 @@ resource "" "example" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			modules := testutils.CreateModulesFromSource(test.terraform, ".tf", t)
+			modules := testutil.CreateModulesFromSource(test.terraform, ".tf", t)
 			adapted := adaptGroups(modules)
-			testutils.AssertDefsecEqual(t, test.expected, adapted)
+			testutil.AssertDefsecEqual(t, test.expected, adapted)
 		})
 	}
 }

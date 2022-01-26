@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/defsec/provider/google/iam"
-	"github.com/aquasecurity/tfsec/internal/pkg/adapter/testutils"
+	"github.com/aquasecurity/tfsec/internal/pkg/adapter/testutil"
 )
 
 func Test_AdaptMember(t *testing.T) {
@@ -27,9 +27,9 @@ resource "" "example" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			modules := testutils.CreateModulesFromSource(test.terraform, ".tf", t)
+			modules := testutil.CreateModulesFromSource(test.terraform, ".tf", t)
 			adapted := AdaptMember(modules.GetBlocks()[0], modules)
-			testutils.AssertDefsecEqual(t, test.expected, adapted)
+			testutil.AssertDefsecEqual(t, test.expected, adapted)
 		})
 	}
 }
@@ -54,9 +54,9 @@ resource "" "example" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			modules := testutils.CreateModulesFromSource(test.terraform, ".tf", t)
+			modules := testutil.CreateModulesFromSource(test.terraform, ".tf", t)
 			adapted := AdaptBinding(modules.GetBlocks()[0], modules)
-			testutils.AssertDefsecEqual(t, test.expected, adapted)
+			testutil.AssertDefsecEqual(t, test.expected, adapted)
 		})
 	}
 }

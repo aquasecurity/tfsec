@@ -3,7 +3,7 @@ package s3
 import (
 	"testing"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/adapter/testutils"
+	"github.com/aquasecurity/tfsec/internal/pkg/adapter/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +15,7 @@ resource "aws_s3_bucket" "bucket1" {
 	
 }
 `
-	modules := testutils.CreateModulesFromSource(source, ".tf", t)
+	modules := testutil.CreateModulesFromSource(source, ".tf", t)
 
 	s3 := Adapt(modules)
 

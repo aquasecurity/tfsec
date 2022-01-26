@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/defsec/provider/aws/vpc"
-	"github.com/aquasecurity/tfsec/internal/pkg/adapter/testutils"
+	"github.com/aquasecurity/tfsec/internal/pkg/adapter/testutil"
 )
 
 func Test_Adapt(t *testing.T) {
@@ -27,9 +27,9 @@ resource "" "example" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			modules := testutils.CreateModulesFromSource(test.terraform, ".tf", t)
+			modules := testutil.CreateModulesFromSource(test.terraform, ".tf", t)
 			adapted := Adapt(modules)
-			testutils.AssertDefsecEqual(t, test.expected, adapted)
+			testutil.AssertDefsecEqual(t, test.expected, adapted)
 		})
 	}
 }
@@ -54,9 +54,9 @@ resource "" "example" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			modules := testutils.CreateModulesFromSource(test.terraform, ".tf", t)
+			modules := testutil.CreateModulesFromSource(test.terraform, ".tf", t)
 			adapted := adaptDefaultVPCs(modules)
-			testutils.AssertDefsecEqual(t, test.expected, adapted)
+			testutil.AssertDefsecEqual(t, test.expected, adapted)
 		})
 	}
 }
@@ -81,9 +81,9 @@ resource "" "example" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			modules := testutils.CreateModulesFromSource(test.terraform, ".tf", t)
+			modules := testutil.CreateModulesFromSource(test.terraform, ".tf", t)
 			adapted := adaptSGRule(modules.GetBlocks()[0], modules)
-			testutils.AssertDefsecEqual(t, test.expected, adapted)
+			testutil.AssertDefsecEqual(t, test.expected, adapted)
 		})
 	}
 }
@@ -108,9 +108,9 @@ resource "" "example" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			modules := testutils.CreateModulesFromSource(test.terraform, ".tf", t)
+			modules := testutil.CreateModulesFromSource(test.terraform, ".tf", t)
 			adapted := adaptNetworkACLRule(modules.GetBlocks()[0])
-			testutils.AssertDefsecEqual(t, test.expected, adapted)
+			testutil.AssertDefsecEqual(t, test.expected, adapted)
 		})
 	}
 }
