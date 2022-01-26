@@ -19,8 +19,8 @@ func output(baseFilename string, formats []string, dir string, results []rules.R
 	}
 
 	var files []string
-	for i, format := range formats {
-		if filename, err := outputFormat(i, len(formats) > 1, baseFilename, format, dir, results); err != nil {
+	for _, format := range formats {
+		if filename, err := outputFormat(len(formats) > 1, baseFilename, format, dir, results); err != nil {
 			return err
 		} else if filename != "" {
 			files = append(files, filename)
@@ -34,7 +34,7 @@ func output(baseFilename string, formats []string, dir string, results []rules.R
 	return nil
 }
 
-func outputFormat(i int, addExtension bool, baseFilename string, format string, dir string, results []rules.Result) (string, error) {
+func outputFormat(addExtension bool, baseFilename string, format string, dir string, results []rules.Result) (string, error) {
 
 	formatter := formatters.New().
 		WithDebugEnabled(debug.Enabled).
@@ -57,10 +57,11 @@ func outputFormat(i int, addExtension bool, baseFilename string, format string, 
 		WithBaseDir(dir).
 		WithMetricsEnabled(!conciseOutput)
 
-	alsoStdout := i == 0
+	var alsoStdout bool
 
 	switch strings.ToLower(format) {
 	case "", "default":
+		alsoStdout = true
 	case "json":
 		formatter.AsJSON()
 	case "csv":
