@@ -2,6 +2,8 @@
 title: Compute instance requests an IP reservation from a public pool
 ---
 
+# Compute instance requests an IP reservation from a public pool
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

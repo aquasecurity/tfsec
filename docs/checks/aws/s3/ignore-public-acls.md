@@ -2,6 +2,8 @@
 title: S3 Access Block should Ignore Public Acl
 ---
 
+# S3 Access Block should Ignore Public Acl
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

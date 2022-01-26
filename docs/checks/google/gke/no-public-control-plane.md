@@ -2,6 +2,8 @@
 title: GKE Control Plane should not be publicly accessible
 ---
 
+# GKE Control Plane should not be publicly accessible
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

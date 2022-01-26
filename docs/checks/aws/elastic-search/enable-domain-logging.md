@@ -2,6 +2,8 @@
 title: Domain logging should be enabled for Elastic Search domains
 ---
 
+# Domain logging should be enabled for Elastic Search domains
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

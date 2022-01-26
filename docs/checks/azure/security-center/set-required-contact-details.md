@@ -2,6 +2,8 @@
 title: The required contact details should be set for security center
 ---
 
+# The required contact details should be set for security center
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

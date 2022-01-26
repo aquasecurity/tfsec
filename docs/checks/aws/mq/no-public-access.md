@@ -2,6 +2,8 @@
 title: Ensure MQ Broker is not publicly exposed
 ---
 
+# Ensure MQ Broker is not publicly exposed
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

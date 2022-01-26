@@ -2,6 +2,8 @@
 title: ECR repository policy must block public access
 ---
 
+# ECR repository policy must block public access
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

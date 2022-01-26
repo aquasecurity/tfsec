@@ -2,6 +2,8 @@
 title: When using Queue Services for a storage account, logging should be enabled.
 ---
 
+# When using Queue Services for a storage account, logging should be enabled.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

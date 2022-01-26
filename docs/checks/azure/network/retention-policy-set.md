@@ -2,6 +2,8 @@
 title: Retention policy for flow logs should be enabled and set to greater than 90 days
 ---
 
+# Retention policy for flow logs should be enabled and set to greater than 90 days
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

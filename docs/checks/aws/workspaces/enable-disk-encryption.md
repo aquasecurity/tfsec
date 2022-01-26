@@ -2,6 +2,8 @@
 title: Root and user volumes on Workspaces should be encrypted
 ---
 
+# Root and user volumes on Workspaces should be encrypted
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

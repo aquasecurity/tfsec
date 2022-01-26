@@ -2,6 +2,8 @@
 title: ECR images tags shouldn't be mutable.
 ---
 
+# ECR images tags shouldn't be mutable.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

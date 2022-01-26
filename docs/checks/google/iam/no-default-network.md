@@ -2,6 +2,8 @@
 title: Default network should not be created at project level
 ---
 
+# Default network should not be created at project level
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

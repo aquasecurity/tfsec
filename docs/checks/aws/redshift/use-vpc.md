@@ -2,6 +2,8 @@
 title: Redshift cluster should be deployed into a specific VPC
 ---
 
+# Redshift cluster should be deployed into a specific VPC
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

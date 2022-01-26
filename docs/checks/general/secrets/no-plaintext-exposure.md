@@ -2,6 +2,8 @@
 title: Secret/sensitive data should not be exposed in plaintext.
 ---
 
+# Secret/sensitive data should not be exposed in plaintext.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

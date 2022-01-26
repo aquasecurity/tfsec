@@ -2,6 +2,8 @@
 title: Ensure that no sensitive credentials are exposed in VM custom_data
 ---
 
+# Ensure that no sensitive credentials are exposed in VM custom_data
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

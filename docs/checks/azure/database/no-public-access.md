@@ -2,6 +2,8 @@
 title: Ensure databases are not publicly accessible
 ---
 
+# Ensure databases are not publicly accessible
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

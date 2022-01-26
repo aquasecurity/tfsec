@@ -2,6 +2,8 @@
 title: Enable the standard security center subscription tier
 ---
 
+# Enable the standard security center subscription tier
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Database auditing rentention period should be longer than 90 days
 ---
 
+# Database auditing rentention period should be longer than 90 days
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

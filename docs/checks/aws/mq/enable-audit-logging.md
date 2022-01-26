@@ -2,6 +2,8 @@
 title: MQ Broker should have audit logging enabled
 ---
 
+# MQ Broker should have audit logging enabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

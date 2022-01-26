@@ -2,6 +2,8 @@
 title: Cloudtrail should be encrypted at rest to secure access to sensitive trail data
 ---
 
+# Cloudtrail should be encrypted at rest to secure access to sensitive trail data
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

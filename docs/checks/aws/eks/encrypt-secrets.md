@@ -2,6 +2,8 @@
 title: EKS should have the encryption of secrets enabled
 ---
 
+# EKS should have the encryption of secrets enabled
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

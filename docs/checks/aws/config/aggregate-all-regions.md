@@ -2,6 +2,8 @@
 title: Config configuration aggregator should be using all regions for source
 ---
 
+# Config configuration aggregator should be using all regions for source
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: An inbound firewall rule allows traffic from /0.
 ---
 
+# An inbound firewall rule allows traffic from /0.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

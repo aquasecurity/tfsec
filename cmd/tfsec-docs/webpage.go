@@ -14,6 +14,8 @@ const (
 title: {{$.Summary}}
 ---
 
+# {{$.Summary}}
+
 ### Default Severity: <span class="severity {{$.Severity | ToLower }}">{{$.Severity }}</span>
 
 ### Explanation

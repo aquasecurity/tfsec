@@ -2,6 +2,8 @@
 title: Spaces buckets should have versioning enabled
 ---
 
+# Spaces buckets should have versioning enabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

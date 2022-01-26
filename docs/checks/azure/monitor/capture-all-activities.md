@@ -2,6 +2,8 @@
 title: Ensure log profile captures all activities
 ---
 
+# Ensure log profile captures all activities
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

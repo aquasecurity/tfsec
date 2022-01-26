@@ -2,6 +2,8 @@
 title: Ensure activitys are captured for all locations
 ---
 
+# Ensure activitys are captured for all locations
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

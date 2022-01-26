@@ -2,6 +2,8 @@
 title: DAX Cluster should always encrypt data at rest
 ---
 
+# DAX Cluster should always encrypt data at rest
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

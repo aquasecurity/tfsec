@@ -2,6 +2,8 @@
 title: Ensure AKS has an API Server Authorized IP Ranges enabled
 ---
 
+# Ensure AKS has an API Server Authorized IP Ranges enabled
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

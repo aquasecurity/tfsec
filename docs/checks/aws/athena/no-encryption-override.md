@@ -2,6 +2,8 @@
 title: Athena workgroups should enforce configuration to prevent client disabling encryption
 ---
 
+# Athena workgroups should enforce configuration to prevent client disabling encryption
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

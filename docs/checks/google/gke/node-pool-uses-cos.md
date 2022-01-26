@@ -2,6 +2,8 @@
 title: Ensure Container-Optimized OS (cos) is used for Kubernetes Engine Clusters Node image
 ---
 
+# Ensure Container-Optimized OS (cos) is used for Kubernetes Engine Clusters Node image
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

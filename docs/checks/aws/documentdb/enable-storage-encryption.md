@@ -2,6 +2,8 @@
 title: DocumentDB storage must be encrypted
 ---
 
+# DocumentDB storage must be encrypted
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

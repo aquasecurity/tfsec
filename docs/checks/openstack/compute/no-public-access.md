@@ -2,6 +2,8 @@
 title: A firewall rule allows traffic from/to the public internet
 ---
 
+# A firewall rule allows traffic from/to the public internet
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

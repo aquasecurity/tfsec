@@ -2,6 +2,8 @@
 title: Key vault should have the network acl block specified
 ---
 
+# Key vault should have the network acl block specified
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Network Policy should be enabled on GKE clusters
 ---
 
+# Network Policy should be enabled on GKE clusters
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

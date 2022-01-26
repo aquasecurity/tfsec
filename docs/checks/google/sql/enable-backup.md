@@ -2,6 +2,8 @@
 title: Enable automated backups to recover from data-loss
 ---
 
+# Enable automated backups to recover from data-loss
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Enable disk encryption on managed disk
 ---
 
+# Enable disk encryption on managed disk
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

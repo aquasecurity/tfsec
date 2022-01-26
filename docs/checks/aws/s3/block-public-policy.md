@@ -2,6 +2,8 @@
 title: S3 Access block should block public policy
 ---
 
+# S3 Access block should block public policy
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

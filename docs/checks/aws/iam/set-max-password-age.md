@@ -2,6 +2,8 @@
 title: IAM Password policy should have expiry less than or equal to 90 days.
 ---
 
+# IAM Password policy should have expiry less than or equal to 90 days.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

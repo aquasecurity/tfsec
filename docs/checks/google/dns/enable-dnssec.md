@@ -2,6 +2,8 @@
 title: Cloud DNS should use DNSSEC
 ---
 
+# Cloud DNS should use DNSSEC
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

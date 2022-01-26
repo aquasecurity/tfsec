@@ -2,6 +2,8 @@
 title: Elasticache Replication Group stores unencrypted data at-rest.
 ---
 
+# Elasticache Replication Group stores unencrypted data at-rest.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

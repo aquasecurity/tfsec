@@ -2,6 +2,8 @@
 title: IAM Password policy should have requirement for at least one lowercase character.
 ---
 
+# IAM Password policy should have requirement for at least one lowercase character.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

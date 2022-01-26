@@ -2,6 +2,8 @@
 title: IAM Groups should have MFA enforcement activated.
 ---
 
+# IAM Groups should have MFA enforcement activated.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

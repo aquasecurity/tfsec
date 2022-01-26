@@ -2,6 +2,8 @@
 title: Ensure that logging of long statements is disabled.
 ---
 
+# Ensure that logging of long statements is disabled.
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

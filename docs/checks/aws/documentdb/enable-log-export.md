@@ -2,6 +2,8 @@
 title: DocumentDB logs export should be enabled
 ---
 
+# DocumentDB logs export should be enabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

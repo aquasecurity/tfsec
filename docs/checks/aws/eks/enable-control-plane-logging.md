@@ -2,6 +2,8 @@
 title: EKS Clusters should have cluster control plane logging turned on
 ---
 
+# EKS Clusters should have cluster control plane logging turned on
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

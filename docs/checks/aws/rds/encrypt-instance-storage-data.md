@@ -2,6 +2,8 @@
 title: RDS encryption has not been enabled at a DB Instance level.
 ---
 
+# RDS encryption has not been enabled at a DB Instance level.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

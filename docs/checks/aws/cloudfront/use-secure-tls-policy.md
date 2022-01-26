@@ -2,6 +2,8 @@
 title: CloudFront distribution uses outdated SSL/TLS protocols.
 ---
 
+# CloudFront distribution uses outdated SSL/TLS protocols.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Elasticsearch doesn't enforce HTTPS traffic.
 ---
 
+# Elasticsearch doesn't enforce HTTPS traffic.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

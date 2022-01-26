@@ -2,6 +2,8 @@
 title: Databases should have the minimum TLS set for connections
 ---
 
+# Databases should have the minimum TLS set for connections
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

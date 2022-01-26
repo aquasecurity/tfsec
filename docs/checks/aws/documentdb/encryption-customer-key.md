@@ -2,6 +2,8 @@
 title: DocumentDB encryption should use Customer Managed Keys
 ---
 
+# DocumentDB encryption should use Customer Managed Keys
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

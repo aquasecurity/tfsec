@@ -2,6 +2,8 @@
 title: CloudWatch log groups should be encrypted using CMK
 ---
 
+# CloudWatch log groups should be encrypted using CMK
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

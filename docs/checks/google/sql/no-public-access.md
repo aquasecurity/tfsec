@@ -2,6 +2,8 @@
 title: Ensure that Cloud SQL Database Instances are not publicly exposed
 ---
 
+# Ensure that Cloud SQL Database Instances are not publicly exposed
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

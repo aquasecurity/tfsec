@@ -2,6 +2,8 @@
 title: Contained database authentication should be disabled
 ---
 
+# Contained database authentication should be disabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

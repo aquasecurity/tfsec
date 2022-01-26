@@ -2,6 +2,8 @@
 title: IAM Password policy should have minimum password length of 14 or more characters.
 ---
 
+# IAM Password policy should have minimum password length of 14 or more characters.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

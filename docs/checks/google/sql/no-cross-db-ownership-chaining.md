@@ -2,6 +2,8 @@
 title: Cross-database ownership chaining should be disabled
 ---
 
+# Cross-database ownership chaining should be disabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

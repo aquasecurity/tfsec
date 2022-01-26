@@ -2,6 +2,8 @@
 title: API Gateway stages for V1 and V2 should have access logging enabled
 ---
 
+# API Gateway stages for V1 and V2 should have access logging enabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

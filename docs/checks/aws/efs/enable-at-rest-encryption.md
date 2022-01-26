@@ -2,6 +2,8 @@
 title: EFS Encryption has not been enabled
 ---
 
+# EFS Encryption has not been enabled
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

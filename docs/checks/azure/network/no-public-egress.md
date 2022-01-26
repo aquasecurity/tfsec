@@ -2,6 +2,8 @@
 title: An outbound network security rule allows traffic to /0.
 ---
 
+# An outbound network security rule allows traffic to /0.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

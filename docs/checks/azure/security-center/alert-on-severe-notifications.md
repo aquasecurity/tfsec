@@ -2,6 +2,8 @@
 title: Send notification emails for high severity alerts
 ---
 
+# Send notification emails for high severity alerts
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: The encryption key used to encrypt a compute disk has been specified in plaintext.
 ---
 
+# The encryption key used to encrypt a compute disk has been specified in plaintext.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

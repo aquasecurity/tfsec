@@ -2,6 +2,8 @@
 title: Web App uses the latest HTTP version
 ---
 
+# Web App uses the latest HTTP version
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

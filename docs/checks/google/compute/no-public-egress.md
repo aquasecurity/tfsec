@@ -2,6 +2,8 @@
 title: An outbound firewall rule allows traffic to /0.
 ---
 
+# An outbound firewall rule allows traffic to /0.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation
