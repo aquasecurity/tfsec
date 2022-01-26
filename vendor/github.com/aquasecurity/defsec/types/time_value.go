@@ -1,6 +1,9 @@
 package types
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type TimeValue interface {
 	metadataProvider
@@ -13,6 +16,10 @@ type TimeValue interface {
 type timeValue struct {
 	metadata *Metadata
 	value    *time.Time
+}
+
+func (v *timeValue) MarshalJSON() ([]byte, error) {
+	return json.Marshal(v.value)
 }
 
 func Time(value time.Time, m *Metadata) TimeValue {

@@ -38,5 +38,5 @@ func AssertDefsecEqual(t *testing.T, expected interface{}, actual interface{}) {
 	require.NoError(t, err)
 	actualJson, err := json.MarshalIndent(actual, "", "\t")
 	require.NoError(t, err)
-	assert.Equal(t, expectedJson, actualJson, "defsec adapted and expected values do not match")
+	assert.Equal(t, string(expectedJson), string(actualJson), "defsec adapted and expected values do not match")
 }
