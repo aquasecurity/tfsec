@@ -41,22 +41,22 @@ func (p *Pool) Run() (rules.Results, error) {
 		workers = append(workers, worker)
 	}
 
-	for _, module := range p.modules {
-		for _, r := range p.rules {
-			if r.CheckTerraform != nil {
-				// run local hcl rule
+	for _, r := range p.rules {
+		if r.CheckTerraform != nil {
+			// run local hcl rule
+			for _, module := range p.modules {
 				outgoing <- &hclModuleRuleJob{
 					module:       module,
 					rule:         r,
 					ignoreErrors: p.ignoreErrors,
 				}
-			} else {
-				// run defsec rule
-				outgoing <- &infraRuleJob{
-					state:        p.state,
-					rule:         r,
-					ignoreErrors: p.ignoreErrors,
-				}
+			}
+		} else {
+			// run defsec rule
+			outgoing <- &infraRuleJob{
+				state:        p.state,
+				rule:         r,
+				ignoreErrors: p.ignoreErrors,
 			}
 		}
 	}
