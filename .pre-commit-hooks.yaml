@@ -3,18 +3,18 @@
   description: TFsec is a tool to statically analyze Terraform templates to spot potential security issues.
   language: golang
   entry: tfsec
-  types: [terraform]
+  pass_filenames: false
 
 - id: tfsec-docker
   name: TFSec Docker
   description: TFsec is a tool to statically analyze Terraform templates to spot potential security issues, uses projects official docker image.
   language: docker_image
   entry: aquasec/tfsec-alpine
-  types: [terraform]
+  pass_filenames: false
 
 - id: tfsec-system
   name: TFSec system
   description: TFsec is a tool to statically analyze Terraform templates to spot potential security issues, uses systems installed tfsec.
   language: system
   entry: tfsec
-  types: [terraform]
+  pass_filenames: false
