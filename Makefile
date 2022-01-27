@@ -23,7 +23,7 @@ generate-docs:
 
 .PHONY: publish-docs
 publish-docs: generate-docs
-	@python3 ./build_checks_nav.py
+	@python3 ./scripts/build_checks_nav.py
 
 .PHONY: tagger
 tagger:
