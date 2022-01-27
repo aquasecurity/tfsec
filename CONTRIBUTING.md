@@ -2,97 +2,111 @@
 
 Thank you for considering contributing to tfsec! 
 
-We've documented the process of adding a new check below. If you have any other specific questions/problems that are preventing you from raising a PR, please get in touch with us! You can [find us on Slack](https://join.slack.com/t/tfsec/shared_invite/zt-o6c7mgoj-eJ1sLDv595sKiP5OPoHJww) - or simply [raise an issue](https://github.com/aquasecurity/tfsec/issues/new) and we'll do our best to help you out.
+Please consider checking out the following resources:
 
-## Adding a New Check
+- [ARCHITECTURE.md](ARCHITECTURE.md): A very high level document that gives an overview of the code and aims to answer the question *Where is the code that does X?*
+- [#tfsec on AquaSec Slack](https://slack.aquasec.com): Come and talk over any questions/suggestions you have with us on Slack!
+- [tfsec documentation](https://aquasecurity.github.io/tfsec/latest/): General usage documentation and rule information.
 
-Adding a check typically involves the addition of two files. The first is the file containing the check code itself and it's documentation. The second is a file containing tests for your check. You won't typically need to touch any other files - documentation is generated automatically from the check file itself.
+## Guide: Adding New Rules
 
-Adding a check can be simplified by running the `make new-check` command. this will request base information about the new check then generate the skeleton code for you to populate.
+If you have any questions/suggestions about the below, please get in touch! If you get stuck at any point we'd be happy to chat, assist or pair-program with you to get your rule merged.
 
-Key attributes requested;
+### Step 1: Fork DefSec
 
-- Provider: Select the provider from the list
-- Short Code: This is a very terse description of the check, it will form the check name
-- Summary: A slightly longer free text summary of the check
-- Impact: A terse note on the impact associated with the check
-- Resolution: A terse note on the resolution in code to pass the check
-- Required Types: What kind of blocks is this check for (resource, data, variable etc). Provide this as a space separated list
-- Required Label: What kind of labels is this check for (aws_instance, google_container_cluster). Provide this as a space separated list
+As described in [ARCHITECTURE.md](ARCHITECTURE.md), the rule logic is defined in the [DefSec](https://github.com/aquasecurity/defsec) repository. To add a new rule, we'll need to add it here before pulling it into tfsec. 
 
-The generator will determine the next available code and create the check and the check test.
-
-### Determining Severity
-
-We currently use the following list of severities:
-
-| Level    | When to use                                                                        | Example                                               |
-| -------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| Critical | Direct risk of compromise to infrastructure, data or other assets.                 | A database resource is marked as publicly accessible. |
-| High     | A misconfiguration that compromises the security of the infrastructure.            | A storage medium is unencrypted.                      |
-| Medium   | Best practice has not been followed that impacts the security of the organisation. | "Force destroy" is enabled on a bucket.               |
-| Low      | Best practice has not been followed, which decreases operational efficiency.       | Description missing on security group rule.           |
+So firstly you'll need to [fork the repository](https://github.com/aquasecurity/defsec/fork) and clone it on your local machine:
 
 
-### Writing Your Check Code
+```bash
+# clone your fork of defsec
+git clone git@github.com/YOUR_USERNAME/defsec.git
+# create a working branch for your new rule
+cd defsec && git checkout -b my-awesome-new-rule
+```
 
-Run `make new-check` to start a wizard that will create the new check stub.
+### Step 2: Add Provider/Service Support
 
-Find your new check and the associated test in one of the subfolders of `internal/apps/tfsec/rules` and complete the check logic
+ DefSec already covers most popular cloud providers and many services, resources and attributes available for each of them.
 
-Here's an example:
+The `provider` package contains structs that represent cloud resources, such as [AWS S3 Buckets](https://github.com/aquasecurity/defsec/blob/master/provider/aws/s3/bucket.go#L5). Rules simply check the various properties of these structs without having to worry about the intricacies of Terraform, CloudFormation or whatever was used to define the resources.
 
-You need to tell the scanner about your check; this is done by calling an `init()` function with the following code:
+Browse the `provider/` directory to see if your desired provider/service are available. Inside the package for your service, check the defined structs and check that the particular resource (e.g. EC2 Instance) is defined along with the particular attributes you need to check.
 
-```go
-func init() {
-	scanner.RegisterCheckRule(rule.Rule{
+If all of the above are already in place, you can skip to *Step 3*. Otherwise, keep reading...
 
-        BadExample:  []string{ `
-resource "aws_gibson" "my-gibson" {
-hackable = true
-}
-`
-        },
-        // An example of Terraform code that would pass our check. Our test suite will make sure this example passes the check.
-        GoodExample: []string{ `
-resource "aws_gibson" "my-gibson" {
-hackable = false
-}
-`
-        },
-        Links: []string{ // any useful links relating to your check go here
-            "https://www.imdb.com/title/tt0113243/"
-        },
-		// which terraform blocks do you want to check - usually "resource"
-		RequiredTypes:  []string{"resource"},
-		// the type of resource(s) you want to target
-		RequiredLabels: []string{"aws_gibson"},
-	})
+Add structs for your resource(s)/attribute(s)/service/provider as required. These should be accessible via the root [state.State](https://github.com/aquasecurity/defsec/blob/master/state/state.go). If you're adding a brand new provider, you'll need to add a property here. Otherwise just make sure you can access it via the relevant property.
+
+You'll notice that most properties on these structs use things like `types.String` instead of a regular Go `string`. This is because these special types have to store more than the relevant string value - they also contain metadata about where this value was defined - e.g. *The `Name` of this S3 Bucket was defined in main.tf on line 6*. 
+
+We generally refer to these as *wrapped* types, because the actual value is *wrapped* in a struct along with the extra metadata. You don't have to worry about where this metadata comes from right now, `tfsec` will do most of the heavy lifting where this is concerned. You can check out the `types` package or other files in the `provider` package to see what types are available.
+
+You may also spot the inclusion of a `types.Metadata` property in many `provider` structs. This metadata exists to store where the entire resource is defined e.g. *The Terraform block that defines this bucket is on lines 5 to 32 of main.tf*. Again, don't worry about how this will be populated, we'll cover that later.
+
+Another useful thing that metadata provides (on top of the definition file and line range) is whether or not a resource is *managed*. A managed resource in `tfsec` is one which has a `resource` HCL block somewhere in the Terraform code being scanned. Why would we ever have a resource which doesn't exist in the code? Well, sometimes we need to *imply* the existance of resources. For example, if a Terraform template exists which contains the following:
+
+```hcl
+resource "aws_s3_bucket_object" "my-file" {
+   bucket = "megabucket"
+   key    = "backup.zip"
+   source = "files/backup.zip"
 }
 ```
 
-Now all that's left is writing the logic itself. This has been moved to [defsec](https://github.com/aquasecurity/defsec). You need to make sure that there's an adapter for the resource. You can see [aws/ec2/adapter.go](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/adapter/aws/ec2/adapt.go) for an example.
+An [S3 bucket object](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object) must live inside a [bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket). It cannot exist without one. But often infrastructure is defined in multiple repositories. The definition for the `megabucket` bucket may exist in another repository. When `tfsec` scans the code above in isolation, it has to *imply* the existance of `megabucket` in order to build the provider hierarchy (`bucket CONTAINS object`). But we don't want to apply all of the security rules to this implied bucket, because it doesn't exist in the source template and we can't be sure of any of it's attributes. `tfsec` flags these implied resources as *unmanaged*, and rule logic will generally avoid checking attributes of these resources for this reason.
 
-You can see a good example of a real check file [here](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/rules/aws/vpc/no_public_egress_sg_rule.go).
-This check also provides [tests](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/rules/aws/vpc/no_public_egress_sg_rule_test.go) and uses provided data checks like `cidr.IsAttributeOpen()` provided [here](https://github.com/aquasecurity/tfsec/blob/master/internal/app/tfsec/cidr/cidr.go).
+### Step 3: Add Rule Logic
 
-### Writing Tests
+Rules are stored in the `rules/*` packages in defsec. They are organised in the same way as the `provider/*` packages.
 
-There is no longer a need to create dedicated tests for new checks - the `BadExample` and `GoodExample` documentation items on the test will be evaluated during the test runs.
+Each rule should include the following files in the relevant subpackage:
 
-The first example that you add for Good and Bad will be used in the documentation, additional blocks you want to be tested to to verify the check should be added afterwards.
+- rule_name.go: The core rule logic and metadata.
+- rule_name_test.go: Tests for the rule.
 
-And that's it! If you have any difficulties, please feel free to raise a draft PR and note any questions/problems in the description and we'll do our best to help you out.
+For a rule to be useful, it should include **at least 1** of the following:
 
-### Submitting the PR
+- rule_name.tf.go: Good and bad Terraform examples (mainly for documentation purposes)
+- rule_name.cf.go: Good and bad CloudFormation examples (mainly for documentation purposes)
 
-When you are ready to submit the PR for review, please run 
+If you have examples for other IaC technologies we'd love to add them too! Please let us know on Slack or GitHub.
 
-```shell
-make pr-ready
+- create rule files (empty logic)
+- describe each field that should be added
+- how to assign avd id
+- create test
+- fail test
+- write logic until tests pass
+- hooray
+
+```bash
+grep -r "AVD-" . | grep AVDID | awk -F'"' '{print $2}' | sort -u
 ```
 
-This will run all of the tests, validate for cyclomatic complexity, spelling mistakes and run the end to end tests in the `./example` folder.
+At this point you can raise a pull request to defsec, the remaining work just involves `tfsec` ([cfsec](https://github.com/aquasecurity/cfsec) too if you'd like to add CloudFormation support for your rule).
 
-Raise your PR when this passes okay (you can expect to see failures from the example run, but overall `make pr-ready` should exit 0)
+```bash
+git add .
+git commit -a -m "Add my shiny new rule"
+git push
+```
+
+### Step 4: Pull the latest defsec into tfsec
+
+- wait until tagged
+- pull tag from defsec
+- gom vendor
+
+### Step 5: Create/update 
+
+
+- run e2e tests
+
+
+
+- write adapter
+- generate docs
+- raise pr
+- :celebrate:
+
