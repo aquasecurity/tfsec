@@ -51,6 +51,7 @@ nav:
     - autoscaling:
       - enable-at-rest-encryption: checks/aws/autoscaling/enable-at-rest-encryption.md
       - no-public-ip: checks/aws/autoscaling/no-public-ip.md
+      - no-sensitive-info: checks/aws/autoscaling/no-sensitive-info.md
     - cloudfront:
       - enable-logging: checks/aws/cloudfront/enable-logging.md
       - enable-waf: checks/aws/cloudfront/enable-waf.md
@@ -97,26 +98,23 @@ nav:
       - no-public-cluster-access-to-cidr: checks/aws/eks/no-public-cluster-access-to-cidr.md
       - no-public-cluster-access: checks/aws/eks/no-public-cluster-access.md
     - elastic-search:
+      - enable-domain-encryption: checks/aws/elastic-search/enable-domain-encryption.md
       - enable-domain-logging: checks/aws/elastic-search/enable-domain-logging.md
       - enable-in-transit-encryption: checks/aws/elastic-search/enable-in-transit-encryption.md
-      - enable-logging: checks/aws/elastic-search/enable-logging.md
-      - encrypt-replication-group: checks/aws/elastic-search/encrypt-replication-group.md
       - enforce-https: checks/aws/elastic-search/enforce-https.md
       - use-secure-tls-policy: checks/aws/elastic-search/use-secure-tls-policy.md
-    - elastic-service:
-      - enable-domain-encryption: checks/aws/elastic-service/enable-domain-encryption.md
     - elasticache:
       - add-description-for-security-group: checks/aws/elasticache/add-description-for-security-group.md
+      - enable-at-rest-encryption: checks/aws/elasticache/enable-at-rest-encryption.md
       - enable-backup-retention: checks/aws/elasticache/enable-backup-retention.md
       - enable-in-transit-encryption: checks/aws/elasticache/enable-in-transit-encryption.md
     - elb:
+      - alb-not-public: checks/aws/elb/alb-not-public.md
       - drop-invalid-headers: checks/aws/elb/drop-invalid-headers.md
-    - elbv2:
-      - alb-not-public: checks/aws/elbv2/alb-not-public.md
-      - http-not-used: checks/aws/elbv2/http-not-used.md
-    - aws: checks/aws/home.md
+      - http-not-used: checks/aws/elb/http-not-used.md
+      - use-secure-tls-policy: checks/aws/elb/use-secure-tls-policy.md
     - iam:
-      - block-kms-policy-wildcard: checks/aws/iam/block-kms-policy-wildcard.md
+      - enforce-mfa: checks/aws/iam/enforce-mfa.md
       - no-password-reuse: checks/aws/iam/no-password-reuse.md
       - no-policy-wildcards: checks/aws/iam/no-policy-wildcards.md
       - require-lowercase-in-passwords: checks/aws/iam/require-lowercase-in-passwords.md
@@ -132,10 +130,6 @@ nav:
     - lambda:
       - enable-tracing: checks/aws/lambda/enable-tracing.md
       - restrict-source-arn: checks/aws/lambda/restrict-source-arn.md
-    - launch:
-      - no-sensitive-info: checks/aws/launch/no-sensitive-info.md
-    - misc:
-      - no-exposing-plaintext-credentials: checks/aws/misc/no-exposing-plaintext-credentials.md
     - mq:
       - enable-audit-logging: checks/aws/mq/enable-audit-logging.md
       - enable-general-logging: checks/aws/mq/enable-general-logging.md
@@ -146,17 +140,17 @@ nav:
     - neptune:
       - enable-log-export: checks/aws/neptune/enable-log-export.md
       - enable-storage-encryption: checks/aws/neptune/enable-storage-encryption.md
+      - encryption-customer-key: checks/aws/neptune/encryption-customer-key.md
     - rds:
-      - backup-retention-specified: checks/aws/rds/backup-retention-specified.md
       - enable-performance-insights: checks/aws/rds/enable-performance-insights.md
       - encrypt-cluster-storage-data: checks/aws/rds/encrypt-cluster-storage-data.md
       - encrypt-instance-storage-data: checks/aws/rds/encrypt-instance-storage-data.md
       - no-classic-resources: checks/aws/rds/no-classic-resources.md
       - no-public-db-access: checks/aws/rds/no-public-db-access.md
+      - specify-backup-retention: checks/aws/rds/specify-backup-retention.md
     - redshift:
-      - add-description-to-security-group: checks/aws/redshift/add-description-to-security-group.md
       - encryption-customer-key: checks/aws/redshift/encryption-customer-key.md
-      - non-default-vpc-deployment: checks/aws/redshift/non-default-vpc-deployment.md
+      - use-vpc: checks/aws/redshift/use-vpc.md
     - s3:
       - block-public-acls: checks/aws/s3/block-public-acls.md
       - block-public-policy: checks/aws/s3/block-public-policy.md
@@ -175,33 +169,21 @@ nav:
     - ssm:
       - secret-use-customer-key: checks/aws/ssm/secret-use-customer-key.md
     - vpc:
-      - add-decription-to-security-group: checks/aws/vpc/add-decription-to-security-group.md
+      - add-description-to-security-group-rule: checks/aws/vpc/add-description-to-security-group-rule.md
       - add-description-to-security-group: checks/aws/vpc/add-description-to-security-group.md
-      - disallow-mixed-sgr: checks/aws/vpc/disallow-mixed-sgr.md
       - no-default-vpc: checks/aws/vpc/no-default-vpc.md
       - no-excessive-port-access: checks/aws/vpc/no-excessive-port-access.md
-      - no-public-egress-sg: checks/aws/vpc/no-public-egress-sg.md
       - no-public-egress-sgr: checks/aws/vpc/no-public-egress-sgr.md
-      - no-public-ingress-sg: checks/aws/vpc/no-public-ingress-sg.md
+      - no-public-ingress-acl: checks/aws/vpc/no-public-ingress-acl.md
       - no-public-ingress-sgr: checks/aws/vpc/no-public-ingress-sgr.md
-      - no-public-ingress: checks/aws/vpc/no-public-ingress.md
-      - use-secure-tls-policy: checks/aws/vpc/use-secure-tls-policy.md
-    - workspace:
-      - enable-disk-encryption: checks/aws/workspace/enable-disk-encryption.md
+    - workspaces:
+      - enable-disk-encryption: checks/aws/workspaces/enable-disk-encryption.md
   - azure:
     - appservice:
       - account-identity-registered: checks/azure/appservice/account-identity-registered.md
       - authentication-enabled: checks/azure/appservice/authentication-enabled.md
-      - detailed-error-messages-enabled: checks/azure/appservice/detailed-error-messages-enabled.md
-      - dotnet-framework-version: checks/azure/appservice/dotnet-framework-version.md
       - enable-http2: checks/azure/appservice/enable-http2.md
-      - enable-https-only: checks/azure/appservice/enable-https-only.md
       - enforce-https: checks/azure/appservice/enforce-https.md
-      - failed-request-tracing-enabled: checks/azure/appservice/failed-request-tracing-enabled.md
-      - ftp-deployments-disabled: checks/azure/appservice/ftp-deployments-disabled.md
-      - http-logs-enabled: checks/azure/appservice/http-logs-enabled.md
-      - php-version: checks/azure/appservice/php-version.md
-      - python-version: checks/azure/appservice/python-version.md
       - require-client-cert: checks/azure/appservice/require-client-cert.md
       - use-secure-tls-policy: checks/azure/appservice/use-secure-tls-policy.md
     - authorization:
@@ -210,31 +192,28 @@ nav:
       - disable-password-authentication: checks/azure/compute/disable-password-authentication.md
       - enable-disk-encryption: checks/azure/compute/enable-disk-encryption.md
       - no-secrets-in-custom-data: checks/azure/compute/no-secrets-in-custom-data.md
-      - ssh-authentication: checks/azure/compute/ssh-authentication.md
     - container:
       - configured-network-policy: checks/azure/container/configured-network-policy.md
       - limit-authorized-ips: checks/azure/container/limit-authorized-ips.md
       - logging: checks/azure/container/logging.md
       - use-rbac-permissions: checks/azure/container/use-rbac-permissions.md
     - database:
+      - all-threat-alerts-enabled: checks/azure/database/all-threat-alerts-enabled.md
       - enable-audit: checks/azure/database/enable-audit.md
       - enable-ssl-enforcement: checks/azure/database/enable-ssl-enforcement.md
-      - mysql-threat-detection-enabled: checks/azure/database/mysql-threat-detection-enabled.md
       - no-public-access: checks/azure/database/no-public-access.md
       - no-public-firewall-access: checks/azure/database/no-public-firewall-access.md
+      - postgres-configuration-connection-throttling: checks/azure/database/postgres-configuration-connection-throttling.md
       - postgres-configuration-log-checkpoints: checks/azure/database/postgres-configuration-log-checkpoints.md
-      - postgres-configuration-log-connection-throttling: checks/azure/database/postgres-configuration-log-connection-throttling.md
       - postgres-configuration-log-connections: checks/azure/database/postgres-configuration-log-connections.md
       - retention-period-set: checks/azure/database/retention-period-set.md
       - secure-tls-policy: checks/azure/database/secure-tls-policy.md
+      - threat-alert-email-set: checks/azure/database/threat-alert-email-set.md
+      - threat-alert-email-to-owner: checks/azure/database/threat-alert-email-to-owner.md
     - datafactory:
       - no-public-access: checks/azure/datafactory/no-public-access.md
     - datalake:
       - enable-at-rest-encryption: checks/azure/datalake/enable-at-rest-encryption.md
-    - functionapp:
-      - authentication-enabled: checks/azure/functionapp/authentication-enabled.md
-      - enable-http2: checks/azure/functionapp/enable-http2.md
-    - azure: checks/azure/home.md
     - keyvault:
       - content-type-for-secret: checks/azure/keyvault/content-type-for-secret.md
       - ensure-key-expiry: checks/azure/keyvault/ensure-key-expiry.md
@@ -245,10 +224,6 @@ nav:
       - activity-log-retention-set: checks/azure/monitor/activity-log-retention-set.md
       - capture-all-activities: checks/azure/monitor/capture-all-activities.md
       - capture-all-regions: checks/azure/monitor/capture-all-regions.md
-    - mssql:
-      - all-threat-alerts-enabled: checks/azure/mssql/all-threat-alerts-enabled.md
-      - threat-alert-email-set: checks/azure/mssql/threat-alert-email-set.md
-      - threat-alert-email-to-owner: checks/azure/mssql/threat-alert-email-to-owner.md
     - network:
       - disable-rdp-from-internet: checks/azure/network/disable-rdp-from-internet.md
       - no-public-egress: checks/azure/network/no-public-egress.md
@@ -257,19 +232,10 @@ nav:
       - ssh-blocked-from-internet: checks/azure/network/ssh-blocked-from-internet.md
     - security-center:
       - alert-on-severe-notifications: checks/azure/security-center/alert-on-severe-notifications.md
-      - defender-on-appservices: checks/azure/security-center/defender-on-appservices.md
-      - defender-on-container-registry: checks/azure/security-center/defender-on-container-registry.md
-      - defender-on-keyvault: checks/azure/security-center/defender-on-keyvault.md
-      - defender-on-kubernetes: checks/azure/security-center/defender-on-kubernetes.md
-      - defender-on-servers: checks/azure/security-center/defender-on-servers.md
-      - defender-on-sql-servers-vms: checks/azure/security-center/defender-on-sql-servers-vms.md
-      - defender-on-sql-servers: checks/azure/security-center/defender-on-sql-servers.md
-      - defender-on-storage: checks/azure/security-center/defender-on-storage.md
       - enable-standard-subscription: checks/azure/security-center/enable-standard-subscription.md
       - set-required-contact-details: checks/azure/security-center/set-required-contact-details.md
     - storage:
       - allow-microsoft-service-bypass: checks/azure/storage/allow-microsoft-service-bypass.md
-      - container-activity-logs-not-public: checks/azure/storage/container-activity-logs-not-public.md
       - default-action-deny: checks/azure/storage/default-action-deny.md
       - enforce-https: checks/azure/storage/enforce-https.md
       - no-public-access: checks/azure/storage/no-public-access.md
@@ -280,46 +246,40 @@ nav:
   - cloudstack:
     - compute:
       - no-sensitive-info: checks/cloudstack/compute/no-sensitive-info.md
-    - cloudstack: checks/cloudstack/home.md
   - digitalocean:
     - compute:
+      - enforce-https: checks/digitalocean/compute/enforce-https.md
+      - kubernetes-auto-upgrades-not-enabled: checks/digitalocean/compute/kubernetes-auto-upgrades-not-enabled.md
       - no-public-egress: checks/digitalocean/compute/no-public-egress.md
       - no-public-ingress: checks/digitalocean/compute/no-public-ingress.md
+      - surge-upgrades-not-enabled: checks/digitalocean/compute/surge-upgrades-not-enabled.md
+      - use-ssh-keys: checks/digitalocean/compute/use-ssh-keys.md
     - droplet:
       - use-ssh-keys: checks/digitalocean/droplet/use-ssh-keys.md
-    - digitalocean: checks/digitalocean/home.md
-    - loadbalancing:
-      - enforce-https: checks/digitalocean/loadbalancing/enforce-https.md
     - spaces:
       - acl-no-public-read: checks/digitalocean/spaces/acl-no-public-read.md
       - disable-force-destroy: checks/digitalocean/spaces/disable-force-destroy.md
       - versioning-enabled: checks/digitalocean/spaces/versioning-enabled.md
   - general:
-    - general: checks/general/home.md
     - secrets:
-      - sensitive-in-attribute-value: checks/general/secrets/sensitive-in-attribute-value.md
-      - sensitive-in-attribute: checks/general/secrets/sensitive-in-attribute.md
-      - sensitive-in-local: checks/general/secrets/sensitive-in-local.md
-      - sensitive-in-variable: checks/general/secrets/sensitive-in-variable.md
+      - no-plaintext-exposure: checks/general/secrets/no-plaintext-exposure.md
   - github:
-    - github: checks/github/home.md
+    - actions:
+      - no-plain-text-action-secrets: checks/github/actions/no-plain-text-action-secrets.md
     - repositories:
       - private: checks/github/repositories/private.md
-      - require-signed-commits: checks/github/repositories/require-signed-commits.md
-      - vulnerability-alerts: checks/github/repositories/vulnerability-alerts.md
   - google:
     - bigquery:
       - no-public-access: checks/google/bigquery/no-public-access.md
     - compute:
       - disk-encryption-customer-key: checks/google/compute/disk-encryption-customer-key.md
-      - disk-encryption-customer-keys: checks/google/compute/disk-encryption-customer-keys.md
-      - disk-encryption-required: checks/google/compute/disk-encryption-required.md
-      - enable-shielded-vm: checks/google/compute/enable-shielded-vm.md
+      - disk-encryption-no-plaintext-key: checks/google/compute/disk-encryption-no-plaintext-key.md
+      - enable-shielded-vm-im: checks/google/compute/enable-shielded-vm-im.md
+      - enable-shielded-vm-vtpm: checks/google/compute/enable-shielded-vm-vtpm.md
       - enable-vpc-flow-logs: checks/google/compute/enable-vpc-flow-logs.md
       - no-default-service-account: checks/google/compute/no-default-service-account.md
       - no-ip-forwarding: checks/google/compute/no-ip-forwarding.md
       - no-oslogin-override: checks/google/compute/no-oslogin-override.md
-      - no-plaintext-disk-keys: checks/google/compute/no-plaintext-disk-keys.md
       - no-plaintext-vm-disk-keys: checks/google/compute/no-plaintext-vm-disk-keys.md
       - no-project-wide-ssh-keys: checks/google/compute/no-project-wide-ssh-keys.md
       - no-public-egress: checks/google/compute/no-public-egress.md
@@ -343,7 +303,6 @@ nav:
       - enable-stackdriver-monitoring: checks/google/gke/enable-stackdriver-monitoring.md
       - enforce-pod-security-policy: checks/google/gke/enforce-pod-security-policy.md
       - metadata-endpoints-disabled: checks/google/gke/metadata-endpoints-disabled.md
-      - no-legacy-auth: checks/google/gke/no-legacy-auth.md
       - no-legacy-authentication: checks/google/gke/no-legacy-authentication.md
       - no-public-control-plane: checks/google/gke/no-public-control-plane.md
       - node-metadata-security: checks/google/gke/node-metadata-security.md
@@ -352,8 +311,8 @@ nav:
       - use-cluster-labels: checks/google/gke/use-cluster-labels.md
       - use-rbac-permissions: checks/google/gke/use-rbac-permissions.md
       - use-service-account: checks/google/gke/use-service-account.md
-    - google: checks/google/home.md
     - iam:
+      - no-default-network: checks/google/iam/no-default-network.md
       - no-folder-level-default-service-account-assignment: checks/google/iam/no-folder-level-default-service-account-assignment.md
       - no-folder-level-service-account-impersonation: checks/google/iam/no-folder-level-service-account-impersonation.md
       - no-org-level-default-service-account-assignment: checks/google/iam/no-org-level-default-service-account-assignment.md
@@ -364,8 +323,16 @@ nav:
       - no-user-granted-permissions: checks/google/iam/no-user-granted-permissions.md
     - kms:
       - rotate-kms-keys: checks/google/kms/rotate-kms-keys.md
-    - project:
-      - no-default-network: checks/google/project/no-default-network.md
+    - platform:
+      - no-default-network: checks/google/platform/no-default-network.md
+      - no-folder-level-default-service-account-assignment: checks/google/platform/no-folder-level-default-service-account-assignment.md
+      - no-folder-level-service-account-impersonation: checks/google/platform/no-folder-level-service-account-impersonation.md
+      - no-org-level-default-service-account-assignment: checks/google/platform/no-org-level-default-service-account-assignment.md
+      - no-org-level-service-account-impersonation: checks/google/platform/no-org-level-service-account-impersonation.md
+      - no-privileged-service-accounts: checks/google/platform/no-privileged-service-accounts.md
+      - no-project-level-default-service-account-assignment: checks/google/platform/no-project-level-default-service-account-assignment.md
+      - no-project-level-service-account-impersonation: checks/google/platform/no-project-level-service-account-impersonation.md
+      - no-user-granted-permissions: checks/google/platform/no-user-granted-permissions.md
     - sql:
       - enable-backup: checks/google/sql/enable-backup.md
       - enable-pg-temp-file-logging: checks/google/sql/enable-pg-temp-file-logging.md
@@ -384,20 +351,16 @@ nav:
       - enable-ubla: checks/google/storage/enable-ubla.md
       - no-public-access: checks/google/storage/no-public-access.md
   - kubernetes:
-    - kubernetes: checks/kubernetes/home.md
     - network:
       - no-public-egress: checks/kubernetes/network/no-public-egress.md
       - no-public-ingress: checks/kubernetes/network/no-public-ingress.md
   - openstack:
     - compute:
       - no-plaintext-password: checks/openstack/compute/no-plaintext-password.md
-    - fw:
-      - no-public-access: checks/openstack/fw/no-public-access.md
-    - openstack: checks/openstack/home.md
+      - no-public-access: checks/openstack/compute/no-public-access.md
   - oracle:
     - compute:
       - no-public-ip: checks/oracle/compute/no-public-ip.md
-    - oracle: checks/oracle/home.md
 
 plugins:
 - search
@@ -405,7 +368,7 @@ plugins:
 - include-markdown
 - exclude-search:
     exclude:
-      - checks/*/home.md
+    - checks/*/home.md
 
 extra:
   generator: false
@@ -425,4 +388,4 @@ markdown_extensions:
 - tables
 
 extra_css:
-  - css/extra.css
+- css/extra.css
