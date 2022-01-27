@@ -1,9 +1,9 @@
-package ec2
+package lambda
 
 import (
 	"testing"
 
-	"github.com/aquasecurity/defsec/provider/aws/ec2"
+	"github.com/aquasecurity/defsec/provider/aws/lambda"
 	"github.com/aquasecurity/tfsec/internal/pkg/adapter/testutil"
 )
 
@@ -12,7 +12,7 @@ func Test_Adapt(t *testing.T) {
 	tests := []struct {
 		name      string
 		terraform string
-		expected  ec2.EC2
+		expected  lambda.Lambda
 	}{
 		{
 			name: "basic",
@@ -21,7 +21,7 @@ resource "" "example" {
     
 }
 `,
-			expected: ec2.EC2{},
+			expected: lambda.Lambda{},
 		},
 	}
 

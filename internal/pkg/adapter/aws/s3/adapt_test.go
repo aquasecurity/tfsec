@@ -3,7 +3,7 @@ package s3
 import (
 	"testing"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/adapter/testutils"
+	"github.com/aquasecurity/tfsec/internal/pkg/adapter/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -47,7 +47,7 @@ resource "aws_s3_bucket_public_access_block" "example_access_block"{
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
 
-			modules := testutils.CreateModulesFromSource(tC.source, ".tf", t)
+			modules := testutil.CreateModulesFromSource(tC.source, ".tf", t)
 			s3Ctx := Adapt(modules)
 
 			assert.Equal(t, tC.expectedBuckets, len(s3Ctx.Buckets))
@@ -106,7 +106,7 @@ resource "aws_s3_bucket_public_access_block" "example_access_block"{
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			modules := testutils.CreateModulesFromSource(tC.source, ".tf", t)
+			modules := testutil.CreateModulesFromSource(tC.source, ".tf", t)
 			s3Ctx := Adapt(modules)
 			require.Len(t, s3Ctx.Buckets, 1)
 			assert.Nil(t, s3Ctx.Buckets[0].PublicAccessBlock)
