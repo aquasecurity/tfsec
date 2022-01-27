@@ -39,6 +39,7 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 	formatter := formatters.New().
 		WithDebugEnabled(debug.Enabled).
 		WithColoursEnabled(!disableColours).
+		WithGroupingEnabled(!disableGrouping).
 		WithLinksFunc(func(result rules.Result) []string {
 			v := "latest"
 			if version.Version != "" {

@@ -37,7 +37,7 @@ func (r Results) Flatten() []FlatResult {
 }
 
 func (r *Result) Flatten() FlatResult {
-	rng := r.Metadata().Range()
+	rng := r.metadata.Range()
 	return FlatResult{
 		RuleID:          r.rule.AVDID,
 		LongID:          r.Rule().LongID(),
@@ -51,7 +51,7 @@ func (r *Result) Flatten() FlatResult {
 		RangeAnnotation: r.Annotation(),
 		Severity:        r.rule.Severity,
 		Status:          r.status,
-		Resource:        r.Metadata().Reference().LogicalID(),
+		Resource:        r.metadata.Reference().LogicalID(),
 		Location: FlatRange{
 			Filename:  rng.GetFilename(),
 			StartLine: rng.GetStartLine(),

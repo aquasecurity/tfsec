@@ -41,7 +41,7 @@ func outputCheckStyle(b configurableFormatter, results []rules.Result) error {
 			link = links[0]
 		}
 
-		rng := res.Metadata().Range()
+		rng := res.Range()
 
 		files[rng.GetFilename()] = append(
 			files[rng.GetFilename()],
