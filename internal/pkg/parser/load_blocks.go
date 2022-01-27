@@ -17,8 +17,6 @@ func LoadBlocksFromFile(file File) (hcl.Blocks, []block.Ignore, error) {
 	var ignores []block.Ignore
 	for _, ignore := range parseIgnores(file.file.Bytes) {
 		ignore.Range = types.NewRange(file.path, ignore.Range.GetStartLine(), ignore.Range.GetEndLine())
-
-		fmt.Println(ignore.Range)
 		ignores = append(ignores, ignore)
 	}
 

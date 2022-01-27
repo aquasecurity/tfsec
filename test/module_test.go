@@ -65,6 +65,34 @@ resource "problem" "uhoh" {
 
 }
 
+func Test_ProblemInModuleIgnored(t *testing.T) {
+
+	scanner.RegisterCheckRule(badRule)
+	defer scanner.DeregisterCheckRule(badRule)
+
+	fs, err := filesystem.New()
+	require.NoError(t, err)
+	defer fs.Close()
+
+	require.NoError(t, fs.WriteTextFile("/project/main.tf", `
+#tfsec:ignore:aws-service-abc
+module "something" {
+	source = "../modules/problem"
+}
+`))
+	require.NoError(t, fs.WriteTextFile("modules/problem/main.tf", `
+resource "problem" "uhoh" {
+	bad = true
+}
+`))
+
+	blocks, err := parser.New(fs.RealPath("/project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	require.NoError(t, err)
+	results, _ := scanner.New().Scan(blocks)
+	testutil.AssertRuleNotFound(t, badRule.ID(), results, "")
+
+}
+
 func Test_ProblemInModuleInSubdirectory(t *testing.T) {
 
 	scanner.RegisterCheckRule(badRule)

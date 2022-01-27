@@ -1,7 +1,6 @@
 package block
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/aquasecurity/defsec/types"
@@ -45,8 +44,6 @@ func (ignore Ignore) Covering(m *types.Metadata, workspace string, ids ...string
 	}
 
 	for m != nil {
-		fmt.Printf("Actual: %s\nIgnore: %s\n", m, ignore.Range)
-
 		if ignore.Range.GetFilename() != m.Range().GetFilename() {
 			m = m.Parent()
 			continue
