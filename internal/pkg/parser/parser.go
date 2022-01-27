@@ -44,7 +44,7 @@ func (parser *Parser) parseDirectoryFiles(files []File) (block.Blocks, block.Ign
 	var ignores block.Ignores
 
 	for _, file := range files {
-		fileBlocks, fileIgnores, err := LoadBlocksFromFile(file, "root")
+		fileBlocks, fileIgnores, err := LoadBlocksFromFile(file)
 		if err != nil {
 			if parser.stopOnHCLError {
 				return nil, nil, err

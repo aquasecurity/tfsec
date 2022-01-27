@@ -39,7 +39,6 @@ The account password policy should be set to expire passwords after 90 days or l
 		if policy.MaxAgeDays.GreaterThan(90) {
 			results.Add(
 				"Password policy allows a maximum password age of greater than 90 days.",
-				&policy,
 				policy.MaxAgeDays,
 			)
 		} else {

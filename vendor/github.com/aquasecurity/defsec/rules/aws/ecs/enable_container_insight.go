@@ -39,7 +39,6 @@ var CheckEnableContainerInsight = rules.Register(
 			if cluster.Settings.ContainerInsightsEnabled.IsFalse() {
 				results.Add(
 					"Cluster does not have container insights enabled.",
-					&cluster,
 					cluster.Settings.ContainerInsightsEnabled,
 				)
 			} else {

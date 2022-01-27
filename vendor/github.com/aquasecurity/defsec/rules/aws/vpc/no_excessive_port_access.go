@@ -40,7 +40,6 @@ var CheckNoExcessivePortAccess = rules.Register(
 				if rule.Protocol.EqualTo("-1") || rule.Protocol.EqualTo("all") {
 					results.Add(
 						"Network ACL rule allows access using ALL ports.",
-						&rule,
 						rule.Protocol,
 					)
 				} else {

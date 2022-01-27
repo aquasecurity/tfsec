@@ -44,7 +44,6 @@ When enabling encryption by setting the kms_key_id.`,
 			if instance.Encryption.EncryptStorage.IsFalse() {
 				results.Add(
 					"Instance does not have storage encryption enabled.",
-					&instance,
 					instance.Encryption.EncryptStorage,
 				)
 			} else {

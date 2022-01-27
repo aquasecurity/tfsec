@@ -40,13 +40,11 @@ var CheckSecretUseCustomerKey = rules.Register(
 			if secret.KMSKeyID.IsEmpty() {
 				results.Add(
 					"Secret is not encrypted with a customer managed key.",
-					&secret,
 					secret.KMSKeyID,
 				)
 			} else if secret.KMSKeyID.EqualTo(ssm.DefaultKMSKeyID) {
 				results.Add(
 					"Secret explicitly uses the default key.",
-					&secret,
 					secret.KMSKeyID,
 				)
 			} else {

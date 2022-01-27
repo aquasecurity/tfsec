@@ -236,7 +236,7 @@ func getDetailedExitCode(results rules.Results) int {
 func removeExcludedResults(results rules.Results, ignoreWarnings bool, excludeDownloaded bool) rules.Results {
 	var returnVal rules.Results
 	for _, res := range results {
-		if excludeDownloaded && strings.Contains(res.NarrowestRange().GetFilename(), fmt.Sprintf("%c.terraform", os.PathSeparator)) {
+		if excludeDownloaded && strings.Contains(res.Range().GetFilename(), fmt.Sprintf("%c.terraform", os.PathSeparator)) {
 			continue
 		}
 

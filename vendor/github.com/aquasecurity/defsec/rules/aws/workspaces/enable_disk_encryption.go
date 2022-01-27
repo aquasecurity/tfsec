@@ -40,7 +40,6 @@ var CheckEnableDiskEncryption = rules.Register(
 			if workspace.RootVolume.Encryption.Enabled.IsFalse() {
 				results.Add(
 					"Root volume does not have encryption enabled.",
-					&workspace,
 					workspace.RootVolume.Encryption.Enabled,
 				)
 				fail = true
@@ -48,7 +47,6 @@ var CheckEnableDiskEncryption = rules.Register(
 			if workspace.UserVolume.Encryption.Enabled.IsFalse() {
 				results.Add(
 					"User volume does not have encryption enabled.",
-					&workspace,
 					workspace.UserVolume.Encryption.Enabled,
 				)
 				fail = true

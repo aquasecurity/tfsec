@@ -55,7 +55,6 @@ var CheckEnableLogging = rules.Register(
 
 			results.Add(
 				"Cluster does not ship logs to any service.",
-				&cluster,
 				brokerLogging.Cloudwatch.Enabled,
 			)
 		}

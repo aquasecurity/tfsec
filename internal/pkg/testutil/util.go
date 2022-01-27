@@ -25,7 +25,7 @@ func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) r
 	res, err := s.Scan(modules)
 	require.NoError(t, err)
 	for _, result := range res {
-		if result.NarrowestRange() == nil {
+		if result.Range() == nil {
 			t.Errorf("result has no range specified: %#v", result)
 		}
 	}
@@ -60,7 +60,7 @@ func AssertRuleFound(t *testing.T, ruleID string, results []rules.Result, messag
 	assert.True(t, found, append([]interface{}{message}, args...)...)
 	for _, result := range results {
 		if result.Rule().LongID() == ruleID {
-			assert.NotEmpty(t, result.NarrowestRange().GetFilename())
+			assert.NotEmpty(t, result.Range().GetFilename())
 		}
 	}
 }

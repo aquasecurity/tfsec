@@ -20,7 +20,7 @@ func adaptBuckets(modules block.Modules) []spaces.Bucket {
 		for _, block := range module.GetResourcesByType("digitalocean_spaces_bucket") {
 
 			bucket := spaces.Bucket{
-				Metadata:     types.NewMetadata(block.Range(), block.Reference()),
+				Metadata:     block.Metadata(),
 				Name:         block.GetAttribute("name").AsStringValueOrDefault("", block),
 				ACL:          block.GetAttribute("acl").AsStringValueOrDefault("", block),
 				ForceDestroy: block.GetAttribute("force_destroy").AsBoolValueOrDefault(false, block),

@@ -43,7 +43,6 @@ S3 buckets should block public ACLs on buckets and any objects they contain. By 
 			} else if bucket.PublicAccessBlock.BlockPublicACLs.IsFalse() {
 				results.Add(
 					"Public access block does not block public ACLs",
-					&bucket,
 					bucket.PublicAccessBlock.BlockPublicACLs,
 				)
 			} else {

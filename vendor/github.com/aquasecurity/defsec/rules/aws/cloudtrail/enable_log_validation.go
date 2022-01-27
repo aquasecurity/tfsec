@@ -39,7 +39,6 @@ var CheckEnableLogValidation = rules.Register(
 			if trail.EnableLogFileValidation.IsFalse() {
 				results.Add(
 					"Trail does not have log validation enabled.",
-					&trail,
 					trail.EnableLogFileValidation,
 				)
 			} else {

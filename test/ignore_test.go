@@ -63,7 +63,24 @@ func Test_IgnoreLineAboveTheBlock(t *testing.T) {
 	results := testutil.ScanHCL(`
 // tfsec:ignore:*
 resource "bad" "my-rule" {
-    
+   secure = false 
+}
+`, t)
+	assert.Len(t, results, 0)
+}
+
+func Test_IgnoreLineStackedAboveTheBlock(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
+	results := testutil.ScanHCL(`
+// tfsec:ignore:*
+// tfsec:ignore:a
+// tfsec:ignore:b
+// tfsec:ignore:c
+// tfsec:ignore:d
+resource "bad" "my-rule" {
+   secure = false 
 }
 `, t)
 	assert.Len(t, results, 0)
@@ -79,7 +96,8 @@ resource "bad" "my-rule" {
 `, t)
 	assert.Len(t, results, 0)
 }
-func Test_IgnoreLineOnTheLine(t *testing.T) {
+
+func Test_IgnoreLineLegacy(t *testing.T) {
 	scanner.RegisterCheckRule(exampleRule)
 	defer scanner.DeregisterCheckRule(exampleRule)
 	legacy.InvertedIDs[exampleRule.Base.Rule().LongID()] = "ABC123"
@@ -132,9 +150,13 @@ func Test_IgnoreSpecific(t *testing.T) {
 
 	results := testutil.ScanHCL(`
 	//tfsec:ignore:ABC123
-	resource "bad" "my-bad" {} 
+	resource "bad" "my-bad" {
+        secure = false
+    } 
 	//tfsec:ignore:aws-service-abc123
-	resource "bad" "my-bad" {} 
+	resource "bad" "my-bad" {
+
+    }
 `, t)
 	require.Len(t, results, 2)
 	assert.Equal(t, results[0].Rule().LongID(), "aws-service-def456")

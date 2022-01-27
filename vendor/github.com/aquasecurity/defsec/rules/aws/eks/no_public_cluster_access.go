@@ -33,7 +33,6 @@ var CheckNoPublicClusterAccess = rules.Register(
 			if cluster.PublicAccessEnabled.IsTrue() {
 				results.Add(
 					"Public cluster access is enabled.",
-					&cluster,
 					cluster.PublicAccessEnabled,
 				)
 			} else {

@@ -41,7 +41,6 @@ var CheckPublicBucketsAreRestricted = rules.Register(
 			} else if bucket.PublicAccessBlock.RestrictPublicBuckets.IsFalse() {
 				results.Add(
 					"Public access block does not restrict public buckets",
-					&bucket,
 					bucket.PublicAccessBlock.RestrictPublicBuckets,
 				)
 			} else {

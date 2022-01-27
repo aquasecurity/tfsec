@@ -33,7 +33,6 @@ var CheckEnableControlPlaneLogging = rules.Register(
 			if cluster.Logging.API.IsFalse() {
 				results.Add(
 					"Control plane API logging is not enabled.",
-					&cluster,
 					cluster.Logging.API,
 				)
 			} else {
@@ -43,7 +42,6 @@ var CheckEnableControlPlaneLogging = rules.Register(
 			if cluster.Logging.Audit.IsFalse() {
 				results.Add(
 					"Control plane audit logging is not enabled.",
-					&cluster,
 					cluster.Logging.Audit,
 				)
 			} else {
@@ -53,7 +51,6 @@ var CheckEnableControlPlaneLogging = rules.Register(
 			if cluster.Logging.Authenticator.IsFalse() {
 				results.Add(
 					"Control plane authenticator logging is not enabled.",
-					&cluster,
 					cluster.Logging.Authenticator,
 				)
 			} else {
@@ -63,7 +60,6 @@ var CheckEnableControlPlaneLogging = rules.Register(
 			if cluster.Logging.ControllerManager.IsFalse() {
 				results.Add(
 					"Control plane controller manager logging is not enabled.",
-					&cluster,
 					cluster.Logging.ControllerManager,
 				)
 			} else {
@@ -73,7 +69,6 @@ var CheckEnableControlPlaneLogging = rules.Register(
 			if cluster.Logging.Scheduler.IsFalse() {
 				results.Add(
 					"Control plane scheduler logging is not enabled.",
-					&cluster,
 					cluster.Logging.Scheduler,
 				)
 			} else {

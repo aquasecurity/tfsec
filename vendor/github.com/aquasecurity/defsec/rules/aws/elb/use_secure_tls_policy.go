@@ -40,7 +40,6 @@ var CheckUseSecureTlsPolicy = rules.Register(
 					if listener.TLSPolicy.EqualTo(outdated) {
 						results.Add(
 							"Listener uses an outdated TLS policy.",
-							&listener,
 							listener.TLSPolicy,
 						)
 					} else {

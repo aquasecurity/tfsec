@@ -34,8 +34,7 @@ func outputSARIF(b configurableFormatter, results []rules.Result) error {
 			rule.WithHelpURI(links[0])
 		}
 
-		rng := res.NarrowestRange()
-
+		rng := res.Range()
 		relativePath, err := filepath.Rel(baseDir, rng.GetFilename())
 		if err != nil {
 			return err

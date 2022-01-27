@@ -37,7 +37,6 @@ var CheckEnableStateMachineTracing = rules.Register(
 			if stateMachine.Tracing.Enabled.IsFalse() {
 				results.Add(
 					"X-Ray tracing is not enabled,",
-					&stateMachine,
 					stateMachine.Tracing.Enabled,
 				)
 			} else {

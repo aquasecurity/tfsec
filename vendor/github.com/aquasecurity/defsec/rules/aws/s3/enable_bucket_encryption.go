@@ -42,7 +42,6 @@ S3 Buckets should be encrypted with customer managed KMS keys and not default AW
 			if bucket.Encryption.Enabled.IsFalse() {
 				results.Add(
 					"Bucket does not have encryption enabled",
-					&bucket,
 					bucket.Encryption.Enabled,
 				)
 			} else {

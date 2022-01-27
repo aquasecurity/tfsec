@@ -38,7 +38,6 @@ var CheckEnableFunctionTracing = rules.Register(
 			if function.Tracing.NotEqualTo(sam.TracingModeActive) {
 				results.Add(
 					"X-Ray tracing is not enabled,",
-					&function,
 					function.Tracing,
 				)
 			} else {

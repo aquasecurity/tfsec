@@ -44,13 +44,11 @@ When enabling encryption by setting the kms_key_id, the storage_encrypted must a
 			if cluster.Encryption.EncryptStorage.IsFalse() {
 				results.Add(
 					"Cluster does not have storage encryption enabled.",
-					&cluster,
 					cluster.Encryption.EncryptStorage,
 				)
 			} else if cluster.Encryption.KMSKeyID.IsEmpty() {
 				results.Add(
 					"Cluster does not specify a customer managed key for storage encryption.",
-					&cluster,
 					cluster.Encryption.KMSKeyID,
 				)
 			} else {

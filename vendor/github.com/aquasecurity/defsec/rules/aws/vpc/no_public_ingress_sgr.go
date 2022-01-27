@@ -44,7 +44,6 @@ var CheckNoPublicIngressSgr = rules.Register(
 						failed = true
 						results.Add(
 							"Security group rule allows ingress from public internet.",
-							&rule,
 							block,
 						)
 					}

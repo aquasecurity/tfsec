@@ -44,7 +44,6 @@ var CheckNoPublicEgressSgr = rules.Register(
 						fail = true
 						results.Add(
 							"Security group rule allows egress to multiple public internet addresses.",
-							&rule,
 							block,
 						)
 					}

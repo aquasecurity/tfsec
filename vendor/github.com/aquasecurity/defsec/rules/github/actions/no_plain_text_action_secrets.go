@@ -36,7 +36,6 @@ var CheckNoPlainTextActionEnvironmentSecrets = rules.Register(
 			}
 			if environmentSecret.PlainTextValue.IsNotEmpty() {
 				results.Add("Secret has plain text value",
-					&environmentSecret,
 					environmentSecret.PlainTextValue)
 			} else {
 				results.AddPassed(&environmentSecret)

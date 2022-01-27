@@ -35,7 +35,6 @@ var CheckNoSensitiveInfo = rules.Register(
 			if result := scanner.Scan(launchConfig.UserData.Value()); result.TransgressionFound {
 				results.Add(
 					fmt.Sprintf("Sensitive data found in user data: %s", result.Description),
-					&launchConfig,
 					launchConfig.UserData,
 				)
 			} else {

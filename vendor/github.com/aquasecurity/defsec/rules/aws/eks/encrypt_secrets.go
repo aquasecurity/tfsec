@@ -39,13 +39,11 @@ var CheckEncryptSecrets = rules.Register(
 			if cluster.Encryption.Secrets.IsFalse() {
 				results.Add(
 					"Cluster does not have secret encryption enabled.",
-					&cluster,
 					cluster.Encryption.Secrets,
 				)
 			} else if cluster.Encryption.KMSKeyID.IsEmpty() {
 				results.Add(
 					"Cluster encryption requires a KMS key ID, which is missing",
-					&cluster,
 					cluster.Encryption.KMSKeyID,
 				)
 			} else {

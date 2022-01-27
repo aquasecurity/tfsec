@@ -21,10 +21,7 @@ func outputCSV(b configurableFormatter, results []rules.Result) error {
 			link = links[0]
 		}
 
-		rng := res.CodeBlockMetadata().Range()
-		if res.IssueBlockMetadata() != nil {
-			rng = res.IssueBlockMetadata().Range()
-		}
+		rng := res.Metadata().Range()
 
 		records = append(records, []string{
 			rng.GetFilename(),

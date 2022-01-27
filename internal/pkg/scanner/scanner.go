@@ -76,7 +76,7 @@ func (scanner *Scanner) Scan(modules block.Modules) (rules.Results, error) {
 
 		for _, result := range results {
 			if !scanner.includeIgnored && ignores.Covering(
-				result.NarrowestRange(),
+				result.Metadata(),
 				scanner.workspaceName,
 				result.Rule().LongID(),
 				legacy.FindID(result.Rule().LongID()),
@@ -121,7 +121,7 @@ func (scanner *Scanner) sortResults(results []rules.Result) {
 		case results[i].Rule().LongID() > results[j].Rule().LongID():
 			return false
 		default:
-			return results[i].NarrowestRange().String() > results[j].NarrowestRange().String()
+			return results[i].Range().String() > results[j].Range().String()
 		}
 	})
 }

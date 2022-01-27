@@ -39,7 +39,6 @@ var CheckEnableAuditLogging = rules.Register(
 			if broker.Logging.Audit.IsFalse() {
 				results.Add(
 					"Broker does not have audit logging enabled.",
-					&broker,
 					broker.Logging.Audit,
 				)
 			} else {

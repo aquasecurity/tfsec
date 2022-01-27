@@ -39,7 +39,6 @@ var CheckEncryptionCustomerKey = rules.Register(
 			if cluster.KMSKeyID.IsEmpty() {
 				results.Add(
 					"Cluster does not encrypt data with a customer managed key.",
-					&cluster,
 					cluster.KMSKeyID,
 				)
 			} else {
