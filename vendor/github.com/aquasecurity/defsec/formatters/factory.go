@@ -35,6 +35,11 @@ func (f *factory) WithColoursEnabled(enabled bool) *factory {
 	return f
 }
 
+func (f *factory) WithGroupingEnabled(enabled bool) *factory {
+	f.base.enableGrouping = enabled
+	return f
+}
+
 func (f *factory) WithBaseDir(dir string) *factory {
 	f.base.baseDir = dir
 	return f

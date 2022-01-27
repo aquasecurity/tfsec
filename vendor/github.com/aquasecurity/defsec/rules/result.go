@@ -21,7 +21,7 @@ type Result struct {
 	description      string
 	annotation       string
 	status           Status
-	metadata         *types.Metadata
+	metadata         types.Metadata
 	severityOverride *severity.Severity
 }
 
@@ -40,7 +40,7 @@ func (r *Result) OverrideDescription(description string) {
 	r.description = description
 }
 
-func (r *Result) OverrideMetadata(metadata *types.Metadata) {
+func (r *Result) OverrideMetadata(metadata types.Metadata) {
 	r.metadata = metadata
 }
 
@@ -64,7 +64,7 @@ func (r Result) Annotation() string {
 	return r.annotation
 }
 
-func (r Result) Metadata() *types.Metadata {
+func (r Result) Metadata() types.Metadata {
 	return r.metadata
 }
 
@@ -82,11 +82,13 @@ type MetadataProvider interface {
 func (r *Results) Add(description string, source MetadataProvider) {
 	var annotationStr string
 
-	metadata := source.GetMetadata()
-
 	result := Result{
 		description: description,
-		metadata:    metadata,
+	}
+
+	metadata := source.GetMetadata()
+	if metadata != nil {
+		result.metadata = *metadata
 	}
 
 	if metadata.IsExplicit() {
@@ -98,13 +100,14 @@ func (r *Results) Add(description string, source MetadataProvider) {
 }
 
 func (r *Results) AddPassed(source MetadataProvider, descriptions ...string) {
-	*r = append(*r,
-		Result{
-			description: strings.Join(descriptions, " "),
-			status:      StatusPassed,
-			metadata:    source.GetMetadata(),
-		},
-	)
+	res := Result{
+		description: strings.Join(descriptions, " "),
+		status:      StatusPassed,
+	}
+	if metadata := source.GetMetadata(); metadata != nil {
+		res.metadata = *metadata
+	}
+	*r = append(*r, res)
 }
 
 func (r *Results) SetRule(rule Rule) {

@@ -34,9 +34,14 @@ func outputDefault(b configurableFormatter, results []rules.Result) error {
 		return nil
 	}
 
+	groups, err := b.GroupResults(results)
+	if err != nil {
+		return err
+	}
+
 	fmt.Fprintln(b.Writer(), "")
-	for i, res := range results {
-		printResult(b, res, i)
+	for _, group := range groups {
+		printResult(b, group)
 	}
 
 	b.PrintMetrics()
@@ -53,13 +58,15 @@ func outputDefault(b configurableFormatter, results []rules.Result) error {
 
 const lineNoWidth = 7
 
-func printResult(b configurableFormatter, res rules.Result, i int) {
+func printResult(b configurableFormatter, group GroupedResult) {
+
+	first := group.Results()[0]
 
 	var severityFormatted string
-	if res.Status() == rules.StatusPassed {
+	if first.Status() == rules.StatusPassed {
 		severityFormatted = tml.Sprintf("<green>PASSED</green>")
 	} else {
-		severityFormatted = severityFormat[res.Severity()]
+		severityFormatted = severityFormat[first.Severity()]
 	}
 
 	width, _ := terminal.Size()
@@ -69,15 +76,24 @@ func printResult(b configurableFormatter, res rules.Result, i int) {
 
 	w := b.Writer()
 
+	numPrefix := "Result"
+	var groupingInfo string
+	if group.Len() > 1 {
+		numPrefix = "Results"
+		groupingInfo = fmt.Sprintf("(%d similar results)", group.Len())
+	}
+
 	tml.Fprintf(
 		w,
-		" <italic>#%d</italic> %s <bold>%s</bold>\n",
-		i+1,
+		"<italic>%s %s</italic> %s <bold>%s</bold> <dim>%s</dim>\n",
+		numPrefix,
+		group.String(),
 		severityFormatted,
-		res.Description(),
+		first.Description(),
+		groupingInfo,
 	)
 
-	innerRange := res.Metadata().Range()
+	innerRange := first.Range()
 	lineInfo := fmt.Sprintf("Lines %d-%d", innerRange.GetStartLine(), innerRange.GetEndLine())
 	if !innerRange.IsMultiLine() {
 		lineInfo = fmt.Sprintf("Line %d", innerRange.GetStartLine())
@@ -93,41 +109,61 @@ func printResult(b configurableFormatter, res rules.Result, i int) {
 		"<dim>%s\n",
 		strings.Repeat("─", width),
 	)
-	tml.Fprintf(
-		w,
-		" <italic>%s <dim>%s\n",
-		filename,
-		lineInfo,
-	)
 
-	tml.Fprintf(
-		w,
-		"<dim>%s%s%s</dim>\n",
-		strings.Repeat("─", lineNoWidth),
-		"┬",
-		strings.Repeat("─", width-lineNoWidth-1),
-	)
+	if first.Status() != rules.StatusPassed {
+		tml.Fprintf(
+			w,
+			" <italic>%s <dim>%s\n",
+			filename,
+			lineInfo,
+		)
 
-	if err := highlightCode(b, res); err != nil {
-		printCodeLine(w, -1, tml.Sprintf("<red><bold>Failed to render code:</bold> %s", err))
+		tml.Fprintf(
+			w,
+			"<dim>%s%s%s</dim>\n",
+			strings.Repeat("─", lineNoWidth),
+			"┬",
+			strings.Repeat("─", width-lineNoWidth-1),
+		)
+
+		if err := highlightCode(b, first); err != nil {
+			printCodeLine(w, -1, tml.Sprintf("<red><bold>Failed to render code:</bold> %s", err))
+		}
+
+		tml.Fprintf(
+			w,
+			"<dim>%s┴%s</dim>\n",
+			strings.Repeat("─", lineNoWidth),
+			strings.Repeat("─", width-lineNoWidth-1),
+		)
 	}
 
-	tml.Fprintf(
-		w,
-		"<dim>%s┴%s</dim>\n",
-		strings.Repeat("─", lineNoWidth),
-		strings.Repeat("─", width-lineNoWidth-1),
-	)
-
-	_ = tml.Fprintf(w, "  <dim>        ID</dim> <italic>%s\n", res.Rule().LongID())
-	if res.Rule().Impact != "" {
-		_ = tml.Fprintf(w, "  <dim>    Impact</dim> %s\n", res.Rule().Impact)
+	if group.Len() > 1 {
+		tml.Printf("  <dim>Individual Causes\n")
+		for _, result := range group.Results() {
+			m := result.Metadata()
+			metadata := &m
+			for metadata.Parent() != nil {
+				metadata = metadata.Parent()
+			}
+			tml.Printf("  <dim>- %s (%s)\n", metadata.Range(), metadata.Reference())
+		}
+		tml.Fprintf(
+			w,
+			"<dim>%s</dim>\n",
+			strings.Repeat("─", width),
+		)
 	}
-	if res.Rule().Resolution != "" {
-		_ = tml.Fprintf(w, "  <dim>Resolution</dim> %s\n", res.Rule().Resolution)
+
+	_ = tml.Fprintf(w, "  <dim>        ID</dim> <italic>%s\n", first.Rule().LongID())
+	if first.Rule().Impact != "" {
+		_ = tml.Fprintf(w, "  <dim>    Impact</dim> %s\n", first.Rule().Impact)
+	}
+	if first.Rule().Resolution != "" {
+		_ = tml.Fprintf(w, "  <dim>Resolution</dim> %s\n", first.Rule().Resolution)
 	}
 
-	links := b.GetLinks(res)
+	links := b.GetLinks(first)
 	if len(links) > 0 {
 		_ = tml.Fprintf(w, "\n  <dim>More Information</dim>")
 	}
@@ -168,7 +204,8 @@ func highlightCode(b configurableFormatter, result rules.Result) error {
 	innerRange := result.Range()
 	outerRange := innerRange
 	if !innerRange.IsMultiLine() {
-		if parent := result.Metadata().Parent(); parent != nil {
+		metadata := result.Metadata()
+		if parent := metadata.Parent(); parent != nil {
 			outerRange = parent.Range()
 		}
 	}

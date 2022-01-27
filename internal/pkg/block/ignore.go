@@ -16,7 +16,7 @@ type Ignore struct {
 
 type Ignores []Ignore
 
-func (ignores Ignores) Covering(m *types.Metadata, workspace string, ids ...string) *Ignore {
+func (ignores Ignores) Covering(m types.Metadata, workspace string, ids ...string) *Ignore {
 	for _, ignore := range ignores {
 		if ignore.Covering(m, workspace, ids...) {
 			return &ignore
@@ -25,7 +25,7 @@ func (ignores Ignores) Covering(m *types.Metadata, workspace string, ids ...stri
 	return nil
 }
 
-func (ignore Ignore) Covering(m *types.Metadata, workspace string, ids ...string) bool {
+func (ignore Ignore) Covering(m types.Metadata, workspace string, ids ...string) bool {
 	if ignore.Expiry != nil && time.Now().After(*ignore.Expiry) {
 		return false
 	}
@@ -43,15 +43,16 @@ func (ignore Ignore) Covering(m *types.Metadata, workspace string, ids ...string
 		return false
 	}
 
-	for m != nil {
-		if ignore.Range.GetFilename() != m.Range().GetFilename() {
-			m = m.Parent()
+	metaHierarchy := &m
+	for metaHierarchy != nil {
+		if ignore.Range.GetFilename() != metaHierarchy.Range().GetFilename() {
+			metaHierarchy = metaHierarchy.Parent()
 			continue
 		}
-		if m.Range().GetStartLine() == ignore.Range.GetStartLine()+1 || m.Range().GetStartLine() == ignore.Range.GetStartLine() {
+		if metaHierarchy.Range().GetStartLine() == ignore.Range.GetStartLine()+1 || metaHierarchy.Range().GetStartLine() == ignore.Range.GetStartLine() {
 			return true
 		}
-		m = m.Parent()
+		metaHierarchy = metaHierarchy.Parent()
 	}
 	return false
 

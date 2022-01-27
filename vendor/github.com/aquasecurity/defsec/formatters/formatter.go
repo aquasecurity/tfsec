@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/aquasecurity/defsec/metrics"
@@ -21,9 +22,11 @@ type configurableFormatter interface {
 	PrintMetrics()
 	BaseDir() string
 	DebugEnabled() bool
+	GroupResults([]rules.Result) ([]GroupedResult, error)
 }
 
 type base struct {
+	enableGrouping bool
 	enableMetrics  bool
 	enableColours  bool
 	enableDebug    bool
@@ -35,6 +38,7 @@ type base struct {
 
 func newBase() *base {
 	return &base{
+		enableGrouping: true,
 		enableMetrics:  true,
 		enableColours:  true,
 		enableDebug:    false,
@@ -97,4 +101,73 @@ func (b *base) PrintMetrics() {
 		fmt.Fprintf(b.Writer(), "\n")
 	}
 
+}
+
+func key(result rules.Result) string {
+	return fmt.Sprintf("%s:%s:%d", result.Range(), result.Rule().AVDID, result.Status())
+}
+
+func (b *base) GroupResults(results []rules.Result) ([]GroupedResult, error) {
+
+	// sort by key first
+	sort.Slice(results, func(i, j int) bool {
+		return key(results[i]) < key(results[j])
+	})
+
+	var output []GroupedResult
+	var lastKey string
+	var group GroupedResult
+	for i, result := range results {
+		currentKey := key(result)
+		if !b.enableGrouping || lastKey != currentKey {
+			if group.Len() > 0 {
+				output = append(output, group)
+			}
+			group = GroupedResult{}
+		}
+		if err := group.Add(i+1, result); err != nil {
+			return nil, err
+		}
+		lastKey = currentKey
+	}
+	if group.Len() > 0 {
+		output = append(output, group)
+	}
+
+	return output, nil
+}
+
+type GroupedResult struct {
+	start   int
+	end     int
+	results []rules.Result
+}
+
+func (g *GroupedResult) Add(i int, res rules.Result) error {
+	if g.end > 0 {
+		if i != g.end+1 {
+			return fmt.Errorf("expecting result #%d, found #%d", g.end+1, i)
+		}
+	}
+	if g.start == 0 {
+		g.start = i
+	}
+	g.end = i
+	g.results = append(g.results, res)
+	return nil
+}
+
+func (g *GroupedResult) String() string {
+	if g.start == g.end {
+		return fmt.Sprintf("#%d", g.start)
+	}
+	return fmt.Sprintf("#%d-%d", g.start, g.end)
+}
+
+func (g *GroupedResult) Len() int {
+	return len(g.results)
+}
+
+func (g *GroupedResult) Results() []rules.Result {
+	return g.results
 }
