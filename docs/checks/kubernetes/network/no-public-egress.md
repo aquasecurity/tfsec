@@ -2,6 +2,8 @@
 title: Public egress should not be allowed via network policies
 ---
 
+# Public egress should not be allowed via network policies
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Password authentication should be disabled on Azure virtual machines
 ---
 
+# Password authentication should be disabled on Azure virtual machines
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

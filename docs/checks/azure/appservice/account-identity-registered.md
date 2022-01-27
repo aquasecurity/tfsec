@@ -2,6 +2,8 @@
 title: Web App has registration with AD enabled
 ---
 
+# Web App has registration with AD enabled
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Disable local_infile setting in MySQL
 ---
 
+# Disable local_infile setting in MySQL
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

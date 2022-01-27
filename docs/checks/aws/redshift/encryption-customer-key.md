@@ -2,6 +2,8 @@
 title: Redshift clusters should use at rest encryption
 ---
 
+# Redshift clusters should use at rest encryption
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

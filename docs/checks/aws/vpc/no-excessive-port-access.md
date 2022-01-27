@@ -2,6 +2,8 @@
 title: An ingress Network ACL rule allows ALL ports.
 ---
 
+# An ingress Network ACL rule allows ALL ports.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

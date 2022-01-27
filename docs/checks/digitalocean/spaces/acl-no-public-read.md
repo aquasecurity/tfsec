@@ -2,6 +2,8 @@
 title: Spaces bucket or bucket object has public read acl set
 ---
 
+# Spaces bucket or bucket object has public read acl set
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Neptune logs export should be enabled
 ---
 
+# Neptune logs export should be enabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: S3 Access block should block public ACL
 ---
 
+# S3 Access block should block public ACL
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

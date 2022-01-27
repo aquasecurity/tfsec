@@ -2,6 +2,8 @@
 title: No sensitive data stored in user_data
 ---
 
+# No sensitive data stored in user_data
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

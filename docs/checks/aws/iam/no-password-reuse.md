@@ -2,6 +2,8 @@
 title: IAM Password policy should prevent password reuse.
 ---
 
+# IAM Password policy should prevent password reuse.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: User data for EC2 instances must not contain sensitive AWS keys
 ---
 
+# User data for EC2 instances must not contain sensitive AWS keys
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

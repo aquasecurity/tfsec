@@ -2,6 +2,8 @@
 title: Ensure that logging of checkpoints is enabled.
 ---
 
+# Ensure that logging of checkpoints is enabled.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

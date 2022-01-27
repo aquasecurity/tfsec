@@ -2,6 +2,8 @@
 title: Temporary file logging should be enabled for all temporary files.
 ---
 
+# Temporary file logging should be enabled for all temporary files.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

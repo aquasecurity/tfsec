@@ -2,6 +2,8 @@
 title: Missing description for security group/security group rule.
 ---
 
+# Missing description for security group/security group rule.
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

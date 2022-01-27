@@ -2,6 +2,8 @@
 title: Data Factory should have public access disabled, the default is enabled.
 ---
 
+# Data Factory should have public access disabled, the default is enabled.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

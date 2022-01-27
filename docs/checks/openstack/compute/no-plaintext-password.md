@@ -2,6 +2,8 @@
 title: No plaintext password for compute instance
 ---
 
+# No plaintext password for compute instance
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

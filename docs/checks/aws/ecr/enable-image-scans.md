@@ -2,6 +2,8 @@
 title: ECR repository has image scans disabled.
 ---
 
+# ECR repository has image scans disabled.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

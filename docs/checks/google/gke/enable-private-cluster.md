@@ -2,6 +2,8 @@
 title: Clusters should be set to private
 ---
 
+# Clusters should be set to private
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Ensure all data stored in the launch configuration EBS is securely encrypted
 ---
 
+# Ensure all data stored in the launch configuration EBS is securely encrypted
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

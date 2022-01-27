@@ -2,6 +2,8 @@
 title: Launch configuration should not have a public IP address.
 ---
 
+# Launch configuration should not have a public IP address.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

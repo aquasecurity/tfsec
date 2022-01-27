@@ -2,6 +2,8 @@
 title: Instances should not use the default service account
 ---
 
+# Instances should not use the default service account
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

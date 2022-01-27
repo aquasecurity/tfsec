@@ -2,6 +2,8 @@
 title: Unencrypted SNS topic.
 ---
 
+# Unencrypted SNS topic.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: An outdated SSL policy is in use by a load balancer.
 ---
 
+# An outdated SSL policy is in use by a load balancer.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

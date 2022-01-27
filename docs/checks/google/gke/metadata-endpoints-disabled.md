@@ -2,6 +2,8 @@
 title: Legacy metadata endpoints enabled.
 ---
 
+# Legacy metadata endpoints enabled.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

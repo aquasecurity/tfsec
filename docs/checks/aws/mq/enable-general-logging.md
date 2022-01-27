@@ -2,6 +2,8 @@
 title: MQ Broker should have general logging enabled
 ---
 
+# MQ Broker should have general logging enabled
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

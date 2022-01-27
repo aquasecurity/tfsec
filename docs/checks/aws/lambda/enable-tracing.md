@@ -2,6 +2,8 @@
 title: Lambda functions should have X-Ray tracing enabled
 ---
 
+# Lambda functions should have X-Ray tracing enabled
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: AWS Classic resource usage.
 ---
 
+# AWS Classic resource usage.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

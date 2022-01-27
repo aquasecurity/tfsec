@@ -2,6 +2,8 @@
 title: Instances should not have public IP addresses
 ---
 
+# Instances should not have public IP addresses
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

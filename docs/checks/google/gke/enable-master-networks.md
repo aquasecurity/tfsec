@@ -2,6 +2,8 @@
 title: Master authorized networks should be configured on GKE clusters
 ---
 
+# Master authorized networks should be configured on GKE clusters
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

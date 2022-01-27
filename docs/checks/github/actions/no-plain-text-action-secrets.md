@@ -2,6 +2,8 @@
 title: Ensure plaintext value is not used for GitHub Action Environment Secret.
 ---
 
+# Ensure plaintext value is not used for GitHub Action Environment Secret.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

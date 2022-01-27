@@ -2,6 +2,8 @@
 title: Cloudfront distribution should have Access Logging configured
 ---
 
+# Cloudfront distribution should have Access Logging configured
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Task definition defines sensitive environment variable(s).
 ---
 
+# Task definition defines sensitive environment variable(s).
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

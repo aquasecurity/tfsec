@@ -2,6 +2,8 @@
 title: EBS volumes must be encrypted
 ---
 
+# EBS volumes must be encrypted
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

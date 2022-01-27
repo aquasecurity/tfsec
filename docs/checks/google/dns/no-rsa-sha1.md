@@ -2,6 +2,8 @@
 title: Zone signing should not use RSA SHA1
 ---
 
+# Zone signing should not use RSA SHA1
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

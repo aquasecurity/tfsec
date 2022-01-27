@@ -2,6 +2,8 @@
 title: Unencrypted SQS queue.
 ---
 
+# Unencrypted SQS queue.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

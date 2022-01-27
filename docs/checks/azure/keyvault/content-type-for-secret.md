@@ -2,6 +2,8 @@
 title: Key vault Secret should have a content type set
 ---
 
+# Key vault Secret should have a content type set
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

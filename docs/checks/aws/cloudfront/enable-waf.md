@@ -2,6 +2,8 @@
 title: CloudFront distribution does not have a WAF in front.
 ---
 
+# CloudFront distribution does not have a WAF in front.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

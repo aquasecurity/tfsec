@@ -2,6 +2,8 @@
 title: Elasticsearch domain uses plaintext traffic for node to node communication.
 ---
 
+# Elasticsearch domain uses plaintext traffic for node to node communication.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

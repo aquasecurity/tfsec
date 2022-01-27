@@ -2,6 +2,8 @@
 title: Elasticsearch domain isn't encrypted at rest.
 ---
 
+# Elasticsearch domain isn't encrypted at rest.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

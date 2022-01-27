@@ -2,6 +2,8 @@
 title: ECS Task Definitions with EFS volumes should use in-transit encryption
 ---
 
+# ECS Task Definitions with EFS volumes should use in-transit encryption
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: Load balancer is exposed to the internet.
 ---
 
+# Load balancer is exposed to the internet.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

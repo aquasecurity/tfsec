@@ -2,6 +2,8 @@
 title: S3 Bucket does not have logging enabled.
 ---
 
+# S3 Bucket does not have logging enabled.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

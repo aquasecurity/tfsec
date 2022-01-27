@@ -2,6 +2,8 @@
 title: Elasticache Replication Group uses unencrypted traffic.
 ---
 
+# Elasticache Replication Group uses unencrypted traffic.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

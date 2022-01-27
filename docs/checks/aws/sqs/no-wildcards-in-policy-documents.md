@@ -2,6 +2,8 @@
 title: AWS SQS policy document has wildcard action statement.
 ---
 
+# AWS SQS policy document has wildcard action statement.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

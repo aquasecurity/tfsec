@@ -2,6 +2,8 @@
 title: Cloudtrail log validation should be enabled to prevent tampering of log data
 ---
 
+# Cloudtrail log validation should be enabled to prevent tampering of log data
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

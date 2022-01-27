@@ -2,6 +2,8 @@
 title: Legacy client authentication methods utilized.
 ---
 
+# Legacy client authentication methods utilized.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

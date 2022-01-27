@@ -2,6 +2,8 @@
 title: API Gateway must have X-Ray tracing enabled
 ---
 
+# API Gateway must have X-Ray tracing enabled
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: An ingress security group rule allows traffic from /0.
 ---
 
+# An ingress security group rule allows traffic from /0.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

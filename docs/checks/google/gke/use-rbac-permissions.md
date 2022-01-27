@@ -2,6 +2,8 @@
 title: Legacy ABAC permissions are enabled.
 ---
 
+# Legacy ABAC permissions are enabled.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

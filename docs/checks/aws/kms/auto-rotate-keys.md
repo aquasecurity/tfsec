@@ -2,6 +2,8 @@
 title: A KMS key is not configured to auto-rotate.
 ---
 
+# A KMS key is not configured to auto-rotate.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

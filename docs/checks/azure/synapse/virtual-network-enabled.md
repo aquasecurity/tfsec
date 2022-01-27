@@ -2,6 +2,8 @@
 title: Synapse Workspace should have managed virtual network enabled, the default is disabled.
 ---
 
+# Synapse Workspace should have managed virtual network enabled, the default is disabled.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

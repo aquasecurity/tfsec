@@ -2,6 +2,8 @@
 title: Kinesis stream is unencrypted.
 ---
 
+# Kinesis stream is unencrypted.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

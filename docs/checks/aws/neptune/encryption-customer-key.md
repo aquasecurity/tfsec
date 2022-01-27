@@ -2,6 +2,8 @@
 title: Neptune encryption should use Customer Managed Keys
 ---
 
+# Neptune encryption should use Customer Managed Keys
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

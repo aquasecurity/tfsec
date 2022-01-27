@@ -2,6 +2,8 @@
 title: aws_instance should activate session tokens for Instance Metadata Service.
 ---
 
+# aws_instance should activate session tokens for Instance Metadata Service.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

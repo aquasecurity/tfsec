@@ -2,6 +2,8 @@
 title: Key vault should have purge protection enabled
 ---
 
+# Key vault should have purge protection enabled
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

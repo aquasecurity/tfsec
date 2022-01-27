@@ -2,6 +2,8 @@
 title: IAM Password policy should have requirement for at least one number in the password.
 ---
 
+# IAM Password policy should have requirement for at least one number in the password.
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

@@ -2,6 +2,8 @@
 title: SSH access should not be accessible from the Internet, should be blocked on port 22
 ---
 
+# SSH access should not be accessible from the Internet, should be blocked on port 22
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

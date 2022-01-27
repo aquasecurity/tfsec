@@ -2,6 +2,8 @@
 title: Elasticsearch domain endpoint is using outdated TLS policy.
 ---
 
+# Elasticsearch domain endpoint is using outdated TLS policy.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

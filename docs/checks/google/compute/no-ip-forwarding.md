@@ -2,6 +2,8 @@
 title: Instances should not have IP forwarding enabled
 ---
 
+# Instances should not have IP forwarding enabled
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

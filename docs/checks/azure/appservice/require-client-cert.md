@@ -2,6 +2,8 @@
 title: Web App accepts incoming client certificate
 ---
 
+# Web App accepts incoming client certificate
+
 ### Default Severity: <span class="severity low">low</span>
 
 ### Explanation

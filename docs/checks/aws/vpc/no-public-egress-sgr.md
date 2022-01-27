@@ -2,6 +2,8 @@
 title: An egress security group rule allows traffic to /0.
 ---
 
+# An egress security group rule allows traffic to /0.
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

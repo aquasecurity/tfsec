@@ -2,6 +2,8 @@
 title: SSH Keys are the preferred way to connect to your droplet, no keys are supplied
 ---
 
+# SSH Keys are the preferred way to connect to your droplet, no keys are supplied
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

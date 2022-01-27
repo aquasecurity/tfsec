@@ -2,6 +2,8 @@
 title: Redis cluster should have backup retention turned on
 ---
 
+# Redis cluster should have backup retention turned on
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

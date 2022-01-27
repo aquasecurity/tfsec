@@ -2,6 +2,8 @@
 title: API Gateway domain name uses outdated SSL/TLS protocols.
 ---
 
+# API Gateway domain name uses outdated SSL/TLS protocols.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

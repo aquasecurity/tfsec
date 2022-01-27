@@ -2,6 +2,8 @@
 title: Force destroy is enabled on Spaces bucket which is dangerous
 ---
 
+# Force destroy is enabled on Spaces bucket which is dangerous
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

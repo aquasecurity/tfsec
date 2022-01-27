@@ -2,6 +2,8 @@
 title: The load balancer forwarding rule is using an insecure protocol as an entrypoint
 ---
 
+# The load balancer forwarding rule is using an insecure protocol as an entrypoint
+
 ### Default Severity: <span class="severity critical">critical</span>
 
 ### Explanation

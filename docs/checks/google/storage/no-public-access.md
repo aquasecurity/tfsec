@@ -2,6 +2,8 @@
 title: Ensure that Cloud Storage bucket is not anonymously or publicly accessible.
 ---
 
+# Ensure that Cloud Storage bucket is not anonymously or publicly accessible.
+
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation

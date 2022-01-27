@@ -40,7 +40,7 @@ You should use HTTPS, which is HTTP over an encrypted (TLS) connection, meaning 
 		for _, domain := range s.AWS.Elasticsearch.Domains {
 			if domain.Endpoint.EnforceHTTPS.IsFalse() {
 				results.Add(
-					"Domain does not enfroce HTTPS.",
+					"Domain does not enforce HTTPS.",
 					&domain,
 					domain.Endpoint.EnforceHTTPS,
 				)

@@ -2,6 +2,8 @@
 title: Disable project-wide SSH keys for all instances
 ---
 
+# Disable project-wide SSH keys for all instances
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation

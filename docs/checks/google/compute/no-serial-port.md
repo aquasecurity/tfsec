@@ -2,6 +2,8 @@
 title: Disable serial port connectivity for all instances
 ---
 
+# Disable serial port connectivity for all instances
+
 ### Default Severity: <span class="severity medium">medium</span>
 
 ### Explanation
