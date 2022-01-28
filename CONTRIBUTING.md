@@ -180,7 +180,7 @@ Whilst the end-to-end tests will automatically cover your new rule and adapter, 
 ### :checkered_flag: Step 6: Prepare a Pull Request
 
 <p align="center">
-    <img alt="Pull!" src="https://media.giphy.com/media/1hdyla7jV3jcPyMjIe/giphy.gif" />
+    <img alt="Pull!" src="https://media.giphy.com/media/nJKDTpuxnZE7fb6Z1b/giphy.gif" />
 </p>
 
 In order to raise your *tfsec* pull request, please run:
