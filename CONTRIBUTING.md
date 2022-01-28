@@ -12,6 +12,14 @@ Please consider checking out the following resources:
 - [#tfsec on AquaSec Slack](https://slack.aquasec.com): Come and talk over any questions/suggestions you have with us on Slack!
 - [tfsec documentation](https://aquasecurity.github.io/tfsec/latest/): General usage documentation and rule information.
 
+## PR Checklist
+
+- Ensure the build passes locally first with `make pr-ready`.
+- Add a brief description of your change.
+- Link to the issue which the PR resolves. Please [create one](https://github.com/aquasecurity/tfsec/issues/new/choose) if necessary.
+- Prefix your PR title with one of `fix:`, `feat:`, `chore:`, `docs:` as described in [Conventional Commits](https://www.conventionalcommits.org/).
+- For bonus points, include a gif to maintain reviewer morale.
+
 ## :book: Guide: Adding New Rules 
 
 If you have any questions/suggestions about the below, please get in touch! If you get stuck at any point we'd be happy to chat, assist or pair-program with you to get your rule merged. The below may look daunting, but many steps can often be skipped or are simpler than the volume of text makes them look at first glance. Don't be afraid to get stuck in and ask us for help if required!
@@ -39,6 +47,10 @@ The `provider` package contains structs that represent cloud resources, such as 
 Browse the `provider/` directory to see if your desired provider/service are available. Inside the package for your service, check the defined structs and check that the particular resource (e.g. EC2 Instance) is defined along with the particular attributes you need to check.
 
 If all of the above are already in place, you can skip to *Step 3*. Otherwise, keep reading...
+
+<p align="center">
+    <img alt="Leaky cloud" src="https://media.giphy.com/media/mNG0rIdAYvLog0Wr8H/giphy.gif" />
+</p>
 
 Add structs for your resource(s)/attribute(s)/service/provider as required. These should be accessible via the root [state.State](https://github.com/aquasecurity/defsec/blob/master/state/state.go). If you're adding a brand new provider, you'll need to add a property here. Otherwise just make sure you can access it via the relevant property.
 
@@ -75,6 +87,11 @@ For a rule to be useful, it should include **at least 1** of the following:
 - rule_name.cf.go: Good and bad CloudFormation examples (mainly for documentation purposes)
 
 If you have examples for other IaC technologies we'd love to add them too! Please let us know on Slack or GitHub.
+
+
+<p align="center">
+    <img alt="You have to live by my rules" src="https://media.giphy.com/media/ZXffEBBmsI3md367PN/giphy.gif" />
+</p>
 
 Create your core rule file by duplicating an existing rule and renaming it appropriately. Remove all logic from the function at the end for now.
 
@@ -152,11 +169,19 @@ Alternatively, if the tests fail, it's likely that *tfsec* needs to be taught ho
 
 All of the structs that describe a Terraform project are passed to the *adapters* to summarise into *defsec* structs - those that you created in *Step 2* above.
 
+<p align="center">
+    <img alt="the squirrel needs to adapt?" src="https://media.giphy.com/media/a1zcR7A6v5k9Mcdxuz/giphy.gif" />
+</p>
+
 Your adapter will receive a list of Terraform modules which you can traverse to find particular blocks, attributes etc., and manufacture a series of defsec structs to return. You can see how this works by reviewing some of the many existing implementations.
 
 Whilst the end-to-end tests will automatically cover your new rule and adapter, it's recommended to also add a more granular set of tests for your adaptation code. You can [check out some examples of this](https://github.com/aquasecurity/tfsec/tree/master/internal/pkg/adapter/aws/apigateway) to get some inspiration. Or some copy and paste fuel.
 
 ### :checkered_flag: Step 6: Prepare a Pull Request
+
+<p align="center">
+    <img alt="Pull!" src="https://media.giphy.com/media/1hdyla7jV3jcPyMjIe/giphy.gif" />
+</p>
 
 In order to raise your *tfsec* pull request, please run:
 
@@ -176,10 +201,11 @@ Now you're ready to [raise the pull request](https://github.com/aquasecurity/tfs
 
 ### :partying_face: Step 7: Relax
 
+You're earned it. You have helped countless individuals and organisations to secure their infrastructure and make the internet a safer place!
+
 <p align="center">
     <img alt="relaxing cat" src="https://i.giphy.com/media/d7nd6bdypnYjGT1jP3/giphy.webp"/>
 </p>
 
-You're earned it. You have helped countless individuals and organisations to secure their infrastructure and make the internet a safer place!
 
 
