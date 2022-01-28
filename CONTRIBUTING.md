@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for considering contributing to tfsec! 
+Thank you for considering contributing to tfsec! :heart:
 
 <p align="center">
     <img alt="welcome to the party, pal!" src="https://media.giphy.com/media/l0MYGb1LuZ3n7dRnO/giphy.gif"/>
@@ -12,7 +12,7 @@ Please consider checking out the following resources:
 - [#tfsec on AquaSec Slack](https://slack.aquasec.com): Come and talk over any questions/suggestions you have with us on Slack!
 - [tfsec documentation](https://aquasecurity.github.io/tfsec/latest/): General usage documentation and rule information.
 
-## PR Checklist
+## :ballot_box_with_check: PR Checklist
 
 - Ensure the build passes locally first with `make pr-ready`.
 - Add a brief description of your change.
