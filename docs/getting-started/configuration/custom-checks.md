@@ -104,7 +104,7 @@ The `MatchSpec` is the what will define the check itself - this is fairly basic 
 | action             | The check type - see below for more information                                                                                            |
 | value              | In cases where a value is required, the value to look for, text matching `TFSEC_VAR_{VAR_NAME}` will be replaced with the variable value   |
 | ignoreUndefined    | If the attribute is undefined, ignore and pass the check                                                                                   |
-| subMatch           | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block                                         |
+| subMatch           | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block, or checking a tag's value in a `tag` map attribute                                       |
 | predicateMatchSpec | An array of MatchSpec blocks to be logically aggregated by either `and` or `or` actions                                                    |
 | assignVariable     | The name of the "variable" to store the value of the `name` attribute in, has to be in uppercase and start with `TFSEC_VAR_`               |
 
