@@ -574,11 +574,11 @@ matchSpec:
 ## How do I know my JSON is valid?
 We have provided the `tfsec-checkgen` binary which will validate your check file to ensure that it is valid for use with `tfsec`. 
 
-In the future, `tfsec-checkgen` will facilitate the creation of new check files with a wizard approach, for now it can be used to validate your check file.
-
 ```shell script
-./tfsec-checkgen validate example/custom/.tfsec/custom_checks.json
+go run ./cmd/tfsec-checkgen validate example/custom/.tfsec/custom_checks.json
 ```
+
+Alternatively, you can install the tfsec-checkgen from the [releases page](https://github.com/aquasecurity/tfsec/releases)
 
 
 ## Are there limitations?

@@ -19,6 +19,21 @@ builds:
     goarch:
       - amd64
       - arm64
+  - id: tfsec-checkgen
+    main: ./cmd/tfsec-checkgen
+    binary: tfsec
+    ldflags:
+      - "-X github.com/aquasecurity/tfsec/version.Version={{.Version}} -s -w -extldflags '-fno-PIC -static'"
+    env:
+      - CGO_ENABLED=0
+      - GOFLAGS=-mod=vendor
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
 
 checksum:
   name_template: '{{ .ProjectName }}_checksums.txt'
