@@ -114,7 +114,7 @@ Fill out the `rules.Rule` struct with appropriate information. The fields are de
 | Severity         | The severity of the check.
 | Terraform/CloudFormation | These contain good and bad code examples (those that pass and fail the rule respectively); a list of IaC technology specific links e.g. a link to the specific resource documentation on the [Terraform Registry](https://registry.terraform.io/); and a markdown block that describes remediation using the specific IaC technology e.g. *Set the Terraform parameter `enable_encryption` to `true`*
 
-We currently use the following guide to approximate severity:
+We use the following guide to approximate severity:
 
 | Level    | When to use                                                                        | Example                                               |
 | -------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------- |
