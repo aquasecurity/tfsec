@@ -158,7 +158,7 @@ You can include values from a tfvars file in the scan,  using, for example: `--t
 
 ## Included Checks
 
-tfsec supports many popular cloud providers.
+tfsec supports many popular cloud and platform providers
 
 There are also checks which are provider agnostic.
 
