@@ -41,7 +41,7 @@ cd defsec && git checkout -b my-awesome-new-rule
 
 ### :cloud: Step 2: Add Cloud Provider/Service Support
 
- DefSec already covers most popular cloud providers and many services, resources and attributes available for each of them.
+ DefSec already covers most popular cloud providers; with many services, resources and attributes available for each.
 
 The `provider` package contains structs that represent cloud resources, such as [AWS S3 Buckets](https://github.com/aquasecurity/defsec/blob/master/provider/aws/s3/bucket.go#L5). Rules simply check the various properties of these structs without having to worry about the intricacies of Terraform, CloudFormation or whatever was used to define the resources.
 
