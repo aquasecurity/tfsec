@@ -2,4 +2,3 @@ mike
 mkdocs-macros-plugin
 mkdocs-include-markdown-plugin
 mkdocs-material
-mkdocs-exclude-search
