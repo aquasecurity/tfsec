@@ -6,7 +6,7 @@ var terraformEnforceHttpTokenImdsGoodExamples = []string{
 	 image_id      = "ami-005e54dee72cc1d00"
 	 instance_type = "t2.micro"
 	 metadata_options {
-	 http_tokens = "required"
+	   http_tokens = "required"
 	 }	
  }
  `,
