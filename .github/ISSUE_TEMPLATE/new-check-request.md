@@ -1,8 +1,8 @@
 ---
 name: New check request
 about: Request a new tfsec check
-title: "[CHECK]"
-labels: new check
+title: "feat: new check for "
+labels: 'new check', 'enhancement', 'requires-defsec'
 assignees: ''
 
 ---
