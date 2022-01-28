@@ -6,7 +6,7 @@ Thank you for considering a contribution to tfsec! :heart:
     <img alt="welcome to the party, pal!" src="https://media.giphy.com/media/l0MYGb1LuZ3n7dRnO/giphy.gif"/>
 </p>
 
-Please consider checking out the following resources:
+Please review the following resources:
 
 - [ARCHITECTURE.md](ARCHITECTURE.md): A very high level document that gives an overview of the code and aims to answer the question *Where is the code that does X?*
 - [#tfsec on AquaSec Slack](https://slack.aquasec.com): Come and talk over any questions/suggestions you have with us on Slack!
