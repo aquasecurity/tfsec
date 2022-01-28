@@ -50,7 +50,9 @@ nav:
       - no-encryption-override: checks/aws/athena/no-encryption-override.md
     - autoscaling:
       - enable-at-rest-encryption: checks/aws/autoscaling/enable-at-rest-encryption.md
+      - enforce-http-token-imds: checks/aws/autoscaling/enforce-http-token-imds.md
       - no-public-ip: checks/aws/autoscaling/no-public-ip.md
+      - no-secrets-in-user-data: checks/aws/autoscaling/no-secrets-in-user-data.md
       - no-sensitive-info: checks/aws/autoscaling/no-sensitive-info.md
     - cloudfront:
       - enable-logging: checks/aws/cloudfront/enable-logging.md
@@ -366,9 +368,6 @@ plugins:
 - search
 - macros
 - include-markdown
-- exclude-search:
-    exclude:
-    - checks/*/home.md
 
 extra:
   generator: false

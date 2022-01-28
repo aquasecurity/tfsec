@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 
 	"github.com/aquasecurity/defsec/provider/aws/autoscaling"
+	"github.com/aquasecurity/defsec/provider/aws/ec2"
 	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/pkg/block"
 )
@@ -11,7 +12,29 @@ import (
 func Adapt(modules block.Modules) autoscaling.Autoscaling {
 	return autoscaling.Autoscaling{
 		LaunchConfigurations: adaptLaunchConfigurations(modules),
+		LaunchTemplates:      adaptLaunchTemplates(modules),
 	}
+}
+
+func adaptLaunchTemplates(modules block.Modules) (templates []autoscaling.LaunchTemplate) {
+
+	blocks := modules.GetResourcesByType("aws_launch_template")
+
+	for _, b := range blocks {
+
+		metadataOptions := getMetadataOptions(b)
+		userData := b.GetAttribute("user_data").AsStringValueOrDefault("", b)
+
+		templates = append(templates, autoscaling.LaunchTemplate{
+			Metadata: *(b.GetMetadata()),
+			Instance: ec2.Instance{
+				MetadataOptions: metadataOptions,
+				UserData:        userData,
+			},
+		})
+	}
+
+	return templates
 }
 
 func adaptLaunchConfigurations(modules block.Modules) []autoscaling.LaunchConfiguration {
@@ -105,6 +128,26 @@ func adaptLaunchConfiguration(resource *block.Block) autoscaling.LaunchConfigura
 		AssociatePublicIP: associatePublicIPAddressVal,
 		RootBlockDevice:   &rootBlockDevice,
 		EBSBlockDevices:   EBSBlockDevices,
+		MetadataOptions:   getMetadataOptions(resource),
 		UserData:          userDataVal,
+	}
+}
+
+func getMetadataOptions(b *block.Block) ec2.MetadataOptions {
+
+	if metadataOptions := b.GetBlock("metadata_options"); metadataOptions.IsNotNil() {
+		metaOpts := ec2.MetadataOptions{
+			Metadata: metadataOptions.Metadata(),
+		}
+
+		metaOpts.HttpTokens = metadataOptions.GetAttribute("http_tokens").AsStringValueOrDefault("", metadataOptions)
+		metaOpts.HttpEndpoint = metadataOptions.GetAttribute("http_endpoint").AsStringValueOrDefault("", metadataOptions)
+		return metaOpts
+	}
+
+	return ec2.MetadataOptions{
+		Metadata:     b.Metadata(),
+		HttpTokens:   types.StringDefault("", b.Metadata()),
+		HttpEndpoint: types.StringDefault("", b.Metadata()),
 	}
 }
