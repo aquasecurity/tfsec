@@ -36,7 +36,8 @@ So firstly you'll need to [fork the repository](https://github.com/aquasecurity/
 # clone your fork of defsec
 git clone git@github.com/YOUR_USERNAME/defsec.git
 # create a working branch for your new rule
-cd defsec && git checkout -b my-awesome-new-rule
+cd defsec 
+git checkout -b my-awesome-new-rule
 ```
 
 ### :cloud: Step 2: Add Cloud Provider/Service Support
