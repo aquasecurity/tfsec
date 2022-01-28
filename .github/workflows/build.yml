@@ -3,7 +3,7 @@ name: tfsec build
 on:
   pull_request:
     paths-ignore:
-      - *.md
+      - '*.md'
   schedule:
     - cron:  0 23 * * *
 
