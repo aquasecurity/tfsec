@@ -8,7 +8,7 @@ on:
       - main
   pull_request:
     paths-ignore:
-      - *.md
+      - '*.md'
 permissions:
   contents: read
   pull-requests: read
