@@ -22,7 +22,8 @@ Please review the following resources:
 
 ## :book: Guide: Adding New Rules 
 
-If you have any questions/suggestions about the below, please get in touch! If you get stuck at any point we'd be happy to chat, assist or pair-program with you to get your rule merged. The below may look daunting, but many steps can often be skipped or are simpler than the volume of text makes them look at first glance. Don't be afraid to get stuck in and ask us for help if required!
+If you have any questions/suggestions about the steps below, please get in touch! If you get stuck at any point we'd be happy to chat, assist or pair-program with you to get your rule merged. The process may look daunting, however, many steps can often be skipped or are simpler than the volume of text makes them look at first glance. 
+Don't be afraid to get stuck in and ask us for help if required! For quick assistance [Slack](https://slack.aquasec.com) is often the quickest route to help.
 
 ### :fork_and_knife: Step 1: Fork *defsec*
 
