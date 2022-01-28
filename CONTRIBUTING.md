@@ -17,8 +17,9 @@ Please review the following resources:
 - Ensure the build passes locally first with `make pr-ready`.
 - Add a brief description of your change.
 - Link to the issue which the PR resolves. Please [create one](https://github.com/aquasecurity/tfsec/issues/new/choose) if necessary.
-- Prefix your PR title with one of [these](https://github.com/commitizen/conventional-commit-types/blob/v3.0.0/index.json) as described in [Conventional Commits](https://www.conventionalcommits.org/) e.g. `feat: Add new rule for AWS S3 bucket encryption`.
+- Prefix your PR title with one of feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert ([see here](https://github.com/commitizen/conventional-commit-types/blob/v3.0.0/index.json)) as described in [Conventional Commits](https://www.conventionalcommits.org/) e.g. `feat: Add new rule for AWS S3 bucket encryption`.
 - For bonus points, include a gif to maintain reviewer morale.
+    
 
 ## :book: Guide: Adding New Rules 
 
