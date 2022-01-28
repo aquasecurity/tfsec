@@ -206,11 +206,8 @@ Now you're ready to [raise the pull request](https://github.com/aquasecurity/tfs
 
 ### :partying_face: Step 7: Relax
 
-You're earned it. You have helped countless individuals and organisations to secure their infrastructure and make the internet a safer place!
+You've earned it. You have helped countless individuals and organisations to secure their infrastructure and make the internet a safer place!
 
 <p align="center">
     <img alt="relaxing cat" src="https://i.giphy.com/media/d7nd6bdypnYjGT1jP3/giphy.webp"/>
 </p>
-
-
-
