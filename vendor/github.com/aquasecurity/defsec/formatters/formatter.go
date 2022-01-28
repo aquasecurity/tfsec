@@ -9,6 +9,7 @@ import (
 
 	"github.com/aquasecurity/defsec/metrics"
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/liamg/tml"
 )
 
@@ -104,7 +105,18 @@ func (b *base) PrintMetrics() {
 }
 
 func key(result rules.Result) string {
-	return fmt.Sprintf("%s:%s:%d", result.Range(), result.Rule().AVDID, result.Status())
+	var severityInt int
+	switch result.Severity() {
+	case severity.Critical:
+		severityInt = 1
+	case severity.High:
+		severityInt = 2
+	case severity.Medium:
+		severityInt = 3
+	case severity.Low:
+		severityInt = 4
+	}
+	return fmt.Sprintf("%d:%s:%s:%d", severityInt, result.Range(), result.Rule().AVDID, result.Status())
 }
 
 func (b *base) GroupResults(results []rules.Result) ([]GroupedResult, error) {
