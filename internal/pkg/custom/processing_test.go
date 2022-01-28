@@ -534,6 +534,321 @@ resource "google_compute_instance" "default" {
 	}
 }
 
+func TestAttributeSubMatches(t *testing.T) {
+	var tests = []struct {
+		name      string
+		source    string
+		matchSpec MatchSpec
+		expected  bool
+	}{
+		{
+			name: "check that lack of subMatches should pass",
+			source: `
+resource "aws_instance" "foo" {
+  tags = {
+    Name = "tf-example"
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+			},
+			expected: true,
+		},
+		{
+			name: "check that a true `isPresent` map attribute subMatch should pass",
+			source: `
+resource "aws_instance" "foo" {
+  tags = {
+    Name = "tf-example"
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:   "Name",
+					Action: "isPresent",
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a true `equals` map attribute subMatch should pass",
+			source: `
+resource "aws_instance" "foo" {
+  tags = {
+    Name = "tf-example"
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "Name",
+					Action:     "equals",
+					MatchValue: "tf-example",
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a false map attribute subMatch should fail",
+			source: `
+resource "aws_instance" "foo" {
+  tags = {
+    Name = "tf-example"
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:   "WrongName",
+					Action: "isPresent",
+				},
+			},
+			expected: false,
+		},
+		{
+			name: "check that a not supported attribute subMatch should fail",
+			source: `
+resource "aws_instance" "foo" {
+  tags = {
+    Name = "tf-example"
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:   "Name",
+					Action: "emptyAction",
+				},
+			},
+			expected: false,
+		},
+		{
+			name: "check that a truey numeric comparison in attribute subMatch should pass",
+			source: `
+resource "aws_instance" "foo" {
+  tags = {
+    InvalidButForTestingTag = 30
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "InvalidButForTestingTag",
+					Action:     "lessThan",
+					MatchValue: 10000,
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a fasley numeric comparison in attribute subMatch should fail",
+			source: `
+resource "aws_instance" "foo" {
+  tags = {
+    InvalidButForTestingTag = 30
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "InvalidButForTestingTag",
+					Action:     "greaterThan",
+					MatchValue: 10000,
+				},
+			},
+			expected: false,
+		},
+		{
+			name: "check that a truey `not` action in attribute subMatch should pass",
+			source: `
+resource "aws_instance" "foo" {
+  tags = {
+    Name = "Creator"
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Action: "not",
+					PredicateMatchSpec: []MatchSpec{
+						{
+							Name:       "Name",
+							Action:     "equals",
+							MatchValue: "Blah",
+						},
+					},
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a falsey `not` action in attribute subMatch should fail",
+			source: `
+resource "aws_instance" "foo" {
+  tags = {
+    Name = "Creator"
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Action: "not",
+					PredicateMatchSpec: []MatchSpec{
+						{
+							Name:       "Name",
+							Action:     "equals",
+							MatchValue: "Creator",
+						},
+					},
+				},
+			},
+			expected: false,
+		},
+		{
+			name: "check that a truey `and` action in attribute subMatch should pass",
+			source: `
+resource "aws_instance" "foo" {
+  tags = {
+    Name = "Creator"
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Action: "and",
+					PredicateMatchSpec: []MatchSpec{
+						{
+							Name:       "Name",
+							Action:     "equals",
+							MatchValue: "Creator",
+						},
+						{
+							Name:       "Name",
+							Action:     "notEqual",
+							MatchValue: "WrongValue",
+						},
+					},
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a falsey `and` action in attribute subMatch should fail",
+			source: `
+resource "aws_instance" "foo" {
+  tags = {
+    Name = "Creator"
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Action: "and",
+					PredicateMatchSpec: []MatchSpec{
+						{
+							Name:       "Name",
+							Action:     "equals",
+							MatchValue: "Creator",
+						},
+						{
+							Name:       "Name",
+							Action:     "equals",
+							MatchValue: "WrongValue",
+						},
+					},
+				},
+			},
+			expected: false,
+		},
+		{
+			name: "check that a false attribute subMatch with non-matching preconditions should pass",
+			source: `
+resource "aws_instance" "foo" {
+  name = "just-a-name"
+  tags = {
+    Name = "tf-example"
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "Name",
+					Action:     "equals",
+					MatchValue: "wrong-value",
+				},
+				PreConditions: []MatchSpec{
+					{
+						Name:       "name",
+						Action:     "equals",
+						MatchValue: "another-name",
+					},
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a false attribute subMatch with matching preconditions should fail",
+			source: `
+resource "aws_instance" "foo" {
+  name = "just-a-name"
+  tags = {
+    Name = "tf-example"
+  }
+}
+`,
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "Name",
+					Action:     "equals",
+					MatchValue: "wrong-value",
+				},
+				PreConditions: []MatchSpec{
+					{
+						Name:       "name",
+						Action:     "equals",
+						MatchValue: "just-a-name",
+					},
+				},
+			},
+			expected: false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
+			assert.Equal(t, result, test.expected, "subMatch evaluation function for attributes behaving incorrectly.")
+		})
+	}
+}
+
 func givenCheck(jsonContent string) {
 	var checksfile ChecksFile
 	err := json.NewDecoder(strings.NewReader(jsonContent)).Decode(&checksfile)
