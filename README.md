@@ -94,7 +94,7 @@ If you want to run tfsec on your repository as a GitHub Action, you can use [htt
 
 - Checks for sensitive data inclusion across all providers
 - Checks for violations of best practice recommendations across all major cloud providers
-- Scans modules (currently only local modules are supported)
+- Scans modules
 - Evaluates expressions as well as literal values
 - Evaluates Terraform functions e.g. `concat()`
 
@@ -102,9 +102,7 @@ If you want to run tfsec on your repository as a GitHub Action, you can use [htt
 
 You may wish to ignore some warnings. If you'd like to do so, you can
 simply add a comment containing `tfsec:ignore:<rule>` to the offending
-line in your templates. If the problem refers to a block of code, such
-as a multiline string, you can add the comment on the line above the
-block, by itself.
+line in your templates. Alternatively, you can add the comment to the line above the block containing the issue, or to the module block to ignore all occurrences of an issue inside the module.
 
 For example, to ignore an open security group rule:
 
@@ -141,13 +139,9 @@ resource "aws_s3_bucket" "my-bucket" {
 ### Expiration Date
 You can set expiration date for `ignore` with `yyyy-mm-dd` format. This is a useful feature when you want to ensure ignored issue won't be forgotten and should be revisited in the future.
 ```
-#tfsec:ignore:aws-s3-enable-bucket-encryption:exp:2022-01-02
+#tfsec:ignore:aws-s3-enable-bucket-encryption:exp:2025-01-02
 ```
-Ignore like this will be active only till `2022-01-02`, after this date it will be deactivated.
-
-### Recent Ignore Changes
-
-As of `v0.52.0`, we fixed an issue where ignores were being incorrectly applied to entire blocks. This has made it more important that ignore comments are added to the correct line(s) in your templates. If tfsec mentions a particular line number as containing an issue you want to ignore, you should add the comment on that same line, or by itself on the line above it (or above the entire block to ignore all issues of that type in the block). If tfsec mentions an entire block as being the issue, you should add a comment on the line above the first line of the block.
+Ignore like this will be active only till `2025-01-02`, after this date it will be deactivated.
 
 ## Disable checks
 
@@ -164,7 +158,8 @@ You can include values from a tfvars file in the scan,  using, for example: `--t
 
 ## Included Checks
 
-tfsec supports AWS/Azure/GCP, and a variety of other resources.
+tfsec supports many popular cloud providers.
+
 There are also checks which are provider agnostic.
 
 | Checks |
