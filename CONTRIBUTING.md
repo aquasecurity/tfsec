@@ -60,7 +60,7 @@ We generally refer to these as *wrapped* types, because the actual value is *wra
 
 You may also spot the inclusion of a `types.Metadata` property in many `provider` structs. This metadata exists to store where the entire resource is defined e.g. *The Terraform block that defines this bucket is on lines 5 to 32 of main.tf*. Again, don't worry about how this will be populated, we'll cover that later.
 
-Another useful thing that metadata provides (on top of the definition file and line range) is whether or not a resource is *managed*. A managed resource in `tfsec` is one which has a `resource` HCL block somewhere in the Terraform code being scanned. Why would we ever have a resource which doesn't exist in the code? Well, sometimes we need to *imply* the existance of resources. For example, if a Terraform template exists which contains the following:
+Another useful thing that metadata provides (on top of the definition file and line range) is whether or not a resource is *managed*. A managed resource in `tfsec` is one which has a `resource` HCL block somewhere in the Terraform code being scanned. Why would we ever have a resource which doesn't exist in the code? Well, sometimes we need to *imply* the existence of resources. For example, if a Terraform template exists which contains the following:
 
 ```hcl
 resource "aws_s3_bucket_object" "my-file" {
@@ -70,11 +70,11 @@ resource "aws_s3_bucket_object" "my-file" {
 }
 ```
 
-An [S3 bucket object](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object) must live inside a [bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket). It cannot exist without one. But often infrastructure is defined in multiple repositories. The definition for the `megabucket` bucket may exist in another repository. When `tfsec` scans the code above in isolation, it has to *imply* the existance of `megabucket` in order to build the provider hierarchy (`bucket CONTAINS object`). But we don't want to apply all of the security rules to this implied bucket, because it doesn't exist in the source template and we can't be sure of any of it's attributes. `tfsec` flags these implied resources as *unmanaged*, and rule logic will generally avoid checking attributes of these resources for this reason.
+An [S3 bucket object](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object) must live inside a [bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket). It cannot exist without one. But often infrastructure is defined in multiple repositories. The definition for the `megabucket` bucket may exist in another repository. When `tfsec` scans the code above in isolation, it has to *imply* the existence of `megabucket` in order to build the provider hierarchy (`bucket CONTAINS object`). But we don't want to apply all of the security rules to this implied bucket, because it doesn't exist in the source template and we can't be sure of any of it's attributes. `tfsec` flags these implied resources as *unmanaged*, and rule logic will generally avoid checking attributes of these resources for this reason.
 
 ### :lock: Step 3: Add Rule Logic
 
-Rules are stored in the `rules/*` packages in defsec. They are organised in the same way as the `provider/*` packages: grouped together by provider and then service. Different resources are generally broken out into seperate files, but this is left to the judgement of the developer.
+Rules are stored in the `rules/*` packages in defsec. They are organised in the same way as the `provider/*` packages: grouped together by provider and then service. Different resources are generally broken out into separate files, but this is left to the judgement of the developer.
 
 Each rule should include the following files:
 
