@@ -211,6 +211,3 @@ You've earned it. You have helped countless individuals and organisations to sec
 <p align="center">
     <img alt="relaxing cat" src="https://i.giphy.com/media/d7nd6bdypnYjGT1jP3/giphy.webp"/>
 </p>
-
-
-
