@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for considering contributing to tfsec! :heart:
+Thank you for considering a contribution to tfsec! :heart:
 
 <p align="center">
     <img alt="welcome to the party, pal!" src="https://media.giphy.com/media/l0MYGb1LuZ3n7dRnO/giphy.gif"/>
