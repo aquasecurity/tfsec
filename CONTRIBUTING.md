@@ -3,7 +3,7 @@
 Thank you for considering contributing to tfsec! 
 
 <p align="center">
-![welcome to the party, pal!](https://media.giphy.com/media/l0MYGb1LuZ3n7dRnO/giphy.gif)
+    <img alt="welcome to the party, pal!" src="https://media.giphy.com/media/l0MYGb1LuZ3n7dRnO/giphy.gif"/>
 </p>
 
 Please consider checking out the following resources:
@@ -177,7 +177,7 @@ Now you're ready to [raise the pull request](https://github.com/aquasecurity/tfs
 ### :partying_face: Step 7: Relax
 
 <p align="center">
-![relaxing](https://i.giphy.com/media/d7nd6bdypnYjGT1jP3/giphy.webp)
+    <img alt="relaxing cat" src="https://i.giphy.com/media/d7nd6bdypnYjGT1jP3/giphy.webp"/>
 </p>
 
 You're earned it. You have helped countless individuals and organisations to secure their infrastructure and make the internet a safer place!
