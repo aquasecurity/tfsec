@@ -96,6 +96,8 @@ If you have examples for other IaC technologies we'd love to add them too! Pleas
 
 Create your core rule file by duplicating an existing rule and renaming it appropriately. Remove all logic from the function at the end for now.
 
+Rules should add results for failure or non-compliance with the check logic AND also provide a Passed result for when the check complies.
+
 Fill out the `rules.Rule` struct with appropriate information. The fields are described below:
 
 | Field            | Description |
