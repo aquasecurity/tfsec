@@ -43,7 +43,7 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 		WithLinksFunc(func(result rules.Result) []string {
 			v := "latest"
 			if version.Version != "" {
-				v = fmt.Sprintf("v%s", version.Version)
+				v = version.Version
 			}
 			return append([]string{
 				fmt.Sprintf(
