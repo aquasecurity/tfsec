@@ -855,7 +855,7 @@ func givenCheck(jsonContent string) {
 	if err != nil {
 		panic(err)
 	}
-	processFoundChecks(checksfile)
+	ProcessFoundChecks(checksfile)
 }
 
 func scanTerraform(t *testing.T, mainTf string) []rules.Result {

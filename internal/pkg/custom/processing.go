@@ -225,7 +225,7 @@ var AttrMatchFunctions = map[CheckAction]func(*block.Attribute, *MatchSpec, *cus
 	},
 }
 
-func processFoundChecks(checks ChecksFile) {
+func ProcessFoundChecks(checks ChecksFile) {
 	for _, customCheck := range checks.Checks {
 		func(customCheck Check) {
 			debug.Log("Loading check: %s\n", customCheck.Code)

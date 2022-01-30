@@ -1,0 +1,27 @@
+{
+  "checks": [
+    {
+      "code": "cus-mfa-delete",
+      "description": "Custom check to ensure MFA Delete is enabled on S3 buckets",
+      "resolution": "Enable MFA Delete (this might already be enabled in AWS, but make sure the attribute is also in terraform)",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "aws_s3_bucket"
+      ],
+      "severity": "Medium",
+      "matchSpec": {
+        "name": "versioning",
+        "action": "isPresent",
+        "subMatch": {
+          "name": "mfa_delete",
+          "action": "equals",
+          "value": true
+        }
+      },
+      "errorMessage": "MFA Delete is disabled",
+      "relatedLinks": []
+    }
+  ]
+}

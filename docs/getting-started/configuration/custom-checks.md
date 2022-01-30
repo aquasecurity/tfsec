@@ -98,15 +98,15 @@ The check contains up of the following attributes;
 
 The `MatchSpec` is the what will define the check itself - this is fairly basic and is made up of the following attributes
 
-| Attribute          | Description                                                                                                                                |
-| :----------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
-| name               | The name of the attribute or block to run the check on                                                                                     |
-| action             | The check type - see below for more information                                                                                            |
-| value              | In cases where a value is required, the value to look for, text matching `TFSEC_VAR_{VAR_NAME}` will be replaced with the variable value   |
-| ignoreUndefined    | If the attribute is undefined, ignore and pass the check                                                                                   |
-| subMatch           | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block, or checking a tag's value in a `tag` map attribute                                       |
-| predicateMatchSpec | An array of MatchSpec blocks to be logically aggregated by either `and` or `or` actions                                                    |
-| assignVariable     | The name of the "variable" to store the value of the `name` attribute in, has to be in uppercase and start with `TFSEC_VAR_`               |
+| Attribute          | Description                                                                                                                                            |
+| :----------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name               | The name of the attribute or block to run the check on                                                                                                 |
+| action             | The check type - see below for more information                                                                                                        |
+| value              | In cases where a value is required, the value to look for, text matching `TFSEC_VAR_{VAR_NAME}` will be replaced with the variable value               |
+| ignoreUndefined    | If the attribute is undefined, ignore and pass the check                                                                                               |
+| subMatch           | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block, or checking a tag's value in a `tag` map attribute |
+| predicateMatchSpec | An array of MatchSpec blocks to be logically aggregated by either `and` or `or` actions                                                                |
+| assignVariable     | The name of the "variable" to store the value of the `name` attribute in, has to be in uppercase and start with `TFSEC_VAR_`                           |
 
 #### Check Actions
 There are a number of `CheckActions` available which should allow you to quickly put together most checks.
@@ -572,14 +572,27 @@ matchSpec:
 ```
 
 ## How do I know my JSON is valid?
-We have provided the `tfsec-checkgen` binary which will validate your check file to ensure that it is valid for use with `tfsec`. 
+We have provided the `tfsec-checkgen` binary which will validate your check file or help perform tests to ensure that it is valid for use with `tfsec`.
+
+### `tfsec-checkgen validate`
+
+Validates the syntax of a custom check.
 
 ```shell script
 go run ./cmd/tfsec-checkgen validate example/custom/.tfsec/custom_checks.json
 ```
 
-Alternatively, you can install the tfsec-checkgen from the [releases page](https://github.com/aquasecurity/tfsec/releases)
+### `tfsec-checkgen test-check`
 
+Tests custom check against provided test cases. You can pass in multiple `--fail`/`-f`/`--pass`/`-p` flags to perform multiple tests at once on the same custom check.
+
+```shell script
+go run ./cmd/tfsec-checkgen test-check ./example/cmd_checkgen_test-check/.tfsec/example_tfchecks.json \
+--fail ./example/cmd_checkgen_test-check/fail.tf \
+--pass ./example/cmd_checkgen_test-check/pass.tf
+```
+
+Alternatively, you can install the tfsec-checkgen from the [releases page](https://github.com/aquasecurity/tfsec/releases)
 
 ## Are there limitations?
 At the moment, check `MatchSpec` is limited in the number of check types it can perform, these are as shown in the previous table.

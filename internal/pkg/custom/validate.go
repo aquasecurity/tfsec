@@ -15,7 +15,7 @@ func Validate(checkFilePath string) error {
 		return fmt.Errorf("check file could not be found at path %s", checkFilePath)
 	}
 
-	checkFile, err := loadCheckFile(checkFilePath)
+	checkFile, err := LoadCheckFile(checkFilePath)
 	if err != nil {
 		return err
 	}
