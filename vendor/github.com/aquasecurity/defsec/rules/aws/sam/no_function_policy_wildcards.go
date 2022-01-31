@@ -69,14 +69,18 @@ func checkStatement(document types.StringValue, statement iamgo.Statement, resul
 		}
 	}
 	for _, resource := range statement.Resource {
-		if strings.Contains(resource, "*") && !iam.IsWildcardAllowed(statement.Action...) {
-			if strings.HasSuffix(resource, "/*") && strings.HasPrefix(resource, "arn:aws:s3") {
-				continue
+		if strings.Contains(resource, "*") {
+			if ok, _ := iam.IsWildcardAllowed(statement.Action...); !ok {
+				if strings.HasSuffix(resource, "/*") && strings.HasPrefix(resource, "arn:aws:s3") {
+					continue
+				}
+				results.Add(
+					"Policy document uses a wildcard resource for sensitive action(s).",
+					document,
+				)
+			} else {
+				results.AddPassed(document)
 			}
-			results.Add(
-				"Policy document uses a wildcard resource for sensitive action(s).",
-				document,
-			)
 		} else {
 			results.AddPassed(document)
 		}
