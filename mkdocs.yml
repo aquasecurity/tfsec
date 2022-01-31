@@ -81,6 +81,7 @@ nav:
       - enable-volume-encryption: checks/aws/ebs/enable-volume-encryption.md
       - encryption-customer-key: checks/aws/ebs/encryption-customer-key.md
     - ec2:
+      - enable-at-rest-encryption: checks/aws/ec2/enable-at-rest-encryption.md
       - enforce-http-token-imds: checks/aws/ec2/enforce-http-token-imds.md
       - no-secrets-in-user-data: checks/aws/ec2/no-secrets-in-user-data.md
     - ecr:

@@ -44,7 +44,7 @@ The following example will pass the aws-autoscaling-enforce-http-token-imds chec
 	 image_id      = "ami-005e54dee72cc1d00"
 	 instance_type = "t2.micro"
 	 metadata_options {
-	 http_tokens = "required"
+	   http_tokens = "required"
 	 }	
  }
  

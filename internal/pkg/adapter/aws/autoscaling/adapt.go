@@ -54,19 +54,6 @@ func adaptLaunchConfigurations(modules block.Modules) []autoscaling.LaunchConfig
 			}
 			launchConfigurations = append(launchConfigurations, launchConfig)
 		}
-		for _, resource := range module.GetResourcesByType("aws_instance") {
-			launchConfig := adaptLaunchConfiguration(resource)
-			for _, resource := range module.GetResourcesByType("aws_ebs_encryption_by_default") {
-				if resource.GetAttribute("enabled").NotEqual(false) {
-					launchConfig.RootBlockDevice.Encrypted = types.BoolDefault(true, *resource.GetMetadata())
-					for i := 0; i < len(launchConfig.EBSBlockDevices); i++ {
-						ebs := &launchConfig.EBSBlockDevices[i]
-						ebs.Encrypted = types.BoolDefault(true, *resource.GetMetadata())
-					}
-				}
-			}
-			launchConfigurations = append(launchConfigurations, launchConfig)
-		}
 	}
 	return launchConfigurations
 }
@@ -84,7 +71,7 @@ func adaptLaunchConfiguration(resource *block.Block) autoscaling.LaunchConfigura
 
 	rootEncryptedVal := types.BoolDefault(false, *resource.GetMetadata())
 	var rootBlockDeviceBlock *block.Block
-	rootBlockDevice := autoscaling.BlockDevice{
+	rootBlockDevice := ec2.BlockDevice{
 		Metadata:  *resource.GetMetadata(),
 		Encrypted: rootEncryptedVal,
 	}
@@ -93,18 +80,18 @@ func adaptLaunchConfiguration(resource *block.Block) autoscaling.LaunchConfigura
 		rootBlockDeviceBlock = resource.GetBlock("root_block_device")
 		encryptedAttr := rootBlockDeviceBlock.GetAttribute("encrypted")
 		rootEncryptedVal = encryptedAttr.AsBoolValueOrDefault(false, rootBlockDeviceBlock)
-		rootBlockDevice = autoscaling.BlockDevice{
+		rootBlockDevice = ec2.BlockDevice{
 			Metadata:  rootBlockDevice.Metadata,
 			Encrypted: rootEncryptedVal,
 		}
 	}
 
-	var EBSBlockDevices []autoscaling.BlockDevice
+	var EBSBlockDevices []ec2.BlockDevice
 	EBSBlockDevicesBlocks := resource.GetBlocks("ebs_block_device")
 	for _, EBSBlockDevicesBlock := range EBSBlockDevicesBlocks {
 		encryptedAttr := EBSBlockDevicesBlock.GetAttribute("encrypted")
 		encryptedVal := encryptedAttr.AsBoolValueOrDefault(false, EBSBlockDevicesBlock)
-		EBSBlockDevices = append(EBSBlockDevices, autoscaling.BlockDevice{
+		EBSBlockDevices = append(EBSBlockDevices, ec2.BlockDevice{
 			Metadata:  *EBSBlockDevicesBlock.GetMetadata(),
 			Encrypted: encryptedVal,
 		})
