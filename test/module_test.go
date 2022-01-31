@@ -38,6 +38,57 @@ var badRule = rule.Rule{
 	},
 }
 
+// IMPORTANT: if this test is failing, you probably need to set the version of go-cty in go.mod to the same version that hcl uses.
+func Test_GoCtyCompatibilityIssue(t *testing.T) {
+	scanner.RegisterCheckRule(badRule)
+	defer scanner.DeregisterCheckRule(badRule)
+
+	fs, err := filesystem.New()
+	require.NoError(t, err)
+	defer fs.Close()
+
+	require.NoError(t, fs.WriteTextFile("/project/main.tf", `
+data "aws_vpc" "default" {
+  default = true
+}
+
+module "test" {
+  source     = "../modules/problem/"
+  cidr_block = data.aws_vpc.default.cidr_block
+}
+`))
+	require.NoError(t, fs.WriteTextFile("/modules/problem/main.tf", `
+variable "cidr_block" {}
+
+variable "open" {                
+  default = false
+}                
+
+resource "aws_security_group" "this" {
+  name = "Test"                       
+
+  ingress {    
+    description = "HTTPs"
+    from_port   = 443    
+    to_port     = 443
+    protocol    = "tcp"
+    self        = ! var.open
+    cidr_blocks = var.open ? [var.cidr_block] : null
+  }                                                 
+}  
+
+resource "problem" "uhoh" {
+	bad = true
+}
+`))
+
+	blocks, err := parser.New(fs.RealPath("/project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	require.NoError(t, err)
+	results, _ := scanner.New().Scan(blocks)
+	testutil.AssertRuleFound(t, badRule.ID(), results, "")
+
+}
+
 func Test_ProblemInModuleInSiblingDir(t *testing.T) {
 
 	scanner.RegisterCheckRule(badRule)
