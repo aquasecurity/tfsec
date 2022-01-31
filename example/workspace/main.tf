@@ -5,6 +5,10 @@ resource "aws_instance" "compliant" {
   instance_type  = "t2.small"
   cpu_core_count = 4
 
+  root_block_device {
+    encrypted = false
+  }
+
   tags = {
     Department = "Finance"
     CostCentre = "CC1234"

@@ -11,6 +11,21 @@ type Instance struct {
 	MetadataOptions MetadataOptions
 	UserData        types.StringValue
 	SecurityGroups  []vpc.SecurityGroup
+	RootBlockDevice *BlockDevice
+	EBSBlockDevices []BlockDevice
+}
+
+type BlockDevice struct {
+	types.Metadata
+	Encrypted types.BoolValue
+}
+
+func (d *BlockDevice) GetMetadata() *types.Metadata {
+	return &d.Metadata
+}
+
+func (d *BlockDevice) GetRawValue() interface{} {
+	return nil
 }
 
 type MetadataOptions struct {
