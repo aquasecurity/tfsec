@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/apparentlymart/go-cidr v1.1.0
-	github.com/aquasecurity/defsec v0.6.2
+	github.com/aquasecurity/defsec v0.6.3-0.20220131150100-5235d6ccaf93
 	github.com/bmatcuk/doublestar v1.3.4
 	github.com/google/go-cmp v0.5.7
 	github.com/google/uuid v1.3.0
@@ -19,7 +19,7 @@ require (
 	github.com/owenrumney/squealer v0.3.1
 	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.0
-	github.com/zclconf/go-cty v1.8.0
+	github.com/zclconf/go-cty v1.10.0
 	github.com/zclconf/go-cty-yaml v1.0.2
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 	golang.org/x/text v0.3.7
