@@ -70,7 +70,7 @@ func (a *adapter) adaptCluster(resource *block.Block, module *block.Module) {
 	}
 
 	masterAuthNetworks := gke.MasterAuthorizedNetworks{
-		Enabled: types.BoolDefault(false, *resource.GetMetadata()),
+		Enabled: types.BoolDefault(false, resource.Metadata()),
 		CIDRs:   []types.StringValue{},
 	}
 
@@ -83,8 +83,8 @@ func (a *adapter) adaptCluster(resource *block.Block, module *block.Module) {
 		}
 	}
 
-	if resource.HasChild("master_authorized_networks_config") {
-		masterAuthNetworks = adaptMasterAuthNetworks(resource.GetAttribute("master_authorized_networks_config"))
+	if blocks := resource.GetBlocks("master_authorized_networks_config"); len(blocks) > 0 {
+		masterAuthNetworks = adaptMasterAuthNetworksAsBlocks(blocks)
 	}
 
 	if resource.HasChild("network_policy") {
@@ -263,26 +263,18 @@ func adaptMasterAuth(resource *block.Block) gke.MasterAuth {
 	}
 }
 
-func adaptMasterAuthNetworks(attribute *block.Attribute) gke.MasterAuthorizedNetworks {
+func adaptMasterAuthNetworksAsBlocks(blocks block.Blocks) gke.MasterAuthorizedNetworks {
 	var cidrs []types.StringValue
-
-	attribute.Each(func(_ cty.Value, val cty.Value) {
-		m := val.AsValueMap()
-		blocks, ok := m["cidr_blocks"]
-		if !ok {
-			return
-		}
-		for _, block := range blocks.AsValueSlice() {
-			blockObj := block.AsValueMap()
-			cidrBlock, ok := blockObj["cidr_block"]
-			if !ok {
-				continue
+	for _, block := range blocks {
+		for _, cidrBlock := range block.GetBlocks("cidr_blocks") {
+			if cidrAttr := cidrBlock.GetAttribute("cidr_block"); cidrAttr.IsNotNil() {
+				for _, cidr := range cidrAttr.ValueAsStrings() {
+					cidrs = append(cidrs, types.String(cidr, cidrAttr.Metadata()))
+				}
 			}
-			cidrs = append(cidrs, types.String(cidrBlock.AsString(), *attribute.GetMetadata()))
 		}
-	})
-	enabled := types.Bool(true, *attribute.GetMetadata())
-
+	}
+	enabled := types.Bool(true, blocks[0].Metadata())
 	return gke.MasterAuthorizedNetworks{
 		Enabled: enabled,
 		CIDRs:   cidrs,
