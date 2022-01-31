@@ -116,9 +116,9 @@ func (val Value) GoString() string {
 // Use RawEquals to compare if two values are equal *ignoring* the
 // short-circuit rules and the exception for null values.
 func (val Value) Equals(other Value) Value {
-	if val.ContainsMarked() || other.ContainsMarked() {
-		val, valMarks := val.UnmarkDeep()
-		other, otherMarks := other.UnmarkDeep()
+	if val.IsMarked() || other.IsMarked() {
+		val, valMarks := val.Unmark()
+		other, otherMarks := other.Unmark()
 		return val.Equals(other).WithMarks(valMarks, otherMarks)
 	}
 
@@ -191,7 +191,7 @@ func (val Value) Equals(other Value) Value {
 
 	switch {
 	case ty == Number:
-		result = rawNumberEqual(val.v.(*big.Float), other.v.(*big.Float))
+		result = val.v.(*big.Float).Cmp(other.v.(*big.Float)) == 0
 	case ty == Bool:
 		result = val.v.(bool) == other.v.(bool)
 	case ty == String:
@@ -492,23 +492,18 @@ func (val Value) RawEquals(other Value) bool {
 
 	case ty.IsMapType():
 		ety := ty.typeImpl.(typeMap).ElementTypeT
-		if !val.HasSameMarks(other) {
-			return false
-		}
-		valUn, _ := val.Unmark()
-		otherUn, _ := other.Unmark()
-		if len(valUn.v.(map[string]interface{})) == len(otherUn.v.(map[string]interface{})) {
-			for k := range valUn.v.(map[string]interface{}) {
-				if _, ok := otherUn.v.(map[string]interface{})[k]; !ok {
+		if len(val.v.(map[string]interface{})) == len(other.v.(map[string]interface{})) {
+			for k := range val.v.(map[string]interface{}) {
+				if _, ok := other.v.(map[string]interface{})[k]; !ok {
 					return false
 				}
 				lhs := Value{
 					ty: ety,
-					v:  valUn.v.(map[string]interface{})[k],
+					v:  val.v.(map[string]interface{})[k],
 				}
 				rhs := Value{
 					ty: ety,
-					v:  otherUn.v.(map[string]interface{})[k],
+					v:  other.v.(map[string]interface{})[k],
 				}
 				eq := lhs.RawEquals(rhs)
 				if !eq {
@@ -1283,7 +1278,9 @@ func (val Value) AsBigFloat() *big.Float {
 	}
 
 	// Copy the float so that callers can't mutate our internal state
-	return new(big.Float).Copy(val.v.(*big.Float))
+	ret := *(val.v.(*big.Float))
+
+	return &ret
 }
 
 // AsValueSlice returns a []cty.Value representation of a non-null, non-unknown

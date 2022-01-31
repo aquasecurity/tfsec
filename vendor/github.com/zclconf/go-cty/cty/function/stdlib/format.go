@@ -114,8 +114,6 @@ var FormatListFunc = function.New(&function.Spec{
 					continue
 				}
 				iterators[i] = arg.ElementIterator()
-			case arg == cty.DynamicVal:
-				unknowns[i] = true
 			default:
 				singleVals[i] = arg
 			}
