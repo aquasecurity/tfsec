@@ -34,8 +34,12 @@ func adaptKeyRings(modules block.Modules) []kms.KeyRing {
 
 func adaptKey(resource *block.Block) kms.Key {
 	rotationPeriodAttr := resource.GetAttribute("rotation_period")
+	if !rotationPeriodAttr.IsString() {
+		return kms.Key{
+			RotationPeriodSeconds: types.IntDefault(-1, resource.Metadata()),
+		}
+	}
 	rotationStr := rotationPeriodAttr.Value().AsString()
-
 	if rotationStr[len(rotationStr)-1:] != "s" {
 		return kms.Key{}
 	}
