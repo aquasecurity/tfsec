@@ -6,27 +6,35 @@ import (
 	"github.com/aquasecurity/tfsec/internal/pkg/block"
 )
 
-func getBuckets(modules block.Modules) []s3.Bucket {
+type adapter struct {
+	modules   block.Modules
+	bucketMap map[string]s3.Bucket
+}
+
+func (a *adapter) adaptBuckets() []s3.Bucket {
+	for _, block := range a.modules.GetResourcesByType("aws_s3_bucket") {
+		bucket := s3.Bucket{
+			Name:     block.GetAttribute("bucket").AsStringValueOrDefault("", block),
+			Metadata: block.Metadata(),
+			Versioning: s3.Versioning{
+				Enabled: isVersioned(block),
+			},
+			Encryption: s3.Encryption{
+				Enabled: isEncrypted(block),
+			},
+			Logging: s3.Logging{
+				Enabled: hasLogging(block),
+			},
+			ACL: block.GetAttribute("acl").AsStringValueOrDefault("", block),
+		}
+		a.bucketMap[block.ID()] = bucket
+	}
+
+	a.adaptPublicAccessBlocks()
+
 	var buckets []s3.Bucket
-	blocks := modules.GetResourcesByType("aws_s3_bucket")
-	for _, b := range blocks {
-		func(block *block.Block) {
-			bucket := s3.Bucket{
-				Name:     b.GetAttribute("bucket").AsStringValueOrDefault("", b),
-				Metadata: block.Metadata(),
-				Versioning: s3.Versioning{
-					Enabled: isVersioned(block),
-				},
-				Encryption: s3.Encryption{
-					Enabled: isEncrypted(block),
-				},
-				Logging: s3.Logging{
-					Enabled: hasLogging(block),
-				},
-				ACL: b.GetAttribute("acl").AsStringValueOrDefault("", b),
-			}
-			buckets = append(buckets, bucket)
-		}(b)
+	for _, bucket := range a.bucketMap {
+		buckets = append(buckets, bucket)
 	}
 
 	return buckets
