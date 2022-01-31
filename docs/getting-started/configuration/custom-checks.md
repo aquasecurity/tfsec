@@ -80,6 +80,8 @@ checks:
 
 ```
 
+Using `go run ./cmd/tfsec-checkgen generate`, you can generate a skeleton custom check file.
+
 The check contains up of the following attributes;
 
 | Attribute      | Description                                                                                            |
