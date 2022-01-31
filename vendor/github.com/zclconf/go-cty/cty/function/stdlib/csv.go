@@ -30,7 +30,7 @@ var CSVDecodeFunc = function.New(&function.Spec{
 			return cty.DynamicPseudoType, fmt.Errorf("missing header line")
 		}
 		if err != nil {
-			return cty.DynamicPseudoType, csvError(err)
+			return cty.DynamicPseudoType, err
 		}
 
 		atys := make(map[string]cty.Type, len(headers))
@@ -64,7 +64,7 @@ var CSVDecodeFunc = function.New(&function.Spec{
 				break
 			}
 			if err != nil {
-				return cty.DynamicVal, csvError(err)
+				return cty.DynamicVal, err
 			}
 
 			vals := make(map[string]cty.Value, len(cols))
@@ -90,13 +90,4 @@ var CSVDecodeFunc = function.New(&function.Spec{
 // determine the values of those attributes.
 func CSVDecode(str cty.Value) (cty.Value, error) {
 	return CSVDecodeFunc.Call([]cty.Value{str})
-}
-
-func csvError(err error) error {
-	switch err := err.(type) {
-	case *csv.ParseError:
-		return fmt.Errorf("CSV parse error on line %d: %w", err.Line, err.Err)
-	default:
-		return err
-	}
 }
