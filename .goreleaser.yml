@@ -13,7 +13,7 @@ builds:
     goarch:
       - amd64
       - arm64
-    gobinary: "go1.17.6"
+    gobinary: "go1.17"
   - id: tfsec-checkgen
     main: ./cmd/tfsec-checkgen
     binary: tfsec-checkgen
@@ -28,7 +28,7 @@ builds:
     goarch:
       - amd64
       - arm64
-    gobinary: "go1.17.6"
+    gobinary: "go1.17"
 checksum:
   name_template: '{{ .ProjectName }}_checksums.txt'
 
