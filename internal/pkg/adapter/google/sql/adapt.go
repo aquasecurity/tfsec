@@ -29,16 +29,16 @@ func adaptInstance(resource *block.Block) sql.DatabaseInstance {
 	backupConfigEnabledVal := types.BoolDefault(false, *resource.GetMetadata())
 
 	flags := sql.Flags{
-		LogTempFileSize:                 types.IntDefault(-1, *resource.GetMetadata()),
-		LocalInFile:                     types.BoolDefault(false, *resource.GetMetadata()),
-		ContainedDatabaseAuthentication: types.BoolDefault(true, *resource.GetMetadata()),
-		CrossDBOwnershipChaining:        types.BoolDefault(true, *resource.GetMetadata()),
-		LogCheckpoints:                  types.BoolDefault(false, *resource.GetMetadata()),
-		LogConnections:                  types.BoolDefault(false, *resource.GetMetadata()),
-		LogDisconnections:               types.BoolDefault(false, *resource.GetMetadata()),
-		LogLockWaits:                    types.BoolDefault(false, *resource.GetMetadata()),
-		LogMinMessages:                  types.StringDefault("", *resource.GetMetadata()),
-		LogMinDurationStatement:         types.IntDefault(-1, *resource.GetMetadata()),
+		LogTempFileSize:                 types.IntDefault(-1, resource.Metadata()),
+		LocalInFile:                     types.BoolDefault(false, resource.Metadata()),
+		ContainedDatabaseAuthentication: types.BoolDefault(true, resource.Metadata()),
+		CrossDBOwnershipChaining:        types.BoolDefault(true, resource.Metadata()),
+		LogCheckpoints:                  types.BoolDefault(false, resource.Metadata()),
+		LogConnections:                  types.BoolDefault(false, resource.Metadata()),
+		LogDisconnections:               types.BoolDefault(false, resource.Metadata()),
+		LogLockWaits:                    types.BoolDefault(false, resource.Metadata()),
+		LogMinMessages:                  types.StringDefault("", resource.Metadata()),
+		LogMinDurationStatement:         types.IntDefault(-1, resource.Metadata()),
 	}
 
 	ipConfig := sql.IPConfiguration{
@@ -55,7 +55,7 @@ func adaptInstance(resource *block.Block) sql.DatabaseInstance {
 	if resource.HasChild("settings") {
 		settingsBlock := resource.GetBlock("settings")
 		if blocks := settingsBlock.GetBlocks("database_flags"); len(blocks) > 0 {
-			flags = adaptFlags(blocks)
+			adaptFlags(blocks, &flags)
 		}
 		if settingsBlock.HasChild("backup_configuration") {
 			backupConfigEnabledAttr := settingsBlock.GetBlock("backup_configuration").GetAttribute("enabled")
@@ -78,21 +78,8 @@ func adaptInstance(resource *block.Block) sql.DatabaseInstance {
 	}
 }
 
-func adaptFlags(resources block.Blocks) sql.Flags {
-
-	flags := sql.Flags{
-		LogTempFileSize:                 types.IntDefault(-1, resources[0].Metadata()),
-		LocalInFile:                     types.BoolDefault(false, resources[0].Metadata()),
-		ContainedDatabaseAuthentication: types.BoolDefault(true, resources[0].Metadata()),
-		CrossDBOwnershipChaining:        types.BoolDefault(true, resources[0].Metadata()),
-		LogCheckpoints:                  types.BoolDefault(false, resources[0].Metadata()),
-		LogConnections:                  types.BoolDefault(false, resources[0].Metadata()),
-		LogDisconnections:               types.BoolDefault(false, resources[0].Metadata()),
-		LogLockWaits:                    types.BoolDefault(false, resources[0].Metadata()),
-		LogMinMessages:                  types.StringDefault("", resources[0].Metadata()),
-		LogMinDurationStatement:         types.IntDefault(-1, resources[0].Metadata()),
-	}
-
+//nolint
+func adaptFlags(resources block.Blocks, flags *sql.Flags) {
 	for _, resource := range resources {
 
 		nameAttr := resource.GetAttribute("name")
@@ -129,8 +116,6 @@ func adaptFlags(resources block.Blocks) sql.Flags {
 			flags.CrossDBOwnershipChaining = types.Bool(valueAttr.Equals("on"), valueAttr.Metadata())
 		}
 	}
-
-	return flags
 }
 
 func adaptIPConfig(resource *block.Block) sql.IPConfiguration {

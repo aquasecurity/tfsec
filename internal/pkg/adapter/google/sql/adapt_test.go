@@ -150,33 +150,6 @@ resource "" "example" {
 	}
 }
 
-func Test_adaptFlags(t *testing.T) {
-	t.SkipNow()
-	tests := []struct {
-		name      string
-		terraform string
-		expected  sql.Flags
-	}{
-		{
-			name: "basic",
-			terraform: `
-resource "" "example" {
-    
-}
-`,
-			expected: sql.Flags{},
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			modules := testutil.CreateModulesFromSource(test.terraform, ".tf", t)
-			adapted := adaptFlags(modules.GetBlocks())
-			testutil.AssertDefsecEqual(t, test.expected, adapted)
-		})
-	}
-}
-
 func Test_adaptIPConfig(t *testing.T) {
 	t.SkipNow()
 	tests := []struct {
