@@ -6,11 +6,13 @@ import (
 )
 
 func Adapt(modules block.Modules) s3.S3 {
-	buckets := getBuckets(modules)
-	publicAccessBlocks := getPublicAccessBlocks(modules, buckets)
+
+	a := &adapter{
+		modules:   modules,
+		bucketMap: make(map[string]s3.Bucket),
+	}
 
 	return s3.S3{
-		Buckets:            buckets,
-		PublicAccessBlocks: publicAccessBlocks,
+		Buckets: a.adaptBuckets(),
 	}
 }
