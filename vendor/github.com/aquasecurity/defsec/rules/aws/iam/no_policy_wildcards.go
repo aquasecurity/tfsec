@@ -1,6 +1,7 @@
 package iam
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/aquasecurity/defsec/provider"
@@ -73,29 +74,30 @@ func checkPolicy(src types.StringValue, results rules.Results) rules.Results {
 	return results
 }
 
+//nolint
 func checkStatement(src types.StringValue, statement iamgo.Statement, results rules.Results) rules.Results {
 	if statement.Effect != iamgo.EffectAllow {
 		return results
 	}
+	var actions []string
+	var resources []string
 	for _, action := range statement.Action {
 		if strings.Contains(action, "*") {
-			results.Add(
-				"IAM policy document uses wildcarded action.",
-				src,
-			)
+			actions = append(actions, action)
 		} else {
 			results.AddPassed(src)
 		}
 	}
 	for _, resource := range statement.Resource {
-		if strings.Contains(resource, "*") && !iam.IsWildcardAllowed(statement.Action...) {
-			if strings.HasSuffix(resource, "/*") && strings.HasPrefix(resource, "arn:aws:s3") {
-				continue
+		if strings.Contains(resource, "*") {
+			if allowed, action := iam.IsWildcardAllowed(statement.Action...); !allowed {
+				if strings.HasSuffix(resource, "/*") && strings.HasPrefix(resource, "arn:aws:s3") {
+					continue
+				}
+				resources = append(resources, fmt.Sprintf("action %s on resource %s", action, resource))
+			} else {
+				results.AddPassed(src)
 			}
-			results.Add(
-				"IAM policy document uses wildcarded resource for sensitive action(s).",
-				src,
-			)
 		} else {
 			results.AddPassed(src)
 		}
@@ -118,5 +120,37 @@ func checkStatement(src types.StringValue, statement iamgo.Statement, results ru
 			}
 		}
 	}
+
+	if len(resources) == 1 {
+		results.Add(
+			fmt.Sprintf("IAM policy document uses wildcarded resource for sensitive action(s): %s", resources[0]),
+			src,
+		)
+	} else if len(resources) > 1 {
+		results.Add(
+			fmt.Sprintf(
+				"IAM policy document uses %d wildcarded resources for sensitive action(s): %s",
+				len(resources),
+				strings.Join(resources, ", "),
+			),
+			src,
+		)
+	}
+
+	if len(actions) == 1 {
+		results.Add(
+			fmt.Sprintf(
+				"IAM policy document uses wildcarded action: %s",
+				actions[0],
+			),
+			src,
+		)
+	} else if len(actions) > 1 {
+		results.Add(
+			fmt.Sprintf("IAM policy document uses %d wildcarded actions: %s", len(actions), strings.Join(actions, ", ")),
+			src,
+		)
+	}
+
 	return results
 }

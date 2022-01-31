@@ -1,6 +1,6 @@
 package iam
 
-func IsWildcardAllowed(actions ...string) bool {
+func IsWildcardAllowed(actions ...string) (bool, string) {
 	for _, action := range actions {
 		var ok bool
 		for _, allowed := range allowedActionsForResourceWildcards {
@@ -10,10 +10,10 @@ func IsWildcardAllowed(actions ...string) bool {
 			}
 		}
 		if !ok {
-			return false
+			return false, action
 		}
 	}
-	return true
+	return true, ""
 }
 
 // see https://docs.aws.amazon.com/service-authorization/latest/reference/list_identityandaccessmanagement.html
