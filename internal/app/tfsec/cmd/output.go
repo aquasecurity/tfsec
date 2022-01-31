@@ -45,6 +45,10 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 			if version.Version != "" {
 				v = version.Version
 			}
+			var links []string
+			if result.Rule().Terraform != nil {
+				links = result.Rule().Terraform.Links
+			}
 			return append([]string{
 				fmt.Sprintf(
 					"https://aquasecurity.github.io/tfsec/%s/checks/%s/%s/%s/",
@@ -53,7 +57,7 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 					strings.ToLower(result.Rule().Service),
 					result.Rule().ShortCode,
 				),
-			}, result.Rule().Terraform.Links...)
+			}, links...)
 		}).
 		WithBaseDir(dir).
 		WithMetricsEnabled(!conciseOutput)
