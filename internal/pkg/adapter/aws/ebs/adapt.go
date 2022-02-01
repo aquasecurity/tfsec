@@ -31,6 +31,7 @@ func adaptVolume(resource *block.Block) ebs.Volume {
 	return ebs.Volume{
 		Metadata: *resource.GetMetadata(),
 		Encryption: ebs.Encryption{
+			Metadata: resource.Metadata(),
 			Enabled:  encryptedVal,
 			KMSKeyID: kmsKeyVal,
 		},

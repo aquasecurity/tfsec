@@ -23,24 +23,28 @@ func adaptClusters(modules block.Modules) []neptune.Cluster {
 }
 
 func adaptCluster(resource *block.Block) neptune.Cluster {
-	enableLogExportsAttr := resource.GetAttribute("enable_cloudwatch_logs_exports")
-	auditVal := types.BoolDefault(false, *resource.GetMetadata())
-	if enableLogExportsAttr.Contains("audit") {
-		auditVal = types.Bool(true, *resource.GetMetadata())
+	cluster := neptune.Cluster{
+		Metadata: resource.Metadata(),
+		Logging: neptune.Logging{
+			Metadata: resource.Metadata(),
+			Audit:    types.BoolDefault(false, resource.Metadata()),
+		},
+		StorageEncrypted: types.BoolDefault(false, resource.Metadata()),
+		KMSKeyID:         types.StringDefault("", resource.Metadata()),
+	}
+
+	if enableLogExportsAttr := resource.GetAttribute("enable_cloudwatch_logs_exports"); enableLogExportsAttr.IsNotNil() {
+		cluster.Logging.Metadata = enableLogExportsAttr.Metadata()
+		if enableLogExportsAttr.Contains("audit") {
+			cluster.Logging.Audit = types.Bool(true, *resource.GetMetadata())
+		}
 	}
 
 	storageEncryptedAttr := resource.GetAttribute("storage_encrypted")
-	storageEncryptedVal := storageEncryptedAttr.AsBoolValueOrDefault(false, resource)
+	cluster.StorageEncrypted = storageEncryptedAttr.AsBoolValueOrDefault(false, resource)
 
 	KMSKeyAttr := resource.GetAttribute("kms_key_arn")
-	KMSKeyVal := KMSKeyAttr.AsStringValueOrDefault("", resource)
+	cluster.KMSKeyID = KMSKeyAttr.AsStringValueOrDefault("", resource)
 
-	return neptune.Cluster{
-		Metadata: *resource.GetMetadata(),
-		Logging: neptune.Logging{
-			Audit: auditVal,
-		},
-		StorageEncrypted: storageEncryptedVal,
-		KMSKeyID:         KMSKeyVal,
-	}
+	return cluster
 }

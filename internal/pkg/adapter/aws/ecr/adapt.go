@@ -23,53 +23,49 @@ func adaptRepositories(modules block.Modules) []ecr.Repository {
 }
 
 func adaptRepository(resource *block.Block, module *block.Module) ecr.Repository {
+	repo := ecr.Repository{
+		Metadata: resource.Metadata(),
+		ImageScanning: ecr.ImageScanning{
+			Metadata:   resource.Metadata(),
+			ScanOnPush: types.BoolDefault(false, *resource.GetMetadata()),
+		},
+		ImageTagsImmutable: types.BoolDefault(false, *resource.GetMetadata()),
+		Policies:           nil,
+		Encryption: ecr.Encryption{
+			Metadata: resource.Metadata(),
+			Type:     types.StringDefault("AES256", *resource.GetMetadata()),
+			KMSKeyID: types.StringDefault("", *resource.GetMetadata()),
+		},
+	}
 
-	scanOnPushVal := types.BoolDefault(false, *resource.GetMetadata())
-	tagsImmutable := types.BoolDefault(false, *resource.GetMetadata())
-	encryptionTypeVal := types.StringDefault("AES256", *resource.GetMetadata())
-	kmsKeyVal := types.StringDefault("", *resource.GetMetadata())
-
-	if resource.HasChild("image_scanning_configuration") {
-		imageScanningBlock := resource.GetBlock("image_scanning_configuration")
+	if imageScanningBlock := resource.GetBlock("image_scanning_configuration"); imageScanningBlock.IsNotNil() {
+		repo.ImageScanning.Metadata = imageScanningBlock.Metadata()
 		scanOnPushAttr := imageScanningBlock.GetAttribute("scan_on_push")
-		scanOnPushVal = scanOnPushAttr.AsBoolValueOrDefault(false, imageScanningBlock)
+		repo.ImageScanning.ScanOnPush = scanOnPushAttr.AsBoolValueOrDefault(false, imageScanningBlock)
 	}
 
 	mutabilityAttr := resource.GetAttribute("image_tag_mutability")
 	if mutabilityAttr.Equals("IMMUTABLE") {
-		tagsImmutable = types.Bool(true, *mutabilityAttr.GetMetadata())
+		repo.ImageTagsImmutable = types.Bool(true, *mutabilityAttr.GetMetadata())
 	} else if mutabilityAttr.Equals("MUTABLE") {
-		tagsImmutable = types.Bool(false, *mutabilityAttr.GetMetadata())
+		repo.ImageTagsImmutable = types.Bool(false, *mutabilityAttr.GetMetadata())
 	}
 
 	policyBlocks := module.GetReferencingResources(resource, "aws_ecr_repository_policy", "repository")
-	var policies []types.StringValue
 	for _, policyRes := range policyBlocks {
-		if policyRes.HasChild("policy") && policyRes.GetAttribute("policy").IsString() {
-			policyAttr := policyRes.GetAttribute("policy")
-			policies = append(policies, policyAttr.AsStringValueOrDefault("", policyRes))
+		if policyAttr := policyRes.GetAttribute("policy"); policyAttr.IsString() {
+			repo.Policies = append(repo.Policies, policyAttr.AsStringValueOrDefault("", policyRes))
 		}
 	}
 
-	if resource.HasChild("encryption_configuration") {
-		encryptBlock := resource.GetBlock("encryption_configuration")
+	if encryptBlock := resource.GetBlock("encryption_configuration"); encryptBlock.IsNotNil() {
+		repo.Encryption.Metadata = encryptBlock.Metadata()
 		encryptionTypeAttr := encryptBlock.GetAttribute("encryption_type")
-		encryptionTypeVal = encryptionTypeAttr.AsStringValueOrDefault("AES256", encryptBlock)
+		repo.Encryption.Type = encryptionTypeAttr.AsStringValueOrDefault("AES256", encryptBlock)
 
 		kmsKeyAttr := encryptBlock.GetAttribute("kms_key")
-		kmsKeyVal = kmsKeyAttr.AsStringValueOrDefault("", encryptBlock)
+		repo.Encryption.KMSKeyID = kmsKeyAttr.AsStringValueOrDefault("", encryptBlock)
 	}
 
-	return ecr.Repository{
-		Metadata: *resource.GetMetadata(),
-		ImageScanning: ecr.ImageScanning{
-			ScanOnPush: scanOnPushVal,
-		},
-		ImageTagsImmutable: tagsImmutable,
-		Policies:           policies,
-		Encryption: ecr.Encryption{
-			Type:     encryptionTypeVal,
-			KMSKeyID: kmsKeyVal,
-		},
-	}
+	return repo
 }

@@ -23,74 +23,70 @@ func adaptClusters(modules block.Modules) []eks.Cluster {
 }
 
 func adaptCluster(resource *block.Block) eks.Cluster {
-	logging := eks.Logging{
-		API:               types.BoolDefault(false, *resource.GetMetadata()),
-		Audit:             types.BoolDefault(false, *resource.GetMetadata()),
-		Authenticator:     types.BoolDefault(false, *resource.GetMetadata()),
-		ControllerManager: types.BoolDefault(false, *resource.GetMetadata()),
-		Scheduler:         types.BoolDefault(false, *resource.GetMetadata()),
+
+	cluster := eks.Cluster{
+		Metadata: resource.Metadata(),
+		Logging: eks.Logging{
+			Metadata:          resource.Metadata(),
+			API:               types.BoolDefault(false, *resource.GetMetadata()),
+			Audit:             types.BoolDefault(false, *resource.GetMetadata()),
+			Authenticator:     types.BoolDefault(false, *resource.GetMetadata()),
+			ControllerManager: types.BoolDefault(false, *resource.GetMetadata()),
+			Scheduler:         types.BoolDefault(false, *resource.GetMetadata()),
+		},
+		Encryption: eks.Encryption{
+			Metadata: resource.Metadata(),
+			Secrets:  types.BoolDefault(false, *resource.GetMetadata()),
+			KMSKeyID: types.StringDefault("", *resource.GetMetadata()),
+		},
+		PublicAccessEnabled: types.BoolDefault(true, *resource.GetMetadata()),
+		PublicAccessCIDRs:   nil,
 	}
 
-	logTypesAttr := resource.GetAttribute("enabled_cluster_log_types")
-	logTypesList := logTypesAttr.ValueAsStrings()
-	for _, logType := range logTypesList {
-		switch logType {
-		case "api":
-			logging.API = types.Bool(true, *logTypesAttr.GetMetadata())
-		case "audit":
-			logging.Audit = types.Bool(true, *logTypesAttr.GetMetadata())
-		case "authenticator":
-			logging.Authenticator = types.Bool(true, *logTypesAttr.GetMetadata())
-		case "controllerManager":
-			logging.ControllerManager = types.Bool(true, *logTypesAttr.GetMetadata())
-		case "scheduler":
-			logging.Scheduler = types.Bool(true, *logTypesAttr.GetMetadata())
+	if logTypesAttr := resource.GetAttribute("enabled_cluster_log_types"); logTypesAttr.IsNotNil() {
+		cluster.Logging.Metadata = logTypesAttr.Metadata()
+		logTypesList := logTypesAttr.ValueAsStrings()
+		for _, logType := range logTypesList {
+			switch logType {
+			case "api":
+				cluster.Logging.API = types.Bool(true, *logTypesAttr.GetMetadata())
+			case "audit":
+				cluster.Logging.Audit = types.Bool(true, *logTypesAttr.GetMetadata())
+			case "authenticator":
+				cluster.Logging.Authenticator = types.Bool(true, *logTypesAttr.GetMetadata())
+			case "controllerManager":
+				cluster.Logging.ControllerManager = types.Bool(true, *logTypesAttr.GetMetadata())
+			case "scheduler":
+				cluster.Logging.Scheduler = types.Bool(true, *logTypesAttr.GetMetadata())
+			}
 		}
 	}
 
-	secrets := types.BoolDefault(false, *resource.GetMetadata())
-	keyArnVal := types.StringDefault("", *resource.GetMetadata())
-
-	if resource.HasChild("encryption_config") {
-		encryptBlock := resource.GetBlock("encryption_config")
+	if encryptBlock := resource.GetBlock("encryption_config"); encryptBlock.IsNotNil() {
+		cluster.Encryption.Metadata = encryptBlock.Metadata()
 		resourcesAttr := encryptBlock.GetAttribute("resources")
 		if resourcesAttr.Contains("secrets") {
-			secrets = types.Bool(true, *resourcesAttr.GetMetadata())
+			cluster.Encryption.Secrets = types.Bool(true, *resourcesAttr.GetMetadata())
 		}
-		if encryptBlock.HasChild("provider") {
-			providerBlock := encryptBlock.GetBlock("provider")
+		if providerBlock := encryptBlock.GetBlock("provider"); providerBlock.IsNotNil() {
 			keyArnAttr := providerBlock.GetAttribute("key_arn")
-			keyArnVal = keyArnAttr.AsStringValueOrDefault("", providerBlock)
+			cluster.Encryption.KMSKeyID = keyArnAttr.AsStringValueOrDefault("", providerBlock)
 		}
 	}
 
-	publicAccessVal := types.BoolDefault(true, *resource.GetMetadata())
-	var cidrs []types.StringValue
-
-	if resource.HasChild("vpc_config") {
-		vpcBlock := resource.GetBlock("vpc_config")
+	if vpcBlock := resource.GetBlock("vpc_config"); vpcBlock.IsNotNil() {
 		publicAccessAttr := vpcBlock.GetAttribute("endpoint_public_access")
-		publicAccessVal = publicAccessAttr.AsBoolValueOrDefault(true, vpcBlock)
+		cluster.PublicAccessEnabled = publicAccessAttr.AsBoolValueOrDefault(true, vpcBlock)
 
 		publicAccessCidrsAttr := vpcBlock.GetAttribute("public_access_cidrs")
 		cidrsList := publicAccessCidrsAttr.ValueAsStrings()
 		for _, cidr := range cidrsList {
-			cidrs = append(cidrs, types.String(cidr, *publicAccessCidrsAttr.GetMetadata()))
+			cluster.PublicAccessCIDRs = append(cluster.PublicAccessCIDRs, types.String(cidr, *publicAccessCidrsAttr.GetMetadata()))
 		}
 		if len(cidrsList) == 0 {
-			cidrs = append(cidrs, types.StringDefault("0.0.0.0/0", *vpcBlock.GetMetadata()))
+			cluster.PublicAccessCIDRs = append(cluster.PublicAccessCIDRs, types.StringDefault("0.0.0.0/0", *vpcBlock.GetMetadata()))
 		}
-
 	}
 
-	return eks.Cluster{
-		Metadata: *resource.GetMetadata(),
-		Logging:  logging,
-		Encryption: eks.Encryption{
-			Secrets:  secrets,
-			KMSKeyID: keyArnVal,
-		},
-		PublicAccessEnabled: publicAccessVal,
-		PublicAccessCIDRs:   cidrs,
-	}
+	return cluster
 }

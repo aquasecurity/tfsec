@@ -17,13 +17,16 @@ func (a *adapter) adaptBuckets() []s3.Bucket {
 			Name:     block.GetAttribute("bucket").AsStringValueOrDefault("", block),
 			Metadata: block.Metadata(),
 			Versioning: s3.Versioning{
-				Enabled: isVersioned(block),
+				Metadata: block.Metadata(),
+				Enabled:  isVersioned(block),
 			},
 			Encryption: s3.Encryption{
-				Enabled: isEncrypted(block),
+				Metadata: block.Metadata(),
+				Enabled:  isEncrypted(block),
 			},
 			Logging: s3.Logging{
-				Enabled: hasLogging(block),
+				Metadata: block.Metadata(),
+				Enabled:  hasLogging(block),
 			},
 			ACL: block.GetAttribute("acl").AsStringValueOrDefault("", block),
 		}

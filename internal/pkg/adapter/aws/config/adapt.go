@@ -17,6 +17,7 @@ func adaptConfigurationAggregrator(modules block.Modules) config.ConfigurationAg
 
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_config_configuration_aggregator") {
+			configurationAggregrator.Metadata = resource.Metadata()
 			configurationAggregrator.IsDefined = true
 
 			aggregationBlock := resource.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")

@@ -55,6 +55,7 @@ func (a *adapter) adaptQueues() []sqs.Queue {
 		}
 
 		a.queues[uuid.NewString()] = sqs.Queue{
+			Metadata: types.NewUnmanagedMetadata(),
 			Policies: []types.StringValue{policy},
 		}
 	}
@@ -87,6 +88,7 @@ func (a *adapter) adaptQueue(resource *block.Block) {
 	a.queues[resource.ID()] = sqs.Queue{
 		Metadata: resource.Metadata(),
 		Encryption: sqs.Encryption{
+			Metadata: resource.Metadata(),
 			KMSKeyID: kmsKeyIdVal,
 		},
 		Policies: policies,

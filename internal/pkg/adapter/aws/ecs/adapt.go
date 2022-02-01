@@ -31,16 +31,17 @@ func adaptClusterResource(resourceBlock *block.Block) ecs.Cluster {
 }
 
 func adaptClusterSettings(resourceBlock *block.Block) ecs.ClusterSettings {
-	if settingBlock := resourceBlock.GetBlock("setting"); settingBlock.IsNotNil() && settingBlock.GetAttribute("name").Equals("containerInsights") {
-		containerInsightsEnabled := settingBlock.GetAttribute("value").Equals("enabled")
-		return ecs.ClusterSettings{
-			ContainerInsightsEnabled: types.Bool(containerInsightsEnabled, settingBlock.Metadata()),
-		}
-	}
-
-	return ecs.ClusterSettings{
+	settings := ecs.ClusterSettings{
+		Metadata:                 resourceBlock.Metadata(),
 		ContainerInsightsEnabled: types.BoolDefault(false, resourceBlock.Metadata()),
 	}
+
+	if settingBlock := resourceBlock.GetBlock("setting"); settingBlock.IsNotNil() && settingBlock.GetAttribute("name").Equals("containerInsights") {
+		containerInsightsEnabled := settingBlock.GetAttribute("value").Equals("enabled")
+		settings.ContainerInsightsEnabled = types.Bool(containerInsightsEnabled, settingBlock.Metadata())
+	}
+
+	return settings
 }
 
 func adaptTaskDefinitions(modules block.Modules) []ecs.TaskDefinition {

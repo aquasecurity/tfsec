@@ -46,9 +46,18 @@ func adaptAPIsV2(modules block.Modules) []apigateway.API {
 }
 
 func adaptStageV2(stageBlock *block.Block) apigateway.Stage {
-	var stage apigateway.Stage
-	stage.Metadata = stageBlock.Metadata()
-	stage.Version = types.IntExplicit(2, stageBlock.Metadata())
+	stage := apigateway.Stage{
+		Metadata: stageBlock.Metadata(),
+		Version:  types.Int(2, stageBlock.Metadata()),
+		RESTMethodSettings: apigateway.RESTMethodSettings{
+			Metadata:           stageBlock.Metadata(),
+			CacheDataEncrypted: types.BoolDefault(true, stageBlock.Metadata()),
+		},
+		AccessLogging: apigateway.AccessLogging{
+			Metadata:              stageBlock.Metadata(),
+			CloudwatchLogGroupARN: types.StringDefault("", stageBlock.Metadata()),
+		},
+	}
 	stage.Name = stageBlock.GetAttribute("name").AsStringValueOrDefault("", stageBlock)
 	if accessLogging := stageBlock.GetBlock("access_log_settings"); accessLogging.IsNotNil() {
 		stage.AccessLogging.Metadata = accessLogging.Metadata()

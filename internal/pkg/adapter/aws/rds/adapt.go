@@ -120,6 +120,7 @@ func getClusterInstances(resource *block.Block, modules block.Modules) (clusterI
 
 func adaptPerformanceInsights(resource *block.Block) rds.PerformanceInsights {
 	return rds.PerformanceInsights{
+		Metadata: resource.Metadata(),
 		Enabled:  resource.GetAttribute("performance_insights_enabled").AsBoolValueOrDefault(false, resource),
 		KMSKeyID: resource.GetAttribute("performance_insights_kms_key_id").AsStringValueOrDefault("", resource),
 	}
@@ -127,6 +128,7 @@ func adaptPerformanceInsights(resource *block.Block) rds.PerformanceInsights {
 
 func adaptEncryption(resource *block.Block) rds.Encryption {
 	return rds.Encryption{
+		Metadata:       resource.Metadata(),
 		EncryptStorage: resource.GetAttribute("storage_encrypted").AsBoolValueOrDefault(false, resource),
 		KMSKeyID:       resource.GetAttribute("kms_key_id").AsStringValueOrDefault("", resource),
 	}

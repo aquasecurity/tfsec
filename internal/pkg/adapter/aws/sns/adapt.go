@@ -30,6 +30,7 @@ func adaptTopic(resourceBlock *block.Block) sns.Topic {
 
 func adaptEncryption(resourceBlock *block.Block) sns.Encryption {
 	return sns.Encryption{
+		Metadata: resourceBlock.Metadata(),
 		KMSKeyID: resourceBlock.GetAttribute("kms_master_key_id").AsStringValueOrDefault("alias/aws/sns", resourceBlock),
 	}
 }

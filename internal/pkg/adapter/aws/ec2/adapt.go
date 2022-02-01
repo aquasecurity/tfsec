@@ -32,8 +32,8 @@ func getInstances(modules block.Modules) []ec2.Instance {
 			},
 		}
 
-		if b.HasChild("root_block_device") {
-			rootBlockDevice := b.GetBlock("root_block_device")
+		if rootBlockDevice := b.GetBlock("root_block_device"); rootBlockDevice.IsNotNil() {
+			instance.RootBlockDevice.Metadata = rootBlockDevice.Metadata()
 			instance.RootBlockDevice.Encrypted = rootBlockDevice.GetAttribute("encrypted").AsBoolValueOrDefault(false, b)
 		}
 
@@ -46,7 +46,6 @@ func getInstances(modules block.Modules) []ec2.Instance {
 
 		for _, resource := range modules.GetResourcesByType("aws_ebs_encryption_by_default") {
 			if resource.GetAttribute("enabled").NotEqual(false) {
-
 				instance.RootBlockDevice.Encrypted = types.BoolDefault(true, *resource.GetMetadata())
 				for i := 0; i < len(instance.EBSBlockDevices); i++ {
 					ebs := &instance.EBSBlockDevices[i]
