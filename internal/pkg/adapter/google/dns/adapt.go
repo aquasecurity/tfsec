@@ -31,12 +31,16 @@ func adaptManagedZone(resource *block.Block) dns.ManagedZone {
 	zone := dns.ManagedZone{
 		Metadata: resource.Metadata(),
 		DNSSec: dns.DNSSec{
-			Enabled: types.BoolDefault(false, resource.Metadata()),
+			Metadata: resource.Metadata(),
+			Enabled:  types.BoolDefault(false, resource.Metadata()),
 			DefaultKeySpecs: dns.KeySpecs{
+				Metadata: resource.Metadata(),
 				KeySigningKey: dns.Key{
+					Metadata:  resource.Metadata(),
 					Algorithm: types.StringDefault("", resource.Metadata()),
 				},
 				ZoneSigningKey: dns.Key{
+					Metadata:  resource.Metadata(),
 					Algorithm: types.StringDefault("", resource.Metadata()),
 				},
 			},
@@ -71,27 +75,28 @@ func adaptManagedZone(resource *block.Block) dns.ManagedZone {
 }
 
 func adaptKeySpecs(resource *block.Block) dns.KeySpecs {
-	keyAlgorithm := types.String("", *resource.GetMetadata())
-	zoneAlgorithm := types.String("", *resource.GetMetadata())
-
+	keySpecs := dns.KeySpecs{
+		Metadata: resource.Metadata(),
+		KeySigningKey: dns.Key{
+			Metadata:  resource.Metadata(),
+			Algorithm: types.String("", *resource.GetMetadata()),
+		},
+		ZoneSigningKey: dns.Key{
+			Metadata:  resource.Metadata(),
+			Algorithm: types.String("", *resource.GetMetadata()),
+		},
+	}
 	KeySigningKeysBlock := resource.GetBlock("key_signing_keys")
 	if KeySigningKeysBlock.IsNotNil() {
 		algorithmAttr := KeySigningKeysBlock.GetAttribute("algorithm")
-		keyAlgorithm = algorithmAttr.AsStringValueOrDefault("", KeySigningKeysBlock)
+		keySpecs.KeySigningKey.Algorithm = algorithmAttr.AsStringValueOrDefault("", KeySigningKeysBlock)
 	}
 
 	ZoneSigningKeysBlock := resource.GetBlock("zone_signing_keys")
 	if ZoneSigningKeysBlock.IsNotNil() {
 		algorithmAttr := ZoneSigningKeysBlock.GetAttribute("algorithm")
-		zoneAlgorithm = algorithmAttr.AsStringValueOrDefault("", ZoneSigningKeysBlock)
+		keySpecs.ZoneSigningKey.Algorithm = algorithmAttr.AsStringValueOrDefault("", ZoneSigningKeysBlock)
 	}
 
-	return dns.KeySpecs{
-		KeySigningKey: dns.Key{
-			Algorithm: keyAlgorithm,
-		},
-		ZoneSigningKey: dns.Key{
-			Algorithm: zoneAlgorithm,
-		},
-	}
+	return keySpecs
 }
