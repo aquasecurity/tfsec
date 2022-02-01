@@ -1,0 +1,13 @@
+bug:
+  - '(bug)'
+feature: 
+  - '(feature)'
+custom-checks:
+  - '(custom)'
+aws:
+  - '(aws|amazon)'
+google:
+  - '(google|gcp)'
+azure:
+  - '(azure|azurerm)'
+
