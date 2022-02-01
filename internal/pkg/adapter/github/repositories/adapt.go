@@ -39,7 +39,8 @@ func adaptRepository(resource *block.Block) github.Repository {
 	privateAttr := resource.GetAttribute("private")
 	if privateAttr.IsTrue() {
 		return github.Repository{
-			Public: types.Bool(false, *resource.GetMetadata()),
+			Metadata: resource.Metadata(),
+			Public:   types.Bool(false, *resource.GetMetadata()),
 		}
 	}
 

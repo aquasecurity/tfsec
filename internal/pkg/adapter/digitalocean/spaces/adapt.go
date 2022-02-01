@@ -28,17 +28,20 @@ func adaptBuckets(modules block.Modules) []spaces.Bucket {
 
 			if versioning := block.GetBlock("versioning"); versioning.IsNotNil() {
 				bucket.Versioning = spaces.Versioning{
-					Enabled: versioning.GetAttribute("enabled").AsBoolValueOrDefault(false, versioning),
+					Metadata: versioning.Metadata(),
+					Enabled:  versioning.GetAttribute("enabled").AsBoolValueOrDefault(false, versioning),
 				}
 			} else {
 				bucket.Versioning = spaces.Versioning{
-					Enabled: types.Bool(false, *block.GetMetadata()),
+					Metadata: block.Metadata(),
+					Enabled:  types.Bool(false, *block.GetMetadata()),
 				}
 			}
 			bucketMap[block.ID()] = bucket
 		}
 		for _, block := range module.GetResourcesByType("digitalocean_spaces_bucket_object") {
 			var object spaces.Object
+			object.Metadata = block.Metadata()
 			object.ACL = block.GetAttribute("acl").AsStringValueOrDefault("private", block)
 			bucketName := block.GetAttribute("bucket")
 			var found bool
