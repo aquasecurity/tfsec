@@ -85,36 +85,36 @@ func adaptAccounts(modules block.Modules) ([]storage.Account, []string, []string
 }
 
 func adaptAccount(resource *block.Block) storage.Account {
-	var networkRules []storage.NetworkRule
+	account := storage.Account{
+		Metadata:     resource.Metadata(),
+		EnforceHTTPS: types.BoolDefault(true, resource.Metadata()),
+		QueueProperties: storage.QueueProperties{
+			Metadata:      resource.Metadata(),
+			EnableLogging: types.BoolDefault(false, resource.Metadata()),
+		},
+		MinimumTLSVersion: types.StringDefault("TLS1_0", resource.Metadata()),
+	}
+
 	networkRulesBlocks := resource.GetBlocks("network_rules")
 	for _, networkBlock := range networkRulesBlocks {
-		networkRules = append(networkRules, adaptNetworkRule(networkBlock))
+		account.NetworkRules = append(account.NetworkRules, adaptNetworkRule(networkBlock))
 	}
 
 	httpsOnlyAttr := resource.GetAttribute("enable_https_traffic_only")
-	httpsOnlyVal := httpsOnlyAttr.AsBoolValueOrDefault(true, resource)
+	account.EnforceHTTPS = httpsOnlyAttr.AsBoolValueOrDefault(true, resource)
 
-	enableLogging := types.Bool(false, *resource.GetMetadata())
 	queuePropertiesBlock := resource.GetBlock("queue_properties")
 	if queuePropertiesBlock.IsNotNil() {
+		account.QueueProperties.Metadata = queuePropertiesBlock.Metadata()
 		loggingBlock := queuePropertiesBlock.GetBlock("logging")
 		if loggingBlock.IsNotNil() {
-			enableLogging = types.Bool(true, *loggingBlock.GetMetadata())
+			account.QueueProperties.EnableLogging = types.Bool(true, loggingBlock.Metadata())
 		}
 	}
 
 	minTLSVersionAttr := resource.GetAttribute("min_tls_version")
-	minTLSVersionVal := minTLSVersionAttr.AsStringValueOrDefault("TLS1_0", resource)
-
-	return storage.Account{
-		Metadata:     resource.Metadata(),
-		NetworkRules: networkRules,
-		EnforceHTTPS: httpsOnlyVal,
-		QueueProperties: storage.QueueProperties{
-			EnableLogging: enableLogging,
-		},
-		MinimumTLSVersion: minTLSVersionVal,
-	}
+	account.MinimumTLSVersion = minTLSVersionAttr.AsStringValueOrDefault("TLS1_0", resource)
+	return account
 }
 
 func adaptContainer(resource *block.Block) storage.Container {
@@ -128,6 +128,7 @@ func adaptContainer(resource *block.Block) storage.Container {
 	}
 
 	return storage.Container{
+		Metadata:     resource.Metadata(),
 		PublicAccess: publicAccess,
 	}
 }
@@ -152,7 +153,7 @@ func adaptNetworkRule(resource *block.Block) storage.NetworkRule {
 	}
 
 	return storage.NetworkRule{
-		Metadata:       *resource.GetMetadata(),
+		Metadata:       resource.Metadata(),
 		Bypass:         bypass,
 		AllowByDefault: allowByDefault,
 	}

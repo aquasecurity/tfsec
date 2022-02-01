@@ -24,35 +24,35 @@ func adaptLogProfiles(modules block.Modules) []monitor.LogProfile {
 }
 
 func adaptLogProfile(resource *block.Block) monitor.LogProfile {
-	retentionPolicyBlock := resource.GetBlock("retention_policy")
 
-	enabledAttr := retentionPolicyBlock.GetAttribute("enabled")
-	enabledVal := enabledAttr.AsBoolValueOrDefault(false, resource)
-
-	daysAttr := retentionPolicyBlock.GetAttribute("days")
-	daysVal := daysAttr.AsIntValueOrDefault(0, resource)
-
-	categoriesAttr := resource.GetAttribute("categories")
-	var categoriesVal []types.StringValue
-	categories := categoriesAttr.ValueAsStrings()
-	for _, category := range categories {
-		categoriesVal = append(categoriesVal, types.String(category, *resource.GetMetadata()))
-	}
-
-	locationsAttr := resource.GetAttribute("locations")
-	var locationsVal []types.StringValue
-	locations := locationsAttr.ValueAsStrings()
-	for _, location := range locations {
-		locationsVal = append(locationsVal, types.String(location, *resource.GetMetadata()))
-	}
-
-	return monitor.LogProfile{
-		Metadata: *resource.GetMetadata(),
+	logProfile := monitor.LogProfile{
+		Metadata: resource.Metadata(),
 		RetentionPolicy: monitor.RetentionPolicy{
-			Enabled: enabledVal,
-			Days:    daysVal,
+			Metadata: resource.Metadata(),
+			Enabled:  types.BoolDefault(false, resource.Metadata()),
+			Days:     types.IntDefault(0, resource.Metadata()),
 		},
-		Categories: categoriesVal,
-		Locations:  locationsVal,
 	}
+
+	if retentionPolicyBlock := resource.GetBlock("retention_policy"); retentionPolicyBlock.IsNotNil() {
+		logProfile.RetentionPolicy.Metadata = retentionPolicyBlock.Metadata()
+		enabledAttr := retentionPolicyBlock.GetAttribute("enabled")
+		logProfile.RetentionPolicy.Enabled = enabledAttr.AsBoolValueOrDefault(false, resource)
+		daysAttr := retentionPolicyBlock.GetAttribute("days")
+		logProfile.RetentionPolicy.Days = daysAttr.AsIntValueOrDefault(0, resource)
+	}
+
+	if categoriesAttr := resource.GetAttribute("categories"); categoriesAttr.IsNotNil() {
+		for _, category := range categoriesAttr.ValueAsStrings() {
+			logProfile.Categories = append(logProfile.Categories, types.String(category, resource.Metadata()))
+		}
+	}
+
+	if locationsAttr := resource.GetAttribute("locations"); locationsAttr.IsNotNil() {
+		for _, location := range locationsAttr.ValueAsStrings() {
+			logProfile.Locations = append(logProfile.Locations, types.String(location, resource.Metadata()))
+		}
+	}
+
+	return logProfile
 }

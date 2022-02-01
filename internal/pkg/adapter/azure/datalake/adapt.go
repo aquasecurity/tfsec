@@ -32,6 +32,7 @@ func adaptStore(resource *block.Block) datalake.Store {
 		}
 	}
 	return datalake.Store{
+		Metadata:         resource.Metadata(),
 		EnableEncryption: types.Bool(true, *resource.GetMetadata()),
 	}
 }

@@ -60,7 +60,14 @@ func AssertRuleFound(t *testing.T, ruleID string, results []rules.Result, messag
 	assert.True(t, found, append([]interface{}{message}, args...)...)
 	for _, result := range results {
 		if result.Rule().LongID() == ruleID {
-			assert.NotEmpty(t, result.Range().GetFilename())
+			m := result.Metadata()
+			meta := &m
+			for meta != nil {
+				assert.NotNil(t, meta.Range(), 0)
+				assert.Greater(t, meta.Range().GetStartLine(), 0)
+				assert.Greater(t, meta.Range().GetEndLine(), 0)
+				meta = meta.Parent()
+			}
 		}
 	}
 }

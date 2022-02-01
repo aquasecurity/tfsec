@@ -85,8 +85,10 @@ func (a *adapter) adaptVault(resource *block.Block, module *block.Module) keyvau
 	softDeleteRetentionDaysAttr := resource.GetAttribute("soft_delete_retention_days")
 	softDeleteRetentionDaysVal := softDeleteRetentionDaysAttr.AsIntValueOrDefault(0, resource)
 
-	if resource.HasChild("network_acls") {
-		defaultActionAttr := resource.GetBlock("network_acls").GetAttribute("default_action")
+	aclMetadata := types.NewUnmanagedMetadata()
+	if aclBlock := resource.GetBlock("network_acls"); aclBlock.IsNotNil() {
+		aclMetadata = aclBlock.Metadata()
+		defaultActionAttr := aclBlock.GetAttribute("default_action")
 		defaultActionVal = defaultActionAttr.AsStringValueOrDefault("", resource.GetBlock("network_acls"))
 	}
 
@@ -97,6 +99,7 @@ func (a *adapter) adaptVault(resource *block.Block, module *block.Module) keyvau
 		EnablePurgeProtection:   purgeProtectionVal,
 		SoftDeleteRetentionDays: softDeleteRetentionDaysVal,
 		NetworkACLs: keyvault.NetworkACLs{
+			Metadata:      aclMetadata,
 			DefaultAction: defaultActionVal,
 		},
 	}
@@ -118,6 +121,7 @@ func adaptSecret(resource *block.Block) keyvault.Secret {
 	}
 
 	return keyvault.Secret{
+		Metadata:    resource.Metadata(),
 		ContentType: contentTypeVal,
 		ExpiryDate:  expiryDateVal,
 	}
@@ -136,6 +140,7 @@ func adaptKey(resource *block.Block) keyvault.Key {
 	}
 
 	return keyvault.Key{
+		Metadata:   resource.Metadata(),
 		ExpiryDate: expiryDateVal,
 	}
 }

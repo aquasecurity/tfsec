@@ -224,7 +224,7 @@ func (a *mssqlAdapter) adaptMSSQLServer(resource *block.Block, module *block.Mod
 	return database.MSSQLServer{
 		Metadata: resource.Metadata(),
 		Server: database.Server{
-			Metadata:                  *resource.GetMetadata(),
+			Metadata:                  resource.Metadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,
 			MinimumTLSVersion:         minTLSVersionVal,
 			EnablePublicNetworkAccess: publicAccessVal,
@@ -354,6 +354,7 @@ func adaptPostgreSQLConfig(resource *block.Block) database.PostgresSQLConfig {
 	}
 
 	return database.PostgresSQLConfig{
+		Metadata:             resource.Metadata(),
 		LogCheckpoints:       logCheckpoints,
 		ConnectionThrottling: connectionThrottling,
 		LogConnections:       logConnections,
