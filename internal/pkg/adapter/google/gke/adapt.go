@@ -155,7 +155,9 @@ func (a *adapter) adaptCluster(resource *block.Block, module *block.Module) {
 		resourceLabels := make(map[string]string)
 
 		resourceLabelsAttr.Each(func(key, val cty.Value) {
-			resourceLabels[string(key.AsString())] = val.AsString()
+			if key.Type() == cty.String && val.Type() == cty.String {
+				resourceLabels[key.AsString()] = val.AsString()
+			}
 		})
 		cluster.ResourceLabels = types.Map(resourceLabels, resourceLabelsAttr.GetMetadata())
 	}
