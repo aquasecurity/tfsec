@@ -23,53 +23,68 @@ func adaptNetworkPolicies(modules block.Modules) []kubernetes.NetworkPolicy {
 
 func adaptNetworkPolicy(resourceBlock *block.Block) kubernetes.NetworkPolicy {
 
-	var spec kubernetes.Spec
-
-	egressBlock := resourceBlock.GetBlock("spec").GetBlock("egress")
-	ingressBlock := resourceBlock.GetBlock("spec").GetBlock("ingress")
-
-	for _, port := range egressBlock.GetBlocks("ports") {
-		numberAttr := port.GetAttribute("number")
-		numberVal := numberAttr.AsStringValueOrDefault("", port)
-
-		protocolAttr := port.GetAttribute("protocol")
-		protocolVal := protocolAttr.AsStringValueOrDefault("", port)
-
-		spec.Egress.Ports = append(spec.Egress.Ports, kubernetes.Port{
-			Number:   numberVal,
-			Protocol: protocolVal,
-		})
-	}
-
-	for _, to := range egressBlock.GetBlocks("to") {
-		cidrAtrr := to.GetBlock("ip_block").GetAttribute("cidr")
-		cidrVal := cidrAtrr.AsStringValueOrDefault("", to)
-
-		spec.Egress.DestinationCIDRs = append(spec.Egress.DestinationCIDRs, cidrVal)
-	}
-
-	for _, port := range ingressBlock.GetBlocks("ports") {
-		numberAttr := port.GetAttribute("number")
-		numberVal := numberAttr.AsStringValueOrDefault("", port)
-
-		protocolAttr := port.GetAttribute("protocol")
-		protocolVal := protocolAttr.AsStringValueOrDefault("", port)
-
-		spec.Ingress.Ports = append(spec.Ingress.Ports, kubernetes.Port{
-			Number:   numberVal,
-			Protocol: protocolVal,
-		})
-	}
-
-	for _, from := range ingressBlock.GetBlocks("from") {
-		cidrAtrr := from.GetBlock("ip_block").GetAttribute("cidr")
-		cidrVal := cidrAtrr.AsStringValueOrDefault("", from)
-
-		spec.Ingress.SourceCIDRs = append(spec.Ingress.SourceCIDRs, cidrVal)
-	}
-
-	return kubernetes.NetworkPolicy{
+	policy := kubernetes.NetworkPolicy{
 		Metadata: resourceBlock.Metadata(),
-		Spec:     spec,
+		Spec: kubernetes.Spec{
+			Metadata: resourceBlock.Metadata(),
+			Egress: kubernetes.Egress{
+				Metadata: resourceBlock.Metadata(),
+			},
+			Ingress: kubernetes.Ingress{
+				Metadata: resourceBlock.Metadata(),
+			},
+		},
 	}
+
+	if specBlock := resourceBlock.GetBlock("spec"); specBlock.IsNotNil() {
+		if egressBlock := specBlock.GetBlock("egress"); egressBlock.IsNotNil() {
+			policy.Spec.Egress.Metadata = egressBlock.Metadata()
+			for _, port := range egressBlock.GetBlocks("ports") {
+				numberAttr := port.GetAttribute("number")
+				numberVal := numberAttr.AsStringValueOrDefault("", port)
+
+				protocolAttr := port.GetAttribute("protocol")
+				protocolVal := protocolAttr.AsStringValueOrDefault("", port)
+
+				policy.Spec.Egress.Ports = append(policy.Spec.Egress.Ports, kubernetes.Port{
+					Metadata: port.Metadata(),
+					Number:   numberVal,
+					Protocol: protocolVal,
+				})
+			}
+
+			for _, to := range egressBlock.GetBlocks("to") {
+				cidrAtrr := to.GetBlock("ip_block").GetAttribute("cidr")
+				cidrVal := cidrAtrr.AsStringValueOrDefault("", to)
+
+				policy.Spec.Egress.DestinationCIDRs = append(policy.Spec.Egress.DestinationCIDRs, cidrVal)
+			}
+		}
+
+		if ingressBlock := specBlock.GetBlock("ingress"); ingressBlock.IsNotNil() {
+			policy.Spec.Ingress.Metadata = ingressBlock.Metadata()
+			for _, port := range ingressBlock.GetBlocks("ports") {
+				numberAttr := port.GetAttribute("number")
+				numberVal := numberAttr.AsStringValueOrDefault("", port)
+
+				protocolAttr := port.GetAttribute("protocol")
+				protocolVal := protocolAttr.AsStringValueOrDefault("", port)
+
+				policy.Spec.Ingress.Ports = append(policy.Spec.Ingress.Ports, kubernetes.Port{
+					Metadata: port.Metadata(),
+					Number:   numberVal,
+					Protocol: protocolVal,
+				})
+			}
+
+			for _, from := range ingressBlock.GetBlocks("from") {
+				cidrAtrr := from.GetBlock("ip_block").GetAttribute("cidr")
+				cidrVal := cidrAtrr.AsStringValueOrDefault("", from)
+
+				policy.Spec.Ingress.SourceCIDRs = append(policy.Spec.Ingress.SourceCIDRs, cidrVal)
+			}
+		}
+	}
+
+	return policy
 }
