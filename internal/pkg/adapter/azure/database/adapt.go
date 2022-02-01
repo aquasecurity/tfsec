@@ -177,9 +177,9 @@ func (a *postgresqlAdapter) adaptPostgreSQLServers(modules block.Modules) []data
 }
 
 func (a *mssqlAdapter) adaptMSSQLServer(resource *block.Block, module *block.Module) database.MSSQLServer {
-	minTLSVersionVal := types.StringDefault("", *resource.GetMetadata())
-	publicAccessVal := types.BoolDefault(true, *resource.GetMetadata())
-	enableSSLEnforcementVal := types.BoolDefault(false, *resource.GetMetadata())
+	minTLSVersionVal := types.StringDefault("", resource.Metadata())
+	publicAccessVal := types.BoolDefault(true, resource.Metadata())
+	enableSSLEnforcementVal := types.BoolDefault(false, resource.Metadata())
 
 	var auditingPolicies []database.ExtendedAuditingPolicy
 	var alertPolicies []database.SecurityAlertPolicy
@@ -224,7 +224,7 @@ func (a *mssqlAdapter) adaptMSSQLServer(resource *block.Block, module *block.Mod
 	return database.MSSQLServer{
 		Metadata: resource.Metadata(),
 		Server: database.Server{
-			Metadata:                  *resource.GetMetadata(),
+			Metadata:                  resource.Metadata(),
 			EnableSSLEnforcement:      enableSSLEnforcementVal,
 			MinimumTLSVersion:         minTLSVersionVal,
 			EnablePublicNetworkAccess: publicAccessVal,
@@ -295,9 +295,9 @@ func (a *postgresqlAdapter) adaptPostgreSQLServer(resource *block.Block, module 
 	var firewallRules []database.FirewallRule
 
 	config := database.PostgresSQLConfig{
-		LogCheckpoints:       types.BoolDefault(false, *resource.GetMetadata()),
-		ConnectionThrottling: types.BoolDefault(false, *resource.GetMetadata()),
-		LogConnections:       types.BoolDefault(false, *resource.GetMetadata()),
+		LogCheckpoints:       types.BoolDefault(false, resource.Metadata()),
+		ConnectionThrottling: types.BoolDefault(false, resource.Metadata()),
+		LogConnections:       types.BoolDefault(false, resource.Metadata()),
 	}
 
 	enableSSLEnforcementAttr := resource.GetAttribute("ssl_enforcement_enabled")
@@ -337,23 +337,24 @@ func adaptPostgreSQLConfig(resource *block.Block) database.PostgresSQLConfig {
 	nameAttr := resource.GetAttribute("name")
 	valAttr := resource.GetAttribute("value")
 
-	logCheckpoints := types.BoolDefault(false, *resource.GetMetadata())
-	connectionThrottling := types.BoolDefault(false, *resource.GetMetadata())
-	logConnections := types.BoolDefault(false, *resource.GetMetadata())
+	logCheckpoints := types.BoolDefault(false, resource.Metadata())
+	connectionThrottling := types.BoolDefault(false, resource.Metadata())
+	logConnections := types.BoolDefault(false, resource.Metadata())
 
 	if valAttr.Equals("on") {
 		if nameAttr.Equals("log_checkpoints") {
-			logCheckpoints = types.Bool(true, *valAttr.GetMetadata())
+			logCheckpoints = types.Bool(true, valAttr.Metadata())
 		}
 		if nameAttr.Equals("connection_throttling") {
-			connectionThrottling = types.Bool(true, *valAttr.GetMetadata())
+			connectionThrottling = types.Bool(true, valAttr.Metadata())
 		}
 		if nameAttr.Equals("log_connections") {
-			logConnections = types.Bool(true, *valAttr.GetMetadata())
+			logConnections = types.Bool(true, valAttr.Metadata())
 		}
 	}
 
 	return database.PostgresSQLConfig{
+		Metadata:             resource.Metadata(),
 		LogCheckpoints:       logCheckpoints,
 		ConnectionThrottling: connectionThrottling,
 		LogConnections:       logConnections,
@@ -367,13 +368,13 @@ func adaptMSSQLSecurityAlertPolicy(resource *block.Block) database.SecurityAlert
 	emailAddressesAttr := resource.GetAttribute("email_addresses")
 	emailAddresses := emailAddressesAttr.ValueAsStrings()
 	for _, email := range emailAddresses {
-		emailAddressesVal = append(emailAddressesVal, types.String(email, *emailAddressesAttr.GetMetadata()))
+		emailAddressesVal = append(emailAddressesVal, types.String(email, emailAddressesAttr.Metadata()))
 	}
 
 	disabledAlertsAttr := resource.GetAttribute("disabled_alerts")
 	disabledAlerts := disabledAlertsAttr.ValueAsStrings()
 	for _, alert := range disabledAlerts {
-		disabledAlertsVal = append(disabledAlertsVal, types.String(alert, *disabledAlertsAttr.GetMetadata()))
+		disabledAlertsVal = append(disabledAlertsVal, types.String(alert, disabledAlertsAttr.Metadata()))
 	}
 
 	emailAccountAdminsAttr := resource.GetAttribute("email_account_admins")

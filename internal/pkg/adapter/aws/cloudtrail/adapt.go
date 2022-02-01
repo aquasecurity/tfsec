@@ -36,7 +36,7 @@ func adaptTrail(resource *block.Block) cloudtrail.Trail {
 	KMSKeyIDVal := KMSKeyIDAttr.AsStringValueOrDefault("", resource)
 
 	return cloudtrail.Trail{
-		Metadata:                *resource.GetMetadata(),
+		Metadata:                resource.Metadata(),
 		Name:                    nameVal,
 		EnableLogFileValidation: enableLogFileValidationVal,
 		IsMultiRegion:           isMultiRegionVal,

@@ -34,27 +34,33 @@ func output(baseFilename string, formats []string, dir string, results []rules.R
 	return nil
 }
 
+func gatherLinks(result rules.Result) []string {
+	v := "latest"
+	if version.Version != "" {
+		v = version.Version
+	}
+	var links []string
+	if result.Rule().Terraform != nil {
+		links = result.Rule().Terraform.Links
+	}
+	return append([]string{
+		fmt.Sprintf(
+			"https://aquasecurity.github.io/tfsec/%s/checks/%s/%s/%s/",
+			v,
+			result.Rule().Provider,
+			strings.ToLower(result.Rule().Service),
+			result.Rule().ShortCode,
+		),
+	}, links...)
+}
+
 func outputFormat(addExtension bool, baseFilename string, format string, dir string, results []rules.Result) (string, error) {
 
 	formatter := formatters.New().
 		WithDebugEnabled(debug.Enabled).
 		WithColoursEnabled(!disableColours).
 		WithGroupingEnabled(!disableGrouping).
-		WithLinksFunc(func(result rules.Result) []string {
-			v := "latest"
-			if version.Version != "" {
-				v = version.Version
-			}
-			return append([]string{
-				fmt.Sprintf(
-					"https://aquasecurity.github.io/tfsec/%s/checks/%s/%s/%s/",
-					v,
-					result.Rule().Provider,
-					strings.ToLower(result.Rule().Service),
-					result.Rule().ShortCode,
-				),
-			}, result.Rule().Terraform.Links...)
-		}).
+		WithLinksFunc(gatherLinks).
 		WithBaseDir(dir).
 		WithMetricsEnabled(!conciseOutput)
 

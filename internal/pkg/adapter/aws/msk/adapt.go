@@ -23,63 +23,64 @@ func adaptClusters(modules block.Modules) []msk.Cluster {
 }
 
 func adaptCluster(resource *block.Block) msk.Cluster {
-	clientBrokerVal := types.StringDefault("TLS_PLAINTEXT", *resource.GetMetadata())
-
-	s3enabled := types.BoolDefault(false, *resource.GetMetadata())
-	cloudwatchEnabled := types.BoolDefault(false, *resource.GetMetadata())
-	firehoseEnabled := types.BoolDefault(false, *resource.GetMetadata())
-
-	if resource.HasChild("encryption_info") {
-		encryptBlock := resource.GetBlock("encryption_info")
-		if encryptBlock.HasChild("encryption_in_transit") {
-			encryptionInTransitBlock := encryptBlock.GetBlock("encryption_in_transit")
-			clientBrokerAttr := encryptionInTransitBlock.GetAttribute("client_broker")
-			if clientBrokerAttr.IsNotNil() {
-				clientBrokerVal = clientBrokerAttr.AsStringValueOrDefault("TLS", encryptionInTransitBlock)
-			}
-		}
-	}
-
-	if resource.HasChild("logging_info") {
-		logBlock := resource.GetBlock("logging_info")
-		if logBlock.HasChild("broker_logs") {
-			brokerLogsBlock := logBlock.GetBlock("broker_logs")
-
-			if brokerLogsBlock.HasChild("s3") {
-				s3Block := brokerLogsBlock.GetBlock("s3")
-				s3enabledAttr := s3Block.GetAttribute("enabled")
-				s3enabled = s3enabledAttr.AsBoolValueOrDefault(false, s3Block)
-			}
-			if brokerLogsBlock.HasChild("cloudwatch_logs") {
-				cloudwatchBlock := brokerLogsBlock.GetBlock("cloudwatch_logs")
-				cwEnabledAttr := cloudwatchBlock.GetAttribute("enabled")
-				cloudwatchEnabled = cwEnabledAttr.AsBoolValueOrDefault(false, cloudwatchBlock)
-			}
-			if brokerLogsBlock.HasChild("firehose") {
-				firehoseBlock := brokerLogsBlock.GetBlock("firehose")
-				firehoseEnabledAttr := firehoseBlock.GetAttribute("enabled")
-				firehoseEnabled = firehoseEnabledAttr.AsBoolValueOrDefault(false, firehoseBlock)
-			}
-		}
-	}
-
-	return msk.Cluster{
-		Metadata: *resource.GetMetadata(),
+	cluster := msk.Cluster{
+		Metadata: resource.Metadata(),
 		EncryptionInTransit: msk.EncryptionInTransit{
-			ClientBroker: clientBrokerVal,
+			Metadata:     resource.Metadata(),
+			ClientBroker: types.StringDefault("TLS_PLAINTEXT", resource.Metadata()),
 		},
 		Logging: msk.Logging{
+			Metadata: resource.Metadata(),
 			Broker: msk.BrokerLogging{
+				Metadata: resource.Metadata(),
 				S3: msk.S3Logging{
-					Enabled: s3enabled,
+					Metadata: resource.Metadata(),
+					Enabled:  types.BoolDefault(false, resource.Metadata()),
 				},
 				Cloudwatch: msk.CloudwatchLogging{
-					Enabled: cloudwatchEnabled,
+					Metadata: resource.Metadata(),
+					Enabled:  types.BoolDefault(false, resource.Metadata()),
 				},
 				Firehose: msk.FirehoseLogging{
-					Enabled: firehoseEnabled,
+					Metadata: resource.Metadata(),
+					Enabled:  types.BoolDefault(false, resource.Metadata()),
 				},
 			},
 		},
 	}
+
+	if encryptBlock := resource.GetBlock("encryption_info"); encryptBlock.IsNotNil() {
+		if encryptionInTransitBlock := encryptBlock.GetBlock("encryption_in_transit"); encryptionInTransitBlock.IsNotNil() {
+			cluster.EncryptionInTransit.Metadata = encryptBlock.Metadata()
+			if clientBrokerAttr := encryptionInTransitBlock.GetAttribute("client_broker"); clientBrokerAttr.IsNotNil() {
+				cluster.EncryptionInTransit.ClientBroker = clientBrokerAttr.AsStringValueOrDefault("TLS", encryptionInTransitBlock)
+			}
+		}
+	}
+
+	if logBlock := resource.GetBlock("logging_info"); logBlock.IsNotNil() {
+		cluster.Logging.Metadata = logBlock.Metadata()
+		if brokerLogsBlock := logBlock.GetBlock("broker_logs"); brokerLogsBlock.IsNotNil() {
+			cluster.Logging.Broker.Metadata = brokerLogsBlock.Metadata()
+			if brokerLogsBlock.HasChild("s3") {
+				if s3Block := brokerLogsBlock.GetBlock("s3"); s3Block.IsNotNil() {
+					s3enabledAttr := s3Block.GetAttribute("enabled")
+					cluster.Logging.Broker.S3.Metadata = s3Block.Metadata()
+					cluster.Logging.Broker.S3.Enabled = s3enabledAttr.AsBoolValueOrDefault(false, s3Block)
+				}
+			}
+			if cloudwatchBlock := brokerLogsBlock.GetBlock("cloudwatch_logs"); cloudwatchBlock.IsNotNil() {
+				cwEnabledAttr := cloudwatchBlock.GetAttribute("enabled")
+				cluster.Logging.Broker.Cloudwatch.Metadata = cloudwatchBlock.Metadata()
+				cluster.Logging.Broker.Cloudwatch.Enabled = cwEnabledAttr.AsBoolValueOrDefault(false, cloudwatchBlock)
+			}
+			if firehoseBlock := brokerLogsBlock.GetBlock("firehose"); firehoseBlock.IsNotNil() {
+				firehoseEnabledAttr := firehoseBlock.GetAttribute("enabled")
+				cluster.Logging.Broker.Firehose.Metadata = firehoseEnabledAttr.Metadata()
+				cluster.Logging.Broker.Firehose.Enabled = firehoseEnabledAttr.AsBoolValueOrDefault(false, firehoseBlock)
+			}
+		}
+	}
+
+	return cluster
 }

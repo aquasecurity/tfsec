@@ -32,7 +32,7 @@ func adaptDefaultVPCs(modules block.Modules) []vpc.DefaultVPC {
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_default_vpc") {
 			defaultVPCs = append(defaultVPCs, vpc.DefaultVPC{
-				Metadata: *resource.GetMetadata(),
+				Metadata: resource.Metadata(),
 			})
 		}
 	}
@@ -112,7 +112,7 @@ func (a *sgAdapter) adaptSecurityGroup(resource *block.Block, module block.Modul
 	}
 
 	return vpc.SecurityGroup{
-		Metadata:     *resource.GetMetadata(),
+		Metadata:     resource.Metadata(),
 		Description:  descriptionVal,
 		IngressRules: ingressRules,
 		EgressRules:  egressRules,
@@ -141,7 +141,7 @@ func adaptSGRule(resource *block.Block, modules block.Modules) vpc.SecurityGroup
 	if cidrBlocks.IsNotNil() {
 		cidrsList := cidrBlocks.ValueAsStrings()
 		for _, cidr := range cidrsList {
-			cidrs = append(cidrs, types.String(cidr, *cidrBlocks.GetMetadata()))
+			cidrs = append(cidrs, types.String(cidr, cidrBlocks.Metadata()))
 		}
 	} else {
 		cidrs = append(cidrs, cidrBlocks.AsStringValueOrDefault("", resource))
@@ -150,14 +150,14 @@ func adaptSGRule(resource *block.Block, modules block.Modules) vpc.SecurityGroup
 	if ipv6cidrBlocks.IsNotNil() {
 		cidrsList := ipv6cidrBlocks.ValueAsStrings()
 		for _, cidr := range cidrsList {
-			cidrs = append(cidrs, types.String(cidr, *ipv6cidrBlocks.GetMetadata()))
+			cidrs = append(cidrs, types.String(cidr, ipv6cidrBlocks.Metadata()))
 		}
 	} else {
 		cidrs = append(cidrs, ipv6cidrBlocks.AsStringValueOrDefault("", resource))
 	}
 
 	return vpc.SecurityGroupRule{
-		Metadata:    *resource.GetMetadata(),
+		Metadata:    resource.Metadata(),
 		Description: ruleDescVal,
 		CIDRs:       cidrs,
 	}
@@ -171,7 +171,7 @@ func (a *naclAdapter) adaptNetworkACL(resource *block.Block, module *block.Modul
 		networkRules = append(networkRules, adaptNetworkACLRule(ruleBlock))
 	}
 	return vpc.NetworkACL{
-		Metadata: *resource.GetMetadata(),
+		Metadata: resource.Metadata(),
 		Rules:    networkRules,
 	}
 }
@@ -179,11 +179,11 @@ func (a *naclAdapter) adaptNetworkACL(resource *block.Block, module *block.Modul
 func adaptNetworkACLRule(resource *block.Block) vpc.NetworkACLRule {
 	var cidrs []types.StringValue
 
-	typeVal := types.StringDefault("ingress", *resource.GetMetadata())
+	typeVal := types.StringDefault("ingress", resource.Metadata())
 
 	egressAtrr := resource.GetAttribute("egress")
 	if egressAtrr.IsTrue() {
-		typeVal = types.String("egress", *resource.GetMetadata())
+		typeVal = types.String("egress", resource.Metadata())
 	}
 
 	actionAttr := resource.GetAttribute("rule_action")
@@ -198,7 +198,7 @@ func adaptNetworkACLRule(resource *block.Block) vpc.NetworkACLRule {
 	cidrs = append(cidrs, ipv4cidrAttr.AsStringValueOrDefault("", resource))
 
 	return vpc.NetworkACLRule{
-		Metadata: *resource.GetMetadata(),
+		Metadata: resource.Metadata(),
 		Type:     typeVal,
 		Action:   actionVal,
 		Protocol: protocolVal,

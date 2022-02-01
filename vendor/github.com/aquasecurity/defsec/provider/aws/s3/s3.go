@@ -4,8 +4,7 @@ import "github.com/aquasecurity/defsec/types"
 
 type S3 struct {
 	types.Metadata
-	Buckets            []Bucket
-	PublicAccessBlocks []PublicAccessBlock
+	Buckets []Bucket
 }
 
 func (s *S3) GetMetadata() *types.Metadata {

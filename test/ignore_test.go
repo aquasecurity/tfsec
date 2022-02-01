@@ -86,6 +86,59 @@ resource "bad" "my-rule" {
 	assert.Len(t, results, 0)
 }
 
+func Test_IgnoreLineStackedAboveTheBlockWithoutMatch(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
+	results := testutil.ScanHCL(`
+#tfsec:ignore:*
+
+#tfsec:ignore:x
+#tfsec:ignore:a
+#tfsec:ignore:b
+#tfsec:ignore:c
+#tfsec:ignore:d
+resource "bad" "my-rule" {
+   secure = false 
+}
+`, t)
+	assert.Len(t, results, 1)
+}
+
+func Test_IgnoreLineStackedAboveTheBlockWithHashesWithoutSpaces(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
+	results := testutil.ScanHCL(`
+#tfsec:ignore:*
+#tfsec:ignore:a
+#tfsec:ignore:b
+#tfsec:ignore:c
+#tfsec:ignore:d
+resource "bad" "my-rule" {
+   secure = false 
+}
+`, t)
+	assert.Len(t, results, 0)
+}
+
+func Test_IgnoreLineStackedAboveTheBlockWithoutSpaces(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
+	results := testutil.ScanHCL(`
+//tfsec:ignore:*
+//tfsec:ignore:a
+//tfsec:ignore:b
+//tfsec:ignore:c
+//tfsec:ignore:d
+resource "bad" "my-rule" {
+   secure = false 
+}
+`, t)
+	assert.Len(t, results, 0)
+}
+
 func Test_IgnoreLineAboveTheLine(t *testing.T) {
 	results := testutil.ScanHCL(`
 

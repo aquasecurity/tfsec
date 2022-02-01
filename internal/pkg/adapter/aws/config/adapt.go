@@ -17,11 +17,12 @@ func adaptConfigurationAggregrator(modules block.Modules) config.ConfigurationAg
 
 	for _, module := range modules {
 		for _, resource := range module.GetResourcesByType("aws_config_configuration_aggregator") {
+			configurationAggregrator.Metadata = resource.Metadata()
 			configurationAggregrator.IsDefined = true
 
 			aggregationBlock := resource.GetFirstMatchingBlock("account_aggregation_source", "organization_aggregation_source")
 			if aggregationBlock.IsNil() {
-				configurationAggregrator.SourceAllRegions = types.Bool(false, *resource.GetMetadata())
+				configurationAggregrator.SourceAllRegions = types.Bool(false, resource.Metadata())
 			} else {
 				allRegionsAttr := aggregationBlock.GetAttribute("all_regions")
 				allRegionsVal := allRegionsAttr.AsBoolValueOrDefault(false, aggregationBlock)

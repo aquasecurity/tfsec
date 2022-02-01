@@ -29,15 +29,19 @@ func adaptWorkspace(resource *block.Block) workspaces.WorkSpace {
 	userVolumeEncryptVal := userVolumeEncryptAttr.AsBoolValueOrDefault(false, resource)
 
 	return workspaces.WorkSpace{
-		Metadata: *resource.GetMetadata(),
+		Metadata: resource.Metadata(),
 		RootVolume: workspaces.Volume{
+			Metadata: resource.Metadata(),
 			Encryption: workspaces.Encryption{
-				Enabled: rootVolumeEncryptVal,
+				Metadata: resource.Metadata(),
+				Enabled:  rootVolumeEncryptVal,
 			},
 		},
 		UserVolume: workspaces.Volume{
+			Metadata: resource.Metadata(),
 			Encryption: workspaces.Encryption{
-				Enabled: userVolumeEncryptVal,
+				Metadata: resource.Metadata(),
+				Enabled:  userVolumeEncryptVal,
 			},
 		},
 	}

@@ -33,15 +33,10 @@ func walk(path Path, val Value, cb func(Path, Value) (bool, error)) error {
 		return nil
 	}
 
-	// The callback already got a chance to see the mark in our
-	// call above, so can safely strip it off here in order to
-	// visit the child elements, which might still have their own marks.
-	rawVal, _ := val.Unmark()
-
 	ty := val.Type()
 	switch {
 	case ty.IsObjectType():
-		for it := rawVal.ElementIterator(); it.Next(); {
+		for it := val.ElementIterator(); it.Next(); {
 			nameVal, av := it.Element()
 			path := append(path, GetAttrStep{
 				Name: nameVal.AsString(),
@@ -51,8 +46,8 @@ func walk(path Path, val Value, cb func(Path, Value) (bool, error)) error {
 				return err
 			}
 		}
-	case rawVal.CanIterateElements():
-		for it := rawVal.ElementIterator(); it.Next(); {
+	case val.CanIterateElements():
+		for it := val.ElementIterator(); it.Next(); {
 			kv, ev := it.Element()
 			path := append(path, IndexStep{
 				Key: kv,
@@ -139,12 +134,6 @@ func transform(path Path, val Value, t Transformer) (Value, error) {
 	ty := val.Type()
 	var newVal Value
 
-	// We need to peel off any marks here so that we can dig around
-	// inside any collection values. We'll reapply these to any
-	// new collections we construct, but the transformer's Exit
-	// method gets the final say on what to do with those.
-	rawVal, marks := val.Unmark()
-
 	switch {
 
 	case val.IsNull() || !val.IsKnown():
@@ -152,14 +141,14 @@ func transform(path Path, val Value, t Transformer) (Value, error) {
 		newVal = val
 
 	case ty.IsListType() || ty.IsSetType() || ty.IsTupleType():
-		l := rawVal.LengthInt()
+		l := val.LengthInt()
 		switch l {
 		case 0:
 			// No deep transform for an empty sequence
 			newVal = val
 		default:
 			elems := make([]Value, 0, l)
-			for it := rawVal.ElementIterator(); it.Next(); {
+			for it := val.ElementIterator(); it.Next(); {
 				kv, ev := it.Element()
 				path := append(path, IndexStep{
 					Key: kv,
@@ -172,25 +161,25 @@ func transform(path Path, val Value, t Transformer) (Value, error) {
 			}
 			switch {
 			case ty.IsListType():
-				newVal = ListVal(elems).WithMarks(marks)
+				newVal = ListVal(elems)
 			case ty.IsSetType():
-				newVal = SetVal(elems).WithMarks(marks)
+				newVal = SetVal(elems)
 			case ty.IsTupleType():
-				newVal = TupleVal(elems).WithMarks(marks)
+				newVal = TupleVal(elems)
 			default:
 				panic("unknown sequence type") // should never happen because of the case we are in
 			}
 		}
 
 	case ty.IsMapType():
-		l := rawVal.LengthInt()
+		l := val.LengthInt()
 		switch l {
 		case 0:
 			// No deep transform for an empty map
 			newVal = val
 		default:
 			elems := make(map[string]Value)
-			for it := rawVal.ElementIterator(); it.Next(); {
+			for it := val.ElementIterator(); it.Next(); {
 				kv, ev := it.Element()
 				path := append(path, IndexStep{
 					Key: kv,
@@ -201,7 +190,7 @@ func transform(path Path, val Value, t Transformer) (Value, error) {
 				}
 				elems[kv.AsString()] = newEv
 			}
-			newVal = MapVal(elems).WithMarks(marks)
+			newVal = MapVal(elems)
 		}
 
 	case ty.IsObjectType():
@@ -223,7 +212,7 @@ func transform(path Path, val Value, t Transformer) (Value, error) {
 				}
 				newAVs[name] = newAV
 			}
-			newVal = ObjectVal(newAVs).WithMarks(marks)
+			newVal = ObjectVal(newAVs)
 		}
 
 	default:

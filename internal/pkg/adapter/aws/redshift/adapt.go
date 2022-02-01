@@ -2,6 +2,7 @@ package redshift
 
 import (
 	"github.com/aquasecurity/defsec/provider/aws/redshift"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/pkg/block"
 )
 
@@ -33,23 +34,26 @@ func adaptSecurityGroups(modules block.Modules) []redshift.SecurityGroup {
 }
 
 func adaptCluster(resource *block.Block) redshift.Cluster {
+	cluster := redshift.Cluster{
+		Metadata: resource.Metadata(),
+		Encryption: redshift.Encryption{
+			Metadata: resource.Metadata(),
+			Enabled:  types.BoolDefault(false, resource.Metadata()),
+			KMSKeyID: types.StringDefault("", resource.Metadata()),
+		},
+		SubnetGroupName: types.StringDefault("", resource.Metadata()),
+	}
+
 	encryptedAttr := resource.GetAttribute("encrypted")
-	encryptedVal := encryptedAttr.AsBoolValueOrDefault(false, resource)
+	cluster.Encryption.Enabled = encryptedAttr.AsBoolValueOrDefault(false, resource)
 
 	KMSKeyIDAttr := resource.GetAttribute("kms_key_id")
-	KMSKeyIDVal := KMSKeyIDAttr.AsStringValueOrDefault("", resource)
+	cluster.Encryption.KMSKeyID = KMSKeyIDAttr.AsStringValueOrDefault("", resource)
 
 	subnetGroupNameAttr := resource.GetAttribute("cluster_subnet_group_name")
-	subnetGroupNameVal := subnetGroupNameAttr.AsStringValueOrDefault("", resource)
+	cluster.SubnetGroupName = subnetGroupNameAttr.AsStringValueOrDefault("", resource)
 
-	return redshift.Cluster{
-		Metadata: *resource.GetMetadata(),
-		Encryption: redshift.Encryption{
-			Enabled:  encryptedVal,
-			KMSKeyID: KMSKeyIDVal,
-		},
-		SubnetGroupName: subnetGroupNameVal,
-	}
+	return cluster
 }
 
 func adaptSecurityGroup(resource *block.Block) redshift.SecurityGroup {
@@ -57,7 +61,7 @@ func adaptSecurityGroup(resource *block.Block) redshift.SecurityGroup {
 	descriptionVal := descriptionAttr.AsStringValueOrDefault("Managed by Terraform", resource)
 
 	return redshift.SecurityGroup{
-		Metadata:    *resource.GetMetadata(),
+		Metadata:    resource.Metadata(),
 		Description: descriptionVal,
 	}
 }

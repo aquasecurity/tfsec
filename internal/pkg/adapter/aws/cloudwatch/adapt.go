@@ -32,7 +32,7 @@ func adaptLogGroup(resource *block.Block) cloudwatch.LogGroup {
 	retentionInDaysVal := retentionInDaysAttr.AsIntValueOrDefault(0, resource)
 
 	return cloudwatch.LogGroup{
-		Metadata:        *resource.GetMetadata(),
+		Metadata:        resource.Metadata(),
 		Name:            nameVal,
 		KMSKeyID:        KMSKeyIDVal,
 		RetentionInDays: retentionInDaysVal,

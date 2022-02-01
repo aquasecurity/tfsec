@@ -1,8 +1,3 @@
-before:
-  hooks:
-    - go mod tidy
-    - go mod vendor
-
 builds:
   - id: tfsec
     main: ./cmd/tfsec
@@ -11,7 +6,6 @@ builds:
       - "-X github.com/aquasecurity/tfsec/version.Version={{.Tag}} -s -w -extldflags '-fno-PIC -static'"
     env:
       - CGO_ENABLED=0
-      - GOFLAGS=-mod=vendor
     goos:
       - linux
       - windows
@@ -26,7 +20,6 @@ builds:
       - "-X github.com/aquasecurity/tfsec/version.Version={{.Tag}} -s -w -extldflags '-fno-PIC -static'"
     env:
       - CGO_ENABLED=0
-      - GOFLAGS=-mod=vendor
     goos:
       - linux
       - windows
@@ -34,7 +27,6 @@ builds:
     goarch:
       - amd64
       - arm64
-
 checksum:
   name_template: '{{ .ProjectName }}_checksums.txt'
 

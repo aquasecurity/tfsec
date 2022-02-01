@@ -34,55 +34,52 @@ func adaptWorkgroups(modules block.Modules) []athena.Workgroup {
 }
 
 func adaptDatabase(resource *block.Block) athena.Database {
-	nameAttr := resource.GetAttribute("name")
-	nameVal := nameAttr.AsStringValueOrDefault("", resource)
-
-	encryptionOptionVal := types.StringDefault("", *resource.GetMetadata())
-
-	if resource.HasChild("encryption_configuration") {
-		encryptionConfigBlock := resource.GetBlock("encryption_configuration")
-		encryptionOptionAttr := encryptionConfigBlock.GetAttribute("encryption_option")
-		encryptionOptionVal = encryptionOptionAttr.AsStringValueOrDefault("", encryptionConfigBlock)
-	}
-
-	return athena.Database{
-		Metadata: *resource.GetMetadata(),
-		Name:     nameVal,
+	database := athena.Database{
+		Metadata: resource.Metadata(),
+		Name:     types.StringDefault("", resource.Metadata()),
 		Encryption: athena.EncryptionConfiguration{
-			Type: encryptionOptionVal,
+			Metadata: resource.Metadata(),
+			Type:     types.StringDefault("", resource.Metadata()),
 		},
 	}
+	nameAttr := resource.GetAttribute("name")
+	database.Name = nameAttr.AsStringValueOrDefault("", resource)
+	if encryptionConfigBlock := resource.GetBlock("encryption_configuration"); encryptionConfigBlock.IsNotNil() {
+		database.Encryption.Metadata = encryptionConfigBlock.Metadata()
+		encryptionOptionAttr := encryptionConfigBlock.GetAttribute("encryption_option")
+		database.Encryption.Type = encryptionOptionAttr.AsStringValueOrDefault("", encryptionConfigBlock)
+	}
+
+	return database
 }
 
 func adaptWorkgroup(resource *block.Block) athena.Workgroup {
+	workgroup := athena.Workgroup{
+		Metadata: resource.Metadata(),
+		Name:     types.StringDefault("", resource.Metadata()),
+		Encryption: athena.EncryptionConfiguration{
+			Metadata: resource.Metadata(),
+			Type:     types.StringDefault("", resource.Metadata()),
+		},
+		EnforceConfiguration: types.BoolDefault(false, resource.Metadata()),
+	}
+
 	nameAttr := resource.GetAttribute("name")
-	nameVal := nameAttr.AsStringValueOrDefault("", resource)
+	workgroup.Name = nameAttr.AsStringValueOrDefault("", resource)
 
-	enforceWGConfigVal := types.BoolDefault(false, *resource.GetMetadata())
-	encryptionOptionVal := types.StringDefault("", *resource.GetMetadata())
-
-	if resource.HasChild("configuration") {
-		configBlock := resource.GetBlock("configuration")
+	if configBlock := resource.GetBlock("configuration"); configBlock.IsNotNil() {
 
 		enforceWGConfigAttr := configBlock.GetAttribute("enforce_workgroup_configuration")
-		enforceWGConfigVal = enforceWGConfigAttr.AsBoolValueOrDefault(true, configBlock)
+		workgroup.EnforceConfiguration = enforceWGConfigAttr.AsBoolValueOrDefault(true, configBlock)
 
-		if configBlock.HasChild("result_configuration") {
-			resultConfigBlock := configBlock.GetBlock("result_configuration")
-			if resultConfigBlock.HasChild("encryption_configuration") {
-				encryptionConfigBlock := resultConfigBlock.GetBlock("encryption_configuration")
+		if resultConfigBlock := configBlock.GetBlock("result_configuration"); configBlock.IsNotNil() {
+			if encryptionConfigBlock := resultConfigBlock.GetBlock("encryption_configuration"); encryptionConfigBlock.IsNotNil() {
 				encryptionOptionAttr := encryptionConfigBlock.GetAttribute("encryption_option")
-				encryptionOptionVal = encryptionOptionAttr.AsStringValueOrDefault("", encryptionConfigBlock)
+				workgroup.Encryption.Metadata = encryptionConfigBlock.Metadata()
+				workgroup.Encryption.Type = encryptionOptionAttr.AsStringValueOrDefault("", encryptionConfigBlock)
 			}
 		}
 	}
 
-	return athena.Workgroup{
-		Metadata: *resource.GetMetadata(),
-		Name:     nameVal,
-		Encryption: athena.EncryptionConfiguration{
-			Type: encryptionOptionVal,
-		},
-		EnforceConfiguration: enforceWGConfigVal,
-	}
+	return workgroup
 }
