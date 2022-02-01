@@ -76,6 +76,9 @@ resource "aws_apigatewayv2_domain_name" "example" {
 								AccessLogging: apigateway.AccessLogging{
 									CloudwatchLogGroupARN: testutil.String("arn:123"),
 								},
+								RESTMethodSettings: apigateway.RESTMethodSettings{
+									CacheDataEncrypted: testutil.Bool(true),
+								},
 							},
 						},
 					},

@@ -26,7 +26,7 @@ func adaptFileSystem(resource *block.Block) efs.FileSystem {
 	encryptedVal := encryptedAttr.AsBoolValueOrDefault(false, resource)
 
 	return efs.FileSystem{
-		Metadata:  *resource.GetMetadata(),
+		Metadata:  resource.Metadata(),
 		Encrypted: encryptedVal,
 	}
 }

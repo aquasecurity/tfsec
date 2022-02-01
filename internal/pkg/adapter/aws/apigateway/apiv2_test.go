@@ -74,6 +74,9 @@ resource "aws_apigatewayv2_stage" "example" {
 				AccessLogging: apigateway.AccessLogging{
 					CloudwatchLogGroupARN: testutil.String(""),
 				},
+				RESTMethodSettings: apigateway.RESTMethodSettings{
+					CacheDataEncrypted: testutil.Bool(true),
+				},
 			},
 		},
 		{
@@ -91,6 +94,9 @@ resource "aws_apigatewayv2_stage" "example" {
 				Version: testutil.Int(2),
 				AccessLogging: apigateway.AccessLogging{
 					CloudwatchLogGroupARN: testutil.String("arn:123"),
+				},
+				RESTMethodSettings: apigateway.RESTMethodSettings{
+					CacheDataEncrypted: testutil.Bool(true),
 				},
 			},
 		},

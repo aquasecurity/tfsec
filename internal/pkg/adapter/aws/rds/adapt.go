@@ -71,7 +71,7 @@ func adaptClusterInstance(resource *block.Block, modules block.Modules) rds.Clus
 
 func adaptClassicDBSecurityGroup(resource *block.Block) rds.DBSecurityGroup {
 	return rds.DBSecurityGroup{
-		Metadata: *resource.GetMetadata(),
+		Metadata: resource.Metadata(),
 	}
 }
 
@@ -85,9 +85,9 @@ func adaptInstance(resource *block.Block, modules block.Modules) rds.Instance {
 		}
 	}
 	return rds.Instance{
-		Metadata:                  *resource.GetMetadata(),
+		Metadata:                  resource.Metadata(),
 		BackupRetentionPeriodDays: resource.GetAttribute("backup_retention_period").AsIntValueOrDefault(0, resource),
-		ReplicationSourceARN:      types.StringExplicit(replicaSourceValue, *resource.GetMetadata()),
+		ReplicationSourceARN:      types.StringExplicit(replicaSourceValue, resource.Metadata()),
 		PerformanceInsights:       adaptPerformanceInsights(resource),
 		Encryption:                adaptEncryption(resource),
 		PublicAccess:              resource.GetAttribute("publicly_accessible").AsBoolValueOrDefault(false, resource),
@@ -99,7 +99,7 @@ func adaptCluster(resource *block.Block, modules block.Modules) (rds.Cluster, []
 	clusterInstances, ids := getClusterInstances(resource, modules)
 
 	return rds.Cluster{
-		Metadata:                  *resource.GetMetadata(),
+		Metadata:                  resource.Metadata(),
 		BackupRetentionPeriodDays: resource.GetAttribute("backup_retention_period").AsIntValueOrDefault(0, resource),
 		ReplicationSourceARN:      resource.GetAttribute("replicate_source_db").AsStringValueOrDefault("", resource),
 		PerformanceInsights:       adaptPerformanceInsights(resource),
@@ -120,6 +120,7 @@ func getClusterInstances(resource *block.Block, modules block.Modules) (clusterI
 
 func adaptPerformanceInsights(resource *block.Block) rds.PerformanceInsights {
 	return rds.PerformanceInsights{
+		Metadata: resource.Metadata(),
 		Enabled:  resource.GetAttribute("performance_insights_enabled").AsBoolValueOrDefault(false, resource),
 		KMSKeyID: resource.GetAttribute("performance_insights_kms_key_id").AsStringValueOrDefault("", resource),
 	}
@@ -127,6 +128,7 @@ func adaptPerformanceInsights(resource *block.Block) rds.PerformanceInsights {
 
 func adaptEncryption(resource *block.Block) rds.Encryption {
 	return rds.Encryption{
+		Metadata:       resource.Metadata(),
 		EncryptStorage: resource.GetAttribute("storage_encrypted").AsBoolValueOrDefault(false, resource),
 		KMSKeyID:       resource.GetAttribute("kms_key_id").AsStringValueOrDefault("", resource),
 	}

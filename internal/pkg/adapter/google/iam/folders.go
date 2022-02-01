@@ -19,6 +19,7 @@ func (a *adapter) adaptFolders() {
 			continue
 		}
 
+		folder.folder.Metadata = folderBlock.Metadata()
 		folder.blockID = folderBlock.ID()
 		if parentAttr.IsString() {
 			folder.parentRef = parentAttr.Value().AsString()

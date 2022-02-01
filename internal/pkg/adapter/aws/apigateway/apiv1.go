@@ -64,12 +64,20 @@ func adaptAPIsV1(modules block.Modules) []apigateway.API {
 }
 
 func adaptStageV1(stageBlock *block.Block, defaultCacheEncryption types.BoolValue, modules block.Modules) apigateway.Stage {
-	var stage apigateway.Stage
-	stage.Metadata = stageBlock.Metadata()
-	stage.Version = types.Int(1, stageBlock.Metadata())
-
-	stage.RESTMethodSettings.CacheDataEncrypted = defaultCacheEncryption
+	stage := apigateway.Stage{
+		Metadata: stageBlock.Metadata(),
+		Version:  types.Int(1, stageBlock.Metadata()),
+		RESTMethodSettings: apigateway.RESTMethodSettings{
+			Metadata:           stageBlock.Metadata(),
+			CacheDataEncrypted: defaultCacheEncryption,
+		},
+		AccessLogging: apigateway.AccessLogging{
+			Metadata:              stageBlock.Metadata(),
+			CloudwatchLogGroupARN: types.StringDefault("", stageBlock.Metadata()),
+		},
+	}
 	for _, methodSettings := range modules.GetReferencingResources(stageBlock, "aws_api_gateway_method_settings", "stage_name") {
+		stage.RESTMethodSettings.Metadata = methodSettings.Metadata()
 		if settings := methodSettings.GetBlock("settings"); settings.IsNotNil() {
 			if encrypted := settings.GetAttribute("cache_data_encrypted"); encrypted.IsNotNil() {
 				stage.RESTMethodSettings.CacheDataEncrypted = settings.GetAttribute("cache_data_encrypted").AsBoolValueOrDefault(false, settings)

@@ -31,10 +31,11 @@ func adaptRoleDefinition(resource *block.Block) authorization.RoleDefinition {
 		var actionsVal []types.StringValue
 		actions := actionsAttr.ValueAsStrings()
 		for _, action := range actions {
-			actionsVal = append(actionsVal, types.String(action, *permissionsBlock.GetMetadata()))
+			actionsVal = append(actionsVal, types.String(action, permissionsBlock.Metadata()))
 		}
 		permissionsVal = append(permissionsVal, authorization.Permission{
-			Actions: actionsVal,
+			Metadata: permissionsBlock.Metadata(),
+			Actions:  actionsVal,
 		})
 	}
 
@@ -42,10 +43,11 @@ func adaptRoleDefinition(resource *block.Block) authorization.RoleDefinition {
 	var assignableScopesVal []types.StringValue
 	assignableScopes := assignableScopesAttr.ValueAsStrings()
 	for _, scope := range assignableScopes {
-		assignableScopesVal = append(assignableScopesVal, types.String(scope, *resource.GetMetadata()))
+		assignableScopesVal = append(assignableScopesVal, types.String(scope, resource.Metadata()))
 	}
 
 	return authorization.RoleDefinition{
+		Metadata:         resource.Metadata(),
 		Permissions:      permissionsVal,
 		AssignableScopes: assignableScopesVal,
 	}

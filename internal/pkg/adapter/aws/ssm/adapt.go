@@ -37,7 +37,7 @@ func adaptSecret(resource *block.Block, module *block.Module) ssm.Secret {
 	}
 
 	return ssm.Secret{
-		Metadata: *resource.GetMetadata(),
+		Metadata: resource.Metadata(),
 		KMSKeyID: KMSKeyIDVal,
 	}
 }

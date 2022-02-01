@@ -27,6 +27,7 @@ func adaptFactory(resource *block.Block) datafactory.Factory {
 	enablePublicNetworkVal := enablePublicNetworkAttr.AsBoolValueOrDefault(true, resource)
 
 	return datafactory.Factory{
+		Metadata:            resource.Metadata(),
 		EnablePublicNetwork: enablePublicNetworkVal,
 	}
 }

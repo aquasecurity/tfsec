@@ -28,10 +28,11 @@ func adaptStore(resource *block.Block) datalake.Store {
 
 	if encryptionStateAttr.Equals("Disabled") {
 		return datalake.Store{
-			EnableEncryption: types.Bool(false, *resource.GetMetadata()),
+			EnableEncryption: types.Bool(false, resource.Metadata()),
 		}
 	}
 	return datalake.Store{
-		EnableEncryption: types.Bool(true, *resource.GetMetadata()),
+		Metadata:         resource.Metadata(),
+		EnableEncryption: types.Bool(true, resource.Metadata()),
 	}
 }

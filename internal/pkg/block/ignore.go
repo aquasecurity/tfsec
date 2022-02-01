@@ -1,6 +1,9 @@
 package block
 
 import (
+	"fmt"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/aquasecurity/defsec/types"
@@ -45,6 +48,10 @@ func (ignore Ignore) Covering(m types.Metadata, workspace string, ids ...string)
 
 	metaHierarchy := &m
 	for metaHierarchy != nil {
+		if metaHierarchy.Range() == nil {
+			fmt.Fprintf(os.Stderr, "WARNING: Missing range for result from result with IDs: %s\n", strings.Join(ids, ", "))
+			break
+		}
 		if ignore.Range.GetFilename() != metaHierarchy.Range().GetFilename() {
 			metaHierarchy = metaHierarchy.Parent()
 			continue

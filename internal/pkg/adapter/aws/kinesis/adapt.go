@@ -2,6 +2,7 @@ package kinesis
 
 import (
 	"github.com/aquasecurity/defsec/provider/aws/kinesis"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/aquasecurity/tfsec/internal/pkg/block"
 )
 
@@ -22,17 +23,19 @@ func adaptStreams(modules block.Modules) []kinesis.Stream {
 }
 
 func adaptStream(resource *block.Block) kinesis.Stream {
-	encryptionTypeAttr := resource.GetAttribute("encryption_type")
-	encryptionTypeVal := encryptionTypeAttr.AsStringValueOrDefault("NONE", resource)
 
-	KMSKeyIDAttr := resource.GetAttribute("kms_key_id")
-	KMSKeyIDVal := KMSKeyIDAttr.AsStringValueOrDefault("", resource)
-
-	return kinesis.Stream{
-		Metadata: *resource.GetMetadata(),
+	stream := kinesis.Stream{
+		Metadata: resource.Metadata(),
 		Encryption: kinesis.Encryption{
-			Type:     encryptionTypeVal,
-			KMSKeyID: KMSKeyIDVal,
+			Metadata: resource.Metadata(),
+			Type:     types.StringDefault("NONE", resource.Metadata()),
+			KMSKeyID: types.StringDefault("", resource.Metadata()),
 		},
 	}
+
+	encryptionTypeAttr := resource.GetAttribute("encryption_type")
+	stream.Encryption.Type = encryptionTypeAttr.AsStringValueOrDefault("NONE", resource)
+	KMSKeyIDAttr := resource.GetAttribute("kms_key_id")
+	stream.Encryption.KMSKeyID = KMSKeyIDAttr.AsStringValueOrDefault("", resource)
+	return stream
 }

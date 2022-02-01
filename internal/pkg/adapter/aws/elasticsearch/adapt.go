@@ -23,60 +23,60 @@ func adaptDomains(modules block.Modules) []elasticsearch.Domain {
 }
 
 func adaptDomain(resource *block.Block) elasticsearch.Domain {
-	nameAttr := resource.GetAttribute("domain_name")
-	nameVal := nameAttr.AsStringValueOrDefault("", resource)
+	domain := elasticsearch.Domain{
+		Metadata:   resource.Metadata(),
+		DomainName: types.StringDefault("", resource.Metadata()),
+		LogPublishing: elasticsearch.LogPublishing{
+			Metadata:     resource.Metadata(),
+			AuditEnabled: types.BoolDefault(false, resource.Metadata()),
+		},
+		TransitEncryption: elasticsearch.TransitEncryption{
+			Metadata: resource.Metadata(),
+			Enabled:  types.BoolDefault(false, resource.Metadata()),
+		},
+		AtRestEncryption: elasticsearch.AtRestEncryption{
+			Metadata: resource.Metadata(),
+			Enabled:  types.BoolDefault(false, resource.Metadata()),
+		},
+		Endpoint: elasticsearch.Endpoint{
+			Metadata:     resource.Metadata(),
+			EnforceHTTPS: types.BoolDefault(false, resource.Metadata()),
+			TLSPolicy:    types.StringDefault("", resource.Metadata()),
+		},
+	}
 
-	auditEnabled := types.BoolDefault(false, *resource.GetMetadata())
-	transitEncryptionVal := types.BoolDefault(false, *resource.GetMetadata())
-	atRestEncryptionVal := types.BoolDefault(false, *resource.GetMetadata())
-	enforceHTTPSVal := types.BoolDefault(false, *resource.GetMetadata())
-	TLSPolicyVal := types.StringDefault("", *resource.GetMetadata())
+	nameAttr := resource.GetAttribute("domain_name")
+	domain.DomainName = nameAttr.AsStringValueOrDefault("", resource)
 
 	for _, logOptionsBlock := range resource.GetBlocks("log_publishing_options") {
+		domain.LogPublishing.Metadata = logOptionsBlock.Metadata()
 		enabledAttr := logOptionsBlock.GetAttribute("enabled")
 		enabledVal := enabledAttr.AsBoolValueOrDefault(true, logOptionsBlock)
 		logTypeAttr := logOptionsBlock.GetAttribute("log_type")
 		if logTypeAttr.Equals("AUDIT_LOGS") {
-			auditEnabled = enabledVal
+			domain.LogPublishing.AuditEnabled = enabledVal
 		}
 	}
 
-	if resource.HasChild("node_to_node_encryption") {
-		transitEncryptBlock := resource.GetBlock("node_to_node_encryption")
+	if transitEncryptBlock := resource.GetBlock("node_to_node_encryption"); transitEncryptBlock.IsNotNil() {
 		enabledAttr := transitEncryptBlock.GetAttribute("enabled")
-		transitEncryptionVal = enabledAttr.AsBoolValueOrDefault(false, transitEncryptBlock)
+		domain.TransitEncryption.Metadata = transitEncryptBlock.Metadata()
+		domain.TransitEncryption.Enabled = enabledAttr.AsBoolValueOrDefault(false, transitEncryptBlock)
 	}
 
-	if resource.HasChild("encrypt_at_rest") {
-		atRestEncryptBlock := resource.GetBlock("encrypt_at_rest")
+	if atRestEncryptBlock := resource.GetBlock("encrypt_at_rest"); atRestEncryptBlock.IsNotNil() {
 		enabledAttr := atRestEncryptBlock.GetAttribute("enabled")
-		atRestEncryptionVal = enabledAttr.AsBoolValueOrDefault(false, atRestEncryptBlock)
+		domain.AtRestEncryption.Metadata = atRestEncryptBlock.Metadata()
+		domain.AtRestEncryption.Enabled = enabledAttr.AsBoolValueOrDefault(false, atRestEncryptBlock)
 	}
 
-	if resource.HasChild("domain_endpoint_options") {
-		endpointBlock := resource.GetBlock("domain_endpoint_options")
+	if endpointBlock := resource.GetBlock("domain_endpoint_options"); endpointBlock.IsNotNil() {
+		domain.Endpoint.Metadata = endpointBlock.Metadata()
 		enforceHTTPSAttr := endpointBlock.GetAttribute("enforce_https")
-		enforceHTTPSVal = enforceHTTPSAttr.AsBoolValueOrDefault(true, endpointBlock)
-
+		domain.Endpoint.EnforceHTTPS = enforceHTTPSAttr.AsBoolValueOrDefault(true, endpointBlock)
 		TLSPolicyAttr := endpointBlock.GetAttribute("tls_security_policy")
-		TLSPolicyVal = TLSPolicyAttr.AsStringValueOrDefault("", endpointBlock)
+		domain.Endpoint.TLSPolicy = TLSPolicyAttr.AsStringValueOrDefault("", endpointBlock)
 	}
 
-	return elasticsearch.Domain{
-		Metadata:   *resource.GetMetadata(),
-		DomainName: nameVal,
-		LogPublishing: elasticsearch.LogPublishing{
-			AuditEnabled: auditEnabled,
-		},
-		TransitEncryption: elasticsearch.TransitEncryption{
-			Enabled: transitEncryptionVal,
-		},
-		AtRestEncryption: elasticsearch.AtRestEncryption{
-			Enabled: atRestEncryptionVal,
-		},
-		Endpoint: elasticsearch.Endpoint{
-			EnforceHTTPS: enforceHTTPSVal,
-			TLSPolicy:    TLSPolicyVal,
-		},
-	}
+	return domain
 }

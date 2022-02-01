@@ -26,56 +26,49 @@ func adaptInstances(modules block.Modules) []sql.DatabaseInstance {
 
 func adaptInstance(resource *block.Block) sql.DatabaseInstance {
 
-	backupConfigEnabledVal := types.BoolDefault(false, *resource.GetMetadata())
-
-	flags := sql.Flags{
-		LogTempFileSize:                 types.IntDefault(-1, resource.Metadata()),
-		LocalInFile:                     types.BoolDefault(false, resource.Metadata()),
-		ContainedDatabaseAuthentication: types.BoolDefault(true, resource.Metadata()),
-		CrossDBOwnershipChaining:        types.BoolDefault(true, resource.Metadata()),
-		LogCheckpoints:                  types.BoolDefault(false, resource.Metadata()),
-		LogConnections:                  types.BoolDefault(false, resource.Metadata()),
-		LogDisconnections:               types.BoolDefault(false, resource.Metadata()),
-		LogLockWaits:                    types.BoolDefault(false, resource.Metadata()),
-		LogMinMessages:                  types.StringDefault("", resource.Metadata()),
-		LogMinDurationStatement:         types.IntDefault(-1, resource.Metadata()),
-	}
-
-	ipConfig := sql.IPConfiguration{
-		RequireTLS: types.BoolDefault(false, *resource.GetMetadata()),
-		EnableIPv4: types.BoolDefault(true, *resource.GetMetadata()),
-		AuthorizedNetworks: []struct {
-			Name types.StringValue
-			CIDR types.StringValue
-		}{},
-	}
-
-	dbVersionVal := resource.GetAttribute("database_version").AsStringValueOrDefault("", resource)
-
-	if resource.HasChild("settings") {
-		settingsBlock := resource.GetBlock("settings")
-		if blocks := settingsBlock.GetBlocks("database_flags"); len(blocks) > 0 {
-			adaptFlags(blocks, &flags)
-		}
-		if settingsBlock.HasChild("backup_configuration") {
-			backupConfigEnabledAttr := settingsBlock.GetBlock("backup_configuration").GetAttribute("enabled")
-			backupConfigEnabledVal = backupConfigEnabledAttr.AsBoolValueOrDefault(false, settingsBlock.GetBlock("backup_configuration"))
-		}
-		if settingsBlock.HasChild("ip_configuration") {
-			ipConfig = adaptIPConfig(settingsBlock.GetBlock("ip_configuration"))
-		}
-	}
-	return sql.DatabaseInstance{
+	instance := sql.DatabaseInstance{
 		Metadata:        resource.Metadata(),
-		DatabaseVersion: dbVersionVal,
+		DatabaseVersion: resource.GetAttribute("database_version").AsStringValueOrDefault("", resource),
 		Settings: sql.Settings{
-			Flags: flags,
-			Backups: sql.Backups{
-				Enabled: backupConfigEnabledVal,
+			Metadata: resource.Metadata(),
+			Flags: sql.Flags{
+				LogTempFileSize:                 types.IntDefault(-1, resource.Metadata()),
+				LocalInFile:                     types.BoolDefault(false, resource.Metadata()),
+				ContainedDatabaseAuthentication: types.BoolDefault(true, resource.Metadata()),
+				CrossDBOwnershipChaining:        types.BoolDefault(true, resource.Metadata()),
+				LogCheckpoints:                  types.BoolDefault(false, resource.Metadata()),
+				LogConnections:                  types.BoolDefault(false, resource.Metadata()),
+				LogDisconnections:               types.BoolDefault(false, resource.Metadata()),
+				LogLockWaits:                    types.BoolDefault(false, resource.Metadata()),
+				LogMinMessages:                  types.StringDefault("", resource.Metadata()),
+				LogMinDurationStatement:         types.IntDefault(-1, resource.Metadata()),
 			},
-			IPConfiguration: ipConfig,
+			Backups: sql.Backups{
+				Metadata: resource.Metadata(),
+				Enabled:  types.BoolDefault(false, resource.Metadata()),
+			},
+			IPConfiguration: sql.IPConfiguration{
+				Metadata:           resource.Metadata(),
+				RequireTLS:         types.BoolDefault(false, resource.Metadata()),
+				EnableIPv4:         types.BoolDefault(true, resource.Metadata()),
+				AuthorizedNetworks: nil,
+			},
 		},
 	}
+
+	if settingsBlock := resource.GetBlock("settings"); settingsBlock.IsNotNil() {
+		if blocks := settingsBlock.GetBlocks("database_flags"); len(blocks) > 0 {
+			adaptFlags(blocks, &instance.Settings.Flags)
+		}
+		if backupBlock := settingsBlock.GetBlock("backup_configuration"); backupBlock.IsNotNil() {
+			backupConfigEnabledAttr := backupBlock.GetAttribute("enabled")
+			instance.Settings.Backups.Enabled = backupConfigEnabledAttr.AsBoolValueOrDefault(false, backupBlock)
+		}
+		if settingsBlock.HasChild("ip_configuration") {
+			instance.Settings.IPConfiguration = adaptIPConfig(settingsBlock.GetBlock("ip_configuration"))
+		}
+	}
+	return instance
 }
 
 //nolint
@@ -145,6 +138,7 @@ func adaptIPConfig(resource *block.Block) sql.IPConfiguration {
 	}
 
 	return sql.IPConfiguration{
+		Metadata:           resource.Metadata(),
 		RequireTLS:         tlsRequiredVal,
 		EnableIPv4:         ipv4enabledVal,
 		AuthorizedNetworks: authorizedNetworks,

@@ -78,7 +78,7 @@ func adaptLinuxVM(resource *block.Block) compute.LinuxVirtualMachine {
 		if err != nil {
 			encoded = []byte(customDataAttr.Value().AsString())
 		}
-		customDataVal = types.String(string(encoded), *workingBlock.GetMetadata())
+		customDataVal = types.String(string(encoded), workingBlock.Metadata())
 	}
 
 	if resource.TypeLabel() == "azurerm_virtual_machine" {
@@ -115,7 +115,7 @@ func adaptWindowsVM(resource *block.Block) compute.WindowsVirtualMachine {
 		if err != nil {
 			encoded = []byte(customDataAttr.Value().AsString())
 		}
-		customDataVal = types.String(string(encoded), *workingBlock.GetMetadata())
+		customDataVal = types.String(string(encoded), workingBlock.Metadata())
 	}
 
 	return compute.WindowsVirtualMachine{
