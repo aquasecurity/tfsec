@@ -47,7 +47,7 @@ func adaptDataset(resource *block.Block) bigquery.Dataset {
 	}
 
 	return bigquery.Dataset{
-		Metadata:     *resource.GetMetadata(),
+		Metadata:     resource.Metadata(),
 		ID:           IDVal,
 		AccessGrants: accessGrants,
 	}

@@ -40,22 +40,22 @@ func adaptService(resource *block.Block) appservice.Service {
 	enableClientCertVal := enableClientCertAttr.AsBoolValueOrDefault(false, resource)
 
 	identityBlock := resource.GetBlock("identity")
-	typeVal := types.String("", *resource.GetMetadata())
+	typeVal := types.String("", resource.Metadata())
 	if identityBlock.IsNotNil() {
 		typeAttr := identityBlock.GetAttribute("type")
 		typeVal = typeAttr.AsStringValueOrDefault("", identityBlock)
 	}
 
 	authBlock := resource.GetBlock("auth_settings")
-	enabledVal := types.Bool(false, *resource.GetMetadata())
+	enabledVal := types.Bool(false, resource.Metadata())
 	if authBlock.IsNotNil() {
 		enabledAttr := authBlock.GetAttribute("enabled")
 		enabledVal = enabledAttr.AsBoolValueOrDefault(false, authBlock)
 	}
 
 	siteBlock := resource.GetBlock("site_config")
-	enableHTTP2Val := types.Bool(false, *resource.GetMetadata())
-	minTLSVersionVal := types.String("1.2", *resource.GetMetadata())
+	enableHTTP2Val := types.Bool(false, resource.Metadata())
+	minTLSVersionVal := types.String("1.2", resource.Metadata())
 	if siteBlock.IsNotNil() {
 		enableHTTP2Attr := siteBlock.GetAttribute("http2_enabled")
 		enableHTTP2Val = enableHTTP2Attr.AsBoolValueOrDefault(false, siteBlock)

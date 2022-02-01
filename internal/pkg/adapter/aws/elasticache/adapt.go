@@ -53,7 +53,7 @@ func adaptCluster(resource *block.Block) elasticache.Cluster {
 	snapshotRetentionVal := snapshotRetentionAttr.AsIntValueOrDefault(0, resource)
 
 	return elasticache.Cluster{
-		Metadata:               *resource.GetMetadata(),
+		Metadata:               resource.Metadata(),
 		Engine:                 engineVal,
 		NodeType:               nodeTypeVal,
 		SnapshotRetentionLimit: snapshotRetentionVal,
@@ -68,7 +68,7 @@ func adaptReplicationGroup(resource *block.Block) elasticache.ReplicationGroup {
 	atRestEncryptionVal := atRestEncryptionAttr.AsBoolValueOrDefault(false, resource)
 
 	return elasticache.ReplicationGroup{
-		Metadata:                 *resource.GetMetadata(),
+		Metadata:                 resource.Metadata(),
 		TransitEncryptionEnabled: transitEncryptionVal,
 		AtRestEncryptionEnabled:  atRestEncryptionVal,
 	}
@@ -79,7 +79,7 @@ func adaptSecurityGroup(resource *block.Block) elasticache.SecurityGroup {
 	descriptionVal := descriptionAttr.AsStringValueOrDefault("Managed by Terraform", resource)
 
 	return elasticache.SecurityGroup{
-		Metadata:    *resource.GetMetadata(),
+		Metadata:    resource.Metadata(),
 		Description: descriptionVal,
 	}
 }

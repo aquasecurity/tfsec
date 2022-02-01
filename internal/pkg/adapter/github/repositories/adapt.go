@@ -27,12 +27,12 @@ func adaptRepository(resource *block.Block) github.Repository {
 	if visibilityAttr.Equals("private") || visibilityAttr.Equals("internal") {
 		return github.Repository{
 			Metadata: resource.Metadata(),
-			Public:   types.Bool(false, *resource.GetMetadata()),
+			Public:   types.Bool(false, resource.Metadata()),
 		}
 	} else if visibilityAttr.Equals("public") {
 		return github.Repository{
 			Metadata: resource.Metadata(),
-			Public:   types.Bool(true, *resource.GetMetadata()),
+			Public:   types.Bool(true, resource.Metadata()),
 		}
 	}
 
@@ -40,12 +40,12 @@ func adaptRepository(resource *block.Block) github.Repository {
 	if privateAttr.IsTrue() {
 		return github.Repository{
 			Metadata: resource.Metadata(),
-			Public:   types.Bool(false, *resource.GetMetadata()),
+			Public:   types.Bool(false, resource.Metadata()),
 		}
 	}
 
 	return github.Repository{
 		Metadata: resource.Metadata(),
-		Public:   types.Bool(true, *resource.GetMetadata()),
+		Public:   types.Bool(true, resource.Metadata()),
 	}
 }

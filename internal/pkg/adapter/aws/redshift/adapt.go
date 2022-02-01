@@ -61,7 +61,7 @@ func adaptSecurityGroup(resource *block.Block) redshift.SecurityGroup {
 	descriptionVal := descriptionAttr.AsStringValueOrDefault("Managed by Terraform", resource)
 
 	return redshift.SecurityGroup{
-		Metadata:    *resource.GetMetadata(),
+		Metadata:    resource.Metadata(),
 		Description: descriptionVal,
 	}
 }

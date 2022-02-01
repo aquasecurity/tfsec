@@ -46,10 +46,10 @@ func adaptLaunchConfigurations(modules block.Modules) []autoscaling.LaunchConfig
 			launchConfig := adaptLaunchConfiguration(resource)
 			for _, resource := range module.GetResourcesByType("aws_ebs_encryption_by_default") {
 				if resource.GetAttribute("enabled").NotEqual(false) {
-					launchConfig.RootBlockDevice.Encrypted = types.BoolDefault(true, *resource.GetMetadata())
+					launchConfig.RootBlockDevice.Encrypted = types.BoolDefault(true, resource.Metadata())
 					for i := 0; i < len(launchConfig.EBSBlockDevices); i++ {
 						ebs := &launchConfig.EBSBlockDevices[i]
-						ebs.Encrypted = types.BoolDefault(true, *resource.GetMetadata())
+						ebs.Encrypted = types.BoolDefault(true, resource.Metadata())
 					}
 				}
 			}
@@ -88,7 +88,7 @@ func adaptLaunchConfiguration(resource *block.Block) autoscaling.LaunchConfigura
 		encryptedAttr := EBSBlockDevicesBlock.GetAttribute("encrypted")
 		encryptedVal := encryptedAttr.AsBoolValueOrDefault(false, EBSBlockDevicesBlock)
 		launchConfig.EBSBlockDevices = append(launchConfig.EBSBlockDevices, ec2.BlockDevice{
-			Metadata:  *EBSBlockDevicesBlock.GetMetadata(),
+			Metadata:  EBSBlockDevicesBlock.Metadata(),
 			Encrypted: encryptedVal,
 		})
 	}

@@ -27,14 +27,14 @@ func adaptRepository(resource *block.Block, module *block.Module) ecr.Repository
 		Metadata: resource.Metadata(),
 		ImageScanning: ecr.ImageScanning{
 			Metadata:   resource.Metadata(),
-			ScanOnPush: types.BoolDefault(false, *resource.GetMetadata()),
+			ScanOnPush: types.BoolDefault(false, resource.Metadata()),
 		},
-		ImageTagsImmutable: types.BoolDefault(false, *resource.GetMetadata()),
+		ImageTagsImmutable: types.BoolDefault(false, resource.Metadata()),
 		Policies:           nil,
 		Encryption: ecr.Encryption{
 			Metadata: resource.Metadata(),
-			Type:     types.StringDefault("AES256", *resource.GetMetadata()),
-			KMSKeyID: types.StringDefault("", *resource.GetMetadata()),
+			Type:     types.StringDefault("AES256", resource.Metadata()),
+			KMSKeyID: types.StringDefault("", resource.Metadata()),
 		},
 	}
 
@@ -46,9 +46,9 @@ func adaptRepository(resource *block.Block, module *block.Module) ecr.Repository
 
 	mutabilityAttr := resource.GetAttribute("image_tag_mutability")
 	if mutabilityAttr.Equals("IMMUTABLE") {
-		repo.ImageTagsImmutable = types.Bool(true, *mutabilityAttr.GetMetadata())
+		repo.ImageTagsImmutable = types.Bool(true, mutabilityAttr.Metadata())
 	} else if mutabilityAttr.Equals("MUTABLE") {
-		repo.ImageTagsImmutable = types.Bool(false, *mutabilityAttr.GetMetadata())
+		repo.ImageTagsImmutable = types.Bool(false, mutabilityAttr.Metadata())
 	}
 
 	policyBlocks := module.GetReferencingResources(resource, "aws_ecr_repository_policy", "repository")

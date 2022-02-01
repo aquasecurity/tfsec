@@ -65,7 +65,7 @@ func (a *adapter) adaptVault(resource *block.Block, module *block.Module) keyvau
 	var keys []keyvault.Key
 	var secrets []keyvault.Secret
 
-	defaultActionVal := types.StringDefault("", *resource.GetMetadata())
+	defaultActionVal := types.StringDefault("", resource.Metadata())
 
 	secretBlocks := module.GetReferencingResources(resource, "azurerm_key_vault_secret", "key_vault_id")
 	for _, secretBlock := range secretBlocks {

@@ -52,9 +52,9 @@ func adaptManagedZone(resource *block.Block) dns.ManagedZone {
 
 		stateAttr := DNSSecBlock.GetAttribute("state")
 		if stateAttr.Equals("on") {
-			zone.DNSSec.Enabled = types.Bool(true, *DNSSecBlock.GetMetadata())
+			zone.DNSSec.Enabled = types.Bool(true, DNSSecBlock.Metadata())
 		} else if stateAttr.Equals("off") || stateAttr.Equals("transfer") {
-			zone.DNSSec.Enabled = types.Bool(false, *DNSSecBlock.GetMetadata())
+			zone.DNSSec.Enabled = types.Bool(false, DNSSecBlock.Metadata())
 		}
 
 		if DNSSecBlock.HasChild("default_key_specs") {
@@ -79,11 +79,11 @@ func adaptKeySpecs(resource *block.Block) dns.KeySpecs {
 		Metadata: resource.Metadata(),
 		KeySigningKey: dns.Key{
 			Metadata:  resource.Metadata(),
-			Algorithm: types.String("", *resource.GetMetadata()),
+			Algorithm: types.String("", resource.Metadata()),
 		},
 		ZoneSigningKey: dns.Key{
 			Metadata:  resource.Metadata(),
-			Algorithm: types.String("", *resource.GetMetadata()),
+			Algorithm: types.String("", resource.Metadata()),
 		},
 	}
 	KeySigningKeysBlock := resource.GetBlock("key_signing_keys")

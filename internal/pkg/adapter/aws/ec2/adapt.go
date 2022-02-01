@@ -46,10 +46,10 @@ func getInstances(modules block.Modules) []ec2.Instance {
 
 		for _, resource := range modules.GetResourcesByType("aws_ebs_encryption_by_default") {
 			if resource.GetAttribute("enabled").NotEqual(false) {
-				instance.RootBlockDevice.Encrypted = types.BoolDefault(true, *resource.GetMetadata())
+				instance.RootBlockDevice.Encrypted = types.BoolDefault(true, resource.Metadata())
 				for i := 0; i < len(instance.EBSBlockDevices); i++ {
 					ebs := &instance.EBSBlockDevices[i]
-					ebs.Encrypted = types.BoolDefault(true, *resource.GetMetadata())
+					ebs.Encrypted = types.BoolDefault(true, resource.Metadata())
 				}
 			}
 		}

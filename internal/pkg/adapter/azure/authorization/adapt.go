@@ -43,7 +43,7 @@ func adaptRoleDefinition(resource *block.Block) authorization.RoleDefinition {
 	var assignableScopesVal []types.StringValue
 	assignableScopes := assignableScopesAttr.ValueAsStrings()
 	for _, scope := range assignableScopes {
-		assignableScopesVal = append(assignableScopesVal, types.String(scope, *resource.GetMetadata()))
+		assignableScopesVal = append(assignableScopesVal, types.String(scope, resource.Metadata()))
 	}
 
 	return authorization.RoleDefinition{

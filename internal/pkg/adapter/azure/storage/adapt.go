@@ -119,12 +119,12 @@ func adaptAccount(resource *block.Block) storage.Account {
 
 func adaptContainer(resource *block.Block) storage.Container {
 	accessTypeAttr := resource.GetAttribute("container_access_type")
-	publicAccess := types.String(storage.PublicAccessOff, *resource.GetMetadata())
+	publicAccess := types.String(storage.PublicAccessOff, resource.Metadata())
 
 	if accessTypeAttr.Equals("blob") {
-		publicAccess = types.String(storage.PublicAccessBlob, *resource.GetMetadata())
+		publicAccess = types.String(storage.PublicAccessBlob, resource.Metadata())
 	} else if accessTypeAttr.Equals("container") {
-		publicAccess = types.String(storage.PublicAccessContainer, *resource.GetMetadata())
+		publicAccess = types.String(storage.PublicAccessContainer, resource.Metadata())
 	}
 
 	return storage.Container{
@@ -139,16 +139,16 @@ func adaptNetworkRule(resource *block.Block) storage.NetworkRule {
 
 	defaultActionAttr := resource.GetAttribute("default_action")
 	if defaultActionAttr.Equals("allow", block.IgnoreCase) {
-		allowByDefault = types.Bool(true, *resource.GetMetadata())
+		allowByDefault = types.Bool(true, resource.Metadata())
 	} else if defaultActionAttr.Equals("deny", block.IgnoreCase) {
-		allowByDefault = types.Bool(false, *resource.GetMetadata())
+		allowByDefault = types.Bool(false, resource.Metadata())
 	}
 
 	if resource.HasChild("bypass") {
 		bypassAttr := resource.GetAttribute("bypass")
 		bypassList := bypassAttr.ValueAsStrings()
 		for _, bypassVal := range bypassList {
-			bypass = append(bypass, types.String(bypassVal, *resource.GetMetadata()))
+			bypass = append(bypass, types.String(bypassVal, resource.Metadata()))
 		}
 	}
 

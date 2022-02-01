@@ -71,7 +71,7 @@ func adaptClusterInstance(resource *block.Block, modules block.Modules) rds.Clus
 
 func adaptClassicDBSecurityGroup(resource *block.Block) rds.DBSecurityGroup {
 	return rds.DBSecurityGroup{
-		Metadata: *resource.GetMetadata(),
+		Metadata: resource.Metadata(),
 	}
 }
 
@@ -85,9 +85,9 @@ func adaptInstance(resource *block.Block, modules block.Modules) rds.Instance {
 		}
 	}
 	return rds.Instance{
-		Metadata:                  *resource.GetMetadata(),
+		Metadata:                  resource.Metadata(),
 		BackupRetentionPeriodDays: resource.GetAttribute("backup_retention_period").AsIntValueOrDefault(0, resource),
-		ReplicationSourceARN:      types.StringExplicit(replicaSourceValue, *resource.GetMetadata()),
+		ReplicationSourceARN:      types.StringExplicit(replicaSourceValue, resource.Metadata()),
 		PerformanceInsights:       adaptPerformanceInsights(resource),
 		Encryption:                adaptEncryption(resource),
 		PublicAccess:              resource.GetAttribute("publicly_accessible").AsBoolValueOrDefault(false, resource),
@@ -99,7 +99,7 @@ func adaptCluster(resource *block.Block, modules block.Modules) (rds.Cluster, []
 	clusterInstances, ids := getClusterInstances(resource, modules)
 
 	return rds.Cluster{
-		Metadata:                  *resource.GetMetadata(),
+		Metadata:                  resource.Metadata(),
 		BackupRetentionPeriodDays: resource.GetAttribute("backup_retention_period").AsIntValueOrDefault(0, resource),
 		ReplicationSourceARN:      resource.GetAttribute("replicate_source_db").AsStringValueOrDefault("", resource),
 		PerformanceInsights:       adaptPerformanceInsights(resource),

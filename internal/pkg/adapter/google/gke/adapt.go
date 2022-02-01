@@ -51,7 +51,7 @@ func (a *adapter) adaptCluster(resource *block.Block, module *block.Module) {
 		Metadata: resource.Metadata(),
 		IPAllocationPolicy: gke.IPAllocationPolicy{
 			Metadata: resource.Metadata(),
-			Enabled:  types.BoolDefault(false, *resource.GetMetadata()),
+			Enabled:  types.BoolDefault(false, resource.Metadata()),
 		},
 		MasterAuthorizedNetworks: gke.MasterAuthorizedNetworks{
 			Metadata: resource.Metadata(),
@@ -60,39 +60,39 @@ func (a *adapter) adaptCluster(resource *block.Block, module *block.Module) {
 		},
 		NetworkPolicy: gke.NetworkPolicy{
 			Metadata: resource.Metadata(),
-			Enabled:  types.BoolDefault(false, *resource.GetMetadata()),
+			Enabled:  types.BoolDefault(false, resource.Metadata()),
 		},
 		PrivateCluster: gke.PrivateCluster{
 			Metadata:           resource.Metadata(),
-			EnablePrivateNodes: types.BoolDefault(false, *resource.GetMetadata()),
+			EnablePrivateNodes: types.BoolDefault(false, resource.Metadata()),
 		},
 		LoggingService:    types.StringDefault("logging.googleapis.com/kubernetes", resource.Metadata()),
 		MonitoringService: types.StringDefault("monitoring.googleapis.com/kubernetes", resource.Metadata()),
 		PodSecurityPolicy: gke.PodSecurityPolicy{
 			Metadata: resource.Metadata(),
-			Enabled:  types.BoolDefault(false, *resource.GetMetadata()),
+			Enabled:  types.BoolDefault(false, resource.Metadata()),
 		},
 		ClusterMetadata: gke.Metadata{
 			Metadata:              resource.Metadata(),
-			EnableLegacyEndpoints: types.BoolDefault(true, *resource.GetMetadata()),
+			EnableLegacyEndpoints: types.BoolDefault(true, resource.Metadata()),
 		},
 		MasterAuth: gke.MasterAuth{
 			Metadata: resource.Metadata(),
 			ClientCertificate: gke.ClientCertificate{
 				Metadata:         resource.Metadata(),
-				IssueCertificate: types.BoolDefault(false, *resource.GetMetadata()),
+				IssueCertificate: types.BoolDefault(false, resource.Metadata()),
 			},
-			Username: types.StringDefault("", *resource.GetMetadata()),
-			Password: types.StringDefault("", *resource.GetMetadata()),
+			Username: types.StringDefault("", resource.Metadata()),
+			Password: types.StringDefault("", resource.Metadata()),
 		},
 		NodeConfig: gke.NodeConfig{
 			Metadata:  resource.Metadata(),
-			ImageType: types.StringDefault("", *resource.GetMetadata()),
+			ImageType: types.StringDefault("", resource.Metadata()),
 			WorkloadMetadataConfig: gke.WorkloadMetadataConfig{
 				Metadata:     resource.Metadata(),
-				NodeMetadata: types.StringDefault("", *resource.GetMetadata()),
+				NodeMetadata: types.StringDefault("", resource.Metadata()),
 			},
-			ServiceAccount: types.StringDefault("", *resource.GetMetadata()),
+			ServiceAccount: types.StringDefault("", resource.Metadata()),
 		},
 		EnableShieldedNodes:   types.BoolDefault(true, resource.Metadata()),
 		EnableLegacyABAC:      types.BoolDefault(false, resource.Metadata()),
@@ -134,7 +134,7 @@ func (a *adapter) adaptCluster(resource *block.Block, module *block.Module) {
 
 	legacyMetadataAttr := resource.GetNestedAttribute("metadata.disable-legacy-endpoints")
 	if legacyMetadataAttr.IsNotNil() && legacyMetadataAttr.IsTrue() {
-		cluster.ClusterMetadata.EnableLegacyEndpoints = types.Bool(false, *legacyMetadataAttr.GetMetadata())
+		cluster.ClusterMetadata.EnableLegacyEndpoints = types.Bool(false, legacyMetadataAttr.Metadata())
 	}
 
 	if masterBlock := resource.GetBlock("master_auth"); masterBlock.IsNotNil() {
@@ -172,17 +172,17 @@ func (a *adapter) adaptNodePools() {
 }
 
 func (a *adapter) adaptNodePool(resource *block.Block) {
-	autoRepair := types.BoolDefault(false, *resource.GetMetadata())
-	autoUpgrade := types.BoolDefault(false, *resource.GetMetadata())
+	autoRepair := types.BoolDefault(false, resource.Metadata())
+	autoUpgrade := types.BoolDefault(false, resource.Metadata())
 
 	nodeConfig := gke.NodeConfig{
 		Metadata:  resource.Metadata(),
-		ImageType: types.StringDefault("", *resource.GetMetadata()),
+		ImageType: types.StringDefault("", resource.Metadata()),
 		WorkloadMetadataConfig: gke.WorkloadMetadataConfig{
 			Metadata:     resource.Metadata(),
-			NodeMetadata: types.StringDefault("", *resource.GetMetadata()),
+			NodeMetadata: types.StringDefault("", resource.Metadata()),
 		},
-		ServiceAccount: types.StringDefault("", *resource.GetMetadata()),
+		ServiceAccount: types.StringDefault("", resource.Metadata()),
 	}
 
 	if resource.HasChild("management") {
@@ -249,7 +249,7 @@ func adaptNodeConfig(resource *block.Block) gke.NodeConfig {
 }
 
 func adaptMasterAuth(resource *block.Block) gke.MasterAuth {
-	issueClientCert := types.BoolDefault(false, *resource.GetMetadata())
+	issueClientCert := types.BoolDefault(false, resource.Metadata())
 
 	if resource.HasChild("client_certificate_config") {
 		clientCertAttr := resource.GetBlock("client_certificate_config").GetAttribute("issue_client_certificate")

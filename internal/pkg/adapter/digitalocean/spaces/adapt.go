@@ -34,7 +34,7 @@ func adaptBuckets(modules block.Modules) []spaces.Bucket {
 			} else {
 				bucket.Versioning = spaces.Versioning{
 					Metadata: block.Metadata(),
-					Enabled:  types.Bool(false, *block.GetMetadata()),
+					Enabled:  types.Bool(false, block.Metadata()),
 				}
 			}
 			bucketMap[block.ID()] = bucket

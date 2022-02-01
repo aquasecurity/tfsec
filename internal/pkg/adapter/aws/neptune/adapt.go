@@ -36,7 +36,7 @@ func adaptCluster(resource *block.Block) neptune.Cluster {
 	if enableLogExportsAttr := resource.GetAttribute("enable_cloudwatch_logs_exports"); enableLogExportsAttr.IsNotNil() {
 		cluster.Logging.Metadata = enableLogExportsAttr.Metadata()
 		if enableLogExportsAttr.Contains("audit") {
-			cluster.Logging.Audit = types.Bool(true, *resource.GetMetadata())
+			cluster.Logging.Audit = types.Bool(true, resource.Metadata())
 		}
 	}
 

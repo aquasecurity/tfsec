@@ -27,7 +27,7 @@ func adaptCluster(resource *block.Block) msk.Cluster {
 		Metadata: resource.Metadata(),
 		EncryptionInTransit: msk.EncryptionInTransit{
 			Metadata:     resource.Metadata(),
-			ClientBroker: types.StringDefault("TLS_PLAINTEXT", *resource.GetMetadata()),
+			ClientBroker: types.StringDefault("TLS_PLAINTEXT", resource.Metadata()),
 		},
 		Logging: msk.Logging{
 			Metadata: resource.Metadata(),
@@ -35,15 +35,15 @@ func adaptCluster(resource *block.Block) msk.Cluster {
 				Metadata: resource.Metadata(),
 				S3: msk.S3Logging{
 					Metadata: resource.Metadata(),
-					Enabled:  types.BoolDefault(false, *resource.GetMetadata()),
+					Enabled:  types.BoolDefault(false, resource.Metadata()),
 				},
 				Cloudwatch: msk.CloudwatchLogging{
 					Metadata: resource.Metadata(),
-					Enabled:  types.BoolDefault(false, *resource.GetMetadata()),
+					Enabled:  types.BoolDefault(false, resource.Metadata()),
 				},
 				Firehose: msk.FirehoseLogging{
 					Metadata: resource.Metadata(),
-					Enabled:  types.BoolDefault(false, *resource.GetMetadata()),
+					Enabled:  types.BoolDefault(false, resource.Metadata()),
 				},
 			},
 		},

@@ -68,7 +68,7 @@ func (a *adapter) adaptLoadBalancer(resource *block.Block, module block.Modules)
 		listeners = append(listeners, adaptListener(listenerBlock, typeVal.Value()))
 	}
 	return elb.LoadBalancer{
-		Metadata:                *resource.GetMetadata(),
+		Metadata:                resource.Metadata(),
 		Type:                    typeVal,
 		DropInvalidHeaderFields: dropInvalidHeadersVal,
 		Internal:                internalVal,

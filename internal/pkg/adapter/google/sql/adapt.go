@@ -45,12 +45,12 @@ func adaptInstance(resource *block.Block) sql.DatabaseInstance {
 			},
 			Backups: sql.Backups{
 				Metadata: resource.Metadata(),
-				Enabled:  types.BoolDefault(false, *resource.GetMetadata()),
+				Enabled:  types.BoolDefault(false, resource.Metadata()),
 			},
 			IPConfiguration: sql.IPConfiguration{
 				Metadata:           resource.Metadata(),
-				RequireTLS:         types.BoolDefault(false, *resource.GetMetadata()),
-				EnableIPv4:         types.BoolDefault(true, *resource.GetMetadata()),
+				RequireTLS:         types.BoolDefault(false, resource.Metadata()),
+				EnableIPv4:         types.BoolDefault(true, resource.Metadata()),
 				AuthorizedNetworks: nil,
 			},
 		},

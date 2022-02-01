@@ -28,18 +28,18 @@ func adaptCluster(resource *block.Block) eks.Cluster {
 		Metadata: resource.Metadata(),
 		Logging: eks.Logging{
 			Metadata:          resource.Metadata(),
-			API:               types.BoolDefault(false, *resource.GetMetadata()),
-			Audit:             types.BoolDefault(false, *resource.GetMetadata()),
-			Authenticator:     types.BoolDefault(false, *resource.GetMetadata()),
-			ControllerManager: types.BoolDefault(false, *resource.GetMetadata()),
-			Scheduler:         types.BoolDefault(false, *resource.GetMetadata()),
+			API:               types.BoolDefault(false, resource.Metadata()),
+			Audit:             types.BoolDefault(false, resource.Metadata()),
+			Authenticator:     types.BoolDefault(false, resource.Metadata()),
+			ControllerManager: types.BoolDefault(false, resource.Metadata()),
+			Scheduler:         types.BoolDefault(false, resource.Metadata()),
 		},
 		Encryption: eks.Encryption{
 			Metadata: resource.Metadata(),
-			Secrets:  types.BoolDefault(false, *resource.GetMetadata()),
-			KMSKeyID: types.StringDefault("", *resource.GetMetadata()),
+			Secrets:  types.BoolDefault(false, resource.Metadata()),
+			KMSKeyID: types.StringDefault("", resource.Metadata()),
 		},
-		PublicAccessEnabled: types.BoolDefault(true, *resource.GetMetadata()),
+		PublicAccessEnabled: types.BoolDefault(true, resource.Metadata()),
 		PublicAccessCIDRs:   nil,
 	}
 
@@ -49,15 +49,15 @@ func adaptCluster(resource *block.Block) eks.Cluster {
 		for _, logType := range logTypesList {
 			switch logType {
 			case "api":
-				cluster.Logging.API = types.Bool(true, *logTypesAttr.GetMetadata())
+				cluster.Logging.API = types.Bool(true, logTypesAttr.Metadata())
 			case "audit":
-				cluster.Logging.Audit = types.Bool(true, *logTypesAttr.GetMetadata())
+				cluster.Logging.Audit = types.Bool(true, logTypesAttr.Metadata())
 			case "authenticator":
-				cluster.Logging.Authenticator = types.Bool(true, *logTypesAttr.GetMetadata())
+				cluster.Logging.Authenticator = types.Bool(true, logTypesAttr.Metadata())
 			case "controllerManager":
-				cluster.Logging.ControllerManager = types.Bool(true, *logTypesAttr.GetMetadata())
+				cluster.Logging.ControllerManager = types.Bool(true, logTypesAttr.Metadata())
 			case "scheduler":
-				cluster.Logging.Scheduler = types.Bool(true, *logTypesAttr.GetMetadata())
+				cluster.Logging.Scheduler = types.Bool(true, logTypesAttr.Metadata())
 			}
 		}
 	}
@@ -66,7 +66,7 @@ func adaptCluster(resource *block.Block) eks.Cluster {
 		cluster.Encryption.Metadata = encryptBlock.Metadata()
 		resourcesAttr := encryptBlock.GetAttribute("resources")
 		if resourcesAttr.Contains("secrets") {
-			cluster.Encryption.Secrets = types.Bool(true, *resourcesAttr.GetMetadata())
+			cluster.Encryption.Secrets = types.Bool(true, resourcesAttr.Metadata())
 		}
 		if providerBlock := encryptBlock.GetBlock("provider"); providerBlock.IsNotNil() {
 			keyArnAttr := providerBlock.GetAttribute("key_arn")
@@ -81,10 +81,10 @@ func adaptCluster(resource *block.Block) eks.Cluster {
 		publicAccessCidrsAttr := vpcBlock.GetAttribute("public_access_cidrs")
 		cidrsList := publicAccessCidrsAttr.ValueAsStrings()
 		for _, cidr := range cidrsList {
-			cluster.PublicAccessCIDRs = append(cluster.PublicAccessCIDRs, types.String(cidr, *publicAccessCidrsAttr.GetMetadata()))
+			cluster.PublicAccessCIDRs = append(cluster.PublicAccessCIDRs, types.String(cidr, publicAccessCidrsAttr.Metadata()))
 		}
 		if len(cidrsList) == 0 {
-			cluster.PublicAccessCIDRs = append(cluster.PublicAccessCIDRs, types.StringDefault("0.0.0.0/0", *vpcBlock.GetMetadata()))
+			cluster.PublicAccessCIDRs = append(cluster.PublicAccessCIDRs, types.StringDefault("0.0.0.0/0", vpcBlock.Metadata()))
 		}
 	}
 
