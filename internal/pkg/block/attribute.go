@@ -177,6 +177,11 @@ func (attr *Attribute) Each(f func(key cty.Value, val cty.Value)) {
 	if attr == nil {
 		return
 	}
+	defer func() {
+		if err := recover(); err != nil {
+			debug.Log("go-cty bug detected - cannot call ForEachElement: %s", err)
+		}
+	}()
 	val := attr.Value()
 	val.ForEachElement(func(key cty.Value, val cty.Value) (stop bool) {
 		f(key, val)
@@ -243,7 +248,15 @@ func (attr *Attribute) ValueAsStrings() []string {
 	return getStrings(attr.hclAttribute.Expr, attr.ctx.Inner())
 }
 
+//nolint
 func getStrings(expr hcl.Expression, ctx *hcl.EvalContext) []string {
+
+	defer func() {
+		if err := recover(); err != nil {
+			debug.Log("go-cty bug detected - failed to derive value from expression: %s", err)
+		}
+	}()
+
 	var results []string
 	switch t := expr.(type) {
 	case *hclsyntax.TupleConsExpr:
