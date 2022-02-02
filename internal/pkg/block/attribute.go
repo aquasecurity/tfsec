@@ -248,6 +248,7 @@ func (attr *Attribute) ValueAsStrings() []string {
 	return getStrings(attr.hclAttribute.Expr, attr.ctx.Inner())
 }
 
+//nolint
 func getStrings(expr hcl.Expression, ctx *hcl.EvalContext) []string {
 
 	defer func() {
