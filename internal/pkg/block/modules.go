@@ -40,11 +40,17 @@ func (m Modules) GetChildResourceIDMapByType(typeLabels ...string) ResourceIDRes
 }
 
 func (m Modules) GetReferencedBlock(referringAttr *Attribute, parentBlock *Block) (*Block, error) {
+	var bestMatch *Block
 	for _, module := range m {
 		b, err := module.GetReferencedBlock(referringAttr, parentBlock)
 		if err == nil {
-			return b, nil
+			if bestMatch == nil || b.moduleBlock == parentBlock.moduleBlock {
+				bestMatch = b
+			}
 		}
+	}
+	if bestMatch != nil {
+		return bestMatch, nil
 	}
 	return nil, fmt.Errorf("block not found")
 }
