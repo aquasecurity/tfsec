@@ -28,7 +28,6 @@ The following example will fail the aws-cloudfront-use-secure-tls-policy check.
      minimum_protocol_version = "TLSv1.0"
    }
  }
-
 ```
 
 
@@ -44,7 +43,6 @@ The following example will pass the aws-cloudfront-use-secure-tls-policy check.
      minimum_protocol_version = "TLSv1.2_2021"
    }
  }
-
 ```
 
 Note that setting `minimum_protocol_version = "TLSv1.2_2021"` is only possible when `cloudfront_default_certificate` is false (eg. you are not using the cloudfront.net domain name). If `cloudfront_default_certificate` is true then the Cloudfront API will only allow setting `minimum_protocol_version = "TLSv1"`, and setting it to any other value will result in a perpetual diff in your `terraform plan`'s. The only option when using the cloudfront.net domain name is to ignore this rule.
