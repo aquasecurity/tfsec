@@ -66,7 +66,7 @@ func adaptDistribution(resource *block.Block) cloudfront.Distribution {
 	}
 
 	if viewerCertBlock := resource.GetBlock("viewer_certificate"); viewerCertBlock.IsNotNil() {
-		distribution.Metadata = viewerCertBlock.Metadata()
+		distribution.ViewerCertificate.Metadata = viewerCertBlock.Metadata()
 		minProtocolAttr := viewerCertBlock.GetAttribute("minimum_protocol_version")
 		distribution.ViewerCertificate.MinimumProtocolVersion = minProtocolAttr.AsStringValueOrDefault("TLSv1", viewerCertBlock)
 	}
