@@ -19,6 +19,7 @@ type Block struct {
 	hclBlock    *hcl.Block
 	context     *Context
 	moduleBlock *Block
+	parentBlock *Block
 	expanded    bool
 	cloneIndex  int
 	childBlocks []*Block
@@ -26,7 +27,7 @@ type Block struct {
 	metadata    types.Metadata
 }
 
-func New(hclBlock *hcl.Block, ctx *Context, moduleBlock *Block) *Block {
+func New(hclBlock *hcl.Block, ctx *Context, moduleBlock *Block, parentBlock *Block) *Block {
 	if ctx == nil {
 		ctx = NewContext(&hcl.EvalContext{}, nil)
 	}
@@ -62,23 +63,10 @@ func New(hclBlock *hcl.Block, ctx *Context, moduleBlock *Block) *Block {
 
 	metadata := types.NewMetadata(rng, ref)
 
-	if moduleBlock != nil {
+	if parentBlock != nil {
+		metadata = metadata.WithParent(parentBlock.metadata)
+	} else if moduleBlock != nil {
 		metadata = metadata.WithParent(moduleBlock.Metadata())
-	}
-
-	var children Blocks
-	switch body := hclBlock.Body.(type) {
-	case *hclsyntax.Body:
-		for _, b := range body.Blocks {
-			children = append(children, New(b.AsHCLBlock(), ctx, moduleBlock))
-		}
-	default:
-		content, _, diag := hclBlock.Body.PartialContent(schema.TerraformSchema_0_12)
-		if diag == nil {
-			for _, hb := range content.Blocks {
-				children = append(children, New(hb, ctx, moduleBlock))
-			}
-		}
 	}
 
 	b := Block{
@@ -86,9 +74,26 @@ func New(hclBlock *hcl.Block, ctx *Context, moduleBlock *Block) *Block {
 		context:     ctx,
 		hclBlock:    hclBlock,
 		moduleBlock: moduleBlock,
-		childBlocks: children,
+		parentBlock: parentBlock,
 		metadata:    metadata,
 	}
+
+	var children Blocks
+	switch body := hclBlock.Body.(type) {
+	case *hclsyntax.Body:
+		for _, b2 := range body.Blocks {
+			children = append(children, New(b2.AsHCLBlock(), ctx, moduleBlock, &b))
+		}
+	default:
+		content, _, diag := hclBlock.Body.PartialContent(schema.TerraformSchema_0_12)
+		if diag == nil {
+			for _, hb := range content.Blocks {
+				children = append(children, New(hb, ctx, moduleBlock, &b))
+			}
+		}
+	}
+
+	b.childBlocks = children
 
 	for _, attr := range b.createAttributes() {
 		b.attributes = append(b.attributes, NewAttribute(attr, ctx, moduleName, metadata, ref))
@@ -141,7 +146,7 @@ func (b *Block) Clone(index cty.Value) *Block {
 
 	cloneHCL := *b.hclBlock
 
-	clone := New(&cloneHCL, childCtx, b.moduleBlock)
+	clone := New(&cloneHCL, childCtx, b.moduleBlock, b.parentBlock)
 	if len(clone.hclBlock.Labels) > 0 {
 		position := len(clone.hclBlock.Labels) - 1
 		labels := make([]string, len(clone.hclBlock.Labels))

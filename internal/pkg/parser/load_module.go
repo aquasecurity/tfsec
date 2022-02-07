@@ -193,7 +193,7 @@ func getModuleBlocks(b *block.Block, modulePath string, stopOnHCLError bool) (bl
 			debug.Log("Added %d blocks from %s...", len(fileBlocks), fileBlocks[0].DefRange.Filename)
 		}
 		for _, fileBlock := range fileBlocks {
-			blocks = append(blocks, block.New(fileBlock, moduleCtx, b))
+			blocks = append(blocks, block.New(fileBlock, moduleCtx, b, nil))
 		}
 		ignores = append(ignores, fileIgnores...)
 	}
