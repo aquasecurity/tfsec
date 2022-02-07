@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/tfsec/internal/pkg/block"
 )
 
-func checkTags(block *block.Block, spec *MatchSpec, module *block.Module) bool {
+func checkTags(block *block.Block, spec *MatchSpec, customCtx *customContext) bool {
 	expectedTag := fmt.Sprintf("%v", spec.MatchValue)
 
 	if block.HasChild("tags") {
@@ -24,7 +24,7 @@ func checkTags(block *block.Block, spec *MatchSpec, module *block.Module) bool {
 		}
 	}
 
-	awsProviders := module.GetProviderBlocksByProvider("aws", alias)
+	awsProviders := customCtx.module.GetProviderBlocksByProvider("aws", alias)
 	for _, providerBlock := range awsProviders {
 		if providerBlock.HasChild("default_tags") {
 			defaultTags := providerBlock.GetBlock("default_tags")
