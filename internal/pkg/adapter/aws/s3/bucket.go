@@ -23,6 +23,7 @@ func (a *adapter) adaptBuckets() []s3.Bucket {
 			Encryption: s3.Encryption{
 				Metadata: block.Metadata(),
 				Enabled:  isEncrypted(block),
+				KMSKeyId: block.GetNestedAttribute("server_side_encryption_configuration.rule.apply_server_side_encryption_by_default.kms_master_key_id").AsStringValueOrDefault("", block),
 			},
 			Logging: s3.Logging{
 				Metadata: block.Metadata(),

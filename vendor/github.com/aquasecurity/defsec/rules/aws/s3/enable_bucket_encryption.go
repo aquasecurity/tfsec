@@ -9,16 +9,14 @@ import (
 
 var CheckEncryptionIsEnabled = rules.Register(
 	rules.Rule{
-		AVDID:      "AVD-AWS-0088",
-		Provider:   provider.AWSProvider,
-		Service:    "s3",
-		ShortCode:  "enable-bucket-encryption",
-		Summary:    "Unencrypted S3 bucket.",
-		Impact:     "The bucket objects could be read if compromised",
-		Resolution: "Configure bucket encryption",
-		Explanation: `
-S3 Buckets should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific buckets.
-`,
+		AVDID:       "AVD-AWS-0088",
+		Provider:    provider.AWSProvider,
+		Service:     "s3",
+		ShortCode:   "enable-bucket-encryption",
+		Summary:     "Unencrypted S3 bucket.",
+		Impact:      "The bucket objects could be read if compromised",
+		Resolution:  "Configure bucket encryption",
+		Explanation: `S3 Buckets should be encrypted to protect the data that is stored within them if access is compromised.`,
 		Links: []string{
 			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html",
 		},
