@@ -1,8 +1,8 @@
 ---
-title: S3 Buckets not publically accessible through ACL.
+title: S3 Buckets not publicly accessible through ACL.
 ---
 
-# S3 Buckets not publically accessible through ACL.
+# S3 Buckets not publicly accessible through ACL.
 
 ### Default Severity: <span class="severity high">high</span>
 

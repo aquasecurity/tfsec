@@ -15,7 +15,7 @@ var CheckForPublicACL = rules.Register(
 		Provider:  provider.AWSProvider,
 		Service:   "s3",
 		ShortCode: "no-public-access-with-acl",
-		Summary:   "S3 Buckets not publically accessible through ACL.",
+		Summary:   "S3 Buckets not publicly accessible through ACL.",
 		Explanation: `
 Buckets should not have ACLs that allow public access
 `,
