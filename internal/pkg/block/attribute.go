@@ -286,8 +286,16 @@ func getStrings(expr hcl.Expression, ctx *hcl.EvalContext) []string {
 			}
 		}
 		subVal, err := t.Value(ctx)
-		if err == nil && subVal.Type() == cty.String {
-			results = append(results, subVal.AsString())
+		if err == nil {
+			switch subVal.Type() {
+			case cty.String:
+				results = append(results, subVal.AsString())
+			default:
+				subVal.ForEachElement(func(_, v cty.Value) bool {
+					results = append(results, v.AsString())
+					return false
+				})
+			}
 		}
 	}
 	return results
