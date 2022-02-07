@@ -39,6 +39,10 @@ var sensitiveWhitelist = []struct {
 		Attribute: "secret_id",
 	},
 	{
+		Resource:  "google_secret_manager_secret_iam_member",
+		Attribute: "secret_id",
+	},
+	{
 		Resource:  "vault_pki_secret_backend_cert",
 		Attribute: "private_key_format",
 	},

@@ -1,4 +1,4 @@
-package neptune
+package s3
 
 import (
 	"github.com/aquasecurity/defsec/provider"
@@ -9,16 +9,16 @@ import (
 
 var CheckEncryptionCustomerKey = rules.Register(
 	rules.Rule{
-		AVDID:       "AVD-AWS-0128",
+		AVDID:       "AVD-AWS-0132",
 		Provider:    provider.AWSProvider,
-		Service:     "neptune",
+		Service:     "s3",
 		ShortCode:   "encryption-customer-key",
-		Summary:     "Neptune encryption should use Customer Managed Keys",
+		Summary:     "S3 encryption should use Customer Managed Keys",
 		Impact:      "Using AWS managed keys does not allow for fine grained control",
 		Resolution:  "Enable encryption using customer managed keys",
-		Explanation: `Encryption using AWS keys provides protection for your Neptune underlying storage. To increase control of the encryption and manage factors like rotation use customer managed keys.`,
+		Explanation: `Encryption using AWS keys provides protection for your S3 buckets. To increase control of the encryption and manage factors like rotation use customer managed keys.`,
 		Links: []string{
-			"https://docs.aws.amazon.com/neptune/latest/userguide/encrypt.html",
+			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html",
 		},
 		Terraform: &rules.EngineMetadata{
 			GoodExamples:        terraformCheckEncryptionCustomerKeyGoodExamples,
@@ -35,14 +35,14 @@ var CheckEncryptionCustomerKey = rules.Register(
 		Severity: severity.High,
 	},
 	func(s *state.State) (results rules.Results) {
-		for _, cluster := range s.AWS.Neptune.Clusters {
-			if cluster.KMSKeyID.IsEmpty() {
+		for _, bucket := range s.AWS.S3.Buckets {
+			if bucket.Encryption.KMSKeyId.IsEmpty() {
 				results.Add(
-					"Cluster does not encrypt data with a customer managed key.",
-					cluster.KMSKeyID,
+					"Bucket does not encrypt data with a customer managed key.",
+					&bucket.Encryption,
 				)
 			} else {
-				results.AddPassed(&cluster)
+				results.AddPassed(&bucket)
 			}
 		}
 		return

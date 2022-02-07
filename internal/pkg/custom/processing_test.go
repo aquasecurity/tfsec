@@ -142,6 +142,26 @@ var testAssignVariableMatchSpec = MatchSpec{
 	},
 }
 
+var testSubMatchOnesSource = `
+resource "aws_dynamodb_table" "example" {
+  name     = "example"
+  hash_key = "TestTableHashKey"
+
+  attribute {
+    name = "TestTableHashKey"
+    type = "S"
+  }
+
+  replica {
+    region_name = "us-east-2"
+  }
+
+  replica {
+    region_name = "eu-west-2"
+  }
+}
+`
+
 func TestRequiresPresenceWithResourcePresent(t *testing.T) {
 	scanResults := scanTerraform(t, `
 resource "aws_vpc" "main" {
@@ -845,6 +865,92 @@ resource "aws_instance" "foo" {
 			block := ParseFromSource(test.source)[0].GetBlocks()[0]
 			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
 			assert.Equal(t, result, test.expected, "subMatch evaluation function for attributes behaving incorrectly.")
+		})
+	}
+}
+
+func TestSubMatchOnes(t *testing.T) {
+	var tests = []struct {
+		name      string
+		source    string
+		matchSpec MatchSpec
+		expected  bool
+	}{
+		{
+			name:   "check `subMatchOne` in `subMatch`-only pass case",
+			source: testSubMatchOnesSource,
+			matchSpec: MatchSpec{
+				Name:   "replica",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:   "region_name",
+					Action: "isPresent",
+				},
+			},
+			expected: true,
+		},
+		{
+			name:   "check `subMatchOne` in `subMatch`-only fail case",
+			source: testSubMatchOnesSource,
+			matchSpec: MatchSpec{
+				Name:   "replica",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "region_name",
+					Action:     "equals",
+					MatchValue: "us-east-2",
+				},
+			},
+			expected: false,
+		},
+		{
+			name:   "check `subMatchOne` in basic pass case",
+			source: testSubMatchOnesSource,
+			matchSpec: MatchSpec{
+				Name:   "replica",
+				Action: "isPresent",
+				SubMatchOne: &MatchSpec{
+					Name:       "region_name",
+					Action:     "equals",
+					MatchValue: "us-east-2",
+				},
+			},
+			expected: true,
+		},
+		{
+			name:   "check `subMatchOne` in multiple matches fail case",
+			source: testSubMatchOnesSource,
+			matchSpec: MatchSpec{
+				Name:   "replica",
+				Action: "isPresent",
+				SubMatchOne: &MatchSpec{
+					Name:       "region_name",
+					Action:     "endsWith",
+					MatchValue: "-2",
+				},
+			},
+			expected: false,
+		},
+		{
+			name:   "check `subMatchOne` in no match fail case",
+			source: testSubMatchOnesSource,
+			matchSpec: MatchSpec{
+				Name:   "replica",
+				Action: "isPresent",
+				SubMatchOne: &MatchSpec{
+					Name:       "region_name",
+					Action:     "equals",
+					MatchValue: "null-region",
+				},
+			},
+			expected: false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
+			assert.Equal(t, result, test.expected, "`subMatchOne` handling function evaluating incorrectly.")
 		})
 	}
 }

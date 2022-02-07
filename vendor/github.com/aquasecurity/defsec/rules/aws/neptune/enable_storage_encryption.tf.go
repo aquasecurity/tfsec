@@ -10,7 +10,8 @@ var terraformEnableStorageEncryptionGoodExamples = []string{
    skip_final_snapshot                 = true
    iam_database_authentication_enabled = true
    apply_immediately                   = true
-   storage_encrypted = true
+   storage_encrypted                   = true
+   kms_key_arn                         = aws_kms_key.example.arn
  }
  `,
 }
@@ -25,7 +26,7 @@ var terraformEnableStorageEncryptionBadExamples = []string{
    skip_final_snapshot                 = true
    iam_database_authentication_enabled = true
    apply_immediately                   = true
-   storage_encrypted = false
+   storage_encrypted                   = false
  }
  `,
 }

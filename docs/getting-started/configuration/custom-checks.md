@@ -108,6 +108,7 @@ The `MatchSpec` is the what will define the check itself - this is fairly basic 
 | ignoreUndefined    | If the attribute is undefined, ignore and pass the check                                                                                                              |
 | preConditions      | An array of checks, performs the check action defined in `action` if all preConditions checks passes, passes the whole `matchSpec` if preConditions are not satisfied |
 | subMatch           | A sub MatchSpec block for nested checking - think looking for `enabled` value in a `logging` block, or checking a tag's value in a `tag` map attribute                |
+| subMatchOne        | Same as subMatch, but looks for only exactly 1 match in nested checks, cannot be applied on subMatches for attributes                                                 |
 | predicateMatchSpec | An array of MatchSpec blocks to be logically aggregated by either `and` or `or` actions                                                                               |
 | assignVariable     | The name of the "variable" to store the value of the `name` attribute in, has to be in uppercase and start with `TFSEC_VAR_`                                          |
 

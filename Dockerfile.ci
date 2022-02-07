@@ -3,5 +3,6 @@ FROM alpine:3.15
 USER nobody
 # work somewhere where we can write
 COPY tfsec /usr/bin/tfsec
-# as we specified an entrypoint, this is appended as an argument (i.e., `tfsec --help`)
+# as we are not specifying an entrypoint, this is the default executed command
+# that you could override
 CMD [ "tfsec", "--help" ]

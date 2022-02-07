@@ -275,20 +275,22 @@ func evalMatchSpec(b *block.Block, spec *MatchSpec, customCtx *customContext) bo
 		}
 	}
 
-	switch spec.Action {
-	case InModule:
-		return b.InModule()
-	case HasTag:
-		return checkTags(b, spec, customCtx.module)
-	case OfType:
-		return ofType(b, spec)
-	case Not:
-		return notifyPredicate(b, spec, customCtx)
-	case And:
-		return processAndPredicate(b, spec, customCtx)
-	case Or:
-		return processOrPredicate(b, spec, customCtx)
-	default:
+	var matchFunctionsDirect = map[CheckAction]func(*block.Block, *MatchSpec, *customContext) bool{
+		InModule: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+			return b.InModule()
+		},
+		HasTag: checkTags,
+		OfType: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+			return ofType(b, spec)
+		},
+		Not: notifyPredicate,
+		And: processAndPredicate,
+		Or:  processOrPredicate,
+	}
+
+	if matchFunction, ok := matchFunctionsDirect[spec.Action]; ok {
+		return matchFunction(b, spec, customCtx)
+	} else {
 		evalResult = matchFunctions[spec.Action](b, spec, customCtx)
 	}
 
@@ -297,7 +299,11 @@ func evalMatchSpec(b *block.Block, spec *MatchSpec, customCtx *customContext) bo
 	}
 
 	if spec.SubMatch != nil && evalResult {
-		evalResult = processSubMatches(b, spec, customCtx, evalResult)
+		evalResult = processSubMatches(b, spec, customCtx)
+	}
+
+	if spec.SubMatchOne != nil && evalResult {
+		evalResult = processSubMatchOnes(b, spec, customCtx)
 	}
 
 	return evalResult
@@ -380,7 +386,7 @@ func processAndPredicateAttr(a *block.Attribute, spec *MatchSpec, customCtx *cus
 	return len(set) == 1 && set[true]
 }
 
-func processSubMatches(b *block.Block, spec *MatchSpec, customCtx *customContext, evalResult bool) bool {
+func processSubMatches(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
 	var subMatchTargetBlocks block.Blocks
 	switch spec.Action {
 	case RequiresPresence:
@@ -400,6 +406,27 @@ func processSubMatches(b *block.Block, spec *MatchSpec, customCtx *customContext
 	}
 
 	return true
+}
+
+func processSubMatchOnes(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	var subMatchTargetBlocks block.Blocks
+	switch spec.Action {
+	case RequiresPresence:
+		subMatchTargetBlocks = customCtx.module.GetResourcesByType(spec.Name)
+	default:
+		subMatchTargetBlocks = b.GetBlocks(spec.Name)
+	}
+	matchFound := false
+	for _, b := range subMatchTargetBlocks {
+		if evalMatchSpec(b, spec.SubMatchOne, customCtx) {
+			if matchFound {
+				return false // found more than one matches
+			} else {
+				matchFound = true
+			}
+		}
+	}
+	return matchFound
 }
 
 func processMatchValueVariables(matchValue interface{}, variables map[string]string) interface{} {

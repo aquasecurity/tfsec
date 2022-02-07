@@ -110,6 +110,7 @@ type MatchSpec struct {
 	PreConditions      []MatchSpec `json:"preConditions,omitempty" yaml:"preConditions,omitempty"`
 	PredicateMatchSpec []MatchSpec `json:"predicateMatchSpec,omitempty" yaml:"predicateMatchSpec,omitempty"`
 	SubMatch           *MatchSpec  `json:"subMatch,omitempty" yaml:"subMatch,omitempty"`
+	SubMatchOne        *MatchSpec  `json:"subMatchOne,omitempty" yaml:"subMatchOne,omitempty"`
 	IgnoreUndefined    bool        `json:"ignoreUndefined,omitempty" yaml:"ignoreUndefined,omitempty"`
 	IgnoreUnmatched    bool        `json:"ignoreUnmatched,omitempty" yaml:"ignoreUnmatched,omitempty"`
 	AssignVariable     string      `json:"assignVariable,omitempty" yaml:"assignVariable,omitempty"`

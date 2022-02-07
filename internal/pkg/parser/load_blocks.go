@@ -106,7 +106,7 @@ func parseIgnoreFromComment(input string) (*block.Ignore, error) {
 		val := segments[i+1]
 		switch key {
 		case "ignore":
-			ignore.RuleID = val
+			ignore.RuleID, ignore.Params = parseIDWithParams(val)
 		case "exp":
 			parsed, err := time.Parse("2006-01-02", val)
 			if err != nil {
@@ -119,4 +119,22 @@ func parseIgnoreFromComment(input string) (*block.Ignore, error) {
 	}
 
 	return &ignore, nil
+}
+
+func parseIDWithParams(input string) (string, map[string]string) {
+	params := make(map[string]string)
+	if !strings.Contains(input, "[") {
+		return input, params
+	}
+	parts := strings.Split(input, "[")
+	id := parts[0]
+	paramStr := strings.TrimSuffix(parts[1], "]")
+	for _, pair := range strings.Split(paramStr, ",") {
+		parts := strings.Split(pair, "=")
+		if len(parts) != 2 {
+			continue
+		}
+		params[parts[0]] = parts[1]
+	}
+	return id, params
 }
