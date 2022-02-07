@@ -160,6 +160,7 @@ nav:
       - enable-bucket-encryption: checks/aws/s3/enable-bucket-encryption.md
       - enable-bucket-logging: checks/aws/s3/enable-bucket-logging.md
       - enable-versioning: checks/aws/s3/enable-versioning.md
+      - encryption-customer-key: checks/aws/s3/encryption-customer-key.md
       - ignore-public-acls: checks/aws/s3/ignore-public-acls.md
       - no-public-access-with-acl: checks/aws/s3/no-public-access-with-acl.md
       - no-public-buckets: checks/aws/s3/no-public-buckets.md

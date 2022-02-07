@@ -36,12 +36,12 @@ The following example will fail the google-gke-no-public-control-plane check.
    # node pool and immediately delete it.
    remove_default_node_pool = true
    initial_node_count       = 1
-   master_authorized_networks_config = [{
-     cidr_blocks = [{
+   master_authorized_networks_config {
+     cidr_blocks {
        cidr_block = "0.0.0.0/0"
        display_name = "external"
-     }]
-   }]
+     }
+   }
  }
  
  resource "google_container_node_pool" "primary_preemptible_nodes" {
@@ -85,12 +85,12 @@ The following example will pass the google-gke-no-public-control-plane check.
    # node pool and immediately delete it.
    remove_default_node_pool = true
    initial_node_count       = 1
-   master_authorized_networks_config = [{
-     cidr_blocks = [{
+   master_authorized_networks_config {
+     cidr_blocks {
        cidr_block = "10.10.128.0/24"
        display_name = "internal"
-     }]
-   }]
+     }
+   }
  }
  
  resource "google_container_node_pool" "primary_preemptible_nodes" {

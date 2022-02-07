@@ -79,7 +79,7 @@ The following example will pass the google-gke-enable-ip-aliasing check.
    # node pool and immediately delete it.
    remove_default_node_pool = true
    initial_node_count       = 1
-   ip_allocation_policy = {}
+   ip_allocation_policy {}
  }
  
  resource "google_container_node_pool" "primary_preemptible_nodes" {

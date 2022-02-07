@@ -15,15 +15,15 @@ var CheckForPublicACL = rules.Register(
 		Provider:  provider.AWSProvider,
 		Service:   "s3",
 		ShortCode: "no-public-access-with-acl",
-		Summary:   "S3 Bucket does not have logging enabled.",
+		Summary:   "S3 Buckets not publicly accessible through ACL.",
 		Explanation: `
-Buckets should have logging enabled so that access can be audited. 
+Buckets should not have ACLs that allow public access
 `,
-		Impact:     "There is no way to determine the access to this bucket",
-		Resolution: "Add a logging block to the resource to enable access logging",
+		Impact:     "Public access to the bucket can lead to data leakage",
+		Resolution: "Don't use canned ACLs or switch to private acl",
 
 		Links: []string{
-			"https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html",
+			"https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html",
 		},
 		Terraform: &rules.EngineMetadata{
 			GoodExamples:        terraformNoPublicAccessWithAclGoodExamples,

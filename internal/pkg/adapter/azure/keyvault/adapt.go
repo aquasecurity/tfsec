@@ -114,8 +114,7 @@ func adaptSecret(resource *block.Block) keyvault.Secret {
 
 	if expiryDateAttr.IsString() {
 		expiryDateString := expiryDateAttr.Value().AsString()
-		layout := "2006-01-02T15:04:00Z"
-		if expiryDate, err := time.Parse(layout, expiryDateString); err == nil {
+		if expiryDate, err := time.Parse(time.RFC3339, expiryDateString); err == nil {
 			expiryDateVal = types.Time(expiryDate, expiryDateAttr.GetMetadata())
 		}
 	}
@@ -133,8 +132,7 @@ func adaptKey(resource *block.Block) keyvault.Key {
 
 	if expiryDateAttr.IsNotNil() {
 		expiryDateString := expiryDateAttr.Value().AsString()
-		layout := "2006-01-02T15:04:00Z"
-		if expiryDate, err := time.Parse(layout, expiryDateString); err == nil {
+		if expiryDate, err := time.Parse(time.RFC3339, expiryDateString); err == nil {
 			expiryDateVal = types.Time(expiryDate, expiryDateAttr.GetMetadata())
 		}
 	}
