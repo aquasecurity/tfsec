@@ -39,6 +39,7 @@ func adaptDataset(resource *block.Block) bigquery.Dataset {
 		specialGrVal := specialGrAttr.AsStringValueOrDefault("", accessBlock)
 
 		accessGrants = append(accessGrants, bigquery.AccessGrant{
+			Metadata:     accessBlock.Metadata(),
 			Role:         roleVal,
 			Domain:       domainVal,
 			SpecialGroup: specialGrVal,
@@ -46,7 +47,7 @@ func adaptDataset(resource *block.Block) bigquery.Dataset {
 	}
 
 	return bigquery.Dataset{
-		Metadata:     *resource.GetMetadata(),
+		Metadata:     resource.Metadata(),
 		ID:           IDVal,
 		AccessGrants: accessGrants,
 	}

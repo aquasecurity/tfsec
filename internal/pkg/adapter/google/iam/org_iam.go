@@ -2,6 +2,7 @@ package iam
 
 import (
 	"github.com/aquasecurity/defsec/provider/google/iam"
+	"github.com/aquasecurity/defsec/types"
 	"github.com/google/uuid"
 )
 
@@ -30,7 +31,8 @@ func (a *adapter) adaptOrganizationMembers() {
 		// we didn't find the organization - add an unmanaged one
 		placeholderID := uuid.NewString()
 		org := iam.Organization{
-			Members: []iam.Member{member},
+			Metadata: types.NewUnmanagedMetadata(),
+			Members:  []iam.Member{member},
 		}
 		a.orgs[placeholderID] = org
 
@@ -65,6 +67,7 @@ func (a *adapter) adaptOrganizationBindings() {
 		// we didn't find the organization - add an unmanaged one
 		placeholderID := uuid.NewString()
 		org := iam.Organization{
+			Metadata: types.NewUnmanagedMetadata(),
 			Bindings: bindings,
 		}
 		a.orgs[placeholderID] = org
@@ -87,6 +90,7 @@ func (a *adapter) adaptOrganizationBindings() {
 		// we didn't find the organization - add an unmanaged one
 		placeholderID := uuid.NewString()
 		org := iam.Organization{
+			Metadata: types.NewUnmanagedMetadata(),
 			Bindings: []iam.Binding{binding},
 		}
 		a.orgs[placeholderID] = org

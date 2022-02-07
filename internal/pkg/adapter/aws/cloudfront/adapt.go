@@ -23,57 +23,53 @@ func adaptDistributions(modules block.Modules) []cloudfront.Distribution {
 }
 
 func adaptDistribution(resource *block.Block) cloudfront.Distribution {
-	WAFIDAtrr := resource.GetAttribute("web_acl_id")
-	WAFIDAVal := WAFIDAtrr.AsStringValueOrDefault("", resource)
 
-	defaultCacheBehaviour := cloudfront.CacheBehaviour{
-		Metadata:             *resource.GetMetadata(),
-		ViewerProtocolPolicy: types.String("allow-all", *resource.GetMetadata()),
+	distribution := cloudfront.Distribution{
+		Metadata: resource.Metadata(),
+		WAFID:    types.StringDefault("", resource.Metadata()),
+		Logging: cloudfront.Logging{
+			Metadata: resource.Metadata(),
+			Bucket:   types.StringDefault("", resource.Metadata()),
+		},
+		DefaultCacheBehaviour: cloudfront.CacheBehaviour{
+			Metadata:             resource.Metadata(),
+			ViewerProtocolPolicy: types.String("allow-all", resource.Metadata()),
+		},
+		ViewerCertificate: cloudfront.ViewerCertificate{
+			Metadata:               resource.Metadata(),
+			MinimumProtocolVersion: types.StringDefault("TLSv1", resource.Metadata()),
+		},
 	}
-	var orderedCacheBehaviours []cloudfront.CacheBehaviour
 
-	bucketVal := types.String("", *resource.GetMetadata())
-	if resource.HasChild("logging_config") {
-		loggingBlock := resource.GetBlock("logging_config")
+	distribution.WAFID = resource.GetAttribute("web_acl_id").AsStringValueOrDefault("", resource)
+
+	if loggingBlock := resource.GetBlock("logging_config"); loggingBlock.IsNotNil() {
+		distribution.Logging.Metadata = loggingBlock.Metadata()
 		bucketAttr := loggingBlock.GetAttribute("bucket")
-		bucketVal = bucketAttr.AsStringValueOrDefault("", loggingBlock)
+		distribution.Logging.Bucket = bucketAttr.AsStringValueOrDefault("", loggingBlock)
 	}
 
-	if resource.HasChild("default_cache_behavior") {
-		defaultCacheBlock := resource.GetBlock("default_cache_behavior")
-		defaultCacheBehaviour.Metadata = *defaultCacheBlock.GetMetadata()
-		ViewerProtocolPolicyAttr := defaultCacheBlock.GetAttribute("viewer_protocol_policy")
-		defaultCacheBehaviour.ViewerProtocolPolicy = ViewerProtocolPolicyAttr.AsStringValueOrDefault("allow-all", defaultCacheBlock)
+	if defaultCacheBlock := resource.GetBlock("default_cache_behavior"); defaultCacheBlock.IsNotNil() {
+		distribution.DefaultCacheBehaviour.Metadata = defaultCacheBlock.Metadata()
+		viewerProtocolPolicyAttr := defaultCacheBlock.GetAttribute("viewer_protocol_policy")
+		distribution.DefaultCacheBehaviour.ViewerProtocolPolicy = viewerProtocolPolicyAttr.AsStringValueOrDefault("allow-all", defaultCacheBlock)
 	}
 
 	orderedCacheBlocks := resource.GetBlocks("ordered_cache_behavior")
 	for _, orderedCacheBlock := range orderedCacheBlocks {
 		ViewerProtocolPolicyAttr := orderedCacheBlock.GetAttribute("viewer_protocol_policy")
 		ViewerProtocolPolicyVal := ViewerProtocolPolicyAttr.AsStringValueOrDefault("allow-all", orderedCacheBlock)
-
-		orderedCacheBehaviours = append(orderedCacheBehaviours, cloudfront.CacheBehaviour{
-			Metadata:             *orderedCacheBlock.GetMetadata(),
+		distribution.OrdererCacheBehaviours = append(distribution.OrdererCacheBehaviours, cloudfront.CacheBehaviour{
+			Metadata:             orderedCacheBlock.Metadata(),
 			ViewerProtocolPolicy: ViewerProtocolPolicyVal,
 		})
 	}
 
-	minProtocolVal := types.String("", *resource.GetMetadata())
-	if resource.HasChild("viewer_certificate") {
-		viewerCertBlock := resource.GetBlock("viewer_certificate")
+	if viewerCertBlock := resource.GetBlock("viewer_certificate"); viewerCertBlock.IsNotNil() {
+		distribution.Metadata = viewerCertBlock.Metadata()
 		minProtocolAttr := viewerCertBlock.GetAttribute("minimum_protocol_version")
-		minProtocolVal = minProtocolAttr.AsStringValueOrDefault("TLSv1", viewerCertBlock)
+		distribution.ViewerCertificate.MinimumProtocolVersion = minProtocolAttr.AsStringValueOrDefault("TLSv1", viewerCertBlock)
 	}
 
-	return cloudfront.Distribution{
-		Metadata: *resource.GetMetadata(),
-		WAFID:    WAFIDAVal,
-		Logging: cloudfront.Logging{
-			Bucket: bucketVal,
-		},
-		DefaultCacheBehaviour:  defaultCacheBehaviour,
-		OrdererCacheBehaviours: orderedCacheBehaviours,
-		ViewerCertificate: cloudfront.ViewerCertificate{
-			MinimumProtocolVersion: minProtocolVal,
-		},
-	}
+	return distribution
 }

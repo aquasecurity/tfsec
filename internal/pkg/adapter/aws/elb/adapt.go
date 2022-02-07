@@ -68,7 +68,7 @@ func (a *adapter) adaptLoadBalancer(resource *block.Block, module block.Modules)
 		listeners = append(listeners, adaptListener(listenerBlock, typeVal.Value()))
 	}
 	return elb.LoadBalancer{
-		Metadata:                *resource.GetMetadata(),
+		Metadata:                resource.Metadata(),
 		Type:                    typeVal,
 		DropInvalidHeaderFields: dropInvalidHeadersVal,
 		Internal:                internalVal,
@@ -77,29 +77,29 @@ func (a *adapter) adaptLoadBalancer(resource *block.Block, module block.Modules)
 }
 
 func adaptListener(listenerBlock *block.Block, typeVal string) elb.Listener {
+	listener := elb.Listener{
+		Metadata:  listenerBlock.Metadata(),
+		Protocol:  types.StringDefault("", listenerBlock.Metadata()),
+		TLSPolicy: types.StringDefault("", listenerBlock.Metadata()),
+		DefaultAction: elb.Action{
+			Metadata: listenerBlock.Metadata(),
+			Type:     types.StringDefault("", listenerBlock.Metadata()),
+		},
+	}
+
 	protocolAttr := listenerBlock.GetAttribute("protocol")
-	protocolVal := protocolAttr.AsStringValueOrDefault("", listenerBlock)
 	if typeVal == "application" {
-		protocolVal = protocolAttr.AsStringValueOrDefault("HTTP", listenerBlock)
+		listener.Protocol = protocolAttr.AsStringValueOrDefault("HTTP", listenerBlock)
 	}
 
 	sslPolicyAttr := listenerBlock.GetAttribute("ssl_policy")
-	sslPolicyVal := sslPolicyAttr.AsStringValueOrDefault("", listenerBlock)
+	listener.TLSPolicy = sslPolicyAttr.AsStringValueOrDefault("", listenerBlock)
 
-	actionTypeVal := types.String("", *listenerBlock.GetMetadata())
-	if listenerBlock.HasChild("default_action") {
-		defaultActionBlock := listenerBlock.GetBlock("default_action")
+	if defaultActionBlock := listenerBlock.GetBlock("default_action"); defaultActionBlock.IsNotNil() {
+		listener.DefaultAction.Metadata = defaultActionBlock.Metadata()
 		actionTypeAttr := defaultActionBlock.GetAttribute("type")
-		actionTypeVal = actionTypeAttr.AsStringValueOrDefault("", defaultActionBlock)
+		listener.DefaultAction.Type = actionTypeAttr.AsStringValueOrDefault("", defaultActionBlock)
 	}
 
-	listener := elb.Listener{
-		Metadata:  *listenerBlock.GetMetadata(),
-		Protocol:  protocolVal,
-		TLSPolicy: sslPolicyVal,
-		DefaultAction: elb.Action{
-			Type: actionTypeVal,
-		},
-	}
 	return listener
 }

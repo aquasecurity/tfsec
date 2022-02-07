@@ -13,6 +13,7 @@ func adaptProjectMetadata(modules block.Modules) (metadata compute.ProjectMetada
 		types.NewUnmanagedMetadata(),
 	)
 	for _, metadataBlock := range modules.GetResourcesByType("google_compute_project_metadata") {
+		metadata.Metadata = metadataBlock.Metadata()
 		if metadataAttr := metadataBlock.GetAttribute("metadata"); metadataAttr.IsNotNil() {
 			if val := metadataAttr.MapValue("enable-oslogin"); val.Type() == cty.Bool {
 				metadata.EnableOSLogin = types.BoolExplicit(val.True(), metadataAttr.Metadata())

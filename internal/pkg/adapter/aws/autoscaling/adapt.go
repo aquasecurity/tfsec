@@ -26,8 +26,9 @@ func adaptLaunchTemplates(modules block.Modules) (templates []autoscaling.Launch
 		userData := b.GetAttribute("user_data").AsStringValueOrDefault("", b)
 
 		templates = append(templates, autoscaling.LaunchTemplate{
-			Metadata: *(b.GetMetadata()),
+			Metadata: b.Metadata(),
 			Instance: ec2.Instance{
+				Metadata:        b.Metadata(),
 				MetadataOptions: metadataOptions,
 				UserData:        userData,
 			},
@@ -45,23 +46,10 @@ func adaptLaunchConfigurations(modules block.Modules) []autoscaling.LaunchConfig
 			launchConfig := adaptLaunchConfiguration(resource)
 			for _, resource := range module.GetResourcesByType("aws_ebs_encryption_by_default") {
 				if resource.GetAttribute("enabled").NotEqual(false) {
-					launchConfig.RootBlockDevice.Encrypted = types.BoolDefault(true, *resource.GetMetadata())
+					launchConfig.RootBlockDevice.Encrypted = types.BoolDefault(true, resource.Metadata())
 					for i := 0; i < len(launchConfig.EBSBlockDevices); i++ {
 						ebs := &launchConfig.EBSBlockDevices[i]
-						ebs.Encrypted = types.BoolDefault(true, *resource.GetMetadata())
-					}
-				}
-			}
-			launchConfigurations = append(launchConfigurations, launchConfig)
-		}
-		for _, resource := range module.GetResourcesByType("aws_instance") {
-			launchConfig := adaptLaunchConfiguration(resource)
-			for _, resource := range module.GetResourcesByType("aws_ebs_encryption_by_default") {
-				if resource.GetAttribute("enabled").NotEqual(false) {
-					launchConfig.RootBlockDevice.Encrypted = types.BoolDefault(true, *resource.GetMetadata())
-					for i := 0; i < len(launchConfig.EBSBlockDevices); i++ {
-						ebs := &launchConfig.EBSBlockDevices[i]
-						ebs.Encrypted = types.BoolDefault(true, *resource.GetMetadata())
+						ebs.Encrypted = types.BoolDefault(true, resource.Metadata())
 					}
 				}
 			}
@@ -72,82 +60,63 @@ func adaptLaunchConfigurations(modules block.Modules) []autoscaling.LaunchConfig
 }
 
 func adaptLaunchConfiguration(resource *block.Block) autoscaling.LaunchConfiguration {
-	nameVal := types.String("", *resource.GetMetadata())
+	launchConfig := autoscaling.LaunchConfiguration{
+		Metadata:          resource.Metadata(),
+		Name:              types.StringDefault("", resource.Metadata()),
+		AssociatePublicIP: resource.GetAttribute("associate_public_ip_address").AsBoolValueOrDefault(false, resource),
+		RootBlockDevice: &ec2.BlockDevice{
+			Metadata:  resource.Metadata(),
+			Encrypted: types.BoolDefault(false, resource.Metadata()),
+		},
+		MetadataOptions: getMetadataOptions(resource),
+		UserData:        types.StringDefault("", resource.Metadata()),
+	}
 
 	if resource.TypeLabel() == "aws_launch_configuration" {
 		nameAttr := resource.GetAttribute("name")
-		nameVal = nameAttr.AsStringValueOrDefault("", resource)
+		launchConfig.Name = nameAttr.AsStringValueOrDefault("", resource)
 	}
 
-	associatePublicIPAddressAttr := resource.GetAttribute("associate_public_ip_address")
-	associatePublicIPAddressVal := associatePublicIPAddressAttr.AsBoolValueOrDefault(false, resource)
-
-	rootEncryptedVal := types.BoolDefault(false, *resource.GetMetadata())
-	var rootBlockDeviceBlock *block.Block
-	rootBlockDevice := autoscaling.BlockDevice{
-		Metadata:  *resource.GetMetadata(),
-		Encrypted: rootEncryptedVal,
-	}
-
-	if resource.HasChild("root_block_device") {
-		rootBlockDeviceBlock = resource.GetBlock("root_block_device")
+	if rootBlockDeviceBlock := resource.GetBlock("root_block_device"); rootBlockDeviceBlock.IsNotNil() {
 		encryptedAttr := rootBlockDeviceBlock.GetAttribute("encrypted")
-		rootEncryptedVal = encryptedAttr.AsBoolValueOrDefault(false, rootBlockDeviceBlock)
-		rootBlockDevice = autoscaling.BlockDevice{
-			Metadata:  rootBlockDevice.Metadata,
-			Encrypted: rootEncryptedVal,
-		}
+		launchConfig.RootBlockDevice.Encrypted = encryptedAttr.AsBoolValueOrDefault(false, rootBlockDeviceBlock)
+		launchConfig.RootBlockDevice.Metadata = rootBlockDeviceBlock.Metadata()
 	}
 
-	var EBSBlockDevices []autoscaling.BlockDevice
 	EBSBlockDevicesBlocks := resource.GetBlocks("ebs_block_device")
 	for _, EBSBlockDevicesBlock := range EBSBlockDevicesBlocks {
 		encryptedAttr := EBSBlockDevicesBlock.GetAttribute("encrypted")
 		encryptedVal := encryptedAttr.AsBoolValueOrDefault(false, EBSBlockDevicesBlock)
-		EBSBlockDevices = append(EBSBlockDevices, autoscaling.BlockDevice{
-			Metadata:  *EBSBlockDevicesBlock.GetMetadata(),
+		launchConfig.EBSBlockDevices = append(launchConfig.EBSBlockDevices, ec2.BlockDevice{
+			Metadata:  EBSBlockDevicesBlock.Metadata(),
 			Encrypted: encryptedVal,
 		})
 	}
 
-	userDataVal := types.String("", *resource.GetMetadata())
-	if resource.GetAttribute("user_data").IsNotNil() {
-		userDataAttr := resource.GetAttribute("user_data")
-		userDataVal = userDataAttr.AsStringValueOrDefault("", resource)
-	} else if resource.GetAttribute("user_data_base64").IsNotNil() && resource.GetAttribute("user_data_base64").IsString() {
-		userDataBase64Attr := resource.GetAttribute("user_data_base64")
+	if userDataAttr := resource.GetAttribute("user_data"); userDataAttr.IsNotNil() {
+		launchConfig.UserData = userDataAttr.AsStringValueOrDefault("", resource)
+	} else if userDataBase64Attr := resource.GetAttribute("user_data_base64"); userDataBase64Attr.IsString() {
 		encoded, err := base64.StdEncoding.DecodeString(userDataBase64Attr.Value().AsString())
 		if err == nil {
-			userDataVal = types.String(string(encoded), *userDataBase64Attr.GetMetadata())
+			launchConfig.UserData = types.String(string(encoded), userDataBase64Attr.Metadata())
 		}
 	}
 
-	return autoscaling.LaunchConfiguration{
-		Metadata:          *resource.GetMetadata(),
-		Name:              nameVal,
-		AssociatePublicIP: associatePublicIPAddressVal,
-		RootBlockDevice:   &rootBlockDevice,
-		EBSBlockDevices:   EBSBlockDevices,
-		MetadataOptions:   getMetadataOptions(resource),
-		UserData:          userDataVal,
-	}
+	return launchConfig
 }
 
 func getMetadataOptions(b *block.Block) ec2.MetadataOptions {
-
-	if metadataOptions := b.GetBlock("metadata_options"); metadataOptions.IsNotNil() {
-		metaOpts := ec2.MetadataOptions{
-			Metadata: metadataOptions.Metadata(),
-		}
-
-		metaOpts.HttpTokens = metadataOptions.GetAttribute("http_tokens").AsStringValueOrDefault("", metadataOptions)
-		metaOpts.HttpEndpoint = metadataOptions.GetAttribute("http_endpoint").AsStringValueOrDefault("", metadataOptions)
-		return metaOpts
-	}
-
-	return ec2.MetadataOptions{
+	options := ec2.MetadataOptions{
 		Metadata:     b.Metadata(),
 		HttpTokens:   types.StringDefault("", b.Metadata()),
 		HttpEndpoint: types.StringDefault("", b.Metadata()),
 	}
+
+	if metadataOptions := b.GetBlock("metadata_options"); metadataOptions.IsNotNil() {
+		options.Metadata = metadataOptions.Metadata()
+		options.HttpTokens = metadataOptions.GetAttribute("http_tokens").AsStringValueOrDefault("", metadataOptions)
+		options.HttpEndpoint = metadataOptions.GetAttribute("http_endpoint").AsStringValueOrDefault("", metadataOptions)
+	}
+
+	return options
 }

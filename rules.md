@@ -149,5 +149,6 @@
 | general-secrets-sensitive-in-local | general | secrets | Potentially sensitive data stored in local value. |
 | general-secrets-sensitive-in-attribute | general | secrets | Potentially sensitive data stored in block attribute. |
 | general-secrets-sensitive-in-attribute-value | general | secrets | The attribute has potentially sensitive data, passwords, tokens or keys in it |
+| general-secrets-no-plaintext-exposure | general | secrets | The plain text has potentially sensitive data, passwords, tokens or keys in it |
 | github-repositories-private | github | repositories | Github repository shouldn't be public. |
 | oracle-compute-no-public-ip | oracle | compute | Compute instance requests an IP reservation from a public pool |

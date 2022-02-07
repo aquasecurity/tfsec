@@ -85,6 +85,7 @@ func adaptLoadBalancers(module block.Modules) (loadBalancers []compute.LoadBalan
 
 		for _, fRule := range forwardingRules {
 			rule := compute.ForwardingRule{}
+			rule.Metadata = fRule.Metadata()
 			rule.EntryProtocol = fRule.GetAttribute("entry_protocol").AsStringValueOrDefault("", fRule)
 			fRules = append(fRules, rule)
 		}

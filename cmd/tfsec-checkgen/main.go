@@ -6,7 +6,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/pkg/custom"
 	"github.com/aquasecurity/tfsec/internal/pkg/parser"
@@ -22,6 +24,7 @@ func init() {
 	rootCmd.AddCommand(testCheckCmd)
 	testCheckCmd.Flags().StringSliceVarP(&passTests, "pass", "p", []string{}, "path to passing test terraform file")
 	testCheckCmd.Flags().StringSliceVarP(&failTests, "fail", "f", []string{}, "path to failing test terraform file")
+	rootCmd.AddCommand(generateCmd)
 }
 
 func main() {
@@ -121,4 +124,230 @@ var testCheckCmd = &cobra.Command{
 		}
 		return nil
 	},
+}
+
+var questions = []*survey.Question{
+	{
+		Name:     "code",
+		Prompt:   &survey.Input{Message: "Identifier for the check (e.g. aws001):"},
+		Validate: survey.Required,
+	},
+	{
+		Name:   "description",
+		Prompt: &survey.Input{Message: "Description text:"},
+	},
+	{
+		Name:   "impact",
+		Prompt: &survey.Input{Message: "Potential impact of the vulnerability:"},
+	},
+	{
+		Name:   "resolution",
+		Prompt: &survey.Input{Message: "Resolution hint text:"},
+	},
+	{
+		Name: "requiredTypes",
+		Prompt: &survey.MultiSelect{
+			Message: "Target block type(s):",
+			Options: []string{"resource", "data", "module", "variable"},
+		},
+		Validate: survey.Required,
+	},
+	{
+		Name:     "requiredLabelsRaw",
+		Prompt:   &survey.Multiline{Message: "Target block label(s) (one per line) (e.g. aws_instance):"},
+		Validate: survey.Required,
+	},
+	{
+		Name: "severity",
+		Prompt: &survey.Select{
+			Message: "Level of severity:",
+			Options: []string{"CRITICAL", "HIGH", "MEDIUM", "LOW", "ERROR", "WARNING", "INFO"},
+		},
+		Validate: survey.Required,
+	},
+	{
+		Name:   "errorMessage",
+		Prompt: &survey.Input{Message: "Error message text:"},
+	},
+	{
+		Name:   "relatedLinksRaw",
+		Prompt: &survey.Multiline{Message: "Related link(s) (one per line):"},
+	},
+}
+
+var fileQuestions = []*survey.Question{
+	{
+		Name:   "filepath",
+		Prompt: &survey.Input{Message: "Relative path to save the custom check (must end in _tfchecks.[json/yaml]):"},
+		Validate: survey.ComposeValidators(
+			survey.Required,
+			func(val interface{}) error {
+				if strings.HasSuffix(fmt.Sprintf("%v", val), "_tfchecks.json") || strings.HasSuffix(fmt.Sprintf("%v", val), "_tfchecks.yaml") {
+					return nil
+				} else {
+					return errors.New("must end in _tfchecks.json or _tfchecks.yaml")
+				}
+			},
+		),
+	},
+}
+
+type GenAns struct {
+	Code              string
+	Description       string
+	Impact            string
+	Resolution        string
+	RequiredTypes     []string
+	RequiredLabels    []string
+	RequiredLabelsRaw string
+	Severity          string
+	ErrorMessage      string
+	RelatedLinks      []string
+	RelatedLinksRaw   string
+}
+
+var generateCmd = &cobra.Command{
+	Use:   "generate",
+	Short: "Generate a custom check starter template",
+	Long:  "CLI util to generate a custom check starter template",
+	Run: func(cmd *cobra.Command, args []string) {
+		addCheckAns := true
+		allAns := []GenAns{}
+
+		for addCheckAns {
+			ans := GenAns{}
+			if err := survey.Ask(questions, &ans); err != nil {
+				fmt.Println(err.Error())
+				os.Exit(1)
+			}
+
+			ans.RequiredLabels = strings.Split(fmt.Sprintf("%v", ans.RequiredLabelsRaw), "\n")
+			ans.RelatedLinks = strings.Split(fmt.Sprintf("%v", ans.RelatedLinksRaw), "\n")
+
+			allAns = append(allAns, ans)
+			if err := survey.AskOne(&survey.Confirm{Message: "Add another check to the file?:"}, &addCheckAns); err != nil {
+				fmt.Println(err.Error())
+				os.Exit(1)
+			}
+		}
+
+		fileAns := struct {
+			Filepath string
+		}{}
+		if err := survey.Ask(fileQuestions, &fileAns); err != nil {
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
+
+		output := ""
+
+		if strings.HasSuffix(fileAns.Filepath, ".json") {
+			for _, ans := range allAns {
+				var requiredTypes = linesToJSONArrayString(ans.RequiredTypes, 8)
+				var requiredLabels = linesToJSONArrayString(ans.RequiredLabels, 8)
+				var relatedLinks = linesToJSONArrayString(ans.RelatedLinks, 8)
+
+				output += fmt.Sprintf(`
+    {
+      "code": "%s",
+      "description": "%s",
+      "impact": "%s",
+      "resolution": "%s",
+      "requiredTypes": [
+%s
+      ],
+      "requiredLabels": [
+%s
+      ],
+      "severity": "%s",
+      "matchSpec": {
+        "name": "tags",
+        "action": "contains",
+        "value": "example"
+      },
+      "errorMessage": "%s",
+      "relatedLinks": [
+%s
+      ]
+    },`,
+					ans.Code,
+					ans.Description,
+					ans.Impact,
+					ans.Resolution,
+					requiredTypes,
+					requiredLabels,
+					ans.Severity,
+					ans.ErrorMessage,
+					relatedLinks)
+			}
+			output = fmt.Sprintf(`{
+  "checks": [%s
+  ]
+}
+`, output[:len(output)-1])
+		} else {
+			for _, ans := range allAns {
+				var requiredTypes = linesToYAMLArrayString(ans.RequiredTypes, 2)
+				var requiredLabels = linesToYAMLArrayString(ans.RequiredLabels, 2)
+				var relatedLinks = linesToYAMLArrayString(ans.RelatedLinks, 2)
+				output += fmt.Sprintf(`
+- code: %s
+  description: %s
+  impact: %s
+  resolution: %s
+  requiredTypes:
+%s
+  requiredLabels:
+%s
+  severity: %s
+  matchSpec:
+    name: tags
+    action: contains
+    value: CostCentre
+  errorMessage: %s
+  relatedLinks:
+%s`,
+					ans.Code,
+					ans.Description,
+					ans.Impact,
+					ans.Resolution,
+					requiredTypes,
+					requiredLabels,
+					ans.Severity,
+					ans.ErrorMessage,
+					relatedLinks)
+			}
+			output = fmt.Sprintf(`---
+checks:%s
+`, output[:len(output)-1])
+		}
+
+		err := ioutil.WriteFile(fileAns.Filepath, []byte(output), 0600)
+		if err != nil {
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
+	},
+}
+
+func linesToJSONArrayString(lines []string, padCount int) string {
+	if len(lines) == 0 {
+		return ""
+	}
+	var requiredTypes = ""
+	for _, line := range lines {
+		requiredTypes += strings.Repeat(" ", padCount) + fmt.Sprintf("\"%s\",\n", strings.TrimSpace(line))
+	}
+	return requiredTypes[:len(requiredTypes)-2]
+}
+
+func linesToYAMLArrayString(lines []string, padCount int) string {
+	if len(lines) == 0 {
+		return ""
+	}
+	var requiredTypes = ""
+	for _, line := range lines {
+		requiredTypes += strings.Repeat(" ", padCount) + fmt.Sprintf("- %s\n", strings.TrimSpace(line))
+	}
+	return requiredTypes[:len(requiredTypes)-1]
 }

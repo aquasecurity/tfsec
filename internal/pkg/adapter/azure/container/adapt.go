@@ -25,56 +25,60 @@ func adaptClusters(modules block.Modules) []container.KubernetesCluster {
 
 func adaptCluster(resource *block.Block) container.KubernetesCluster {
 
-	networkProfileBlock := resource.GetBlock("network_profile")
-	networkPolicyVal := types.StringDefault("", resource.Metadata())
+	cluster := container.KubernetesCluster{
+		Metadata: resource.Metadata(),
+		NetworkProfile: container.NetworkProfile{
+			Metadata:      resource.Metadata(),
+			NetworkPolicy: types.StringDefault("", resource.Metadata()),
+		},
+		EnablePrivateCluster:        types.BoolDefault(false, resource.Metadata()),
+		APIServerAuthorizedIPRanges: nil,
+		RoleBasedAccessControl: container.RoleBasedAccessControl{
+			Metadata: resource.Metadata(),
+			Enabled:  types.BoolDefault(false, resource.Metadata()),
+		},
+		AddonProfile: container.AddonProfile{
+			Metadata: resource.Metadata(),
+			OMSAgent: container.OMSAgent{
+				Metadata: resource.Metadata(),
+				Enabled:  types.BoolDefault(false, resource.Metadata()),
+			},
+		},
+	}
+	cluster.Metadata = resource.Metadata()
 
+	networkProfileBlock := resource.GetBlock("network_profile")
 	if networkProfileBlock.IsNotNil() {
 		networkPolicyAttr := networkProfileBlock.GetAttribute("network_policy")
-		networkPolicyVal = networkPolicyAttr.AsStringValueOrDefault("", networkProfileBlock)
+		cluster.NetworkProfile.Metadata = networkProfileBlock.Metadata()
+		cluster.NetworkProfile.NetworkPolicy = networkPolicyAttr.AsStringValueOrDefault("", networkProfileBlock)
 	}
 
 	privateClusterEnabledAttr := resource.GetAttribute("private_cluster_enabled")
-	privateClusterEnabledVal := privateClusterEnabledAttr.AsBoolValueOrDefault(false, resource)
+	cluster.EnablePrivateCluster = privateClusterEnabledAttr.AsBoolValueOrDefault(false, resource)
 
 	apiServerAuthorizedIPRangesAttr := resource.GetAttribute("api_server_authorized_ip_ranges")
 	ips := apiServerAuthorizedIPRangesAttr.ValueAsStrings()
-	authIPRangesVals := []types.StringValue{}
 	for _, ip := range ips {
-		authIPRangesVals = append(authIPRangesVals, types.String(ip, *resource.GetMetadata()))
+		cluster.APIServerAuthorizedIPRanges = append(cluster.APIServerAuthorizedIPRanges, types.String(ip, resource.Metadata()))
 	}
 
-	enabledVal := types.Bool(false, *resource.GetMetadata())
 	addonProfileBlock := resource.GetBlock("addon_profile")
 	if addonProfileBlock.IsNotNil() {
+		cluster.AddonProfile.Metadata = addonProfileBlock.Metadata()
 		omsAgentBlock := addonProfileBlock.GetBlock("oms_agent")
 		if omsAgentBlock.IsNotNil() {
+			cluster.AddonProfile.OMSAgent.Metadata = omsAgentBlock.Metadata()
 			enabledAttr := omsAgentBlock.GetAttribute("enabled")
-			enabledVal = enabledAttr.AsBoolValueOrDefault(false, omsAgentBlock)
+			cluster.AddonProfile.OMSAgent.Enabled = enabledAttr.AsBoolValueOrDefault(false, omsAgentBlock)
 		}
 	}
 
 	roleBasedAccessControlBlock := resource.GetBlock("role_based_access_control")
-	rbEnabledVal := types.Bool(false, *resource.GetMetadata())
-
 	if roleBasedAccessControlBlock.IsNotNil() {
 		rbEnabledAttr := roleBasedAccessControlBlock.GetAttribute("enabled")
-		rbEnabledVal = rbEnabledAttr.AsBoolValueOrDefault(false, roleBasedAccessControlBlock)
+		cluster.RoleBasedAccessControl.Metadata = roleBasedAccessControlBlock.Metadata()
+		cluster.RoleBasedAccessControl.Enabled = rbEnabledAttr.AsBoolValueOrDefault(false, roleBasedAccessControlBlock)
 	}
-	return container.KubernetesCluster{
-		Metadata: resource.Metadata(),
-		NetworkProfile: container.NetworkProfile{
-			NetworkPolicy: networkPolicyVal,
-		},
-		EnablePrivateCluster:        privateClusterEnabledVal,
-		APIServerAuthorizedIPRanges: authIPRangesVals,
-		AddonProfile: container.AddonProfile{
-			OMSAgent: container.OMSAgent{
-				Enabled: enabledVal,
-			},
-		},
-		RoleBasedAccessControl: container.RoleBasedAccessControl{
-			Enabled: rbEnabledVal,
-		},
-	}
-
+	return cluster
 }

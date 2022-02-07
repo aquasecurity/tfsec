@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 
@@ -47,11 +48,11 @@ func parseIgnores(data []byte) []block.Ignore {
 		}
 	}
 	for a, ignoreA := range ignores {
-		if ignoreA.Block {
+		if !ignoreA.Block {
 			continue
 		}
 		for _, ignoreB := range ignores {
-			if ignoreB.Block {
+			if !ignoreB.Block {
 				continue
 			}
 			if ignoreA.Range.GetStartLine()+1 == ignoreB.Range.GetStartLine() {
@@ -64,10 +65,12 @@ func parseIgnores(data []byte) []block.Ignore {
 
 }
 
+var commentPattern = regexp.MustCompile(`^\s*([\/]+|\/\*|#)\s*tfsec:`)
+
 func parseIgnoresFromLine(input string) []block.Ignore {
 
 	var ignores []block.Ignore
-
+	input = commentPattern.ReplaceAllString(input, "tfsec:")
 	bits := strings.Split(strings.TrimSpace(input), " ")
 	for i, bit := range bits {
 		bit := strings.TrimSpace(bit)

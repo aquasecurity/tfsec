@@ -49,7 +49,8 @@ func (a *adapter) adaptSecurityGroups() []network.SecurityGroup {
 		}
 
 		a.groups[uuid.NewString()] = network.SecurityGroup{
-			Rules: []network.SecurityGroupRule{rule},
+			Metadata: types.NewUnmanagedMetadata(),
+			Rules:    []network.SecurityGroupRule{rule},
 		}
 	}
 
@@ -192,19 +193,23 @@ func expandRange(r string, m types.Metadata) network.PortRange {
 }
 
 func adaptWatcherLog(resource *block.Block) network.NetworkWatcherFlowLog {
-	retentionPolicyBlock := resource.GetBlock("retention_policy")
-
-	enabledAttr := retentionPolicyBlock.GetAttribute("enabled")
-	enabledVal := enabledAttr.AsBoolValueOrDefault(false, retentionPolicyBlock)
-
-	daysAttr := retentionPolicyBlock.GetAttribute("days")
-	daysVal := daysAttr.AsIntValueOrDefault(0, retentionPolicyBlock)
-
-	return network.NetworkWatcherFlowLog{
+	flowLog := network.NetworkWatcherFlowLog{
 		Metadata: resource.Metadata(),
 		RetentionPolicy: network.RetentionPolicy{
-			Enabled: enabledVal,
-			Days:    daysVal,
+			Enabled: types.BoolDefault(false, resource.Metadata()),
+			Days:    types.IntDefault(0, resource.Metadata()),
 		},
 	}
+
+	if retentionPolicyBlock := resource.GetBlock("retention_policy"); retentionPolicyBlock.IsNotNil() {
+		flowLog.RetentionPolicy.Metadata = retentionPolicyBlock.Metadata()
+
+		enabledAttr := retentionPolicyBlock.GetAttribute("enabled")
+		flowLog.RetentionPolicy.Enabled = enabledAttr.AsBoolValueOrDefault(false, retentionPolicyBlock)
+
+		daysAttr := retentionPolicyBlock.GetAttribute("days")
+		flowLog.RetentionPolicy.Days = daysAttr.AsIntValueOrDefault(0, retentionPolicyBlock)
+	}
+
+	return flowLog
 }

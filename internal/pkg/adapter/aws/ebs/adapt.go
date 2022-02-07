@@ -29,8 +29,9 @@ func adaptVolume(resource *block.Block) ebs.Volume {
 	kmsKeyVal := kmsKeyAttr.AsStringValueOrDefault("", resource)
 
 	return ebs.Volume{
-		Metadata: *resource.GetMetadata(),
+		Metadata: resource.Metadata(),
 		Encryption: ebs.Encryption{
+			Metadata: resource.Metadata(),
 			Enabled:  encryptedVal,
 			KMSKeyID: kmsKeyVal,
 		},

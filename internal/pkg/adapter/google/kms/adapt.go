@@ -25,7 +25,8 @@ func adaptKeyRings(modules block.Modules) []kms.KeyRing {
 				keys = append(keys, adaptKey(keyBlock))
 			}
 			keyRings = append(keyRings, kms.KeyRing{
-				Keys: keys,
+				Metadata: resource.Metadata(),
+				Keys:     keys,
 			})
 		}
 	}
@@ -33,18 +34,25 @@ func adaptKeyRings(modules block.Modules) []kms.KeyRing {
 }
 
 func adaptKey(resource *block.Block) kms.Key {
-	rotationPeriodAttr := resource.GetAttribute("rotation_period")
-	rotationStr := rotationPeriodAttr.Value().AsString()
 
+	key := kms.Key{
+		Metadata:              resource.Metadata(),
+		RotationPeriodSeconds: types.IntDefault(-1, resource.Metadata()),
+	}
+
+	rotationPeriodAttr := resource.GetAttribute("rotation_period")
+	if !rotationPeriodAttr.IsString() {
+		return key
+	}
+	rotationStr := rotationPeriodAttr.Value().AsString()
 	if rotationStr[len(rotationStr)-1:] != "s" {
-		return kms.Key{}
+		return key
 	}
 	seconds, err := strconv.Atoi(rotationStr[:len(rotationStr)-1])
 	if err != nil {
-		return kms.Key{}
+		return key
 	}
 
-	return kms.Key{
-		RotationPeriodSeconds: types.Int(seconds, *resource.GetMetadata()),
-	}
+	key.RotationPeriodSeconds = types.Int(seconds, resource.Metadata())
+	return key
 }

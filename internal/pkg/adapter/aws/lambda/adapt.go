@@ -56,12 +56,14 @@ func (a *adapter) adaptFunction(function *block.Block, modules block.Modules) la
 func (a *adapter) adaptTracing(function *block.Block) lambda.Tracing {
 	if tracingConfig := function.GetBlock("tracing_config"); tracingConfig.IsNotNil() {
 		return lambda.Tracing{
-			Mode: tracingConfig.GetAttribute("mode").AsStringValueOrDefault("", tracingConfig),
+			Metadata: tracingConfig.Metadata(),
+			Mode:     tracingConfig.GetAttribute("mode").AsStringValueOrDefault("", tracingConfig),
 		}
 	}
 
 	return lambda.Tracing{
-		Mode: types.StringDefault("", function.Metadata()),
+		Metadata: function.Metadata(),
+		Mode:     types.StringDefault("", function.Metadata()),
 	}
 }
 
@@ -69,7 +71,6 @@ func (a *adapter) adaptPermissions(modules block.Modules) []lambda.Permission {
 	var permissions []lambda.Permission
 	for _, module := range modules {
 		for _, p := range module.GetResourcesByType("aws_lambda_permission") {
-
 			permissions = append(permissions, a.adaptPermission(p))
 		}
 	}
@@ -78,6 +79,7 @@ func (a *adapter) adaptPermissions(modules block.Modules) []lambda.Permission {
 
 func (a *adapter) adaptPermission(permission *block.Block) lambda.Permission {
 	return lambda.Permission{
+		Metadata:  permission.Metadata(),
 		Principal: permission.GetAttribute("principal").AsStringValueOrDefault("", permission),
 		SourceARN: permission.GetAttribute("source_arn").AsStringValueOrDefault("", permission),
 	}

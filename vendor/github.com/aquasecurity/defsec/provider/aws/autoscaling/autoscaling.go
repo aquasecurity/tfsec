@@ -15,8 +15,8 @@ type LaunchConfiguration struct {
 	types.Metadata
 	Name              types.StringValue
 	AssociatePublicIP types.BoolValue
-	RootBlockDevice   *BlockDevice
-	EBSBlockDevices   []BlockDevice
+	RootBlockDevice   *ec2.BlockDevice
+	EBSBlockDevices   []ec2.BlockDevice
 	MetadataOptions   ec2.MetadataOptions
 	UserData          types.StringValue
 }
@@ -24,19 +24,6 @@ type LaunchConfiguration struct {
 type LaunchTemplate struct {
 	types.Metadata
 	ec2.Instance
-}
-
-type BlockDevice struct {
-	types.Metadata
-	Encrypted types.BoolValue
-}
-
-func (d *BlockDevice) GetMetadata() *types.Metadata {
-	return &d.Metadata
-}
-
-func (d *BlockDevice) GetRawValue() interface{} {
-	return nil
 }
 
 func (i *LaunchConfiguration) RequiresIMDSToken() bool {

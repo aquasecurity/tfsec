@@ -32,7 +32,7 @@ The following example will fail the aws-autoscaling-no-secrets-in-user-data chec
  export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
  export AWS_DEFAULT_REGION=us-west-2 
 EOF
- }
+}
  
 ```
 
@@ -52,12 +52,12 @@ The following example will pass the aws-autoscaling-no-secrets-in-user-data chec
 	 instance_type = "t2.small"
  
 	 iam_instance_profile {
-		name =  aws_iam_instance_profile.good_profile.arn
+		 name = aws_iam_instance_profile.good_profile.arn
 	 }
 	 user_data = <<EOF
 	 export GREETING=hello
 EOF
- }
+}
  
 ```
 

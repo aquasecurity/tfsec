@@ -20,8 +20,9 @@ func (a *adapter) adaptMember(iamBlock *block.Block) iam.Member {
 }
 
 func AdaptMember(iamBlock *block.Block, modules block.Modules) iam.Member {
-	var member iam.Member
-	member.Metadata = iamBlock.Metadata()
+	member := iam.Member{
+		Metadata: iamBlock.Metadata(),
+	}
 	roleAttr := iamBlock.GetAttribute("role")
 	member.Role = roleAttr.AsStringValueOrDefault("", iamBlock)
 
@@ -96,6 +97,7 @@ func (a *adapter) adaptProjectMembers() {
 			// we didn't find the project - add an unmanaged one
 			a.projects = append(a.projects, parentedProject{
 				project: iam.Project{
+					Metadata:          types.NewUnmanagedMetadata(),
 					AutoCreateNetwork: nil,
 					Members:           []iam.Member{member},
 				},
@@ -191,6 +193,7 @@ func (a *adapter) adaptProjectDataBindings() {
 		// we didn't find the project - add an unmanaged one
 		a.projects = append(a.projects, parentedProject{
 			project: iam.Project{
+				Metadata:          types.NewUnmanagedMetadata(),
 				AutoCreateNetwork: nil,
 				Bindings:          bindings,
 			},
@@ -244,6 +247,7 @@ func (a *adapter) adaptProjectBindings() {
 			// we didn't find the project - add an unmanaged one
 			a.projects = append(a.projects, parentedProject{
 				project: iam.Project{
+					Metadata:          types.NewUnmanagedMetadata(),
 					AutoCreateNetwork: nil,
 					Bindings:          []iam.Binding{binding},
 				},

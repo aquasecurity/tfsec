@@ -22,11 +22,39 @@ func getInstances(modules block.Modules) []ec2.Instance {
 		metadataOptions := getMetadataOptions(b)
 		userData := b.GetAttribute("user_data").AsStringValueOrDefault("", b)
 
-		instances = append(instances, ec2.Instance{
-			Metadata:        *(b.GetMetadata()),
+		instance := ec2.Instance{
+			Metadata:        b.Metadata(),
 			MetadataOptions: metadataOptions,
 			UserData:        userData,
-		})
+			RootBlockDevice: &ec2.BlockDevice{
+				Metadata:  b.Metadata(),
+				Encrypted: types.BoolDefault(false, b.Metadata()),
+			},
+		}
+
+		if rootBlockDevice := b.GetBlock("root_block_device"); rootBlockDevice.IsNotNil() {
+			instance.RootBlockDevice.Metadata = rootBlockDevice.Metadata()
+			instance.RootBlockDevice.Encrypted = rootBlockDevice.GetAttribute("encrypted").AsBoolValueOrDefault(false, b)
+		}
+
+		for _, ebsBlock := range b.GetBlocks("ebs_block_device") {
+			instance.EBSBlockDevices = append(instance.EBSBlockDevices, ec2.BlockDevice{
+				Metadata:  ebsBlock.Metadata(),
+				Encrypted: ebsBlock.GetAttribute("encrypted").AsBoolValueOrDefault(false, b),
+			})
+		}
+
+		for _, resource := range modules.GetResourcesByType("aws_ebs_encryption_by_default") {
+			if resource.GetAttribute("enabled").NotEqual(false) {
+				instance.RootBlockDevice.Encrypted = types.BoolDefault(true, resource.Metadata())
+				for i := 0; i < len(instance.EBSBlockDevices); i++ {
+					ebs := &instance.EBSBlockDevices[i]
+					ebs.Encrypted = types.BoolDefault(true, resource.Metadata())
+				}
+			}
+		}
+
+		instances = append(instances, instance)
 	}
 
 	return instances

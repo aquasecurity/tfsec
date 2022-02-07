@@ -32,7 +32,7 @@ func adaptCluster(resource *block.Block, module *block.Module) documentdb.Cluste
 	enabledLogExportsAttr := resource.GetAttribute("enabled_cloudwatch_logs_exports")
 	enabledLogExportsList := enabledLogExportsAttr.ValueAsStrings()
 	for _, logExport := range enabledLogExportsList {
-		enabledLogExports = append(enabledLogExports, types.String(logExport, *enabledLogExportsAttr.GetMetadata()))
+		enabledLogExports = append(enabledLogExports, types.String(logExport, enabledLogExportsAttr.Metadata()))
 	}
 
 	instancesRes := module.GetReferencingResources(resource, "aws_docdb_cluster_instance", "cluster_identifier")
@@ -41,7 +41,7 @@ func adaptCluster(resource *block.Block, module *block.Module) documentdb.Cluste
 		keyIDVal := keyIDAttr.AsStringValueOrDefault("", instanceRes)
 
 		instances = append(instances, documentdb.Instance{
-			Metadata: *instanceRes.GetMetadata(),
+			Metadata: instanceRes.Metadata(),
 			KMSKeyID: keyIDVal,
 		})
 	}
@@ -53,7 +53,7 @@ func adaptCluster(resource *block.Block, module *block.Module) documentdb.Cluste
 	KMSKeyIDVal := KMSKeyIDAttr.AsStringValueOrDefault("", resource)
 
 	return documentdb.Cluster{
-		Metadata:          *resource.GetMetadata(),
+		Metadata:          resource.Metadata(),
 		Identifier:        identifierVal,
 		EnabledLogExports: enabledLogExports,
 		Instances:         instances,

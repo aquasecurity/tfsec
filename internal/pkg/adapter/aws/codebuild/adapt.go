@@ -23,44 +23,44 @@ func adaptProjects(modules block.Modules) []codebuild.Project {
 }
 
 func adaptProject(resource *block.Block) codebuild.Project {
-	artifactsBlock := resource.GetBlock("artifacts")
-	encryptionEnabled := types.BoolDefault(true, *resource.GetMetadata())
 
-	if artifactsBlock.IsNotNil() {
+	project := codebuild.Project{
+		Metadata: resource.Metadata(),
+		ArtifactSettings: codebuild.ArtifactSettings{
+			Metadata:          resource.Metadata(),
+			EncryptionEnabled: types.BoolDefault(true, resource.Metadata()),
+		},
+		SecondaryArtifactSettings: nil,
+	}
+
+	var hasArtifacts bool
+
+	if artifactsBlock := resource.GetBlock("artifacts"); artifactsBlock.IsNotNil() {
+		project.ArtifactSettings.Metadata = artifactsBlock.Metadata()
 		typeAttr := artifactsBlock.GetAttribute("type")
 		encryptionDisabledAttr := artifactsBlock.GetAttribute("encryption_disabled")
-
-		if encryptionDisabledAttr.IsTrue() && typeAttr.NotEqual("NO_ARTIFACTS") {
-			encryptionEnabled = types.Bool(false, *artifactsBlock.GetMetadata())
+		hasArtifacts = typeAttr.NotEqual("NO_ARTIFACTS")
+		if encryptionDisabledAttr.IsTrue() && hasArtifacts {
+			project.ArtifactSettings.EncryptionEnabled = types.Bool(false, artifactsBlock.Metadata())
 		} else {
-			encryptionEnabled = types.Bool(true, *artifactsBlock.GetMetadata())
+			project.ArtifactSettings.EncryptionEnabled = types.Bool(true, artifactsBlock.Metadata())
 		}
 	}
 
-	var secondaryArtifacts []codebuild.ArtifactSettings
 	secondaryArtifactBlocks := resource.GetBlocks("secondary_artifacts")
-
 	for _, secondaryArtifactBlock := range secondaryArtifactBlocks {
 
-		secondaryEncryptionEnabled := types.BoolDefault(true, *secondaryArtifactBlock.GetMetadata())
+		secondaryEncryptionEnabled := types.BoolDefault(true, secondaryArtifactBlock.Metadata())
 		secondaryEncryptionDisabledAttr := secondaryArtifactBlock.GetAttribute("encryption_disabled")
-		secondaryTypeAttr := artifactsBlock.GetAttribute("type")
-
-		if secondaryEncryptionDisabledAttr.IsTrue() && secondaryTypeAttr.NotEqual("NO_ARTIFACTS") {
-			secondaryEncryptionEnabled = types.Bool(false, *secondaryArtifactBlock.GetMetadata())
+		if secondaryEncryptionDisabledAttr.IsTrue() && hasArtifacts {
+			secondaryEncryptionEnabled = types.Bool(false, secondaryArtifactBlock.Metadata())
 		}
 
-		secondaryArtifacts = append(secondaryArtifacts, codebuild.ArtifactSettings{
-			Metadata:          *secondaryArtifactBlock.GetMetadata(),
+		project.SecondaryArtifactSettings = append(project.SecondaryArtifactSettings, codebuild.ArtifactSettings{
+			Metadata:          secondaryArtifactBlock.Metadata(),
 			EncryptionEnabled: secondaryEncryptionEnabled,
 		})
 	}
 
-	return codebuild.Project{
-		Metadata: *resource.GetMetadata(),
-		ArtifactSettings: codebuild.ArtifactSettings{
-			EncryptionEnabled: encryptionEnabled,
-		},
-		SecondaryArtifactSettings: secondaryArtifacts,
-	}
+	return project
 }

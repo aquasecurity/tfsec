@@ -26,14 +26,21 @@ func adaptClusters(modules block.Modules) []dynamodb.DAXCluster {
 }
 
 func adaptCluster(resource *block.Block, module *block.Module) dynamodb.DAXCluster {
-	sseEnabledVal := types.BoolDefault(false, *resource.GetMetadata())
-	kmsKeyIdVal := types.StringDefault("", *resource.GetMetadata())
-	recoveryEnabledVal := types.BoolDefault(false, *resource.GetMetadata())
 
-	if resource.HasChild("server_side_encryption") {
-		ssEncryptionBlock := resource.GetBlock("server_side_encryption")
+	cluster := dynamodb.DAXCluster{
+		Metadata: resource.Metadata(),
+		ServerSideEncryption: dynamodb.ServerSideEncryption{
+			Metadata: resource.Metadata(),
+			Enabled:  types.BoolDefault(false, resource.Metadata()),
+			KMSKeyID: types.StringDefault("", resource.Metadata()),
+		},
+		PointInTimeRecovery: types.BoolDefault(false, resource.Metadata()),
+	}
+
+	if ssEncryptionBlock := resource.GetBlock("server_side_encryption"); ssEncryptionBlock.IsNotNil() {
+		cluster.Metadata = ssEncryptionBlock.Metadata()
 		enabledAttr := ssEncryptionBlock.GetAttribute("enabled")
-		sseEnabledVal = enabledAttr.AsBoolValueOrDefault(false, ssEncryptionBlock)
+		cluster.ServerSideEncryption.Enabled = enabledAttr.AsBoolValueOrDefault(false, ssEncryptionBlock)
 
 		if resource.TypeLabel() == "aws_dynamodb_table" {
 			kmsKeyIdAttr := ssEncryptionBlock.GetAttribute("kms_key_arn")
@@ -43,23 +50,14 @@ func adaptCluster(resource *block.Block, module *block.Module) dynamodb.DAXClust
 				kmsKeyIdAttr = kmsData.GetAttribute("key_id")
 			}
 
-			kmsKeyIdVal = kmsKeyIdAttr.AsStringValueOrDefault("alias/aws/dynamodb", ssEncryptionBlock)
+			cluster.ServerSideEncryption.KMSKeyID = kmsKeyIdAttr.AsStringValueOrDefault("alias/aws/dynamodb", ssEncryptionBlock)
 		}
 	}
 
-	if resource.HasChild("point_in_time_recovery") {
-		recoveryBlock := resource.GetBlock("point_in_time_recovery")
+	if recoveryBlock := resource.GetBlock("point_in_time_recovery"); recoveryBlock.IsNotNil() {
 		recoveryEnabledAttr := recoveryBlock.GetAttribute("enabled")
-		recoveryEnabledVal = recoveryEnabledAttr.AsBoolValueOrDefault(false, recoveryBlock)
+		cluster.PointInTimeRecovery = recoveryEnabledAttr.AsBoolValueOrDefault(false, recoveryBlock)
 	}
 
-	return dynamodb.DAXCluster{
-		Metadata: *resource.GetMetadata(),
-		ServerSideEncryption: dynamodb.ServerSideEncryption{
-			Enabled:  sseEnabledVal,
-			KMSKeyID: kmsKeyIdVal,
-		},
-		PointInTimeRecovery: recoveryEnabledVal,
-	}
-
+	return cluster
 }

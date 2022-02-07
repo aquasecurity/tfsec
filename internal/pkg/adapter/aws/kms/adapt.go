@@ -29,7 +29,7 @@ func adaptKey(resource *block.Block) kms.Key {
 	enableKeyRotationVal := enableKeyRotationAttr.AsBoolValueOrDefault(false, resource)
 
 	return kms.Key{
-		Metadata:        *resource.GetMetadata(),
+		Metadata:        resource.Metadata(),
 		Usage:           usageVal,
 		RotationEnabled: enableKeyRotationVal,
 	}
