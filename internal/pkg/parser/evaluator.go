@@ -125,7 +125,7 @@ func (e *Evaluator) evaluateModules() {
 
 		moduleIgnores := module.Modules[0].Ignores()
 		metadata := module.Definition.Metadata()
-		if ignore := e.ignores.Covering(metadata, e.workspace); ignore != nil {
+		if ignore := e.ignores.Covering(nil, metadata, e.workspace); ignore != nil {
 			moduleIgnore := *ignore
 			moduleIgnores = append(moduleIgnores, moduleIgnore)
 		}
