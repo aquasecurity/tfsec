@@ -5,15 +5,25 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/pkg/custom"
+	"github.com/aquasecurity/tfsec/internal/pkg/parser"
+	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
 	"github.com/spf13/cobra"
 )
 
+var passTests []string
+var failTests []string
+
 func init() {
 	rootCmd.AddCommand(validateCmd)
+	rootCmd.AddCommand(testCheckCmd)
+	testCheckCmd.Flags().StringSliceVarP(&passTests, "pass", "p", []string{}, "path to passing test terraform file")
+	testCheckCmd.Flags().StringSliceVarP(&failTests, "fail", "f", []string{}, "path to failing test terraform file")
 	rootCmd.AddCommand(generateCmd)
 }
 
@@ -45,6 +55,74 @@ var validateCmd = &cobra.Command{
 		}
 		fmt.Println("Config is valid")
 		os.Exit(0)
+	},
+}
+
+func scanTestFile(testFile string) (rules.Results, error) {
+	source, err := ioutil.ReadFile(testFile)
+	if err != nil {
+		return nil, err
+	}
+	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
+	if err != nil {
+		return nil, err
+	}
+	path := filepath.Join(dir, "test.tf")
+	if err := ioutil.WriteFile(path, source, 0600); err != nil {
+		return nil, err
+	}
+	modules, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
+	if err != nil {
+		return nil, err
+	}
+	results, err := scanner.New().Scan(modules)
+	return results, err
+}
+
+var testCheckCmd = &cobra.Command{
+	Use:   "test-check <custom-check-file>",
+	Short: "Run test on a custom check against passing/failing tests",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		checkFile, err := custom.LoadCheckFile(args[0])
+		if err != nil {
+			return err
+		}
+		custom.ProcessFoundChecks(checkFile)
+		for _, passTest := range passTests {
+			results, err := scanTestFile(passTest)
+			if err != nil {
+				return err
+			}
+			for _, result := range results {
+				if result.Rule().LongID()[:6] == "custom" {
+					fmt.Printf("failed custom check in expected passing terraform test file: %v\n", passTest)
+					fmt.Println(result.Rule().LongID())
+					fmt.Println(result.Description())
+					return errors.New("test case did not pass")
+				}
+			}
+		}
+		for _, failTest := range failTests {
+			results, err := scanTestFile(failTest)
+			if err != nil {
+				return err
+			}
+			foundFailCheck := false
+			for _, result := range results {
+				if result.Rule().LongID()[:6] == "custom" {
+					foundFailCheck = true
+				}
+			}
+			if !foundFailCheck {
+				fmt.Printf("passed custom check in expected failing terraform test file: %v\n", failTest)
+				return errors.New("test case did not pass")
+			}
+		}
+		for _, rule := range scanner.GetRegisteredRules() {
+			scanner.DeregisterCheckRule(rule)
+		}
+		return nil
 	},
 }
 

@@ -576,14 +576,27 @@ matchSpec:
 ```
 
 ## How do I know my JSON is valid?
-We have provided the `tfsec-checkgen` binary which will validate your check file to ensure that it is valid for use with `tfsec`. 
+We have provided the `tfsec-checkgen` binary which will validate your check file or help perform tests to ensure that it is valid for use with `tfsec`.
+
+### `tfsec-checkgen validate`
+
+Validates the syntax of a custom check.
 
 ```shell script
 go run ./cmd/tfsec-checkgen validate example/custom/.tfsec/custom_checks.json
 ```
 
-Alternatively, you can install the tfsec-checkgen from the [releases page](https://github.com/aquasecurity/tfsec/releases)
+### `tfsec-checkgen test-check`
 
+Tests custom check against provided test cases. You can pass in multiple `--fail`/`-f`/`--pass`/`-p` flags to perform multiple tests at once on the same custom check.
+
+```shell script
+go run ./cmd/tfsec-checkgen test-check ./example/cmd_checkgen_test-check/.tfsec/example_tfchecks.json \
+--fail ./example/cmd_checkgen_test-check/fail.tf \
+--pass ./example/cmd_checkgen_test-check/pass.tf
+```
+
+Alternatively, you can install the tfsec-checkgen from the [releases page](https://github.com/aquasecurity/tfsec/releases)
 
 ## Are there limitations?
 At the moment, check `MatchSpec` is limited in the number of check types it can perform, these are as shown in the previous table.

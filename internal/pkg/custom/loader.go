@@ -41,13 +41,13 @@ func loadCustomChecks(customCheckDir string) error {
 			errorList = append(errorList, err.Error())
 			continue
 		}
-		checks, err := loadCheckFile(checkFilePath)
+		checks, err := LoadCheckFile(checkFilePath)
 		if err != nil {
 			errorList = append(errorList, err.Error())
 			continue
 		}
 
-		processFoundChecks(checks)
+		ProcessFoundChecks(checks)
 	}
 
 	if len(errorList) > 0 {
@@ -56,7 +56,7 @@ func loadCustomChecks(customCheckDir string) error {
 	return nil
 }
 
-func loadCheckFile(checkFilePath string) (ChecksFile, error) {
+func LoadCheckFile(checkFilePath string) (ChecksFile, error) {
 	var checks ChecksFile
 	checkFileContent, err := ioutil.ReadFile(checkFilePath)
 	if err != nil {
