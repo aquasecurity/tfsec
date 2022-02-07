@@ -8,7 +8,7 @@ title: Neptune encryption should use Customer Managed Keys
 
 ### Explanation
 
-Encryption using AWS keys provides protection for your DocumentDB underlying storage. To increase control of the encryption and manage factors like rotation use customer managed keys.
+Encryption using AWS keys provides protection for your Neptune underlying storage. To increase control of the encryption and manage factors like rotation use customer managed keys.
 
 ### Possible Impact
 Using AWS managed keys does not allow for fine grained control

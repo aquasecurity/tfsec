@@ -1,22 +1,22 @@
 ---
-title: S3 Bucket does not have logging enabled.
+title: S3 Buckets not publically accessible through ACL.
 ---
 
-# S3 Bucket does not have logging enabled.
+# S3 Buckets not publically accessible through ACL.
 
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation
 
 
-Buckets should have logging enabled so that access can be audited. 
+Buckets should not have ACLs that allow public access
 
 
 ### Possible Impact
-There is no way to determine the access to this bucket
+Public access to the bucket can lead to data leakage
 
 ### Suggested Resolution
-Add a logging block to the resource to enable access logging
+Don't use canned ACLs or switch to private acl
 
 
 ### Insecure Example
@@ -50,7 +50,7 @@ resource "aws_s3_bucket" "good_example" {
 
 - [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket){:target="_blank" rel="nofollow noreferrer noopener"}
 
-- [https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html](https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerLogs.html){:target="_blank" rel="nofollow noreferrer noopener"}
+- [https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html](https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html){:target="_blank" rel="nofollow noreferrer noopener"}
 
 
 

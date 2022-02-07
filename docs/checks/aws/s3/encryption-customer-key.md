@@ -1,30 +1,38 @@
 ---
-title: Unencrypted S3 bucket.
+title: S3 encryption should use Customer Managed Keys
 ---
 
-# Unencrypted S3 bucket.
+# S3 encryption should use Customer Managed Keys
 
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation
 
-S3 Buckets should be encrypted to protect the data that is stored within them if access is compromised.
+Encryption using AWS keys provides protection for your S3 buckets. To increase control of the encryption and manage factors like rotation use customer managed keys.
 
 ### Possible Impact
-The bucket objects could be read if compromised
+Using AWS managed keys does not allow for fine grained control
 
 ### Suggested Resolution
-Configure bucket encryption
+Enable encryption using customer managed keys
 
 
 ### Insecure Example
 
-The following example will fail the aws-s3-enable-bucket-encryption check.
+The following example will fail the aws-s3-encryption-customer-key check.
 ```terraform
 
- resource "aws_s3_bucket" "bad_example" {
+resource "aws_s3_bucket" "bad_exampl" {
    bucket = "mybucket"
- }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "AES256"
+      }
+    }
+  }
+}
  
 ```
 
@@ -32,16 +40,20 @@ The following example will fail the aws-s3-enable-bucket-encryption check.
 
 ### Secure Example
 
-The following example will pass the aws-s3-enable-bucket-encryption check.
+The following example will pass the aws-s3-encryption-customer-key check.
 ```terraform
 
- resource "aws_s3_bucket" "good_example" {
+resource "aws_kms_key" "good_example" {
+  enable_key_rotation = true
+}
+
+resource "aws_s3_bucket" "good_example" {
    bucket = "mybucket"
  
    server_side_encryption_configuration {
      rule {
        apply_server_side_encryption_by_default {
-         kms_master_key_id = "arn"
+         kms_master_key_id = aws_kms_key.example.arn
          sse_algorithm     = "aws:kms"
        }
      }
