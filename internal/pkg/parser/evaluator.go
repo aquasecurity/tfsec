@@ -63,6 +63,8 @@ func NewEvaluator(
 		b.OverrideContext(ctx.NewChild())
 	}
 
+	block.SortByHierarchy(blocks)
+
 	return &Evaluator{
 		modulePath:      modulePath,
 		moduleName:      moduleName,
