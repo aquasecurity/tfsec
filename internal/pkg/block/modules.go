@@ -1,6 +1,10 @@
 package block
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/aquasecurity/defsec/types"
+)
 
 type Modules []*Module
 
@@ -79,4 +83,15 @@ func (m Modules) GetResourceByIDs(id ...string) Blocks {
 	}
 
 	return blocks
+}
+
+func (m Modules) GetBlockByIgnoreRange(r types.Range) *Block {
+	for _, module := range m {
+		for _, block := range module.GetBlocks() {
+			if br := block.GetMetadata().Range(); br != nil && br.GetFilename() == r.GetFilename() && br.GetStartLine() == r.GetStartLine()+1 {
+				return block
+			}
+		}
+	}
+	return nil
 }

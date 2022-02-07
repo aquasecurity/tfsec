@@ -69,6 +69,88 @@ resource "bad" "my-rule" {
 	assert.Len(t, results, 0)
 }
 
+func Test_IgnoreLineAboveTheBlockMatchingParamBool(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
+	results := testutil.ScanHCL(`
+// tfsec:ignore:*[secure=false]
+resource "bad" "my-rule" {
+   secure = false
+}
+`, t)
+	assert.Len(t, results, 0)
+}
+
+func Test_IgnoreLineAboveTheBlockNotMatchingParamBool(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
+	results := testutil.ScanHCL(`
+// tfsec:ignore:*[secure=true]
+resource "bad" "my-rule" {
+   secure = false 
+}
+`, t)
+	assert.Len(t, results, 1)
+}
+
+func Test_IgnoreLineAboveTheBlockMatchingParamString(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
+	results := testutil.ScanHCL(`
+// tfsec:ignore:*[name=myrule]
+resource "bad" "my-rule" {
+    name = "myrule"
+    secure = false
+}
+`, t)
+	assert.Len(t, results, 0)
+}
+
+func Test_IgnoreLineAboveTheBlockNotMatchingParamString(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
+	results := testutil.ScanHCL(`
+// tfsec:ignore:*[name=myrule2]
+resource "bad" "my-rule" {
+    name = "myrule"
+    secure = false 
+}
+`, t)
+	assert.Len(t, results, 1)
+}
+
+func Test_IgnoreLineAboveTheBlockMatchingParamInt(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
+	results := testutil.ScanHCL(`
+// tfsec:ignore:*[port=123]
+resource "bad" "my-rule" {
+   secure = false
+   port = 123
+}
+`, t)
+	assert.Len(t, results, 0)
+}
+
+func Test_IgnoreLineAboveTheBlockNotMatchingParamInt(t *testing.T) {
+	scanner.RegisterCheckRule(exampleRule)
+	defer scanner.DeregisterCheckRule(exampleRule)
+
+	results := testutil.ScanHCL(`
+// tfsec:ignore:*[port=456]
+resource "bad" "my-rule" {
+   secure = false 
+   port = 123
+}
+`, t)
+	assert.Len(t, results, 1)
+}
+
 func Test_IgnoreLineStackedAboveTheBlock(t *testing.T) {
 	scanner.RegisterCheckRule(exampleRule)
 	defer scanner.DeregisterCheckRule(exampleRule)
