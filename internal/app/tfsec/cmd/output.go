@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/defsec/formatters"
+	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/pkg/debug"
 	"github.com/aquasecurity/tfsec/version"
@@ -43,15 +44,23 @@ func gatherLinks(result rules.Result) []string {
 	if result.Rule().Terraform != nil {
 		links = result.Rule().Terraform.Links
 	}
-	return append([]string{
-		fmt.Sprintf(
-			"https://aquasecurity.github.io/tfsec/%s/checks/%s/%s/%s/",
-			v,
-			result.Rule().Provider,
-			strings.ToLower(result.Rule().Service),
-			result.Rule().ShortCode,
-		),
-	}, links...)
+
+	var docsLink []string
+	if result.Rule().Provider == provider.CustomProvider {
+		docsLink = result.Rule().Links
+	} else {
+		docsLink = []string{
+			fmt.Sprintf(
+				"https://aquasecurity.github.io/tfsec/%s/checks/%s/%s/%s/",
+				v,
+				result.Rule().Provider,
+				strings.ToLower(result.Rule().Service),
+				result.Rule().ShortCode,
+			),
+		}
+	}
+
+	return append(docsLink, links...)
 }
 
 func outputFormat(addExtension bool, baseFilename string, format string, dir string, results []rules.Result) (string, error) {
