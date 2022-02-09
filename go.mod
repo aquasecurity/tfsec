@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.2
 	github.com/apparentlymart/go-cidr v1.1.0
-	github.com/aquasecurity/defsec v0.6.9
+	github.com/aquasecurity/defsec v0.7.1
 	github.com/bmatcuk/doublestar v1.3.4
 	github.com/google/go-cmp v0.5.7
 	github.com/google/uuid v1.3.0
@@ -22,7 +22,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/zclconf/go-cty v1.8.0
 	github.com/zclconf/go-cty-yaml v1.0.2
-	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
+	golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce
 	golang.org/x/text v0.3.7
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -57,8 +57,8 @@ require (
 	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d // indirect
-	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
+	golang.org/x/net v0.0.0-20220114011407-0dd24b26b47d // indirect
+	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 	golang.org/x/term v0.0.0-20210503060354-a79de5458b56 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
