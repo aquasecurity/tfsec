@@ -1,24 +1,24 @@
 package custom
 
 import (
-    "encoding/json"
-    "fmt"
-    "io/ioutil"
-    "os"
-    "path/filepath"
-    "strings"
-    "testing"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
 
-    "github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/rules"
 
-    "github.com/aquasecurity/tfsec/internal/pkg/scanner"
-    "github.com/aquasecurity/trivy-config-parsers/terraform"
-    "github.com/aquasecurity/trivy-config-parsers/terraform/parser"
-    "github.com/stretchr/testify/assert"
+	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/trivy-config-parsers/terraform"
+	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
+	"github.com/stretchr/testify/assert"
 )
 
 func init() {
-    givenCheck(`{
+	givenCheck(`{
   "checks": [
     {
       "code": "DP006",
@@ -47,99 +47,99 @@ func init() {
 }
 
 var testOrMatchSpec = MatchSpec{
-    Action: "or",
-    PredicateMatchSpec: []MatchSpec{
-        {
-            Name:   "name",
-            Action: "isPresent",
-        },
-        {
-            Name:   "description",
-            Action: "isPresent",
-        },
-    },
+	Action: "or",
+	PredicateMatchSpec: []MatchSpec{
+		{
+			Name:   "name",
+			Action: "isPresent",
+		},
+		{
+			Name:   "description",
+			Action: "isPresent",
+		},
+	},
 }
 
 var testAndMatchSpec = MatchSpec{
-    Action: "and",
-    PredicateMatchSpec: []MatchSpec{
-        {
-            Name:   "name",
-            Action: "isPresent",
-        },
-        {
-            Name:   "description",
-            Action: "isPresent",
-        },
-    },
+	Action: "and",
+	PredicateMatchSpec: []MatchSpec{
+		{
+			Name:   "name",
+			Action: "isPresent",
+		},
+		{
+			Name:   "description",
+			Action: "isPresent",
+		},
+	},
 }
 
 var testNestedMatchSpec = MatchSpec{
-    Action: "and",
-    PredicateMatchSpec: []MatchSpec{
-        {
-            Name:       "virtualization_type",
-            Action:     "equals",
-            MatchValue: "paravirtual",
-        },
-        {
-            Action: "or",
-            PredicateMatchSpec: []MatchSpec{
-                {
-                    Name:   "image_location",
-                    Action: "isPresent",
-                },
-                {
-                    Name:   "kernel_id",
-                    Action: "isPresent",
-                },
-            },
-        },
-    },
+	Action: "and",
+	PredicateMatchSpec: []MatchSpec{
+		{
+			Name:       "virtualization_type",
+			Action:     "equals",
+			MatchValue: "paravirtual",
+		},
+		{
+			Action: "or",
+			PredicateMatchSpec: []MatchSpec{
+				{
+					Name:   "image_location",
+					Action: "isPresent",
+				},
+				{
+					Name:   "kernel_id",
+					Action: "isPresent",
+				},
+			},
+		},
+	},
 }
 
 var testNotMatchSpec = MatchSpec{
-    Action: "not",
-    PredicateMatchSpec: []MatchSpec{
-        {
-            Name:       "virtualization_type",
-            Action:     "equals",
-            MatchValue: "paravirtual",
-        },
-    },
+	Action: "not",
+	PredicateMatchSpec: []MatchSpec{
+		{
+			Name:       "virtualization_type",
+			Action:     "equals",
+			MatchValue: "paravirtual",
+		},
+	},
 }
 
 var testPreConditionCheck = MatchSpec{
-    Action:     "equals",
-    Name:       "name",
-    MatchValue: "test-name",
-    PreConditions: []MatchSpec{
-        {
-            Action:     "equals",
-            Name:       "id",
-            MatchValue: "test-id",
-        },
-    },
+	Action:     "equals",
+	Name:       "name",
+	MatchValue: "test-name",
+	PreConditions: []MatchSpec{
+		{
+			Action:     "equals",
+			Name:       "id",
+			MatchValue: "test-id",
+		},
+	},
 }
 
 var testAssignVariableMatchSpec = MatchSpec{
-    Action: "and",
-    PredicateMatchSpec: []MatchSpec{
-        {
-            Name:           "bucket",
-            Action:         "isPresent",
-            AssignVariable: "TFSEC_VAR_BUCKET_NAME",
-        },
-        {
-            Name:   "lifecycle_rule",
-            Action: "isPresent",
-            SubMatch: &MatchSpec{
-                Name:       "id",
-                Action:     "startsWith",
-                MatchValue: "TFSEC_VAR_BUCKET_NAME",
-            },
-        },
-    },
+	Action: "and",
+	PredicateMatchSpec: []MatchSpec{
+		{
+			Name:           "bucket",
+			Action:         "isPresent",
+			AssignVariable: "TFSEC_VAR_BUCKET_NAME",
+		},
+		{
+			Name:   "lifecycle_rule",
+			Action: "isPresent",
+			SubMatch: &MatchSpec{
+				Name:       "id",
+				Action:     "startsWith",
+				MatchValue: "TFSEC_VAR_BUCKET_NAME",
+			},
+		},
+	},
 }
 
 var testSubMatchOnesSource = `
@@ -163,7 +163,7 @@ resource "aws_dynamodb_table" "example" {
 `
 
 func TestRequiresPresenceWithResourcePresent(t *testing.T) {
-    scanResults := scanTerraform(t, `
+	scanResults := scanTerraform(t, `
 resource "aws_vpc" "main" {
   cidr_block       = "10.0.0.0/16"
   instance_tenancy = "default"
@@ -180,11 +180,11 @@ resource "aws_flow_log" "example" {
   vpc_id          = aws_vpc.example.id
 }
 `)
-    assert.Len(t, scanResults, 0)
+	assert.Len(t, scanResults, 0)
 }
 
 func TestRequiresPresenceWithResourceMissing(t *testing.T) {
-    scanResults := scanTerraform(t, `
+	scanResults := scanTerraform(t, `
 resource "aws_vpc" "main" {
   cidr_block       = "10.0.0.0/16"
   instance_tenancy = "default"
@@ -194,11 +194,11 @@ resource "aws_vpc" "main" {
   }
 }
 `)
-    assert.Len(t, scanResults, 1)
+	assert.Len(t, scanResults, 1)
 }
 
 func TestRequiresPresenceWithSubMatchFailing(t *testing.T) {
-    scanResults := scanTerraform(t, `
+	scanResults := scanTerraform(t, `
 resource "aws_vpc" "main" {
   cidr_block       = "10.0.0.0/16"
   instance_tenancy = "default"
@@ -214,242 +214,242 @@ resource "aws_flow_log" "example" {
   vpc_id          = aws_vpc.example.id
 }
 `)
-    assert.Len(t, scanResults, 1)
+	assert.Len(t, scanResults, 1)
 }
 
 func TestOrMatchFunction(t *testing.T) {
 
-    var tests = []struct {
-        name               string
-        source             string
-        predicateMatchSpec MatchSpec
-        expected           bool
-    }{
-        {
-            name: "check `or` match function with no true evaluation",
-            source: `
+	var tests = []struct {
+		name               string
+		source             string
+		predicateMatchSpec MatchSpec
+		expected           bool
+	}{
+		{
+			name: "check `or` match function with no true evaluation",
+			source: `
 resource "aws_ami" "example" {
 }
 `,
-            predicateMatchSpec: testOrMatchSpec,
-            expected:           false,
-        },
-        {
-            name: "check `or` match function with a single true evaluation",
-            source: `
+			predicateMatchSpec: testOrMatchSpec,
+			expected:           false,
+		},
+		{
+			name: "check `or` match function with a single true evaluation",
+			source: `
 resource "aws_ami" "example" {
 	name = "placeholder-name"
 }
 `,
-            predicateMatchSpec: testOrMatchSpec,
-            expected:           true,
-        },
-        {
-            name: "check `or` match function with all true evaluation",
-            source: `
+			predicateMatchSpec: testOrMatchSpec,
+			expected:           true,
+		},
+		{
+			name: "check `or` match function with all true evaluation",
+			source: `
 resource "aws_ami" "example" {
 	name = "placeholder-name"
 	description = "this is a description."
 }
 `,
-            predicateMatchSpec: testOrMatchSpec,
-            expected:           true,
-        },
-    }
-    for _, test := range tests {
-        t.Run(test.name, func(t *testing.T) {
-            block := ParseFromSource(test.source)[0].GetBlocks()[0]
-            result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
-            assert.Equal(t, test.expected, result, "`Or` match function evaluating incorrectly.")
-        })
-    }
+			predicateMatchSpec: testOrMatchSpec,
+			expected:           true,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
+			assert.Equal(t, test.expected, result, "`Or` match function evaluating incorrectly.")
+		})
+	}
 }
 
 func TestAndMatchFunction(t *testing.T) {
-    var tests = []struct {
-        name               string
-        source             string
-        predicateMatchSpec MatchSpec
-        expected           bool
-    }{
-        {
-            name: "check `and` match function with no true evaluation",
-            source: `
+	var tests = []struct {
+		name               string
+		source             string
+		predicateMatchSpec MatchSpec
+		expected           bool
+	}{
+		{
+			name: "check `and` match function with no true evaluation",
+			source: `
 resource "aws_ami" "example" {
 }
 `,
-            predicateMatchSpec: testAndMatchSpec,
-            expected:           false,
-        },
-        {
-            name: "check `and` match function with a single true evaluation",
-            source: `
+			predicateMatchSpec: testAndMatchSpec,
+			expected:           false,
+		},
+		{
+			name: "check `and` match function with a single true evaluation",
+			source: `
 resource "aws_ami" "example" {
 	name = "placeholder-name"
 }
 `,
-            predicateMatchSpec: testAndMatchSpec,
-            expected:           false,
-        },
-        {
-            name: "check `and` match function with all true evaluation",
-            source: `
+			predicateMatchSpec: testAndMatchSpec,
+			expected:           false,
+		},
+		{
+			name: "check `and` match function with all true evaluation",
+			source: `
 resource "aws_ami" "example" {
 	name = "placeholder-name"
 	description = "this is a description."
 }
 `,
-            predicateMatchSpec: testAndMatchSpec,
-            expected:           true,
-        },
-    }
-    for _, test := range tests {
-        t.Run(test.name, func(t *testing.T) {
-            block := ParseFromSource(test.source)[0].GetBlocks()[0]
-            result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
-            assert.Equal(t, test.expected, result, "`And` match function evaluating incorrectly.")
-        })
-    }
+			predicateMatchSpec: testAndMatchSpec,
+			expected:           true,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
+			assert.Equal(t, test.expected, result, "`And` match function evaluating incorrectly.")
+		})
+	}
 }
 
 func TestNestedMatchFunction(t *testing.T) {
-    var tests = []struct {
-        name               string
-        source             string
-        predicateMatchSpec MatchSpec
-        expected           bool
-    }{
-        {
-            name: "check nested match function with only inner true evaluation",
-            source: `
+	var tests = []struct {
+		name               string
+		source             string
+		predicateMatchSpec MatchSpec
+		expected           bool
+	}{
+		{
+			name: "check nested match function with only inner true evaluation",
+			source: `
 resource "aws_ami" "example" {
 	virtualization_type = "hvm"
 	image_location = "image-XXXX"
 	kernel_id = "XXXXXXXXXX"
 }
 `,
-            predicateMatchSpec: testNestedMatchSpec,
-            expected:           false,
-        },
-        {
-            name: "check nested match function with no true evaluation",
-            source: `
+			predicateMatchSpec: testNestedMatchSpec,
+			expected:           false,
+		},
+		{
+			name: "check nested match function with no true evaluation",
+			source: `
 resource "aws_ami" "example" {
 	virtualization_type = "hvm"
 }
 `,
-            predicateMatchSpec: testNestedMatchSpec,
-            expected:           false,
-        },
-        {
-            name: "check nested match function with all true evaluation",
-            source: `
+			predicateMatchSpec: testNestedMatchSpec,
+			expected:           false,
+		},
+		{
+			name: "check nested match function with all true evaluation",
+			source: `
 resource "aws_ami" "example" {
 	virtualization_type = "paravirtual"
 	image_location = "image-XXXX"
 	kernel_id = "XXXXXXXXXX"
 }
 `,
-            predicateMatchSpec: testNestedMatchSpec,
-            expected:           true,
-        },
-    }
-    for _, test := range tests {
-        t.Run(test.name, func(t *testing.T) {
-            block := ParseFromSource(test.source)[0].GetBlocks()[0]
-            result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
-            assert.Equal(t, test.expected, result, "Nested match functions evaluating incorrectly.")
-        })
-    }
+			predicateMatchSpec: testNestedMatchSpec,
+			expected:           true,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
+			assert.Equal(t, test.expected, result, "Nested match functions evaluating incorrectly.")
+		})
+	}
 }
 
 func TestNotFunction(t *testing.T) {
-    var tests = []struct {
-        name      string
-        source    string
-        matchSpec MatchSpec
-        expected  bool
-    }{
-        {
-            name: "check that not correctly inverts the outcome of a given predicateMatchSpec",
-            source: `
+	var tests = []struct {
+		name      string
+		source    string
+		matchSpec MatchSpec
+		expected  bool
+	}{
+		{
+			name: "check that not correctly inverts the outcome of a given predicateMatchSpec",
+			source: `
 resource "aws_ami" "example" {
 	virtualization_type = "paravirtual"
 }
 `,
-            matchSpec: testNotMatchSpec,
-            expected:  false,
-        },
-    }
-    for _, test := range tests {
-        t.Run(test.name, func(t *testing.T) {
-            block := ParseFromSource(test.source)[0].GetBlocks()[0]
-            result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
-            assert.Equal(t, test.expected, result, "Not match functions evaluating incorrectly.")
-        })
-    }
+			matchSpec: testNotMatchSpec,
+			expected:  false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
+			assert.Equal(t, test.expected, result, "Not match functions evaluating incorrectly.")
+		})
+	}
 }
 
 func TestPreCondition(t *testing.T) {
-    var tests = []struct {
-        name      string
-        source    string
-        matchSpec MatchSpec
-        expected  bool
-    }{
-        {
-            name: "check that precondition check prevents check being performed",
-            source: `
+	var tests = []struct {
+		name      string
+		source    string
+		matchSpec MatchSpec
+		expected  bool
+	}{
+		{
+			name: "check that precondition check prevents check being performed",
+			source: `
 resource "aws_ami" "testing" {
 	name = "something else"
 }
 `,
-            matchSpec: testPreConditionCheck,
-            expected:  true,
-        },
-        {
-            name: "check that precondition which passes allows check to be performed which fails",
-            source: `
+			matchSpec: testPreConditionCheck,
+			expected:  true,
+		},
+		{
+			name: "check that precondition which passes allows check to be performed which fails",
+			source: `
 resource "aws_ami" "testing" {
 	name = "something else"
 	id   = "test-id"
 }
 `,
-            matchSpec: testPreConditionCheck,
-            expected:  false,
-        },
-        {
-            name: "check that precondition which passes allows check to be performed which passes",
-            source: `
+			matchSpec: testPreConditionCheck,
+			expected:  false,
+		},
+		{
+			name: "check that precondition which passes allows check to be performed which passes",
+			source: `
 resource "aws_ami" "testing" {
 	name = "test-name"
 	id   = "test-id"
 }
 `,
-            matchSpec: testPreConditionCheck,
-            expected:  true,
-        },
-    }
+			matchSpec: testPreConditionCheck,
+			expected:  true,
+		},
+	}
 
-    for _, test := range tests {
-        t.Run(test.name, func(t *testing.T) {
-            block := ParseFromSource(test.source)[0].GetBlocks()[0]
-            result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
-            assert.Equal(t, test.expected, result, "precondition functions evaluating incorrectly.")
-        })
-    }
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
+			assert.Equal(t, test.expected, result, "precondition functions evaluating incorrectly.")
+		})
+	}
 }
 
 func TestAssignVariable(t *testing.T) {
-    var tests = []struct {
-        name      string
-        source    string
-        matchSpec MatchSpec
-        expected  bool
-    }{
-        {
-            name: "check assignVariable handling in pass case",
-            source: `
+	var tests = []struct {
+		name      string
+		source    string
+		matchSpec MatchSpec
+		expected  bool
+	}{
+		{
+			name: "check assignVariable handling in pass case",
+			source: `
 resource "aws_s3_bucket" "test-bucket" {
   bucket = "test-bucket"
 
@@ -458,12 +458,12 @@ resource "aws_s3_bucket" "test-bucket" {
   }
 }
 `,
-            matchSpec: testAssignVariableMatchSpec,
-            expected:  true,
-        },
-        {
-            name: "check assignVariable handling in fail case",
-            source: `
+			matchSpec: testAssignVariableMatchSpec,
+			expected:  true,
+		},
+		{
+			name: "check assignVariable handling in fail case",
+			source: `
 resource "aws_s3_bucket" "test-bucket" {
   bucket = "test-bucket"
 
@@ -472,30 +472,30 @@ resource "aws_s3_bucket" "test-bucket" {
   }
 }
 `,
-            matchSpec: testAssignVariableMatchSpec,
-            expected:  false,
-        },
-    }
+			matchSpec: testAssignVariableMatchSpec,
+			expected:  false,
+		},
+	}
 
-    for _, test := range tests {
-        t.Run(test.name, func(t *testing.T) {
-            block := ParseFromSource(test.source)[0].GetBlocks()[0]
-            result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
-            assert.Equal(t, test.expected, result, "processing variable assignments incorrectly.")
-        })
-    }
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
+			assert.Equal(t, test.expected, result, "processing variable assignments incorrectly.")
+		})
+	}
 }
 
 func TestRegexMatches(t *testing.T) {
-    var tests = []struct {
-        name               string
-        source             string
-        predicateMatchSpec MatchSpec
-        expected           bool
-    }{
-        {
-            name: "check `regexMatches` in pass case",
-            source: `
+	var tests = []struct {
+		name               string
+		source             string
+		predicateMatchSpec MatchSpec
+		expected           bool
+	}{
+		{
+			name: "check `regexMatches` in pass case",
+			source: `
 resource "google_compute_instance" "default" {
   name         = "test_instance_name"
   machine_type = "e2-medium"
@@ -503,16 +503,16 @@ resource "google_compute_instance" "default" {
   zone         = "europe-west3-a"
 }
 `,
-            predicateMatchSpec: MatchSpec{
-                Name:       "name",
-                Action:     "regexMatches",
-                MatchValue: "^test_.*$",
-            },
-            expected: true,
-        },
-        {
-            name: "check `regexMatches` in regex-not-matching fail case",
-            source: `
+			predicateMatchSpec: MatchSpec{
+				Name:       "name",
+				Action:     "regexMatches",
+				MatchValue: "^test_.*$",
+			},
+			expected: true,
+		},
+		{
+			name: "check `regexMatches` in regex-not-matching fail case",
+			source: `
 resource "google_compute_instance" "default" {
   name         = "wrong_test_instance_name"
   machine_type = "e2-medium"
@@ -520,16 +520,16 @@ resource "google_compute_instance" "default" {
   zone         = "europe-west3-a"
 }
 `,
-            predicateMatchSpec: MatchSpec{
-                Name:       "name",
-                Action:     "regexMatches",
-                MatchValue: "^test_.*$",
-            },
-            expected: false,
-        },
-        {
-            name: "check `regexMatches` in attribute-not-found fail case",
-            source: `
+			predicateMatchSpec: MatchSpec{
+				Name:       "name",
+				Action:     "regexMatches",
+				MatchValue: "^test_.*$",
+			},
+			expected: false,
+		},
+		{
+			name: "check `regexMatches` in attribute-not-found fail case",
+			source: `
 resource "google_compute_instance" "default" {
   name         = "wrong_test_instance_name"
   machine_type = "e2-medium"
@@ -537,275 +537,275 @@ resource "google_compute_instance" "default" {
   zone         = "europe-west3-a"
 }
 `,
-            predicateMatchSpec: MatchSpec{
-                Name:       "not-name",
-                Action:     "regexMatches",
-                MatchValue: "^test_.*$",
-            },
-            expected: false,
-        },
-    }
-    for _, test := range tests {
-        t.Run(test.name, func(t *testing.T) {
-            block := ParseFromSource(test.source)[0].GetBlocks()[0]
-            result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
-            assert.Equal(t, result, test.expected, "`regexMatches` match function evaluating incorrectly.")
-        })
-    }
+			predicateMatchSpec: MatchSpec{
+				Name:       "not-name",
+				Action:     "regexMatches",
+				MatchValue: "^test_.*$",
+			},
+			expected: false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
+			assert.Equal(t, result, test.expected, "`regexMatches` match function evaluating incorrectly.")
+		})
+	}
 }
 
 func TestAttributeSubMatches(t *testing.T) {
-    var tests = []struct {
-        name      string
-        source    string
-        matchSpec MatchSpec
-        expected  bool
-    }{
-        {
-            name: "check that lack of subMatches should pass",
-            source: `
+	var tests = []struct {
+		name      string
+		source    string
+		matchSpec MatchSpec
+		expected  bool
+	}{
+		{
+			name: "check that lack of subMatches should pass",
+			source: `
 resource "aws_instance" "foo" {
   tags = {
     Name = "tf-example"
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-            },
-            expected: true,
-        },
-        {
-            name: "check that a true `isPresent` map attribute subMatch should pass",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+			},
+			expected: true,
+		},
+		{
+			name: "check that a true `isPresent` map attribute subMatch should pass",
+			source: `
 resource "aws_instance" "foo" {
   tags = {
     Name = "tf-example"
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Name:   "Name",
-                    Action: "isPresent",
-                },
-            },
-            expected: true,
-        },
-        {
-            name: "check that a true `equals` map attribute subMatch should pass",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:   "Name",
+					Action: "isPresent",
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a true `equals` map attribute subMatch should pass",
+			source: `
 resource "aws_instance" "foo" {
   tags = {
     Name = "tf-example"
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Name:       "Name",
-                    Action:     "equals",
-                    MatchValue: "tf-example",
-                },
-            },
-            expected: true,
-        },
-        {
-            name: "check that a false map attribute subMatch should fail",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "Name",
+					Action:     "equals",
+					MatchValue: "tf-example",
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a false map attribute subMatch should fail",
+			source: `
 resource "aws_instance" "foo" {
   tags = {
     Name = "tf-example"
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Name:   "WrongName",
-                    Action: "isPresent",
-                },
-            },
-            expected: false,
-        },
-        {
-            name: "check that a not supported attribute subMatch should fail",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:   "WrongName",
+					Action: "isPresent",
+				},
+			},
+			expected: false,
+		},
+		{
+			name: "check that a not supported attribute subMatch should fail",
+			source: `
 resource "aws_instance" "foo" {
   tags = {
     Name = "tf-example"
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Name:   "Name",
-                    Action: "emptyAction",
-                },
-            },
-            expected: false,
-        },
-        {
-            name: "check that a truey numeric comparison in attribute subMatch should pass",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:   "Name",
+					Action: "emptyAction",
+				},
+			},
+			expected: false,
+		},
+		{
+			name: "check that a truey numeric comparison in attribute subMatch should pass",
+			source: `
 resource "aws_instance" "foo" {
   tags = {
     InvalidButForTestingTag = 30
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Name:       "InvalidButForTestingTag",
-                    Action:     "lessThan",
-                    MatchValue: 10000,
-                },
-            },
-            expected: true,
-        },
-        {
-            name: "check that a fasley numeric comparison in attribute subMatch should fail",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "InvalidButForTestingTag",
+					Action:     "lessThan",
+					MatchValue: 10000,
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a fasley numeric comparison in attribute subMatch should fail",
+			source: `
 resource "aws_instance" "foo" {
   tags = {
     InvalidButForTestingTag = 30
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Name:       "InvalidButForTestingTag",
-                    Action:     "greaterThan",
-                    MatchValue: 10000,
-                },
-            },
-            expected: false,
-        },
-        {
-            name: "check that a truey `not` action in attribute subMatch should pass",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "InvalidButForTestingTag",
+					Action:     "greaterThan",
+					MatchValue: 10000,
+				},
+			},
+			expected: false,
+		},
+		{
+			name: "check that a truey `not` action in attribute subMatch should pass",
+			source: `
 resource "aws_instance" "foo" {
   tags = {
     Name = "Creator"
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Action: "not",
-                    PredicateMatchSpec: []MatchSpec{
-                        {
-                            Name:       "Name",
-                            Action:     "equals",
-                            MatchValue: "Blah",
-                        },
-                    },
-                },
-            },
-            expected: true,
-        },
-        {
-            name: "check that a falsey `not` action in attribute subMatch should fail",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Action: "not",
+					PredicateMatchSpec: []MatchSpec{
+						{
+							Name:       "Name",
+							Action:     "equals",
+							MatchValue: "Blah",
+						},
+					},
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a falsey `not` action in attribute subMatch should fail",
+			source: `
 resource "aws_instance" "foo" {
   tags = {
     Name = "Creator"
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Action: "not",
-                    PredicateMatchSpec: []MatchSpec{
-                        {
-                            Name:       "Name",
-                            Action:     "equals",
-                            MatchValue: "Creator",
-                        },
-                    },
-                },
-            },
-            expected: false,
-        },
-        {
-            name: "check that a truey `and` action in attribute subMatch should pass",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Action: "not",
+					PredicateMatchSpec: []MatchSpec{
+						{
+							Name:       "Name",
+							Action:     "equals",
+							MatchValue: "Creator",
+						},
+					},
+				},
+			},
+			expected: false,
+		},
+		{
+			name: "check that a truey `and` action in attribute subMatch should pass",
+			source: `
 resource "aws_instance" "foo" {
   tags = {
     Name = "Creator"
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Action: "and",
-                    PredicateMatchSpec: []MatchSpec{
-                        {
-                            Name:       "Name",
-                            Action:     "equals",
-                            MatchValue: "Creator",
-                        },
-                        {
-                            Name:       "Name",
-                            Action:     "notEqual",
-                            MatchValue: "WrongValue",
-                        },
-                    },
-                },
-            },
-            expected: true,
-        },
-        {
-            name: "check that a falsey `and` action in attribute subMatch should fail",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Action: "and",
+					PredicateMatchSpec: []MatchSpec{
+						{
+							Name:       "Name",
+							Action:     "equals",
+							MatchValue: "Creator",
+						},
+						{
+							Name:       "Name",
+							Action:     "notEqual",
+							MatchValue: "WrongValue",
+						},
+					},
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a falsey `and` action in attribute subMatch should fail",
+			source: `
 resource "aws_instance" "foo" {
   tags = {
     Name = "Creator"
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Action: "and",
-                    PredicateMatchSpec: []MatchSpec{
-                        {
-                            Name:       "Name",
-                            Action:     "equals",
-                            MatchValue: "Creator",
-                        },
-                        {
-                            Name:       "Name",
-                            Action:     "equals",
-                            MatchValue: "WrongValue",
-                        },
-                    },
-                },
-            },
-            expected: false,
-        },
-        {
-            name: "check that a false attribute subMatch with non-matching preconditions should pass",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Action: "and",
+					PredicateMatchSpec: []MatchSpec{
+						{
+							Name:       "Name",
+							Action:     "equals",
+							MatchValue: "Creator",
+						},
+						{
+							Name:       "Name",
+							Action:     "equals",
+							MatchValue: "WrongValue",
+						},
+					},
+				},
+			},
+			expected: false,
+		},
+		{
+			name: "check that a false attribute subMatch with non-matching preconditions should pass",
+			source: `
 resource "aws_instance" "foo" {
   name = "just-a-name"
   tags = {
@@ -813,27 +813,27 @@ resource "aws_instance" "foo" {
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Name:       "Name",
-                    Action:     "equals",
-                    MatchValue: "wrong-value",
-                },
-                PreConditions: []MatchSpec{
-                    {
-                        Name:       "name",
-                        Action:     "equals",
-                        MatchValue: "another-name",
-                    },
-                },
-            },
-            expected: true,
-        },
-        {
-            name: "check that a false attribute subMatch with matching preconditions should fail",
-            source: `
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "Name",
+					Action:     "equals",
+					MatchValue: "wrong-value",
+				},
+				PreConditions: []MatchSpec{
+					{
+						Name:       "name",
+						Action:     "equals",
+						MatchValue: "another-name",
+					},
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "check that a false attribute subMatch with matching preconditions should fail",
+			source: `
 resource "aws_instance" "foo" {
   name = "just-a-name"
   tags = {
@@ -841,174 +841,174 @@ resource "aws_instance" "foo" {
   }
 }
 `,
-            matchSpec: MatchSpec{
-                Name:   "tags",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Name:       "Name",
-                    Action:     "equals",
-                    MatchValue: "wrong-value",
-                },
-                PreConditions: []MatchSpec{
-                    {
-                        Name:       "name",
-                        Action:     "equals",
-                        MatchValue: "just-a-name",
-                    },
-                },
-            },
-            expected: false,
-        },
-    }
-    for _, test := range tests {
-        t.Run(test.name, func(t *testing.T) {
-            block := ParseFromSource(test.source)[0].GetBlocks()[0]
-            result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
-            assert.Equal(t, result, test.expected, "subMatch evaluation function for attributes behaving incorrectly.")
-        })
-    }
+			matchSpec: MatchSpec{
+				Name:   "tags",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "Name",
+					Action:     "equals",
+					MatchValue: "wrong-value",
+				},
+				PreConditions: []MatchSpec{
+					{
+						Name:       "name",
+						Action:     "equals",
+						MatchValue: "just-a-name",
+					},
+				},
+			},
+			expected: false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
+			assert.Equal(t, result, test.expected, "subMatch evaluation function for attributes behaving incorrectly.")
+		})
+	}
 }
 
 func TestSubMatchOnes(t *testing.T) {
-    var tests = []struct {
-        name      string
-        source    string
-        matchSpec MatchSpec
-        expected  bool
-    }{
-        {
-            name:   "check `subMatchOne` in `subMatch`-only pass case",
-            source: testSubMatchOnesSource,
-            matchSpec: MatchSpec{
-                Name:   "replica",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Name:   "region_name",
-                    Action: "isPresent",
-                },
-            },
-            expected: true,
-        },
-        {
-            name:   "check `subMatchOne` in `subMatch`-only fail case",
-            source: testSubMatchOnesSource,
-            matchSpec: MatchSpec{
-                Name:   "replica",
-                Action: "isPresent",
-                SubMatch: &MatchSpec{
-                    Name:       "region_name",
-                    Action:     "equals",
-                    MatchValue: "us-east-2",
-                },
-            },
-            expected: false,
-        },
-        {
-            name:   "check `subMatchOne` in basic pass case",
-            source: testSubMatchOnesSource,
-            matchSpec: MatchSpec{
-                Name:   "replica",
-                Action: "isPresent",
-                SubMatchOne: &MatchSpec{
-                    Name:       "region_name",
-                    Action:     "equals",
-                    MatchValue: "us-east-2",
-                },
-            },
-            expected: true,
-        },
-        {
-            name:   "check `subMatchOne` in multiple matches fail case",
-            source: testSubMatchOnesSource,
-            matchSpec: MatchSpec{
-                Name:   "replica",
-                Action: "isPresent",
-                SubMatchOne: &MatchSpec{
-                    Name:       "region_name",
-                    Action:     "endsWith",
-                    MatchValue: "-2",
-                },
-            },
-            expected: false,
-        },
-        {
-            name:   "check `subMatchOne` in no match fail case",
-            source: testSubMatchOnesSource,
-            matchSpec: MatchSpec{
-                Name:   "replica",
-                Action: "isPresent",
-                SubMatchOne: &MatchSpec{
-                    Name:       "region_name",
-                    Action:     "equals",
-                    MatchValue: "null-region",
-                },
-            },
-            expected: false,
-        },
-    }
-    for _, test := range tests {
-        t.Run(test.name, func(t *testing.T) {
-            block := ParseFromSource(test.source)[0].GetBlocks()[0]
-            result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
-            assert.Equal(t, result, test.expected, "`subMatchOne` handling function evaluating incorrectly.")
-        })
-    }
+	var tests = []struct {
+		name      string
+		source    string
+		matchSpec MatchSpec
+		expected  bool
+	}{
+		{
+			name:   "check `subMatchOne` in `subMatch`-only pass case",
+			source: testSubMatchOnesSource,
+			matchSpec: MatchSpec{
+				Name:   "replica",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:   "region_name",
+					Action: "isPresent",
+				},
+			},
+			expected: true,
+		},
+		{
+			name:   "check `subMatchOne` in `subMatch`-only fail case",
+			source: testSubMatchOnesSource,
+			matchSpec: MatchSpec{
+				Name:   "replica",
+				Action: "isPresent",
+				SubMatch: &MatchSpec{
+					Name:       "region_name",
+					Action:     "equals",
+					MatchValue: "us-east-2",
+				},
+			},
+			expected: false,
+		},
+		{
+			name:   "check `subMatchOne` in basic pass case",
+			source: testSubMatchOnesSource,
+			matchSpec: MatchSpec{
+				Name:   "replica",
+				Action: "isPresent",
+				SubMatchOne: &MatchSpec{
+					Name:       "region_name",
+					Action:     "equals",
+					MatchValue: "us-east-2",
+				},
+			},
+			expected: true,
+		},
+		{
+			name:   "check `subMatchOne` in multiple matches fail case",
+			source: testSubMatchOnesSource,
+			matchSpec: MatchSpec{
+				Name:   "replica",
+				Action: "isPresent",
+				SubMatchOne: &MatchSpec{
+					Name:       "region_name",
+					Action:     "endsWith",
+					MatchValue: "-2",
+				},
+			},
+			expected: false,
+		},
+		{
+			name:   "check `subMatchOne` in no match fail case",
+			source: testSubMatchOnesSource,
+			matchSpec: MatchSpec{
+				Name:   "replica",
+				Action: "isPresent",
+				SubMatchOne: &MatchSpec{
+					Name:       "region_name",
+					Action:     "equals",
+					MatchValue: "null-region",
+				},
+			},
+			expected: false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
+			assert.Equal(t, result, test.expected, "`subMatchOne` handling function evaluating incorrectly.")
+		})
+	}
 }
 
 func givenCheck(jsonContent string) {
-    var checksfile ChecksFile
-    err := json.NewDecoder(strings.NewReader(jsonContent)).Decode(&checksfile)
-    if err != nil {
-        panic(err)
-    }
-    ProcessFoundChecks(checksfile)
+	var checksfile ChecksFile
+	err := json.NewDecoder(strings.NewReader(jsonContent)).Decode(&checksfile)
+	if err != nil {
+		panic(err)
+	}
+	ProcessFoundChecks(checksfile)
 }
 
 func scanTerraform(t *testing.T, mainTf string) []rules.Result {
-    dirName, err := ioutil.TempDir("", "tfsec-testing-")
-    assert.NoError(t, err)
+	dirName, err := ioutil.TempDir("", "tfsec-testing-")
+	assert.NoError(t, err)
 
-    err = ioutil.WriteFile(fmt.Sprintf("%s/%s", dirName, "main.tf"), []byte(mainTf), os.ModePerm)
-    assert.NoError(t, err)
+	err = ioutil.WriteFile(fmt.Sprintf("%s/%s", dirName, "main.tf"), []byte(mainTf), os.ModePerm)
+	assert.NoError(t, err)
 
-    p := parser.New(parser.OptionStopOnHCLError())
-    if err := p.ParseDirectory(dirName); err != nil {
-        panic(err)
-    }
-    modules, _, err := p.EvaluateAll()
-    if err != nil {
-        panic(err)
-    }
+	p := parser.New(parser.OptionStopOnHCLError())
+	if err := p.ParseDirectory(dirName); err != nil {
+		panic(err)
+	}
+	modules, _, err := p.EvaluateAll()
+	if err != nil {
+		panic(err)
+	}
 
-    res, _ := scanner.New(scanner.OptionStopOnErrors()).Scan(modules)
-    return res
+	res, _ := scanner.New(scanner.OptionStopOnErrors()).Scan(modules)
+	return res
 }
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.
 // TODO: Extract into a testing utility package once the amount of duplication justifies introducing an extra package.
 func ParseFromSource(source string) terraform.Modules {
-    path := createTestFile("test.tf", source)
-    p := parser.New(parser.OptionStopOnHCLError())
-    if err := p.ParseDirectory(filepath.Dir(path)); err != nil {
-        panic(err)
-    }
-    modules, _, err := p.EvaluateAll()
-    if err != nil {
-        panic(err)
-    }
-    return modules
+	path := createTestFile("test.tf", source)
+	p := parser.New(parser.OptionStopOnHCLError())
+	if err := p.ParseDirectory(filepath.Dir(path)); err != nil {
+		panic(err)
+	}
+	modules, _, err := p.EvaluateAll()
+	if err != nil {
+		panic(err)
+	}
+	return modules
 }
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.
 // TODO: Extract into a testing utility package once the amount of duplication justifies introducing an extra package.
 func createTestFile(filename, contents string) string {
-    dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
-    if err != nil {
-        panic(err)
-    }
-    path := filepath.Join(dir, filename)
-    if err := ioutil.WriteFile(path, []byte(contents), 0600); err != nil {
-        panic(err)
-    }
-    return path
+	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
+	if err != nil {
+		panic(err)
+	}
+	path := filepath.Join(dir, filename)
+	if err := ioutil.WriteFile(path, []byte(contents), 0600); err != nil {
+		panic(err)
+	}
+	return path
 }
