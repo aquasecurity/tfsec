@@ -253,6 +253,8 @@ func ProcessFoundChecks(checks ChecksFile) {
 							fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage),
 							rootBlock,
 						)
+					} else {
+						results.AddPassed(rootBlock)
 					}
 					return
 				},
