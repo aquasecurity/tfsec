@@ -4,11 +4,6 @@ go 1.17
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.2
-	github.com/apparentlymart/go-cidr v1.1.0
-	github.com/bmatcuk/doublestar v1.3.4
-	github.com/google/go-cmp v0.5.7
-	github.com/google/uuid v1.3.0
-	github.com/hashicorp/go-uuid v1.0.2
 	github.com/aquasecurity/defsec v0.7.3-0.20220210143534-055fbf888ce4
 	github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210150016-5f1669ec78e9
 	github.com/hashicorp/go-version v1.4.0
@@ -36,14 +31,12 @@ require (
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.3.1 // indirect
 	github.com/go-git/go-git/v5 v5.4.2 // indirect
-	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/go-uuid v1.0.2 // indirect
 	github.com/hashicorp/hcl/v2 v2.11.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
-	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/liamg/clinch v1.5.6 // indirect
 	github.com/liamg/gifwrap v0.0.6 // indirect
 	github.com/liamg/iamgo v0.0.2 // indirect

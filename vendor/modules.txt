@@ -344,8 +344,6 @@ github.com/go-git/go-git/v5/utils/ioutil
 github.com/go-git/go-git/v5/utils/merkletrie
 github.com/go-git/go-git/v5/utils/merkletrie/internal/frame
 github.com/go-git/go-git/v5/utils/merkletrie/noder
-# github.com/google/go-cmp v0.5.7
-## explicit; go 1.11
 # github.com/google/uuid v1.3.0
 ## explicit
 github.com/google/uuid
@@ -377,8 +375,6 @@ github.com/jbenet/go-context/io
 # github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 ## explicit
 github.com/kballard/go-shellquote
-# github.com/kylelemons/godebug v1.1.0
-## explicit; go 1.11
 # github.com/liamg/clinch v1.5.6
 ## explicit; go 1.13
 github.com/liamg/clinch/terminal
