@@ -51,7 +51,10 @@ func New(hclBlock *hcl.Block, ctx *Context, moduleBlock *Block, parentBlock *Blo
 	)
 
 	var parts []string
-	if hclBlock.Type != "resource" {
+	// if there are no labels then use the block type
+	// this is for the case where "special" keywords like "resource" are used
+	// as normal block names in top level blocks - see issue #1528 for an example
+	if hclBlock.Type != "resource" || len(hclBlock.Labels) == 0 {
 		parts = append(parts, hclBlock.Type)
 	}
 	parts = append(parts, hclBlock.Labels...)
@@ -78,6 +81,18 @@ func New(hclBlock *hcl.Block, ctx *Context, moduleBlock *Block, parentBlock *Blo
 		metadata:    metadata,
 	}
 
+	children := getChildren(hclBlock, ctx, moduleBlock, b)
+
+	b.childBlocks = children
+
+	for _, attr := range b.createAttributes() {
+		b.attributes = append(b.attributes, NewAttribute(attr, ctx, moduleName, metadata, ref))
+	}
+
+	return &b
+}
+
+func getChildren(hclBlock *hcl.Block, ctx *Context, moduleBlock *Block, b Block) Blocks {
 	var children Blocks
 	switch body := hclBlock.Body.(type) {
 	case *hclsyntax.Body:
@@ -92,14 +107,7 @@ func New(hclBlock *hcl.Block, ctx *Context, moduleBlock *Block, parentBlock *Blo
 			}
 		}
 	}
-
-	b.childBlocks = children
-
-	for _, attr := range b.createAttributes() {
-		b.attributes = append(b.attributes, NewAttribute(attr, ctx, moduleName, metadata, ref))
-	}
-
-	return &b
+	return children
 }
 
 func (b *Block) ID() string {
