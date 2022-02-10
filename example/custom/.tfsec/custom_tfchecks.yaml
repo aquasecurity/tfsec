@@ -27,7 +27,7 @@ checks:
       subMatch:
         name: enabled
         action: equals
-        value: 'true'
+        value: true
     errorMessage: The versioning block requires enabled attribute
     relatedLinks:
       - http://internal.acmecorp.com/standards/aws/tagging.html
