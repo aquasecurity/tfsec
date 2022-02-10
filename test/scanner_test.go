@@ -13,10 +13,10 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/aquasecurity/defsec/severity"
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
-	"github.com/aquasecurity/tfsec/internal/pkg/parser"
 	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
 	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/aquasecurity/trivy-config-parsers/terraform"
+	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 )
 
 var panicRule = rule.Rule{
@@ -31,7 +31,7 @@ var panicRule = rule.Rule{
 	),
 	RequiredTypes:  []string{"resource"},
 	RequiredLabels: []string{"problem"},
-	CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
+	CheckTerraform: func(resourceBlock *terraform.Block, _ *terraform.Module) (results rules.Results) {
 		if resourceBlock.GetAttribute("panic").IsTrue() {
 			panic("This is fine")
 		}
@@ -53,10 +53,12 @@ resource "problem" "this" {
 	panic = true
 }
 `))
-
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError())
+	err = p.ParseDirectory(fs.RealPath("/project"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _ := scanner.New().Scan(modules)
 	testutil.AssertRuleNotFound(t, panicRule.ID(), results, "")
 }
 
@@ -75,9 +77,12 @@ resource "problem" "this" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError())
+	err = p.ParseDirectory(fs.RealPath("/project"))
 	require.NoError(t, err)
-	_, err = scanner.New(scanner.OptionStopOnErrors()).Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	_, err = scanner.New(scanner.OptionStopOnErrors()).Scan(modules)
 	assert.Error(t, err)
 }
 
@@ -96,9 +101,12 @@ resource "problem" "this" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError())
+	err = p.ParseDirectory(fs.RealPath("/project"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _ := scanner.New().Scan(modules)
 	testutil.AssertRuleNotFound(t, panicRule.ID(), results, "")
 }
 
@@ -117,9 +125,12 @@ resource "problem" "this" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError())
+	err = p.ParseDirectory(fs.RealPath("/project"))
+	require.NoError(t, err)
+	modules, _, err := p.EvaluateAll()
 	require.NoError(t, err)
 
-	_, err = scanner.New(scanner.OptionStopOnErrors()).Scan(blocks)
+	_, err = scanner.New(scanner.OptionStopOnErrors()).Scan(modules)
 	assert.Error(t, err)
 }

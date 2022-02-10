@@ -12,7 +12,7 @@ import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
+	"github.com/aquasecurity/trivy-config-parsers/terraform"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
@@ -31,7 +31,7 @@ var exampleRule = rule.Rule{
 		Severity:  severity.High,
 	}, nil),
 	RequiredLabels: []string{"bad"},
-	CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
+	CheckTerraform: func(resourceBlock *terraform.Block, _ *terraform.Module) (results rules.Results) {
 		attr := resourceBlock.GetAttribute("secure")
 		if attr.IsNil() {
 			results.Add("example problem", resourceBlock)
@@ -272,7 +272,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 			Severity:  severity.High,
 		}, nil),
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
+		CheckTerraform: func(resourceBlock *terraform.Block, _ *terraform.Module) (results rules.Results) {
 			results.Add(
 				"example problem",
 				resourceBlock,

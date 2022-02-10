@@ -1,6 +1,6 @@
 package oracle
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type Oracle struct {
 	types.Metadata

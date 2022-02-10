@@ -1,6 +1,6 @@
 package rds
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type RDS struct {
 	types.Metadata
@@ -43,52 +43,4 @@ type PerformanceInsights struct {
 	types.Metadata
 	Enabled  types.BoolValue
 	KMSKeyID types.StringValue
-}
-
-func (c *Cluster) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *Cluster) GetRawValue() interface{} {
-	return nil
-}
-
-func (i *Instance) GetMetadata() *types.Metadata {
-	return &i.Metadata
-}
-
-func (i *Instance) GetRawValue() interface{} {
-	return nil
-}
-
-func (i *ClusterInstance) GetMetadata() *types.Metadata {
-	return &i.Metadata
-}
-
-func (i *ClusterInstance) GetRawValue() interface{} {
-	return nil
-}
-
-func (r *RDS) GetMetadata() *types.Metadata {
-	return &r.Metadata
-}
-
-func (r *RDS) GetRawValue() interface{} {
-	return nil
-}
-
-func (e *Encryption) GetMetadata() *types.Metadata {
-	return &e.Metadata
-}
-
-func (e *Encryption) GetRawValue() interface{} {
-	return nil
-}
-
-func (p *PerformanceInsights) GetMetadata() *types.Metadata {
-	return &p.Metadata
-}
-
-func (p *PerformanceInsights) GetRawValue() interface{} {
-	return nil
 }

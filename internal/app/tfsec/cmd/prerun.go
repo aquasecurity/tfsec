@@ -6,8 +6,9 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/debug"
 	"github.com/aquasecurity/tfsec/internal/pkg/ignores"
+
+	"github.com/aquasecurity/tfsec/internal/pkg/debug"
 	"github.com/aquasecurity/tfsec/internal/pkg/updater"
 	"github.com/aquasecurity/tfsec/version"
 	"github.com/liamg/tml"

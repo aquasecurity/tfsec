@@ -1,7 +1,7 @@
 package sam
 
 import (
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/trivy-config-parsers/types"
 )
 
 type Function struct {
@@ -21,20 +21,4 @@ type Permission struct {
 	types.Metadata
 	Principal types.StringValue
 	SourceARN types.StringValue
-}
-
-func (c *Function) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *Function) GetRawValue() interface{} {
-	return nil
-}
-
-func (c *Permission) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *Permission) GetRawValue() interface{} {
-	return nil
 }

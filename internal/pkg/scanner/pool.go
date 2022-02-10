@@ -7,19 +7,19 @@ import (
 
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/state"
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
 	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
 type Pool struct {
 	size         int
-	modules      block.Modules
+	modules      terraform.Modules
 	state        *state.State
 	rules        []rule.Rule
 	ignoreErrors bool
 }
 
-func NewPool(size int, rules []rule.Rule, modules block.Modules, state *state.State, ignoreErrors bool) *Pool {
+func NewPool(size int, rules []rule.Rule, modules terraform.Modules, state *state.State, ignoreErrors bool) *Pool {
 	return &Pool{
 		size:         size,
 		rules:        rules,
@@ -86,7 +86,7 @@ type infraRuleJob struct {
 }
 
 type hclModuleRuleJob struct {
-	module       *block.Module
+	module       *terraform.Module
 	rule         rule.Rule
 	ignoreErrors bool
 }

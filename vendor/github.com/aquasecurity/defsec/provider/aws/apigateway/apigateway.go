@@ -1,6 +1,6 @@
 package apigateway
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type APIGateway struct {
 	types.Metadata
@@ -62,60 +62,4 @@ type DomainName struct {
 	Name           types.StringValue
 	Version        types.IntValue
 	SecurityPolicy types.StringValue
-}
-
-func (a *API) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *API) GetRawValue() interface{} {
-	return nil
-}
-
-func (s *Stage) GetMetadata() *types.Metadata {
-	return &s.Metadata
-}
-
-func (s *Stage) GetRawValue() interface{} {
-	return nil
-}
-
-func (m *RESTMethod) GetMetadata() *types.Metadata {
-	return &m.Metadata
-}
-
-func (m *RESTMethod) GetRawValue() interface{} {
-	return nil
-}
-
-func (d *DomainName) GetMetadata() *types.Metadata {
-	return &d.Metadata
-}
-
-func (d *DomainName) GetRawValue() interface{} {
-	return nil
-}
-
-func (a *APIGateway) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *APIGateway) GetRawValue() interface{} {
-	return nil
-}
-
-func (a *AccessLogging) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *AccessLogging) GetRawValue() interface{} {
-	return nil
-}
-
-func (r *RESTMethodSettings) GetMetadata() *types.Metadata {
-	return &r.Metadata
-}
-
-func (r *RESTMethodSettings) GetRawValue() interface{} {
-	return nil
 }

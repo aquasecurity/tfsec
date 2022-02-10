@@ -1,6 +1,6 @@
 package kubernetes
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type Kubernetes struct {
 	types.Metadata

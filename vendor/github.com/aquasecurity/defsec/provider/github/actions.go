@@ -1,6 +1,6 @@
 package github
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type Action struct {
 	types.Metadata
@@ -14,12 +14,4 @@ type EnvironmentSecret struct {
 	SecretName     types.StringValue
 	PlainTextValue types.StringValue
 	EncryptedValue types.StringValue
-}
-
-func (a *EnvironmentSecret) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *EnvironmentSecret) GetRawValue() interface{} {
-	return nil
 }

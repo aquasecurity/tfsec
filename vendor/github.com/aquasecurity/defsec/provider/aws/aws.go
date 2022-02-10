@@ -36,7 +36,7 @@ import (
 	"github.com/aquasecurity/defsec/provider/aws/ssm"
 	"github.com/aquasecurity/defsec/provider/aws/vpc"
 	"github.com/aquasecurity/defsec/provider/aws/workspaces"
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/trivy-config-parsers/types"
 )
 
 type AWS struct {

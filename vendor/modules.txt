@@ -33,8 +33,78 @@ github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
 ## explicit; go 1.16
 github.com/apparentlymart/go-textseg/v13/textseg
-# github.com/aquasecurity/defsec v0.7.2
+# github.com/aquasecurity/defsec v0.7.3-0.20220210143534-055fbf888ce4
 ## explicit; go 1.17
+github.com/aquasecurity/defsec/adapters/terraform
+github.com/aquasecurity/defsec/adapters/terraform/aws
+github.com/aquasecurity/defsec/adapters/terraform/aws/apigateway
+github.com/aquasecurity/defsec/adapters/terraform/aws/athena
+github.com/aquasecurity/defsec/adapters/terraform/aws/autoscaling
+github.com/aquasecurity/defsec/adapters/terraform/aws/cloudfront
+github.com/aquasecurity/defsec/adapters/terraform/aws/cloudtrail
+github.com/aquasecurity/defsec/adapters/terraform/aws/cloudwatch
+github.com/aquasecurity/defsec/adapters/terraform/aws/codebuild
+github.com/aquasecurity/defsec/adapters/terraform/aws/config
+github.com/aquasecurity/defsec/adapters/terraform/aws/documentdb
+github.com/aquasecurity/defsec/adapters/terraform/aws/dynamodb
+github.com/aquasecurity/defsec/adapters/terraform/aws/ebs
+github.com/aquasecurity/defsec/adapters/terraform/aws/ec2
+github.com/aquasecurity/defsec/adapters/terraform/aws/ecr
+github.com/aquasecurity/defsec/adapters/terraform/aws/ecs
+github.com/aquasecurity/defsec/adapters/terraform/aws/efs
+github.com/aquasecurity/defsec/adapters/terraform/aws/eks
+github.com/aquasecurity/defsec/adapters/terraform/aws/elasticache
+github.com/aquasecurity/defsec/adapters/terraform/aws/elasticsearch
+github.com/aquasecurity/defsec/adapters/terraform/aws/elb
+github.com/aquasecurity/defsec/adapters/terraform/aws/iam
+github.com/aquasecurity/defsec/adapters/terraform/aws/kinesis
+github.com/aquasecurity/defsec/adapters/terraform/aws/kms
+github.com/aquasecurity/defsec/adapters/terraform/aws/lambda
+github.com/aquasecurity/defsec/adapters/terraform/aws/mq
+github.com/aquasecurity/defsec/adapters/terraform/aws/msk
+github.com/aquasecurity/defsec/adapters/terraform/aws/neptune
+github.com/aquasecurity/defsec/adapters/terraform/aws/rds
+github.com/aquasecurity/defsec/adapters/terraform/aws/redshift
+github.com/aquasecurity/defsec/adapters/terraform/aws/s3
+github.com/aquasecurity/defsec/adapters/terraform/aws/sns
+github.com/aquasecurity/defsec/adapters/terraform/aws/sqs
+github.com/aquasecurity/defsec/adapters/terraform/aws/ssm
+github.com/aquasecurity/defsec/adapters/terraform/aws/vpc
+github.com/aquasecurity/defsec/adapters/terraform/aws/workspaces
+github.com/aquasecurity/defsec/adapters/terraform/azure
+github.com/aquasecurity/defsec/adapters/terraform/azure/appservice
+github.com/aquasecurity/defsec/adapters/terraform/azure/authorization
+github.com/aquasecurity/defsec/adapters/terraform/azure/compute
+github.com/aquasecurity/defsec/adapters/terraform/azure/container
+github.com/aquasecurity/defsec/adapters/terraform/azure/database
+github.com/aquasecurity/defsec/adapters/terraform/azure/datafactory
+github.com/aquasecurity/defsec/adapters/terraform/azure/datalake
+github.com/aquasecurity/defsec/adapters/terraform/azure/keyvault
+github.com/aquasecurity/defsec/adapters/terraform/azure/monitor
+github.com/aquasecurity/defsec/adapters/terraform/azure/network
+github.com/aquasecurity/defsec/adapters/terraform/azure/securitycenter
+github.com/aquasecurity/defsec/adapters/terraform/azure/storage
+github.com/aquasecurity/defsec/adapters/terraform/azure/synapse
+github.com/aquasecurity/defsec/adapters/terraform/cloudstack
+github.com/aquasecurity/defsec/adapters/terraform/cloudstack/compute
+github.com/aquasecurity/defsec/adapters/terraform/digitalocean
+github.com/aquasecurity/defsec/adapters/terraform/digitalocean/compute
+github.com/aquasecurity/defsec/adapters/terraform/digitalocean/spaces
+github.com/aquasecurity/defsec/adapters/terraform/github
+github.com/aquasecurity/defsec/adapters/terraform/github/repositories
+github.com/aquasecurity/defsec/adapters/terraform/github/secrets
+github.com/aquasecurity/defsec/adapters/terraform/google
+github.com/aquasecurity/defsec/adapters/terraform/google/bigquery
+github.com/aquasecurity/defsec/adapters/terraform/google/compute
+github.com/aquasecurity/defsec/adapters/terraform/google/dns
+github.com/aquasecurity/defsec/adapters/terraform/google/gke
+github.com/aquasecurity/defsec/adapters/terraform/google/iam
+github.com/aquasecurity/defsec/adapters/terraform/google/kms
+github.com/aquasecurity/defsec/adapters/terraform/google/sql
+github.com/aquasecurity/defsec/adapters/terraform/google/storage
+github.com/aquasecurity/defsec/adapters/terraform/kubernetes
+github.com/aquasecurity/defsec/adapters/terraform/openstack
+github.com/aquasecurity/defsec/adapters/terraform/oracle
 github.com/aquasecurity/defsec/cidr
 github.com/aquasecurity/defsec/formatters
 github.com/aquasecurity/defsec/loader
@@ -177,7 +247,13 @@ github.com/aquasecurity/defsec/rules/oracle/compute
 github.com/aquasecurity/defsec/security
 github.com/aquasecurity/defsec/severity
 github.com/aquasecurity/defsec/state
-github.com/aquasecurity/defsec/types
+# github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210144846-39bbe34edd59
+## explicit; go 1.17
+github.com/aquasecurity/trivy-config-parsers/terraform
+github.com/aquasecurity/trivy-config-parsers/terraform/context
+github.com/aquasecurity/trivy-config-parsers/terraform/parser
+github.com/aquasecurity/trivy-config-parsers/terraform/parser/funcs
+github.com/aquasecurity/trivy-config-parsers/types
 # github.com/bmatcuk/doublestar v1.3.4
 ## explicit; go 1.12
 github.com/bmatcuk/doublestar
@@ -270,11 +346,6 @@ github.com/go-git/go-git/v5/utils/merkletrie/internal/frame
 github.com/go-git/go-git/v5/utils/merkletrie/noder
 # github.com/google/go-cmp v0.5.7
 ## explicit; go 1.11
-github.com/google/go-cmp/cmp
-github.com/google/go-cmp/cmp/internal/diff
-github.com/google/go-cmp/cmp/internal/flags
-github.com/google/go-cmp/cmp/internal/function
-github.com/google/go-cmp/cmp/internal/value
 # github.com/google/uuid v1.3.0
 ## explicit
 github.com/google/uuid
@@ -376,7 +447,7 @@ github.com/spf13/pflag
 ## explicit; go 1.13
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/require
-# github.com/zclconf/go-cty v1.8.0
+# github.com/zclconf/go-cty v1.10.0
 ## explicit; go 1.12
 github.com/zclconf/go-cty/cty
 github.com/zclconf/go-cty/cty/convert
@@ -388,7 +459,7 @@ github.com/zclconf/go-cty/cty/set
 # github.com/zclconf/go-cty-yaml v1.0.2
 ## explicit
 github.com/zclconf/go-cty-yaml
-# golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce
+# golang.org/x/crypto v0.0.0-20220208233918-bba287dce954
 ## explicit; go 1.17
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
@@ -397,7 +468,6 @@ golang.org/x/crypto/chacha20
 golang.org/x/crypto/curve25519
 golang.org/x/crypto/curve25519/internal/field
 golang.org/x/crypto/ed25519
-golang.org/x/crypto/ed25519/internal/edwards25519
 golang.org/x/crypto/internal/poly1305
 golang.org/x/crypto/internal/subtle
 golang.org/x/crypto/ssh

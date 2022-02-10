@@ -1,6 +1,6 @@
 package elasticache
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type ElastiCache struct {
 	types.Metadata
@@ -25,36 +25,4 @@ type ReplicationGroup struct {
 type SecurityGroup struct {
 	types.Metadata
 	Description types.StringValue
-}
-
-func (c *SecurityGroup) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *SecurityGroup) GetRawValue() interface{} {
-	return nil
-}
-
-func (c *Cluster) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *Cluster) GetRawValue() interface{} {
-	return nil
-}
-
-func (r *ReplicationGroup) GetMetadata() *types.Metadata {
-	return &r.Metadata
-}
-
-func (r *ReplicationGroup) GetRawValue() interface{} {
-	return nil
-}
-
-func (e *ElastiCache) GetMetadata() *types.Metadata {
-	return &e.Metadata
-}
-
-func (e *ElastiCache) GetRawValue() interface{} {
-	return nil
 }

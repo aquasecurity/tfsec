@@ -2,7 +2,7 @@ package cloudstack
 
 import (
 	"github.com/aquasecurity/defsec/provider/cloudstack/compute"
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/trivy-config-parsers/types"
 )
 
 type CloudStack struct {

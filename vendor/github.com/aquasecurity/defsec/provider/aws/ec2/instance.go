@@ -2,7 +2,7 @@ package ec2
 
 import (
 	"github.com/aquasecurity/defsec/provider/aws/vpc"
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/trivy-config-parsers/types"
 	"github.com/owenrumney/squealer/pkg/squealer"
 )
 
@@ -18,14 +18,6 @@ type Instance struct {
 type BlockDevice struct {
 	types.Metadata
 	Encrypted types.BoolValue
-}
-
-func (d *BlockDevice) GetMetadata() *types.Metadata {
-	return &d.Metadata
-}
-
-func (d *BlockDevice) GetRawValue() interface{} {
-	return nil
 }
 
 type MetadataOptions struct {
@@ -45,20 +37,4 @@ func (i *Instance) HasHTTPEndpointDisabled() bool {
 func (i *Instance) HasSensitiveInformationInUserData() bool {
 	scanner := squealer.NewStringScanner()
 	return scanner.Scan(i.UserData.Value()).TransgressionFound
-}
-
-func (c *Instance) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *Instance) GetRawValue() interface{} {
-	return nil
-}
-
-func (m *MetadataOptions) GetMetadata() *types.Metadata {
-	return &m.Metadata
-}
-
-func (m *MetadataOptions) GetRawValue() interface{} {
-	return nil
 }

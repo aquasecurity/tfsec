@@ -1,6 +1,6 @@
 package iam
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type PasswordPolicy struct {
 	types.Metadata
@@ -11,12 +11,4 @@ type PasswordPolicy struct {
 	RequireSymbols       types.BoolValue
 	MaxAgeDays           types.IntValue
 	MinimumLength        types.IntValue
-}
-
-func (p *PasswordPolicy) GetMetadata() *types.Metadata {
-	return &p.Metadata
-}
-
-func (p *PasswordPolicy) GetRawValue() interface{} {
-	return nil
 }
