@@ -247,7 +247,7 @@ github.com/aquasecurity/defsec/rules/oracle/compute
 github.com/aquasecurity/defsec/security
 github.com/aquasecurity/defsec/severity
 github.com/aquasecurity/defsec/state
-# github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210144846-39bbe34edd59
+# github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210150016-5f1669ec78e9
 ## explicit; go 1.17
 github.com/aquasecurity/trivy-config-parsers/terraform
 github.com/aquasecurity/trivy-config-parsers/terraform/context

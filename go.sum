@@ -108,6 +108,8 @@ github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210135951-7406459eea5d 
 github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210135951-7406459eea5d/go.mod h1:78xN8c40ibIDlD8OkaC9++Wr2Eu6rnwuExqyuRyKokk=
 github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210144846-39bbe34edd59 h1:cf2Z1zA7rmunUP7xeY8fxRIainB0csS9ZmnqOptfadc=
 github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210144846-39bbe34edd59/go.mod h1:78xN8c40ibIDlD8OkaC9++Wr2Eu6rnwuExqyuRyKokk=
+github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210150016-5f1669ec78e9 h1:glXtmeIy31qelXA4MTM23xpnm8MyVEAjYf+x4GuYAGo=
+github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210150016-5f1669ec78e9/go.mod h1:78xN8c40ibIDlD8OkaC9++Wr2Eu6rnwuExqyuRyKokk=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=
 github.com/armon/go-metrics v0.3.10/go.mod h1:4O98XIr/9W0sxpJ8UaYkvjk10Iff7SnFrb4QAOwNTFc=

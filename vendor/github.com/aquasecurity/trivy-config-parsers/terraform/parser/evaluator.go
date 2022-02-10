@@ -14,12 +14,6 @@ import (
 
 const maxContextIterations = 32
 
-type visitedModule struct {
-    name                string
-    path                string
-    definitionReference string
-}
-
 type evaluator struct {
     ctx             *context.Context
     blocks          terraform.Blocks
@@ -31,9 +25,7 @@ type evaluator struct {
     workingDir      string
     workspace       string
     ignores         terraform.Ignores
-    stopOnHCLError  bool
     parentParser    Parser
-    submodules      []terraform.Module
 }
 
 func newEvaluator(
