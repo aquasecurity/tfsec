@@ -33,7 +33,7 @@ github.com/apparentlymart/go-cidr/cidr
 # github.com/apparentlymart/go-textseg/v13 v13.0.0
 ## explicit; go 1.16
 github.com/apparentlymart/go-textseg/v13/textseg
-# github.com/aquasecurity/defsec v0.7.3-0.20220210143534-055fbf888ce4
+# github.com/aquasecurity/defsec v0.7.3-0.20220211173331-3864b684e54b
 ## explicit; go 1.17
 github.com/aquasecurity/defsec/adapters/terraform
 github.com/aquasecurity/defsec/adapters/terraform/aws
@@ -108,7 +108,6 @@ github.com/aquasecurity/defsec/adapters/terraform/oracle
 github.com/aquasecurity/defsec/cidr
 github.com/aquasecurity/defsec/formatters
 github.com/aquasecurity/defsec/loader
-github.com/aquasecurity/defsec/metrics
 github.com/aquasecurity/defsec/provider
 github.com/aquasecurity/defsec/provider/aws
 github.com/aquasecurity/defsec/provider/aws/apigateway
@@ -247,7 +246,7 @@ github.com/aquasecurity/defsec/rules/oracle/compute
 github.com/aquasecurity/defsec/security
 github.com/aquasecurity/defsec/severity
 github.com/aquasecurity/defsec/state
-# github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210150016-5f1669ec78e9
+# github.com/aquasecurity/trivy-config-parsers v0.0.0-20220211143132-370091d2bbb9
 ## explicit; go 1.17
 github.com/aquasecurity/trivy-config-parsers/terraform
 github.com/aquasecurity/trivy-config-parsers/terraform/context

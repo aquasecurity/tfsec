@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
 	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 )
@@ -14,13 +14,13 @@ func BenchmarkCalculate(b *testing.B) {
 	if err != nil {
 		panic(err)
 	}
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	createBadBlocks(fs)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		p := parser.New(parser.OptionStopOnHCLError())
+		p := parser.New(parser.OptionStopOnHCLError(true))
 		if err := p.ParseDirectory(fs.RealPath("/project")); err != nil {
 			panic(err)
 		}
@@ -28,7 +28,7 @@ func BenchmarkCalculate(b *testing.B) {
 		if err != nil {
 			panic(err)
 		}
-		_, _ = scanner.New().Scan(modules)
+		_, _, _ = executor.New().Execute(modules)
 	}
 }
 
@@ -39,7 +39,7 @@ func createBadBlocks(fs *filesystem.FileSystem) {
 		}
 		`)
 
-	for _, rule := range scanner.GetRegisteredRules() {
+	for _, rule := range executor.GetRegisteredRules() {
 		for i, bad := range rule.Base.Rule().Terraform.BadExamples {
 			_ = fs.WriteTextFile(fmt.Sprintf("/modules/problem/%s-%d.tf", rule.ID(), i), bad)
 		}

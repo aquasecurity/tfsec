@@ -14,13 +14,13 @@ func BenchmarkBlockParsing(b *testing.B) {
 	if err != nil {
 		panic(err)
 	}
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	createBadBlocks(fs)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		p := parser.New(parser.OptionStopOnHCLError())
+		p := parser.New(parser.OptionStopOnHCLError(true))
 		if err := p.ParseDirectory(fs.RealPath("/project")); err != nil {
 			panic(err)
 		}

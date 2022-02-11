@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
 	"github.com/aquasecurity/trivy-config-parsers/terraform"
 	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
@@ -13,14 +13,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) rules.Results {
+func ScanHCL(source string, t *testing.T, additionalOptions ...executor.Option) rules.Results {
 	modules := CreateModulesFromSource(source, ".tf", t)
-	s := scanner.New()
+	s := executor.New()
 	for _, opt := range additionalOptions {
 		opt(s)
 	}
-	scanner.OptionStopOnErrors()(s)
-	res, err := s.Scan(modules)
+	executor.OptionStopOnErrors(true)(s)
+	res, _, err := s.Execute(modules)
 	require.NoError(t, err)
 	for _, result := range res {
 		if result.Range() == nil {
@@ -32,7 +32,7 @@ func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) r
 
 func ScanJSON(source string, t *testing.T) rules.Results {
 	modules := CreateModulesFromSource(source, ".tf.json", t)
-	res, _ := scanner.New().Scan(modules)
+	res, _, _ := executor.New().Execute(modules)
 	return res
 }
 
@@ -46,7 +46,7 @@ func CreateModulesFromSource(source string, ext string, t *testing.T) terraform.
 		t.Fatal(err)
 	}
 	path := fs.RealPath("test" + ext)
-	p := parser.New(parser.OptionStopOnHCLError())
+	p := parser.New(parser.OptionStopOnHCLError(true))
 	if err := p.ParseDirectory(filepath.Dir(path)); err != nil {
 		t.Fatal(err)
 	}

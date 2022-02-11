@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/trivy-config-parsers/terraform"
@@ -81,8 +81,8 @@ func TestScanningJSON(t *testing.T) {
 					return
 				},
 			}
-			scanner.RegisterCheckRule(r1)
-			defer scanner.DeregisterCheckRule(r1)
+			executor.RegisterCheckRule(r1)
+			defer executor.DeregisterCheckRule(r1)
 
 			results := testutil.ScanJSON(test.source, t)
 			var include, exclude string

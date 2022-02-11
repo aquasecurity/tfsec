@@ -161,7 +161,7 @@ module "custom_module" {
 			if err != nil {
 				t.Fatal(err)
 			}
-			defer fs.Close()
+			defer func() { _ = fs.Close() }()
 
 			if err := fs.WriteTextFile("src/main.tf", test.source); err != nil {
 				t.Fatal(err)
@@ -172,7 +172,7 @@ module "custom_module" {
 			}
 
 			require.NoError(t, os.Chdir(fs.RealPath("/"))) // change directory for relative path tests to work
-			p := parser.New(parser.OptionStopOnHCLError())
+			p := parser.New(parser.OptionStopOnHCLError(true))
 			if err := p.ParseDirectory(fs.RealPath("src/")); err != nil {
 				t.Fatal(err)
 			}

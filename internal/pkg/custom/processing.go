@@ -10,8 +10,7 @@ import (
 
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/pkg/debug"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
@@ -233,8 +232,7 @@ var AttrMatchFunctions = map[CheckAction]func(*terraform.Attribute, *MatchSpec, 
 func ProcessFoundChecks(checks ChecksFile) {
 	for _, customCheck := range checks.Checks {
 		func(customCheck Check) {
-			debug.Log("Loading check: %s\n", customCheck.Code)
-			scanner.RegisterCheckRule(rule.Rule{
+			executor.RegisterCheckRule(rule.Rule{
 				Base: rules.Register(
 					rules.Rule{
 						Service:    "custom",

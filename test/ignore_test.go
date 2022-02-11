@@ -18,7 +18,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -44,8 +44,8 @@ var exampleRule = rule.Rule{
 }
 
 func Test_IgnoreAll(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 resource "bad" "my-rule" {
@@ -57,8 +57,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineAboveTheBlock(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 // tfsec:ignore:*
@@ -70,8 +70,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineAboveTheBlockMatchingParamBool(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 // tfsec:ignore:*[secure=false]
@@ -83,8 +83,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineAboveTheBlockNotMatchingParamBool(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 // tfsec:ignore:*[secure=true]
@@ -96,8 +96,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineAboveTheBlockMatchingParamString(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 // tfsec:ignore:*[name=myrule]
@@ -110,8 +110,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineAboveTheBlockNotMatchingParamString(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 // tfsec:ignore:*[name=myrule2]
@@ -124,8 +124,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineAboveTheBlockMatchingParamInt(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 // tfsec:ignore:*[port=123]
@@ -138,8 +138,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineAboveTheBlockNotMatchingParamInt(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 // tfsec:ignore:*[port=456]
@@ -152,8 +152,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineStackedAboveTheBlock(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 // tfsec:ignore:*
@@ -169,8 +169,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineStackedAboveTheBlockWithoutMatch(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 #tfsec:ignore:*
@@ -188,8 +188,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineStackedAboveTheBlockWithHashesWithoutSpaces(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 #tfsec:ignore:*
@@ -205,8 +205,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineStackedAboveTheBlockWithoutSpaces(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 //tfsec:ignore:*
@@ -233,8 +233,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineLegacy(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 	legacy.InvertedIDs[exampleRule.Base.Rule().LongID()] = "ABC123"
 	results := testutil.ScanHCL(`
 resource "bad" "my-rule" {
@@ -245,8 +245,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreLineWithCarriageReturn(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	legacy.InvertedIDs[exampleRule.Base.Rule().LongID()] = "ABC123"
 	results := testutil.ScanHCL(strings.ReplaceAll(`
@@ -261,8 +261,8 @@ func Test_IgnoreSpecific(t *testing.T) {
 
 	legacy.InvertedIDs[exampleRule.Base.Rule().LongID()] = "ABC123"
 
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	r2 := rule.Rule{
 		Base: rules.Register(rules.Rule{
@@ -280,8 +280,8 @@ func Test_IgnoreSpecific(t *testing.T) {
 			return
 		},
 	}
-	scanner.RegisterCheckRule(r2)
-	defer scanner.DeregisterCheckRule(r2)
+	executor.RegisterCheckRule(r2)
+	defer executor.DeregisterCheckRule(r2)
 
 	results := testutil.ScanHCL(`
 	//tfsec:ignore:ABC123
@@ -300,8 +300,8 @@ func Test_IgnoreSpecific(t *testing.T) {
 }
 
 func Test_IgnoreWithExpDateIfDateBreachedThenDontIgnore(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 resource "bad" "my-rule" {
@@ -312,8 +312,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreWithExpDateIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 resource "bad" "my-rule" {
@@ -324,8 +324,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreWithExpDateIfDateInvalidThenDropTheIgnore(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 resource "bad" "my-rule" {
@@ -336,8 +336,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreAboveResourceBlockWithExpDateIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 #tfsec:ignore:ABC123:exp:2221-01-02
@@ -348,8 +348,8 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreAboveResourceBlockWithExpDateAndMultipleIgnoresIfDateNotBreachedThenIgnoreIgnore(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 # tfsec:ignore:ABC123:exp:2221-01-02
@@ -361,20 +361,20 @@ resource "bad" "my-rule" {
 }
 
 func Test_IgnoreIgnoreWithExpiryAndWorkspaceAndWorkspaceSupplied(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 # tfsec:ignore:ABC123:exp:2221-01-02:ws:testworkspace
 resource "bad" "my-rule" {
 }
-`, t, scanner.OptionWithWorkspaceName("testworkspace"))
+`, t, executor.OptionWithWorkspaceName("testworkspace"))
 	assert.Len(t, results, 0)
 }
 
 func Test_IgnoreInline(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(fmt.Sprintf(`
 	resource "bad" "sample" {
@@ -385,14 +385,14 @@ func Test_IgnoreInline(t *testing.T) {
 }
 
 func Test_IgnoreIgnoreWithExpiryAndWorkspaceButWrongWorkspaceSupplied(t *testing.T) {
-	scanner.RegisterCheckRule(exampleRule)
-	defer scanner.DeregisterCheckRule(exampleRule)
+	executor.RegisterCheckRule(exampleRule)
+	defer executor.DeregisterCheckRule(exampleRule)
 
 	results := testutil.ScanHCL(`
 # tfsec:ignore:ABC123:exp:2221-01-02:ws:otherworkspace
 resource "bad" "my-rule" {
 	
 }
-`, t, scanner.OptionWithWorkspaceName("testworkspace"))
+`, t, executor.OptionWithWorkspaceName("testworkspace"))
 	assert.Len(t, results, 1)
 }

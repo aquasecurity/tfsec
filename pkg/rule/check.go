@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	runtimeDebug "runtime/debug"
 	"strings"
 
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/state"
-	"github.com/aquasecurity/tfsec/internal/pkg/debug"
 	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
@@ -19,13 +17,6 @@ func (r *Rule) CheckAgainstState(s *state.State) rules.Results {
 		results.SetRule(r.Base.Rule())
 	}
 	return results
-}
-
-func (r *Rule) RecoverFromCheckPanic() {
-	if err := recover(); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", r.ID(), err)
-		debug.Log("Stack trace for failed %s r:\n%s\n\n", r.ID(), string(runtimeDebug.Stack()))
-	}
 }
 
 func (r *Rule) CheckAgainstBlock(b *terraform.Block, m *terraform.Module) rules.Results {

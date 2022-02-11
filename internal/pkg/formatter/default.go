@@ -1,4 +1,4 @@
-package formatters
+package formatter
 
 import (
 	"fmt"
@@ -7,6 +7,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/pkg/scanner"
+
+	"github.com/aquasecurity/defsec/formatters"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/liamg/clinch/terminal"
@@ -15,50 +18,52 @@ import (
 
 var severityFormat map[severity.Severity]string
 
-func outputDefault(b configurableFormatter, results []rules.Result) error {
+func DefaultWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableFormatter, results []rules.Result) error {
+	return func(b formatters.ConfigurableFormatter, results []rules.Result) error {
 
-	// we initialise the map here so we respect the colour-ignore options
-	severityFormat = map[severity.Severity]string{
-		severity.Low:      tml.Sprintf("<white>%s</white>", severity.Low),
-		severity.Medium:   tml.Sprintf("<yellow>%s</yellow>", severity.Medium),
-		severity.High:     tml.Sprintf("<red>%s</red>", severity.High),
-		severity.Critical: tml.Sprintf("<bold><red>%s</red></bold>", severity.Critical),
-		"":                tml.Sprintf("<white> UNKNOWN</white>"),
-	}
+		// we initialise the map here so we respect the colour-ignore options
+		severityFormat = map[severity.Severity]string{
+			severity.Low:      tml.Sprintf("<white>%s</white>", severity.Low),
+			severity.Medium:   tml.Sprintf("<yellow>%s</yellow>", severity.Medium),
+			severity.High:     tml.Sprintf("<red>%s</red>", severity.High),
+			severity.Critical: tml.Sprintf("<bold><red>%s</red></bold>", severity.Critical),
+			"":                tml.Sprintf("<white> UNKNOWN</white>"),
+		}
 
-	passCount := countPassedResults(results)
+		passCount := countPassedResults(results)
 
-	if len(results) == 0 || len(results) == passCount {
-		b.PrintMetrics()
-		tml.Fprintf(b.Writer(), "\n<green><bold>No problems detected!\n\n")
+		if len(results) == 0 || len(results) == passCount {
+			printMetrics(b.Writer(), metrics)
+			_ = tml.Fprintf(b.Writer(), "\n<green><bold>No problems detected!\n\n")
+			return nil
+		}
+
+		groups, err := b.GroupResults(results)
+		if err != nil {
+			return err
+		}
+
+		_, _ = fmt.Fprintln(b.Writer(), "")
+		for _, group := range groups {
+			printResult(b, group)
+		}
+
+		printMetrics(b.Writer(), metrics)
+
+		var passInfo string
+		if passCount > 0 {
+			passInfo = fmt.Sprintf("%d passed, ", passCount)
+		}
+		_ = tml.Fprintf(b.Writer(), "  <red><bold>%s%d potential problem(s) detected.\n\n", passInfo, len(results)-countPassedResults(results))
+
 		return nil
+
 	}
-
-	groups, err := b.GroupResults(results)
-	if err != nil {
-		return err
-	}
-
-	fmt.Fprintln(b.Writer(), "")
-	for _, group := range groups {
-		printResult(b, group)
-	}
-
-	b.PrintMetrics()
-
-	var passInfo string
-	if passCount > 0 {
-		passInfo = fmt.Sprintf("%d passed, ", passCount)
-	}
-	tml.Fprintf(b.Writer(), "\n  <red><bold>%s%d potential problem(s) detected.\n\n", passInfo, len(results)-countPassedResults(results))
-
-	return nil
-
 }
 
 const lineNoWidth = 7
 
-func printResult(b configurableFormatter, group GroupedResult) {
+func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult) {
 
 	first := group.Results()[0]
 
@@ -83,7 +88,7 @@ func printResult(b configurableFormatter, group GroupedResult) {
 		groupingInfo = fmt.Sprintf("(%d similar results)", group.Len())
 	}
 
-	tml.Fprintf(
+	_ = tml.Fprintf(
 		w,
 		"<italic>%s %s</italic> %s <bold>%s</bold> <dim>%s</dim>\n",
 		numPrefix,
@@ -104,21 +109,21 @@ func printResult(b configurableFormatter, group GroupedResult) {
 		filename = relative
 	}
 
-	tml.Fprintf(
+	_ = tml.Fprintf(
 		w,
 		"<dim>%s\n",
 		strings.Repeat("─", width),
 	)
 
 	if first.Status() != rules.StatusPassed {
-		tml.Fprintf(
+		_ = tml.Fprintf(
 			w,
 			" <italic>%s <dim>%s\n",
 			filename,
 			lineInfo,
 		)
 
-		tml.Fprintf(
+		_ = tml.Fprintf(
 			w,
 			"<dim>%s%s%s</dim>\n",
 			strings.Repeat("─", lineNoWidth),
@@ -130,7 +135,7 @@ func printResult(b configurableFormatter, group GroupedResult) {
 			printCodeLine(w, -1, tml.Sprintf("<red><bold>Failed to render code:</bold> %s", err))
 		}
 
-		tml.Fprintf(
+		_ = tml.Fprintf(
 			w,
 			"<dim>%s┴%s</dim>\n",
 			strings.Repeat("─", lineNoWidth),
@@ -139,16 +144,16 @@ func printResult(b configurableFormatter, group GroupedResult) {
 	}
 
 	if group.Len() > 1 {
-		tml.Printf("  <dim>Individual Causes\n")
+		_ = tml.Printf("  <dim>Individual Causes\n")
 		for _, result := range group.Results() {
 			m := result.Metadata()
 			metadata := &m
 			for metadata.Parent() != nil {
 				metadata = metadata.Parent()
 			}
-			tml.Printf("  <dim>- %s (%s)\n", metadata.Range(), metadata.Reference())
+			_ = tml.Printf("  <dim>- %s (%s)\n", metadata.Range(), metadata.Reference())
 		}
-		tml.Fprintf(
+		_ = tml.Fprintf(
 			w,
 			"<dim>%s</dim>\n",
 			strings.Repeat("─", width),
@@ -171,23 +176,11 @@ func printResult(b configurableFormatter, group GroupedResult) {
 		_ = tml.Fprintf(w, "\n  <dim>-</dim> <blue>%s", link)
 	}
 
-	tml.Fprintf(
+	_ = tml.Fprintf(
 		w,
 		"\n<dim>%s</dim>\n\n\n",
 		strings.Repeat("─", width),
 	)
-}
-
-func countPassedResults(results []rules.Result) int {
-	passed := 0
-
-	for _, res := range results {
-		if res.Status() == rules.StatusPassed {
-			passed++
-		}
-	}
-
-	return passed
 }
 
 func printCodeLine(w io.Writer, i int, code string) {
@@ -199,7 +192,7 @@ func printCodeLine(w io.Writer, i int, code string) {
 	)
 }
 
-func highlightCode(b configurableFormatter, result rules.Result) error {
+func highlightCode(b formatters.ConfigurableFormatter, result rules.Result) error {
 
 	innerRange := result.Range()
 	outerRange := innerRange
@@ -248,4 +241,14 @@ func highlightCode(b configurableFormatter, result rules.Result) error {
 	}
 
 	return nil
+}
+
+func countPassedResults(results []rules.Result) int {
+	passed := 0
+	for _, res := range results {
+		if res.Status() == rules.StatusPassed {
+			passed++
+		}
+	}
+	return passed
 }

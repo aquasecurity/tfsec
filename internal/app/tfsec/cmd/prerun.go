@@ -7,9 +7,8 @@ import (
 	"runtime"
 
 	"github.com/aquasecurity/tfsec/internal/pkg/ignores"
-
-	"github.com/aquasecurity/tfsec/internal/pkg/debug"
 	"github.com/aquasecurity/tfsec/internal/pkg/updater"
+
 	"github.com/aquasecurity/tfsec/version"
 	"github.com/liamg/tml"
 	"github.com/spf13/cobra"
@@ -19,7 +18,6 @@ func prerun(_ *cobra.Command, args []string) {
 
 	// disable colour if running on windows - colour formatting doesn't work
 	if disableColours || runtime.GOOS == "windows" {
-		debug.Log("Disabled formatting.")
 		tml.DisableFormatting()
 	}
 
@@ -33,9 +31,15 @@ func prerun(_ *cobra.Command, args []string) {
 	}
 
 	if runUpdate {
-		if err := updater.Update(); err != nil {
-			fmt.Fprintf(os.Stderr, "Not updating, %s\n", err.Error())
+		updateVersion, err := updater.Update()
+		if err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "Error during update: %s\n", err.Error())
 			os.Exit(1)
+		}
+		if updateVersion == "" {
+			fmt.Println("You are already running the latest version.")
+		} else {
+			fmt.Printf("Successfully updated to %s.\n", updateVersion)
 		}
 		os.Exit(0)
 	}

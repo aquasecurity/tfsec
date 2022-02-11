@@ -1,10 +1,12 @@
 package parser
 
+import "io"
+
 type Option func(p *parser)
 
-func OptionDoNotSearchTfFiles() Option {
+func OptionWithDebugWriter(w io.Writer) Option {
 	return func(p *parser) {
-		p.stopOnFirstTf = false
+		p.debugWriter = w
 	}
 }
 
@@ -14,26 +16,14 @@ func OptionWithTFVarsPaths(paths []string) Option {
 	}
 }
 
-func OptionStopOnHCLError() Option {
+func OptionStopOnHCLError(stop bool) Option {
 	return func(p *parser) {
-		p.stopOnHCLError = true
+		p.stopOnHCLError = stop
 	}
 }
 
 func OptionWithWorkspaceName(workspaceName string) Option {
 	return func(p *parser) {
 		p.workspaceName = workspaceName
-	}
-}
-
-func OptionSkipDownloaded() Option {
-	return func(p *parser) {
-		p.skipDownloaded = true
-	}
-}
-
-func OptionWithExcludePaths(paths []string) Option {
-	return func(p *parser) {
-		p.excludePaths = paths
 	}
 }

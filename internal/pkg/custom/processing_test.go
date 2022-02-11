@@ -11,7 +11,7 @@ import (
 
 	"github.com/aquasecurity/defsec/rules"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/trivy-config-parsers/terraform"
 	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 	"github.com/stretchr/testify/assert"
@@ -971,7 +971,7 @@ func scanTerraform(t *testing.T, mainTf string) []rules.Result {
 	err = ioutil.WriteFile(fmt.Sprintf("%s/%s", dirName, "main.tf"), []byte(mainTf), os.ModePerm)
 	assert.NoError(t, err)
 
-	p := parser.New(parser.OptionStopOnHCLError())
+	p := parser.New(parser.OptionStopOnHCLError(true))
 	if err := p.ParseDirectory(dirName); err != nil {
 		panic(err)
 	}
@@ -980,7 +980,7 @@ func scanTerraform(t *testing.T, mainTf string) []rules.Result {
 		panic(err)
 	}
 
-	res, _ := scanner.New(scanner.OptionStopOnErrors()).Scan(modules)
+	res, _, _ := executor.New(executor.OptionStopOnErrors(true)).Execute(modules)
 	return res
 }
 
@@ -988,7 +988,7 @@ func scanTerraform(t *testing.T, mainTf string) []rules.Result {
 // TODO: Extract into a testing utility package once the amount of duplication justifies introducing an extra package.
 func ParseFromSource(source string) terraform.Modules {
 	path := createTestFile("test.tf", source)
-	p := parser.New(parser.OptionStopOnHCLError())
+	p := parser.New(parser.OptionStopOnHCLError(true))
 	if err := p.ParseDirectory(filepath.Dir(path)); err != nil {
 		panic(err)
 	}

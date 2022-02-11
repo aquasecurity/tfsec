@@ -4,10 +4,12 @@ go 1.17
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.2
-	github.com/aquasecurity/defsec v0.7.3-0.20220210143534-055fbf888ce4
-	github.com/aquasecurity/trivy-config-parsers v0.0.0-20220210150016-5f1669ec78e9
+	github.com/aquasecurity/defsec v0.7.3-0.20220211173331-3864b684e54b
+	github.com/aquasecurity/trivy-config-parsers v0.0.0-20220211143132-370091d2bbb9
 	github.com/hashicorp/go-version v1.4.0
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
+	github.com/liamg/clinch v1.5.6
+	github.com/liamg/gifwrap v0.0.6
 	github.com/liamg/tml v0.6.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/owenrumney/squealer v0.3.1
@@ -37,8 +39,6 @@ require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
-	github.com/liamg/clinch v1.5.6 // indirect
-	github.com/liamg/gifwrap v0.0.6 // indirect
 	github.com/liamg/iamgo v0.0.2 // indirect
 	github.com/lucasb-eyer/go-colorful v1.0.3 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect

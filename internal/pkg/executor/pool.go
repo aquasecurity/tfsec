@@ -1,4 +1,4 @@
-package scanner
+package executor
 
 import (
 	"fmt"
@@ -75,7 +75,7 @@ func (p *Pool) Run() (rules.Results, error) {
 }
 
 type Job interface {
-	Run() rules.Results
+	Run() (rules.Results, error)
 }
 
 type infraRuleJob struct {
@@ -91,22 +91,29 @@ type hclModuleRuleJob struct {
 	ignoreErrors bool
 }
 
-func (h *infraRuleJob) Run() rules.Results {
+func (h *infraRuleJob) Run() (_ rules.Results, err error) {
 	if h.ignoreErrors {
-		defer h.rule.RecoverFromCheckPanic()
+		defer func() {
+			if panicErr := recover(); panicErr != nil {
+				err = fmt.Errorf("%s\n%s", panicErr, string(runtimeDebug.Stack()))
+			}
+		}()
 	}
-	return h.rule.CheckAgainstState(h.state)
+	return h.rule.CheckAgainstState(h.state), err
 }
 
-func (h *hclModuleRuleJob) Run() rules.Results {
+func (h *hclModuleRuleJob) Run() (results rules.Results, err error) {
 	if h.ignoreErrors {
-		defer h.rule.RecoverFromCheckPanic()
+		defer func() {
+			if panicErr := recover(); panicErr != nil {
+				err = fmt.Errorf("%s\n%s", panicErr, string(runtimeDebug.Stack()))
+			}
+		}()
 	}
-	var results rules.Results
 	for _, block := range h.module.GetBlocks() {
 		results = append(results, h.rule.CheckAgainstBlock(block, h.module)...)
 	}
-	return results
+	return
 }
 
 type Worker struct {
@@ -129,12 +136,11 @@ func (w *Worker) Start() {
 	w.results = nil
 	for job := range w.incoming {
 		func() {
-			defer func() {
-				if err := recover(); err != nil {
-					w.panic = fmt.Errorf("%s\n%s", err, string(runtimeDebug.Stack()))
-				}
-			}()
-			w.results = append(w.results, job.Run()...)
+			results, err := job.Run()
+			if err != nil {
+				w.panic = err
+			}
+			w.results = append(w.results, results...)
 		}()
 	}
 }

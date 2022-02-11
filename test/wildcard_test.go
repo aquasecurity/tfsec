@@ -13,7 +13,7 @@ import (
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 )
 
 func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
@@ -69,8 +69,8 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 				return
 			},
 		}
-		scanner.RegisterCheckRule(rule)
-		defer scanner.DeregisterCheckRule(rule)
+		executor.RegisterCheckRule(rule)
+		defer executor.DeregisterCheckRule(rule)
 
 		results := testutil.ScanHCL(test.input, t)
 
