@@ -75,7 +75,7 @@ func (e *Executor) debug(format string, args ...interface{}) {
 	if e.debugWriter == nil {
 		return
 	}
-	prefix := fmt.Sprintf("[debug:exec] ")
+	prefix := "[debug:exec] "
 	_, _ = e.debugWriter.Write([]byte(fmt.Sprintf(prefix+format+"\n", args...)))
 }
 
@@ -188,7 +188,9 @@ func (e *Executor) filterResults(results []rules.Result) ([]rules.Result, int) {
 	var filtered []rules.Result
 	var countExcluded int
 
+	// nolint // deliberate action of appending to a different slice
 	includedList := append(e.includedRuleIDs, e.config.IncludedChecks...)
+	// nolint // deliberate action of appending to a different slice
 	excludedList := append(e.excludedRuleIDs, e.config.ExcludedChecks...)
 	includedOnly := len(includedList) > 0
 
