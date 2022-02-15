@@ -6,7 +6,7 @@ import (
 
 	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/trivy-config-parsers/types"
 )
 
 type Status uint8
@@ -75,27 +75,19 @@ func (r Result) Range() types.Range {
 type Results []Result
 
 type MetadataProvider interface {
-	GetMetadata() *types.Metadata
+	GetMetadata() types.Metadata
 	GetRawValue() interface{}
 }
 
 func (r *Results) Add(description string, source MetadataProvider) {
-	var annotationStr string
-
 	result := Result{
 		description: description,
 	}
-
-	metadata := source.GetMetadata()
-	if metadata != nil {
-		result.metadata = *metadata
-	}
-
-	if metadata.IsExplicit() {
-		annotationStr = rawToString(metadata.GetRawValue())
+	result.metadata = source.GetMetadata()
+	if result.metadata.IsExplicit() {
+		annotationStr := rawToString(source.GetRawValue())
 		result.annotation = annotationStr
 	}
-
 	*r = append(*r, result)
 }
 
@@ -104,9 +96,7 @@ func (r *Results) AddPassed(source MetadataProvider, descriptions ...string) {
 		description: strings.Join(descriptions, " "),
 		status:      StatusPassed,
 	}
-	if metadata := source.GetMetadata(); metadata != nil {
-		res.metadata = *metadata
-	}
+	res.metadata = source.GetMetadata()
 	*r = append(*r, res)
 }
 

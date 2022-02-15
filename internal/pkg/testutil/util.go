@@ -5,24 +5,22 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
-
+	"github.com/aquasecurity/trivy-config-parsers/terraform"
+	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/aquasecurity/tfsec/internal/pkg/parser"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
 )
 
-func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) rules.Results {
+func ScanHCL(source string, t *testing.T, additionalOptions ...executor.Option) rules.Results {
 	modules := CreateModulesFromSource(source, ".tf", t)
-	s := scanner.New()
+	s := executor.New()
 	for _, opt := range additionalOptions {
 		opt(s)
 	}
-	scanner.OptionStopOnErrors()(s)
-	res, err := s.Scan(modules)
+	executor.OptionStopOnErrors(true)(s)
+	res, _, err := s.Execute(modules)
 	require.NoError(t, err)
 	for _, result := range res {
 		if result.Range() == nil {
@@ -34,11 +32,11 @@ func ScanHCL(source string, t *testing.T, additionalOptions ...scanner.Option) r
 
 func ScanJSON(source string, t *testing.T) rules.Results {
 	modules := CreateModulesFromSource(source, ".tf.json", t)
-	res, _ := scanner.New().Scan(modules)
+	res, _, _ := executor.New().Execute(modules)
 	return res
 }
 
-func CreateModulesFromSource(source string, ext string, t *testing.T) block.Modules {
+func CreateModulesFromSource(source string, ext string, t *testing.T) terraform.Modules {
 	fs, err := filesystem.New()
 	if err != nil {
 		t.Fatal(err)
@@ -48,7 +46,11 @@ func CreateModulesFromSource(source string, ext string, t *testing.T) block.Modu
 		t.Fatal(err)
 	}
 	path := fs.RealPath("test" + ext)
-	modules, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	if err := p.ParseDirectory(filepath.Dir(path)); err != nil {
+		t.Fatal(err)
+	}
+	modules, _, err := p.EvaluateAll()
 	if err != nil {
 		t.Fatalf("parse error: %s", err)
 	}

@@ -5,13 +5,13 @@ import (
 	"github.com/aquasecurity/defsec/rules/general/secrets"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
+	"github.com/aquasecurity/trivy-config-parsers/terraform"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/pkg/security"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 )
 
 var sensitiveWhitelist = []struct {
@@ -53,10 +53,10 @@ var sensitiveWhitelist = []struct {
 }
 
 func init() {
-	scanner.RegisterCheckRule(rule.Rule{
+	executor.RegisterCheckRule(rule.Rule{
 		RequiredTypes: []string{"resource", "provider", "module"},
 		Base:          secrets.CheckNotExposed,
-		CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
+		CheckTerraform: func(resourceBlock *terraform.Block, _ *terraform.Module) (results rules.Results) {
 
 			attributes := resourceBlock.GetAttributes()
 

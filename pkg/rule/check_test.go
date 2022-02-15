@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
-	"github.com/aquasecurity/tfsec/internal/pkg/parser"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
+	"github.com/aquasecurity/trivy-config-parsers/terraform"
+	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -31,7 +31,7 @@ func TestRequiredSourcesMatch(t *testing.T) {
 			rule: Rule{
 				RequiredTypes:  []string{"data"},
 				RequiredLabels: []string{"custom_module"},
-				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
+				CheckTerraform: func(*terraform.Block, *terraform.Module) rules.Results {
 					return nil
 				},
 			},
@@ -48,7 +48,7 @@ module "custom_module" {
 			rule: Rule{
 				RequiredTypes:  []string{"module"},
 				RequiredLabels: []string{"dont_match"},
-				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
+				CheckTerraform: func(*terraform.Block, *terraform.Module) rules.Results {
 					return nil
 				},
 			},
@@ -65,7 +65,7 @@ module "custom_module" {
 			rule: Rule{
 				RequiredTypes:  []string{"module"},
 				RequiredLabels: []string{"*"},
-				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
+				CheckTerraform: func(*terraform.Block, *terraform.Module) rules.Results {
 					return nil
 				},
 			},
@@ -83,7 +83,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"path_doesnt_match"},
-				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
+				CheckTerraform: func(*terraform.Block, *terraform.Module) rules.Results {
 					return nil
 				},
 			},
@@ -101,7 +101,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"github.com/hashicorp/example"},
-				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
+				CheckTerraform: func(*terraform.Block, *terraform.Module) rules.Results {
 					return nil
 				},
 			},
@@ -119,7 +119,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"*two/three"},
-				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
+				CheckTerraform: func(*terraform.Block, *terraform.Module) rules.Results {
 					return nil
 				},
 			},
@@ -137,7 +137,7 @@ module "custom_module" {
 				RequiredTypes:   []string{"module"},
 				RequiredLabels:  []string{"*"},
 				RequiredSources: []string{"one/two/three"},
-				CheckTerraform: func(*block.Block, *block.Module) rules.Results {
+				CheckTerraform: func(*terraform.Block, *terraform.Module) rules.Results {
 					return nil
 				},
 			},
@@ -161,7 +161,7 @@ module "custom_module" {
 			if err != nil {
 				t.Fatal(err)
 			}
-			defer fs.Close()
+			defer func() { _ = fs.Close() }()
 
 			if err := fs.WriteTextFile("src/main.tf", test.source); err != nil {
 				t.Fatal(err)
@@ -171,12 +171,16 @@ module "custom_module" {
 				t.Fatal(err)
 			}
 
-			modules, err := parser.New(fs.RealPath("src/"), parser.OptionStopOnHCLError()).ParseDirectory()
+			require.NoError(t, os.Chdir(fs.RealPath("/"))) // change directory for relative path tests to work
+			p := parser.New(parser.OptionStopOnHCLError(true))
+			if err := p.ParseDirectory(fs.RealPath("src/")); err != nil {
+				t.Fatal(err)
+			}
+			modules, _, err := p.EvaluateAll()
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			require.NoError(t, os.Chdir(fs.RealPath("/"))) // change directory for relative path tests to work
 			result := test.rule.isRuleRequiredForBlock(modules[0].GetBlocks()[0])
 			assert.Equal(t, test.expected, result, "`IsRuleRequiredForBlock` match function evaluating incorrectly for requiredSources test.")
 		})

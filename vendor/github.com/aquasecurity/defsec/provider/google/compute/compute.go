@@ -1,6 +1,6 @@
 package compute
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type Compute struct {
 	types.Metadata
@@ -9,12 +9,4 @@ type Compute struct {
 	SSLPolicies     []SSLPolicy
 	ProjectMetadata ProjectMetadata
 	Instances       []Instance
-}
-
-func (c *Compute) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *Compute) GetRawValue() interface{} {
-	return nil
 }

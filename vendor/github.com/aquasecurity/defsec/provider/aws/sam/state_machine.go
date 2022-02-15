@@ -1,7 +1,7 @@
 package sam
 
 import (
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/trivy-config-parsers/types"
 )
 
 type StateMachine struct {
@@ -21,28 +21,4 @@ type LoggingConfiguration struct {
 type TracingConfiguration struct {
 	types.Metadata
 	Enabled types.BoolValue
-}
-
-func (a *StateMachine) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *StateMachine) GetRawValue() interface{} {
-	return nil
-}
-
-func (a *LoggingConfiguration) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *LoggingConfiguration) GetRawValue() interface{} {
-	return nil
-}
-
-func (a *TracingConfiguration) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *TracingConfiguration) GetRawValue() interface{} {
-	return nil
 }

@@ -1,6 +1,6 @@
 package vpc
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type VPC struct {
 	types.Metadata
@@ -47,51 +47,4 @@ type NetworkACLRule struct {
 	Action   types.StringValue
 	Protocol types.StringValue
 	CIDRs    []types.StringValue
-}
-
-func (v *DefaultVPC) GetMetadata() *types.Metadata {
-	return &v.Metadata
-}
-
-func (v *DefaultVPC) GetRawValue() interface{} {
-	return nil
-}
-
-func (v *SecurityGroup) GetMetadata() *types.Metadata {
-	return &v.Metadata
-}
-
-func (v *SecurityGroup) GetRawValue() interface{} {
-	return nil
-}
-
-func (v *SecurityGroupRule) GetMetadata() *types.Metadata {
-	return &v.Metadata
-}
-
-func (v *SecurityGroupRule) GetRawValue() interface{} {
-	return nil
-}
-func (v *NetworkACLRule) GetMetadata() *types.Metadata {
-	return &v.Metadata
-}
-
-func (v *NetworkACLRule) GetRawValue() interface{} {
-	return nil
-}
-
-func (v *VPC) GetMetadata() *types.Metadata {
-	return &v.Metadata
-}
-
-func (v *VPC) GetRawValue() interface{} {
-	return nil
-}
-
-func (n *NetworkACL) GetMetadata() *types.Metadata {
-	return &n.Metadata
-}
-
-func (n *NetworkACL) GetRawValue() interface{} {
-	return nil
 }

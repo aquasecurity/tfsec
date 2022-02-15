@@ -1,6 +1,6 @@
 package compute
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type Instance struct {
 	types.Metadata
@@ -35,36 +35,4 @@ type ShieldedVMConfig struct {
 	SecureBootEnabled          types.BoolValue
 	IntegrityMonitoringEnabled types.BoolValue
 	VTPMEnabled                types.BoolValue
-}
-
-func (i *Instance) GetMetadata() *types.Metadata {
-	return &i.Metadata
-}
-
-func (i *Instance) GetRawValue() interface{} {
-	return nil
-}
-
-func (s *ServiceAccount) GetMetadata() *types.Metadata {
-	return &s.Metadata
-}
-
-func (s *ServiceAccount) GetRawValue() interface{} {
-	return nil
-}
-
-func (n *NetworkInterface) GetMetadata() *types.Metadata {
-	return &n.Metadata
-}
-
-func (n *NetworkInterface) GetRawValue() interface{} {
-	return nil
-}
-
-func (s *ShieldedVMConfig) GetMetadata() *types.Metadata {
-	return &s.Metadata
-}
-
-func (s *ShieldedVMConfig) GetRawValue() interface{} {
-	return nil
 }

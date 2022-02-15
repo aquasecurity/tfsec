@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	_ "github.com/aquasecurity/tfsec/internal/pkg/rules"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
 	"github.com/spf13/cobra"
 )
 
@@ -44,7 +44,7 @@ var rootCmd = &cobra.Command{
 }
 
 func getSortedFileContents() []*FileContent {
-	rules := scanner.GetRegisteredRules()
+	rules := executor.GetRegisteredRules()
 
 	checkMap := make(map[string][]templateObject)
 

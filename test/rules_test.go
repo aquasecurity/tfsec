@@ -5,12 +5,12 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil"
 )
 
 func TestBlockTypes(t *testing.T) {
-	for _, rule := range scanner.GetRegisteredRules() {
+	for _, rule := range executor.GetRegisteredRules() {
 		for _, blockType := range rule.RequiredTypes {
 			switch blockType {
 			case "resource", "data", "provider", "variable", "module", "locals", "output":
@@ -23,7 +23,7 @@ func TestBlockTypes(t *testing.T) {
 
 func TestBlockLabels(t *testing.T) {
 	identifierRegex := regexp.MustCompile(`^[a-zA-Z\-_][a-zA-Z0-9\-_]*$`)
-	for _, rule := range scanner.GetRegisteredRules() {
+	for _, rule := range executor.GetRegisteredRules() {
 		for _, label := range rule.RequiredLabels {
 			if !identifierRegex.MatchString(label) {
 				t.Errorf("Invalid required label for rule %s: '%s'", rule.ID(), label)
@@ -33,7 +33,7 @@ func TestBlockLabels(t *testing.T) {
 }
 
 func TestDefSecUsage(t *testing.T) {
-	for _, rule := range scanner.GetRegisteredRules() {
+	for _, rule := range executor.GetRegisteredRules() {
 		t.Run(rule.ID(), func(t *testing.T) {
 			if rule.Base.Rule().AVDID == "" {
 				t.Errorf("Rule is not ready for defsec: %#v", rule)
@@ -43,7 +43,7 @@ func TestDefSecUsage(t *testing.T) {
 }
 
 func TestRulesAgainstExampleCode(t *testing.T) {
-	for _, rule := range scanner.GetRegisteredRules() {
+	for _, rule := range executor.GetRegisteredRules() {
 		t.Run(rule.Base.Rule().LongID(), func(t *testing.T) {
 			t.Run("good examples", func(t *testing.T) {
 				for i, example := range rule.Base.Rule().Terraform.GoodExamples {

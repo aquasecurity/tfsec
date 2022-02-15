@@ -5,9 +5,7 @@ import (
 	"io"
 	"os"
 	"sort"
-	"strings"
 
-	"github.com/aquasecurity/defsec/metrics"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/liamg/tml"
@@ -17,91 +15,61 @@ type Formatter interface {
 	Output(results []rules.Result) error
 }
 
-type configurableFormatter interface {
+type ConfigurableFormatter interface {
 	Writer() io.Writer
 	GetLinks(rules.Result) []string
-	PrintMetrics()
 	BaseDir() string
 	DebugEnabled() bool
 	GroupResults([]rules.Result) ([]GroupedResult, error)
 }
 
-type base struct {
+type Base struct {
 	enableGrouping bool
 	enableMetrics  bool
 	enableColours  bool
 	enableDebug    bool
 	baseDir        string
 	writer         io.Writer
-	outputOverride func(b configurableFormatter, results []rules.Result) error
+	outputOverride func(b ConfigurableFormatter, results []rules.Result) error
 	linksOverride  func(result rules.Result) []string
 }
 
-func newBase() *base {
-	return &base{
+func NewBase() *Base {
+	return &Base{
 		enableGrouping: true,
 		enableMetrics:  true,
 		enableColours:  true,
 		enableDebug:    false,
 		baseDir:        ".",
 		writer:         os.Stdout,
-		outputOverride: outputDefault,
+		outputOverride: outputSARIF,
 		linksOverride: func(result rules.Result) []string {
 			return result.Rule().Links
 		},
 	}
 }
 
-func (b *base) Writer() io.Writer {
+func (b *Base) Writer() io.Writer {
 	return b.writer
 }
 
-func (b *base) DebugEnabled() bool {
+func (b *Base) DebugEnabled() bool {
 	return b.enableDebug
 }
 
-func (b *base) GetLinks(result rules.Result) []string {
+func (b *Base) GetLinks(result rules.Result) []string {
 	return b.linksOverride(result)
 }
 
-func (b *base) BaseDir() string {
+func (b *Base) BaseDir() string {
 	return b.baseDir
 }
 
-func (b *base) Output(results []rules.Result) error {
+func (b *Base) Output(results []rules.Result) error {
 	if !b.enableColours {
 		tml.DisableFormatting()
 	}
 	return b.outputOverride(b, results)
-}
-
-func (b *base) PrintMetrics() {
-
-	if !b.enableMetrics {
-		return
-	}
-
-	categories := metrics.General()
-
-	if b.enableDebug {
-		categories = append(categories, metrics.Debug()...)
-	}
-
-	for _, category := range categories {
-		tml.Fprintf(b.Writer(), "  <bold>%s</bold>\n  %s\n", category.Name(), strings.Repeat("─", 42))
-		for _, metric := range category.Metrics() {
-			if metric.Name() != "total" {
-				_ = tml.Fprintf(b.Writer(), "  <dim>%-20s</dim> %s\n", metric.Name(), metric.Value())
-			}
-		}
-		for _, metric := range category.Metrics() {
-			if metric.Name() == "total" {
-				_ = tml.Fprintf(b.Writer(), "  <dim>%-20s</dim> %s\n", metric.Name(), metric.Value())
-			}
-		}
-		fmt.Fprintf(b.Writer(), "\n")
-	}
-
 }
 
 func key(result rules.Result) string {
@@ -119,7 +87,7 @@ func key(result rules.Result) string {
 	return fmt.Sprintf("%d:%s:%s:%d", severityInt, result.Range(), result.Rule().AVDID, result.Status())
 }
 
-func (b *base) GroupResults(results []rules.Result) ([]GroupedResult, error) {
+func (b *Base) GroupResults(results []rules.Result) ([]GroupedResult, error) {
 
 	// sort by key first
 	sort.Slice(results, func(i, j int) bool {

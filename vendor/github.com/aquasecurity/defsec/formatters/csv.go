@@ -8,7 +8,7 @@ import (
 	"github.com/aquasecurity/defsec/rules"
 )
 
-func outputCSV(b configurableFormatter, results []rules.Result) error {
+func outputCSV(b ConfigurableFormatter, results []rules.Result) error {
 
 	records := [][]string{
 		{"file", "start_line", "end_line", "rule_id", "severity", "description", "link", "passed"},

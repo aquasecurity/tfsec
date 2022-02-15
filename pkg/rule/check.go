@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	runtimeDebug "runtime/debug"
 	"strings"
 
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/state"
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
-	"github.com/aquasecurity/tfsec/internal/pkg/debug"
+	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
 func (r *Rule) CheckAgainstState(s *state.State) rules.Results {
@@ -21,14 +19,7 @@ func (r *Rule) CheckAgainstState(s *state.State) rules.Results {
 	return results
 }
 
-func (r *Rule) RecoverFromCheckPanic() {
-	if err := recover(); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "WARNING: skipped %s due to error(s): %s\n", r.ID(), err)
-		debug.Log("Stack trace for failed %s r:\n%s\n\n", r.ID(), string(runtimeDebug.Stack()))
-	}
-}
-
-func (r *Rule) CheckAgainstBlock(b *block.Block, m *block.Module) rules.Results {
+func (r *Rule) CheckAgainstBlock(b *terraform.Block, m *terraform.Module) rules.Results {
 	if r.CheckTerraform == nil {
 		return nil
 	}
@@ -44,7 +35,7 @@ func (r *Rule) CheckAgainstBlock(b *block.Block, m *block.Module) rules.Results 
 }
 
 // IsRuleRequiredForBlock returns true if the Rule should be applied to the given HCL block
-func (r *Rule) isRuleRequiredForBlock(b *block.Block) bool {
+func (r *Rule) isRuleRequiredForBlock(b *terraform.Block) bool {
 
 	if len(r.RequiredTypes) > 0 {
 		if !r.checkRequiredTypesMatch(b) {
@@ -59,7 +50,7 @@ func (r *Rule) isRuleRequiredForBlock(b *block.Block) bool {
 
 	}
 
-	if len(r.RequiredSources) > 0 && b.Type() == block.TypeModule.Name() {
+	if len(r.RequiredSources) > 0 && b.Type() == terraform.TypeModule.Name() {
 		if !r.checkRequiredSourcesMatch(b) {
 			return false
 		}
@@ -68,7 +59,7 @@ func (r *Rule) isRuleRequiredForBlock(b *block.Block) bool {
 	return true
 }
 
-func (r *Rule) checkRequiredTypesMatch(b *block.Block) bool {
+func (r *Rule) checkRequiredTypesMatch(b *terraform.Block) bool {
 	var found bool
 	for _, requiredType := range r.RequiredTypes {
 		if b.Type() == requiredType {
@@ -80,7 +71,7 @@ func (r *Rule) checkRequiredTypesMatch(b *block.Block) bool {
 	return found
 }
 
-func (r *Rule) checkRequiredLabelsMatch(b *block.Block) bool {
+func (r *Rule) checkRequiredLabelsMatch(b *terraform.Block) bool {
 	var found bool
 	for _, requiredLabel := range r.RequiredLabels {
 		if requiredLabel == "*" || (len(b.Labels()) > 0 && wildcardMatch(requiredLabel, b.TypeLabel())) {
@@ -92,7 +83,7 @@ func (r *Rule) checkRequiredLabelsMatch(b *block.Block) bool {
 	return found
 }
 
-func (r *Rule) checkRequiredSourcesMatch(b *block.Block) bool {
+func (r *Rule) checkRequiredSourcesMatch(b *terraform.Block) bool {
 	var found bool
 	if sourceAttr := b.GetAttribute("source"); sourceAttr.IsNotNil() {
 		sourcePath := sourceAttr.ValueAsStrings()[0]

@@ -1,6 +1,6 @@
 package cloudtrail
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type CloudTrail struct {
 	types.Metadata
@@ -13,20 +13,4 @@ type Trail struct {
 	EnableLogFileValidation types.BoolValue
 	IsMultiRegion           types.BoolValue
 	KMSKeyID                types.StringValue
-}
-
-func (c *Trail) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *Trail) GetRawValue() interface{} {
-	return nil
-}
-
-func (c *CloudTrail) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *CloudTrail) GetRawValue() interface{} {
-	return nil
 }

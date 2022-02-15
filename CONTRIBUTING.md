@@ -32,7 +32,6 @@ As described in [ARCHITECTURE.md](ARCHITECTURE.md), the rule logic is defined in
 
 So firstly you'll need to [fork the repository](https://github.com/aquasecurity/defsec/fork) and clone it on your local machine:
 
-
 ```bash
 # clone your fork of defsec
 git clone git@github.com/YOUR_USERNAME/defsec.git
@@ -133,6 +132,22 @@ Running the tests should fail, as there is currently no logic in the rule. Now i
 
 The `*state.State` which is passed to the rule contains all cloud resources which have been detected in Terraform templates by `tfsec` (or in another set of sources by another tool!). Most rules will look in this struct for certain cloud resources and check certain properties, they're relatively simple and you can find inspiration in any of the existing rules. If you find a positive result, you can use `results.Add(...)` to record it. This method takes a description of the issue e.g. *Bucket is not encrypted* and the *source* of the issue. The source is either the struct that represents the cloud resource with the issue, or preferably a specific attribute of the struct, where possible. This is recorded so the source of the issue can be shown to the end user when tfsec runs.
 
+### :left_right_arrow: Step 4: Write an Adapter
+
+*defsec* (and therefore *tfsec*) supports a lot of cloud providers and services, but there are always more to add (especially with the frequency that AWS adds new services!) and so it is often required to add or update *adapters*. *defsec* parses Terraform templates into handy Go structs that represent HCL concepts such as *blocks*, *attributes* etc. and also Terraform specific concepts such as *modules*, *resources* etc. 
+
+All of the structs that describe a Terraform project are passed to the *adapters* to summarise into *defsec* structs - those that you created in *Step 2* above.
+
+<p align="center">
+    <img alt="the squirrel needs to adapt?" src="https://media.giphy.com/media/a1zcR7A6v5k9Mcdxuz/giphy.gif" />
+</p>
+
+Your adapter will receive a list of Terraform modules which you can traverse to find particular blocks, attributes etc., and manufacture a series of defsec structs to return. You can see how this works by reviewing some of the many existing implementations.
+
+Whilst the end-to-end tests will automatically cover your new rule and adapter, it's recommended to also add a more granular set of tests for your adaptation code. You can [check out some examples of this](https://github.com/aquasecurity/defsec/tree/master/adapters/terraform/aws/apigateway) to get some inspiration. Or some copy and paste fuel.
+
+### Step 5: Create your *defsec* Pull Request 
+
 Once your tests pass, it's time to [raise a pull request](https://github.com/aquasecurity/defsec/compare)!
 
 You can see a good example of a PR for a new defsec rule [here](https://github.com/aquasecurity/defsec/pull/115/files).
@@ -150,7 +165,7 @@ cd tfsec && git checkout -b my-awesome-new-rule
 
 After merging a defsec PR we'll create a tag straight away - we generally release little and often - so you can use the new version in tfsec.
 
-### :arrow_down: Step 4: Apply the Rule in *tfsec*
+### :arrow_down: Step 6: Apply the New Rule in *tfsec*
 
 > NOTE: If you'd like to earn bonus points and support running your rule against *CloudFormation*, you can repeat this step in the [cfsec](https://github.com/aquasecurity/cfsec) repository - if not we'll get to it eventually and make sure your rule runs everywhere!
 
@@ -168,21 +183,8 @@ If you run `make test` and everything looks good, you can skip to *Step 6* - you
 
 Alternatively, if the tests fail, it's likely that *tfsec* needs to be taught how to recognise the cloud resource your test covers in Terraform code, and translate it to a defsec struct. We refer to this process as *adaptation*.
 
-### :left_right_arrow: Step 5: Write an Adapter
 
-*tfsec* supports a lot of cloud providers and services, but there are always more to add (especially with the frequency that AWS adds new services!) and so it is often required to add or update *adapters*. *tfsec* parses Terraform templates into handy Go structs that represent HCL concepts such as *blocks*, *attributes* etc. and also Terraform specific concepts such as *modules*, *resources* etc. 
-
-All of the structs that describe a Terraform project are passed to the *adapters* to summarise into *defsec* structs - those that you created in *Step 2* above.
-
-<p align="center">
-    <img alt="the squirrel needs to adapt?" src="https://media.giphy.com/media/a1zcR7A6v5k9Mcdxuz/giphy.gif" />
-</p>
-
-Your adapter will receive a list of Terraform modules which you can traverse to find particular blocks, attributes etc., and manufacture a series of defsec structs to return. You can see how this works by reviewing some of the many existing implementations.
-
-Whilst the end-to-end tests will automatically cover your new rule and adapter, it's recommended to also add a more granular set of tests for your adaptation code. You can [check out some examples of this](https://github.com/aquasecurity/tfsec/tree/master/internal/pkg/adapter/aws/apigateway) to get some inspiration. Or some copy and paste fuel.
-
-### :checkered_flag: Step 6: Prepare a Pull Request
+### :checkered_flag: Step 7: Prepare a *tfsec* Pull Request
 
 <p align="center">
     <img alt="Pull!" src="https://media.giphy.com/media/nJKDTpuxnZE7fb6Z1b/giphy.gif" />

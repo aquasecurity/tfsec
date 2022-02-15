@@ -27,13 +27,15 @@ var CheckProjectLevelOslogin = rules.Register(
 		Severity: severity.Medium,
 	},
 	func(s *state.State) (results rules.Results) {
-		if s.Google.Compute.ProjectMetadata.EnableOSLogin.IsFalse() {
-			results.Add(
-				"OS Login is disabled at project level.",
-				s.Google.Compute.ProjectMetadata.EnableOSLogin,
-			)
-		} else {
-			results.AddPassed(&s.Google.Compute.ProjectMetadata)
+		if s.Google.Compute.ProjectMetadata.IsManaged() {
+			if s.Google.Compute.ProjectMetadata.EnableOSLogin.IsFalse() {
+				results.Add(
+					"OS Login is disabled at project level.",
+					s.Google.Compute.ProjectMetadata.EnableOSLogin,
+				)
+			} else {
+				results.AddPassed(&s.Google.Compute.ProjectMetadata)
+			}
 		}
 		return
 	},

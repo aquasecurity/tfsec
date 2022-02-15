@@ -8,12 +8,12 @@ import (
 
 func New() *factory {
 	return &factory{
-		base: newBase(),
+		base: NewBase(),
 	}
 }
 
 type factory struct {
-	base *base
+	base *Base
 }
 
 func (f *factory) Build() Formatter {
@@ -45,7 +45,7 @@ func (f *factory) WithBaseDir(dir string) *factory {
 	return f
 }
 
-func (f *factory) WithCustomFormatterFunc(fn func(configurableFormatter, []rules.Result) error) *factory {
+func (f *factory) WithCustomFormatterFunc(fn func(ConfigurableFormatter, []rules.Result) error) *factory {
 	f.base.outputOverride = fn
 	return f
 }
@@ -70,18 +70,8 @@ func (f *factory) AsCheckStyle() *factory {
 	return f
 }
 
-func (f *factory) AsDefault() *factory {
-	f.base.outputOverride = outputDefault
-	return f
-}
-
 func (f *factory) AsCSV() *factory {
 	f.base.outputOverride = outputCSV
-	return f
-}
-
-func (f *factory) AsGIF() *factory {
-	f.base.outputOverride = outputGif
 	return f
 }
 

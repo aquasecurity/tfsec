@@ -40,7 +40,7 @@ type jUnitFailure struct {
 	Contents string `xml:",chardata"`
 }
 
-func outputJUnit(b configurableFormatter, results []rules.Result) error {
+func outputJUnit(b ConfigurableFormatter, results []rules.Result) error {
 
 	output := jUnitTestSuite{
 		Name:     filepath.Base(os.Args[0]),
@@ -109,7 +109,7 @@ func highlightCodeJunit(res rules.Result) string {
 	return output
 }
 
-func buildFailure(b configurableFormatter, res rules.Result) *jUnitFailure {
+func buildFailure(b ConfigurableFormatter, res rules.Result) *jUnitFailure {
 	if res.Status() == rules.StatusPassed {
 		return nil
 	}
@@ -128,4 +128,16 @@ func buildFailure(b configurableFormatter, res rules.Result) *jUnitFailure {
 			link,
 		),
 	}
+}
+
+func countPassedResults(results []rules.Result) int {
+	passed := 0
+
+	for _, res := range results {
+		if res.Status() == rules.StatusPassed {
+			passed++
+		}
+	}
+
+	return passed
 }

@@ -1,6 +1,6 @@
 package ecs
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type ECS struct {
 	types.Metadata
@@ -32,52 +32,4 @@ type Volume struct {
 type EFSVolumeConfiguration struct {
 	types.Metadata
 	TransitEncryptionEnabled types.BoolValue
-}
-
-func (c *Cluster) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *Cluster) GetRawValue() interface{} {
-	return nil
-}
-
-func (v *Volume) GetMetadata() *types.Metadata {
-	return &v.Metadata
-}
-
-func (v *Volume) GetRawValue() interface{} {
-	return nil
-}
-
-func (td *TaskDefinition) GetMetadata() *types.Metadata {
-	return &td.Metadata
-}
-
-func (td *TaskDefinition) GetRawValue() interface{} {
-	return nil
-}
-
-func (td *EFSVolumeConfiguration) GetMetadata() *types.Metadata {
-	return &td.Metadata
-}
-
-func (td *EFSVolumeConfiguration) GetRawValue() interface{} {
-	return nil
-}
-
-func (e *ECS) GetMetadata() *types.Metadata {
-	return &e.Metadata
-}
-
-func (e *ECS) GetRawValue() interface{} {
-	return nil
-}
-
-func (c *ClusterSettings) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *ClusterSettings) GetRawValue() interface{} {
-	return nil
 }

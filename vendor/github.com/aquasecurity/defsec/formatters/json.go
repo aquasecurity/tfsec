@@ -6,7 +6,7 @@ import (
 	"github.com/aquasecurity/defsec/rules"
 )
 
-func outputJSON(b configurableFormatter, results []rules.Result) error {
+func outputJSON(b ConfigurableFormatter, results []rules.Result) error {
 	jsonWriter := json.NewEncoder(b.Writer())
 	jsonWriter.SetIndent("", "\t")
 	var flatResults []rules.FlatResult

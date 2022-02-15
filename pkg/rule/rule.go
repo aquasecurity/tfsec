@@ -2,7 +2,7 @@ package rule
 
 import (
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
+	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
 // Rule is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.
@@ -12,7 +12,7 @@ type Rule struct {
 	RequiredTypes   []string
 	RequiredLabels  []string
 	RequiredSources []string
-	CheckTerraform  func(*block.Block, *block.Module) rules.Results
+	CheckTerraform  func(*terraform.Block, *terraform.Module) rules.Results
 }
 
 func (r Rule) ID() string {

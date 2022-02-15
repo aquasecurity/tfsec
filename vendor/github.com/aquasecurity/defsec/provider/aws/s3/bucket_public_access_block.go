@@ -1,6 +1,6 @@
 package s3
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type PublicAccessBlock struct {
 	types.Metadata
@@ -8,12 +8,4 @@ type PublicAccessBlock struct {
 	BlockPublicPolicy     types.BoolValue
 	IgnorePublicACLs      types.BoolValue
 	RestrictPublicBuckets types.BoolValue
-}
-
-func (p *PublicAccessBlock) GetMetadata() *types.Metadata {
-	return &p.Metadata
-}
-
-func (p *PublicAccessBlock) GetRawValue() interface{} {
-	return nil
 }

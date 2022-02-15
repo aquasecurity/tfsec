@@ -1,6 +1,6 @@
 package sam
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type SAM struct {
 	types.Metadata
@@ -10,12 +10,4 @@ type SAM struct {
 	HttpAPIs      []HttpAPI
 	SimpleTables  []SimpleTable
 	StateMachines []StateMachine
-}
-
-func (s *SAM) GetMetadata() *types.Metadata {
-	return &s.Metadata
-}
-
-func (s *SAM) GetRawValue() interface{} {
-	return nil
 }

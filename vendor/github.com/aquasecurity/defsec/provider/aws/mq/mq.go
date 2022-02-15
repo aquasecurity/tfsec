@@ -1,6 +1,6 @@
 package mq
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type MQ struct {
 	types.Metadata
@@ -17,28 +17,4 @@ type Logging struct {
 	types.Metadata
 	General types.BoolValue
 	Audit   types.BoolValue
-}
-
-func (c *Broker) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *Broker) GetRawValue() interface{} {
-	return nil
-}
-
-func (m *MQ) GetMetadata() *types.Metadata {
-	return &m.Metadata
-}
-
-func (m *MQ) GetRawValue() interface{} {
-	return nil
-}
-
-func (l *Logging) GetMetadata() *types.Metadata {
-	return &l.Metadata
-}
-
-func (l *Logging) GetRawValue() interface{} {
-	return nil
 }

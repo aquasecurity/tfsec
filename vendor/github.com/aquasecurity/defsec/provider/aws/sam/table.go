@@ -1,6 +1,6 @@
 package sam
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type SimpleTable struct {
 	types.Metadata
@@ -13,20 +13,4 @@ type SSESpecification struct {
 
 	Enabled        types.BoolValue
 	KMSMasterKeyID types.StringValue
-}
-
-func (a *SimpleTable) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *SimpleTable) GetRawValue() interface{} {
-	return nil
-}
-
-func (a *SSESpecification) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *SSESpecification) GetRawValue() interface{} {
-	return nil
 }

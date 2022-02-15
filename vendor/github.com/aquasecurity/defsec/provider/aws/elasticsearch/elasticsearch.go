@@ -1,6 +1,6 @@
 package elasticsearch
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type Elasticsearch struct {
 	types.Metadata
@@ -35,52 +35,4 @@ type TransitEncryption struct {
 type AtRestEncryption struct {
 	types.Metadata
 	Enabled types.BoolValue
-}
-
-func (c *Domain) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *Domain) GetRawValue() interface{} {
-	return nil
-}
-
-func (e *Elasticsearch) GetMetadata() *types.Metadata {
-	return &e.Metadata
-}
-
-func (e *Elasticsearch) GetRawValue() interface{} {
-	return nil
-}
-
-func (e *Endpoint) GetMetadata() *types.Metadata {
-	return &e.Metadata
-}
-
-func (e *Endpoint) GetRawValue() interface{} {
-	return nil
-}
-
-func (l *LogPublishing) GetMetadata() *types.Metadata {
-	return &l.Metadata
-}
-
-func (l *LogPublishing) GetRawValue() interface{} {
-	return nil
-}
-
-func (t *TransitEncryption) GetMetadata() *types.Metadata {
-	return &t.Metadata
-}
-
-func (t *TransitEncryption) GetRawValue() interface{} {
-	return nil
-}
-
-func (a *AtRestEncryption) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *AtRestEncryption) GetRawValue() interface{} {
-	return nil
 }

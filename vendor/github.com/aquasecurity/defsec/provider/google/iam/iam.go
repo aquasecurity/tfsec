@@ -1,6 +1,6 @@
 package iam
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type IAM struct {
 	Organizations []Organization
@@ -75,20 +75,4 @@ func (f *Folder) AllFolders() []Folder {
 		folders = append(folders, folder.AllFolders()...)
 	}
 	return folders
-}
-
-func (m *Member) GetMetadata() *types.Metadata {
-	return &m.Metadata
-}
-
-func (m *Member) GetRawValue() interface{} {
-	return nil
-}
-
-func (b *Binding) GetMetadata() *types.Metadata {
-	return &b.Metadata
-}
-
-func (b *Binding) GetRawValue() interface{} {
-	return nil
 }

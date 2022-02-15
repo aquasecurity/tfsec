@@ -9,11 +9,11 @@ import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
+	"github.com/aquasecurity/trivy-config-parsers/terraform"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 )
 
 func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
@@ -64,13 +64,13 @@ func Test_WildcardMatchingOnRequiredLabels(t *testing.T) {
 			}, nil),
 			RequiredTypes:  []string{"resource"},
 			RequiredLabels: []string{test.pattern},
-			CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
+			CheckTerraform: func(resourceBlock *terraform.Block, _ *terraform.Module) (results rules.Results) {
 				results.Add("Custom check failed for resource.", resourceBlock)
 				return
 			},
 		}
-		scanner.RegisterCheckRule(rule)
-		defer scanner.DeregisterCheckRule(rule)
+		executor.RegisterCheckRule(rule)
+		defer executor.DeregisterCheckRule(rule)
 
 		results := testutil.ScanHCL(test.input, t)
 

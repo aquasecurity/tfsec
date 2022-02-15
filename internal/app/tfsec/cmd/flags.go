@@ -1,8 +1,11 @@
 package cmd
 
 import (
-	"github.com/aquasecurity/tfsec/internal/pkg/config"
-	"github.com/aquasecurity/tfsec/internal/pkg/debug"
+	"os"
+	"path/filepath"
+	"strings"
+
+	"github.com/aquasecurity/tfsec/pkg/scanner"
 )
 
 var showVersion = false
@@ -17,21 +20,19 @@ var excludePaths []string
 var outputFlag string
 var customCheckDir string
 var configFile string
-var tfsecConfig = &config.Config{}
 var conciseOutput = false
 var excludeDownloaded = false
 var includePassed = false
 var includeIgnored = false
-var ignoreWarnings = false
-var ignoreInfo = false
 var allDirs = false
 var migrateIgnores = false
 var runStatistics bool
 var ignoreHCLErrors bool
 var stopOnCheckError bool
-var workspace string
+var workspace = "default"
 var singleThreadedMode bool
 var disableGrouping bool
+var debug bool
 
 func init() {
 	rootCmd.Flags().BoolVar(&singleThreadedMode, "single-thread", singleThreadedMode, "Run checks using a single thread")
@@ -51,8 +52,8 @@ func init() {
 	rootCmd.Flags().StringVarP(&outputFlag, "out", "O", outputFlag, "Set output file. This filename will have a format descriptor appended if multiple formats are specified with --format")
 	rootCmd.Flags().StringVar(&customCheckDir, "custom-check-dir", customCheckDir, "Explicitly the custom checks dir location")
 	rootCmd.Flags().StringVar(&configFile, "config-file", configFile, "Config file to use during run")
-	rootCmd.Flags().BoolVar(&debug.Enabled, "debug", debug.Enabled, "Enable debug logging (same as verbose)")
-	rootCmd.Flags().BoolVar(&debug.Enabled, "verbose", debug.Enabled, "Enable verbose logging (same as debug)")
+	rootCmd.Flags().BoolVar(&debug, "debug", debug, "Enable debug logging (same as verbose)")
+	rootCmd.Flags().BoolVar(&debug, "verbose", debug, "Enable verbose logging (same as debug)")
 	rootCmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Include passed checks in the result output")
@@ -62,4 +63,50 @@ func init() {
 	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
 	rootCmd.Flags().StringVarP(&workspace, "workspace", "w", workspace, "Specify a workspace for ignore limits")
 	_ = rootCmd.Flags().MarkHidden("allow-checks-to-panic")
+}
+
+func configureOptions(dir string) []scanner.Option {
+	var options []scanner.Option
+	options = append(options, scanner.OptionWithSingleThread(singleThreadedMode))
+	options = append(options, scanner.OptionStopOnHCLError(!ignoreHCLErrors))
+	options = append(options, scanner.OptionStopOnRuleErrors(stopOnCheckError))
+	options = append(options, scanner.OptionWithTFVarsPaths(tfvarsPaths))
+	options = append(options, scanner.OptionWithExcludePaths(excludePaths))
+	options = append(options, scanner.OptionSkipDownloaded(excludeDownloaded))
+	options = append(options, scanner.OptionIncludePassed(includePassed))
+	options = append(options, scanner.OptionIncludeIgnored(includeIgnored))
+	options = append(options, scanner.OptionScanAllDirectories(allDirs))
+	options = append(options, scanner.OptionWithWorkspaceName(workspace))
+
+	if filterResults != "" {
+		longIDs := strings.Split(filterResults, ",")
+		options = append(options, scanner.OptionWithIncludeOnlyResults(longIDs))
+	}
+
+	if excludedRuleIDs != "" {
+		options = append(options, scanner.OptionExcludeRules(strings.Split(excludedRuleIDs, ",")))
+	}
+
+	if configFile != "" {
+		options = append(options, scanner.OptionWithConfigFile(configFile))
+	} else {
+		configDir := filepath.Join(dir, ".tfsec")
+		for _, filename := range []string{"config.json", "config.yml", "config.yaml"} {
+			path := filepath.Join(configDir, filename)
+			if _, err := os.Stat(path); err == nil {
+				options = append(options, scanner.OptionWithConfigFile(path))
+				break
+			}
+		}
+	}
+	if customCheckDir != "" {
+		options = append(options, scanner.OptionWithCustomCheckDir(customCheckDir))
+	} else {
+		customDir := filepath.Join(dir, ".tfsec")
+		options = append(options, scanner.OptionWithCustomCheckDir(customDir))
+	}
+	if debug {
+		options = append(options, scanner.OptionWithDebugWriter(os.Stderr))
+	}
+	return options
 }

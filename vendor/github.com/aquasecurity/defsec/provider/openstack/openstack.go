@@ -1,6 +1,6 @@
 package openstack
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type OpenStack struct {
 	types.Metadata

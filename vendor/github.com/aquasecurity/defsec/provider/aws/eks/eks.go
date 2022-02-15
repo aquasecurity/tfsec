@@ -1,6 +1,6 @@
 package eks
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type EKS struct {
 	types.Metadata
@@ -28,36 +28,4 @@ type Encryption struct {
 	types.Metadata
 	Secrets  types.BoolValue
 	KMSKeyID types.StringValue
-}
-
-func (c *Cluster) GetMetadata() *types.Metadata {
-	return &c.Metadata
-}
-
-func (c *Cluster) GetRawValue() interface{} {
-	return nil
-}
-
-func (e *EKS) GetMetadata() *types.Metadata {
-	return &e.Metadata
-}
-
-func (e *EKS) GetRawValue() interface{} {
-	return nil
-}
-
-func (l *Logging) GetMetadata() *types.Metadata {
-	return &l.Metadata
-}
-
-func (l *Logging) GetRawValue() interface{} {
-	return nil
-}
-
-func (e *Encryption) GetMetadata() *types.Metadata {
-	return &e.Metadata
-}
-
-func (e *Encryption) GetRawValue() interface{} {
-	return nil
 }

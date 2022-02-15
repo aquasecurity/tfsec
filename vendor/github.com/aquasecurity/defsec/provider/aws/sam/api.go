@@ -1,6 +1,6 @@
 package sam
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type API struct {
 	types.Metadata
@@ -33,44 +33,4 @@ type RESTMethodSettings struct {
 	LoggingEnabled     types.BoolValue
 	DataTraceEnabled   types.BoolValue
 	MetricsEnabled     types.BoolValue
-}
-
-func (a *API) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *API) GetRawValue() interface{} {
-	return nil
-}
-
-func (a *AccessLogging) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *AccessLogging) GetRawValue() interface{} {
-	return nil
-}
-
-func (a *DomainConfiguration) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *DomainConfiguration) GetRawValue() interface{} {
-	return nil
-}
-
-func (a *RESTMethodSettings) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *RESTMethodSettings) GetRawValue() interface{} {
-	return nil
-}
-
-func (a *ApiAuth) GetMetadata() *types.Metadata {
-	return &a.Metadata
-}
-
-func (a *ApiAuth) GetRawValue() interface{} {
-	return nil
 }

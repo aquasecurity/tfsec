@@ -1,17 +1,9 @@
 package compute
 
-import "github.com/aquasecurity/defsec/types"
+import "github.com/aquasecurity/trivy-config-parsers/types"
 
 type Network struct {
 	types.Metadata
 	Firewall    *Firewall
 	Subnetworks []SubNetwork
-}
-
-func (n *Network) GetMetadata() *types.Metadata {
-	return &n.Metadata
-}
-
-func (n *Network) GetRawValue() interface{} {
-	return nil
 }

@@ -2,7 +2,7 @@ package storage
 
 import (
 	"github.com/aquasecurity/defsec/provider/google/iam"
-	"github.com/aquasecurity/defsec/types"
+	"github.com/aquasecurity/trivy-config-parsers/types"
 )
 
 type Storage struct {
@@ -17,20 +17,4 @@ type Bucket struct {
 	EnableUniformBucketLevelAccess types.BoolValue
 	Members                        []iam.Member
 	Bindings                       []iam.Binding
-}
-
-func (s *Storage) GetMetadata() *types.Metadata {
-	return &s.Metadata
-}
-
-func (s *Storage) GetRawValue() interface{} {
-	return nil
-}
-
-func (b *Bucket) GetMetadata() *types.Metadata {
-	return &b.Metadata
-}
-
-func (b *Bucket) GetRawValue() interface{} {
-	return nil
 }

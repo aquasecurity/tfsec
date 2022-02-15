@@ -6,10 +6,10 @@ import (
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil"
 	"github.com/aquasecurity/tfsec/pkg/rule"
+	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
 func TestScanningJSON(t *testing.T) {
@@ -73,7 +73,7 @@ func TestScanningJSON(t *testing.T) {
 					Severity:  severity.High,
 				}, nil),
 				RequiredLabels: []string{"bad"},
-				CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
+				CheckTerraform: func(resourceBlock *terraform.Block, _ *terraform.Module) (results rules.Results) {
 					if resourceBlock.GetAttribute("secure").IsTrue() {
 						return
 					}
@@ -81,8 +81,8 @@ func TestScanningJSON(t *testing.T) {
 					return
 				},
 			}
-			scanner.RegisterCheckRule(r1)
-			defer scanner.DeregisterCheckRule(r1)
+			executor.RegisterCheckRule(r1)
+			defer executor.DeregisterCheckRule(r1)
 
 			results := testutil.ScanJSON(test.source, t)
 			var include, exclude string

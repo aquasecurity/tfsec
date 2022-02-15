@@ -6,22 +6,25 @@ import (
 	"os"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/internal/pkg/formatter"
+
+	"github.com/aquasecurity/tfsec/pkg/scanner"
+
 	"github.com/aquasecurity/defsec/formatters"
 	"github.com/aquasecurity/defsec/provider"
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/pkg/debug"
 	"github.com/aquasecurity/tfsec/version"
 	"github.com/liamg/tml"
 )
 
-func output(baseFilename string, formats []string, dir string, results []rules.Result) error {
+func output(baseFilename string, formats []string, dir string, results []rules.Result, metrics scanner.Metrics) error {
 	if baseFilename == "" && len(formats) > 1 {
 		return fmt.Errorf("you must specify a base output filename with --out if you want to use multiple formats")
 	}
 
 	var files []string
 	for _, format := range formats {
-		if filename, err := outputFormat(len(formats) > 1, baseFilename, format, dir, results); err != nil {
+		if filename, err := outputFormat(len(formats) > 1, baseFilename, format, dir, results, metrics); err != nil {
 			return err
 		} else if filename != "" {
 			files = append(files, filename)
@@ -63,10 +66,10 @@ func gatherLinks(result rules.Result) []string {
 	return append(docsLink, links...)
 }
 
-func outputFormat(addExtension bool, baseFilename string, format string, dir string, results []rules.Result) (string, error) {
+func outputFormat(addExtension bool, baseFilename string, format string, dir string, results []rules.Result, metrics scanner.Metrics) (string, error) {
 
-	formatter := formatters.New().
-		WithDebugEnabled(debug.Enabled).
+	factory := formatters.New().
+		WithDebugEnabled(debug).
 		WithColoursEnabled(!disableColours).
 		WithGroupingEnabled(!disableGrouping).
 		WithLinksFunc(gatherLinks).
@@ -78,20 +81,21 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 	switch strings.ToLower(format) {
 	case "", "default":
 		alsoStdout = true
+		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics))
 	case "json":
-		formatter.AsJSON()
+		factory.AsJSON()
 	case "csv":
-		formatter.AsCSV()
+		factory.AsCSV()
 	case "checkstyle":
-		formatter.AsCheckStyle()
+		factory.AsCheckStyle()
 	case "junit":
-		formatter.AsJUnit()
+		factory.AsJUnit()
 	case "text":
-		formatter.AsDefault().WithColoursEnabled(false)
+		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics)).WithColoursEnabled(false)
 	case "sarif":
-		formatter.AsSARIF()
+		factory.AsSARIF()
 	case "gif":
-		formatter.AsGIF()
+		factory.WithCustomFormatterFunc(formatter.GifWithMetrics(metrics))
 	default:
 		return "", fmt.Errorf("invalid format specified: '%s'", format)
 	}
@@ -110,13 +114,13 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 		defer func() { _ = f.Close() }()
 		if alsoStdout {
 			m := io.MultiWriter(f, os.Stdout)
-			formatter.WithWriter(m)
+			factory.WithWriter(m)
 		} else {
-			formatter.WithWriter(f)
+			factory.WithWriter(f)
 		}
 	}
 
-	return outputPath, formatter.Build().Output(results)
+	return outputPath, factory.Build().Output(results)
 }
 
 func getExtensionForFormat(format string) string {
