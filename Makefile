@@ -60,7 +60,7 @@ clone-image-tfsec:
 
 .PHONY: sanity
 sanity: test
-	go run ./cmd/tfsec -s -p --force-all-dirs ./example > /dev/null
+	go run ./cmd/tfsec -s -p --force-all-dirs ./_examples > /dev/null
 
 .PHONY: pr-ready
 pr-ready: quality sanity typos

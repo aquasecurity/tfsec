@@ -28,6 +28,7 @@ func OptionWithCustomCheckDir(dir string) Option {
 
 func OptionWithDebugWriter(w io.Writer) Option {
 	return func(s *Scanner) {
+		s.debugWriter = w
 		s.executorOpt = append(s.executorOpt, executor.OptionWithDebugWriter(w))
 		s.parserOpt = append(s.parserOpt, parser.OptionWithDebugWriter(w))
 	}

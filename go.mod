@@ -4,8 +4,8 @@ go 1.17
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.2
-	github.com/aquasecurity/defsec v0.7.3-0.20220211173331-3864b684e54b
-	github.com/aquasecurity/trivy-config-parsers v0.0.0-20220211143132-370091d2bbb9
+	github.com/aquasecurity/defsec v0.8.0
+	github.com/aquasecurity/trivy-config-parsers v0.0.1
 	github.com/hashicorp/go-version v1.4.0
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/liamg/clinch v1.5.6

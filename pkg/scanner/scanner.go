@@ -1,6 +1,8 @@
 package scanner
 
 import (
+	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -24,6 +26,7 @@ type Scanner struct {
 	forceAllDirs   bool
 	customCheckDir string
 	configFile     string
+	debugWriter    io.Writer
 }
 
 type Metrics struct {
@@ -36,12 +39,21 @@ type Metrics struct {
 
 func New(options ...Option) *Scanner {
 	s := &Scanner{
-		dirs: make(map[string]struct{}),
+		dirs:        make(map[string]struct{}),
+		debugWriter: ioutil.Discard,
 	}
 	for _, opt := range options {
 		opt(s)
 	}
 	return s
+}
+
+func (s *Scanner) debug(format string, args ...interface{}) {
+	if s.debugWriter == nil {
+		return
+	}
+	prefix := "[debug:scan] "
+	_, _ = s.debugWriter.Write([]byte(fmt.Sprintf(prefix+format+"\n", args...)))
 }
 
 func (s *Scanner) AddPath(path string) error {
@@ -68,10 +80,14 @@ func (s *Scanner) Scan() (rules.Results, Metrics, error) {
 	if s.configFile != "" {
 		if conf, err := config.LoadConfig(s.configFile); err == nil {
 			s.executorOpt = append(s.executorOpt, executor.OptionWithConfig(*conf))
+			s.debug("Loaded config file from %s.", s.configFile)
+		} else {
+			s.debug("Failed to load config file from %s: %s", s.configFile, err)
 		}
 	}
 	if s.customCheckDir != "" {
 		if err := custom.Load(s.customCheckDir); err != nil {
+			s.debug("Failed to load custom checks from %s: %s", s.customCheckDir, err)
 			return nil, metrics, err
 		}
 	}
@@ -128,6 +144,11 @@ func (s *Scanner) Scan() (rules.Results, Metrics, error) {
 
 		allResults = append(allResults, results...)
 	}
+
+	metrics.Timings.Total += metrics.Parser.Timings.DiskIODuration
+	metrics.Timings.Total += metrics.Parser.Timings.ParseDuration
+	metrics.Timings.Total += metrics.Executor.Timings.Adaptation
+	metrics.Timings.Total += metrics.Executor.Timings.RunningChecks
 
 	return allResults, metrics, nil
 }

@@ -122,6 +122,7 @@ func (e *Executor) Execute(modules terraform.Modules) (rules.Results, Metrics, e
 				e.workspaceName,
 				result.Rule().LongID(),
 				legacy.FindID(result.Rule().LongID()),
+				result.Rule().AVDID,
 			) != nil {
 				e.debug("Ignored '%s' at '%s'.", result.Rule().LongID(), result.Range())
 				continue

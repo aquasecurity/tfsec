@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -30,7 +29,7 @@ var migrateIgnores = false
 var runStatistics bool
 var ignoreHCLErrors bool
 var stopOnCheckError bool
-var workspace string
+var workspace = "default"
 var singleThreadedMode bool
 var disableGrouping bool
 var debug bool
@@ -92,8 +91,8 @@ func configureOptions(dir string) []scanner.Option {
 		options = append(options, scanner.OptionWithConfigFile(configFile))
 	} else {
 		configDir := filepath.Join(dir, ".tfsec")
-		for _, filename := range []string{"config.json", "config.yaml"} {
-			path := fmt.Sprintf("%s/%s", configDir, filename)
+		for _, filename := range []string{"config.json", "config.yml", "config.yaml"} {
+			path := filepath.Join(configDir, filename)
 			if _, err := os.Stat(path); err == nil {
 				options = append(options, scanner.OptionWithConfigFile(path))
 				break

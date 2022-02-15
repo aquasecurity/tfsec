@@ -8,8 +8,17 @@ For more information please check out our [contributing guide](CONTRIBUTING.md) 
 
 At a very high level, tfsec is structured like this. The most important packages are broken down below.
 
-```
-    *.tf files -> parser.Parse() -> adapter.Adapt() -> scanner.Scan() -> Results
+```mermaid
+flowchart LR;
+    files[*.tf files]
+    parser[parser.Parse()]
+    adapter[adapter.Adapt()]
+    scanner[scanner.Scan()]
+    results[Results]
+    files-->parser;
+    parser-->adapter;
+    adapter-->scanner;
+    scanner-->results;
 ```
 
 ### `cmd/tfsec`
