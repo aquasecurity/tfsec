@@ -10,11 +10,11 @@ At a very high level, tfsec is structured like this. The most important packages
 
 ```mermaid
 flowchart LR;
-    files[*.tf files]
-    parser[parser.Parse()]
-    adapter[adapter.Adapt()]
-    scanner[scanner.Scan()]
-    results[Results]
+    files["*.tf files"]
+    parser["parser.Parse()"]
+    adapter["adapter.Adapt()"]
+    scanner["scanner.Scan()"]
+    results["Results"]
     files-->parser;
     parser-->adapter;
     adapter-->scanner;
