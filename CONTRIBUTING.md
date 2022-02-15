@@ -32,7 +32,6 @@ As described in [ARCHITECTURE.md](ARCHITECTURE.md), the rule logic is defined in
 
 So firstly you'll need to [fork the repository](https://github.com/aquasecurity/defsec/fork) and clone it on your local machine:
 
-
 ```bash
 # clone your fork of defsec
 git clone git@github.com/YOUR_USERNAME/defsec.git
