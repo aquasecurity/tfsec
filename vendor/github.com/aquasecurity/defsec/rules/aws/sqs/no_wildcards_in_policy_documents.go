@@ -43,21 +43,21 @@ This ensures that the queue itself cannot be modified or deleted, and prevents p
 		for _, queue := range s.AWS.SQS.Queues {
 			for _, policyDoc := range queue.Policies {
 				var fail bool
-				policy, err := iamgo.ParseString(policyDoc.Value())
-				if err != nil {
-					return
-				}
-				for _, statement := range policy.Statement {
-					if statement.Effect != iamgo.EffectAllow {
+				policy := policyDoc.Document.Parsed
+				statements, _ := policy.Statements()
+				for _, statement := range statements {
+					effect, _ := statement.Effect()
+					if effect != iamgo.EffectAllow {
 						continue
 					}
-					for _, action := range statement.Action {
+					actions, r := statement.Actions()
+					for _, action := range actions {
 						action = strings.ToLower(action)
 						if action == "*" || action == "sqs:*" {
 							fail = true
 							results.Add(
 								"Queue policy does not restrict actions to a known set.",
-								policyDoc,
+								policyDoc.Document.MetadataFromIamGo(statement.Range(), r),
 							)
 							break
 						}

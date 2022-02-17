@@ -1,6 +1,9 @@
 package iam
 
-import "github.com/aquasecurity/trivy-config-parsers/types"
+import (
+	"github.com/aquasecurity/trivy-config-parsers/types"
+	"github.com/liamg/iamgo"
+)
 
 type IAM struct {
 	types.Metadata
@@ -14,7 +17,14 @@ type IAM struct {
 type Policy struct {
 	types.Metadata
 	Name     types.StringValue
-	Document types.StringValue
+	Document Document
+}
+
+type Document struct {
+	types.Metadata
+	Parsed   iamgo.Document
+	IsOffset bool
+	HasRefs  bool
 }
 
 type Group struct {
@@ -35,4 +45,25 @@ type Role struct {
 	types.Metadata
 	Name     types.StringValue
 	Policies []Policy
+}
+
+func (d Document) MetadataFromIamGo(r ...iamgo.Range) types.Metadata {
+	m := d.GetMetadata()
+	if d.HasRefs {
+		return m
+	}
+	newRange := m.Range()
+	var start int
+	if !d.IsOffset {
+		start = newRange.GetStartLine()
+	}
+	for _, rng := range r {
+		newRange := types.NewRange(
+			newRange.GetFilename(),
+			start+rng.StartLine,
+			start+rng.EndLine,
+		)
+		m = types.NewMetadata(newRange, m.Reference()).WithParent(m)
+	}
+	return m
 }

@@ -5,7 +5,6 @@ import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/defsec/state"
-	"github.com/liamg/iamgo"
 )
 
 var CheckNoStateMachinePolicyWildcards = rules.Register(
@@ -37,12 +36,10 @@ var CheckNoStateMachinePolicyWildcards = rules.Register(
 			}
 
 			for _, document := range stateMachine.Policies {
-				policy, err := iamgo.ParseString(document.Value())
-				if err != nil {
-					continue
-				}
-				for _, statement := range policy.Statement {
-					results = checkStatement(document, statement, results)
+				policy := document.Document.Parsed
+				statements, _ := policy.Statements()
+				for _, statement := range statements {
+					results = checkStatement(document.Document, statement, results)
 				}
 			}
 		}

@@ -1,134 +1,162 @@
 package iam
 
 import (
-	"encoding/json"
 	"strings"
+
+	"github.com/aquasecurity/defsec/provider/aws/iam"
 
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/trivy-config-parsers/terraform"
-	"github.com/aquasecurity/trivy-config-parsers/types"
 	"github.com/liamg/iamgo"
 )
 
 type wrappedDocument struct {
-	source   rules.MetadataProvider
+	Source   rules.MetadataProvider
 	Document iamgo.Document
 }
 
-func parsePolicyFromAttr(attr *terraform.Attribute, owner *terraform.Block, modules terraform.Modules) (types.StringValue, error) {
+func parsePolicyFromAttr(attr *terraform.Attribute, owner *terraform.Block, modules terraform.Modules) (*iam.Document, error) {
 
 	documents := findAllPolicies(modules, owner, attr)
 	if len(documents) > 0 {
-		output, err := json.Marshal(documents[0].Document)
-		if err != nil {
-			return nil, err
-		}
-		return types.String(unescapeVars(string(output)), documents[0].source.GetMetadata()), nil
+		return &iam.Document{
+			Parsed:   documents[0].Document,
+			Metadata: documents[0].Source.GetMetadata(),
+			IsOffset: true,
+		}, nil
 	}
 
 	if attr.IsString() {
-		return types.String(unescapeVars(attr.Value().AsString()), owner.GetMetadata()), nil
+		parsed, err := iamgo.Parse([]byte(unescapeVars(attr.Value().AsString())))
+		if err != nil {
+			return nil, err
+		}
+		return &iam.Document{
+			Parsed:   *parsed,
+			Metadata: attr.GetMetadata(),
+			IsOffset: false,
+			HasRefs:  len(attr.AllReferences()) > 0,
+		}, nil
 	}
 
-	return attr.AsStringValueOrDefault("", owner), nil
+	return &iam.Document{
+		Metadata: owner.GetMetadata(),
+	}, nil
 }
 
 func unescapeVars(input string) string {
 	return strings.ReplaceAll(input, "&{", "${")
 }
 
-// https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
+// ConvertTerraformDocument converts a terraform data policy into an iamgo policy https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
 func ConvertTerraformDocument(modules terraform.Modules, block *terraform.Block) (*wrappedDocument, error) {
 
-	var document iamgo.Document
+	builder := iamgo.NewPolicyBuilder()
 
 	if sourceAttr := block.GetAttribute("source_json"); sourceAttr.IsString() {
 		doc, err := iamgo.ParseString(sourceAttr.Value().AsString())
 		if err != nil {
 			return nil, err
 		}
-		document = *doc
+		builder = iamgo.PolicyBuilderFromDocument(*doc)
 	}
 
 	if sourceDocumentsAttr := block.GetAttribute("source_policy_documents"); sourceDocumentsAttr.IsIterable() {
 		docs := findAllPolicies(modules, block, sourceDocumentsAttr)
 		for _, doc := range docs {
-			document.Statement = append(document.Statement, doc.Document.Statement...)
-		}
-	}
-
-	if idAttr := block.GetAttribute("policy_id"); idAttr.IsString() {
-		document.Id = idAttr.Value().AsString()
-	}
-
-	if versionAttr := block.GetAttribute("version"); versionAttr.IsString() {
-		document.Version = iamgo.Version(versionAttr.Value().AsString())
-	}
-
-	// count number of statements in the source json to ensure we only override these with regular statements
-	sourceCount := len(document.Statement)
-
-	for _, statementBlock := range block.GetBlocks("statement") {
-
-		statement := parseStatement(statementBlock)
-		mergeInStatement(&document, statement, sourceCount)
-	}
-
-	sourceCount = len(document.Statement)
-	if overrideDocumentsAttr := block.GetAttribute("override_policy_documents"); overrideDocumentsAttr.IsIterable() {
-		docs := findAllPolicies(modules, block, overrideDocumentsAttr)
-		for _, doc := range docs {
-			for _, statement := range doc.Document.Statement {
-				mergeInStatement(&document, statement, sourceCount)
+			statements, _ := doc.Document.Statements()
+			for _, statement := range statements {
+				builder.WithStatement(statement)
 			}
 		}
 	}
 
-	return &wrappedDocument{Document: document, source: block}, nil
-}
+	if idAttr := block.GetAttribute("policy_id"); idAttr.IsString() {
+		r := idAttr.GetMetadata().Range()
+		builder.WithId(idAttr.Value().AsString(), r.GetStartLine(), r.GetEndLine())
+	}
 
-func mergeInStatement(document *iamgo.Document, statement iamgo.Statement, overrideToIndex int) {
-	var sidExists bool
-	for i, existing := range document.Statement {
-		if i >= overrideToIndex {
-			break
-		}
-		if existing.Sid == statement.Sid {
-			sidExists = true
-			document.Statement[i] = statement
-			break
+	if versionAttr := block.GetAttribute("version"); versionAttr.IsString() {
+		r := versionAttr.GetMetadata().Range()
+		builder.WithVersion(versionAttr.Value().AsString(), r.GetStartLine(), r.GetEndLine())
+	}
+
+	for _, statementBlock := range block.GetBlocks("statement") {
+		statement := parseStatement(statementBlock)
+		builder.WithStatement(statement, statement.Range().StartLine, statement.Range().EndLine)
+	}
+
+	if overrideDocumentsAttr := block.GetAttribute("override_policy_documents"); overrideDocumentsAttr.IsIterable() {
+		docs := findAllPolicies(modules, block, overrideDocumentsAttr)
+		for _, doc := range docs {
+			statements, _ := doc.Document.Statements()
+			for _, statement := range statements {
+				builder.WithStatement(statement, statement.Range().StartLine, statement.Range().EndLine)
+			}
 		}
 	}
-	if !sidExists {
-		document.Statement = append(document.Statement, statement)
-	}
+
+	return &wrappedDocument{Document: builder.Build(), Source: block}, nil
 }
 
+//nolint
 func parseStatement(statementBlock *terraform.Block) iamgo.Statement {
-	var statement iamgo.Statement
+
+	metadata := statementBlock.GetMetadata()
+
+	builder := iamgo.NewStatementBuilder()
+	builder.WithRange(metadata.Range().GetStartLine(), metadata.Range().GetEndLine())
+
 	if sidAttr := statementBlock.GetAttribute("sid"); sidAttr.IsString() {
-		statement.Sid = sidAttr.Value().AsString()
+		r := sidAttr.GetMetadata().Range()
+		builder.WithSid(sidAttr.Value().AsString(), r.GetStartLine(), r.GetEndLine())
 	}
 	if actionsAttr := statementBlock.GetAttribute("actions"); actionsAttr.IsIterable() {
-		statement.Action = actionsAttr.ValueAsStrings()
+		r := actionsAttr.GetMetadata().Range()
+		builder.WithActions(actionsAttr.ValueAsStrings(), r.GetStartLine(), r.GetEndLine())
 	}
 	if notActionsAttr := statementBlock.GetAttribute("not_actions"); notActionsAttr.IsIterable() {
-		statement.NotAction = notActionsAttr.ValueAsStrings()
+		r := notActionsAttr.GetMetadata().Range()
+		builder.WithNotActions(notActionsAttr.ValueAsStrings(), r.GetStartLine(), r.GetEndLine())
 	}
 	if resourcesAttr := statementBlock.GetAttribute("resources"); resourcesAttr.IsIterable() {
-		statement.Resource = resourcesAttr.ValueAsStrings()
+		r := resourcesAttr.GetMetadata().Range()
+		builder.WithResources(resourcesAttr.ValueAsStrings(), r.GetStartLine(), r.GetEndLine())
 	}
 	if notResourcesAttr := statementBlock.GetAttribute("not_resources"); notResourcesAttr.IsIterable() {
-		statement.NotResource = notResourcesAttr.ValueAsStrings()
+		r := notResourcesAttr.GetMetadata().Range()
+		builder.WithNotResources(notResourcesAttr.ValueAsStrings(), r.GetStartLine(), r.GetEndLine())
 	}
 	if effectAttr := statementBlock.GetAttribute("effect"); effectAttr.IsString() {
-		statement.Effect = iamgo.Effect(effectAttr.Value().AsString())
+		r := effectAttr.GetMetadata().Range()
+		builder.WithEffect(effectAttr.Value().AsString(), r.GetStartLine(), r.GetEndLine())
 	} else {
-		statement.Effect = iamgo.EffectAllow
+		builder.WithEffect(iamgo.EffectAllow)
 	}
 
-	statement.Principal = readPrincipal(statementBlock.GetBlocks("principals"))
-	statement.NotPrincipal = readPrincipal(statementBlock.GetBlocks("not_principals"))
+	for _, principalBlock := range statementBlock.GetBlocks("principals") {
+		typeAttr := principalBlock.GetAttribute("type")
+		if !typeAttr.IsString() {
+			continue
+		}
+		identifiersAttr := principalBlock.GetAttribute("identifiers")
+		if !identifiersAttr.IsIterable() {
+			continue
+		}
+		r := principalBlock.GetMetadata().Range()
+		switch typeAttr.Value().AsString() {
+		case "*":
+			builder.WithAllPrincipals(true, r.GetStartLine(), r.GetEndLine())
+		case "AWS":
+			builder.WithAWSPrincipals(identifiersAttr.ValueAsStrings(), r.GetStartLine(), r.GetEndLine())
+		case "Federated":
+			builder.WithFederatedPrincipals(identifiersAttr.ValueAsStrings(), r.GetStartLine(), r.GetEndLine())
+		case "Service":
+			builder.WithServicePrincipals(identifiersAttr.ValueAsStrings(), r.GetStartLine(), r.GetEndLine())
+		case "CanonicalUser":
+			builder.WithCanonicalUsersPrincipals(identifiersAttr.ValueAsStrings(), r.GetStartLine(), r.GetEndLine())
+		}
+	}
 
 	for _, conditionBlock := range statementBlock.GetBlocks("condition") {
 		testAttr := conditionBlock.GetAttribute("test")
@@ -143,45 +171,19 @@ func parseStatement(statementBlock *terraform.Block) iamgo.Statement {
 		if valuesAttr.IsNil() || len(valuesAttr.ValueAsStrings()) == 0 {
 			continue
 		}
-		statement.Condition = append(statement.Condition, iamgo.Condition{
-			Operator: testAttr.Value().AsString(),
-			Key:      variableAttr.Value().AsString(),
-			Value:    valuesAttr.ValueAsStrings(),
-		})
+
+		r := conditionBlock.GetMetadata().Range()
+
+		builder.WithCondition(
+			testAttr.Value().AsString(),
+			variableAttr.Value().AsString(),
+			valuesAttr.ValueAsStrings(),
+			r.GetStartLine(),
+			r.GetEndLine(),
+		)
+
 	}
-	return statement
-}
-
-func readPrincipal(blocks terraform.Blocks) *iamgo.Principals {
-	var principals *iamgo.Principals
-	for _, principalBlock := range blocks {
-
-		typeAttr := principalBlock.GetAttribute("type")
-		if !typeAttr.IsString() {
-			continue
-		}
-		identifiersAttr := principalBlock.GetAttribute("identifiers")
-		if !identifiersAttr.IsIterable() {
-			continue
-		}
-
-		if principals == nil {
-			principals = &iamgo.Principals{}
-		}
-		switch typeAttr.Value().AsString() {
-		case "*":
-			principals.All = true
-		case "AWS":
-			principals.AWS = append(principals.AWS, identifiersAttr.ValueAsStrings()...)
-		case "Federated":
-			principals.Federated = append(principals.Federated, identifiersAttr.ValueAsStrings()...)
-		case "Service":
-			principals.Service = append(principals.Service, identifiersAttr.ValueAsStrings()...)
-		case "CanonicalUser":
-			principals.CanonicalUsers = append(principals.CanonicalUsers, identifiersAttr.ValueAsStrings()...)
-		}
-	}
-	return principals
+	return builder.Build()
 }
 
 func findAllPolicies(modules terraform.Modules, parentBlock *terraform.Block, attr *terraform.Attribute) []wrappedDocument {
