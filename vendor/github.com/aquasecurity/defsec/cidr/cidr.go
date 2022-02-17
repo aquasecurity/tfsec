@@ -18,6 +18,7 @@ func init() {
 		"::1/128",        // IPv6 loopback
 		"fe80::/10",      // IPv6 link-local
 		"fc00::/7",       // IPv6 unique local addr
+		"100.64.0.0/10",  // IPv4 shared address space
 	} {
 		_, block, err := net.ParseCIDR(cidr)
 		if err != nil {
