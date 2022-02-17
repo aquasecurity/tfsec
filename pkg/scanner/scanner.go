@@ -154,6 +154,9 @@ func (s *Scanner) Scan() (rules.Results, Metrics, error) {
 }
 
 func (s *Scanner) removeNestedDirs(dirs []string) []string {
+	if s.forceAllDirs {
+		return dirs
+	}
 	var clean []string
 	for _, dirA := range dirs {
 		dirOK := true
@@ -181,7 +184,9 @@ func (s *Scanner) findRootModules(dirs []string) []string {
 	for _, dir := range dirs {
 		if isRootModule(dir) {
 			roots = append(roots, dir)
-			continue
+			if !s.forceAllDirs {
+				continue
+			}
 		}
 
 		// if this isn't a root module, look at directories inside it
