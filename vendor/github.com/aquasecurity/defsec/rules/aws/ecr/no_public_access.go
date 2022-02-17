@@ -7,7 +7,6 @@ import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/defsec/state"
-	"github.com/liamg/iamgo"
 )
 
 var CheckNoPublicAccess = rules.Register(
@@ -43,13 +42,12 @@ var CheckNoPublicAccess = rules.Register(
 				continue
 			}
 			for _, policyDocument := range repo.Policies {
-				policy, err := iamgo.ParseString(policyDocument.Value())
-				if err != nil {
-					continue
-				}
-				for _, statement := range policy.Statement {
+				policy := policyDocument.Document.Parsed
+				statements, _ := policy.Statements()
+				for _, statement := range statements {
 					var hasECRAction bool
-					for _, action := range statement.Action {
+					actions, _ := statement.Actions()
+					for _, action := range actions {
 						if strings.HasPrefix(action, "ecr:") {
 							hasECRAction = true
 							break
@@ -59,19 +57,21 @@ var CheckNoPublicAccess = rules.Register(
 						continue
 					}
 					var foundIssue bool
-					if statement.Principal.All {
+					principals, _ := statement.Principals()
+					if all, r := principals.All(); all {
 						foundIssue = true
 						results.Add(
 							"Policy provides public access to the ECR repository.",
-							policyDocument,
+							policyDocument.Document.MetadataFromIamGo(statement.Range(), r),
 						)
 					} else {
-						for _, account := range statement.Principal.AWS {
+						accounts, r := principals.AWS()
+						for _, account := range accounts {
 							if account == "*" {
 								foundIssue = true
 								results.Add(
 									"Policy provides public access to the ECR repository.",
-									policyDocument,
+									policyDocument.Document.MetadataFromIamGo(statement.Range(), r),
 								)
 							}
 							continue

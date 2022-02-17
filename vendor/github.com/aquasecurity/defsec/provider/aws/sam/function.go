@@ -1,6 +1,7 @@
 package sam
 
 import (
+	"github.com/aquasecurity/defsec/provider/aws/iam"
 	"github.com/aquasecurity/trivy-config-parsers/types"
 )
 
@@ -9,7 +10,7 @@ type Function struct {
 	FunctionName    types.StringValue
 	Tracing         types.StringValue
 	ManagedPolicies []types.StringValue
-	Policies        []types.StringValue
+	Policies        []iam.Policy
 }
 
 const (

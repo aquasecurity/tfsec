@@ -9,7 +9,6 @@ import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/defsec/state"
-	"github.com/aquasecurity/trivy-config-parsers/types"
 	"github.com/liamg/iamgo"
 )
 
@@ -63,93 +62,71 @@ var CheckNoPolicyWildcards = rules.Register(
 	},
 )
 
-func checkPolicy(src types.StringValue, results rules.Results) rules.Results {
-	policy, err := iamgo.ParseString(src.Value())
-	if err != nil {
-		return results
-	}
-	for _, statement := range policy.Statement {
+func checkPolicy(src iam.Document, results rules.Results) rules.Results {
+	statements, _ := src.Parsed.Statements()
+	for _, statement := range statements {
 		results = checkStatement(src, statement, results)
 	}
 	return results
 }
 
 //nolint
-func checkStatement(src types.StringValue, statement iamgo.Statement, results rules.Results) rules.Results {
-	if statement.Effect != iamgo.EffectAllow {
+func checkStatement(src iam.Document, statement iamgo.Statement, results rules.Results) rules.Results {
+	effect, _ := statement.Effect()
+	if effect != iamgo.EffectAllow {
 		return results
 	}
-	var actions []string
-	var resources []string
-	for _, action := range statement.Action {
+
+	actions, r := statement.Actions()
+	for _, action := range actions {
 		if strings.Contains(action, "*") {
-			actions = append(actions, action)
+			results.Add(
+				fmt.Sprintf(
+					"IAM policy document uses wildcarded action '%s'",
+					actions[0],
+				),
+				src.MetadataFromIamGo(statement.Range(), r),
+			)
 		} else {
 			results.AddPassed(src)
 		}
 	}
-	for _, resource := range statement.Resource {
+
+	resources, r := statement.Resources()
+	for _, resource := range resources {
 		if strings.Contains(resource, "*") {
-			if allowed, action := iam.IsWildcardAllowed(statement.Action...); !allowed {
+			if allowed, action := iam.IsWildcardAllowed(actions...); !allowed {
 				if strings.HasSuffix(resource, "/*") && strings.HasPrefix(resource, "arn:aws:s3") {
 					continue
 				}
-				resources = append(resources, fmt.Sprintf("action %s on resource %s", action, resource))
-			} else {
-				results.AddPassed(src)
-			}
-		} else {
-			results.AddPassed(src)
-		}
-	}
-	if statement.Principal != nil {
-		if statement.Principal.All {
-			results.Add(
-				"IAM policy document uses wildcarded principal.",
-				src,
-			)
-		}
-		for _, principal := range statement.Principal.AWS {
-			if strings.Contains(principal, "*") {
 				results.Add(
-					"IAM policy document uses wildcarded principal.",
-					src,
+					fmt.Sprintf("IAM policy document uses sensitive action '%s' on wildcarded resource '%s'", action, resources[0]),
+					src.MetadataFromIamGo(statement.Range(), r),
 				)
 			} else {
 				results.AddPassed(src)
 			}
+		} else {
+			results.AddPassed(src)
 		}
 	}
-
-	if len(resources) == 1 {
+	principals, _ := statement.Principals()
+	if all, r := principals.All(); all {
 		results.Add(
-			fmt.Sprintf("IAM policy document uses wildcarded resource for sensitive action(s): %s", resources[0]),
-			src,
-		)
-	} else if len(resources) > 1 {
-		results.Add(
-			fmt.Sprintf(
-				"IAM policy document uses %d wildcarded resources for sensitive action(s): %s",
-				len(resources),
-				strings.Join(resources, ", "),
-			),
-			src,
+			"IAM policy document uses wildcarded principal.",
+			src.MetadataFromIamGo(statement.Range(), r),
 		)
 	}
-
-	if len(actions) == 1 {
-		results.Add(
-			fmt.Sprintf(
-				"IAM policy document uses wildcarded action: %s",
-				actions[0],
-			),
-			src,
-		)
-	} else if len(actions) > 1 {
-		results.Add(
-			fmt.Sprintf("IAM policy document uses %d wildcarded actions: %s", len(actions), strings.Join(actions, ", ")),
-			src,
-		)
+	aws, r := principals.AWS()
+	for _, principal := range aws {
+		if strings.Contains(principal, "*") {
+			results.Add(
+				"IAM policy document uses wildcarded principal.",
+				src.MetadataFromIamGo(statement.Range(), r),
+			)
+		} else {
+			results.AddPassed(src)
+		}
 	}
 
 	return results

@@ -28,23 +28,24 @@ func parsePolicy(policyBlock *terraform.Block, modules terraform.Modules) (iam.P
 	policy.Metadata = policyBlock.GetMetadata()
 	policy.Name = policyBlock.GetAttribute("name").AsStringValueOrDefault("", policyBlock)
 	var err error
-	policy.Document, err = parsePolicyFromAttr(policyBlock.GetAttribute("policy"), policyBlock, modules)
+	doc, err := parsePolicyFromAttr(policyBlock.GetAttribute("policy"), policyBlock, modules)
 	if err != nil {
 		return policy, err
 	}
+	policy.Document = *doc
 	return policy, nil
 
 }
 
 func adaptPolicies(modules terraform.Modules) (policies []iam.Policy) {
-	var err error
 	for _, policyBlock := range modules.GetResourcesByType("aws_iam_policy") {
 		var policy iam.Policy
 		policy.Name = policyBlock.GetAttribute("name").AsStringValueOrDefault("", policyBlock)
-		policy.Document, err = parsePolicyFromAttr(policyBlock.GetAttribute("policy"), policyBlock, modules)
+		doc, err := parsePolicyFromAttr(policyBlock.GetAttribute("policy"), policyBlock, modules)
 		if err != nil {
 			continue
 		}
+		policy.Document = *doc
 		policies = append(policies, policy)
 	}
 	return

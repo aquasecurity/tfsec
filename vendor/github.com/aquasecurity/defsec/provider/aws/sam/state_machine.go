@@ -1,6 +1,7 @@
 package sam
 
 import (
+	"github.com/aquasecurity/defsec/provider/aws/iam"
 	"github.com/aquasecurity/trivy-config-parsers/types"
 )
 
@@ -9,7 +10,7 @@ type StateMachine struct {
 	Name                 types.StringValue
 	LoggingConfiguration LoggingConfiguration
 	ManagedPolicies      []types.StringValue
-	Policies             []types.StringValue
+	Policies             []iam.Policy
 	Tracing              TracingConfiguration
 }
 

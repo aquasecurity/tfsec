@@ -1,6 +1,7 @@
 package ecr
 
 import (
+	"github.com/aquasecurity/defsec/provider/aws/iam"
 	"github.com/aquasecurity/trivy-config-parsers/types"
 )
 
@@ -13,7 +14,7 @@ type Repository struct {
 	types.Metadata
 	ImageScanning      ImageScanning
 	ImageTagsImmutable types.BoolValue
-	Policies           []types.StringValue
+	Policies           []iam.Policy
 	Encryption         Encryption
 }
 

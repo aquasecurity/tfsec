@@ -1,9 +1,10 @@
 package sqs
 
 import (
-	"encoding/json"
+	"github.com/liamg/iamgo"
 
 	"github.com/aquasecurity/defsec/adapters/terraform/aws/iam"
+	iamp "github.com/aquasecurity/defsec/provider/aws/iam"
 
 	"github.com/aquasecurity/defsec/provider/aws/sqs"
 	"github.com/aquasecurity/trivy-config-parsers/terraform"
@@ -32,15 +33,20 @@ func (a *adapter) adaptQueues() []sqs.Queue {
 
 	for _, policyBlock := range a.modules.GetResourcesByType("aws_sqs_queue_policy") {
 
-		policy := types.StringDefault("", policyBlock.GetMetadata())
+		var policy iamp.Policy
+		policy.Metadata = policyBlock.GetMetadata()
 		if attr := policyBlock.GetAttribute("policy"); attr.IsString() {
-			policy = attr.AsStringValueOrDefault("", policyBlock)
+			parsed, err := iamgo.ParseString(attr.Value().AsString())
+			if err != nil {
+				continue
+			}
+			policy.Document.Parsed = *parsed
+			policy.Document.Metadata = attr.GetMetadata()
 		} else if refBlock, err := a.modules.GetReferencedBlock(attr, policyBlock); err == nil {
 			if refBlock.Type() == "data" && refBlock.TypeLabel() == "aws_iam_policy_document" {
 				if doc, err := iam.ConvertTerraformDocument(a.modules, refBlock); err == nil {
-					if data, err := json.Marshal(doc.Document); err == nil {
-						policy = types.String(string(data), refBlock.GetMetadata())
-					}
+					policy.Document.Parsed = doc.Document
+					policy.Document.Metadata = doc.Source.GetMetadata()
 				}
 			}
 		}
@@ -57,7 +63,7 @@ func (a *adapter) adaptQueues() []sqs.Queue {
 
 		a.queues[uuid.NewString()] = sqs.Queue{
 			Metadata: types.NewUnmanagedMetadata(),
-			Policies: []types.StringValue{policy},
+			Policies: []iamp.Policy{policy},
 		}
 	}
 
@@ -73,15 +79,22 @@ func (a *adapter) adaptQueue(resource *terraform.Block) {
 	kmsKeyIdAttr := resource.GetAttribute("kms_master_key_id")
 	kmsKeyIdVal := kmsKeyIdAttr.AsStringValueOrDefault("", resource)
 
-	var policies []types.StringValue
+	var policies []iamp.Policy
 	if attr := resource.GetAttribute("policy"); attr.IsString() {
-		policies = append(policies, attr.AsStringValueOrDefault("", resource))
+		var policy iamp.Policy
+		parsed, err := iamgo.ParseString(attr.Value().AsString())
+		if err == nil {
+			policy.Document.Parsed = *parsed
+			policy.Document.Metadata = attr.GetMetadata()
+			policies = append(policies, policy)
+		}
 	} else if refBlock, err := a.modules.GetReferencedBlock(attr, resource); err == nil {
 		if refBlock.Type() == "data" && refBlock.TypeLabel() == "aws_iam_policy_document" {
 			if doc, err := iam.ConvertTerraformDocument(a.modules, refBlock); err == nil {
-				if data, err := json.Marshal(doc.Document); err == nil {
-					policies = append(policies, types.String(string(data), refBlock.GetMetadata()))
-				}
+				var policy iamp.Policy
+				policy.Document.Parsed = doc.Document
+				policy.Document.Metadata = doc.Source.GetMetadata()
+				policies = append(policies, policy)
 			}
 		}
 	}

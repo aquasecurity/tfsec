@@ -2,8 +2,10 @@ package ecr
 
 import (
 	"github.com/aquasecurity/defsec/provider/aws/ecr"
+	iamp "github.com/aquasecurity/defsec/provider/aws/iam"
 	"github.com/aquasecurity/trivy-config-parsers/terraform"
 	"github.com/aquasecurity/trivy-config-parsers/types"
+	"github.com/liamg/iamgo"
 )
 
 func Adapt(modules terraform.Modules) ecr.ECR {
@@ -54,7 +56,21 @@ func adaptRepository(resource *terraform.Block, module *terraform.Module) ecr.Re
 	policyBlocks := module.GetReferencingResources(resource, "aws_ecr_repository_policy", "repository")
 	for _, policyRes := range policyBlocks {
 		if policyAttr := policyRes.GetAttribute("policy"); policyAttr.IsString() {
-			repo.Policies = append(repo.Policies, policyAttr.AsStringValueOrDefault("", policyRes))
+
+			parsed, err := iamgo.ParseString(policyAttr.Value().AsString())
+			if err != nil {
+				continue
+			}
+
+			policy := iamp.Policy{
+				Metadata: policyRes.GetMetadata(),
+				Document: iamp.Document{
+					Parsed:   *parsed,
+					Metadata: policyAttr.GetMetadata(),
+				},
+			}
+
+			repo.Policies = append(repo.Policies, policy)
 		}
 	}
 

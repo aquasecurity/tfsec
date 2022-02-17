@@ -1,6 +1,7 @@
 package sqs
 
 import (
+	"github.com/aquasecurity/defsec/provider/aws/iam"
 	"github.com/aquasecurity/trivy-config-parsers/types"
 )
 
@@ -12,7 +13,7 @@ type SQS struct {
 type Queue struct {
 	types.Metadata
 	Encryption Encryption
-	Policies   []types.StringValue
+	Policies   []iam.Policy
 }
 
 type Encryption struct {

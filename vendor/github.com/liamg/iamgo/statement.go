@@ -2,68 +2,92 @@ package iamgo
 
 import (
 	"encoding/json"
-	"fmt"
+
+	"github.com/liamg/jfather"
 )
 
 type Statement struct {
-	Sid          string      `json:"Sid,omitempty"`
-	Effect       Effect      `json:"Effect"`
-	Principal    *Principals `json:"Principal,omitempty"`
-	NotPrincipal *Principals `json:"NotPrincipal,omitempty"`
-	Action       StringSet   `json:"Action,omitempty"`
-	NotAction    StringSet   `json:"NotAction,omitempty"`
-	Resource     StringSet   `json:"Resource,omitempty"`
-	NotResource  StringSet   `json:"NotResource,omitempty"`
-	Condition    Conditions  `json:"Condition,omitempty"`
+	inner innerStatement
+	r     Range
 }
 
-type Statements []Statement
+type Statements struct {
+	r     Range
+	inner []Statement
+}
 
-func (v *Statements) UnmarshalJSON(b []byte) error {
+type innerStatement struct {
+	Sid          String     `json:"Sid,omitempty"`
+	Effect       String     `json:"Effect"`
+	Principal    Principals `json:"Principal,omitempty"`
+	NotPrincipal Principals `json:"NotPrincipal,omitempty"`
+	Action       Strings    `json:"Action,omitempty"`
+	NotAction    Strings    `json:"NotAction,omitempty"`
+	Resource     Strings    `json:"Resource,omitempty"`
+	NotResource  Strings    `json:"NotResource,omitempty"`
+	Condition    Conditions `json:"Condition,omitempty"`
+}
 
-	if len(b) == 0 {
-		return fmt.Errorf("invalid json: unexpected EOF")
+func (s *Statements) UnmarshalJSONWithMetadata(node jfather.Node) error {
+	s.r.StartLine = node.Range().Start.Line
+	s.r.EndLine = node.Range().End.Line
+	if err := node.Decode(&s.inner); err != nil {
+		s.inner = append(s.inner, Statement{})
+		return node.Decode(&s.inner[0])
 	}
-
-	// unmarshal slice of statements
-	if b[0] == '[' {
-		var output []Statement
-		if err := json.Unmarshal(b, &output); err != nil {
-			return err
-		}
-		*v = output
-		return nil
-	}
-
-	// unmarshal single statement
-	var statement Statement
-	if err := json.Unmarshal(b, &statement); err != nil {
-		return err
-	}
-	*v = []Statement{statement}
 	return nil
 }
 
-type StringSet []string
+func (s *Statement) UnmarshalJSONWithMetadata(node jfather.Node) error {
+	s.r.StartLine = node.Range().Start.Line
+	s.r.EndLine = node.Range().End.Line
+	return node.Decode(&s.inner)
+}
 
-func (v *StringSet) UnmarshalJSON(b []byte) error {
-	var raw interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
-		return err
-	}
-	switch actual := raw.(type) {
-	case []string:
-		*v = actual
-	case []interface{}:
-		var output []string
-		for _, raw := range actual {
-			output = append(output, fmt.Sprintf("%s", raw))
-		}
-		*v = output
-	case string:
-		*v = []string{actual}
-	default:
-		return fmt.Errorf("cannot use %T type for multi-value JSON field", actual)
-	}
-	return nil
+func (s Statements) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.inner)
+}
+
+func (s Statement) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.inner)
+}
+
+func (s *Statement) SID() (string, Range) {
+	return s.inner.Sid.inner, s.inner.Sid.r
+}
+
+func (s *Statement) Effect() (string, Range) {
+	return s.inner.Effect.inner, s.inner.Effect.r
+}
+
+func (s *Statement) Actions() ([]string, Range) {
+	return s.inner.Action.inner, s.inner.Action.r
+}
+
+func (s *Statement) NotActions() ([]string, Range) {
+	return s.inner.NotAction.inner, s.inner.NotAction.r
+}
+
+func (s *Statement) Resources() ([]string, Range) {
+	return s.inner.Resource.inner, s.inner.Resource.r
+}
+
+func (s *Statement) NotResource() ([]string, Range) {
+	return s.inner.NotResource.inner, s.inner.NotResource.r
+}
+
+func (s *Statement) Conditions() ([]Condition, Range) {
+	return s.inner.Condition.inner, s.inner.Condition.r
+}
+
+func (s *Statement) Principals() (Principals, Range) {
+	return s.inner.Principal, s.inner.Principal.r
+}
+
+func (s *Statement) NotPrincipals() (Principals, Range) {
+	return s.inner.NotPrincipal, s.inner.NotPrincipal.r
+}
+
+func (s *Statement) Range() Range {
+	return s.r
 }

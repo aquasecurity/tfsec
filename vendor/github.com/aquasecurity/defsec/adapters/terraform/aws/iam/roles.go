@@ -40,7 +40,6 @@ func adaptRoles(modules terraform.Modules) []iam.Role {
 func mapRoles(modules terraform.Modules) (map[string]iam.Role, map[string]struct{}) {
 	policyMap := make(map[string]struct{})
 	roleMap := make(map[string]iam.Role)
-	var err error
 	for _, roleBlock := range modules.GetResourcesByType("aws_iam_role") {
 		var role iam.Role
 		role.Metadata = roleBlock.GetMetadata()
@@ -49,10 +48,11 @@ func mapRoles(modules terraform.Modules) (map[string]iam.Role, map[string]struct
 			var policy iam.Policy
 			policy.Metadata = inlineBlock.GetMetadata()
 			policy.Name = inlineBlock.GetAttribute("name").AsStringValueOrDefault("", inlineBlock)
-			policy.Document, err = parsePolicyFromAttr(inlineBlock.GetAttribute("policy"), inlineBlock, modules)
+			doc, err := parsePolicyFromAttr(inlineBlock.GetAttribute("policy"), inlineBlock, modules)
 			if err != nil {
 				continue
 			}
+			policy.Document = *doc
 			role.Policies = append(role.Policies, policy)
 		}
 

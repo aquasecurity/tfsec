@@ -7,7 +7,6 @@ import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/defsec/state"
-	"github.com/liamg/iamgo"
 )
 
 var CheckEnforceMFA = rules.Register(
@@ -38,13 +37,13 @@ IAM user accounts should be protected with multi factor authentication to add sa
 		for _, group := range s.AWS.IAM.Groups {
 			var mfaEnforced bool
 			for _, policy := range group.Policies {
-				document, err := iamgo.ParseString(policy.Document.Value())
-				if err != nil {
-					continue
-				}
-				for _, statement := range document.Statement {
-					for _, condition := range statement.Condition {
-						if strings.EqualFold(condition.Key, "aws:MultiFactorAuthPresent") {
+				document := policy.Document.Parsed
+				statements, _ := document.Statements()
+				for _, statement := range statements {
+					conditions, _ := statement.Conditions()
+					for _, condition := range conditions {
+						key, _ := condition.Key()
+						if strings.EqualFold(key, "aws:MultiFactorAuthPresent") {
 							mfaEnforced = true
 							break
 						}
@@ -52,7 +51,7 @@ IAM user accounts should be protected with multi factor authentication to add sa
 				}
 			}
 			if !mfaEnforced {
-				results.Add("Multi-Factor Authentication is not enforced for group", &group)
+				results.Add("Multi-Factor authentication is not enforced for group", &group)
 			}
 		}
 

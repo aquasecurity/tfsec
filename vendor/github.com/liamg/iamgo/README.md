@@ -9,15 +9,20 @@ It handles the multiple possible types for various IAM elements and hides this c
 ```go
 package main
 
-import "github.com/liamg/iamgo"
+import (
+    "fmt"
+    
+    "github.com/liamg/iamgo"
+)
 
 func main() {
 
     rawJSON := []byte(`...`)
 
-    var policyDocument iamgo.Document
-    if err := json.Unmarshal(rawJSON, &policyDocument); err != nil {
+    doc, err := iamgo.Parse(rawJSON)
+    if err != nil {
         panic(err)
     }
+    fmt.Printf("Done: %#v\n", doc)
 }
 ```
