@@ -31,6 +31,9 @@ func adaptGroups(modules terraform.Modules) []iam.Group {
 	}
 
 	for _, attachBlock := range modules.GetResourcesByType("aws_iam_group_policy_attachment") {
+		if _, ok := policyMap[attachBlock.ID()]; ok {
+			continue
+		}
 		groupAttr := attachBlock.GetAttribute("group")
 		if groupAttr.IsNil() {
 			continue
