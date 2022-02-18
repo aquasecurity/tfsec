@@ -30,12 +30,3 @@ linters-settings:
     disabled-checks:
       - singleCaseSwitch
 
-issues:
-  exclude-rules:
-    - path: internal/pkg/funcs/
-      linters:
-        - cyclop
-        - errorlint
-        - gocritic
-        - gosec
-

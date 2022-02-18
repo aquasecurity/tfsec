@@ -38,7 +38,7 @@ tagger:
 .PHONY: typos
 typos:
 	which codespell || pip install codespell
-	codespell -S vendor,funcs,.terraform,.git,go.sum --ignore-words .codespellignore -f
+	codespell -S .terraform,.git,go.sum --ignore-words .codespellignore -f
 
 .PHONY: quality
 quality:
@@ -48,7 +48,7 @@ quality:
 .PHONY: fix-typos
 fix-typos:
 	which codespell || pip install codespell
-	codespell -S vendor,funcs,.terraform,go.sum --ignore-words .codespellignore -f -w -i1
+	codespell -S .terraform,go.sum --ignore-words .codespellignore -f -w -i1
 
 .PHONY: clone-image-github
 clone-image-github:
