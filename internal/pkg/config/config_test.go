@@ -11,6 +11,25 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestMinRequiredVersionFromYAML(t *testing.T) {
+	content := `
+min_required_version: v1.2.0
+`
+	c := load(t, "config.yaml", content)
+
+	assert.Equal(t, c.MinimumRequiredVersion, "v1.2.0")
+}
+
+func TestMinRequiredVersionFromJSON(t *testing.T) {
+	content := `{
+	"min_required_version": "v1.2.0"
+}
+`
+	c := load(t, "config.json", content)
+
+	assert.Equal(t, c.MinimumRequiredVersion, "v1.2.0")
+}
+
 func TestExcludesElementsFromYAML(t *testing.T) {
 	content := `
 severity_overrides:

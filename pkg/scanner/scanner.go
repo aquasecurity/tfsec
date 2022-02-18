@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/aquasecurity/tfsec/internal/pkg/custom"
+	"github.com/aquasecurity/tfsec/version"
+	semver "github.com/hashicorp/go-version"
 
 	"github.com/aquasecurity/tfsec/internal/pkg/config"
 
@@ -78,11 +80,15 @@ func (s *Scanner) Scan() (rules.Results, Metrics, error) {
 
 	var metrics Metrics
 	if s.configFile != "" {
-		if conf, err := config.LoadConfig(s.configFile); err == nil {
+		conf, err := config.LoadConfig(s.configFile)
+		if err == nil {
 			s.executorOpt = append(s.executorOpt, executor.OptionWithConfig(*conf))
 			s.debug("Loaded config file from %s.", s.configFile)
 		} else {
 			s.debug("Failed to load config file from %s: %s", s.configFile, err)
+		}
+		if !s.minVersionSatisfied(conf) {
+			return nil, metrics, fmt.Errorf("minimum tfsec version requirement not satisfied")
 		}
 	}
 	if s.customCheckDir != "" {
@@ -151,6 +157,28 @@ func (s *Scanner) Scan() (rules.Results, Metrics, error) {
 	metrics.Timings.Total += metrics.Executor.Timings.RunningChecks
 
 	return allResults, metrics, nil
+}
+
+func (s *Scanner) minVersionSatisfied(conf *config.Config) bool {
+
+	s.debug("Checking if min tfsec version configured")
+	if conf.MinimumRequiredVersion == "" {
+		s.debug("No minimum tfsec version specified in the config")
+		return true
+	}
+	s.debug("Comparing required version [%s] against current version [%s]", conf.MinimumRequiredVersion, version.Version)
+
+	v1, err := semver.NewVersion(conf.MinimumRequiredVersion)
+	if err != nil {
+		s.debug("There was an error parsing the config min required version: %w", err)
+		return true
+	}
+	v2, err := semver.NewVersion(version.Version)
+	if err != nil {
+		s.debug("There was an error parsing the current version: %w", err)
+		return true
+	}
+	return v2.GreaterThanOrEqual(v1)
 }
 
 func (s *Scanner) removeNestedDirs(dirs []string) []string {
