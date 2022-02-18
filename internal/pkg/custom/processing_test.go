@@ -11,9 +11,9 @@ import (
 
 	"github.com/aquasecurity/defsec/rules"
 
+	"github.com/aquasecurity/defsec/parsers/terraform"
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
 	"github.com/aquasecurity/tfsec/internal/pkg/executor"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
-	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 	"github.com/stretchr/testify/assert"
 )
 

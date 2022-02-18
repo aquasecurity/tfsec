@@ -1,12 +1,12 @@
 package secrets
 
 import (
+	"github.com/aquasecurity/defsec/parsers/terraform"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/general/secrets"
 	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/internal/pkg/security"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
 func init() {

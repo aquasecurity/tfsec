@@ -11,7 +11,7 @@ import (
 	"github.com/aquasecurity/tfsec/pkg/scanner"
 
 	"github.com/aquasecurity/defsec/formatters"
-	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/providers"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/version"
 	"github.com/liamg/tml"
@@ -49,7 +49,7 @@ func gatherLinks(result rules.Result) []string {
 	}
 
 	var docsLink []string
-	if result.Rule().Provider == provider.CustomProvider {
+	if result.Rule().Provider == providers.CustomProvider {
 		docsLink = result.Rule().Links
 	} else {
 		docsLink = []string{

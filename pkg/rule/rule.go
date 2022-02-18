@@ -1,8 +1,8 @@
 package rule
 
 import (
+	"github.com/aquasecurity/defsec/parsers/terraform"
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
 // Rule is a targeted security test which can be applied to terraform templates. It includes the types to run on e.g.

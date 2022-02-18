@@ -8,11 +8,11 @@ import (
 	"github.com/aquasecurity/tfsec/internal/pkg/legacy"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil"
 
-	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/providers"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
+	"github.com/aquasecurity/defsec/parsers/terraform"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
@@ -25,7 +25,7 @@ import (
 
 var exampleRule = rule.Rule{
 	Base: rules.Register(rules.Rule{
-		Provider:  provider.AWSProvider,
+		Provider:  providers.AWSProvider,
 		Service:   "service",
 		ShortCode: "abc123",
 		Severity:  severity.High,
@@ -266,7 +266,7 @@ func Test_IgnoreSpecific(t *testing.T) {
 
 	r2 := rule.Rule{
 		Base: rules.Register(rules.Rule{
-			Provider:  provider.AWSProvider,
+			Provider:  providers.AWSProvider,
 			Service:   "service",
 			ShortCode: "def456",
 			Severity:  severity.High,

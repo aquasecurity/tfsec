@@ -1,6 +1,6 @@
 package custom
 
-import "github.com/aquasecurity/trivy-config-parsers/terraform"
+import "github.com/aquasecurity/defsec/parsers/terraform"
 
 type customCheckVariables map[string]string
 

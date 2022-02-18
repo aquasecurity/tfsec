@@ -3,9 +3,9 @@ package secrets
 import (
 	"github.com/zclconf/go-cty/cty"
 
+	"github.com/aquasecurity/defsec/parsers/terraform"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/general/secrets"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 

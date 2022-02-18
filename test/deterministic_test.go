@@ -6,8 +6,8 @@ import (
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
 	"github.com/stretchr/testify/require"
 
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
 	"github.com/aquasecurity/tfsec/internal/pkg/executor"
-	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 )
 
 func Test_DeterministicResults(t *testing.T) {

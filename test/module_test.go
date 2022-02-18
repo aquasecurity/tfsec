@@ -7,19 +7,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
 	"github.com/stretchr/testify/require"
 
-	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/parsers/terraform"
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
+	"github.com/aquasecurity/defsec/providers"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/iam"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
-	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 )
 
 var badRule = rule.Rule{
 	Base: rules.Register(rules.Rule{
-		Provider:    provider.AWSProvider,
+		Provider:    providers.AWSProvider,
 		Service:     "service",
 		ShortCode:   "abc",
 		Summary:     "A stupid example check for a test.",
@@ -523,7 +523,7 @@ resource "bad" "thing" {
 
 	r1 := rule.Rule{
 		Base: rules.Register(rules.Rule{
-			Provider:  provider.AWSProvider,
+			Provider:  providers.AWSProvider,
 			Service:   "service",
 			ShortCode: "abc123",
 			Severity:  severity.High,
@@ -574,7 +574,7 @@ resource "bad" "thing" {
 
 	r1 := rule.Rule{
 		Base: rules.Register(rules.Rule{
-			Provider:  provider.AWSProvider,
+			Provider:  providers.AWSProvider,
 			Service:   "service",
 			ShortCode: "abc123",
 			Severity:  severity.High,

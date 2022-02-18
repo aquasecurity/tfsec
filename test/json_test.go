@@ -3,13 +3,13 @@ package test
 import (
 	"testing"
 
-	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/parsers/terraform"
+	"github.com/aquasecurity/defsec/providers"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
 func TestScanningJSON(t *testing.T) {
@@ -67,7 +67,7 @@ func TestScanningJSON(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			r1 := rule.Rule{
 				Base: rules.Register(rules.Rule{
-					Provider:  provider.AWSProvider,
+					Provider:  providers.AWSProvider,
 					Service:   "service",
 					ShortCode: "abc123",
 					Severity:  severity.High,

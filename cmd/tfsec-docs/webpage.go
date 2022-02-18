@@ -6,7 +6,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/providers"
 )
 
 const (
@@ -103,7 +103,7 @@ func formatProviderName(providerName string) string {
 	if providerName == "digitalocean" {
 		providerName = "digital ocean"
 	}
-	return provider.Provider(providerName).DisplayName()
+	return providers.Provider(providerName).DisplayName()
 }
 
 func generateWebPage(webProviderPath string, r templateObject) error {
