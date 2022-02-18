@@ -62,3 +62,22 @@ exclude:
   - CUS002
   - aws-s3-enable-versioning
 ```
+
+### Minimum required version
+
+For your CI you might want to pull a config file into all of your build processes with a centrally managed config file. If this is the case, you might also want to require a minimum tfsec version to be used.
+
+This can be achieved in the config file using the `min_required_version` setting. 
+
+
+```json
+{
+  "min_required_version": "v1.1.2"
+}
+
+or in yaml
+
+```yaml
+---
+min_required_version: v1.1.2
+```
