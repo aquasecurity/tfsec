@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/aquasecurity/defsec/parsers/terraform"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/state"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
 func (r *Rule) CheckAgainstState(s *state.State) rules.Results {

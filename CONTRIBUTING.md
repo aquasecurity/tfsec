@@ -104,7 +104,7 @@ Fill out the `rules.Rule` struct with appropriate information. The fields are de
 | Field            | Description |
 | ---------------- | ----------- |
 | AVDID            | This is a unique ID that identifies the rule not just within DefSec, but within the [AVD](https://avd.aquasec.com/). The ID is composed of the prefix `AVD-`, three letters representing the provider in capitals e.g. `AWS`, another `-`, and then a 4-digit, zero-padded number. For example: `AVD-AWS-0086`. The easiest way to assign a new AVD ID is to run `grep -r "AVD-" . | grep AVDID | awk -F'"' '{print $2}' | sort -u` to find the highest number for your provider and increment it by one.
-| Provider         | You can set this using a constant from the `provider` package, listed [here](https://github.com/aquasecurity/defsec/blob/master/provider/provider.go#L8-L21)
+| Provider         | You can set this using a constant from the `provider` package, listed [here](https://github.com/aquasecurity/defsec/blob/master/provider/providers.go#L8-L21)
 | Service          | A string representing the service your rule relates to (lower-case), e.g. `s3`. This will generally match the package your rule is inside.
 | ShortCode        | This is a human-readable identifier for your check that uniquely describes it within the provider and service. e.g. `block-public-acls`
 | Summary          | A short paragraph that summarises what best-practice the rule is trying to enforce. e.g. *Data stored in service X should be encrypted at rest*

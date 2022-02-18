@@ -9,10 +9,10 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/pkg/custom"
 	"github.com/aquasecurity/tfsec/internal/pkg/executor"
-	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 	"github.com/spf13/cobra"
 )
 

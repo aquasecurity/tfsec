@@ -9,7 +9,7 @@ import (
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
 
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
+	"github.com/aquasecurity/defsec/parsers/terraform"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 

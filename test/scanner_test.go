@@ -5,24 +5,24 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
 
-	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/providers"
 	"github.com/aquasecurity/defsec/rules"
 
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/aquasecurity/defsec/parsers/terraform"
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
 	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
-	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 )
 
 var panicRule = rule.Rule{
 	Base: rules.Register(
 		rules.Rule{
-			Provider:  provider.AWSProvider,
+			Provider:  providers.AWSProvider,
 			Service:   "service",
 			ShortCode: "abc",
 			Severity:  severity.High,

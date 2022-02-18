@@ -5,10 +5,10 @@ import (
 	runtimeDebug "runtime/debug"
 	"sync"
 
+	"github.com/aquasecurity/defsec/parsers/terraform"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/state"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
 type Pool struct {

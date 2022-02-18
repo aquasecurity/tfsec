@@ -3,7 +3,7 @@ package custom
 import (
 	"fmt"
 
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
+	"github.com/aquasecurity/defsec/parsers/terraform"
 )
 
 func checkTags(block *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
@@ -18,9 +18,9 @@ func checkTags(block *terraform.Block, spec *MatchSpec, customCtx *customContext
 
 	var alias string
 	if block.HasChild("provider") {
-		aliasRef, err := block.GetAttribute("provider").SingleReference()
-		if err == nil {
-			alias = aliasRef.String()
+		aliasRef := block.GetAttribute("provider").AllReferences()
+		if len(aliasRef) > 0 {
+			alias = aliasRef[0].String()
 		}
 	}
 

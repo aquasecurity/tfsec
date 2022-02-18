@@ -13,9 +13,9 @@ import (
 	"github.com/aquasecurity/defsec/severity"
 
 	adapter "github.com/aquasecurity/defsec/adapters/terraform"
+	"github.com/aquasecurity/defsec/parsers/terraform"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/pkg/legacy"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
 // Executor scans HCL blocks by running all registered rules against them

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
 	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
-	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 )
 
 func BenchmarkCalculate(b *testing.B) {

@@ -8,11 +8,11 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 
-	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/parsers/terraform"
+	"github.com/aquasecurity/defsec/providers"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/pkg/rule"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
 )
 
 var matchFunctions = map[CheckAction]func(*terraform.Block, *MatchSpec, *customContext) bool{
@@ -240,7 +240,7 @@ func ProcessFoundChecks(checks ChecksFile) {
 						Summary:    customCheck.Description,
 						Impact:     customCheck.Impact,
 						Resolution: customCheck.Resolution,
-						Provider:   provider.CustomProvider,
+						Provider:   providers.CustomProvider,
 						Links:      customCheck.RelatedLinks,
 						Severity:   customCheck.Severity,
 					},

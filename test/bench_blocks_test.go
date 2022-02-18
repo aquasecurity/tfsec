@@ -3,9 +3,9 @@ package test
 import (
 	"testing"
 
+	"github.com/aquasecurity/defsec/parsers/terraform"
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
-	"github.com/aquasecurity/trivy-config-parsers/terraform"
-	"github.com/aquasecurity/trivy-config-parsers/terraform/parser"
 )
 
 func BenchmarkBlockParsing(b *testing.B) {

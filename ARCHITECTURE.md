@@ -31,7 +31,7 @@ Code to support running in the CLI, including flags, output settings etc.
 
 ### Parser
 
-Can be found in [trivy-config-parsers](https://github.com/aquasecurity/trivy-config-parsers).
+Can be found in [defsec/parsers](https://github.com/aquasecurity/defsec/parsers).
 
 Takes plaintext Terraform HCL templates as input and produces logical abstractions from the `internal/pkg/block` package. Returns a slice of *modules* which in turn contain blocks which can contain other blocks, which can in turn ultimately contain attributes, as is the HCL format. Each of the abstractions for these concepts has many utility methods.
 
