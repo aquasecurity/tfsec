@@ -33,11 +33,6 @@ func main() {
 	}
 }
 
-type service struct {
-	Name string
-	Path string
-}
-
 var rootCmd = &cobra.Command{
 	Use:   "tfsec-docs",
 	Short: "tfsec-docs generates documentation for the checks in tfsec",

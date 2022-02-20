@@ -7,7 +7,7 @@ title: sns
 ## Checks
 
 
-- [enable-topic-encryption](enable-topic-encryption){:target="_blank" rel="nofollow noreferrer noopener"} Unencrypted SNS topic.
+- [enable-topic-encryption](enable-topic-encryption) Unencrypted SNS topic.
 
 
 

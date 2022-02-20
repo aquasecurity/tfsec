@@ -7,7 +7,7 @@ title: compute
 ## Checks
 
 
-- [no-sensitive-info](no-sensitive-info){:target="_blank" rel="nofollow noreferrer noopener"} No sensitive data stored in user_data
+- [no-sensitive-info](no-sensitive-info) No sensitive data stored in user_data
 
 
 

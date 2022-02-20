@@ -7,22 +7,22 @@ title: google
 ## Services
 
 
-- [IAM](iam){:target="_blank" rel="nofollow noreferrer noopener"}
+- [IAM](iam)
 
-- [bigquery](bigquery){:target="_blank" rel="nofollow noreferrer noopener"}
+- [bigquery](bigquery)
 
-- [compute](compute){:target="_blank" rel="nofollow noreferrer noopener"}
+- [compute](compute)
 
-- [dns](dns){:target="_blank" rel="nofollow noreferrer noopener"}
+- [dns](dns)
 
-- [gke](gke){:target="_blank" rel="nofollow noreferrer noopener"}
+- [gke](gke)
 
-- [iam](iam){:target="_blank" rel="nofollow noreferrer noopener"}
+- [iam](iam)
 
-- [kms](kms){:target="_blank" rel="nofollow noreferrer noopener"}
+- [kms](kms)
 
-- [sql](sql){:target="_blank" rel="nofollow noreferrer noopener"}
+- [sql](sql)
 
-- [storage](storage){:target="_blank" rel="nofollow noreferrer noopener"}
+- [storage](storage)
 
 

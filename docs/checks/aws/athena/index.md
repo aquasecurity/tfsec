@@ -7,9 +7,9 @@ title: athena
 ## Checks
 
 
-- [enable-at-rest-encryption](enable-at-rest-encryption){:target="_blank" rel="nofollow noreferrer noopener"} Athena databases and workgroup configurations are created unencrypted at rest by default, they should be encrypted
+- [enable-at-rest-encryption](enable-at-rest-encryption) Athena databases and workgroup configurations are created unencrypted at rest by default, they should be encrypted
 
-- [no-encryption-override](no-encryption-override){:target="_blank" rel="nofollow noreferrer noopener"} Athena workgroups should enforce configuration to prevent client disabling encryption
+- [no-encryption-override](no-encryption-override) Athena workgroups should enforce configuration to prevent client disabling encryption
 
 
 

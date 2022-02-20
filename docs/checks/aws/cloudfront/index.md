@@ -7,13 +7,13 @@ title: cloudfront
 ## Checks
 
 
-- [enable-logging](enable-logging){:target="_blank" rel="nofollow noreferrer noopener"} Cloudfront distribution should have Access Logging configured
+- [enable-logging](enable-logging) Cloudfront distribution should have Access Logging configured
 
-- [enable-waf](enable-waf){:target="_blank" rel="nofollow noreferrer noopener"} CloudFront distribution does not have a WAF in front.
+- [enable-waf](enable-waf) CloudFront distribution does not have a WAF in front.
 
-- [enforce-https](enforce-https){:target="_blank" rel="nofollow noreferrer noopener"} CloudFront distribution allows unencrypted (HTTP) communications.
+- [enforce-https](enforce-https) CloudFront distribution allows unencrypted (HTTP) communications.
 
-- [use-secure-tls-policy](use-secure-tls-policy){:target="_blank" rel="nofollow noreferrer noopener"} CloudFront distribution uses outdated SSL/TLS protocols.
+- [use-secure-tls-policy](use-secure-tls-policy) CloudFront distribution uses outdated SSL/TLS protocols.
 
 
 

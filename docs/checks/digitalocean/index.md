@@ -7,8 +7,8 @@ title: digitalocean
 ## Services
 
 
-- [compute](compute){:target="_blank" rel="nofollow noreferrer noopener"}
+- [compute](compute)
 
-- [spaces](spaces){:target="_blank" rel="nofollow noreferrer noopener"}
+- [spaces](spaces)
 
 

@@ -7,6 +7,6 @@ title: openstack
 ## Services
 
 
-- [compute](compute){:target="_blank" rel="nofollow noreferrer noopener"}
+- [compute](compute)
 
 

@@ -7,72 +7,72 @@ title: aws
 ## Services
 
 
-- [api-gateway](api-gateway){:target="_blank" rel="nofollow noreferrer noopener"}
+- [api-gateway](api-gateway)
 
-- [athena](athena){:target="_blank" rel="nofollow noreferrer noopener"}
+- [athena](athena)
 
-- [autoscaling](autoscaling){:target="_blank" rel="nofollow noreferrer noopener"}
+- [autoscaling](autoscaling)
 
-- [cloudfront](cloudfront){:target="_blank" rel="nofollow noreferrer noopener"}
+- [cloudfront](cloudfront)
 
-- [cloudtrail](cloudtrail){:target="_blank" rel="nofollow noreferrer noopener"}
+- [cloudtrail](cloudtrail)
 
-- [cloudwatch](cloudwatch){:target="_blank" rel="nofollow noreferrer noopener"}
+- [cloudwatch](cloudwatch)
 
-- [codebuild](codebuild){:target="_blank" rel="nofollow noreferrer noopener"}
+- [codebuild](codebuild)
 
-- [config](config){:target="_blank" rel="nofollow noreferrer noopener"}
+- [config](config)
 
-- [documentdb](documentdb){:target="_blank" rel="nofollow noreferrer noopener"}
+- [documentdb](documentdb)
 
-- [dynamodb](dynamodb){:target="_blank" rel="nofollow noreferrer noopener"}
+- [dynamodb](dynamodb)
 
-- [ebs](ebs){:target="_blank" rel="nofollow noreferrer noopener"}
+- [ebs](ebs)
 
-- [ec2](ec2){:target="_blank" rel="nofollow noreferrer noopener"}
+- [ec2](ec2)
 
-- [ecr](ecr){:target="_blank" rel="nofollow noreferrer noopener"}
+- [ecr](ecr)
 
-- [ecs](ecs){:target="_blank" rel="nofollow noreferrer noopener"}
+- [ecs](ecs)
 
-- [efs](efs){:target="_blank" rel="nofollow noreferrer noopener"}
+- [efs](efs)
 
-- [eks](eks){:target="_blank" rel="nofollow noreferrer noopener"}
+- [eks](eks)
 
-- [elastic-search](elastic-search){:target="_blank" rel="nofollow noreferrer noopener"}
+- [elastic-search](elastic-search)
 
-- [elasticache](elasticache){:target="_blank" rel="nofollow noreferrer noopener"}
+- [elasticache](elasticache)
 
-- [elb](elb){:target="_blank" rel="nofollow noreferrer noopener"}
+- [elb](elb)
 
-- [iam](iam){:target="_blank" rel="nofollow noreferrer noopener"}
+- [iam](iam)
 
-- [kinesis](kinesis){:target="_blank" rel="nofollow noreferrer noopener"}
+- [kinesis](kinesis)
 
-- [kms](kms){:target="_blank" rel="nofollow noreferrer noopener"}
+- [kms](kms)
 
-- [lambda](lambda){:target="_blank" rel="nofollow noreferrer noopener"}
+- [lambda](lambda)
 
-- [mq](mq){:target="_blank" rel="nofollow noreferrer noopener"}
+- [mq](mq)
 
-- [msk](msk){:target="_blank" rel="nofollow noreferrer noopener"}
+- [msk](msk)
 
-- [neptune](neptune){:target="_blank" rel="nofollow noreferrer noopener"}
+- [neptune](neptune)
 
-- [rds](rds){:target="_blank" rel="nofollow noreferrer noopener"}
+- [rds](rds)
 
-- [redshift](redshift){:target="_blank" rel="nofollow noreferrer noopener"}
+- [redshift](redshift)
 
-- [s3](s3){:target="_blank" rel="nofollow noreferrer noopener"}
+- [s3](s3)
 
-- [sns](sns){:target="_blank" rel="nofollow noreferrer noopener"}
+- [sns](sns)
 
-- [sqs](sqs){:target="_blank" rel="nofollow noreferrer noopener"}
+- [sqs](sqs)
 
-- [ssm](ssm){:target="_blank" rel="nofollow noreferrer noopener"}
+- [ssm](ssm)
 
-- [vpc](vpc){:target="_blank" rel="nofollow noreferrer noopener"}
+- [vpc](vpc)
 
-- [workspaces](workspaces){:target="_blank" rel="nofollow noreferrer noopener"}
+- [workspaces](workspaces)
 
 

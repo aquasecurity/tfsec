@@ -7,6 +7,6 @@ title: general
 ## Services
 
 
-- [secrets](secrets){:target="_blank" rel="nofollow noreferrer noopener"}
+- [secrets](secrets)
 
 
