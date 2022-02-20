@@ -1,0 +1,17 @@
+---
+title: dynamodb
+---
+
+# dynamodb
+
+## Checks
+
+
+- [enable-at-rest-encryption](enable-at-rest-encryption){:target="_blank" rel="nofollow noreferrer noopener"} DAX Cluster should always encrypt data at rest
+
+- [enable-recovery](enable-recovery){:target="_blank" rel="nofollow noreferrer noopener"} Point in time recovery should be enabled to protect DynamoDB table
+
+- [table-customer-key](table-customer-key){:target="_blank" rel="nofollow noreferrer noopener"} DynamoDB tables should use at rest encryption with a Customer Managed Key
+
+
+
