@@ -38,8 +38,13 @@ var rootCmd = &cobra.Command{
 	Short: "tfsec-docs generates documentation for the checks in tfsec",
 	Long:  `tfsec-docs generates the content for the root README and also can generate the missing base pages for the wiki`,
 	RunE: func(_ *cobra.Command, _ []string) error {
+
 		fileContents := getSortedFileContents()
-		return generateWebPages(fileContents)
+		if err := generateWebPages(fileContents); err != nil {
+			return err
+		}
+
+		return generateIndexPages(fileContents)
 	},
 }
 
