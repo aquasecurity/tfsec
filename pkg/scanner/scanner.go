@@ -222,6 +222,7 @@ func (s *Scanner) findRootModules(dirs []string) []string {
 			continue
 		}
 		for _, file := range files {
+			file := resolveSymlink(dir, file)
 			if file.IsDir() {
 				others = append(others, filepath.Join(dir, file.Name()))
 			}
@@ -233,6 +234,17 @@ func (s *Scanner) findRootModules(dirs []string) []string {
 	}
 
 	return s.removeNestedDirs(roots)
+}
+
+func resolveSymlink(dir string, file os.FileInfo) os.FileInfo {
+
+	if resolvedLink, err := os.Readlink(filepath.Join(dir, file.Name())); err == nil {
+		resolvedPath := filepath.Clean(filepath.Join(dir, resolvedLink))
+		if info, err := os.Lstat(resolvedPath); err == nil {
+			return info
+		}
+	}
+	return file
 }
 
 func isRootModule(dir string) bool {
