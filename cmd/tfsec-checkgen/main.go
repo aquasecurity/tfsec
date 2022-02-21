@@ -9,10 +9,10 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/pkg/custom"
-	"github.com/aquasecurity/tfsec/internal/pkg/parser"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +29,7 @@ func init() {
 
 func main() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprint(os.Stderr, err)
+		_, _ = fmt.Fprint(os.Stderr, err)
 		os.Exit(1)
 	}
 }
@@ -50,7 +50,7 @@ var validateCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		err := custom.Validate(args[0])
 		if err != nil {
-			fmt.Fprint(os.Stderr, err)
+			_, _ = fmt.Fprint(os.Stderr, err)
 			os.Exit(-1)
 		}
 		fmt.Println("Config is valid")
@@ -71,11 +71,15 @@ func scanTestFile(testFile string) (rules.Results, error) {
 	if err := ioutil.WriteFile(path, source, 0600); err != nil {
 		return nil, err
 	}
-	modules, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	if err := p.ParseDirectory(filepath.Dir(path)); err != nil {
+		return nil, err
+	}
+	modules, _, err := p.EvaluateAll()
 	if err != nil {
 		return nil, err
 	}
-	results, err := scanner.New().Scan(modules)
+	results, _, err := executor.New().Execute(modules)
 	return results, err
 }
 
@@ -119,8 +123,8 @@ var testCheckCmd = &cobra.Command{
 				return errors.New("test case did not pass")
 			}
 		}
-		for _, rule := range scanner.GetRegisteredRules() {
-			scanner.DeregisterCheckRule(rule)
+		for _, rule := range executor.GetRegisteredRules() {
+			executor.DeregisterCheckRule(rule)
 		}
 		return nil
 	},

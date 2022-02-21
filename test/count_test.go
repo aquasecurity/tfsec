@@ -3,11 +3,11 @@ package test
 import (
 	"testing"
 
-	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/parsers/terraform"
+	"github.com/aquasecurity/defsec/providers"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/severity"
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 	"github.com/stretchr/testify/assert"
@@ -154,7 +154,7 @@ variable "things" {
 			r1 := rule.Rule{
 				Base: rules.Register(
 					rules.Rule{
-						Provider:  provider.AWSProvider,
+						Provider:  providers.AWSProvider,
 						Service:   "service",
 						ShortCode: "abc123",
 						Severity:  severity.High,
@@ -162,7 +162,7 @@ variable "things" {
 					nil,
 				),
 				RequiredLabels: []string{"bad"},
-				CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
+				CheckTerraform: func(resourceBlock *terraform.Block, _ *terraform.Module) (results rules.Results) {
 					if resourceBlock.GetAttribute("secure").IsTrue() {
 						return
 					}
@@ -173,8 +173,8 @@ variable "things" {
 					return
 				},
 			}
-			scanner.RegisterCheckRule(r1)
-			defer scanner.DeregisterCheckRule(r1)
+			executor.RegisterCheckRule(r1)
+			defer executor.DeregisterCheckRule(r1)
 			results := testutil.ScanHCL(test.source, t)
 			var include string
 			var exclude string

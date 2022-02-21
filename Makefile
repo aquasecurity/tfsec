@@ -11,7 +11,7 @@ image:
 .PHONY: test
 test:
 	which gotestsum || (pushd /tmp && go install gotest.tools/gotestsum@latest && popd)
-	gotestsum -- --mod=vendor -bench=^$$ -race ./...
+	gotestsum -- -bench=^$$ -race ./...
 
 .PHONY: build
 build:
@@ -38,7 +38,7 @@ tagger:
 .PHONY: typos
 typos:
 	which codespell || pip install codespell
-	codespell -S vendor,funcs,.terraform,.git,go.sum --ignore-words .codespellignore -f
+	codespell -S .terraform,.git,go.sum --ignore-words .codespellignore -f
 
 .PHONY: quality
 quality:
@@ -48,7 +48,7 @@ quality:
 .PHONY: fix-typos
 fix-typos:
 	which codespell || pip install codespell
-	codespell -S vendor,funcs,.terraform,go.sum --ignore-words .codespellignore -f -w -i1
+	codespell -S .terraform,go.sum --ignore-words .codespellignore -f -w -i1
 
 .PHONY: clone-image-github
 clone-image-github:
@@ -60,7 +60,7 @@ clone-image-tfsec:
 
 .PHONY: sanity
 sanity: test
-	go run ./cmd/tfsec -s -p --force-all-dirs ./example > /dev/null
+	go run ./cmd/tfsec -s -p --force-all-dirs ./_examples > /dev/null
 
 .PHONY: pr-ready
 pr-ready: quality sanity typos

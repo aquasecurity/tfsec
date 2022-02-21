@@ -11,9 +11,9 @@ import (
 
 	"github.com/aquasecurity/defsec/rules"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
-	"github.com/aquasecurity/tfsec/internal/pkg/parser"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/defsec/parsers/terraform"
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -971,18 +971,28 @@ func scanTerraform(t *testing.T, mainTf string) []rules.Result {
 	err = ioutil.WriteFile(fmt.Sprintf("%s/%s", dirName, "main.tf"), []byte(mainTf), os.ModePerm)
 	assert.NoError(t, err)
 
-	blocks, err := parser.New(dirName, parser.OptionStopOnHCLError()).ParseDirectory()
-	assert.NoError(t, err)
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	if err := p.ParseDirectory(dirName); err != nil {
+		panic(err)
+	}
+	modules, _, err := p.EvaluateAll()
+	if err != nil {
+		panic(err)
+	}
 
-	res, _ := scanner.New(scanner.OptionStopOnErrors()).Scan(blocks)
+	res, _, _ := executor.New(executor.OptionStopOnErrors(true)).Execute(modules)
 	return res
 }
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.
 // TODO: Extract into a testing utility package once the amount of duplication justifies introducing an extra package.
-func ParseFromSource(source string) block.Modules {
+func ParseFromSource(source string) terraform.Modules {
 	path := createTestFile("test.tf", source)
-	modules, err := parser.New(filepath.Dir(path), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	if err := p.ParseDirectory(filepath.Dir(path)); err != nil {
+		panic(err)
+	}
+	modules, _, err := p.EvaluateAll()
 	if err != nil {
 		panic(err)
 	}

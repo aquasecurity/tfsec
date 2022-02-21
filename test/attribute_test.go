@@ -3,7 +3,8 @@ package test
 import (
 	"testing"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
+	"github.com/aquasecurity/defsec/parsers/terraform"
+
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil"
 
 	"github.com/stretchr/testify/assert"
@@ -283,7 +284,7 @@ resource "aws_security_group" "my-security_group" {
 					}
 					attr := b.GetAttribute(test.checkAttribute)
 					if test.ignoreCase {
-						assert.Equal(t, test.expectedResult, attr.Contains(test.checkValue, block.IgnoreCase))
+						assert.Equal(t, test.expectedResult, attr.Contains(test.checkValue, terraform.IgnoreCase))
 					} else {
 						assert.Equal(t, test.expectedResult, attr.Contains(test.checkValue))
 					}

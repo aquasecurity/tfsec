@@ -3,8 +3,8 @@ package test
 import (
 	"testing"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
-	"github.com/aquasecurity/tfsec/internal/pkg/parser"
+	"github.com/aquasecurity/defsec/parsers/terraform"
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
 )
 
@@ -14,19 +14,23 @@ func BenchmarkBlockParsing(b *testing.B) {
 	if err != nil {
 		panic(err)
 	}
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	createBadBlocks(fs)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		modules, err := parser.New(fs.RealPath("/project"), parser.OptionStopOnHCLError()).ParseDirectory()
+		p := parser.New(parser.OptionStopOnHCLError(true))
+		if err := p.ParseDirectory(fs.RealPath("/project")); err != nil {
+			panic(err)
+		}
+		modules, _, err := p.EvaluateAll()
 		if err != nil {
 			panic(err)
 		}
 
 		for _, m := range modules {
-			block.NewHCLModule(fs.RealPath("/project"), "", m.GetBlocks(), nil)
+			terraform.NewModule(fs.RealPath("/project"), "", m.GetBlocks(), nil)
 		}
 
 	}

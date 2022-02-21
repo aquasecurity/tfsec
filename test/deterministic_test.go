@@ -6,18 +6,18 @@ import (
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
 	"github.com/stretchr/testify/require"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/parser"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 )
 
 func Test_DeterministicResults(t *testing.T) {
 
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 	require.NoError(t, fs.WriteTextFile("/project/first.tf", `
 resource "problem" "uhoh" {
 	bad = true
@@ -39,9 +39,12 @@ locals {
 `))
 
 	for i := 0; i < 100; i++ {
-		blocks, err := parser.New(fs.RealPath("/project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+		p := parser.New(parser.OptionStopOnHCLError(true))
+		err := p.ParseDirectory(fs.RealPath("/project"))
 		require.NoError(t, err)
-		results, _ := scanner.New().Scan(blocks)
+		modules, _, err := p.EvaluateAll()
+		require.NoError(t, err)
+		results, _, _ := executor.New().Execute(modules)
 		require.Len(t, results, 2)
 	}
 }

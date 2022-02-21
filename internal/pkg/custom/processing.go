@@ -8,22 +8,21 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 
-	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/parsers/terraform"
+	"github.com/aquasecurity/defsec/providers"
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
-	"github.com/aquasecurity/tfsec/internal/pkg/debug"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
-var matchFunctions = map[CheckAction]func(*block.Block, *MatchSpec, *customContext) bool{
-	IsPresent: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+var matchFunctions = map[CheckAction]func(*terraform.Block, *MatchSpec, *customContext) bool{
+	IsPresent: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		return b.HasChild(spec.Name) || spec.IgnoreUndefined
 	},
-	NotPresent: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	NotPresent: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		return !b.HasChild(spec.Name)
 	},
-	IsEmpty: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	IsEmpty: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		if b.MissingChild(spec.Name) {
 			return true
 		}
@@ -35,91 +34,96 @@ var matchFunctions = map[CheckAction]func(*block.Block, *MatchSpec, *customConte
 		childBlock := b.GetBlock(spec.Name)
 		return childBlock.IsEmpty()
 	},
-	StartsWith: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	StartsWith: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.StartsWith(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	EndsWith: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	EndsWith: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.EndsWith(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	Contains: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	Contains: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
-		return attribute.Contains(processMatchValueVariables(spec.MatchValue, customCtx.variables), block.IgnoreCase)
+		return attribute.Contains(processMatchValueVariables(spec.MatchValue, customCtx.variables), terraform.IgnoreCase)
 	},
-	NotContains: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	NotContains: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return !attribute.Contains(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	Equals: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	Equals: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.Equals(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	NotEqual: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	NotEqual: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.NotEqual(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
-	LessThan: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	LessThan: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThan(spec.MatchValue)
 	},
-	LessThanOrEqualTo: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	LessThanOrEqualTo: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.LessThanOrEqualTo(spec.MatchValue)
 	},
-	GreaterThan: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	GreaterThan: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThan(spec.MatchValue)
 	},
-	GreaterThanOrEqualTo: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	GreaterThanOrEqualTo: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
 		return attribute.GreaterThanOrEqualTo(spec.MatchValue)
 	},
-	RegexMatches: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	RegexMatches: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
 		}
-		return attribute.RegexMatches(processMatchValueVariables(spec.MatchValue, customCtx.variables))
+		raw := processMatchValueVariables(spec.MatchValue, customCtx.variables)
+		regex, err := regexp.Compile(fmt.Sprintf("%v", raw))
+		if err != nil {
+			return false
+		}
+		return attribute.RegexMatches(*regex)
 	},
-	RequiresPresence: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	RequiresPresence: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		return resourceFound(spec, customCtx.module)
 	},
-	IsAny: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	IsAny: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		return attribute != nil && attribute.IsAny(unpackInterfaceToInterfaceSlice(processMatchValueVariables(spec.MatchValue, customCtx.variables))...)
 	},
-	IsNone: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	IsNone: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
 			return spec.IgnoreUndefined
@@ -128,14 +132,14 @@ var matchFunctions = map[CheckAction]func(*block.Block, *MatchSpec, *customConte
 	},
 }
 
-var AttrMatchFunctions = map[CheckAction]func(*block.Attribute, *MatchSpec, *customContext) bool{
-	IsPresent: func(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+var AttrMatchFunctions = map[CheckAction]func(*terraform.Attribute, *MatchSpec, *customContext) bool{
+	IsPresent: func(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 		return a.Contains(spec.Name) || spec.IgnoreUndefined
 	},
-	NotPresent: func(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+	NotPresent: func(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 		return !a.Contains(spec.Name)
 	},
-	StartsWith: func(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+	StartsWith: func(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 		if attributeValue := a.MapValue(spec.Name); attributeValue.IsNull() {
 			if !attributeValue.Type().Equals(cty.String) {
 				return false
@@ -144,7 +148,7 @@ var AttrMatchFunctions = map[CheckAction]func(*block.Attribute, *MatchSpec, *cus
 		}
 		return spec.IgnoreUndefined
 	},
-	EndsWith: func(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+	EndsWith: func(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 		if attributeValue := a.MapValue(spec.Name); !attributeValue.IsNull() {
 			if !attributeValue.Type().Equals(cty.String) {
 				return false
@@ -153,7 +157,7 @@ var AttrMatchFunctions = map[CheckAction]func(*block.Attribute, *MatchSpec, *cus
 		}
 		return spec.IgnoreUndefined
 	},
-	Equals: func(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+	Equals: func(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 		if attributeValue := a.MapValue(spec.Name); !attributeValue.IsNull() {
 			if !attributeValue.Type().Equals(cty.String) {
 				return false
@@ -162,7 +166,7 @@ var AttrMatchFunctions = map[CheckAction]func(*block.Attribute, *MatchSpec, *cus
 		}
 		return spec.IgnoreUndefined
 	},
-	NotEqual: func(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+	NotEqual: func(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 		if attributeValue := a.MapValue(spec.Name); !attributeValue.IsNull() {
 			if !attributeValue.Type().Equals(cty.String) {
 				return false
@@ -171,7 +175,7 @@ var AttrMatchFunctions = map[CheckAction]func(*block.Attribute, *MatchSpec, *cus
 		}
 		return spec.IgnoreUndefined
 	},
-	LessThan: func(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+	LessThan: func(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 		if attributeValue := a.MapValue(spec.Name); !attributeValue.IsNull() {
 			if !attributeValue.Type().Equals(cty.Number) {
 				return false
@@ -184,7 +188,7 @@ var AttrMatchFunctions = map[CheckAction]func(*block.Attribute, *MatchSpec, *cus
 		}
 		return spec.IgnoreUndefined
 	},
-	LessThanOrEqualTo: func(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+	LessThanOrEqualTo: func(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 		if attributeValue := a.MapValue(spec.Name); !attributeValue.IsNull() {
 			if !attributeValue.Type().Equals(cty.Number) {
 				return false
@@ -197,7 +201,7 @@ var AttrMatchFunctions = map[CheckAction]func(*block.Attribute, *MatchSpec, *cus
 		}
 		return spec.IgnoreUndefined
 	},
-	GreaterThan: func(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+	GreaterThan: func(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 		if attributeValue := a.MapValue(spec.Name); !attributeValue.IsNull() {
 			if !attributeValue.Type().Equals(cty.Number) {
 				return false
@@ -210,7 +214,7 @@ var AttrMatchFunctions = map[CheckAction]func(*block.Attribute, *MatchSpec, *cus
 		}
 		return spec.IgnoreUndefined
 	},
-	GreaterThanOrEqualTo: func(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+	GreaterThanOrEqualTo: func(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 		if attributeValue := a.MapValue(spec.Name); !attributeValue.IsNull() {
 			if !attributeValue.Type().Equals(cty.Number) {
 				return false
@@ -228,8 +232,7 @@ var AttrMatchFunctions = map[CheckAction]func(*block.Attribute, *MatchSpec, *cus
 func ProcessFoundChecks(checks ChecksFile) {
 	for _, customCheck := range checks.Checks {
 		func(customCheck Check) {
-			debug.Log("Loading check: %s\n", customCheck.Code)
-			scanner.RegisterCheckRule(rule.Rule{
+			executor.RegisterCheckRule(rule.Rule{
 				Base: rules.Register(
 					rules.Rule{
 						Service:    "custom",
@@ -237,7 +240,7 @@ func ProcessFoundChecks(checks ChecksFile) {
 						Summary:    customCheck.Description,
 						Impact:     customCheck.Impact,
 						Resolution: customCheck.Resolution,
-						Provider:   provider.CustomProvider,
+						Provider:   providers.CustomProvider,
 						Links:      customCheck.RelatedLinks,
 						Severity:   customCheck.Severity,
 					},
@@ -246,13 +249,15 @@ func ProcessFoundChecks(checks ChecksFile) {
 				RequiredTypes:   customCheck.RequiredTypes,
 				RequiredLabels:  customCheck.RequiredLabels,
 				RequiredSources: customCheck.RequiredSources,
-				CheckTerraform: func(rootBlock *block.Block, module *block.Module) (results rules.Results) {
+				CheckTerraform: func(rootBlock *terraform.Block, module *terraform.Module) (results rules.Results) {
 					matchSpec := customCheck.MatchSpec
 					if !evalMatchSpec(rootBlock, matchSpec, NewCustomContext(module)) {
 						results.Add(
 							fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage),
 							rootBlock,
 						)
+					} else {
+						results.AddPassed(rootBlock)
 					}
 					return
 				},
@@ -261,7 +266,7 @@ func ProcessFoundChecks(checks ChecksFile) {
 	}
 }
 
-func evalMatchSpec(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+func evalMatchSpec(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 	if b.IsNil() {
 		return false
 	}
@@ -275,12 +280,12 @@ func evalMatchSpec(b *block.Block, spec *MatchSpec, customCtx *customContext) bo
 		}
 	}
 
-	var matchFunctionsDirect = map[CheckAction]func(*block.Block, *MatchSpec, *customContext) bool{
-		InModule: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+	var matchFunctionsDirect = map[CheckAction]func(*terraform.Block, *MatchSpec, *customContext) bool{
+		InModule: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 			return b.InModule()
 		},
 		HasTag: checkTags,
-		OfType: func(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+		OfType: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 			return ofType(b, spec)
 		},
 		Not: notifyPredicate,
@@ -309,7 +314,7 @@ func evalMatchSpec(b *block.Block, spec *MatchSpec, customCtx *customContext) bo
 	return evalResult
 }
 
-func evalMatchSpecAttr(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+func evalMatchSpecAttr(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 	for _, preCondition := range spec.PreConditions {
 		clone := preCondition
 		if !evalMatchSpecAttr(a, &clone, customCtx) {
@@ -334,15 +339,15 @@ func evalMatchSpecAttr(a *block.Attribute, spec *MatchSpec, customCtx *customCon
 	}
 }
 
-func notifyPredicate(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+func notifyPredicate(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 	return !evalMatchSpec(b, &spec.PredicateMatchSpec[0], customCtx)
 }
 
-func notifyPredicateAttr(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+func notifyPredicateAttr(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 	return !evalMatchSpecAttr(a, &spec.PredicateMatchSpec[0], customCtx)
 }
 
-func processOrPredicate(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+func processOrPredicate(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 	for _, childSpec := range spec.PredicateMatchSpec {
 		clone := childSpec
 		if evalMatchSpec(b, &clone, customCtx) {
@@ -352,7 +357,7 @@ func processOrPredicate(b *block.Block, spec *MatchSpec, customCtx *customContex
 	return false
 }
 
-func processOrPredicateAttr(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+func processOrPredicateAttr(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 	for _, childSpec := range spec.PredicateMatchSpec {
 		clone := childSpec
 		if evalMatchSpecAttr(a, &clone, customCtx) {
@@ -362,7 +367,7 @@ func processOrPredicateAttr(a *block.Attribute, spec *MatchSpec, customCtx *cust
 	return false
 }
 
-func processAndPredicate(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+func processAndPredicate(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 	set := make(map[bool]bool)
 
 	for _, childSpec := range spec.PredicateMatchSpec {
@@ -374,7 +379,7 @@ func processAndPredicate(b *block.Block, spec *MatchSpec, customCtx *customConte
 	return len(set) == 1 && set[true]
 }
 
-func processAndPredicateAttr(a *block.Attribute, spec *MatchSpec, customCtx *customContext) bool {
+func processAndPredicateAttr(a *terraform.Attribute, spec *MatchSpec, customCtx *customContext) bool {
 	set := make(map[bool]bool)
 
 	for _, childSpec := range spec.PredicateMatchSpec {
@@ -386,8 +391,8 @@ func processAndPredicateAttr(a *block.Attribute, spec *MatchSpec, customCtx *cus
 	return len(set) == 1 && set[true]
 }
 
-func processSubMatches(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
-	var subMatchTargetBlocks block.Blocks
+func processSubMatches(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
+	var subMatchTargetBlocks terraform.Blocks
 	switch spec.Action {
 	case RequiresPresence:
 		subMatchTargetBlocks = customCtx.module.GetResourcesByType(spec.Name)
@@ -408,8 +413,8 @@ func processSubMatches(b *block.Block, spec *MatchSpec, customCtx *customContext
 	return true
 }
 
-func processSubMatchOnes(b *block.Block, spec *MatchSpec, customCtx *customContext) bool {
-	var subMatchTargetBlocks block.Blocks
+func processSubMatchOnes(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
+	var subMatchTargetBlocks terraform.Blocks
 	switch spec.Action {
 	case RequiresPresence:
 		subMatchTargetBlocks = customCtx.module.GetResourcesByType(spec.Name)
@@ -442,7 +447,7 @@ func processMatchValueVariables(matchValue interface{}, variables map[string]str
 	}
 }
 
-func resourceFound(spec *MatchSpec, module *block.Module) bool {
+func resourceFound(spec *MatchSpec, module *terraform.Module) bool {
 	val := fmt.Sprintf("%v", spec.Name)
 	byType := module.GetResourcesByType(val)
 	return len(byType) > 0

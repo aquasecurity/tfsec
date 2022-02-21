@@ -2,8 +2,6 @@ builds:
   - id: tfsec
     main: ./cmd/tfsec
     binary: tfsec
-    flags:
-      - -mod=vendor
     ldflags:
       - "-X github.com/aquasecurity/tfsec/version.Version={{.Tag}} -s -w -extldflags '-fno-PIC -static'"
     env:

@@ -3,22 +3,22 @@ package secrets
 import (
 	"github.com/zclconf/go-cty/cty"
 
+	"github.com/aquasecurity/defsec/parsers/terraform"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/general/secrets"
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
 
 	"github.com/aquasecurity/tfsec/pkg/rule"
 
 	"github.com/aquasecurity/tfsec/internal/pkg/security"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 )
 
 func init() {
-	scanner.RegisterCheckRule(rule.Rule{
+	executor.RegisterCheckRule(rule.Rule{
 		RequiredTypes: []string{"variable"},
 		Base:          secrets.CheckNotExposed,
-		CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
+		CheckTerraform: func(resourceBlock *terraform.Block, _ *terraform.Module) (results rules.Results) {
 
 			if len(resourceBlock.Labels()) == 0 || !security.IsSensitiveAttribute(resourceBlock.TypeLabel()) {
 				return

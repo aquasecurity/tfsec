@@ -1,13 +1,13 @@
 package ignores
 
 import (
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/debug"
 	"github.com/aquasecurity/tfsec/internal/pkg/legacy"
 )
 
@@ -89,7 +89,7 @@ func RunMigration(dir string) (MigrationStatistics, error) {
 }
 
 func migrateFile(file string, legacyMapping map[string]string) (MigrationStatistics, error) {
-	debug.Log("Asked to migrate %s", file)
+	fmt.Printf("Asked to migrate %s\n", file)
 	if filepath.Ext(file) != ".tf" {
 
 		return nil, nil
@@ -97,7 +97,7 @@ func migrateFile(file string, legacyMapping map[string]string) (MigrationStatist
 
 	legacyIgnoreRegex := regexp.MustCompile(`tfsec:ignore:([A-Z]{3}\d{3})`)
 
-	debug.Log("Running migrations for file: %s", file)
+	fmt.Printf("Running migrations for file: %s\n", file)
 	content, err := os.ReadFile(file)
 	if err != nil {
 		return nil, err
@@ -114,7 +114,7 @@ func migrateFile(file string, legacyMapping map[string]string) (MigrationStatist
 		if !ok {
 			continue
 		}
-		debug.Log("Found %s, migrating to %s", legacyCode, newCode)
+		fmt.Printf("Found %s, migrating to %s\n", legacyCode, newCode)
 		contentString = strings.ReplaceAll(contentString, legacyCode, newCode)
 		stats = append(stats, &migrationStatistic{
 			Filename: file,

@@ -10,7 +10,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-
+    ignore:
+      - dependency-name: "github.com/zclconf/go-cty"
+        versions: ["1.x"]
+        
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"

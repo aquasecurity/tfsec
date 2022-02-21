@@ -3,8 +3,8 @@ package custom
 import (
 	"testing"
 
+	"github.com/aquasecurity/defsec/providers"
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/pkg/provider"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -93,7 +93,7 @@ resource "aws_instance" "bastion" {
 func filterCustomResults(scanResults []rules.Result) []rules.Result {
 	var customResults []rules.Result
 	for _, result := range scanResults {
-		if result.Rule().Provider.DisplayName() == provider.CustomProvider.DisplayName() {
+		if result.Rule().Provider.DisplayName() == providers.CustomProvider.DisplayName() {
 			customResults = append(customResults, result)
 		}
 	}

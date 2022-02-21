@@ -7,19 +7,19 @@ import (
 	"github.com/aquasecurity/tfsec/internal/pkg/testutil/filesystem"
 	"github.com/stretchr/testify/require"
 
-	"github.com/aquasecurity/defsec/provider"
+	"github.com/aquasecurity/defsec/parsers/terraform"
+	"github.com/aquasecurity/defsec/parsers/terraform/parser"
+	"github.com/aquasecurity/defsec/providers"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/defsec/rules/aws/iam"
 	"github.com/aquasecurity/defsec/severity"
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
-	"github.com/aquasecurity/tfsec/internal/pkg/parser"
-	"github.com/aquasecurity/tfsec/internal/pkg/scanner"
+	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 var badRule = rule.Rule{
 	Base: rules.Register(rules.Rule{
-		Provider:    provider.AWSProvider,
+		Provider:    providers.AWSProvider,
 		Service:     "service",
 		ShortCode:   "abc",
 		Summary:     "A stupid example check for a test.",
@@ -30,7 +30,7 @@ var badRule = rule.Rule{
 	}, nil),
 	RequiredTypes:  []string{"resource"},
 	RequiredLabels: []string{"problem"},
-	CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
+	CheckTerraform: func(resourceBlock *terraform.Block, _ *terraform.Module) (results rules.Results) {
 		if attr := resourceBlock.GetAttribute("bad"); attr.IsTrue() {
 			results.Add("bad", attr)
 		}
@@ -40,12 +40,12 @@ var badRule = rule.Rule{
 
 // IMPORTANT: if this test is failing, you probably need to set the version of go-cty in go.mod to the same version that hcl uses.
 func Test_GoCtyCompatibilityIssue(t *testing.T) {
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("/project/main.tf", `
 data "aws_vpc" "default" {
@@ -82,21 +82,24 @@ resource "problem" "uhoh" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("/project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, err := executor.New().Execute(modules)
+	require.NoError(t, err)
 	testutil.AssertRuleFound(t, badRule.ID(), results, "")
-
 }
 
 func Test_ProblemInModuleInSiblingDir(t *testing.T) {
 
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("/project/main.tf", `
 module "something" {
@@ -109,21 +112,24 @@ resource "problem" "uhoh" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("/project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
 func Test_ProblemInModuleIgnored(t *testing.T) {
 
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("/project/main.tf", `
 #tfsec:ignore:aws-service-abc
@@ -137,21 +143,24 @@ resource "problem" "uhoh" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("/project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleNotFound(t, badRule.ID(), results, "")
 
 }
 
 func Test_ProblemInModuleInSubdirectory(t *testing.T) {
 
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", `
 module "something" {
@@ -164,21 +173,24 @@ resource "problem" "uhoh" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
 func Test_ProblemInModuleInParentDir(t *testing.T) {
 
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", `
 module "something" {
@@ -191,21 +203,24 @@ resource "problem" "uhoh" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
 func Test_ProblemInModuleReuse(t *testing.T) {
 
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", `
 module "something_good" {
@@ -227,21 +242,24 @@ resource "problem" "uhoh" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
 func Test_ProblemInNestedModule(t *testing.T) {
 
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", `
 module "something" {
@@ -264,21 +282,24 @@ resource "problem" "uhoh" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
 func Test_ProblemInReusedNestedModule(t *testing.T) {
 
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", `
 module "something" {
@@ -318,21 +339,24 @@ resource "problem" "uhoh" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
 func Test_ProblemInInitialisedModule(t *testing.T) {
 
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", `
 module "something" {
@@ -361,23 +385,29 @@ resource "problem" "uhoh" {
 }
 `))
 	require.NoError(t, fs.WriteTextFile("project/.terraform/modules/modules.json", `
-	{"Modules":[{"Key":"something","Source":"../modules/somewhere","Version":"2.35.0","Dir":"../modules/somewhere"},{"Key":"something.something_nested","Source":"git::https://github.com/some/module.git","Version":"2.35.0","Dir":".terraform/modules/something.something_nested"}]}
+	{"Modules":[
+        {"Key":"something","Source":"../modules/somewhere","Version":"2.35.0","Dir":"../modules/somewhere"},
+        {"Key":"something.something_nested","Source":"git::https://github.com/some/module.git","Version":"2.35.0","Dir":".terraform/modules/something.something_nested"}
+    ]}
 `))
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 func Test_ProblemInReusedInitialisedModule(t *testing.T) {
 
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", `
 module "something" {
@@ -401,20 +431,23 @@ resource "problem" "uhoh" {
 	{"Modules":[{"Key":"something","Source":"/nowhere","Version":"2.35.0","Dir":".terraform/modules/a"},{"Key":"something2","Source":"/nowhere","Version":"2.35.0","Dir":".terraform/modules/a"}]}
 `))
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
 
 func Test_ProblemInDuplicateModuleNameAndPath(t *testing.T) {
-	scanner.RegisterCheckRule(badRule)
-	defer scanner.DeregisterCheckRule(badRule)
+	executor.RegisterCheckRule(badRule)
+	defer executor.DeregisterCheckRule(badRule)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", `
 module "something" {
@@ -455,9 +488,12 @@ resource "problem" "uhoh" {
 }
 `))
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleFound(t, badRule.ID(), results, "")
 
 }
@@ -481,19 +517,19 @@ resource "bad" "thing" {
 `
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
 
 	r1 := rule.Rule{
 		Base: rules.Register(rules.Rule{
-			Provider:  provider.AWSProvider,
+			Provider:  providers.AWSProvider,
 			Service:   "service",
 			ShortCode: "abc123",
 			Severity:  severity.High,
 		}, nil),
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
+		CheckTerraform: func(resourceBlock *terraform.Block, _ *terraform.Module) (results rules.Results) {
 			if resourceBlock.GetAttribute("secure").IsTrue() {
 				return
 			}
@@ -501,12 +537,15 @@ resource "bad" "thing" {
 			return
 		},
 	}
-	scanner.RegisterCheckRule(r1)
-	defer scanner.DeregisterCheckRule(r1)
+	executor.RegisterCheckRule(r1)
+	defer executor.DeregisterCheckRule(r1)
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleFound(t, r1.ID(), results, "")
 }
 
@@ -529,19 +568,19 @@ resource "bad" "thing" {
 `
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", example))
 
 	r1 := rule.Rule{
 		Base: rules.Register(rules.Rule{
-			Provider:  provider.AWSProvider,
+			Provider:  providers.AWSProvider,
 			Service:   "service",
 			ShortCode: "abc123",
 			Severity:  severity.High,
 		}, nil),
 		RequiredLabels: []string{"bad"},
-		CheckTerraform: func(resourceBlock *block.Block, _ *block.Module) (results rules.Results) {
+		CheckTerraform: func(resourceBlock *terraform.Block, _ *terraform.Module) (results rules.Results) {
 			if resourceBlock.GetAttribute("secure").IsTrue() {
 				return
 			}
@@ -549,12 +588,15 @@ resource "bad" "thing" {
 			return
 		},
 	}
-	scanner.RegisterCheckRule(r1)
-	defer scanner.DeregisterCheckRule(r1)
+	executor.RegisterCheckRule(r1)
+	defer executor.DeregisterCheckRule(r1)
 
-	blocks, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(blocks)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleNotFound(t, r1.ID(), results, "")
 }
 
@@ -564,12 +606,12 @@ func Test_ReferencesPassedToNestedModule(t *testing.T) {
 		Base: iam.CheckEnforceMFA,
 	}
 
-	scanner.RegisterCheckRule(r)
-	defer scanner.DeregisterCheckRule(r)
+	executor.RegisterCheckRule(r)
+	defer executor.DeregisterCheckRule(r)
 
 	fs, err := filesystem.New()
 	require.NoError(t, err)
-	defer fs.Close()
+	defer func() { _ = fs.Close() }()
 
 	require.NoError(t, fs.WriteTextFile("project/main.tf", `
 
@@ -609,10 +651,12 @@ data "aws_iam_policy_document" "policy" {
 }
 
 `))
-
-	modules, err := parser.New(fs.RealPath("project/"), parser.OptionStopOnHCLError()).ParseDirectory()
+	p := parser.New(parser.OptionStopOnHCLError(true))
+	err = p.ParseDirectory(fs.RealPath("project/"))
 	require.NoError(t, err)
-	results, _ := scanner.New().Scan(modules)
+	modules, _, err := p.EvaluateAll()
+	require.NoError(t, err)
+	results, _, _ := executor.New().Execute(modules)
 	testutil.AssertRuleNotFound(t, r.ID(), results, "")
 
 }

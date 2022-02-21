@@ -3,10 +3,10 @@ package custom
 import (
 	"fmt"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/block"
+	"github.com/aquasecurity/defsec/parsers/terraform"
 )
 
-func checkTags(block *block.Block, spec *MatchSpec, customCtx *customContext) bool {
+func checkTags(block *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 	expectedTag := fmt.Sprintf("%v", spec.MatchValue)
 
 	if block.HasChild("tags") {
@@ -18,9 +18,9 @@ func checkTags(block *block.Block, spec *MatchSpec, customCtx *customContext) bo
 
 	var alias string
 	if block.HasChild("provider") {
-		aliasRef, err := block.GetAttribute("provider").SingleReference()
-		if err == nil {
-			alias = aliasRef.String()
+		aliasRef := block.GetAttribute("provider").AllReferences()
+		if len(aliasRef) > 0 {
+			alias = aliasRef[0].String()
 		}
 	}
 
@@ -39,7 +39,7 @@ func checkTags(block *block.Block, spec *MatchSpec, customCtx *customContext) bo
 	return false
 }
 
-func ofType(block *block.Block, spec *MatchSpec) bool {
+func ofType(block *terraform.Block, spec *MatchSpec) bool {
 	switch value := spec.MatchValue.(type) {
 	case []interface{}:
 		for _, v := range value {

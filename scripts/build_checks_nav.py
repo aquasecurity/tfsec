@@ -18,7 +18,7 @@ for provider in sorted(os.listdir('./docs/checks')):
     services = []
     for service in sorted(os.listdir(f'./docs/checks/{provider}')):
         service_checks = []
-        if service == 'home.md':
+        if service == 'home.md' or service == 'index.md':
             services.append(
                 {provider: f'checks/{provider}/home.md'})
             continue
@@ -26,7 +26,7 @@ for provider in sorted(os.listdir('./docs/checks')):
         for check in sorted(os.listdir(f'./docs/checks/{provider}/{service}')):
             check_name = check.replace('.md', '')
             service_checks.append(
-                {check_name: f'checks/{provider}/{service}/{check}'})
+                {check_name: f'checks/{provider}/{service}/{check}/index.md'})
 
         services.append({service: service_checks})
     checks.append({provider: services})
