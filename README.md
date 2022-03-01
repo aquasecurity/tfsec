@@ -164,16 +164,16 @@ There are also checks which are provider agnostic.
 
 | Checks |
 |:---|
-|[AWS Checks](https://aquasecurity.github.io/tfsec/latest/checks/aws/home/)|
-|[Azure Checks](https://aquasecurity.github.io/tfsec/latest/checks/azure/home/)|
-|[GCP Checks](https://aquasecurity.github.io/tfsec/latest/checks/google/home/)|
-|[CloudStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/cloudstack/home/)|
-|[DigitalOcean Checks](https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/home/)|
-|[GitHub Checks](https://aquasecurity.github.io/tfsec/latest/checks/github/home/)|
-|[Kubernetes Checks](https://aquasecurity.github.io/tfsec/latest/checks/kubernetes/home/)|
-|[OpenStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/openstack/home/)|
-|[Oracle Checks](https://aquasecurity.github.io/tfsec/latest/checks/oracle/home/)|
-|[General Checks](https://aquasecurity.github.io/tfsec/latest/checks/general/home/)|
+|[AWS Checks](https://aquasecurity.github.io/tfsec/latest/checks/aws/)|
+|[Azure Checks](https://aquasecurity.github.io/tfsec/latest/checks/azure/)|
+|[GCP Checks](https://aquasecurity.github.io/tfsec/latest/checks/google/)|
+|[CloudStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/cloudstack/)|
+|[DigitalOcean Checks](https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/)|
+|[GitHub Checks](https://aquasecurity.github.io/tfsec/latest/checks/github/)|
+|[Kubernetes Checks](https://aquasecurity.github.io/tfsec/latest/checks/kubernetes/)|
+|[OpenStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/openstack/)|
+|[Oracle Checks](https://aquasecurity.github.io/tfsec/latest/checks/oracle/)|
+|[General Checks](https://aquasecurity.github.io/tfsec/latest/checks/general/)|
 
 ## Running in CI
 
