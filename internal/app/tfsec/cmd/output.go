@@ -81,7 +81,7 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 	switch strings.ToLower(format) {
 	case "", "default":
 		alsoStdout = true
-		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics))
+		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics, conciseOutput))
 	case "json":
 		factory.AsJSON()
 	case "csv":
@@ -91,7 +91,7 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 	case "junit":
 		factory.AsJUnit()
 	case "text":
-		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics)).WithColoursEnabled(false)
+		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics, conciseOutput)).WithColoursEnabled(false)
 	case "sarif":
 		factory.AsSARIF()
 	case "gif":
