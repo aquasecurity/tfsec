@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
@@ -106,6 +107,7 @@ func (s *Scanner) Scan() (rules.Results, Metrics, error) {
 
 	// find directories which directly contain tf files (and have no parent containing tf files)
 	rootDirs := s.findRootModules(simplifiedDirs)
+	sort.Strings(rootDirs)
 
 	var allResults rules.Results
 
