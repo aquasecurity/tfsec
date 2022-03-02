@@ -42,6 +42,26 @@ severity_overrides:
   aws-s3-enable-versioning: HIGH
 ```
 
+### Including checks
+
+In some situations you may want to only scan for a subset of the checks - this may be the case if newly added checks need to be evaluated before adding to the CI.
+We have removed the option to pass the included checks on the command line but they can be added in the config file.
+
+```json
+{
+  "include": ["CUS002", "aws-s3-enable-versioning"]
+}
+```
+
+or in yaml
+
+```yaml
+---
+include:
+  - CUS002
+  - aws-s3-enable-versioning
+```
+
 ### Excluding checks
 
 There are moments where the list of checks you'd want to exclude becomes larger and larger.
