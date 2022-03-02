@@ -59,7 +59,7 @@ clone-image-tfsec:
 	./scripts/clone-images.sh tfsec
 
 .PHONY: sanity
-sanity: test
+sanity:
 	go run ./cmd/tfsec -s -p --force-all-dirs ./_examples > /dev/null
 
 .PHONY: pr-ready

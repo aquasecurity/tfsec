@@ -126,7 +126,11 @@ func OptionWithExcludePaths(paths []string) Option {
 				}
 				good := true
 				for _, exclude := range paths {
-					if str, err := filepath.Rel(exclude, result.Range().GetFilename()); err == nil && !strings.HasPrefix(str, "..") {
+					abs, err := filepath.Abs(exclude)
+					if err != nil {
+						continue
+					}
+					if str, err := filepath.Rel(abs, result.Range().GetFilename()); err == nil && !strings.HasPrefix(str, "..") {
 						good = false
 						break
 					}
