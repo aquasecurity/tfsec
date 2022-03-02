@@ -53,7 +53,7 @@ release:
   github:
     owner: aquasecurity
     name: tfsec
-
+ 
 dockers:
   - image_templates: ["aquasec/{{ .ProjectName }}:{{ .Tag }}-amd64"]
     ids: 
