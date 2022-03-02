@@ -19,6 +19,11 @@ jobs:
         go-version: '1.17'
     - run: go version
 
-    - name: Run pr-ready
-      run: make pr-ready
+    - name: Run tests
+      run: make test
 
+    - name: Run sanity check
+      run: make sanity
+
+    - name: Run typo checks
+      run: make typos
