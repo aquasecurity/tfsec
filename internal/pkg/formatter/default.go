@@ -18,7 +18,7 @@ import (
 
 var severityFormat map[severity.Severity]string
 
-func DefaultWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableFormatter, results []rules.Result) error {
+func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b formatters.ConfigurableFormatter, results []rules.Result) error {
 	return func(b formatters.ConfigurableFormatter, results []rules.Result) error {
 
 		// we initialise the map here so we respect the colour-ignore options
@@ -48,7 +48,9 @@ func DefaultWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableF
 			printResult(b, group)
 		}
 
-		printMetrics(b.Writer(), metrics)
+		if !conciseOutput {
+			printMetrics(b.Writer(), metrics)
+		}
 
 		var passInfo string
 		if passCount > 0 {

@@ -24,6 +24,6 @@ func GifWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableForma
 			_ = renderer.PlayOnce()
 		}
 
-		return DefaultWithMetrics(metrics)(b, results)
+		return DefaultWithMetrics(metrics, false)(b, results)
 	}
 }
