@@ -43,17 +43,17 @@ nav:
       - enable-access-logging: checks/aws/api-gateway/enable-access-logging/index.md
       - enable-cache-encryption: checks/aws/api-gateway/enable-cache-encryption/index.md
       - enable-tracing: checks/aws/api-gateway/enable-tracing/index.md
-      - index: checks/aws/api-gateway/index.md/index.md
+      
       - no-public-access: checks/aws/api-gateway/no-public-access/index.md
       - use-secure-tls-policy: checks/aws/api-gateway/use-secure-tls-policy/index.md
     - athena:
       - enable-at-rest-encryption: checks/aws/athena/enable-at-rest-encryption/index.md
-      - index: checks/aws/athena/index.md/index.md
+      
       - no-encryption-override: checks/aws/athena/no-encryption-override/index.md
     - autoscaling:
       - enable-at-rest-encryption: checks/aws/autoscaling/enable-at-rest-encryption/index.md
       - enforce-http-token-imds: checks/aws/autoscaling/enforce-http-token-imds/index.md
-      - index: checks/aws/autoscaling/index.md/index.md
+      
       - no-public-ip: checks/aws/autoscaling/no-public-ip/index.md
       - no-secrets-in-user-data: checks/aws/autoscaling/no-secrets-in-user-data/index.md
       - no-sensitive-info: checks/aws/autoscaling/no-sensitive-info/index.md
@@ -61,59 +61,59 @@ nav:
       - enable-logging: checks/aws/cloudfront/enable-logging/index.md
       - enable-waf: checks/aws/cloudfront/enable-waf/index.md
       - enforce-https: checks/aws/cloudfront/enforce-https/index.md
-      - index: checks/aws/cloudfront/index.md/index.md
+      
       - use-secure-tls-policy: checks/aws/cloudfront/use-secure-tls-policy/index.md
     - cloudtrail:
       - enable-all-regions: checks/aws/cloudtrail/enable-all-regions/index.md
       - enable-at-rest-encryption: checks/aws/cloudtrail/enable-at-rest-encryption/index.md
       - enable-log-validation: checks/aws/cloudtrail/enable-log-validation/index.md
-      - index: checks/aws/cloudtrail/index.md/index.md
+      
     - cloudwatch:
-      - index: checks/aws/cloudwatch/index.md/index.md
+      
       - log-group-customer-key: checks/aws/cloudwatch/log-group-customer-key/index.md
     - codebuild:
       - enable-encryption: checks/aws/codebuild/enable-encryption/index.md
-      - index: checks/aws/codebuild/index.md/index.md
+      
     - config:
       - aggregate-all-regions: checks/aws/config/aggregate-all-regions/index.md
-      - index: checks/aws/config/index.md/index.md
+      
     - documentdb:
       - enable-log-export: checks/aws/documentdb/enable-log-export/index.md
       - enable-storage-encryption: checks/aws/documentdb/enable-storage-encryption/index.md
       - encryption-customer-key: checks/aws/documentdb/encryption-customer-key/index.md
-      - index: checks/aws/documentdb/index.md/index.md
+      
     - dynamodb:
       - enable-at-rest-encryption: checks/aws/dynamodb/enable-at-rest-encryption/index.md
       - enable-recovery: checks/aws/dynamodb/enable-recovery/index.md
-      - index: checks/aws/dynamodb/index.md/index.md
+      
       - table-customer-key: checks/aws/dynamodb/table-customer-key/index.md
     - ebs:
       - enable-volume-encryption: checks/aws/ebs/enable-volume-encryption/index.md
       - encryption-customer-key: checks/aws/ebs/encryption-customer-key/index.md
-      - index: checks/aws/ebs/index.md/index.md
+      
     - ec2:
       - enable-at-rest-encryption: checks/aws/ec2/enable-at-rest-encryption/index.md
       - enforce-http-token-imds: checks/aws/ec2/enforce-http-token-imds/index.md
-      - index: checks/aws/ec2/index.md/index.md
+      
       - no-secrets-in-user-data: checks/aws/ec2/no-secrets-in-user-data/index.md
     - ecr:
       - enable-image-scans: checks/aws/ecr/enable-image-scans/index.md
       - enforce-immutable-repository: checks/aws/ecr/enforce-immutable-repository/index.md
-      - index: checks/aws/ecr/index.md/index.md
+      
       - no-public-access: checks/aws/ecr/no-public-access/index.md
       - repository-customer-key: checks/aws/ecr/repository-customer-key/index.md
     - ecs:
       - enable-container-insight: checks/aws/ecs/enable-container-insight/index.md
       - enable-in-transit-encryption: checks/aws/ecs/enable-in-transit-encryption/index.md
-      - index: checks/aws/ecs/index.md/index.md
+      
       - no-plaintext-secrets: checks/aws/ecs/no-plaintext-secrets/index.md
     - efs:
       - enable-at-rest-encryption: checks/aws/efs/enable-at-rest-encryption/index.md
-      - index: checks/aws/efs/index.md/index.md
+      
     - eks:
       - enable-control-plane-logging: checks/aws/eks/enable-control-plane-logging/index.md
       - encrypt-secrets: checks/aws/eks/encrypt-secrets/index.md
-      - index: checks/aws/eks/index.md/index.md
+      
       - no-public-cluster-access: checks/aws/eks/no-public-cluster-access/index.md
       - no-public-cluster-access-to-cidr: checks/aws/eks/no-public-cluster-access-to-cidr/index.md
     - elastic-search:
@@ -121,23 +121,23 @@ nav:
       - enable-domain-logging: checks/aws/elastic-search/enable-domain-logging/index.md
       - enable-in-transit-encryption: checks/aws/elastic-search/enable-in-transit-encryption/index.md
       - enforce-https: checks/aws/elastic-search/enforce-https/index.md
-      - index: checks/aws/elastic-search/index.md/index.md
+      
       - use-secure-tls-policy: checks/aws/elastic-search/use-secure-tls-policy/index.md
     - elasticache:
       - add-description-for-security-group: checks/aws/elasticache/add-description-for-security-group/index.md
       - enable-at-rest-encryption: checks/aws/elasticache/enable-at-rest-encryption/index.md
       - enable-backup-retention: checks/aws/elasticache/enable-backup-retention/index.md
       - enable-in-transit-encryption: checks/aws/elasticache/enable-in-transit-encryption/index.md
-      - index: checks/aws/elasticache/index.md/index.md
+      
     - elb:
       - alb-not-public: checks/aws/elb/alb-not-public/index.md
       - drop-invalid-headers: checks/aws/elb/drop-invalid-headers/index.md
       - http-not-used: checks/aws/elb/http-not-used/index.md
-      - index: checks/aws/elb/index.md/index.md
+      
       - use-secure-tls-policy: checks/aws/elb/use-secure-tls-policy/index.md
     - iam:
       - enforce-mfa: checks/aws/iam/enforce-mfa/index.md
-      - index: checks/aws/iam/index.md/index.md
+      
       - no-password-reuse: checks/aws/iam/no-password-reuse/index.md
       - no-policy-wildcards: checks/aws/iam/no-policy-wildcards/index.md
       - require-lowercase-in-passwords: checks/aws/iam/require-lowercase-in-passwords/index.md
@@ -149,39 +149,39 @@ nav:
     - aws: checks/aws/home.md
     - kinesis:
       - enable-in-transit-encryption: checks/aws/kinesis/enable-in-transit-encryption/index.md
-      - index: checks/aws/kinesis/index.md/index.md
+      
     - kms:
       - auto-rotate-keys: checks/aws/kms/auto-rotate-keys/index.md
-      - index: checks/aws/kms/index.md/index.md
+      
     - lambda:
       - enable-tracing: checks/aws/lambda/enable-tracing/index.md
-      - index: checks/aws/lambda/index.md/index.md
+      
       - restrict-source-arn: checks/aws/lambda/restrict-source-arn/index.md
     - mq:
       - enable-audit-logging: checks/aws/mq/enable-audit-logging/index.md
       - enable-general-logging: checks/aws/mq/enable-general-logging/index.md
-      - index: checks/aws/mq/index.md/index.md
+      
       - no-public-access: checks/aws/mq/no-public-access/index.md
     - msk:
       - enable-in-transit-encryption: checks/aws/msk/enable-in-transit-encryption/index.md
       - enable-logging: checks/aws/msk/enable-logging/index.md
-      - index: checks/aws/msk/index.md/index.md
+      
     - neptune:
       - enable-log-export: checks/aws/neptune/enable-log-export/index.md
       - enable-storage-encryption: checks/aws/neptune/enable-storage-encryption/index.md
       - encryption-customer-key: checks/aws/neptune/encryption-customer-key/index.md
-      - index: checks/aws/neptune/index.md/index.md
+      
     - rds:
       - enable-performance-insights: checks/aws/rds/enable-performance-insights/index.md
       - encrypt-cluster-storage-data: checks/aws/rds/encrypt-cluster-storage-data/index.md
       - encrypt-instance-storage-data: checks/aws/rds/encrypt-instance-storage-data/index.md
-      - index: checks/aws/rds/index.md/index.md
+      
       - no-classic-resources: checks/aws/rds/no-classic-resources/index.md
       - no-public-db-access: checks/aws/rds/no-public-db-access/index.md
       - specify-backup-retention: checks/aws/rds/specify-backup-retention/index.md
     - redshift:
       - encryption-customer-key: checks/aws/redshift/encryption-customer-key/index.md
-      - index: checks/aws/redshift/index.md/index.md
+      
       - use-vpc: checks/aws/redshift/use-vpc/index.md
     - s3:
       - block-public-acls: checks/aws/s3/block-public-acls/index.md
@@ -191,24 +191,24 @@ nav:
       - enable-versioning: checks/aws/s3/enable-versioning/index.md
       - encryption-customer-key: checks/aws/s3/encryption-customer-key/index.md
       - ignore-public-acls: checks/aws/s3/ignore-public-acls/index.md
-      - index: checks/aws/s3/index.md/index.md
+      
       - no-public-access-with-acl: checks/aws/s3/no-public-access-with-acl/index.md
       - no-public-buckets: checks/aws/s3/no-public-buckets/index.md
       - specify-public-access-block: checks/aws/s3/specify-public-access-block/index.md
     - sns:
       - enable-topic-encryption: checks/aws/sns/enable-topic-encryption/index.md
-      - index: checks/aws/sns/index.md/index.md
+      
     - sqs:
       - enable-queue-encryption: checks/aws/sqs/enable-queue-encryption/index.md
-      - index: checks/aws/sqs/index.md/index.md
+      
       - no-wildcards-in-policy-documents: checks/aws/sqs/no-wildcards-in-policy-documents/index.md
     - ssm:
-      - index: checks/aws/ssm/index.md/index.md
+      
       - secret-use-customer-key: checks/aws/ssm/secret-use-customer-key/index.md
     - vpc:
       - add-description-to-security-group: checks/aws/vpc/add-description-to-security-group/index.md
       - add-description-to-security-group-rule: checks/aws/vpc/add-description-to-security-group-rule/index.md
-      - index: checks/aws/vpc/index.md/index.md
+      
       - no-default-vpc: checks/aws/vpc/no-default-vpc/index.md
       - no-excessive-port-access: checks/aws/vpc/no-excessive-port-access/index.md
       - no-public-egress-sgr: checks/aws/vpc/no-public-egress-sgr/index.md
@@ -216,27 +216,27 @@ nav:
       - no-public-ingress-sgr: checks/aws/vpc/no-public-ingress-sgr/index.md
     - workspaces:
       - enable-disk-encryption: checks/aws/workspaces/enable-disk-encryption/index.md
-      - index: checks/aws/workspaces/index.md/index.md
+      
   - azure:
     - appservice:
       - account-identity-registered: checks/azure/appservice/account-identity-registered/index.md
       - authentication-enabled: checks/azure/appservice/authentication-enabled/index.md
       - enable-http2: checks/azure/appservice/enable-http2/index.md
       - enforce-https: checks/azure/appservice/enforce-https/index.md
-      - index: checks/azure/appservice/index.md/index.md
+      
       - require-client-cert: checks/azure/appservice/require-client-cert/index.md
       - use-secure-tls-policy: checks/azure/appservice/use-secure-tls-policy/index.md
     - authorization:
-      - index: checks/azure/authorization/index.md/index.md
+      
       - limit-role-actions: checks/azure/authorization/limit-role-actions/index.md
     - compute:
       - disable-password-authentication: checks/azure/compute/disable-password-authentication/index.md
       - enable-disk-encryption: checks/azure/compute/enable-disk-encryption/index.md
-      - index: checks/azure/compute/index.md/index.md
+      
       - no-secrets-in-custom-data: checks/azure/compute/no-secrets-in-custom-data/index.md
     - container:
       - configured-network-policy: checks/azure/container/configured-network-policy/index.md
-      - index: checks/azure/container/index.md/index.md
+      
       - limit-authorized-ips: checks/azure/container/limit-authorized-ips/index.md
       - logging: checks/azure/container/logging/index.md
       - use-rbac-permissions: checks/azure/container/use-rbac-permissions/index.md
@@ -244,7 +244,7 @@ nav:
       - all-threat-alerts-enabled: checks/azure/database/all-threat-alerts-enabled/index.md
       - enable-audit: checks/azure/database/enable-audit/index.md
       - enable-ssl-enforcement: checks/azure/database/enable-ssl-enforcement/index.md
-      - index: checks/azure/database/index.md/index.md
+      
       - no-public-access: checks/azure/database/no-public-access/index.md
       - no-public-firewall-access: checks/azure/database/no-public-firewall-access/index.md
       - postgres-configuration-connection-throttling: checks/azure/database/postgres-configuration-connection-throttling/index.md
@@ -255,27 +255,27 @@ nav:
       - threat-alert-email-set: checks/azure/database/threat-alert-email-set/index.md
       - threat-alert-email-to-owner: checks/azure/database/threat-alert-email-to-owner/index.md
     - datafactory:
-      - index: checks/azure/datafactory/index.md/index.md
+      
       - no-public-access: checks/azure/datafactory/no-public-access/index.md
     - datalake:
       - enable-at-rest-encryption: checks/azure/datalake/enable-at-rest-encryption/index.md
-      - index: checks/azure/datalake/index.md/index.md
+      
     - azure: checks/azure/home.md
     - keyvault:
       - content-type-for-secret: checks/azure/keyvault/content-type-for-secret/index.md
       - ensure-key-expiry: checks/azure/keyvault/ensure-key-expiry/index.md
       - ensure-secret-expiry: checks/azure/keyvault/ensure-secret-expiry/index.md
-      - index: checks/azure/keyvault/index.md/index.md
+      
       - no-purge: checks/azure/keyvault/no-purge/index.md
       - specify-network-acl: checks/azure/keyvault/specify-network-acl/index.md
     - monitor:
       - activity-log-retention-set: checks/azure/monitor/activity-log-retention-set/index.md
       - capture-all-activities: checks/azure/monitor/capture-all-activities/index.md
       - capture-all-regions: checks/azure/monitor/capture-all-regions/index.md
-      - index: checks/azure/monitor/index.md/index.md
+      
     - network:
       - disable-rdp-from-internet: checks/azure/network/disable-rdp-from-internet/index.md
-      - index: checks/azure/network/index.md/index.md
+      
       - no-public-egress: checks/azure/network/no-public-egress/index.md
       - no-public-ingress: checks/azure/network/no-public-ingress/index.md
       - retention-policy-set: checks/azure/network/retention-policy-set/index.md
@@ -283,28 +283,28 @@ nav:
     - security-center:
       - alert-on-severe-notifications: checks/azure/security-center/alert-on-severe-notifications/index.md
       - enable-standard-subscription: checks/azure/security-center/enable-standard-subscription/index.md
-      - index: checks/azure/security-center/index.md/index.md
+      
       - set-required-contact-details: checks/azure/security-center/set-required-contact-details/index.md
     - storage:
       - allow-microsoft-service-bypass: checks/azure/storage/allow-microsoft-service-bypass/index.md
       - default-action-deny: checks/azure/storage/default-action-deny/index.md
       - enforce-https: checks/azure/storage/enforce-https/index.md
-      - index: checks/azure/storage/index.md/index.md
+      
       - no-public-access: checks/azure/storage/no-public-access/index.md
       - queue-services-logging-enabled: checks/azure/storage/queue-services-logging-enabled/index.md
       - use-secure-tls-policy: checks/azure/storage/use-secure-tls-policy/index.md
     - synapse:
-      - index: checks/azure/synapse/index.md/index.md
+      
       - virtual-network-enabled: checks/azure/synapse/virtual-network-enabled/index.md
   - cloudstack:
     - compute:
-      - index: checks/cloudstack/compute/index.md/index.md
+      
       - no-sensitive-info: checks/cloudstack/compute/no-sensitive-info/index.md
     - cloudstack: checks/cloudstack/home.md
   - digitalocean:
     - compute:
       - enforce-https: checks/digitalocean/compute/enforce-https/index.md
-      - index: checks/digitalocean/compute/index.md/index.md
+      
       - kubernetes-auto-upgrades-not-enabled: checks/digitalocean/compute/kubernetes-auto-upgrades-not-enabled/index.md
       - no-public-egress: checks/digitalocean/compute/no-public-egress/index.md
       - no-public-ingress: checks/digitalocean/compute/no-public-ingress/index.md
@@ -314,24 +314,25 @@ nav:
     - spaces:
       - acl-no-public-read: checks/digitalocean/spaces/acl-no-public-read/index.md
       - disable-force-destroy: checks/digitalocean/spaces/disable-force-destroy/index.md
-      - index: checks/digitalocean/spaces/index.md/index.md
+      
       - versioning-enabled: checks/digitalocean/spaces/versioning-enabled/index.md
   - general:
     - general: checks/general/home.md
     - secrets:
-      - index: checks/general/secrets/index.md/index.md
+      
       - no-plaintext-exposure: checks/general/secrets/no-plaintext-exposure/index.md
   - github:
     - actions:
-      - index: checks/github/actions/index.md/index.md
+      
       - no-plain-text-action-secrets: checks/github/actions/no-plain-text-action-secrets/index.md
     - github: checks/github/home.md
     - repositories:
-      - index: checks/github/repositories/index.md/index.md
+      - enable_vulnerability_alerts: checks/github/repositories/enable_vulnerability_alerts/index.md
+      
       - private: checks/github/repositories/private/index.md
   - google:
     - bigquery:
-      - index: checks/google/bigquery/index.md/index.md
+      
       - no-public-access: checks/google/bigquery/no-public-access/index.md
     - compute:
       - disk-encryption-customer-key: checks/google/compute/disk-encryption-customer-key/index.md
@@ -339,7 +340,7 @@ nav:
       - enable-shielded-vm-im: checks/google/compute/enable-shielded-vm-im/index.md
       - enable-shielded-vm-vtpm: checks/google/compute/enable-shielded-vm-vtpm/index.md
       - enable-vpc-flow-logs: checks/google/compute/enable-vpc-flow-logs/index.md
-      - index: checks/google/compute/index.md/index.md
+      
       - no-default-service-account: checks/google/compute/no-default-service-account/index.md
       - no-ip-forwarding: checks/google/compute/no-ip-forwarding/index.md
       - no-oslogin-override: checks/google/compute/no-oslogin-override/index.md
@@ -353,7 +354,7 @@ nav:
       - vm-disk-encryption-customer-key: checks/google/compute/vm-disk-encryption-customer-key/index.md
     - dns:
       - enable-dnssec: checks/google/dns/enable-dnssec/index.md
-      - index: checks/google/dns/index.md/index.md
+      
       - no-rsa-sha1: checks/google/dns/no-rsa-sha1/index.md
     - gke:
       - enable-auto-repair: checks/google/gke/enable-auto-repair/index.md
@@ -365,7 +366,7 @@ nav:
       - enable-stackdriver-logging: checks/google/gke/enable-stackdriver-logging/index.md
       - enable-stackdriver-monitoring: checks/google/gke/enable-stackdriver-monitoring/index.md
       - enforce-pod-security-policy: checks/google/gke/enforce-pod-security-policy/index.md
-      - index: checks/google/gke/index.md/index.md
+      
       - metadata-endpoints-disabled: checks/google/gke/metadata-endpoints-disabled/index.md
       - no-legacy-authentication: checks/google/gke/no-legacy-authentication/index.md
       - no-public-control-plane: checks/google/gke/no-public-control-plane/index.md
@@ -376,7 +377,7 @@ nav:
       - use-rbac-permissions: checks/google/gke/use-rbac-permissions/index.md
       - use-service-account: checks/google/gke/use-service-account/index.md
     - iam:
-      - index: checks/google/iam/index.md/index.md
+      
       - no-default-network: checks/google/iam/no-default-network/index.md
       - no-folder-level-default-service-account-assignment: checks/google/iam/no-folder-level-default-service-account-assignment/index.md
       - no-folder-level-service-account-impersonation: checks/google/iam/no-folder-level-service-account-impersonation/index.md
@@ -388,13 +389,13 @@ nav:
       - no-user-granted-permissions: checks/google/iam/no-user-granted-permissions/index.md
     - google: checks/google/home.md
     - kms:
-      - index: checks/google/kms/index.md/index.md
+      
       - rotate-kms-keys: checks/google/kms/rotate-kms-keys/index.md
     - sql:
       - enable-backup: checks/google/sql/enable-backup/index.md
       - enable-pg-temp-file-logging: checks/google/sql/enable-pg-temp-file-logging/index.md
       - encrypt-in-transit-data: checks/google/sql/encrypt-in-transit-data/index.md
-      - index: checks/google/sql/index.md/index.md
+      
       - mysql-no-local-infile: checks/google/sql/mysql-no-local-infile/index.md
       - no-contained-db-auth: checks/google/sql/no-contained-db-auth/index.md
       - no-cross-db-ownership-chaining: checks/google/sql/no-cross-db-ownership-chaining/index.md
@@ -407,23 +408,23 @@ nav:
       - pg-no-min-statement-logging: checks/google/sql/pg-no-min-statement-logging/index.md
     - storage:
       - enable-ubla: checks/google/storage/enable-ubla/index.md
-      - index: checks/google/storage/index.md/index.md
+      
       - no-public-access: checks/google/storage/no-public-access/index.md
   - kubernetes:
     - kubernetes: checks/kubernetes/home.md
     - network:
-      - index: checks/kubernetes/network/index.md/index.md
+      
       - no-public-egress: checks/kubernetes/network/no-public-egress/index.md
       - no-public-ingress: checks/kubernetes/network/no-public-ingress/index.md
   - openstack:
     - compute:
-      - index: checks/openstack/compute/index.md/index.md
+      
       - no-plaintext-password: checks/openstack/compute/no-plaintext-password/index.md
       - no-public-access: checks/openstack/compute/no-public-access/index.md
     - openstack: checks/openstack/home.md
   - oracle:
     - compute:
-      - index: checks/oracle/compute/index.md/index.md
+      
       - no-public-ip: checks/oracle/compute/no-public-ip/index.md
     - oracle: checks/oracle/home.md
 
