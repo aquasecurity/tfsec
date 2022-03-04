@@ -179,7 +179,7 @@ go mod vendor
 
 At this point *tfsec* will automatically pull in your new rule when it runs. It will also pull in the good/bad example code you provided earlier and automatically test this code to see if the rule matches expectations against each.
 
-If you run `make test` and everything looks good, you can skip to *Step 6* - you're ready to raise a pull request against *tfsec* and put your feet up. 
+If you run `make test` and everything looks good, you can skip to *Step 7* - you're ready to raise a pull request against *tfsec* and put your feet up.
 
 Alternatively, if the tests fail, it's likely that *tfsec* needs to be taught how to recognise the cloud resource your test covers in Terraform code, and translate it to a defsec struct. We refer to this process as *adaptation*.
 

@@ -1,5 +1,4 @@
 IMAGE := tfsec/tfsec
-SHELL := /bin/bash
 
 MKDOCS_IMAGE := aquasec/mkdocs-material:tracee
 MKDOCS_PORT := 8000
@@ -37,8 +36,8 @@ tagger:
 
 .PHONY: typos
 typos:
-	which codespell || pip install codespell
-	codespell -S .terraform,.git,go.sum --ignore-words .codespellignore -f
+	which codespell || pip3 install codespell
+	codespell -S .terraform,.git,go.sum,vendor --ignore-words .codespellignore -f
 
 .PHONY: quality
 quality:
@@ -47,7 +46,7 @@ quality:
 
 .PHONY: fix-typos
 fix-typos:
-	which codespell || pip install codespell
+	which codespell || pip3 install codespell
 	codespell -S .terraform,go.sum --ignore-words .codespellignore -f -w -i1
 
 .PHONY: clone-image-github
