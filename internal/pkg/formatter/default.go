@@ -33,7 +33,10 @@ func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b form
 		passCount := countPassedResults(results)
 
 		if len(results) == 0 || len(results) == passCount {
-			printMetrics(b.Writer(), metrics)
+			if !conciseOutput {
+				printMetrics(b.Writer(), metrics)
+			}
+
 			_ = tml.Fprintf(b.Writer(), "\n<green><bold>No problems detected!\n\n")
 			return nil
 		}
