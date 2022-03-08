@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/aquasecurity/defsec/severity"
 	"github.com/aquasecurity/tfsec/pkg/scanner"
 )
 
@@ -33,6 +35,7 @@ var workspace = "default"
 var singleThreadedMode bool
 var disableGrouping bool
 var debug bool
+var minimumSeverity string
 
 func init() {
 	rootCmd.Flags().BoolVar(&singleThreadedMode, "single-thread", singleThreadedMode, "Run checks using a single thread")
@@ -62,10 +65,11 @@ func init() {
 	rootCmd.Flags().BoolVar(&runStatistics, "run-statistics", runStatistics, "View statistics table of current findings.")
 	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
 	rootCmd.Flags().StringVarP(&workspace, "workspace", "w", workspace, "Specify a workspace for ignore limits")
+	rootCmd.Flags().StringVarP(&minimumSeverity, "minimum-severity", "m", minimumSeverity, "The minimum severity to report. One of CRITICAL, HIGH, MEDIUM, LOW.")
 	_ = rootCmd.Flags().MarkHidden("allow-checks-to-panic")
 }
 
-func configureOptions(dir string) []scanner.Option {
+func configureOptions(dir string) ([]scanner.Option, error) {
 	var options []scanner.Option
 	options = append(options, scanner.OptionWithSingleThread(singleThreadedMode))
 	options = append(options, scanner.OptionStopOnHCLError(!ignoreHCLErrors))
@@ -77,6 +81,14 @@ func configureOptions(dir string) []scanner.Option {
 	options = append(options, scanner.OptionIncludeIgnored(includeIgnored))
 	options = append(options, scanner.OptionScanAllDirectories(allDirs))
 	options = append(options, scanner.OptionWithWorkspaceName(workspace))
+
+	if minimumSeverity != "" {
+		sev := severity.StringToSeverity(minimumSeverity)
+		if sev == severity.None {
+			return nil, fmt.Errorf("'%s' is not a valid severity - should be one of CRITICAL, HIGH, MEDIUM, LOW", minimumSeverity)
+		}
+		options = append(options, scanner.OptionWithMinimumSeverity(sev))
+	}
 
 	if filterResults != "" {
 		longIDs := strings.Split(filterResults, ",")
@@ -108,5 +120,5 @@ func configureOptions(dir string) []scanner.Option {
 	if debug {
 		options = append(options, scanner.OptionWithDebugWriter(os.Stderr))
 	}
-	return options
+	return options, nil
 }
