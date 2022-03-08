@@ -13,7 +13,7 @@ Enabling Performance insights allows for greater depth in monitoring data.
 For example, information about active sessions could help diagose a compromise or assist in the investigation
 
 ### Possible Impact
-Without adaquate monitoring, performance related issues may go unreported and potentially lead to compromise.
+Without adequate monitoring, performance related issues may go unreported and potentially lead to compromise.
 
 ### Suggested Resolution
 Enable performance insights
