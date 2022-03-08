@@ -1,32 +1,32 @@
 ---
-title: Enable Performance Insights to detect potential problems
+title: Encryption for RDS Performance Insights should be enabled.
 ---
 
-# Enable Performance Insights to detect potential problems
+# Encryption for RDS Performance Insights should be enabled.
 
-### Default Severity: <span class="severity low">low</span>
+### Default Severity: <span class="severity high">high</span>
 
 ### Explanation
 
-Enabling Performance insights allows for greater depth in monitoring data.
-		
-For example, information about active sessions could help diagose a compromise or assist in the investigation
+When enabling Performance Insights on an RDS cluster or RDS DB Instance, and encryption key should be provided.
+
+The encryption key specified in `performance_insights_kms_key_id` references a KMS ARN
 
 ### Possible Impact
-Without adaquate monitoring, performance related issues may go unreported and potentially lead to compromise.
+Data can be read from the RDS Performance Insights if it is compromised
 
 ### Suggested Resolution
-Enable performance insights
+Enable encryption for RDS clusters and instances
 
 
 ### Insecure Example
 
-The following example will fail the aws-rds-enable-performance-insights check.
+The following example will fail the aws-rds-enable-performance-insights-encryption check.
 ```terraform
 
 resource "aws_rds_cluster_instance" "bad_example" {
 	name = "bar"
-	performance_insights_enabled = false
+	performance_insights_enabled = true
 	performance_insights_kms_key_id = ""
 }
 		
@@ -36,7 +36,7 @@ resource "aws_rds_cluster_instance" "bad_example" {
 
 ### Secure Example
 
-The following example will pass the aws-rds-enable-performance-insights check.
+The following example will pass the aws-rds-enable-performance-insights-encryption check.
 ```terraform
 
 resource "aws_rds_cluster_instance" "good_example" {
@@ -56,7 +56,7 @@ resource "aws_rds_cluster_instance" "good_example" {
 
 - [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance#performance_insights_kms_key_id](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance#performance_insights_kms_key_id){:target="_blank" rel="nofollow noreferrer noopener"}
 
-- [https://aws.amazon.com/rds/performance-insights/](https://aws.amazon.com/rds/performance-insights/){:target="_blank" rel="nofollow noreferrer noopener"}
+- [https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.htm](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.htm){:target="_blank" rel="nofollow noreferrer noopener"}
 
 
 

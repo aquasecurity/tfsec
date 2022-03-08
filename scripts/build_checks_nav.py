@@ -25,6 +25,9 @@ for provider in sorted(os.listdir('./docs/checks')):
 
         for check in sorted(os.listdir(f'./docs/checks/{provider}/{service}')):
             check_name = check.replace('.md', '')
+            if check_name == 'index':
+                print(f'skipping {check}')
+                continue
             service_checks.append(
                 {check_name: f'checks/{provider}/{service}/{check}/index.md'})
 
