@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/aquasecurity/defsec/severity"
+
 	"github.com/aquasecurity/tfsec/internal/pkg/custom"
 	"github.com/aquasecurity/tfsec/version"
 	semver "github.com/hashicorp/go-version"
@@ -89,6 +91,9 @@ func (s *Scanner) Scan() (rules.Results, Metrics, error) {
 		}
 		if !s.minVersionSatisfied(conf) {
 			return nil, metrics, fmt.Errorf("minimum tfsec version requirement not satisfied")
+		}
+		if conf.MinimumSeverity != "" {
+			OptionWithMinimumSeverity(severity.StringToSeverity(conf.MinimumSeverity))(s)
 		}
 	}
 	if s.customCheckDir != "" {
