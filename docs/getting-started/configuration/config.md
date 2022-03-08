@@ -16,6 +16,23 @@ The config file can also be set with the `--config-file` option:
 tfsec --config-file tfsec.yml
 ```
 
+## Minimum Severity
+
+You can specify the minimum severity of result that should be reported. By default, every severity is reported. You must use one of CRITICAL, HIGH, MEDIUM, LOW.
+
+```json
+{
+  "minimum_severity": "MEDIUM"
+}
+```
+
+or in yaml
+
+```yaml
+---
+minimum_severity: MEDIUM
+```
+
 ## Syntax and Overrides
 
 ### Severity Overrides

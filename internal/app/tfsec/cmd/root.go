@@ -49,7 +49,11 @@ var rootCmd = &cobra.Command{
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: A tfvars file was found but not automatically used. Did you mean to specify the --tfvars-file flag?\n")
 		}
 
-		scnr := scanner.New(configureOptions(dir)...)
+		options, err := configureOptions(dir)
+		if err != nil {
+			failf("invalid option: %s", err)
+		}
+		scnr := scanner.New(options...)
 		if err := scnr.AddPath(dir); err != nil {
 			failf("Parse error: %s", err)
 		}

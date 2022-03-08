@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/severity"
 
 	"github.com/aquasecurity/defsec/parsers/terraform/parser"
 	"github.com/aquasecurity/tfsec/internal/pkg/executor"
@@ -157,5 +158,35 @@ func OptionWithIncludeOnlyResults(ids []string) Option {
 			}
 			return filtered
 		}))
+	}
+}
+
+func OptionWithMinimumSeverity(minimum severity.Severity) Option {
+	min := severityAsOrdinal(minimum)
+	return func(s *Scanner) {
+		s.executorOpt = append(s.executorOpt, executor.OptionWithResultsFilter(func(results rules.Results) rules.Results {
+			var filtered rules.Results
+			for _, result := range results {
+				if severityAsOrdinal(result.Severity()) >= min {
+					filtered = append(filtered, result)
+				}
+			}
+			return filtered
+		}))
+	}
+}
+
+func severityAsOrdinal(sev severity.Severity) int {
+	switch sev {
+	case severity.Critical:
+		return 4
+	case severity.High:
+		return 3
+	case severity.Medium:
+		return 2
+	case severity.Low:
+		return 1
+	default:
+		return 0
 	}
 }
