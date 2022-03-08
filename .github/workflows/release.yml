@@ -25,7 +25,7 @@ jobs:
       id: import_gpg
       uses: crazy-max/ghaction-import-gpg@v4.2.0
       with:
-        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+        gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
         passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
     - name: Login to docker.io registry
