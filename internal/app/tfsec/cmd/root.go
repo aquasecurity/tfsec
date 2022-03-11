@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	_ "github.com/aquasecurity/defsec/loader"
 	"github.com/aquasecurity/defsec/scanners/terraform/executor"
 
 	scanner "github.com/aquasecurity/defsec/scanners/terraform"
@@ -80,8 +81,8 @@ var rootCmd = &cobra.Command{
 					options = append(options, scanner.OptionWithMinimumSeverity(severity.StringToSeverity(conf.MinimumSeverity)))
 				}
 				options = append(options, scanner.OptionWithSeverityOverrides(conf.SeverityOverrides))
-				options = append(options, scanner.OptionWithIncludeOnlyResults(conf.IncludedChecks))
-				options = append(options, scanner.OptionWithIncludeOnlyResults(append(conf.ExcludedChecks, excludedRuleIDs)))
+				options = append(options, scanner.OptionIncludeRules(conf.IncludedChecks))
+				options = append(options, scanner.OptionExcludeRules(append(conf.ExcludedChecks, excludedRuleIDs)))
 			}
 		}
 
