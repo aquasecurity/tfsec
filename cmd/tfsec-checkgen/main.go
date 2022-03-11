@@ -8,11 +8,12 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/aquasecurity/defsec/scanners/terraform/executor"
+
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/aquasecurity/defsec/parsers/terraform/parser"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/internal/pkg/custom"
-	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/spf13/cobra"
 )
 
@@ -122,9 +123,6 @@ var testCheckCmd = &cobra.Command{
 				fmt.Printf("passed custom check in expected failing terraform test file: %v\n", failTest)
 				return errors.New("test case did not pass")
 			}
-		}
-		for _, rule := range executor.GetRegisteredRules() {
-			executor.DeregisterCheckRule(rule)
 		}
 		return nil
 	},
