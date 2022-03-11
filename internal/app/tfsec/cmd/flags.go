@@ -3,11 +3,12 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/internal/pkg/legacy"
+
+	scanner "github.com/aquasecurity/defsec/scanners/terraform"
 	"github.com/aquasecurity/defsec/severity"
-	"github.com/aquasecurity/tfsec/pkg/scanner"
 )
 
 var showVersion = false
@@ -71,16 +72,20 @@ func init() {
 
 func configureOptions(dir string) ([]scanner.Option, error) {
 	var options []scanner.Option
-	options = append(options, scanner.OptionWithSingleThread(singleThreadedMode))
-	options = append(options, scanner.OptionStopOnHCLError(!ignoreHCLErrors))
-	options = append(options, scanner.OptionStopOnRuleErrors(stopOnCheckError))
-	options = append(options, scanner.OptionWithTFVarsPaths(tfvarsPaths))
-	options = append(options, scanner.OptionWithExcludePaths(excludePaths))
-	options = append(options, scanner.OptionSkipDownloaded(excludeDownloaded))
-	options = append(options, scanner.OptionIncludePassed(includePassed))
-	options = append(options, scanner.OptionIncludeIgnored(includeIgnored))
-	options = append(options, scanner.OptionScanAllDirectories(allDirs))
-	options = append(options, scanner.OptionWithWorkspaceName(workspace))
+	options = append(
+		options,
+		scanner.OptionWithSingleThread(singleThreadedMode),
+		scanner.OptionStopOnHCLError(!ignoreHCLErrors),
+		scanner.OptionStopOnRuleErrors(stopOnCheckError),
+		scanner.OptionWithTFVarsPaths(tfvarsPaths),
+		scanner.OptionWithExcludePaths(excludePaths),
+		scanner.OptionSkipDownloaded(excludeDownloaded),
+		scanner.OptionIncludePassed(includePassed),
+		scanner.OptionIncludeIgnored(includeIgnored),
+		scanner.OptionScanAllDirectories(allDirs),
+		scanner.OptionWithWorkspaceName(workspace),
+		scanner.OptionWithAlternativeIDProvider(legacy.FindID),
+	)
 
 	if minimumSeverity != "" {
 		sev := severity.StringToSeverity(minimumSeverity)
@@ -99,24 +104,6 @@ func configureOptions(dir string) ([]scanner.Option, error) {
 		options = append(options, scanner.OptionExcludeRules(strings.Split(excludedRuleIDs, ",")))
 	}
 
-	if configFile != "" {
-		options = append(options, scanner.OptionWithConfigFile(configFile))
-	} else {
-		configDir := filepath.Join(dir, ".tfsec")
-		for _, filename := range []string{"config.json", "config.yml", "config.yaml"} {
-			path := filepath.Join(configDir, filename)
-			if _, err := os.Stat(path); err == nil {
-				options = append(options, scanner.OptionWithConfigFile(path))
-				break
-			}
-		}
-	}
-	if customCheckDir != "" {
-		options = append(options, scanner.OptionWithCustomCheckDir(customCheckDir))
-	} else {
-		customDir := filepath.Join(dir, ".tfsec")
-		options = append(options, scanner.OptionWithCustomCheckDir(customDir))
-	}
 	if debug {
 		options = append(options, scanner.OptionWithDebugWriter(os.Stderr))
 	}

@@ -8,7 +8,7 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/pkg/formatter"
 
-	"github.com/aquasecurity/tfsec/pkg/scanner"
+	scanner "github.com/aquasecurity/defsec/scanners/terraform"
 
 	"github.com/aquasecurity/defsec/formatters"
 	"github.com/aquasecurity/defsec/providers"

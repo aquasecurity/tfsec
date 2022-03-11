@@ -6,10 +6,17 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/scanner"
+	"github.com/aquasecurity/defsec/scanners/terraform/executor"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/executor"
-	_ "github.com/aquasecurity/tfsec/internal/pkg/rules"
+	scanner "github.com/aquasecurity/defsec/scanners/terraform"
+
+	"github.com/Masterminds/semver"
+	"github.com/aquasecurity/tfsec/internal/pkg/custom"
+	"github.com/aquasecurity/tfsec/version"
+
+	"github.com/aquasecurity/defsec/severity"
+
+	"github.com/aquasecurity/tfsec/internal/pkg/config"
 	"github.com/spf13/cobra"
 )
 
@@ -53,6 +60,38 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			failf("invalid option: %s", err)
 		}
+
+		if configFile == "" {
+			configDir := filepath.Join(dir, ".tfsec")
+			for _, filename := range []string{"config.json", "config.yml", "config.yaml"} {
+				path := filepath.Join(configDir, filename)
+				if _, err := os.Stat(path); err == nil {
+					configFile = path
+					break
+				}
+			}
+		}
+		if configFile != "" {
+			if conf, err := config.LoadConfig(configFile); err == nil {
+				if !minVersionSatisfied(conf) {
+					return fmt.Errorf("minimum tfsec version requirement not satisfied")
+				}
+				if conf.MinimumSeverity != "" {
+					options = append(options, scanner.OptionWithMinimumSeverity(severity.StringToSeverity(conf.MinimumSeverity)))
+				}
+				options = append(options, scanner.OptionWithSeverityOverrides(conf.SeverityOverrides))
+				options = append(options, scanner.OptionWithIncludeOnlyResults(conf.IncludedChecks))
+				options = append(options, scanner.OptionWithIncludeOnlyResults(append(conf.ExcludedChecks, excludedRuleIDs)))
+			}
+		}
+
+		if customCheckDir == "" {
+			customCheckDir = filepath.Join(dir, ".tfsec")
+		}
+		if err := custom.Load(customCheckDir); err != nil {
+			return fmt.Errorf("failed to load custom checks from %s: %w", customCheckDir, err)
+		}
+
 		scnr := scanner.New(options...)
 		if err := scnr.AddPath(dir); err != nil {
 			failf("Parse error: %s", err)
@@ -85,6 +124,23 @@ var rootCmd = &cobra.Command{
 		os.Exit(getDetailedExitCode(metrics))
 		return nil
 	},
+}
+
+func minVersionSatisfied(conf *config.Config) bool {
+
+	if conf.MinimumRequiredVersion == "" {
+		return true
+	}
+
+	minimum, err := semver.NewVersion(conf.MinimumRequiredVersion)
+	if err != nil {
+		return true
+	}
+	actual, err := semver.NewVersion(version.Version)
+	if err != nil {
+		return true
+	}
+	return minimum.LessThan(actual)
 }
 
 func failf(format string, a ...interface{}) {

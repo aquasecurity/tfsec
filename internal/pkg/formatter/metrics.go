@@ -7,7 +7,7 @@ import (
 
 	"github.com/liamg/tml"
 
-	"github.com/aquasecurity/tfsec/pkg/scanner"
+	scanner "github.com/aquasecurity/defsec/scanners/terraform"
 )
 
 func printMetrics(w io.Writer, metrics scanner.Metrics) {

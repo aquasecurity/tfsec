@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/internal/pkg/executor"
-	_ "github.com/aquasecurity/tfsec/internal/pkg/rules"
+	"github.com/aquasecurity/defsec/rules"
+
 	"github.com/spf13/cobra"
 )
 
@@ -49,25 +49,24 @@ var rootCmd = &cobra.Command{
 }
 
 func getSortedFileContents() []*FileContent {
-	rules := executor.GetRegisteredRules()
 
 	checkMap := make(map[string][]templateObject)
 
-	for _, r := range rules {
-		provider := string(r.Base.Rule().Provider)
+	for _, r := range rules.GetRegistered() {
+		provider := string(r.Rule().Provider)
 		checkMap[provider] = append(checkMap[provider], templateObject{
-			ID:          r.ID(),
-			ShortCode:   r.Base.Rule().ShortCode,
-			Severity:    strings.ToLower(string(r.Base.Rule().Severity)),
-			Service:     r.Base.Rule().Service,
-			Provider:    string(r.Base.Rule().Provider),
-			Summary:     r.Base.Rule().Summary,
-			Explanation: r.Base.Rule().Explanation,
-			Impact:      r.Base.Rule().Impact,
-			Resolution:  r.Base.Rule().Resolution,
-			BadExample:  r.Base.Rule().Terraform.BadExamples[0],
-			GoodExample: r.Base.Rule().Terraform.GoodExamples[0],
-			Links:       append(r.Base.Rule().Terraform.Links, r.Base.Rule().Links...),
+			ID:          r.Rule().LongID(),
+			ShortCode:   r.Rule().ShortCode,
+			Severity:    strings.ToLower(string(r.Rule().Severity)),
+			Service:     r.Rule().Service,
+			Provider:    string(r.Rule().Provider),
+			Summary:     r.Rule().Summary,
+			Explanation: r.Rule().Explanation,
+			Impact:      r.Rule().Impact,
+			Resolution:  r.Rule().Resolution,
+			BadExample:  r.Rule().Terraform.BadExamples[0],
+			GoodExample: r.Rule().Terraform.GoodExamples[0],
+			Links:       append(r.Rule().Terraform.Links, r.Rule().Links...),
 		})
 	}
 

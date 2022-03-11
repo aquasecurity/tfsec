@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/scanner"
+	scanner "github.com/aquasecurity/defsec/scanners/terraform"
 
 	"github.com/aquasecurity/defsec/formatters"
 	"github.com/aquasecurity/defsec/rules"
