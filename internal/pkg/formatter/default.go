@@ -18,8 +18,8 @@ import (
 
 var severityFormat map[severity.Severity]string
 
-func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b formatters.ConfigurableFormatter, results []rules.Result) error {
-	return func(b formatters.ConfigurableFormatter, results []rules.Result) error {
+func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b formatters.ConfigurableFormatter, results rules.Results) error {
+	return func(b formatters.ConfigurableFormatter, results rules.Results) error {
 
 		// we initialise the map here so we respect the colour-ignore options
 		severityFormat = map[severity.Severity]string{
@@ -30,7 +30,7 @@ func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b form
 			"":                tml.Sprintf("<white> UNKNOWN</white>"),
 		}
 
-		passCount := countPassedResults(results)
+		passCount := len(results.GetPassed())
 
 		if len(results) == 0 || len(results) == passCount {
 			if !conciseOutput {
@@ -41,7 +41,15 @@ func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b form
 			return nil
 		}
 
-		groups, err := b.GroupResults(results)
+		filtered := results.GetFailed()
+		if b.IncludePassed() {
+			filtered = append(filtered, results.GetPassed()...)
+		}
+		if b.IncludeIgnored() {
+			filtered = append(filtered, results.GetIgnored()...)
+		}
+
+		groups, err := b.GroupResults(filtered)
 		if err != nil {
 			return err
 		}
@@ -59,7 +67,7 @@ func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b form
 		if passCount > 0 {
 			passInfo = fmt.Sprintf("%d passed, ", passCount)
 		}
-		_ = tml.Fprintf(b.Writer(), "  <red><bold>%s%d potential problem(s) detected.\n\n", passInfo, len(results)-countPassedResults(results))
+		_ = tml.Fprintf(b.Writer(), "  <red><bold>%s%d potential problem(s) detected.\n\n", passInfo, len(results.GetFailed()))
 
 		return nil
 
@@ -68,16 +76,22 @@ func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b form
 
 const lineNoWidth = 7
 
+func getStatusOrSeverity(status rules.Status, severity severity.Severity) string {
+	switch status {
+	case rules.StatusPassed:
+		return tml.Sprintf("<green>PASSED</green>")
+	case rules.StatusIgnored:
+		return tml.Sprintf("<yellow>IGNORED</yellow>")
+	default:
+		return severityFormat[severity]
+	}
+}
+
 func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult) {
 
 	first := group.Results()[0]
 
-	var severityFormatted string
-	if first.Status() == rules.StatusPassed {
-		severityFormatted = tml.Sprintf("<green>PASSED</green>")
-	} else {
-		severityFormatted = severityFormat[first.Severity()]
-	}
+	severityFormatted := getStatusOrSeverity(first.Status(), first.Severity())
 
 	width, _ := terminal.Size()
 	if width <= 0 {
@@ -246,14 +260,4 @@ func highlightCode(b formatters.ConfigurableFormatter, result rules.Result) erro
 	}
 
 	return nil
-}
-
-func countPassedResults(results []rules.Result) int {
-	passed := 0
-	for _, res := range results {
-		if res.Status() == rules.StatusPassed {
-			passed++
-		}
-	}
-	return passed
 }

@@ -27,8 +27,8 @@ func printMetrics(w io.Writer, metrics scanner.Metrics) {
 	_, _ = fmt.Fprintf(w, "\n")
 
 	printTitle(w, "results")
+	printValue(w, "passed", fmt.Sprintf("%d", metrics.Executor.Counts.Passed))
 	printValue(w, "ignored", fmt.Sprintf("%d", metrics.Executor.Counts.Ignored))
-	printValue(w, "excluded", fmt.Sprintf("%d", metrics.Executor.Counts.Excluded))
 	printValue(w, "critical", fmt.Sprintf("%d", metrics.Executor.Counts.Critical))
 	printValue(w, "high", fmt.Sprintf("%d", metrics.Executor.Counts.High))
 	printValue(w, "medium", fmt.Sprintf("%d", metrics.Executor.Counts.Medium))

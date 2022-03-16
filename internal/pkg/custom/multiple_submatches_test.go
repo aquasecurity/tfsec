@@ -63,7 +63,7 @@ resource "aws_instance" "bastion" {
 }
 `)
 	customResults := filterCustomResults(scanResults)
-	assert.Len(t, customResults, 0)
+	assert.Len(t, customResults.GetFailed(), 0)
 }
 
 func TestInstanceMetadataEndpointMissing(t *testing.T) {
@@ -90,7 +90,7 @@ resource "aws_instance" "bastion" {
 	assert.Len(t, customResults, 1)
 }
 
-func filterCustomResults(scanResults []rules.Result) []rules.Result {
+func filterCustomResults(scanResults []rules.Result) rules.Results {
 	var customResults []rules.Result
 	for _, result := range scanResults {
 		if result.Rule().Provider.DisplayName() == providers.CustomProvider.DisplayName() {

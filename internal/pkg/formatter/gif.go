@@ -8,10 +8,10 @@ import (
 	"github.com/liamg/gifwrap/pkg/ascii"
 )
 
-func GifWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableFormatter, results []rules.Result) error {
-	return func(b formatters.ConfigurableFormatter, results []rules.Result) error {
+func GifWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableFormatter, results rules.Results) error {
+	return func(b formatters.ConfigurableFormatter, results rules.Results) error {
 
-		failCount := len(results) - countPassedResults(results)
+		failCount := len(results.GetFailed())
 
 		gifSrc := "https://media.giphy.com/media/kyLYXonQYYfwYDIeZl/source.gif"
 

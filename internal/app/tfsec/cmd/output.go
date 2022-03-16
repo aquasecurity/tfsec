@@ -74,7 +74,9 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 		WithGroupingEnabled(!disableGrouping).
 		WithLinksFunc(gatherLinks).
 		WithBaseDir(dir).
-		WithMetricsEnabled(!conciseOutput)
+		WithMetricsEnabled(!conciseOutput).
+		WithIncludeIgnored(includeIgnored).
+		WithIncludePassed(includePassed)
 
 	var alsoStdout bool
 

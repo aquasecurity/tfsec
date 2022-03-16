@@ -37,6 +37,7 @@ var singleThreadedMode bool
 var disableGrouping bool
 var debug bool
 var minimumSeverity string
+var disableIgnores bool
 
 func init() {
 	rootCmd.Flags().BoolVar(&singleThreadedMode, "single-thread", singleThreadedMode, "Run checks using a single thread")
@@ -62,6 +63,7 @@ func init() {
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Include passed checks in the result output")
 	rootCmd.Flags().BoolVar(&includeIgnored, "include-ignored", includeIgnored, "Include ignored checks in the result output")
+	rootCmd.Flags().BoolVar(&disableIgnores, "no-ignores", disableIgnores, "Do not apply any ignore rules - normally ignored checks will fail")
 	rootCmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
 	rootCmd.Flags().BoolVar(&runStatistics, "run-statistics", runStatistics, "View statistics table of current findings.")
 	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
@@ -80,12 +82,14 @@ func configureOptions(dir string) ([]scanner.Option, error) {
 		scanner.OptionWithTFVarsPaths(tfvarsPaths),
 		scanner.OptionWithExcludePaths(excludePaths),
 		scanner.OptionSkipDownloaded(excludeDownloaded),
-		scanner.OptionIncludePassed(includePassed),
-		scanner.OptionIncludeIgnored(includeIgnored),
 		scanner.OptionScanAllDirectories(allDirs),
 		scanner.OptionWithWorkspaceName(workspace),
 		scanner.OptionWithAlternativeIDProvider(legacy.FindID),
 	)
+
+	if disableIgnores {
+		options = append(options, scanner.OptionNoIgnores())
+	}
 
 	if minimumSeverity != "" {
 		sev := severity.StringToSeverity(minimumSeverity)
