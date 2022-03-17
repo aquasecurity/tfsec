@@ -38,6 +38,7 @@ var disableGrouping bool
 var debug bool
 var minimumSeverity string
 var disableIgnores bool
+var regoPolicyDir string
 
 func init() {
 	rootCmd.Flags().BoolVar(&singleThreadedMode, "single-thread", singleThreadedMode, "Run checks using a single thread")
@@ -69,10 +70,11 @@ func init() {
 	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
 	rootCmd.Flags().StringVarP(&workspace, "workspace", "w", workspace, "Specify a workspace for ignore limits")
 	rootCmd.Flags().StringVarP(&minimumSeverity, "minimum-severity", "m", minimumSeverity, "The minimum severity to report. One of CRITICAL, HIGH, MEDIUM, LOW.")
+	rootCmd.Flags().StringVar(&regoPolicyDir, "rego-policy-dir", regoPolicyDir, "Directory to load rego policies from (recursively).")
 	_ = rootCmd.Flags().MarkHidden("allow-checks-to-panic")
 }
 
-func configureOptions(dir string) ([]scanner.Option, error) {
+func configureOptions() ([]scanner.Option, error) {
 	var options []scanner.Option
 	options = append(
 		options,
@@ -86,6 +88,10 @@ func configureOptions(dir string) ([]scanner.Option, error) {
 		scanner.OptionWithWorkspaceName(workspace),
 		scanner.OptionWithAlternativeIDProvider(legacy.FindID),
 	)
+
+	if regoPolicyDir != "" {
+		options = append(options, scanner.OptionWithPolicyDirs([]string{regoPolicyDir}))
+	}
 
 	if disableIgnores {
 		options = append(options, scanner.OptionNoIgnores())
@@ -101,7 +107,7 @@ func configureOptions(dir string) ([]scanner.Option, error) {
 
 	if filterResults != "" {
 		longIDs := strings.Split(filterResults, ",")
-		options = append(options, scanner.OptionWithIncludeOnlyResults(longIDs))
+		options = append(options, scanner.OptionIncludeRules(longIDs))
 	}
 
 	if excludedRuleIDs != "" {

@@ -57,7 +57,7 @@ var rootCmd = &cobra.Command{
 			_, _ = fmt.Fprintf(os.Stderr, "WARNING: A tfvars file was found but not automatically used. Did you mean to specify the --tfvars-file flag?\n")
 		}
 
-		options, err := configureOptions(dir)
+		options, err := configureOptions()
 		if err != nil {
 			failf("invalid option: %s", err)
 		}
