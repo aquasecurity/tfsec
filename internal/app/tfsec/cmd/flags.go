@@ -86,7 +86,7 @@ func configureOptions() ([]scanner.Option, error) {
 		scanner.OptionSkipDownloaded(excludeDownloaded),
 		scanner.OptionScanAllDirectories(allDirs),
 		scanner.OptionWithWorkspaceName(workspace),
-		scanner.OptionWithAlternativeIDProvider(legacy.FindID),
+		scanner.OptionWithAlternativeIDProvider(legacy.FindIDs),
 	)
 
 	if regoPolicyDir != "" {
