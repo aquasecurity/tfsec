@@ -84,7 +84,7 @@ func configureOptions(dir string) ([]scanner.Option, error) {
 		scanner.OptionSkipDownloaded(excludeDownloaded),
 		scanner.OptionScanAllDirectories(allDirs),
 		scanner.OptionWithWorkspaceName(workspace),
-		scanner.OptionWithAlternativeIDProvider(legacy.FindID),
+		scanner.OptionWithAlternativeIDProvider(legacy.FindIDs),
 	)
 
 	if disableIgnores {
@@ -101,7 +101,7 @@ func configureOptions(dir string) ([]scanner.Option, error) {
 
 	if filterResults != "" {
 		longIDs := strings.Split(filterResults, ",")
-		options = append(options, scanner.OptionWithIncludeOnlyResults(longIDs))
+		options = append(options, scanner.OptionIncludeRules(longIDs))
 	}
 
 	if excludedRuleIDs != "" {
