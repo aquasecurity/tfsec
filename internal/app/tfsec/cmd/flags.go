@@ -87,6 +87,7 @@ func configureOptions() ([]scanner.Option, error) {
 		scanner.OptionScanAllDirectories(allDirs),
 		scanner.OptionWithWorkspaceName(workspace),
 		scanner.OptionWithAlternativeIDProvider(legacy.FindIDs),
+		scanner.OptionWithPolicyNamespaces("custom"),
 	)
 
 	if regoPolicyDir != "" {
