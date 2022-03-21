@@ -102,6 +102,10 @@ var rootCmd = &cobra.Command{
 			failf("Scan error: %s", err)
 		}
 
+		if printRegoInput {
+			os.Exit(0)
+		}
+
 		if runStatistics {
 			statistics := executor.Statistics{}
 			for _, result := range results {

@@ -1,9 +1,12 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/aquasecurity/defsec/state"
 
 	"github.com/aquasecurity/tfsec/internal/pkg/legacy"
 
@@ -39,6 +42,7 @@ var debug bool
 var minimumSeverity string
 var disableIgnores bool
 var regoPolicyDir string
+var printRegoInput bool
 
 func init() {
 	rootCmd.Flags().BoolVar(&singleThreadedMode, "single-thread", singleThreadedMode, "Run checks using a single thread")
@@ -71,6 +75,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&workspace, "workspace", "w", workspace, "Specify a workspace for ignore limits")
 	rootCmd.Flags().StringVarP(&minimumSeverity, "minimum-severity", "m", minimumSeverity, "The minimum severity to report. One of CRITICAL, HIGH, MEDIUM, LOW.")
 	rootCmd.Flags().StringVar(&regoPolicyDir, "rego-policy-dir", regoPolicyDir, "Directory to load rego policies from (recursively).")
+	rootCmd.Flags().BoolVar(&printRegoInput, "print-rego-input", printRegoInput, "Print a JSON representation of the input supplied to rego policies.")
 	_ = rootCmd.Flags().MarkHidden("allow-checks-to-panic")
 }
 
@@ -118,5 +123,16 @@ func configureOptions() ([]scanner.Option, error) {
 	if debug {
 		options = append(options, scanner.OptionWithDebugWriter(os.Stderr))
 	}
+
+	if printRegoInput {
+		options = append(options, scanner.OptionWithStateFunc(func(s *state.State) {
+			data, err := json.Marshal(s.ToRego())
+			if err != nil {
+				failf("Failed to encode rego input: %s\n", err)
+			}
+			fmt.Printf("\n%s\n\n", string(data))
+		}))
+	}
+
 	return options, nil
 }
