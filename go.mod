@@ -3,7 +3,7 @@ module github.com/aquasecurity/tfsec
 go 1.16
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.3.2
+	github.com/AlecAivazis/survey/v2 v2.3.3
 	github.com/Masterminds/semver v1.5.0
 	github.com/aquasecurity/defsec v0.25.0
 	github.com/hashicorp/go-version v1.4.0
