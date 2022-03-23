@@ -1,17 +1,17 @@
 package formatter
 
 import (
-	"github.com/aquasecurity/tfsec/pkg/scanner"
+	scanner "github.com/aquasecurity/defsec/scanners/terraform"
 
 	"github.com/aquasecurity/defsec/formatters"
 	"github.com/aquasecurity/defsec/rules"
 	"github.com/liamg/gifwrap/pkg/ascii"
 )
 
-func GifWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableFormatter, results []rules.Result) error {
-	return func(b formatters.ConfigurableFormatter, results []rules.Result) error {
+func GifWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableFormatter, results rules.Results) error {
+	return func(b formatters.ConfigurableFormatter, results rules.Results) error {
 
-		failCount := len(results) - countPassedResults(results)
+		failCount := len(results.GetFailed())
 
 		gifSrc := "https://media.giphy.com/media/kyLYXonQYYfwYDIeZl/source.gif"
 
@@ -24,6 +24,6 @@ func GifWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableForma
 			_ = renderer.PlayOnce()
 		}
 
-		return DefaultWithMetrics(metrics)(b, results)
+		return DefaultWithMetrics(metrics, false)(b, results)
 	}
 }

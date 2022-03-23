@@ -11,8 +11,6 @@ import (
 	"github.com/aquasecurity/defsec/parsers/terraform"
 	"github.com/aquasecurity/defsec/providers"
 	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/tfsec/internal/pkg/executor"
-	"github.com/aquasecurity/tfsec/pkg/rule"
 )
 
 var matchFunctions = map[CheckAction]func(*terraform.Block, *MatchSpec, *customContext) bool{
@@ -232,36 +230,35 @@ var AttrMatchFunctions = map[CheckAction]func(*terraform.Attribute, *MatchSpec, 
 func ProcessFoundChecks(checks ChecksFile) {
 	for _, customCheck := range checks.Checks {
 		func(customCheck Check) {
-			executor.RegisterCheckRule(rule.Rule{
-				Base: rules.Register(
-					rules.Rule{
-						Service:    "custom",
-						ShortCode:  customCheck.Code,
-						Summary:    customCheck.Description,
-						Impact:     customCheck.Impact,
-						Resolution: customCheck.Resolution,
-						Provider:   providers.CustomProvider,
-						Links:      customCheck.RelatedLinks,
-						Severity:   customCheck.Severity,
+			rules.Register(rules.Rule{
+				Service:    "custom",
+				ShortCode:  customCheck.Code,
+				Summary:    customCheck.Description,
+				Impact:     customCheck.Impact,
+				Resolution: customCheck.Resolution,
+				Provider:   providers.CustomProvider,
+				Links:      customCheck.RelatedLinks,
+				Severity:   customCheck.Severity,
+				CustomChecks: rules.CustomChecks{
+					Terraform: &rules.TerraformCustomCheck{
+						RequiredTypes:   customCheck.RequiredTypes,
+						RequiredLabels:  customCheck.RequiredLabels,
+						RequiredSources: customCheck.RequiredSources,
+						Check: func(rootBlock *terraform.Block, module *terraform.Module) (results rules.Results) {
+							matchSpec := customCheck.MatchSpec
+							if !evalMatchSpec(rootBlock, matchSpec, NewCustomContext(module)) {
+								results.Add(
+									fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage),
+									rootBlock,
+								)
+							} else {
+								results.AddPassed(rootBlock)
+							}
+							return
+						},
 					},
-					nil,
-				),
-				RequiredTypes:   customCheck.RequiredTypes,
-				RequiredLabels:  customCheck.RequiredLabels,
-				RequiredSources: customCheck.RequiredSources,
-				CheckTerraform: func(rootBlock *terraform.Block, module *terraform.Module) (results rules.Results) {
-					matchSpec := customCheck.MatchSpec
-					if !evalMatchSpec(rootBlock, matchSpec, NewCustomContext(module)) {
-						results.Add(
-							fmt.Sprintf("Custom check failed for resource %s. %s", rootBlock.FullName(), customCheck.ErrorMessage),
-							rootBlock,
-						)
-					} else {
-						results.AddPassed(rootBlock)
-					}
-					return
 				},
-			})
+			}, nil)
 		}(*customCheck)
 	}
 }

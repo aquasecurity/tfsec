@@ -13,6 +13,7 @@ import (
 )
 
 type Config struct {
+	MinimumSeverity        string            `json:"minimum_severity,omitempty"`
 	SeverityOverrides      map[string]string `json:"severity_overrides,omitempty" yaml:"severity_overrides,omitempty"`
 	ExcludedChecks         []string          `json:"exclude,omitempty" yaml:"exclude,omitempty"`
 	IncludedChecks         []string          `json:"include,omitempty" yaml:"include,omitempty"`

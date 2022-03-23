@@ -9,11 +9,12 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/aquasecurity/defsec/scanners/terraform/executor"
+
 	"github.com/aquasecurity/defsec/rules"
 
 	"github.com/aquasecurity/defsec/parsers/terraform"
 	"github.com/aquasecurity/defsec/parsers/terraform/parser"
-	"github.com/aquasecurity/tfsec/internal/pkg/executor"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -180,7 +181,7 @@ resource "aws_flow_log" "example" {
   vpc_id          = aws_vpc.example.id
 }
 `)
-	assert.Len(t, scanResults, 0)
+	assert.Len(t, scanResults.GetFailed(), 0)
 }
 
 func TestRequiresPresenceWithResourceMissing(t *testing.T) {
@@ -964,7 +965,7 @@ func givenCheck(jsonContent string) {
 	ProcessFoundChecks(checksfile)
 }
 
-func scanTerraform(t *testing.T, mainTf string) []rules.Result {
+func scanTerraform(t *testing.T, mainTf string) rules.Results {
 	dirName, err := ioutil.TempDir("", "tfsec-testing-")
 	assert.NoError(t, err)
 

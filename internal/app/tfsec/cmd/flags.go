@@ -1,11 +1,17 @@
 package cmd
 
 import (
+	"encoding/json"
+	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/scanner"
+	"github.com/aquasecurity/defsec/state"
+
+	"github.com/aquasecurity/tfsec/internal/pkg/legacy"
+
+	scanner "github.com/aquasecurity/defsec/scanners/terraform"
+	"github.com/aquasecurity/defsec/severity"
 )
 
 var showVersion = false
@@ -33,6 +39,10 @@ var workspace = "default"
 var singleThreadedMode bool
 var disableGrouping bool
 var debug bool
+var minimumSeverity string
+var disableIgnores bool
+var regoPolicyDir string
+var printRegoInput bool
 
 func init() {
 	rootCmd.Flags().BoolVar(&singleThreadedMode, "single-thread", singleThreadedMode, "Run checks using a single thread")
@@ -58,55 +68,71 @@ func init() {
 	rootCmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
 	rootCmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Include passed checks in the result output")
 	rootCmd.Flags().BoolVar(&includeIgnored, "include-ignored", includeIgnored, "Include ignored checks in the result output")
+	rootCmd.Flags().BoolVar(&disableIgnores, "no-ignores", disableIgnores, "Do not apply any ignore rules - normally ignored checks will fail")
 	rootCmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
 	rootCmd.Flags().BoolVar(&runStatistics, "run-statistics", runStatistics, "View statistics table of current findings.")
 	rootCmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
 	rootCmd.Flags().StringVarP(&workspace, "workspace", "w", workspace, "Specify a workspace for ignore limits")
+	rootCmd.Flags().StringVarP(&minimumSeverity, "minimum-severity", "m", minimumSeverity, "The minimum severity to report. One of CRITICAL, HIGH, MEDIUM, LOW.")
+	rootCmd.Flags().StringVar(&regoPolicyDir, "rego-policy-dir", regoPolicyDir, "Directory to load rego policies from (recursively).")
+	rootCmd.Flags().BoolVar(&printRegoInput, "print-rego-input", printRegoInput, "Print a JSON representation of the input supplied to rego policies.")
 	_ = rootCmd.Flags().MarkHidden("allow-checks-to-panic")
 }
 
-func configureOptions(dir string) []scanner.Option {
+func configureOptions() ([]scanner.Option, error) {
 	var options []scanner.Option
-	options = append(options, scanner.OptionWithSingleThread(singleThreadedMode))
-	options = append(options, scanner.OptionStopOnHCLError(!ignoreHCLErrors))
-	options = append(options, scanner.OptionStopOnRuleErrors(stopOnCheckError))
-	options = append(options, scanner.OptionWithTFVarsPaths(tfvarsPaths))
-	options = append(options, scanner.OptionWithExcludePaths(excludePaths))
-	options = append(options, scanner.OptionSkipDownloaded(excludeDownloaded))
-	options = append(options, scanner.OptionIncludePassed(includePassed))
-	options = append(options, scanner.OptionIncludeIgnored(includeIgnored))
-	options = append(options, scanner.OptionScanAllDirectories(allDirs))
-	options = append(options, scanner.OptionWithWorkspaceName(workspace))
+	options = append(
+		options,
+		scanner.OptionWithSingleThread(singleThreadedMode),
+		scanner.OptionStopOnHCLError(!ignoreHCLErrors),
+		scanner.OptionStopOnRuleErrors(stopOnCheckError),
+		scanner.OptionWithTFVarsPaths(tfvarsPaths),
+		scanner.OptionWithExcludePaths(excludePaths),
+		scanner.OptionSkipDownloaded(excludeDownloaded),
+		scanner.OptionScanAllDirectories(allDirs),
+		scanner.OptionWithWorkspaceName(workspace),
+		scanner.OptionWithAlternativeIDProvider(legacy.FindIDs),
+		scanner.OptionWithPolicyNamespaces("custom"),
+	)
+
+	if regoPolicyDir != "" {
+		options = append(options, scanner.OptionWithPolicyDirs([]string{regoPolicyDir}))
+	}
+
+	if disableIgnores {
+		options = append(options, scanner.OptionNoIgnores())
+	}
+
+	if minimumSeverity != "" {
+		sev := severity.StringToSeverity(minimumSeverity)
+		if sev == severity.None {
+			return nil, fmt.Errorf("'%s' is not a valid severity - should be one of CRITICAL, HIGH, MEDIUM, LOW", minimumSeverity)
+		}
+		options = append(options, scanner.OptionWithMinimumSeverity(sev))
+	}
 
 	if filterResults != "" {
 		longIDs := strings.Split(filterResults, ",")
-		options = append(options, scanner.OptionWithIncludeOnlyResults(longIDs))
+		options = append(options, scanner.OptionIncludeRules(longIDs))
 	}
 
 	if excludedRuleIDs != "" {
 		options = append(options, scanner.OptionExcludeRules(strings.Split(excludedRuleIDs, ",")))
 	}
 
-	if configFile != "" {
-		options = append(options, scanner.OptionWithConfigFile(configFile))
-	} else {
-		configDir := filepath.Join(dir, ".tfsec")
-		for _, filename := range []string{"config.json", "config.yml", "config.yaml"} {
-			path := filepath.Join(configDir, filename)
-			if _, err := os.Stat(path); err == nil {
-				options = append(options, scanner.OptionWithConfigFile(path))
-				break
-			}
-		}
-	}
-	if customCheckDir != "" {
-		options = append(options, scanner.OptionWithCustomCheckDir(customCheckDir))
-	} else {
-		customDir := filepath.Join(dir, ".tfsec")
-		options = append(options, scanner.OptionWithCustomCheckDir(customDir))
-	}
 	if debug {
 		options = append(options, scanner.OptionWithDebugWriter(os.Stderr))
 	}
-	return options
+
+	if printRegoInput {
+		options = append(options, scanner.OptionWithStateFunc(func(s *state.State) {
+			data, err := json.Marshal(s.ToRego())
+			if err != nil {
+				failf("Failed to encode rego input: %s\n", err)
+			}
+			fmt.Printf("\n%s\n\n", string(data))
+		}))
+	}
+
+	return options, nil
 }

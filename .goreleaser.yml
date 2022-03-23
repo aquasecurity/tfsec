@@ -53,7 +53,7 @@ release:
   github:
     owner: aquasecurity
     name: tfsec
-
+ 
 dockers:
   - image_templates: ["aquasec/{{ .ProjectName }}:{{ .Tag }}-amd64"]
     ids: 
@@ -63,6 +63,19 @@ dockers:
     build_flag_templates:
     - --platform=linux/amd64
   - image_templates: ["aquasec/{{ .ProjectName }}:{{ .Tag }}-arm64v8"]
+    goarch: arm64
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+    - --platform=linux/arm64/v8
+  - image_templates: ["aquasec/{{ .ProjectName }}-alpine:{{ .Tag }}-amd64"]
+    ids: 
+    - tfsec
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+    - --platform=linux/amd64
+  - image_templates: ["aquasec/{{ .ProjectName }}-alpine:{{ .Tag }}-arm64v8"]
     goarch: arm64
     dockerfile: Dockerfile
     use: buildx
@@ -104,17 +117,17 @@ docker_manifests:
     - aquasec/{{ .ProjectName }}:{{ .Tag }}-amd64
   - name_template: "aquasec/{{ .ProjectName }}-alpine:{{ .Tag }}"
     image_templates:
-    - aquasec/{{ .ProjectName }}:{{ .Tag }}-arm64v8
-    - aquasec/{{ .ProjectName }}:{{ .Tag }}-amd64
+    - aquasec/{{ .ProjectName }}-alpine:{{ .Tag }}-arm64v8
+    - aquasec/{{ .ProjectName }}-alpine:{{ .Tag }}-amd64
   - name_template: "aquasec/{{ .ProjectName }}-alpine:latest"
     image_templates:
-    - aquasec/{{ .ProjectName }}:{{ .Tag }}-arm64v8
-    - aquasec/{{ .ProjectName }}:{{ .Tag }}-amd64
+    - aquasec/{{ .ProjectName }}-alpine:{{ .Tag }}-arm64v8
+    - aquasec/{{ .ProjectName }}-alpine:{{ .Tag }}-amd64
   - name_template: "aquasec/{{ .ProjectName }}-alpine:v{{ .Major }}.{{ .Minor }}"
     skip_push: auto
     image_templates:
-    - aquasec/{{ .ProjectName }}:{{ .Tag }}-arm64v8
-    - aquasec/{{ .ProjectName }}:{{ .Tag }}-amd64
+    - aquasec/{{ .ProjectName }}-alpine:{{ .Tag }}-arm64v8
+    - aquasec/{{ .ProjectName }}-alpine:{{ .Tag }}-amd64
   - name_template: "aquasec/{{ .ProjectName }}-scratch:{{ .Tag }}"
     image_templates:
     - aquasec/{{ .ProjectName }}-scratch:{{ .Tag }}-arm64v8

@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/aquasecurity/tfsec/pkg/scanner"
+	scanner "github.com/aquasecurity/defsec/scanners/terraform"
 
 	"github.com/aquasecurity/defsec/formatters"
 	"github.com/aquasecurity/defsec/rules"
@@ -18,8 +18,8 @@ import (
 
 var severityFormat map[severity.Severity]string
 
-func DefaultWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableFormatter, results []rules.Result) error {
-	return func(b formatters.ConfigurableFormatter, results []rules.Result) error {
+func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b formatters.ConfigurableFormatter, results rules.Results) error {
+	return func(b formatters.ConfigurableFormatter, results rules.Results) error {
 
 		// we initialise the map here so we respect the colour-ignore options
 		severityFormat = map[severity.Severity]string{
@@ -30,15 +30,24 @@ func DefaultWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableF
 			"":                tml.Sprintf("<white> UNKNOWN</white>"),
 		}
 
-		passCount := countPassedResults(results)
+		if len(results.GetFailed()) == 0 {
+			if !conciseOutput {
+				printMetrics(b.Writer(), metrics)
+			}
 
-		if len(results) == 0 || len(results) == passCount {
-			printMetrics(b.Writer(), metrics)
 			_ = tml.Fprintf(b.Writer(), "\n<green><bold>No problems detected!\n\n")
 			return nil
 		}
 
-		groups, err := b.GroupResults(results)
+		filtered := results.GetFailed()
+		if b.IncludePassed() {
+			filtered = append(filtered, results.GetPassed()...)
+		}
+		if b.IncludeIgnored() {
+			filtered = append(filtered, results.GetIgnored()...)
+		}
+
+		groups, err := b.GroupResults(filtered)
 		if err != nil {
 			return err
 		}
@@ -48,13 +57,19 @@ func DefaultWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableF
 			printResult(b, group)
 		}
 
-		printMetrics(b.Writer(), metrics)
+		if !conciseOutput {
+			printMetrics(b.Writer(), metrics)
+		}
 
 		var passInfo string
-		if passCount > 0 {
+		if passCount := len(results.GetPassed()); passCount > 0 {
 			passInfo = fmt.Sprintf("%d passed, ", passCount)
 		}
-		_ = tml.Fprintf(b.Writer(), "  <red><bold>%s%d potential problem(s) detected.\n\n", passInfo, len(results)-countPassedResults(results))
+		var ignoreInfo string
+		if ignoreCount := len(results.GetIgnored()); ignoreCount > 0 {
+			ignoreInfo = fmt.Sprintf("%d ignored, ", ignoreCount)
+		}
+		_ = tml.Fprintf(b.Writer(), "  <red><bold>%s%s%d potential problem(s) detected.\n\n", passInfo, ignoreInfo, len(results.GetFailed()))
 
 		return nil
 
@@ -63,16 +78,23 @@ func DefaultWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableF
 
 const lineNoWidth = 7
 
+func getStatusOrSeverity(status rules.Status, severity severity.Severity) string {
+	switch status {
+	case rules.StatusPassed:
+		return tml.Sprintf("<green>PASSED</green>")
+	case rules.StatusIgnored:
+		return tml.Sprintf("<yellow>IGNORED</yellow>")
+	default:
+		return severityFormat[severity]
+	}
+}
+
 func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult) {
 
 	first := group.Results()[0]
 
-	var severityFormatted string
-	if first.Status() == rules.StatusPassed {
-		severityFormatted = tml.Sprintf("<green>PASSED</green>")
-	} else {
-		severityFormatted = severityFormat[first.Severity()]
-	}
+	isRego := first.Rule().RegoPackage != ""
+	severityFormatted := getStatusOrSeverity(first.Status(), first.Severity())
 
 	width, _ := terminal.Size()
 	if width <= 0 {
@@ -115,7 +137,18 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 		strings.Repeat("─", width),
 	)
 
-	if first.Status() != rules.StatusPassed {
+	if first.Metadata().Range().GetStartLine() == 0 {
+		if filename := first.Metadata().Range().GetFilename(); filename != "" {
+			_ = tml.Fprintf(
+				w,
+				"<dim>%s%s%s</dim>\n  %s",
+				strings.Repeat("─", lineNoWidth),
+				"┬",
+				strings.Repeat("─", width-lineNoWidth-1),
+				filename,
+			)
+		}
+	} else if first.Status() != rules.StatusPassed {
 		_ = tml.Fprintf(
 			w,
 			" <italic>%s <dim>%s\n",
@@ -160,27 +193,34 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 		)
 	}
 
-	_ = tml.Fprintf(w, "  <dim>        ID</dim> <italic>%s\n", first.Rule().LongID())
-	if first.Rule().Impact != "" {
-		_ = tml.Fprintf(w, "  <dim>    Impact</dim> %s\n", first.Rule().Impact)
-	}
-	if first.Rule().Resolution != "" {
-		_ = tml.Fprintf(w, "  <dim>Resolution</dim> %s\n", first.Rule().Resolution)
-	}
-
-	links := b.GetLinks(first)
-	if len(links) > 0 {
-		_ = tml.Fprintf(w, "\n  <dim>More Information</dim>")
-	}
-	for _, link := range links {
-		_ = tml.Fprintf(w, "\n  <dim>-</dim> <blue>%s", link)
-	}
+	printMetadata(w, first, b.GetLinks(first), isRego)
 
 	_ = tml.Fprintf(
 		w,
 		"\n<dim>%s</dim>\n\n\n",
 		strings.Repeat("─", width),
 	)
+}
+
+func printMetadata(w io.Writer, result rules.Result, links []string, isRego bool) {
+	if isRego {
+		_ = tml.Fprintf(w, "  <dim>Rego Package</dim> <italic>%s\n", result.RegoNamespace())
+		_ = tml.Fprintf(w, "  <dim>   Rego Rule</dim> <italic>%s", result.RegoRule())
+	} else {
+		_ = tml.Fprintf(w, "  <dim>        ID</dim> <italic>%s\n", result.Rule().LongID())
+		if result.Rule().Impact != "" {
+			_ = tml.Fprintf(w, "  <dim>    Impact</dim> %s\n", result.Rule().Impact)
+		}
+		if result.Rule().Resolution != "" {
+			_ = tml.Fprintf(w, "  <dim>Resolution</dim> %s\n", result.Rule().Resolution)
+		}
+		if len(links) > 0 {
+			_ = tml.Fprintf(w, "\n  <dim>More Information</dim>")
+		}
+		for _, link := range links {
+			_ = tml.Fprintf(w, "\n  <dim>-</dim> <blue>%s", link)
+		}
+	}
 }
 
 func printCodeLine(w io.Writer, i int, code string) {
@@ -241,14 +281,4 @@ func highlightCode(b formatters.ConfigurableFormatter, result rules.Result) erro
 	}
 
 	return nil
-}
-
-func countPassedResults(results []rules.Result) int {
-	passed := 0
-	for _, res := range results {
-		if res.Status() == rules.StatusPassed {
-			passed++
-		}
-	}
-	return passed
 }

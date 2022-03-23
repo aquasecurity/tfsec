@@ -7,7 +7,9 @@ title: rds
 ## Checks
 
 
-- [enable-performance-insights](enable-performance-insights) Encryption for RDS Performance Insights should be enabled.
+- [enable-performance-insights](enable-performance-insights) Enable Performance Insights to detect potential problems
+
+- [enable-performance-insights-encryption](enable-performance-insights-encryption) Encryption for RDS Performance Insights should be enabled.
 
 - [encrypt-cluster-storage-data](encrypt-cluster-storage-data) There is no encryption specified or encryption is disabled on the RDS Cluster.
 

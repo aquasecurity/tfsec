@@ -42,7 +42,7 @@ typos:
 
 .PHONY: quality
 quality:
-	which golangci-lint || go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.43.0
+	which golangci-lint || go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.44.2
 	golangci-lint run
 
 .PHONY: fix-typos
@@ -59,7 +59,7 @@ clone-image-tfsec:
 	./scripts/clone-images.sh tfsec
 
 .PHONY: sanity
-sanity: test
+sanity:
 	go run ./cmd/tfsec -s -p --force-all-dirs ./_examples > /dev/null
 
 .PHONY: pr-ready

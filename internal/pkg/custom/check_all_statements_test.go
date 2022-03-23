@@ -136,9 +136,9 @@ data "aws_iam_policy_document" "bucket_policy" {
   statement {}
 }
 `)
-	assert.Len(t, scanResults, 0)
+	assert.Len(t, scanResults.GetFailed(), 0)
 }
-func TestMultipleSubmatchesOntoMultipleStatemetns(t *testing.T) {
+func TestMultipleSubmatchesOntoMultipleStatements(t *testing.T) {
 	scanResults := scanTerraform(t, `
 data "imaginary_resource" "bucket_policy" {
   statement {

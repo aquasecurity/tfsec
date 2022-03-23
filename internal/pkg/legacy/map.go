@@ -1,15 +1,15 @@
 package legacy
 
-func FindID(longID string) string {
+func FindIDs(longID string) []string {
 	return InvertedIDs[longID]
 }
 
-var InvertedIDs map[string]string
+var InvertedIDs map[string][]string
 
 func init() {
-	InvertedIDs = make(map[string]string)
+	InvertedIDs = make(map[string][]string)
 	for legacy, modern := range IDs {
-		InvertedIDs[modern] = legacy
+		InvertedIDs[modern] = append(InvertedIDs[modern], legacy)
 	}
 }
 

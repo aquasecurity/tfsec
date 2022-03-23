@@ -8,7 +8,7 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/pkg/formatter"
 
-	"github.com/aquasecurity/tfsec/pkg/scanner"
+	scanner "github.com/aquasecurity/defsec/scanners/terraform"
 
 	"github.com/aquasecurity/defsec/formatters"
 	"github.com/aquasecurity/defsec/providers"
@@ -74,14 +74,16 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 		WithGroupingEnabled(!disableGrouping).
 		WithLinksFunc(gatherLinks).
 		WithBaseDir(dir).
-		WithMetricsEnabled(!conciseOutput)
+		WithMetricsEnabled(!conciseOutput).
+		WithIncludeIgnored(includeIgnored).
+		WithIncludePassed(includePassed)
 
 	var alsoStdout bool
 
 	switch strings.ToLower(format) {
 	case "", "default":
 		alsoStdout = true
-		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics))
+		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics, conciseOutput))
 	case "json":
 		factory.AsJSON()
 	case "csv":
@@ -91,7 +93,7 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 	case "junit":
 		factory.AsJUnit()
 	case "text":
-		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics)).WithColoursEnabled(false)
+		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics, conciseOutput)).WithColoursEnabled(false)
 	case "sarif":
 		factory.AsSARIF()
 	case "gif":
