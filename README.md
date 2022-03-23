@@ -10,8 +10,23 @@
 [![AUR version](https://img.shields.io/aur/version/tfsec)](https://aur.archlinux.org/packages/tfsec)
 [![VScode Extension](https://img.shields.io/visual-studio-marketplace/v/tfsec.tfsec?label=vscode)](https://marketplace.visualstudio.com/items?itemName=tfsec.tfsec)
 
-tfsec uses static analysis of your terraform templates to spot potential
-security issues. Now with terraform CDK support.
+tfsec uses static analysis of your terraform code to spot potential misconfigurations.
+
+## Features
+
+- :cloud: Checks for misconfigurations across all major (and some minor) cloud providers
+- :no_entry: Hundreds of built-in rules
+- :nesting_dolls: Scans modules (local and remote)
+- :heavy_plus_sign: Evaluates HCL expressions as well as literal values
+- :arrow_right_hook: Evaluates Terraform functions e.g. `concat()`
+- :link: Evaluates relationships between Terraform resources
+- :toolbox: Compatible with the Terraform CDK
+- :no_good: Applies (and embellishes) user-defined Rego policies
+- :page_with_curl: Supports multiple output formats: CLI, JSON, SARIF, CSV, CheckStyle, and JUnit.
+- :hammer_and_wrench: Configurable (via CLI flags and/or config file)
+- :zap: Very fast, capable of quickly scanning huge repositories
+- :electric_plug: Plugins for popular IDEs available ([JetBrains](https://plugins.jetbrains.com/plugin/18687-tfsec-findings-explorer) and [VSCode](https://marketplace.visualstudio.com/items?itemName=tfsec.tfsec))
+- :house_with_garden: Community-driven - come and chat with us [on Slack](https://slack.aquasec.com/)!
 
 ## Example Output
 
@@ -90,14 +105,6 @@ A Visual Studio Code extension is being developed to integrate with tfsec result
 
 If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/aquasecurity/tfsec-pr-commenter-action](https://github.com/aquasecurity/tfsec-pr-commenter-action).
 
-## Features
-
-- Checks for sensitive data inclusion across all providers
-- Checks for violations of best practice recommendations across all major cloud providers
-- Scans modules
-- Evaluates expressions as well as literal values
-- Evaluates Terraform functions e.g. `concat()`
-
 ## Ignoring Warnings
 
 You may wish to ignore some warnings. If you'd like to do so, you can
@@ -160,20 +167,17 @@ You can include values from a tfvars file in the scan,  using, for example: `--t
 
 tfsec supports many popular cloud and platform providers
 
-There are also checks which are provider agnostic.
-
-| Checks |
-|:---|
-|[AWS Checks](https://aquasecurity.github.io/tfsec/latest/checks/aws/)|
-|[Azure Checks](https://aquasecurity.github.io/tfsec/latest/checks/azure/)|
-|[GCP Checks](https://aquasecurity.github.io/tfsec/latest/checks/google/)|
-|[CloudStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/cloudstack/)|
-|[DigitalOcean Checks](https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/)|
-|[GitHub Checks](https://aquasecurity.github.io/tfsec/latest/checks/github/)|
-|[Kubernetes Checks](https://aquasecurity.github.io/tfsec/latest/checks/kubernetes/)|
-|[OpenStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/openstack/)|
-|[Oracle Checks](https://aquasecurity.github.io/tfsec/latest/checks/oracle/)|
-|[General Checks](https://aquasecurity.github.io/tfsec/latest/checks/general/)|
+| Checks                                                                                  |
+|:----------------------------------------------------------------------------------------|
+| [AWS Checks](https://aquasecurity.github.io/tfsec/latest/checks/aws/)                   |
+| [Azure Checks](https://aquasecurity.github.io/tfsec/latest/checks/azure/)               |
+| [GCP Checks](https://aquasecurity.github.io/tfsec/latest/checks/google/)                |
+| [CloudStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/cloudstack/)     |
+| [DigitalOcean Checks](https://aquasecurity.github.io/tfsec/latest/checks/digitalocean/) |
+| [GitHub Checks](https://aquasecurity.github.io/tfsec/latest/checks/github/)             |
+| [Kubernetes Checks](https://aquasecurity.github.io/tfsec/latest/checks/kubernetes/)     |
+| [OpenStack Checks](https://aquasecurity.github.io/tfsec/latest/checks/openstack/)       |
+| [Oracle Checks](https://aquasecurity.github.io/tfsec/latest/checks/oracle/)             |
 
 ## Running in CI
 
@@ -182,10 +186,10 @@ output. You can do this using `--no-colour` (or `--no-color` for our American fr
 
 ## Output options
 
-You can output tfsec results as JSON, CSV, Checkstyle, Sarif, JUnit or just plain old human readable format. Use the `--format` flag
+You can output tfsec results as JSON, CSV, Checkstyle, Sarif, JUnit or just plain old human-readable format. Use the `--format` flag
 to specify your desired format.
 
-## Github Security Alerts
+## GitHub Security Alerts
 If you want to integrate with Github Security alerts and include the output of your tfsec checks you can use the [tfsec-sarif-action](https://github.com/marketplace/actions/run-tfsec-with-sarif-upload) Github action to run the static analysis then upload the results to the security alerts tab.
 
 The alerts generated for [tfsec-example-project](https://github.com/tfsec/tfsec-example-project) look like this.
@@ -219,4 +223,3 @@ Made with [contributors-img](https://contrib.rocks).
 `tfsec` is an [Aqua Security](https://aquasec.com) open source project.
 Learn about our open source work and portfolio [here](https://www.aquasec.com/products/open-source-projects/).
 Join the community, and talk to us about any matter in [GitHub Discussion](https://github.com/aquasecurity/tfsec/discussions) or [Slack](https://slack.aquasec.com).
-
