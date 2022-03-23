@@ -32,7 +32,7 @@ The _package_ (line #1) must always start with the `custom` namespace in order f
 
 The name of the `deny` rule is important. Rule names must either be `deny`, or begin with `deny_` in order to highlight an issue when _tfsec_ runs.
 
-The `input` variable contains cloud resources organised by provider (e.g _aws_), and then service (e.g. _s3_). You can see what this looks like by running _tfsec_ on your project with the `--print-rego-input` flag. Combining this with the [jq](https://stedolan.github.io/jq/){:target="_blank"} tool is very helpful:
+The `input` variable contains cloud resources organised by provider (e.g _aws_), and then service (e.g. _s3_). You can see what this looks like by running _tfsec_ on your project with the `--print-rego-input` flag. Combining this with the [jq](https://stedolan.github.io/jq/) tool is very helpful:
 
 ```console
 tfsec --print-rego-input | jq '.aws.s3.buckets[0].name'
@@ -46,7 +46,7 @@ tfsec --print-rego-input | jq '.aws.s3.buckets[0].name'
 }
 ```
 
-For more information about the input structure, you can review the entire schema in code form by studying the `state.State` Go struct [defined in the defsec source code](https://github.com/aquasecurity/defsec/blob/master/state/state.go#L18-L28){:target="_blank"}. All property names are converted to lower-case for consistency, to make writing policies easier.
+For more information about the input structure, you can review the entire schema in code form by studying the `state.State` Go struct [defined in the defsec source code](https://github.com/aquasecurity/defsec/blob/master/state/state.go#L18-L28). All property names are converted to lower-case for consistency, to make writing policies easier.
 
 You may have noticed that the policy checks `bucket.name.value`, instead of just `bucket.name`. This is because the `bucket.name` property contains more than just the _value_ of the property, it also contains various metadata about where this property value was defined, including the filename and line number of the source Terraform file. You can see an example of this metadata in the jq output above.
 
