@@ -24,19 +24,21 @@ theme:
 
 nav:
 - HOME: index.md
-- Getting Started:
-  - Installation: getting-started/installation.md
-  - Signature Verification: getting-started/signing.md
-  - Quick Start: getting-started/quickstart.md
-  - Parameters: getting-started/usage.md
-  - Credits: getting-started/credit.md
+- Guides:
+  - Installation: guides/installation.md
+  - Signature Verification: guides/signing.md
+  - Quick Start: guides/quickstart.md
+  - Parameters: guides/usage.md
+  - Credits: guides/credit.md
   - Configuration:
-    - Config File: getting-started/configuration/config.md
-    - Custom Checks: getting-started/configuration/custom-checks.md
-    - Ignoring Checks: getting-started/configuration/ignores.md
+    - Config File: guides/configuration/config.md
+    - Custom Checks: guides/configuration/custom-checks.md
+    - Ignoring Checks: guides/configuration/ignores.md
   - GitHub Actions:
-    - GitHub Action: getting-started/configuration/github-actions/github-action.md
-    - PR Commenter: getting-started/configuration/github-actions/pr-commenter.md
+    - GitHub Action: guides/github-actions/github-action.md
+    - PR Commenter: guides/github-actions/pr-commenter.md
+  - Rego:
+      - Writing Custom Rego Policies: guides/rego/rego.md
 - Checks:
   - aws:
     - api-gateway:

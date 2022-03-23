@@ -16,7 +16,7 @@ The PR Commenter action will process a Pull request and add comments to any area
 
 To add the action, add tfsec_pr_commenter.yml into the .github/workflows directory in the root of your Github project.
 
-![Setup a new workflow](../../../imgs/newworkflow.png)
+![Setup a new workflow](../../imgs/newworkflow.png)
 
 The contents of tfsec_pr_commenter.yml should be;
 
@@ -50,4 +50,4 @@ The comment will only be added once per transgression.
 
 The screenshot below demonstrates the comments that can be expected when using the action
 
-![PR Commenter Example](../../../imgs/pr_commenter.png)
+![PR Commenter Example](../../imgs/pr_commenter.png)
