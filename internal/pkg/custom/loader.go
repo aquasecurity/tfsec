@@ -67,12 +67,12 @@ func LoadCheckFile(checkFilePath string) (ChecksFile, error) {
 	case ".json":
 		err = json.Unmarshal(checkFileContent, &checks)
 		if err != nil {
-			return checks, err
+			return checks, fmt.Errorf("Check did not pass the expected schema. %w", err)
 		}
 	case ".yml", ".yaml":
 		err = yaml.Unmarshal(checkFileContent, &checks)
 		if err != nil {
-			return checks, nil
+			return checks, fmt.Errorf("Check did not pass the expected schema. %w", err)
 		}
 	default:
 		return checks, fmt.Errorf("couldn't process the file %s", checkFilePath)
