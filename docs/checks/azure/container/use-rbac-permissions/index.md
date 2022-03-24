@@ -23,9 +23,13 @@ The following example will fail the azure-container-use-rbac-permissions check.
 ```terraform
 
  resource "azurerm_kubernetes_cluster" "bad_example" {
+	// azurerm < 2.99.0
  	role_based_access_control {
  		enabled = false
  	}
+
+	// azurerm >= 2.99.0
+	role_based_access_control_enabled = false
  }
  
 ```
@@ -38,9 +42,13 @@ The following example will pass the azure-container-use-rbac-permissions check.
 ```terraform
 
  resource "azurerm_kubernetes_cluster" "good_example" {
- 	role_based_access_control {
+	// azurerm < 2.99.0
+	role_based_access_control {
  		enabled = true
  	}
+
+	// azurerm >= 2.99.0
+ 	role_based_access_control_enabled = true
  }
  
 ```

@@ -38,7 +38,7 @@ nav:
     - GitHub Action: guides/github-actions/github-action.md
     - PR Commenter: guides/github-actions/pr-commenter.md
   - Rego:
-      - Writing Custom Rego Policies: guides/rego/rego.md
+    - Writing Custom Rego Policies: guides/rego/rego.md
 - Checks:
   - aws:
     - api-gateway:
@@ -175,6 +175,7 @@ nav:
       - enable-queue-encryption: checks/aws/sqs/enable-queue-encryption/index.md
       - no-wildcards-in-policy-documents: checks/aws/sqs/no-wildcards-in-policy-documents/index.md
     - ssm:
+      - avoid-leaks-via-http: checks/aws/ssm/avoid-leaks-via-http/index.md
       - secret-use-customer-key: checks/aws/ssm/secret-use-customer-key/index.md
     - vpc:
       - add-description-to-security-group: checks/aws/vpc/add-description-to-security-group/index.md
