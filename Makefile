@@ -54,10 +54,6 @@ fix-typos:
 clone-image-github:
 	./scripts/clone-images.sh ghcr.io/aquasecurity
 
-.PHONY: clone-image-tfsec
-clone-image-tfsec:
-	./scripts/clone-images.sh tfsec
-
 .PHONY: sanity
 sanity:
 	go run ./cmd/tfsec -s -p --force-all-dirs ./_examples > /dev/null
