@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	_ "github.com/aquasecurity/defsec/loader"
 	"github.com/aquasecurity/defsec/rules"
 
 	"github.com/spf13/cobra"
@@ -53,6 +54,9 @@ func getSortedFileContents() []*FileContent {
 	checkMap := make(map[string][]templateObject)
 
 	for _, r := range rules.GetRegistered() {
+		if r.Rule().Terraform == nil {
+			continue
+		}
 		provider := string(r.Rule().Provider)
 		checkMap[provider] = append(checkMap[provider], templateObject{
 			ID:          r.Rule().LongID(),
