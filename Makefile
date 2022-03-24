@@ -70,3 +70,8 @@ bench:
 mkdocs-serve:
 	docker build -t $(MKDOCS_IMAGE) -f docs/Dockerfile docs
 	docker  run --name mkdocs-serve --rm -v $(PWD):/docs -p $(MKDOCS_PORT):8000 $(MKDOCS_IMAGE)
+
+.PHONY: update-defsec
+update-defsec:
+	go get github.com/aquasecurity/defsec@latest
+
