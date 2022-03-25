@@ -145,7 +145,7 @@ func minVersionSatisfied(conf *config.Config) bool {
 	if err != nil {
 		return true
 	}
-	return minimum.LessThan(actual)
+	return minimum.Equal(actual) || minimum.LessThan(actual)
 }
 
 func failf(format string, a ...interface{}) {
