@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -76,7 +77,7 @@ func scanTestFile(testFile string) (rules.Results, error) {
 	if err := p.ParseDirectory(filepath.Dir(path)); err != nil {
 		return nil, err
 	}
-	modules, _, err := p.EvaluateAll()
+	modules, _, err := p.EvaluateAll(context.TODO())
 	if err != nil {
 		return nil, err
 	}
