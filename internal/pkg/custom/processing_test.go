@@ -1,6 +1,7 @@
 package custom
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -976,7 +977,7 @@ func scanTerraform(t *testing.T, mainTf string) rules.Results {
 	if err := p.ParseDirectory(dirName); err != nil {
 		panic(err)
 	}
-	modules, _, err := p.EvaluateAll()
+	modules, _, err := p.EvaluateAll(context.TODO())
 	if err != nil {
 		panic(err)
 	}
@@ -993,7 +994,7 @@ func ParseFromSource(source string) terraform.Modules {
 	if err := p.ParseDirectory(filepath.Dir(path)); err != nil {
 		panic(err)
 	}
-	modules, _, err := p.EvaluateAll()
+	modules, _, err := p.EvaluateAll(context.TODO())
 	if err != nil {
 		panic(err)
 	}

@@ -43,6 +43,7 @@ var minimumSeverity string
 var disableIgnores bool
 var regoPolicyDir string
 var printRegoInput bool
+var noModuleDownloads bool
 
 func init() {
 	rootCmd.Flags().BoolVar(&singleThreadedMode, "single-thread", singleThreadedMode, "Run checks using a single thread")
@@ -76,6 +77,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&minimumSeverity, "minimum-severity", "m", minimumSeverity, "The minimum severity to report. One of CRITICAL, HIGH, MEDIUM, LOW.")
 	rootCmd.Flags().StringVar(&regoPolicyDir, "rego-policy-dir", regoPolicyDir, "Directory to load rego policies from (recursively).")
 	rootCmd.Flags().BoolVar(&printRegoInput, "print-rego-input", printRegoInput, "Print a JSON representation of the input supplied to rego policies.")
+	rootCmd.Flags().BoolVar(&noModuleDownloads, "no-module-downloads", noModuleDownloads, "Do not download remote modules.")
 	_ = rootCmd.Flags().MarkHidden("allow-checks-to-panic")
 }
 
@@ -93,6 +95,7 @@ func configureOptions() ([]scanner.Option, error) {
 		scanner.OptionWithWorkspaceName(workspace),
 		scanner.OptionWithAlternativeIDProvider(legacy.FindIDs),
 		scanner.OptionWithPolicyNamespaces("custom"),
+		scanner.OptionWithDownloads(!noModuleDownloads),
 	)
 
 	if regoPolicyDir != "" {
