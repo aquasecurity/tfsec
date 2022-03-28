@@ -5,13 +5,13 @@ go 1.16
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.3
 	github.com/Masterminds/semver v1.5.0
-	github.com/aquasecurity/defsec v0.27.0
+	github.com/aquasecurity/defsec v0.28.0
 	github.com/hashicorp/go-version v1.4.0
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/liamg/clinch v1.5.6
 	github.com/liamg/gifwrap v0.0.6
 	github.com/liamg/tml v0.6.0
-	github.com/owenrumney/squealer v0.3.1
+	github.com/owenrumney/squealer v0.3.2
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.7.1
 	github.com/zclconf/go-cty v1.10.0
