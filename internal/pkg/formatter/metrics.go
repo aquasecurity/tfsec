@@ -23,7 +23,7 @@ func printMetrics(w io.Writer, metrics scanner.Metrics) {
 	printTitle(w, "counts")
 	printValue(w, "modules downloaded", fmt.Sprintf("%d", metrics.Parser.Counts.ModuleDownloads))
 	printValue(w, "modules processed", fmt.Sprintf("%d", metrics.Parser.Counts.Modules))
-	printValue(w, "blocks processsed", fmt.Sprintf("%d", metrics.Parser.Counts.Blocks))
+	printValue(w, "blocks processed", fmt.Sprintf("%d", metrics.Parser.Counts.Blocks))
 	printValue(w, "files read", fmt.Sprintf("%d", metrics.Parser.Counts.Files))
 	_, _ = fmt.Fprintf(w, "\n")
 
