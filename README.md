@@ -25,7 +25,7 @@ tfsec uses static analysis of your terraform code to spot potential misconfigura
 - :page_with_curl: Supports multiple output formats: CLI, JSON, SARIF, CSV, CheckStyle, and JUnit.
 - :hammer_and_wrench: Configurable (via CLI flags and/or config file)
 - :zap: Very fast, capable of quickly scanning huge repositories
-- :electric_plug: Plugins for popular IDEs available ([JetBrains](https://plugins.jetbrains.com/plugin/18687-tfsec-findings-explorer) and [VSCode](https://marketplace.visualstudio.com/items?itemName=tfsec.tfsec))
+- :electric_plug: Plugins for popular IDEs available ([JetBrains](https://plugins.jetbrains.com/plugin/18687-tfsec-findings-explorer), [VSCode](https://marketplace.visualstudio.com/items?itemName=tfsec.tfsec) and [Vim](https://github.com/aquasecurity/vim-tfsec))
 - :house_with_garden: Community-driven - come and chat with us [on Slack](https://slack.aquasec.com/)!
 
 ## Recommended by Thoughtworks
