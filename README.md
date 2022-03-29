@@ -28,6 +28,12 @@ tfsec uses static analysis of your terraform code to spot potential misconfigura
 - :electric_plug: Plugins for popular IDEs available ([JetBrains](https://plugins.jetbrains.com/plugin/18687-tfsec-findings-explorer) and [VSCode](https://marketplace.visualstudio.com/items?itemName=tfsec.tfsec))
 - :house_with_garden: Community-driven - come and chat with us [on Slack](https://slack.aquasec.com/)!
 
+## Recommended by Thoughtworks
+
+Rated _Adopt_ by the [Thoughtworks Tech Radar](https://www.thoughtworks.com/en-gb/radar/tools/tfsec):
+
+> For our projects using Terraform, tfsec has quickly become a default static analysis tool to detect potential security risks. It's easy to integrate into a CI pipeline and has a growing library of checks against all of the major cloud providers and platforms like Kubernetes. Given its ease of use, we believe tfsec could be a good addition to any Terraform project.
+
 ## Example Output
 
 ![Example screenshot](screenshot.png)
