@@ -109,7 +109,7 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 		} else {
 			outputPath = baseFilename
 		}
-		f, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
+		f, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
 		if err != nil {
 			return "", err
 		}
