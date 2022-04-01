@@ -120,7 +120,7 @@ docker_manifests:
   - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}:latest"
     image_templates:
       - ghcr.io/aquasecurity/{{ .ProjectName }}:{{ .Tag }}-arm64v8
-      - ghcr.io/aquasecuritysec/{{ .ProjectName }}:{{ .Tag }}-amd64
+      - ghcr.io/aquasecurity/{{ .ProjectName }}:{{ .Tag }}-amd64
   - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}:v{{ .Major }}.{{ .Minor }}"
     skip_push: auto
     image_templates:
