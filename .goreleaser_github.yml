@@ -1,0 +1,167 @@
+builds:
+  - id: tfsec
+    main: ./cmd/tfsec
+    binary: tfsec
+    ldflags:
+      - "-X github.com/aquasecurity/tfsec/version.Version={{.Tag}} -s -w -extldflags '-fno-PIC -static'"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+  - id: tfsec-checkgen
+    main: ./cmd/tfsec-checkgen
+    binary: tfsec-checkgen
+    ldflags:
+      - "-X github.com/aquasecurity/tfsec/version.Version={{.Tag}} -s -w -extldflags '-fno-PIC -static'"
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+checksum:
+  name_template: "{{ .ProjectName }}_checksums.txt"
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+signs:
+  - artifacts: binary
+    signature: "${artifact}.D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE.sig"
+
+dockers:
+  - image_templates:
+      ["ghcr.io/aquasecurity/{{ .ProjectName }}:{{ .Tag }}-amd64"]
+    ids:
+      - tfsec
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/amd64
+  - image_templates:
+      ["ghcr.io/aquasecurity/{{ .ProjectName }}:{{ .Tag }}-arm64v8"]
+    ids:
+      - tfsec
+    goarch: arm64
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/arm64/v8
+  - image_templates:
+      ["ghcr.io/aquasecurity/{{ .ProjectName }}-alpine:{{ .Tag }}-amd64"]
+    ids:
+      - tfsec
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/amd64
+  - image_templates:
+      ["ghcr.io/aquasecurity/{{ .ProjectName }}-alpine:{{ .Tag }}-arm64v8"]
+    ids:
+      - tfsec
+    goarch: arm64
+    dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/arm64/v8
+  - image_templates:
+      ["ghcr.io/aquasecurity/{{ .ProjectName }}-scratch:{{ .Tag }}-amd64"]
+    ids:
+      - tfsec
+    dockerfile: Dockerfile.scratch
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/amd64
+  - image_templates:
+      ["ghcr.io/aquasecurity/{{ .ProjectName }}-scratch:{{ .Tag }}-arm64v8"]
+    ids:
+      - tfsec
+    dockerfile: Dockerfile.scratch
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/arm64/v8
+  - image_templates:
+      ["ghcr.io/aquasecurity/{{ .ProjectName }}-ci:{{ .Tag }}-amd64"]
+    ids:
+      - tfsec
+    dockerfile: Dockerfile.ci
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/amd64
+  - image_templates:
+      ["ghcr.io/aquasecurity/{{ .ProjectName }}-ci:{{ .Tag }}-arm64v8"]
+    ids:
+      - tfsec
+    dockerfile: Dockerfile.ci
+    use: buildx
+    build_flag_templates:
+      - --platform=linux/arm64/v8
+
+docker_manifests:
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}:{{ .Tag }}"
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}:{{ .Tag }}-arm64v8
+      - ghcr.io/aquasecurity/{{ .ProjectName }}:{{ .Tag }}-amd64
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}:latest"
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}:{{ .Tag }}-arm64v8
+      - aquaghcr.io/aquasecuritysec/{{ .ProjectName }}:{{ .Tag }}-amd64
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}:v{{ .Major }}.{{ .Minor }}"
+    skip_push: auto
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}:{{ .Tag }}-arm64v8
+      - ghcr.io/aquasecurity/{{ .ProjectName }}:{{ .Tag }}-amd64
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}-alpine:{{ .Tag }}"
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-alpine:{{ .Tag }}-arm64v8
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-alpine:{{ .Tag }}-amd64
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}-alpine:latest"
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-alpine:{{ .Tag }}-arm64v8
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-alpine:{{ .Tag }}-amd64
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}-alpine:v{{ .Major }}.{{ .Minor }}"
+    skip_push: auto
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-alpine:{{ .Tag }}-arm64v8
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-alpine:{{ .Tag }}-amd64
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}-scratch:{{ .Tag }}"
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-scratch:{{ .Tag }}-arm64v8
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-scratch:{{ .Tag }}-amd64
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}-scratch:latest"
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-scratch:{{ .Tag }}-arm64v8
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-scratch:{{ .Tag }}-amd64
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}-scratch:v{{ .Major }}.{{ .Minor }}"
+    skip_push: auto
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-scratch:{{ .Tag }}-arm64v8
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-scratch:{{ .Tag }}-amd64
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}-ci:{{ .Tag }}"
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-ci:{{ .Tag }}-arm64v8
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-ci:{{ .Tag }}-amd64
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}-ci:latest"
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-ci:{{ .Tag }}-arm64v8
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-ci:{{ .Tag }}-amd64
+  - name_template: "ghcr.io/aquasecurity/{{ .ProjectName }}-ci:v{{ .Major }}.{{ .Minor }}"
+    skip_push: auto
+    image_templates:
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-ci:{{ .Tag }}-arm64v8
+      - ghcr.io/aquasecurity/{{ .ProjectName }}-ci:{{ .Tag }}-amd64
