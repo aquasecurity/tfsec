@@ -95,6 +95,7 @@ type simpleLocation struct {
 	moduleName string
 }
 
+// nolint
 func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult) {
 
 	first := group.Results()[0]
