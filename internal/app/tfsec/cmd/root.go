@@ -1,23 +1,20 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
-	_ "github.com/aquasecurity/defsec/loader"
-	"github.com/aquasecurity/defsec/scanners/terraform/executor"
-
-	scanner "github.com/aquasecurity/defsec/scanners/terraform"
-
 	"github.com/Masterminds/semver"
+	"github.com/aquasecurity/defsec/pkg/extrafs"
+	scanner "github.com/aquasecurity/defsec/pkg/scanners/terraform"
+	"github.com/aquasecurity/defsec/pkg/scanners/terraform/executor"
+	"github.com/aquasecurity/defsec/pkg/severity"
+	"github.com/aquasecurity/tfsec/internal/pkg/config"
 	"github.com/aquasecurity/tfsec/internal/pkg/custom"
 	"github.com/aquasecurity/tfsec/version"
-
-	"github.com/aquasecurity/defsec/severity"
-
-	"github.com/aquasecurity/tfsec/internal/pkg/config"
 	"github.com/spf13/cobra"
 )
 
@@ -93,11 +90,19 @@ var rootCmd = &cobra.Command{
 			return fmt.Errorf("failed to load custom checks from %s: %w", customCheckDir, err)
 		}
 
-		scnr := scanner.New(options...)
-		if err := scnr.AddPath(dir); err != nil {
-			failf("Parse error: %s", err)
+		root := "/"
+		if vol := filepath.VolumeName(dir); vol != "" {
+			root = vol
 		}
-		results, metrics, err := scnr.Scan()
+		rel, err := filepath.Rel(root, dir)
+		if err != nil {
+			failf("failed to set relative path: %s", err)
+		}
+		rel = filepath.ToSlash(rel)
+		osFS := extrafs.OSDir(root)
+
+		scnr := scanner.New(options...)
+		results, metrics, err := scnr.ScanFSWithMetrics(context.TODO(), osFS, rel)
 		if err != nil {
 			failf("Scan error: %s", err)
 		}
@@ -116,7 +121,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		formats := strings.Split(format, ",")
-		if err := output(outputFlag, formats, dir, results, metrics); err != nil {
+		if err := output(outputFlag, formats, rel, results, metrics); err != nil {
 			failf("Failed to write output: %s", err)
 		}
 

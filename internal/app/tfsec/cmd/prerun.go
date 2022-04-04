@@ -8,7 +8,6 @@ import (
 
 	"github.com/aquasecurity/tfsec/internal/pkg/ignores"
 	"github.com/aquasecurity/tfsec/internal/pkg/updater"
-
 	"github.com/aquasecurity/tfsec/version"
 	"github.com/liamg/tml"
 	"github.com/spf13/cobra"

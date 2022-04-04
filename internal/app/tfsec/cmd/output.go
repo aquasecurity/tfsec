@@ -6,18 +6,16 @@ import (
 	"os"
 	"strings"
 
+	"github.com/aquasecurity/defsec/pkg/formatters"
+	"github.com/aquasecurity/defsec/pkg/providers"
+	"github.com/aquasecurity/defsec/pkg/scan"
+	scanner "github.com/aquasecurity/defsec/pkg/scanners/terraform"
 	"github.com/aquasecurity/tfsec/internal/pkg/formatter"
-
-	scanner "github.com/aquasecurity/defsec/scanners/terraform"
-
-	"github.com/aquasecurity/defsec/formatters"
-	"github.com/aquasecurity/defsec/providers"
-	"github.com/aquasecurity/defsec/rules"
 	"github.com/aquasecurity/tfsec/version"
 	"github.com/liamg/tml"
 )
 
-func output(baseFilename string, formats []string, dir string, results []rules.Result, metrics scanner.Metrics) error {
+func output(baseFilename string, formats []string, dir string, results []scan.Result, metrics scanner.Metrics) error {
 	if baseFilename == "" && len(formats) > 1 {
 		return fmt.Errorf("you must specify a base output filename with --out if you want to use multiple formats")
 	}
@@ -38,7 +36,7 @@ func output(baseFilename string, formats []string, dir string, results []rules.R
 	return nil
 }
 
-func gatherLinks(result rules.Result) []string {
+func gatherLinks(result scan.Result) []string {
 	v := "latest"
 	if version.Version != "" {
 		v = version.Version
@@ -66,7 +64,7 @@ func gatherLinks(result rules.Result) []string {
 	return append(docsLink, links...)
 }
 
-func outputFormat(addExtension bool, baseFilename string, format string, dir string, results []rules.Result, metrics scanner.Metrics) (string, error) {
+func outputFormat(addExtension bool, baseFilename string, format string, dir string, results []scan.Result, metrics scanner.Metrics) (string, error) {
 
 	factory := formatters.New().
 		WithDebugEnabled(debug).
