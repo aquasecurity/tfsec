@@ -1,15 +1,15 @@
 package formatter
 
 import (
-	scanner "github.com/aquasecurity/defsec/scanners/terraform"
+	"github.com/aquasecurity/defsec/pkg/scan"
+	scanner "github.com/aquasecurity/defsec/pkg/scanners/terraform"
 
-	"github.com/aquasecurity/defsec/formatters"
-	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/pkg/formatters"
 	"github.com/liamg/gifwrap/pkg/ascii"
 )
 
-func GifWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableFormatter, results rules.Results) error {
-	return func(b formatters.ConfigurableFormatter, results rules.Results) error {
+func GifWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableFormatter, results scan.Results) error {
+	return func(b formatters.ConfigurableFormatter, results scan.Results) error {
 
 		failCount := len(results.GetFailed())
 

@@ -1,6 +1,6 @@
 package custom
 
-import "github.com/aquasecurity/defsec/parsers/terraform"
+import "github.com/aquasecurity/defsec/pkg/terraform"
 
 type customCheckVariables map[string]string
 

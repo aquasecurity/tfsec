@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/aquasecurity/defsec/scanners/terraform/executor"
+	"github.com/aquasecurity/defsec/pkg/scan"
 
-	"github.com/AlecAivazis/survey/v2"
-	"github.com/aquasecurity/defsec/parsers/terraform/parser"
-	"github.com/aquasecurity/defsec/rules"
+	"github.com/aquasecurity/defsec/pkg/scanners/terraform"
+
+	survey "github.com/AlecAivazis/survey/v2"
 	"github.com/aquasecurity/tfsec/internal/pkg/custom"
 	"github.com/spf13/cobra"
 )
@@ -60,7 +60,7 @@ var validateCmd = &cobra.Command{
 	},
 }
 
-func scanTestFile(testFile string) (rules.Results, error) {
+func scanTestFile(testFile string) (scan.Results, error) {
 	source, err := ioutil.ReadFile(testFile)
 	if err != nil {
 		return nil, err
@@ -73,16 +73,8 @@ func scanTestFile(testFile string) (rules.Results, error) {
 	if err := ioutil.WriteFile(path, source, 0600); err != nil {
 		return nil, err
 	}
-	p := parser.New(parser.OptionStopOnHCLError(true))
-	if err := p.ParseDirectory(filepath.Dir(path)); err != nil {
-		return nil, err
-	}
-	modules, _, err := p.EvaluateAll(context.TODO())
-	if err != nil {
-		return nil, err
-	}
-	results, _, err := executor.New().Execute(modules)
-	return results, err
+	scnr := terraform.New()
+	return scnr.ScanFS(context.TODO(), os.DirFS("C:\\"), dir)
 }
 
 var testCheckCmd = &cobra.Command{

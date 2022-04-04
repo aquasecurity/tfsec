@@ -3,20 +3,18 @@ package custom
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
+	"io/fs"
 	"strings"
 	"testing"
 
-	"github.com/aquasecurity/defsec/scanners/terraform/executor"
+	"github.com/aquasecurity/defsec/pkg/scan"
+	scanner "github.com/aquasecurity/defsec/pkg/scanners/terraform"
+	"github.com/aquasecurity/defsec/pkg/scanners/terraform/parser"
+	"github.com/liamg/memoryfs"
 
-	"github.com/aquasecurity/defsec/rules"
-
-	"github.com/aquasecurity/defsec/parsers/terraform"
-	"github.com/aquasecurity/defsec/parsers/terraform/parser"
+	"github.com/aquasecurity/defsec/pkg/terraform"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func init() {
@@ -260,7 +258,7 @@ resource "aws_ami" "example" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			block := parseFromSource(t, test.source)[0].GetBlocks()[0]
 			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "`Or` match function evaluating incorrectly.")
 		})
@@ -307,7 +305,7 @@ resource "aws_ami" "example" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			block := parseFromSource(t, test.source)[0].GetBlocks()[0]
 			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "`And` match function evaluating incorrectly.")
 		})
@@ -358,7 +356,7 @@ resource "aws_ami" "example" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			block := parseFromSource(t, test.source)[0].GetBlocks()[0]
 			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "Nested match functions evaluating incorrectly.")
 		})
@@ -385,7 +383,7 @@ resource "aws_ami" "example" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			block := parseFromSource(t, test.source)[0].GetBlocks()[0]
 			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "Not match functions evaluating incorrectly.")
 		})
@@ -435,7 +433,7 @@ resource "aws_ami" "testing" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			block := parseFromSource(t, test.source)[0].GetBlocks()[0]
 			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "precondition functions evaluating incorrectly.")
 		})
@@ -481,7 +479,7 @@ resource "aws_s3_bucket" "test-bucket" {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			block := parseFromSource(t, test.source)[0].GetBlocks()[0]
 			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
 			assert.Equal(t, test.expected, result, "processing variable assignments incorrectly.")
 		})
@@ -549,7 +547,7 @@ resource "google_compute_instance" "default" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			block := parseFromSource(t, test.source)[0].GetBlocks()[0]
 			result := evalMatchSpec(block, &test.predicateMatchSpec, NewEmptyCustomContext())
 			assert.Equal(t, result, test.expected, "`regexMatches` match function evaluating incorrectly.")
 		})
@@ -864,7 +862,7 @@ resource "aws_instance" "foo" {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			block := parseFromSource(t, test.source)[0].GetBlocks()[0]
 			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
 			assert.Equal(t, result, test.expected, "subMatch evaluation function for attributes behaving incorrectly.")
 		})
@@ -950,7 +948,7 @@ func TestSubMatchOnes(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			block := ParseFromSource(test.source)[0].GetBlocks()[0]
+			block := parseFromSource(t, test.source)[0].GetBlocks()[0]
 			result := evalMatchSpec(block, &test.matchSpec, NewEmptyCustomContext())
 			assert.Equal(t, result, test.expected, "`subMatchOne` handling function evaluating incorrectly.")
 		})
@@ -966,51 +964,32 @@ func givenCheck(jsonContent string) {
 	ProcessFoundChecks(checksfile)
 }
 
-func scanTerraform(t *testing.T, mainTf string) rules.Results {
-	dirName, err := ioutil.TempDir("", "tfsec-testing-")
-	assert.NoError(t, err)
+func scanTerraform(t *testing.T, mainTf string) scan.Results {
 
-	err = ioutil.WriteFile(fmt.Sprintf("%s/%s", dirName, "main.tf"), []byte(mainTf), os.ModePerm)
-	assert.NoError(t, err)
+	f := memoryfs.New()
+	err := f.WriteFile("main.tf", []byte(mainTf), 0o600)
+	require.NoError(t, err)
 
-	p := parser.New(parser.OptionStopOnHCLError(true))
-	if err := p.ParseDirectory(dirName); err != nil {
-		panic(err)
-	}
-	modules, _, err := p.EvaluateAll(context.TODO())
-	if err != nil {
-		panic(err)
-	}
-
-	res, _, _ := executor.New(executor.OptionStopOnErrors(true)).Execute(modules)
-	return res
+	results, err := scanner.New().ScanFS(context.TODO(), f, ".")
+	require.NoError(t, err)
+	return results
 }
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.
-// TODO: Extract into a testing utility package once the amount of duplication justifies introducing an extra package.
-func ParseFromSource(source string) terraform.Modules {
-	path := createTestFile("test.tf", source)
-	p := parser.New(parser.OptionStopOnHCLError(true))
-	if err := p.ParseDirectory(filepath.Dir(path)); err != nil {
-		panic(err)
-	}
+func parseFromSource(t *testing.T, source string) terraform.Modules {
+	f := createTestFile(t, "test.tf", source)
+	p := parser.New(f, "", parser.OptionStopOnHCLError(true))
+	err := p.ParseFS(context.TODO(), ".")
+	require.NoError(t, err)
 	modules, _, err := p.EvaluateAll(context.TODO())
-	if err != nil {
-		panic(err)
-	}
+	require.NoError(t, err)
 	return modules
 }
 
 // This function is copied from setup_test.go as it is not possible to import function from test files.
-// TODO: Extract into a testing utility package once the amount of duplication justifies introducing an extra package.
-func createTestFile(filename, contents string) string {
-	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
-	if err != nil {
-		panic(err)
-	}
-	path := filepath.Join(dir, filename)
-	if err := ioutil.WriteFile(path, []byte(contents), 0600); err != nil {
-		panic(err)
-	}
-	return path
+func createTestFile(t *testing.T, filename, contents string) fs.FS {
+	f := memoryfs.New()
+	err := f.WriteFile(filename, []byte(contents), 0o600)
+	require.NoError(t, err)
+	return f
 }

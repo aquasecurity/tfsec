@@ -6,12 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/aquasecurity/defsec/state"
+	scanner "github.com/aquasecurity/defsec/pkg/scanners/terraform"
+	"github.com/aquasecurity/defsec/pkg/severity"
 
+	"github.com/aquasecurity/defsec/pkg/state"
 	"github.com/aquasecurity/tfsec/internal/pkg/legacy"
-
-	scanner "github.com/aquasecurity/defsec/scanners/terraform"
-	"github.com/aquasecurity/defsec/severity"
 )
 
 var showVersion = false
@@ -99,7 +98,7 @@ func configureOptions() ([]scanner.Option, error) {
 	)
 
 	if regoPolicyDir != "" {
-		options = append(options, scanner.OptionWithPolicyDirs([]string{regoPolicyDir}))
+		options = append(options, scanner.OptionWithPolicyDirs(regoPolicyDir))
 	}
 
 	if disableIgnores {
@@ -124,7 +123,7 @@ func configureOptions() ([]scanner.Option, error) {
 	}
 
 	if debug {
-		options = append(options, scanner.OptionWithDebugWriter(os.Stderr))
+		options = append(options, scanner.OptionWithDebug(os.Stderr))
 	}
 
 	if printRegoInput {

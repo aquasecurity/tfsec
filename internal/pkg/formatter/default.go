@@ -3,23 +3,23 @@ package formatter
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
+	"io/fs"
 	"path/filepath"
 	"strings"
 
-	scanner "github.com/aquasecurity/defsec/scanners/terraform"
+	"github.com/aquasecurity/defsec/pkg/scan"
+	scanner "github.com/aquasecurity/defsec/pkg/scanners/terraform"
 
-	"github.com/aquasecurity/defsec/formatters"
-	"github.com/aquasecurity/defsec/rules"
-	"github.com/aquasecurity/defsec/severity"
+	"github.com/aquasecurity/defsec/pkg/formatters"
+	"github.com/aquasecurity/defsec/pkg/severity"
 	"github.com/liamg/clinch/terminal"
 	"github.com/liamg/tml"
 )
 
 var severityFormat map[severity.Severity]string
 
-func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b formatters.ConfigurableFormatter, results rules.Results) error {
-	return func(b formatters.ConfigurableFormatter, results rules.Results) error {
+func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b formatters.ConfigurableFormatter, results scan.Results) error {
+	return func(b formatters.ConfigurableFormatter, results scan.Results) error {
 
 		// we initialise the map here so we respect the colour-ignore options
 		severityFormat = map[severity.Severity]string{
@@ -78,17 +78,24 @@ func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b form
 
 const lineNoWidth = 7
 
-func getStatusOrSeverity(status rules.Status, severity severity.Severity) string {
+func getStatusOrSeverity(status scan.Status, severity severity.Severity) string {
 	switch status {
-	case rules.StatusPassed:
+	case scan.StatusPassed:
 		return tml.Sprintf("<green>PASSED</green>")
-	case rules.StatusIgnored:
+	case scan.StatusIgnored:
 		return tml.Sprintf("<yellow>IGNORED</yellow>")
 	default:
 		return severityFormat[severity]
 	}
 }
 
+type simpleLocation struct {
+	filename   string
+	lineInfo   string
+	moduleName string
+}
+
+// nolint
 func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult) {
 
 	first := group.Results()[0]
@@ -127,8 +134,41 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 	}
 
 	filename := innerRange.GetFilename()
-	if relative, err := filepath.Rel(b.BaseDir(), filename); err == nil {
-		filename = relative
+	var via []simpleLocation
+	if innerRange.GetSourcePrefix() == "" || strings.HasPrefix(innerRange.GetSourcePrefix(), ".") {
+		if relative, err := filepath.Rel(b.BaseDir(), filename); err == nil && !strings.Contains(relative, "..") {
+			filename = relative
+		}
+	} else {
+		m := first.Metadata()
+		mod := &m
+		lastFilename := m.Range().GetFilename()
+		for {
+			mod = mod.Parent()
+			if mod == nil {
+				break
+			}
+			parentRange := mod.Range()
+			parentFilename := parentRange.GetFilename()
+			if parentFilename == lastFilename {
+				continue
+			}
+			lastFilename = parentFilename
+			if parentRange.GetSourcePrefix() == "" || strings.HasPrefix(parentRange.GetSourcePrefix(), ".") {
+				if parentRelative, err := filepath.Rel(b.BaseDir(), parentFilename); err == nil && !strings.Contains(parentRelative, "..") {
+					parentLineInfo := fmt.Sprintf("Lines %d-%d", parentRange.GetStartLine(), parentRange.GetEndLine())
+					if !parentRange.IsMultiLine() {
+						parentLineInfo = fmt.Sprintf("Line %d", parentRange.GetStartLine())
+					}
+					via = append(via, simpleLocation{
+						filename:   parentRelative,
+						lineInfo:   parentLineInfo,
+						moduleName: mod.Reference().String(),
+					})
+				}
+			}
+
+		}
 	}
 
 	_ = tml.Fprintf(
@@ -138,7 +178,7 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 	)
 
 	if first.Metadata().Range().GetStartLine() == 0 {
-		if filename := first.Metadata().Range().GetFilename(); filename != "" {
+		if filename != "" {
 			_ = tml.Fprintf(
 				w,
 				"<dim>%s%s%s</dim>\n  %s",
@@ -148,13 +188,23 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 				filename,
 			)
 		}
-	} else if first.Status() != rules.StatusPassed {
+	} else if first.Status() != scan.StatusPassed {
 		_ = tml.Fprintf(
 			w,
 			" <italic>%s <dim>%s\n",
 			filename,
 			lineInfo,
 		)
+		for i, v := range via {
+			_ = tml.Fprintf(
+				w,
+				" %s<dim>via </dim><italic>%s <dim>%s (%s)\n",
+				strings.Repeat(" ", i+1),
+				v.filename,
+				v.lineInfo,
+				v.moduleName,
+			)
+		}
 
 		_ = tml.Fprintf(
 			w,
@@ -202,7 +252,7 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 	)
 }
 
-func printMetadata(w io.Writer, result rules.Result, links []string, isRego bool) {
+func printMetadata(w io.Writer, result scan.Result, links []string, isRego bool) {
 	if isRego {
 		_ = tml.Fprintf(w, "  <dim>Rego Package</dim> <italic>%s\n", result.RegoNamespace())
 		_ = tml.Fprintf(w, "  <dim>   Rego Rule</dim> <italic>%s", result.RegoRule())
@@ -232,7 +282,12 @@ func printCodeLine(w io.Writer, i int, code string) {
 	)
 }
 
-func highlightCode(b formatters.ConfigurableFormatter, result rules.Result) error {
+func highlightCode(b formatters.ConfigurableFormatter, result scan.Result) error {
+
+	srcFS := result.Metadata().Range().GetFS()
+	if srcFS == nil {
+		return fmt.Errorf("code unavailable: no filesystem provided")
+	}
 
 	innerRange := result.Range()
 	outerRange := innerRange
@@ -243,7 +298,7 @@ func highlightCode(b formatters.ConfigurableFormatter, result rules.Result) erro
 		}
 	}
 
-	content, err := ioutil.ReadFile(innerRange.GetFilename())
+	content, err := fs.ReadFile(srcFS, innerRange.GetLocalFilename())
 	if err != nil {
 		return err
 	}
@@ -270,7 +325,7 @@ func highlightCode(b formatters.ConfigurableFormatter, result rules.Result) erro
 
 		// if we're rendering the actual issue lines, use red
 		if i+1 >= innerRange.GetStartLine() && i < innerRange.GetEndLine() {
-			if result.Status() == rules.StatusPassed {
+			if result.Status() == scan.StatusPassed {
 				printCodeLine(w, line, tml.Sprintf("<green>%s", bodyString))
 			} else {
 				printCodeLine(w, line, tml.Sprintf("<red>%s", bodyString))
