@@ -193,8 +193,8 @@ github.com/apparentlymart/go-textseg v1.0.0 h1:rRmlIsPEEhUTIKQb7T++Nz/A5Q6C9IuX2
 github.com/apparentlymart/go-textseg v1.0.0/go.mod h1:z96Txxhf3xSFMPmb5X/1W05FF/Nj9VFpLOpjS5yuumk=
 github.com/apparentlymart/go-textseg/v13 v13.0.0 h1:Y+KvPE1NYz0xl601PVImeQfFyEy6iT90AvPUL1NNfNw=
 github.com/apparentlymart/go-textseg/v13 v13.0.0/go.mod h1:ZK2fH7c4NqDTLtiYLvIkEghdlcqw7yxLeM89kiTRPUo=
-github.com/aquasecurity/defsec v0.30.2 h1:9zBVN2J3QOAAtuyvE/Qt+abtEyozR8ylw4N59bfZ+CQ=
-github.com/aquasecurity/defsec v0.30.2/go.mod h1:ISnJXXbCr5p8JbcW6lN87zQTEs4zx71hELdvvNBklpg=
+github.com/aquasecurity/defsec v0.30.3 h1:d6B5Y0q2LcQ4EHyyowREPvxrcDzpYNsj1xmLqdfgQBo=
+github.com/aquasecurity/defsec v0.30.3/go.mod h1:ISnJXXbCr5p8JbcW6lN87zQTEs4zx71hELdvvNBklpg=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6/go.mod h1:grANhF5doyWs3UAsr3K4I6qtAmlQcZDesFNEHPZAzj8=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=

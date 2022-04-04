@@ -89,6 +89,12 @@ func getStatusOrSeverity(status scan.Status, severity severity.Severity) string 
 	}
 }
 
+type simpleLocation struct {
+	filename   string
+	lineInfo   string
+	moduleName string
+}
+
 func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult) {
 
 	first := group.Results()[0]
@@ -127,8 +133,41 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 	}
 
 	filename := innerRange.GetFilename()
-	if relative, err := filepath.Rel(b.BaseDir(), filename); err == nil && !strings.Contains(relative, "..") {
-		filename = relative
+	var via []simpleLocation
+	if innerRange.GetSourcePrefix() == "" || strings.HasPrefix(innerRange.GetSourcePrefix(), ".") {
+		if relative, err := filepath.Rel(b.BaseDir(), filename); err == nil && !strings.Contains(relative, "..") {
+			filename = relative
+		}
+	} else {
+		m := first.Metadata()
+		mod := &m
+		lastFilename := m.Range().GetFilename()
+		for {
+			mod = mod.Parent()
+			if mod == nil {
+				break
+			}
+			parentRange := mod.Range()
+			parentFilename := parentRange.GetFilename()
+			if parentFilename == lastFilename {
+				continue
+			}
+			lastFilename = parentFilename
+			if parentRange.GetSourcePrefix() == "" || strings.HasPrefix(parentRange.GetSourcePrefix(), ".") {
+				if parentRelative, err := filepath.Rel(b.BaseDir(), parentFilename); err == nil && !strings.Contains(parentRelative, "..") {
+					parentLineInfo := fmt.Sprintf("Lines %d-%d", parentRange.GetStartLine(), parentRange.GetEndLine())
+					if !parentRange.IsMultiLine() {
+						parentLineInfo = fmt.Sprintf("Line %d", parentRange.GetStartLine())
+					}
+					via = append(via, simpleLocation{
+						filename:   parentRelative,
+						lineInfo:   parentLineInfo,
+						moduleName: mod.Reference().String(),
+					})
+				}
+			}
+
+		}
 	}
 
 	_ = tml.Fprintf(
@@ -138,7 +177,7 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 	)
 
 	if first.Metadata().Range().GetStartLine() == 0 {
-		if filename := first.Metadata().Range().GetFilename(); filename != "" {
+		if filename != "" {
 			_ = tml.Fprintf(
 				w,
 				"<dim>%s%s%s</dim>\n  %s",
@@ -155,6 +194,16 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 			filename,
 			lineInfo,
 		)
+		for i, v := range via {
+			_ = tml.Fprintf(
+				w,
+				" %s<dim>via </dim><italic>%s <dim>%s (%s)\n",
+				strings.Repeat(" ", i+1),
+				v.filename,
+				v.lineInfo,
+				v.moduleName,
+			)
+		}
 
 		_ = tml.Fprintf(
 			w,
