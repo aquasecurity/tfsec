@@ -91,14 +91,20 @@ var rootCmd = &cobra.Command{
 		}
 
 		root := "/"
+		var rel string
 		if vol := filepath.VolumeName(dir); vol != "" {
 			root = vol
+			if len(dir) <= len(vol)+1 {
+				rel = "."
+			} else {
+				rel = dir[len(vol)+1:]
+			}
+		} else {
+			rel, err = filepath.Rel(root, dir)
+			if err != nil {
+				failf("failed to set relative path: %s", err)
+			}
 		}
-		rel, err := filepath.Rel(root, dir)
-		if err != nil {
-			failf("failed to set relative path: %s", err)
-		}
-		rel = filepath.ToSlash(rel)
 		osFS := extrafs.OSDir(root)
 
 		scnr := scanner.New(options...)

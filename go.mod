@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.4
 	github.com/Masterminds/semver v1.5.0
-	github.com/aquasecurity/defsec v0.31.1
+	github.com/aquasecurity/defsec v0.31.2
 	github.com/hashicorp/go-version v1.4.0
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/liamg/clinch v1.5.6
@@ -19,7 +19,7 @@ require (
 )
 
 require (
-	github.com/liamg/memoryfs v0.0.3
+	github.com/liamg/memoryfs v1.2.0
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-runewidth v0.0.12 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
