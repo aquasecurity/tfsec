@@ -9,7 +9,6 @@ linters:
     - ineffassign
     - staticcheck
     - structcheck
-    - typecheck
     - unused
     - varcheck
     - bodyclose
@@ -30,3 +29,8 @@ linters-settings:
     disabled-checks:
       - singleCaseSwitch
 
+issues:
+  exclude-rules:
+    - path: "."
+      linters:
+        - typecheck
