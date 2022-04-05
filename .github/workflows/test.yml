@@ -1,4 +1,4 @@
-name: tfsec build
+name: tests
 
 on:
   pull_request:
@@ -28,5 +28,3 @@ jobs:
     - name: Run sanity check
       run: make sanity
 
-    - name: Run typo checks
-      run: make typos
