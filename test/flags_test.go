@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
 
@@ -332,13 +331,10 @@ func Test_Flag_ConfigFile(t *testing.T) {
 }
 
 func Test_Flag_Debug(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("awkward to test on windows")
-	}
 	// use json to ensure all debug goes to stderr and does not break json format
 	for _, flag := range []string{"--debug", "--verbose"} {
 		t.Run(flag, func(t *testing.T) {
-			out, err, exit := execWithArgs("./test/testdata/pass", "-f", "json", flag)
+			out, err, exit := runWithArgs("./testdata/pass", "-f", "json", flag)
 			_ = parseJSON(t, out)
 			assert.Contains(t, err, "\n[debug:")
 			assert.Equal(t, 0, exit)

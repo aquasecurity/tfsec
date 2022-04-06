@@ -197,7 +197,7 @@ func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]scanner.Option,
 	}
 
 	if debug {
-		options = append(options, scanner.OptionWithDebug(os.Stderr))
+		options = append(options, scanner.OptionWithDebug(cmd.ErrOrStderr()))
 	}
 
 	if printRegoInput {

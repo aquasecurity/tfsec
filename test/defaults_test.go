@@ -11,7 +11,7 @@ import (
 )
 
 func Test_Failure(t *testing.T) {
-	_, _, exit := runWithArgs("./testdata/fail")
+	_, _, exit := runWithArgs("./testdata/fail", "--debug")
 	assert.Equal(t, 1, exit)
 }
 
