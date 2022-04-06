@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"runtime"
 	"testing"
 
@@ -11,8 +12,14 @@ import (
 )
 
 func Test_Failure(t *testing.T) {
-	_, _, exit := runWithArgs("./testdata/fail", "--debug")
+	out, err, exit := runWithArgs("./testdata/fail", "--debug")
 	assert.Equal(t, 1, exit)
+	if t.Failed() {
+		fmt.Println("StdErr:")
+		fmt.Println(err)
+		fmt.Println("StdOut:")
+		fmt.Println(out)
+	}
 }
 
 func Test_Pass(t *testing.T) {
