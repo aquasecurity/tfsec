@@ -7,7 +7,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -19,20 +18,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func convertArgs(args []string) []string {
-	var converted []string
-	for _, arg := range args {
-		if strings.HasPrefix(arg, ".") {
-			converted = append(converted, strings.ReplaceAll(arg, "/", string(filepath.Separator)))
-		} else {
-			converted = append(converted, arg)
-		}
-	}
-	return converted
-}
-
 func runWithArgs(args ...string) (stdout string, stderr string, exit int) {
-	args = convertArgs(args)
 	sOut := bytes.NewBuffer([]byte{})
 	sErr := bytes.NewBuffer([]byte{})
 	rootCmd := cmd.Root()
