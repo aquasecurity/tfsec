@@ -177,7 +177,7 @@ func findDirectory(args []string) (string, error) {
 	}
 
 	if len(args) == 1 {
-		dir, err = filepath.Abs(args[0])
+		dir, err = filepath.Abs(filepath.Clean(args[0]))
 		if err != nil {
 			return "", fmt.Errorf("could not determine absolute path for provided path: %w", err)
 		}

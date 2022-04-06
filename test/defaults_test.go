@@ -30,7 +30,7 @@ func Test_GroupedResults(t *testing.T) {
 
 func Test_BadHCL(t *testing.T) {
 	_, err, exit := runWithArgs("./testdata/badhcl")
-	assert.Contains(t, err, "badhcl/main.tf:1,29-30")
+	assert.Contains(t, err, "main.tf:1,29-30")
 	assert.Equal(t, 1, exit)
 }
 
