@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/aquasecurity/defsec/pkg/formatters"
 	"github.com/aquasecurity/defsec/pkg/providers"
 	"github.com/aquasecurity/defsec/pkg/scan"
@@ -15,14 +17,14 @@ import (
 	"github.com/liamg/tml"
 )
 
-func output(baseFilename string, formats []string, dir string, results []scan.Result, metrics scanner.Metrics) error {
+func output(cmd *cobra.Command, baseFilename string, formats []string, dir string, results []scan.Result, metrics scanner.Metrics) error {
 	if baseFilename == "" && len(formats) > 1 {
 		return fmt.Errorf("you must specify a base output filename with --out if you want to use multiple formats")
 	}
 
 	var files []string
 	for _, format := range formats {
-		if filename, err := outputFormat(len(formats) > 1, baseFilename, format, dir, results, metrics); err != nil {
+		if filename, err := outputFormat(cmd.OutOrStdout(), len(formats) > 1, baseFilename, format, dir, results, metrics); err != nil {
 			return err
 		} else if filename != "" {
 			files = append(files, filename)
@@ -30,7 +32,7 @@ func output(baseFilename string, formats []string, dir string, results []scan.Re
 	}
 
 	if len(files) > 0 {
-		_ = tml.Fprintf(os.Stderr, "<bold>%d file(s) written: %s\n", len(files), strings.Join(files, ", "))
+		_ = tml.Fprintf(cmd.ErrOrStderr(), "<bold>%d file(s) written: %s\n", len(files), strings.Join(files, ", "))
 	}
 
 	return nil
@@ -64,7 +66,7 @@ func gatherLinks(result scan.Result) []string {
 	return append(docsLink, links...)
 }
 
-func outputFormat(addExtension bool, baseFilename string, format string, dir string, results scan.Results, metrics scanner.Metrics) (string, error) {
+func outputFormat(w io.Writer, addExtension bool, baseFilename string, format string, dir string, results scan.Results, metrics scanner.Metrics) (string, error) {
 
 	factory := formatters.New().
 		WithDebugEnabled(debug).
@@ -80,7 +82,7 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 	var makeRelative bool
 
 	switch strings.ToLower(format) {
-	case "", "default":
+	case "lovely", "default":
 		alsoStdout = true
 		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics, conciseOutput))
 	case "json":
@@ -123,11 +125,13 @@ func outputFormat(addExtension bool, baseFilename string, format string, dir str
 		}
 		defer func() { _ = f.Close() }()
 		if alsoStdout {
-			m := io.MultiWriter(f, os.Stdout)
+			m := io.MultiWriter(f, w)
 			factory.WithWriter(m)
 		} else {
 			factory.WithWriter(f)
 		}
+	} else {
+		factory.WithWriter(w)
 	}
 
 	return outputPath, factory.Build().Output(results)

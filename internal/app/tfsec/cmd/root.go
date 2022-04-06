@@ -18,128 +18,147 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Root() *cobra.Command {
-	return rootCmd
+type ErrorWithExitCode struct {
+	inner error
+	code  int
 }
 
-var rootCmd = &cobra.Command{
-	Use:              "tfsec [directory]",
-	Short:            "tfsec is a terraform security scanner",
-	Long:             `tfsec is a simple tool to detect potential security vulnerabilities in your terraformed infrastructure.`,
-	PersistentPreRun: prerun,
-	RunE: func(_ *cobra.Command, args []string) error {
+func (e ErrorWithExitCode) Error() string {
+	if e.inner == nil {
+		return ""
+	}
+	return e.inner.Error()
+}
 
-		var dir string
-		var err error
+func (e ErrorWithExitCode) Code() int {
+	return e.code
+}
 
-		if len(args) == 1 {
-			dir, err = filepath.Abs(args[0])
+func Root() *cobra.Command {
+	rootCmd := &cobra.Command{
+		Use:               "tfsec [directory]",
+		Short:             "tfsec is a terraform security scanner",
+		Long:              `tfsec is a simple tool to detect potential security vulnerabilities in your terraformed infrastructure.`,
+		PersistentPreRunE: prerun,
+		SilenceErrors:     true,
+		RunE: func(cmd *cobra.Command, args []string) error {
+
+			// we handle our own errors, and usage does not need to be shown if we've got this far
+			cmd.SilenceUsage = true
+
+			var dir string
+			var err error
+
+			workingDir, err := os.Getwd()
 			if err != nil {
-				failf("Error determining absolute path for provided path: %s", err)
+				return fmt.Errorf("could not determine current directory: %s", err)
 			}
-		} else {
-			dir, err = os.Getwd()
-			if err != nil {
-				failf("Error determining current directory: %s", err)
-			}
-		}
 
-		if dirInfo, err := os.Stat(dir); err != nil {
-			failf("Error accessing provided path: %s", err)
-		} else if !dirInfo.IsDir() {
-			failf("The provided path is not a dir, exiting")
-		}
-
-		if len(tfvarsPaths) == 0 && unusedTfvarsPresent(dir) {
-			_, _ = fmt.Fprintf(os.Stderr, "WARNING: A tfvars file was found but not automatically used. Did you mean to specify the --tfvars-file flag?\n")
-		}
-
-		options, err := configureOptions()
-		if err != nil {
-			failf("invalid option: %s", err)
-		}
-
-		if configFile == "" {
-			configDir := filepath.Join(dir, ".tfsec")
-			for _, filename := range []string{"config.json", "config.yml", "config.yaml"} {
-				path := filepath.Join(configDir, filename)
-				if _, err := os.Stat(path); err == nil {
-					configFile = path
-					break
+			if len(args) == 1 {
+				dir, err = filepath.Abs(args[0])
+				if err != nil {
+					return fmt.Errorf("could not determine absolute path for provided path: %s", err)
 				}
-			}
-		}
-		if configFile != "" {
-			if conf, err := config.LoadConfig(configFile); err == nil {
-				if !minVersionSatisfied(conf) {
-					return fmt.Errorf("minimum tfsec version requirement not satisfied")
-				}
-				if conf.MinimumSeverity != "" {
-					options = append(options, scanner.OptionWithMinimumSeverity(severity.StringToSeverity(conf.MinimumSeverity)))
-				}
-				options = append(options, scanner.OptionWithSeverityOverrides(conf.SeverityOverrides))
-				options = append(options, scanner.OptionIncludeRules(conf.IncludedChecks))
-				options = append(options, scanner.OptionExcludeRules(append(conf.ExcludedChecks, excludedRuleIDs)))
-			}
-		}
-
-		if customCheckDir == "" {
-			customCheckDir = filepath.Join(dir, ".tfsec")
-		}
-		if err := custom.Load(customCheckDir); err != nil {
-			return fmt.Errorf("failed to load custom checks from %s: %w", customCheckDir, err)
-		}
-
-		root := "/"
-		var rel string
-		if vol := filepath.VolumeName(dir); vol != "" {
-			root = vol
-			if len(dir) <= len(vol)+1 {
-				rel = "."
 			} else {
-				rel = dir[len(vol)+1:]
+				dir = workingDir
 			}
-		} else {
-			rel, err = filepath.Rel(root, dir)
+
+			if dirInfo, err := os.Stat(dir); err != nil {
+				return fmt.Errorf("failed to access provided path: %s", err)
+			} else if !dirInfo.IsDir() {
+				return fmt.Errorf("provided path is not a dir")
+			}
+
+			if len(tfvarsPaths) == 0 && unusedTfvarsPresent(dir) {
+				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "WARNING: A tfvars file was found but not automatically used. Did you mean to specify the --tfvars-file flag?\n")
+			}
+
+			root, rel, err := splitRoot(dir)
 			if err != nil {
-				failf("failed to set relative path: %s", err)
+				return err
 			}
-		}
-		osFS := extrafs.OSDir(root)
 
-		scnr := scanner.New(options...)
-		results, metrics, err := scnr.ScanFSWithMetrics(context.TODO(), osFS, rel)
-		if err != nil {
-			failf("Scan error: %s", err)
-		}
-
-		if printRegoInput {
-			os.Exit(0)
-		}
-
-		if runStatistics {
-			statistics := executor.Statistics{}
-			for _, result := range results {
-				statistics = executor.AddStatisticsCount(statistics, result)
+			options, err := configureOptions(cmd, root)
+			if err != nil {
+				return fmt.Errorf("invalid option: %s", err)
 			}
-			statistics.PrintStatisticsTable()
+
+			if configFile == "" {
+				configDir := filepath.Join(dir, ".tfsec")
+				for _, filename := range []string{"config.json", "config.yml", "config.yaml"} {
+					path := filepath.Join(configDir, filename)
+					if _, err := os.Stat(path); err == nil {
+						configFile = path
+						break
+					}
+				}
+			}
+			if configFile != "" {
+				if conf, err := config.LoadConfig(configFile); err == nil {
+					if !minVersionSatisfied(conf) {
+						return fmt.Errorf("minimum tfsec version requirement not satisfied")
+					}
+					if conf.MinimumSeverity != "" {
+						options = append(options, scanner.OptionWithMinimumSeverity(severity.StringToSeverity(conf.MinimumSeverity)))
+					}
+					options = append(options, scanner.OptionWithSeverityOverrides(conf.SeverityOverrides))
+					options = append(options, scanner.OptionIncludeRules(conf.IncludedChecks))
+					options = append(options, scanner.OptionExcludeRules(append(conf.ExcludedChecks, excludedRuleIDs)))
+				}
+			}
+
+			if customCheckDir == "" {
+				customCheckDir = filepath.Join(dir, ".tfsec")
+			}
+			if err := custom.Load(customCheckDir); err != nil {
+				return fmt.Errorf("failed to load custom checks from %s: %w", customCheckDir, err)
+			}
+
+			osFS := extrafs.OSDir(root)
+
+			scnr := scanner.New(options...)
+			results, metrics, err := scnr.ScanFSWithMetrics(context.TODO(), osFS, rel)
+			if err != nil {
+				return fmt.Errorf("scan failed: %s", err)
+			}
+
+			if printRegoInput {
+				return nil
+			}
+
+			if runStatistics {
+				statistics := executor.Statistics{}
+				for _, result := range results {
+					statistics = executor.AddStatisticsCount(statistics, result)
+				}
+				statistics.PrintStatisticsTable(cmd.ErrOrStderr())
+				return nil
+			}
+
+			formats := strings.Split(format, ",")
+			if err := output(cmd, outputFlag, formats, rel, results, metrics); err != nil {
+				return fmt.Errorf("failed to write output: %s", err)
+			}
+
+			// Soft fail always takes precedence. If set, only execution errors
+			// produce a failure exit code (1).
+			if softFail {
+				return nil
+			}
+
+			exitCode := getDetailedExitCode(metrics)
+			if exitCode != 0 {
+				return &ErrorWithExitCode{
+					code: exitCode,
+				}
+			}
+
 			return nil
-		}
+		},
+	}
 
-		formats := strings.Split(format, ",")
-		if err := output(outputFlag, formats, rel, results, metrics); err != nil {
-			failf("Failed to write output: %s", err)
-		}
-
-		// Soft fail always takes precedence. If set, only execution errors
-		// produce a failure exit code (1).
-		if softFail {
-			return nil
-		}
-
-		os.Exit(getDetailedExitCode(metrics))
-		return nil
-	},
+	configureFlags(rootCmd)
+	return rootCmd
 }
 
 func minVersionSatisfied(conf *config.Config) bool {
@@ -157,11 +176,6 @@ func minVersionSatisfied(conf *config.Config) bool {
 		return true
 	}
 	return minimum.Equal(actual) || minimum.LessThan(actual)
-}
-
-func failf(format string, a ...interface{}) {
-	_, _ = fmt.Fprintf(os.Stderr, format+"\n", a...)
-	os.Exit(1)
 }
 
 func getDetailedExitCode(metrics scanner.Metrics) int {
@@ -187,4 +201,24 @@ func unusedTfvarsPresent(checkDir string) bool {
 		return true
 	}
 	return false
+}
+
+func splitRoot(dir string) (string, string, error) {
+	root := "/"
+	var rel string
+	if vol := filepath.VolumeName(dir); vol != "" {
+		root = vol
+		if len(dir) <= len(vol)+1 {
+			rel = "."
+		} else {
+			rel = dir[len(vol)+1:]
+		}
+	} else {
+		var err error
+		rel, err = filepath.Rel(root, dir)
+		if err != nil {
+			return "", "", fmt.Errorf("failed to set relative path: %s", err)
+		}
+	}
+	return root, rel, nil
 }

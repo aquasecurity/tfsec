@@ -30,21 +30,21 @@ func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b form
 			"":                tml.Sprintf("<white> UNKNOWN</white>"),
 		}
 
-		if len(results.GetFailed()) == 0 {
-			if !conciseOutput {
-				printMetrics(b.Writer(), metrics)
-			}
-
-			_ = tml.Fprintf(b.Writer(), "\n<green><bold>No problems detected!\n\n")
-			return nil
-		}
-
 		filtered := results.GetFailed()
 		if b.IncludePassed() {
 			filtered = append(filtered, results.GetPassed()...)
 		}
 		if b.IncludeIgnored() {
 			filtered = append(filtered, results.GetIgnored()...)
+		}
+
+		if len(filtered) == 0 {
+			if !conciseOutput {
+				printMetrics(b.Writer(), metrics)
+			}
+
+			_ = tml.Fprintf(b.Writer(), "\n<green><bold>No problems detected!\n\n")
+			return nil
 		}
 
 		groups, err := b.GroupResults(filtered)
@@ -188,7 +188,7 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 				filename,
 			)
 		}
-	} else if first.Status() != scan.StatusPassed {
+	} else {
 		_ = tml.Fprintf(
 			w,
 			" <italic>%s <dim>%s\n",
@@ -227,14 +227,14 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 	}
 
 	if group.Len() > 1 {
-		_ = tml.Printf("  <dim>Individual Causes\n")
+		_ = tml.Fprintf(w, "  <dim>Individual Causes\n")
 		for _, result := range group.Results() {
 			m := result.Metadata()
 			metadata := &m
 			for metadata.Parent() != nil {
 				metadata = metadata.Parent()
 			}
-			_ = tml.Printf("  <dim>- %s (%s)\n", metadata.Range(), metadata.Reference())
+			_ = tml.Fprintf(w, "  <dim>- %s (%s)\n", metadata.Range(), metadata.Reference())
 		}
 		_ = tml.Fprintf(
 			w,
@@ -254,10 +254,10 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 
 func printMetadata(w io.Writer, result scan.Result, links []string, isRego bool) {
 	if isRego {
-		_ = tml.Fprintf(w, "  <dim>Rego Package</dim> <italic>%s\n", result.RegoNamespace())
-		_ = tml.Fprintf(w, "  <dim>   Rego Rule</dim> <italic>%s", result.RegoRule())
+		_ = tml.Fprintf(w, "  <dim>Rego Package</dim><italic> %s\n", result.RegoNamespace())
+		_ = tml.Fprintf(w, "  <dim>   Rego Rule</dim><italic> %s", result.RegoRule())
 	} else {
-		_ = tml.Fprintf(w, "  <dim>        ID</dim> <italic>%s\n", result.Rule().LongID())
+		_ = tml.Fprintf(w, "  <dim>        ID</dim><italic> %s\n", result.Rule().LongID())
 		if result.Rule().Impact != "" {
 			_ = tml.Fprintf(w, "  <dim>    Impact</dim> %s\n", result.Rule().Impact)
 		}
