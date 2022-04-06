@@ -1,4 +1,3 @@
-resource "special" "pass" {
+resource "pass" "pass" {
   # this should always pass!
-  ok = true
 }
