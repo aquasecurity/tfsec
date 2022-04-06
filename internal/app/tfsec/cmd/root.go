@@ -59,6 +59,10 @@ func Root() *cobra.Command {
 				return err
 			}
 
+			if debug {
+				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Paths: args=%s dir=%s root=%s rel=%s\n", args, dir, root, rel)
+			}
+
 			options, err := configureOptions(cmd, root, dir)
 			if err != nil {
 				return fmt.Errorf("invalid option: %w", err)
@@ -90,11 +94,17 @@ func Root() *cobra.Command {
 
 			exitCode := getDetailedExitCode(metrics)
 			if exitCode != 0 && !softFail {
+				if debug {
+					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Exit code: %d\n", exitCode)
+				}
 				return &ExitCodeError{
 					code: exitCode,
 				}
 			}
 
+			if debug {
+				_, _ = fmt.Fprint(cmd.ErrOrStderr(), "All done.\n")
+			}
 			return nil
 		},
 	}
