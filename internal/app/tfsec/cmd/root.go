@@ -102,9 +102,6 @@ func Root() *cobra.Command {
 				}
 			}
 
-			if debug {
-				_, _ = fmt.Fprint(cmd.ErrOrStderr(), "All done.\n")
-			}
 			return nil
 		},
 	}

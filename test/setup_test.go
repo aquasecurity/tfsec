@@ -22,7 +22,11 @@ import (
 func convertArgs(args []string) []string {
 	var converted []string
 	for _, arg := range args {
-		converted = append(converted, strings.ReplaceAll(arg, "/", string(filepath.Separator)))
+		if strings.HasPrefix(arg, ".") {
+			converted = append(converted, strings.ReplaceAll(arg, "/", string(filepath.Separator)))
+		} else {
+			converted = append(converted, arg)
+		}
 	}
 	return converted
 }
