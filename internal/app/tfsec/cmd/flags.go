@@ -52,75 +52,40 @@ var regoPolicyDir string
 var printRegoInput bool
 var noModuleDownloads bool
 
-func resetFlagsToDefaults() {
-	showVersion = false
-	runUpdate = false
-	disableColours = false
-	format = "lovely"
-	softFail = false
-	filterResults = ""
-	excludedRuleIDs = ""
-	tfvarsPaths = nil
-	excludePaths = nil
-	outputFlag = ""
-	customCheckDir = ""
-	configFile = ""
-	conciseOutput = false
-	excludeDownloaded = false
-	includePassed = false
-	includeIgnored = false
-	allDirs = false
-	migrateIgnores = false
-	runStatistics = false
-	ignoreHCLErrors = false
-	stopOnCheckError = false
-	workspace = "default"
-	singleThreadedMode = false
-	disableGrouping = false
-	debug = false
-	minimumSeverity = ""
-	disableIgnores = false
-	regoPolicyDir = ""
-	printRegoInput = false
-	noModuleDownloads = false
-}
-
 func configureFlags(cmd *cobra.Command) {
 
-	resetFlagsToDefaults()
-
-	cmd.Flags().BoolVar(&singleThreadedMode, "single-thread", singleThreadedMode, "Run checks using a single thread")
-	cmd.Flags().BoolVarP(&disableGrouping, "disable-grouping", "G", disableGrouping, "Disable grouping of similar results")
-	cmd.Flags().BoolVar(&ignoreHCLErrors, "ignore-hcl-errors", ignoreHCLErrors, "Stop and report an error if an HCL parse error is encountered")
-	cmd.Flags().BoolVar(&disableColours, "no-colour", disableColours, "Disable coloured output")
-	cmd.Flags().BoolVar(&disableColours, "no-color", disableColours, "Disable colored output (American style!)")
-	cmd.Flags().BoolVarP(&showVersion, "version", "v", showVersion, "Show version information and exit")
-	cmd.Flags().BoolVar(&runUpdate, "update", runUpdate, "Update to latest version")
-	cmd.Flags().BoolVar(&migrateIgnores, "migrate-ignores", migrateIgnores, "Migrate ignore codes to the new ID structure")
-	cmd.Flags().StringVarP(&format, "format", "f", format, "Select output format: lovely, json, csv, checkstyle, junit, sarif. To use multiple formats, separate with a comma and specify a base output filename with --out. A file will be written for each type. The first format will additionally be written stdout.")
-	cmd.Flags().StringVarP(&excludedRuleIDs, "exclude", "e", excludedRuleIDs, "Provide comma-separated list of rule IDs to exclude from run.")
-	cmd.Flags().StringVar(&filterResults, "filter-results", filterResults, "Filter results to return specific checks only (supports comma-delimited input).")
-	cmd.Flags().BoolVarP(&softFail, "soft-fail", "s", softFail, "Runs checks but suppresses error code")
-	cmd.Flags().StringSliceVar(&tfvarsPaths, "tfvars-file", tfvarsPaths, "Path to .tfvars file, can be used multiple times and evaluated in order of specification")
-	cmd.Flags().StringSliceVar(&excludePaths, "exclude-path", excludePaths, "Folder path to exclude, can be used multiple times and evaluated in order of specification")
-	cmd.Flags().StringVarP(&outputFlag, "out", "O", outputFlag, "Set output file. This filename will have a format descriptor appended if multiple formats are specified with --format")
-	cmd.Flags().StringVar(&customCheckDir, "custom-check-dir", customCheckDir, "Explicitly the custom checks dir location")
-	cmd.Flags().StringVar(&configFile, "config-file", configFile, "Config file to use during run")
-	cmd.Flags().BoolVar(&debug, "debug", debug, "Enable debug logging (same as verbose)")
-	cmd.Flags().BoolVar(&debug, "verbose", debug, "Enable verbose logging (same as debug)")
-	cmd.Flags().BoolVar(&conciseOutput, "concise-output", conciseOutput, "Reduce the amount of output and no statistics")
-	cmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", excludeDownloaded, "Remove results for downloaded modules in .terraform folder")
-	cmd.Flags().BoolVar(&includePassed, "include-passed", includePassed, "Include passed checks in the result output")
-	cmd.Flags().BoolVar(&includeIgnored, "include-ignored", includeIgnored, "Include ignored checks in the result output")
-	cmd.Flags().BoolVar(&disableIgnores, "no-ignores", disableIgnores, "Do not apply any ignore rules - normally ignored checks will fail")
-	cmd.Flags().BoolVar(&allDirs, "force-all-dirs", allDirs, "Don't search for tf files, include everything below provided directory.")
-	cmd.Flags().BoolVar(&runStatistics, "run-statistics", runStatistics, "View statistics table of current findings.")
-	cmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", stopOnCheckError, "Allow panics to propagate up from rule checking")
-	cmd.Flags().StringVarP(&workspace, "workspace", "w", workspace, "Specify a workspace for ignore limits")
-	cmd.Flags().StringVarP(&minimumSeverity, "minimum-severity", "m", minimumSeverity, "The minimum severity to report. One of CRITICAL, HIGH, MEDIUM, LOW.")
-	cmd.Flags().StringVar(&regoPolicyDir, "rego-policy-dir", regoPolicyDir, "Directory to load rego policies from (recursively).")
-	cmd.Flags().BoolVar(&printRegoInput, "print-rego-input", printRegoInput, "Print a JSON representation of the input supplied to rego policies.")
-	cmd.Flags().BoolVar(&noModuleDownloads, "no-module-downloads", noModuleDownloads, "Do not download remote modules.")
+	cmd.Flags().BoolVar(&singleThreadedMode, "single-thread", false, "Run checks using a single thread")
+	cmd.Flags().BoolVarP(&disableGrouping, "disable-grouping", "G", false, "Disable grouping of similar results")
+	cmd.Flags().BoolVar(&ignoreHCLErrors, "ignore-hcl-errors", false, "Do not report an error if an HCL parse error is encountered")
+	cmd.Flags().BoolVar(&disableColours, "no-colour", false, "Disable coloured output")
+	cmd.Flags().BoolVar(&disableColours, "no-color", false, "Disable colored output (American style!)")
+	cmd.Flags().BoolVarP(&showVersion, "version", "v", false, "Show version information and exit")
+	cmd.Flags().BoolVar(&runUpdate, "update", false, "Update to latest version")
+	cmd.Flags().BoolVar(&migrateIgnores, "migrate-ignores", false, "Migrate ignore codes to the new ID structure")
+	cmd.Flags().StringVarP(&format, "format", "f", "lovely", "Select output format: lovely, json, csv, checkstyle, junit, sarif. To use multiple formats, separate with a comma and specify a base output filename with --out. A file will be written for each type. The first format will additionally be written stdout.")
+	cmd.Flags().StringVarP(&excludedRuleIDs, "exclude", "e", "", "Provide comma-separated list of rule IDs to exclude from run.")
+	cmd.Flags().StringVar(&filterResults, "filter-results", "", "Filter results to return specific checks only (supports comma-delimited input).")
+	cmd.Flags().BoolVarP(&softFail, "soft-fail", "s", false, "Runs checks but suppresses error code")
+	cmd.Flags().StringSliceVar(&tfvarsPaths, "tfvars-file", nil, "Path to .tfvars file, can be used multiple times and evaluated in order of specification")
+	cmd.Flags().StringSliceVar(&excludePaths, "exclude-path", nil, "Folder path to exclude, can be used multiple times and evaluated in order of specification")
+	cmd.Flags().StringVarP(&outputFlag, "out", "O", "", "Set output file. This filename will have a format descriptor appended if multiple formats are specified with --format")
+	cmd.Flags().StringVar(&customCheckDir, "custom-check-dir", "", "Explicitly the custom checks dir location")
+	cmd.Flags().StringVar(&configFile, "config-file", "", "Config file to use during run")
+	cmd.Flags().BoolVar(&debug, "debug", false, "Enable debug logging (same as verbose)")
+	cmd.Flags().BoolVar(&debug, "verbose", false, "Enable verbose logging (same as debug)")
+	cmd.Flags().BoolVar(&conciseOutput, "concise-output", false, "Reduce the amount of output and no statistics")
+	cmd.Flags().BoolVar(&excludeDownloaded, "exclude-downloaded-modules", false, "Remove results for downloaded modules in .terraform folder")
+	cmd.Flags().BoolVar(&includePassed, "include-passed", false, "Include passed checks in the result output")
+	cmd.Flags().BoolVar(&includeIgnored, "include-ignored", false, "Include ignored checks in the result output")
+	cmd.Flags().BoolVar(&disableIgnores, "no-ignores", false, "Do not apply any ignore rules - normally ignored checks will fail")
+	cmd.Flags().BoolVar(&allDirs, "force-all-dirs", false, "Don't search for tf files, include everything below provided directory.")
+	cmd.Flags().BoolVar(&runStatistics, "run-statistics", false, "View statistics table of current findings.")
+	cmd.Flags().BoolVarP(&stopOnCheckError, "allow-checks-to-panic", "p", false, "Allow panics to propagate up from rule checking")
+	cmd.Flags().StringVarP(&workspace, "workspace", "w", "default", "Specify a workspace for ignore limits")
+	cmd.Flags().StringVarP(&minimumSeverity, "minimum-severity", "m", "", "The minimum severity to report. One of CRITICAL, HIGH, MEDIUM, LOW.")
+	cmd.Flags().StringVar(&regoPolicyDir, "rego-policy-dir", "", "Directory to load rego policies from (recursively).")
+	cmd.Flags().BoolVar(&printRegoInput, "print-rego-input", false, "Print a JSON representation of the input supplied to rego policies.")
+	cmd.Flags().BoolVar(&noModuleDownloads, "no-module-downloads", false, "Do not download remote modules.")
 
 	_ = cmd.Flags().MarkHidden("allow-checks-to-panic")
 }
