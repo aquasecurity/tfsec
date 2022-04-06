@@ -30,20 +30,20 @@ func prerun(cmd *cobra.Command, args []string) error {
 		} else {
 			_, _ = fmt.Fprintln(cmd.OutOrStdout(), version.Version)
 		}
-		return &ErrorWithExitCode{code: 0}
+		return &ExitCodeError{code: 0}
 	}
 
 	if runUpdate {
 		updateVersion, err := updater.Update()
 		if err != nil {
-			return fmt.Errorf("update failed: %s", err)
+			return fmt.Errorf("update failed: %w", err)
 		}
 		if updateVersion == "" {
 			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "You are already running the latest version.")
 		} else {
 			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Successfully updated to %s.\n", updateVersion)
 		}
-		return &ErrorWithExitCode{code: 0}
+		return &ExitCodeError{code: 0}
 	}
 
 	if migrateIgnores {
@@ -56,19 +56,19 @@ func prerun(cmd *cobra.Command, args []string) error {
 			dir, err = os.Getwd()
 		}
 		if err != nil {
-			return fmt.Errorf("directory was not provided, and tfsec encountered an error trying to determine the current working directory: %s", err)
+			return fmt.Errorf("directory was not provided, and tfsec encountered an error trying to determine the current working directory: %w", err)
 		}
 
 		stats, err := ignores.RunMigration(dir)
 		if err != nil {
-			return fmt.Errorf("migration failed: %s", err)
+			return fmt.Errorf("migration failed: %w", err)
 		}
 		if len(stats) > 0 {
 			for _, stat := range stats {
 				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%s migrated from %s => %s\n", stat.Filename, stat.FromCode, stat.ToCode)
 			}
 		}
-		return &ErrorWithExitCode{code: 0}
+		return &ExitCodeError{code: 0}
 	}
 
 	return nil

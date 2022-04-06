@@ -13,7 +13,7 @@ func main() {
 		if err.Error() != "" {
 			fmt.Printf("Error: %s\n", err)
 		}
-		var exitErr *cmd.ErrorWithExitCode
+		var exitErr *cmd.ExitCodeError
 		if errors.As(err, &exitErr) {
 			os.Exit(exitErr.Code())
 		}

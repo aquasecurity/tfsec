@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/aquasecurity/tfsec/internal/pkg/custom"
+
 	"github.com/aquasecurity/defsec/pkg/scan"
 
 	"github.com/spf13/cobra"
@@ -15,6 +17,7 @@ import (
 	"github.com/aquasecurity/defsec/pkg/severity"
 
 	"github.com/aquasecurity/defsec/pkg/state"
+	"github.com/aquasecurity/tfsec/internal/pkg/config"
 	"github.com/aquasecurity/tfsec/internal/pkg/legacy"
 )
 
@@ -149,7 +152,29 @@ func makePathRelativeToFSRoot(fsRoot, path string) (string, error) {
 	return dir, nil
 }
 
-func configureOptions(cmd *cobra.Command, fsRoot string) ([]scanner.Option, error) {
+func excludeFunc(excludePaths []string) func(results scan.Results) scan.Results {
+	return func(results scan.Results) scan.Results {
+		for i, result := range results {
+			rng := result.Range()
+			if rng == nil {
+				continue
+			}
+			for _, exclude := range excludePaths {
+				exclude = fmt.Sprintf("%c%s%[1]c", filepath.Separator, filepath.Clean(exclude))
+				if strings.Contains(
+					fmt.Sprintf("%c%s%[1]c", filepath.Separator, rng.GetFilename()),
+					exclude,
+				) {
+					results[i].OverrideStatus(scan.StatusIgnored)
+					break
+				}
+			}
+		}
+		return results
+	}
+}
+
+func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]scanner.Option, error) {
 
 	var options []scanner.Option
 	options = append(
@@ -166,25 +191,7 @@ func configureOptions(cmd *cobra.Command, fsRoot string) ([]scanner.Option, erro
 	)
 
 	if len(excludePaths) > 0 {
-		options = append(options, scanner.OptionWithResultsFilter(func(results scan.Results) scan.Results {
-			for i, result := range results {
-				rng := result.Range()
-				if rng == nil {
-					continue
-				}
-				for _, exclude := range excludePaths {
-					exclude = fmt.Sprintf("%c%s%[1]c", filepath.Separator, filepath.Clean(exclude))
-					if strings.Contains(
-						fmt.Sprintf("%c%s%[1]c", filepath.Separator, rng.GetFilename()),
-						exclude,
-					) {
-						results[i].OverrideStatus(scan.StatusIgnored)
-						break
-					}
-				}
-			}
-			return results
-		}))
+		options = append(options, scanner.OptionWithResultsFilter(excludeFunc(excludePaths)))
 	}
 
 	if len(tfvarsPaths) > 0 {
@@ -235,5 +242,38 @@ func configureOptions(cmd *cobra.Command, fsRoot string) ([]scanner.Option, erro
 		}))
 	}
 
+	return applyConfigFiles(options, dir)
+}
+
+func applyConfigFiles(options []scanner.Option, dir string) ([]scanner.Option, error) {
+	if configFile == "" {
+		configDir := filepath.Join(dir, ".tfsec")
+		for _, filename := range []string{"config.json", "config.yml", "config.yaml"} {
+			path := filepath.Join(configDir, filename)
+			if _, err := os.Stat(path); err == nil {
+				configFile = path
+				break
+			}
+		}
+	}
+	if configFile != "" {
+		if conf, err := config.LoadConfig(configFile); err == nil {
+			if !minVersionSatisfied(conf) {
+				return nil, fmt.Errorf("minimum tfsec version requirement not satisfied")
+			}
+			if conf.MinimumSeverity != "" {
+				options = append(options, scanner.OptionWithMinimumSeverity(severity.StringToSeverity(conf.MinimumSeverity)))
+			}
+			options = append(options, scanner.OptionWithSeverityOverrides(conf.SeverityOverrides))
+			options = append(options, scanner.OptionIncludeRules(conf.IncludedChecks))
+			options = append(options, scanner.OptionExcludeRules(append(conf.ExcludedChecks, excludedRuleIDs)))
+		}
+	}
+	if customCheckDir == "" {
+		customCheckDir = filepath.Join(dir, ".tfsec")
+	}
+	if err := custom.Load(customCheckDir); err != nil {
+		return nil, fmt.Errorf("failed to load custom checks from %s: %w", customCheckDir, err)
+	}
 	return options, nil
 }

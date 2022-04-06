@@ -54,7 +54,7 @@ func runWithArgs(args ...string) (stdout string, stderr string, exit int) {
 			_, _ = fmt.Fprintf(sErr, "Error: %s\n", err)
 		}
 		exit = 1
-		var exitErr *cmd.ErrorWithExitCode
+		var exitErr *cmd.ExitCodeError
 		if errors.As(err, &exitErr) {
 			exit = exitErr.Code()
 		}
