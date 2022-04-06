@@ -20,7 +20,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func convertArgs(args []string) []string {
+	var converted []string
+	for _, arg := range args {
+		converted = append(converted, strings.ReplaceAll(arg, "/", string(filepath.Separator)))
+	}
+	return converted
+}
+
 func execWithArgs(args ...string) (stdout string, stderr string, exit int) {
+	args = convertArgs(args)
 	sOut := bytes.NewBuffer([]byte{})
 	sErr := bytes.NewBuffer([]byte{})
 	combinedArgs := append([]string{
@@ -42,6 +51,7 @@ func execWithArgs(args ...string) (stdout string, stderr string, exit int) {
 }
 
 func runWithArgs(args ...string) (stdout string, stderr string, exit int) {
+	args = convertArgs(args)
 	sOut := bytes.NewBuffer([]byte{})
 	sErr := bytes.NewBuffer([]byte{})
 	rootCmd := cmd.Root()
