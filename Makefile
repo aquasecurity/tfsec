@@ -54,12 +54,8 @@ fix-typos:
 clone-image-github:
 	./scripts/clone-images.sh ghcr.io/aquasecurity
 
-.PHONY: sanity
-sanity:
-	go run ./cmd/tfsec -s -p --force-all-dirs ./_examples > /dev/null
-
 .PHONY: pr-ready
-pr-ready: quality sanity typos
+pr-ready: quality typos
 
 .PHONY: bench
 bench:
