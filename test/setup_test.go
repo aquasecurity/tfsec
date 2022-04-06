@@ -7,7 +7,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -26,28 +25,6 @@ func convertArgs(args []string) []string {
 		converted = append(converted, strings.ReplaceAll(arg, "/", string(filepath.Separator)))
 	}
 	return converted
-}
-
-func execWithArgs(args ...string) (stdout string, stderr string, exit int) {
-	args = convertArgs(args)
-	sOut := bytes.NewBuffer([]byte{})
-	sErr := bytes.NewBuffer([]byte{})
-	combinedArgs := append([]string{
-		"run",
-		"./cmd/tfsec",
-	}, args...)
-	command := exec.Command("go", combinedArgs...)
-	command.Stderr = sErr
-	command.Stdout = sOut
-	command.Dir, _ = filepath.Abs("..")
-	if err := command.Run(); err != nil {
-		exit = 1
-		var exitErr *exec.ExitError
-		if errors.As(err, &exitErr) {
-			exit = exitErr.ExitCode()
-		}
-	}
-	return sOut.String(), sErr.String(), exit
 }
 
 func runWithArgs(args ...string) (stdout string, stderr string, exit int) {
