@@ -417,6 +417,17 @@ func Test_Flag_MinimumSeverity(t *testing.T) {
 	assert.Less(t, len(results), len(beforeResults))
 }
 
+func Test_Flag_ConfigFile_WithMinimumSeverity(t *testing.T) {
+	before, err, _ := runWithArgs("./testdata/fail")
+	assert.Equal(t, "", err)
+	beforeResults := parseLovely(t, before)
+
+	out, err, _ := runWithArgs("./testdata/fail", "--config-file", "./testdata/config-minimum-severity/config.yml")
+	assert.Equal(t, "", err)
+	results := parseLovely(t, out)
+	assert.Less(t, len(results), len(beforeResults))
+}
+
 func Test_Flag_RegoPolicyDir(t *testing.T) {
 	out, err, exit := runWithArgs("./testdata/rego/tf", "--rego-policy-dir", "./testdata/rego/policies")
 	assert.Equal(t, "", err)
