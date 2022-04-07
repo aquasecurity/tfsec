@@ -51,6 +51,7 @@ var disableIgnores bool
 var regoPolicyDir string
 var printRegoInput bool
 var noModuleDownloads bool
+var regoOnly bool
 
 func configureFlags(cmd *cobra.Command) {
 
@@ -86,6 +87,7 @@ func configureFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVar(&regoPolicyDir, "rego-policy-dir", "", "Directory to load rego policies from (recursively).")
 	cmd.Flags().BoolVar(&printRegoInput, "print-rego-input", false, "Print a JSON representation of the input supplied to rego policies.")
 	cmd.Flags().BoolVar(&noModuleDownloads, "no-module-downloads", false, "Do not download remote modules.")
+	cmd.Flags().BoolVar(&regoOnly, "rego-only", false, "Run rego policies exclusively.")
 
 	_ = cmd.Flags().MarkHidden("allow-checks-to-panic")
 }
@@ -153,6 +155,7 @@ func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]scanner.Option,
 		scanner.OptionWithAlternativeIDProvider(legacy.FindIDs),
 		scanner.OptionWithPolicyNamespaces("custom"),
 		scanner.OptionWithDownloads(!noModuleDownloads),
+		scanner.OptionWithRegoOnly(regoOnly),
 	)
 
 	if len(excludePaths) > 0 {

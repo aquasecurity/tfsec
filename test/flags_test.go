@@ -461,3 +461,12 @@ func Test_Flag_NoModuleDownloads(t *testing.T) {
 	assert.Len(t, results, 0, out)
 	assert.Equal(t, 0, exit)
 }
+
+func Test_Flag_RegoOnly(t *testing.T) {
+	out, err, exit := runWithArgs("./testdata/rego/tf", "--rego-policy-dir", "./testdata/rego/policies", "--rego-only")
+	assert.Equal(t, "", err)
+	results := parseLovely(t, out)
+	assertResultsContain(t, results, "custom.rego.rego.sauce")
+	assert.Len(t, results, 1)
+	assert.Equal(t, 1, exit)
+}
