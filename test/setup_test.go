@@ -51,10 +51,10 @@ func parseLovely(t *testing.T, data string) []scan.FlatResult {
 	var results []scan.FlatResult
 	idMarker := "        ID"
 	regoMarker := "Rego Package"
-	var hasExampleCode bool
+	var hasExampleCodeError bool
 	for _, line := range strings.Split(data, "\n") {
-		if strings.Contains(line, "│") {
-			hasExampleCode = true
+		if strings.Contains(line, "Failed to render code") {
+			hasExampleCodeError = true
 		}
 		if strings.Contains(line, idMarker) {
 			longID := strings.TrimSpace(strings.Split(line, idMarker)[1])
@@ -63,8 +63,8 @@ func parseLovely(t *testing.T, data string) []scan.FlatResult {
 			results = append(results, scan.FlatResult{
 				LongID: longID,
 			})
-			assert.True(t, hasExampleCode, "result %s should have highlighted code output", longID)
-			hasExampleCode = false
+			assert.False(t, hasExampleCodeError, "result %s should have highlighted code output", longID)
+			hasExampleCodeError = false
 		} else if strings.Contains(line, regoMarker) {
 			longID := strings.TrimSpace(strings.Split(line, regoMarker)[1])
 			parts := strings.Split(longID, " ")
@@ -72,7 +72,7 @@ func parseLovely(t *testing.T, data string) []scan.FlatResult {
 			results = append(results, scan.FlatResult{
 				LongID: longID,
 			})
-			hasExampleCode = false
+			hasExampleCodeError = false
 		}
 
 	}

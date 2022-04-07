@@ -95,6 +95,50 @@ type simpleLocation struct {
 	moduleName string
 }
 
+func makeFilenameNice(first scan.Result, baseDir string) (string, string, []simpleLocation) {
+	innerRange := first.Range()
+	filename := innerRange.GetFilename()
+	topFilename := filename
+	var via []simpleLocation
+	if innerRange.GetSourcePrefix() == "" || strings.HasPrefix(innerRange.GetSourcePrefix(), ".") {
+		if relative, err := filepath.Rel(baseDir, filename); err == nil && !strings.Contains(relative, "..") {
+			filename = relative
+		}
+	} else {
+		m := first.Metadata()
+		mod := &m
+		lastFilename := m.Range().GetFilename()
+		for {
+			mod = mod.Parent()
+			if mod == nil {
+				break
+			}
+			parentRange := mod.Range()
+			parentFilename := parentRange.GetFilename()
+			if parentFilename == lastFilename {
+				continue
+			}
+			lastFilename = parentFilename
+			if parentRange.GetSourcePrefix() == "" || strings.HasPrefix(parentRange.GetSourcePrefix(), ".") {
+				if parentRelative, err := filepath.Rel(baseDir, parentFilename); err == nil && !strings.Contains(parentRelative, "..") {
+					parentLineInfo := fmt.Sprintf("Lines %d-%d", parentRange.GetStartLine(), parentRange.GetEndLine())
+					if !parentRange.IsMultiLine() {
+						parentLineInfo = fmt.Sprintf("Line %d", parentRange.GetStartLine())
+					}
+					via = append(via, simpleLocation{
+						filename:   parentRelative,
+						lineInfo:   parentLineInfo,
+						moduleName: mod.Reference().String(),
+					})
+					topFilename = parentRelative
+				}
+			}
+
+		}
+	}
+	return filename, topFilename, via
+}
+
 // nolint
 func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult) {
 
@@ -133,43 +177,7 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 		lineInfo = fmt.Sprintf("Line %d", innerRange.GetStartLine())
 	}
 
-	filename := innerRange.GetFilename()
-	var via []simpleLocation
-	if innerRange.GetSourcePrefix() == "" || strings.HasPrefix(innerRange.GetSourcePrefix(), ".") {
-		if relative, err := filepath.Rel(b.BaseDir(), filename); err == nil && !strings.Contains(relative, "..") {
-			filename = relative
-		}
-	} else {
-		m := first.Metadata()
-		mod := &m
-		lastFilename := m.Range().GetFilename()
-		for {
-			mod = mod.Parent()
-			if mod == nil {
-				break
-			}
-			parentRange := mod.Range()
-			parentFilename := parentRange.GetFilename()
-			if parentFilename == lastFilename {
-				continue
-			}
-			lastFilename = parentFilename
-			if parentRange.GetSourcePrefix() == "" || strings.HasPrefix(parentRange.GetSourcePrefix(), ".") {
-				if parentRelative, err := filepath.Rel(b.BaseDir(), parentFilename); err == nil && !strings.Contains(parentRelative, "..") {
-					parentLineInfo := fmt.Sprintf("Lines %d-%d", parentRange.GetStartLine(), parentRange.GetEndLine())
-					if !parentRange.IsMultiLine() {
-						parentLineInfo = fmt.Sprintf("Line %d", parentRange.GetStartLine())
-					}
-					via = append(via, simpleLocation{
-						filename:   parentRelative,
-						lineInfo:   parentLineInfo,
-						moduleName: mod.Reference().String(),
-					})
-				}
-			}
-
-		}
-	}
+	filename, _, via := makeFilenameNice(first, b.BaseDir())
 
 	_ = tml.Fprintf(
 		w,
@@ -229,12 +237,20 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 	if group.Len() > 1 {
 		_ = tml.Fprintf(w, "  <dim>Individual Causes\n")
 		for _, result := range group.Results() {
+
+			_, niceFilename, _ := makeFilenameNice(result, b.BaseDir())
+
 			m := result.Metadata()
 			metadata := &m
 			for metadata.Parent() != nil {
 				metadata = metadata.Parent()
 			}
-			_ = tml.Fprintf(w, "  <dim>- %s (%s)\n", metadata.Range(), metadata.Reference())
+			innerRange := metadata.Range()
+			lineInfo := fmt.Sprintf("%d-%d", innerRange.GetStartLine(), innerRange.GetEndLine())
+			if !innerRange.IsMultiLine() {
+				lineInfo = fmt.Sprintf("%d", innerRange.GetStartLine())
+			}
+			_ = tml.Fprintf(w, "  <dim>- %s:%s (%s)\n", niceFilename, lineInfo, metadata.Reference())
 		}
 		_ = tml.Fprintf(
 			w,
@@ -298,7 +314,7 @@ func highlightCode(b formatters.ConfigurableFormatter, result scan.Result) error
 		}
 	}
 
-	content, err := fs.ReadFile(srcFS, innerRange.GetLocalFilename())
+	content, err := fs.ReadFile(srcFS, filepath.ToSlash(innerRange.GetLocalFilename()))
 	if err != nil {
 		return err
 	}
