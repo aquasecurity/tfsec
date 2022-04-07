@@ -1,0 +1,26 @@
+{
+  "checks": [
+    {
+      "code": "CUS001",
+      "description": "A thing happens.",
+      "impact": "Everything descends into ruin.",
+      "resolution": "Give up.",
+      "requiredTypes": [
+        "resource"
+      ],
+      "requiredLabels": [
+        "special"
+      ],
+      "severity": "ERROR",
+      "matchSpec": {
+        "name": "ok",
+        "action": "equals",
+        "value": "true"
+      },
+      "errorMessage": "Alarm!",
+      "relatedLinks": [
+        "https://google.com"
+      ]
+    }
+  ]
+}

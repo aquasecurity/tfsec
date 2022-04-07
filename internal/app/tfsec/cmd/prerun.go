@@ -13,34 +13,37 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func prerun(_ *cobra.Command, args []string) {
+func prerun(cmd *cobra.Command, args []string) error {
+
+	cmd.SilenceUsage = true
 
 	// disable colour if running on windows - colour formatting doesn't work
 	if disableColours || runtime.GOOS == "windows" {
 		tml.DisableFormatting()
+	} else {
+		tml.EnableFormatting()
 	}
 
 	if showVersion {
 		if version.Version == "" {
-			fmt.Println("You are running a locally built version of tfsec.")
+			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "You are running a locally built version of tfsec.")
 		} else {
-			fmt.Println(version.Version)
+			_, _ = fmt.Fprintln(cmd.OutOrStdout(), version.Version)
 		}
-		os.Exit(0)
+		return &ExitCodeError{code: 0}
 	}
 
 	if runUpdate {
 		updateVersion, err := updater.Update()
 		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "Error during update: %s\n", err.Error())
-			os.Exit(1)
+			return fmt.Errorf("update failed: %w", err)
 		}
 		if updateVersion == "" {
-			fmt.Println("You are already running the latest version.")
+			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "You are already running the latest version.")
 		} else {
-			fmt.Printf("Successfully updated to %s.\n", updateVersion)
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Successfully updated to %s.\n", updateVersion)
 		}
-		os.Exit(0)
+		return &ExitCodeError{code: 0}
 	}
 
 	if migrateIgnores {
@@ -53,20 +56,20 @@ func prerun(_ *cobra.Command, args []string) {
 			dir, err = os.Getwd()
 		}
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Directory was not provided, and tfsec encountered an error trying to determine the current working directory: %s\n", err)
-			os.Exit(1)
+			return fmt.Errorf("directory was not provided, and tfsec encountered an error trying to determine the current working directory: %w", err)
 		}
 
 		stats, err := ignores.RunMigration(dir)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Errors occurred while running migration: %s", err.Error())
-			os.Exit(1)
+			return fmt.Errorf("migration failed: %w", err)
 		}
 		if len(stats) > 0 {
 			for _, stat := range stats {
-				fmt.Printf("%s migrated from %s => %s\n", stat.Filename, stat.FromCode, stat.ToCode)
+				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%s migrated from %s => %s\n", stat.Filename, stat.FromCode, stat.ToCode)
 			}
 		}
-		os.Exit(0)
+		return &ExitCodeError{code: 0}
 	}
+
+	return nil
 }
