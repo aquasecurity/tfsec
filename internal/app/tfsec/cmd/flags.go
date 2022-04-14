@@ -68,6 +68,7 @@ func configureFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVar(&filterResults, "filter-results", "", "Filter results to return specific checks only (supports comma-delimited input).")
 	cmd.Flags().BoolVarP(&softFail, "soft-fail", "s", false, "Runs checks but suppresses error code")
 	cmd.Flags().StringSliceVar(&tfvarsPaths, "tfvars-file", nil, "Path to .tfvars file, can be used multiple times and evaluated in order of specification")
+	cmd.Flags().StringSliceVar(&tfvarsPaths, "var-file", nil, "Path to .tfvars file, can be used multiple times and evaluated in order of specification (same functionaility as --tfvars-file but consistent with Terraform)")
 	cmd.Flags().StringSliceVar(&excludePaths, "exclude-path", nil, "Folder path to exclude, can be used multiple times and evaluated in order of specification")
 	cmd.Flags().StringVarP(&outputFlag, "out", "O", "", "Set output file. This filename will have a format descriptor appended if multiple formats are specified with --format")
 	cmd.Flags().StringVar(&customCheckDir, "custom-check-dir", "", "Explicitly the custom checks dir location")
