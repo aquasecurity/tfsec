@@ -7,7 +7,7 @@ author: tfsec
 tags: [installation, quickstart]
 ---
 
-tfsec can by run with no arguments and will act on the current folder. 
+tfsec can be run with no arguments and will act on the current folder. 
 
 For a richer experience, there are many additional command line arguments that you can make use of.
 
@@ -40,8 +40,7 @@ For a richer experience, there are many additional command line arguments that y
 | `--sort-severity`                                        |            | Sort the results by severity from highest to lowest                                                                                                                                                                                                           |
 | `--tfvars-file strings`                                  |            | Path to .tfvars file, can be used multiple times and evaluated in order of specification                                                                                                                                                                      |
 | `--update`                                               |            | Update to latest version                                                                                                                                                                                                                                      |
-| `--var-file strings`                                  |            | Path to .tfvars file, can be used multiple times and evaluated in order of specification. Same action as -tfvars-file but more consistent with Terraform                                                                                                                                                                    |
-
+| `--var-file strings`                                     |            | Path to .tfvars file, can be used multiple times and evaluated in order of specification. Same action as -tfvars-file but more consistent with Terraform                                                                                                                                                                    |
 | `--verbose`                                              |            | Enable verbose logging                                                                                                                                                                                                                                        |
 | `--version`                                              | `-v`       | Show version information and exit                                                                                                                                                                                                                             |
 | `--workspace [terraform workspace]`                      | `-w`       | Specify a workspace for ignore limits                                                                                                                                                                                                                         |
