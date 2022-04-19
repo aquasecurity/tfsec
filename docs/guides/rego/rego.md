@@ -7,7 +7,7 @@ author: tfsec
 tags: [rego, custom, code scanning, security analysis]
 ---
 
-_tfsec_ has the capability to apply user-defined Rego policies.
+_tfsec_ has the capability to apply user-defined [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/) policies.
 
 This is a useful feature if your organisation needs to implement custom security policies on top of avoid other misconfigurations and enforcing best practice guidelines.
 
