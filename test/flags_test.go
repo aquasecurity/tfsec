@@ -336,7 +336,7 @@ func Test_Flag_Debug(t *testing.T) {
 		t.Run(flag, func(t *testing.T) {
 			out, err, exit := runWithArgs("./testdata/pass", "-f", "json", flag)
 			_ = parseJSON(t, out)
-			assert.Contains(t, err, "\n[debug:")
+			assert.Contains(t, err, "\n[scan:")
 			assert.Equal(t, 0, exit)
 		})
 	}

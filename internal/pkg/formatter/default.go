@@ -100,11 +100,7 @@ func makeFilenameNice(first scan.Result, baseDir string) (string, string, []simp
 	filename := innerRange.GetFilename()
 	topFilename := filename
 	var via []simpleLocation
-	if innerRange.GetSourcePrefix() == "" || strings.HasPrefix(innerRange.GetSourcePrefix(), ".") {
-		if relative, err := filepath.Rel(baseDir, filename); err == nil && !strings.Contains(relative, "..") {
-			filename = relative
-		}
-	} else {
+	if strings.HasPrefix(innerRange.GetSourcePrefix(), ".") {
 		m := first.Metadata()
 		mod := &m
 		lastFilename := m.Range().GetFilename()
@@ -314,7 +310,19 @@ func highlightCode(b formatters.ConfigurableFormatter, result scan.Result) error
 		}
 	}
 
-	content, err := fs.ReadFile(srcFS, filepath.ToSlash(innerRange.GetLocalFilename()))
+	base := b.BaseDir()
+	if len(base) >= 2 && base[0] != '/' && base[1] == ':' {
+		base += "/"
+	}
+
+	fullPath := filepath.ToSlash(filepath.Join(filepath.ToSlash(base), filepath.ToSlash(innerRange.GetLocalFilename())))
+	if strings.HasPrefix(fullPath, "/") {
+		fullPath = fullPath[1:]
+	} else if len(fullPath) > 2 && fullPath[1] == ':' {
+		fullPath = fullPath[3:]
+	}
+
+	content, err := fs.ReadFile(srcFS, fullPath)
 	if err != nil {
 		return err
 	}
