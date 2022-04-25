@@ -294,6 +294,7 @@ func printCodeLine(w io.Writer, i int, code string) {
 	)
 }
 
+// nolint
 func highlightCode(b formatters.ConfigurableFormatter, result scan.Result) error {
 
 	srcFS := result.Metadata().Range().GetFS()
