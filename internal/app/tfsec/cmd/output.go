@@ -17,14 +17,14 @@ import (
 	"github.com/liamg/tml"
 )
 
-func output(cmd *cobra.Command, baseFilename string, formats []string, dir string, results []scan.Result, metrics scanner.Metrics) error {
+func output(cmd *cobra.Command, baseFilename string, formats []string, root string, rel string, fullDir string, results []scan.Result, metrics scanner.Metrics) error {
 	if baseFilename == "" && len(formats) > 1 {
 		return fmt.Errorf("you must specify a base output filename with --out if you want to use multiple formats")
 	}
 
 	var files []string
 	for _, format := range formats {
-		if filename, err := outputFormat(cmd.OutOrStdout(), len(formats) > 1, baseFilename, format, dir, results, metrics); err != nil {
+		if filename, err := outputFormat(cmd.OutOrStdout(), len(formats) > 1, baseFilename, format, root, rel, fullDir, results, metrics); err != nil {
 			return err
 		} else if filename != "" {
 			files = append(files, filename)
@@ -66,7 +66,7 @@ func gatherLinks(result scan.Result) []string {
 	return append(docsLink, links...)
 }
 
-func outputFormat(w io.Writer, addExtension bool, baseFilename string, format string, dir string, results scan.Results, metrics scanner.Metrics) (string, error) {
+func outputFormat(w io.Writer, addExtension bool, baseFilename string, format string, root string, rel string, fullDir string, results scan.Results, metrics scanner.Metrics) (string, error) {
 
 	factory := formatters.New().
 		WithDebugEnabled(debug).
@@ -108,7 +108,7 @@ func outputFormat(w io.Writer, addExtension bool, baseFilename string, format st
 	}
 
 	if makeRelative {
-		results.SetRelativeTo(dir)
+		results.SetRelativeTo(root, fullDir)
 	}
 
 	var outputPath string

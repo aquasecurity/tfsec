@@ -88,7 +88,7 @@ func Root() *cobra.Command {
 			}
 
 			formats := strings.Split(format, ",")
-			if err := output(cmd, outputFlag, formats, rel, results, metrics); err != nil {
+			if err := output(cmd, outputFlag, formats, root, rel, dir, results, metrics); err != nil {
 				return fmt.Errorf("failed to write output: %w", err)
 			}
 
