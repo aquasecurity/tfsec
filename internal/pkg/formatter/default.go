@@ -315,11 +315,14 @@ func highlightCode(b formatters.ConfigurableFormatter, result scan.Result) error
 		base += "/"
 	}
 
-	fullPath := filepath.ToSlash(filepath.Join(filepath.ToSlash(base), filepath.ToSlash(innerRange.GetLocalFilename())))
-	if strings.HasPrefix(fullPath, "/") {
-		fullPath = fullPath[1:]
-	} else if len(fullPath) > 2 && fullPath[1] == ':' {
-		fullPath = fullPath[3:]
+	fullPath := innerRange.GetLocalFilename()
+	if innerRange.GetSourcePrefix() == "" || strings.HasPrefix(innerRange.GetSourcePrefix(), ".") {
+		fullPath = filepath.ToSlash(filepath.Join(filepath.ToSlash(base), filepath.ToSlash(innerRange.GetLocalFilename())))
+		if strings.HasPrefix(fullPath, "/") {
+			fullPath = fullPath[1:]
+		} else if len(fullPath) > 2 && fullPath[1] == ':' {
+			fullPath = fullPath[3:]
+		}
 	}
 
 	content, err := fs.ReadFile(srcFS, fullPath)
