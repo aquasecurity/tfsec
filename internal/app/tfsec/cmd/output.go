@@ -73,7 +73,6 @@ func outputFormat(w io.Writer, addExtension bool, baseFilename string, format st
 		WithColoursEnabled(!disableColours).
 		WithGroupingEnabled(!disableGrouping).
 		WithLinksFunc(gatherLinks).
-		WithBaseDir(dir).
 		WithMetricsEnabled(!conciseOutput).
 		WithIncludeIgnored(includeIgnored).
 		WithIncludePassed(includePassed)
