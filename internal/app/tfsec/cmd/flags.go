@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/aquasecurity/defsec/pkg/scanners/options"
+
 	"github.com/aquasecurity/tfsec/internal/pkg/custom"
 
 	"github.com/aquasecurity/defsec/pkg/scan"
@@ -142,25 +144,25 @@ func excludeFunc(excludePaths []string) func(results scan.Results) scan.Results 
 	}
 }
 
-func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]scanner.Option, error) {
+func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]options.ScannerOption, error) {
 
-	var options []scanner.Option
-	options = append(
-		options,
-		scanner.OptionWithSingleThread(singleThreadedMode),
-		scanner.OptionStopOnHCLError(!ignoreHCLErrors),
-		scanner.OptionStopOnRuleErrors(stopOnCheckError),
-		scanner.OptionSkipDownloaded(excludeDownloaded),
-		scanner.OptionScanAllDirectories(allDirs),
-		scanner.OptionWithWorkspaceName(workspace),
-		scanner.OptionWithAlternativeIDProvider(legacy.FindIDs),
-		scanner.OptionWithPolicyNamespaces("custom"),
-		scanner.OptionWithDownloads(!noModuleDownloads),
-		scanner.OptionWithRegoOnly(regoOnly),
+	var scannerOptions []options.ScannerOption
+	scannerOptions = append(
+		scannerOptions,
+		scanner.ScannerWithSingleThread(singleThreadedMode),
+		scanner.ScannerWithStopOnHCLError(!ignoreHCLErrors),
+		scanner.ScannerWithStopOnRuleErrors(stopOnCheckError),
+		scanner.ScannerWithSkipDownloaded(excludeDownloaded),
+		scanner.ScannerWithAllDirectories(allDirs),
+		scanner.ScannerWithWorkspaceName(workspace),
+		scanner.ScannerWithAlternativeIDProvider(legacy.FindIDs),
+		options.ScannerWithPolicyNamespaces("custom"),
+		scanner.ScannerWithDownloadsAllowed(!noModuleDownloads),
+		scanner.ScannerWithRegoOnly(regoOnly),
 	)
 
 	if len(excludePaths) > 0 {
-		options = append(options, scanner.OptionWithResultsFilter(excludeFunc(excludePaths)))
+		scannerOptions = append(scannerOptions, scanner.ScannerWithResultsFilter(excludeFunc(excludePaths)))
 	}
 
 	if len(tfvarsPaths) > 0 {
@@ -168,7 +170,7 @@ func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]scanner.Option,
 		if err != nil {
 			return nil, fmt.Errorf("tfvars problem: %w", err)
 		}
-		options = append(options, scanner.OptionWithTFVarsPaths(fixedPaths))
+		scannerOptions = append(scannerOptions, scanner.ScannerWithTFVarsPaths(fixedPaths...))
 	}
 
 	if regoPolicyDir != "" {
@@ -176,11 +178,11 @@ func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]scanner.Option,
 		if err != nil {
 			return nil, fmt.Errorf("rego policy dir problem: %w", err)
 		}
-		options = append(options, scanner.OptionWithPolicyDirs(fixedPath))
+		scannerOptions = append(scannerOptions, options.ScannerWithPolicyDirs(fixedPath))
 	}
 
 	if disableIgnores {
-		options = append(options, scanner.OptionNoIgnores())
+		scannerOptions = append(scannerOptions, scanner.ScannerWithNoIgnores())
 	}
 
 	if minimumSeverity != "" {
@@ -188,33 +190,33 @@ func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]scanner.Option,
 		if sev == severity.None {
 			return nil, fmt.Errorf("'%s' is not a valid severity - should be one of CRITICAL, HIGH, MEDIUM, LOW", minimumSeverity)
 		}
-		options = append(options, scanner.OptionWithMinimumSeverity(sev))
+		scannerOptions = append(scannerOptions, scanner.ScannerWithMinimumSeverity(sev))
 	}
 
 	if filterResults != "" {
 		longIDs := strings.Split(filterResults, ",")
-		options = append(options, scanner.OptionIncludeRules(longIDs))
+		scannerOptions = append(scannerOptions, scanner.ScannerWithIncludedRules(longIDs))
 	}
 
 	if excludedRuleIDs != "" {
-		options = append(options, scanner.OptionExcludeRules(strings.Split(excludedRuleIDs, ",")))
+		scannerOptions = append(scannerOptions, scanner.ScannerWithExcludedRules(strings.Split(excludedRuleIDs, ",")))
 	}
 
 	if debug {
-		options = append(options, scanner.OptionWithDebug(cmd.ErrOrStderr()))
+		scannerOptions = append(scannerOptions, options.ScannerWithDebug(cmd.ErrOrStderr()))
 	}
 
 	if printRegoInput {
-		options = append(options, scanner.OptionWithStateFunc(func(s *state.State) {
+		scannerOptions = append(scannerOptions, scanner.ScannerWithStateFunc(func(s *state.State) {
 			data, _ := json.Marshal(s.ToRego())
 			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "\n%s\n\n", string(data))
 		}))
 	}
 
-	return applyConfigFiles(options, dir)
+	return applyConfigFiles(scannerOptions, dir)
 }
 
-func applyConfigFiles(options []scanner.Option, dir string) ([]scanner.Option, error) {
+func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.ScannerOption, error) {
 	if configFile == "" {
 		configDir := filepath.Join(dir, ".tfsec")
 		for _, filename := range []string{"config.json", "config.yml", "config.yaml"} {
@@ -231,11 +233,17 @@ func applyConfigFiles(options []scanner.Option, dir string) ([]scanner.Option, e
 				return nil, fmt.Errorf("minimum tfsec version requirement not satisfied")
 			}
 			if conf.MinimumSeverity != "" {
-				options = append(options, scanner.OptionWithMinimumSeverity(severity.StringToSeverity(conf.MinimumSeverity)))
+				options = append(options, scanner.ScannerWithMinimumSeverity(severity.StringToSeverity(conf.MinimumSeverity)))
 			}
-			options = append(options, scanner.OptionWithSeverityOverrides(conf.SeverityOverrides))
-			options = append(options, scanner.OptionIncludeRules(conf.IncludedChecks))
-			options = append(options, scanner.OptionExcludeRules(append(conf.ExcludedChecks, excludedRuleIDs)))
+			if len(conf.SeverityOverrides) > 0 {
+				options = append(options, scanner.ScannerWithSeverityOverrides(conf.SeverityOverrides))
+			}
+			if len(conf.IncludedChecks) > 0 {
+				options = append(options, scanner.ScannerWithIncludedRules(conf.IncludedChecks))
+			}
+			if len(conf.ExcludedChecks) > 0 {
+				options = append(options, scanner.ScannerWithExcludedRules(append(conf.ExcludedChecks, excludedRuleIDs)))
+			}
 		}
 	}
 	if customCheckDir == "" {
