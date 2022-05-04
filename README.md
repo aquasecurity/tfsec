@@ -22,10 +22,10 @@ tfsec uses static analysis of your terraform code to spot potential misconfigura
 - :link: Evaluates relationships between Terraform resources
 - :toolbox: Compatible with the Terraform CDK
 - :no_good: Applies (and embellishes) user-defined Rego policies
-- :page_with_curl: Supports multiple output formats: CLI, JSON, SARIF, CSV, CheckStyle, and JUnit.
+- :page_with_curl: Supports multiple output formats: lovely (default), JSON, SARIF, CSV, CheckStyle, JUnit, text, Gif.
 - :hammer_and_wrench: Configurable (via CLI flags and/or config file)
 - :zap: Very fast, capable of quickly scanning huge repositories
-- :electric_plug: Plugins for popular IDEs available ([JetBrains](https://plugins.jetbrains.com/plugin/18687-tfsec-findings-explorer), [VSCode](https://marketplace.visualstudio.com/items?itemName=tfsec.tfsec) and [Vim](https://github.com/aquasecurity/vim-tfsec)) 
+- :electric_plug: Plugins for popular IDEs available ([JetBrains](https://plugins.jetbrains.com/plugin/18687-tfsec-findings-explorer), [VSCode](https://marketplace.visualstudio.com/items?itemName=tfsec.tfsec) and [Vim](https://github.com/aquasecurity/vim-tfsec))
 - :house_with_garden: Community-driven - come and chat with us [on Slack](https://slack.aquasec.com/)!
 
 ## Recommended by Thoughtworks
@@ -70,7 +70,7 @@ Please note that using `go install` will install directly from the `master` bran
 
 ### Signing
 
-The binaries on the [releases page](https://github.com/aquasecurity/tfsec/releases) are signed with the tfsec signing key `D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE` 
+The binaries on the [releases page](https://github.com/aquasecurity/tfsec/releases) are signed with the tfsec signing key `D66B222A3EA4C25D5D1A097FC34ACEFB46EC39CE`
 
 Form more information check the [signing page](SIGNING.md) for instructions on verification.
 
@@ -202,11 +202,11 @@ The alerts generated for [tfsec-example-project](https://github.com/tfsec/tfsec-
 
 ![github security alerts](codescanning.png)
 
-When you click through the alerts for the branch, you get more information about the actual issue. 
+When you click through the alerts for the branch, you get more information about the actual issue.
 
 ![github security alerts](scanningalert.png)
 
-For more information about adding security alerts, check 
+For more information about adding security alerts, check
 
 ## Support for older terraform versions
 
