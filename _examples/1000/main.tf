@@ -1,3 +1,8 @@
+
+variable "bad" {
+  default = "0.0"
+}
+
 resource "aws_security_group" "test" {
   name        = "allow-all-sg"
   description = "Allowing everyone to connect to this public instance"
@@ -16,6 +21,6 @@ resource "aws_security_group" "test" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.${var.bad}/0"]
   }
 }

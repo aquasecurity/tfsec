@@ -17,8 +17,10 @@ func prerun(cmd *cobra.Command, args []string) error {
 
 	cmd.SilenceUsage = true
 
+	term := os.Getenv("TERM")
+
 	// disable colour if running on windows - colour formatting doesn't work
-	if disableColours || runtime.GOOS == "windows" {
+	if disableColours || (runtime.GOOS == "windows" && term == "") {
 		tml.DisableFormatting()
 	} else {
 		tml.EnableFormatting()

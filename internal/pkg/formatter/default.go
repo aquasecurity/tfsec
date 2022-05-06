@@ -3,7 +3,6 @@ package formatter
 import (
 	"fmt"
 	"io"
-	"io/fs"
 	"path/filepath"
 	"strings"
 
@@ -76,14 +75,12 @@ func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b form
 	}
 }
 
-const lineNoWidth = 7
-
 func getStatusOrSeverity(status scan.Status, severity severity.Severity) string {
 	switch status {
 	case scan.StatusPassed:
 		return tml.Sprintf("<green>PASSED</green>")
 	case scan.StatusIgnored:
-		return tml.Sprintf("<yellow>IGNORED</yellow>")
+		return tml.Sprintf("<yellow>IGNORED</yellow> (") + severityFormat[severity] + ")"
 	default:
 		return severityFormat[severity]
 	}
@@ -95,44 +92,48 @@ type simpleLocation struct {
 	moduleName string
 }
 
-func makeFilenameNice(first scan.Result, baseDir string) (string, string, []simpleLocation) {
-	innerRange := first.Range()
-	filename := innerRange.GetFilename()
-	topFilename := filename
+func getOccurrences(first scan.Result, baseDir string) []simpleLocation {
 	var via []simpleLocation
-	if strings.HasPrefix(innerRange.GetSourcePrefix(), ".") {
-		m := first.Metadata()
-		mod := &m
-		lastFilename := m.Range().GetFilename()
-		for {
-			mod = mod.Parent()
-			if mod == nil {
-				break
-			}
-			parentRange := mod.Range()
-			parentFilename := parentRange.GetFilename()
-			if parentFilename == lastFilename {
-				continue
-			}
-			lastFilename = parentFilename
-			if parentRange.GetSourcePrefix() == "" || strings.HasPrefix(parentRange.GetSourcePrefix(), ".") {
-				if parentRelative, err := filepath.Rel(baseDir, parentFilename); err == nil && !strings.Contains(parentRelative, "..") {
-					parentLineInfo := fmt.Sprintf("Lines %d-%d", parentRange.GetStartLine(), parentRange.GetEndLine())
-					if !parentRange.IsMultiLine() {
-						parentLineInfo = fmt.Sprintf("Line %d", parentRange.GetStartLine())
-					}
-					via = append(via, simpleLocation{
-						filename:   parentRelative,
-						lineInfo:   parentLineInfo,
-						moduleName: mod.Reference().String(),
-					})
-					topFilename = parentRelative
-				}
-			}
-
+	m := first.Metadata()
+	mod := &m
+	lastFilename := m.Range().GetFilename()
+	for {
+		mod = mod.Parent()
+		if mod == nil {
+			break
 		}
+		parentRange := mod.Range()
+		parentFilename := parentRange.GetFilename()
+		if parentFilename == lastFilename {
+			continue
+		}
+		lastFilename = parentFilename
+		if parentRange.GetSourcePrefix() == "" || strings.HasPrefix(parentRange.GetSourcePrefix(), ".") {
+			if parentRelative, err := filepath.Rel(baseDir, parentFilename); err == nil && !strings.Contains(parentRelative, "..") {
+				parentLineInfo := fmt.Sprintf(":%d-%d", parentRange.GetStartLine(), parentRange.GetEndLine())
+				if !parentRange.IsMultiLine() {
+					parentLineInfo = fmt.Sprintf(":%d", parentRange.GetStartLine())
+				}
+				via = append(via, simpleLocation{
+					filename:   parentRelative,
+					lineInfo:   parentLineInfo,
+					moduleName: mod.Reference().String(),
+				})
+			}
+		} else {
+			parentLineInfo := fmt.Sprintf(":%d-%d", parentRange.GetStartLine(), parentRange.GetEndLine())
+			if !parentRange.IsMultiLine() {
+				parentLineInfo = fmt.Sprintf(":%d", parentRange.GetStartLine())
+			}
+			via = append(via, simpleLocation{
+				filename:   parentRange.GetFilename(),
+				lineInfo:   parentLineInfo,
+				moduleName: mod.Reference().String(),
+			})
+		}
+
 	}
-	return filename, topFilename, via
+	return via
 }
 
 // nolint
@@ -168,16 +169,17 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 	)
 
 	innerRange := first.Range()
-	lineInfo := fmt.Sprintf("Lines %d-%d", innerRange.GetStartLine(), innerRange.GetEndLine())
+	lineInfo := fmt.Sprintf(":%d-%d", innerRange.GetStartLine(), innerRange.GetEndLine())
 	if !innerRange.IsMultiLine() {
-		lineInfo = fmt.Sprintf("Line %d", innerRange.GetStartLine())
+		lineInfo = fmt.Sprintf(":%d", innerRange.GetStartLine())
 	}
 
-	filename, _, via := makeFilenameNice(first, b.BaseDir())
+	via := getOccurrences(first, b.BaseDir())
+	filename := b.Path(first)
 
 	_ = tml.Fprintf(
 		w,
-		"<dim>%s\n",
+		"<darkgrey>%s\n",
 		strings.Repeat("─", width),
 	)
 
@@ -185,25 +187,23 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 		if filename != "" {
 			_ = tml.Fprintf(
 				w,
-				"<dim>%s%s%s</dim>\n  %s",
-				strings.Repeat("─", lineNoWidth),
-				"┬",
-				strings.Repeat("─", width-lineNoWidth-1),
+				"<darkgrey>%s</darkgrey>\n  <italic>%s",
+				strings.Repeat("─", width),
 				filename,
 			)
 		}
 	} else {
 		_ = tml.Fprintf(
 			w,
-			" <italic>%s <dim>%s\n",
+			"  <italic>%s<dim>%s\n",
 			filename,
 			lineInfo,
 		)
 		for i, v := range via {
 			_ = tml.Fprintf(
 				w,
-				" %s<dim>via </dim><italic>%s <dim>%s (%s)\n",
-				strings.Repeat(" ", i+1),
+				" %s<dim>via </dim><italic>%s<dim>%s (%s)\n",
+				strings.Repeat(" ", i+2),
 				v.filename,
 				v.lineInfo,
 				v.moduleName,
@@ -212,29 +212,27 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 
 		_ = tml.Fprintf(
 			w,
-			"<dim>%s%s%s</dim>\n",
-			strings.Repeat("─", lineNoWidth),
-			"┬",
-			strings.Repeat("─", width-lineNoWidth-1),
+			"<darkgrey>%s</darkgrey>\n",
+			strings.Repeat("─", width),
 		)
 
 		if err := highlightCode(b, first); err != nil {
-			printCodeLine(w, -1, tml.Sprintf("<red><bold>Failed to render code:</bold> %s", err))
+			_, _ = fmt.Fprintf(w, tml.Sprintf("  <red><bold>Failed to render code:</bold> %s", err))
 		}
 
 		_ = tml.Fprintf(
 			w,
-			"<dim>%s┴%s</dim>\n",
-			strings.Repeat("─", lineNoWidth),
-			strings.Repeat("─", width-lineNoWidth-1),
+			"<darkgrey>%s</darkgrey>\n",
+			strings.Repeat("─", width),
 		)
 	}
 
 	if group.Len() > 1 {
 		_ = tml.Fprintf(w, "  <dim>Individual Causes\n")
+		causeMap := make(map[string]int)
 		for _, result := range group.Results() {
 
-			_, niceFilename, _ := makeFilenameNice(result, b.BaseDir())
+			niceFilename := b.Path(result)
 
 			m := result.Metadata()
 			metadata := &m
@@ -246,11 +244,20 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 			if !innerRange.IsMultiLine() {
 				lineInfo = fmt.Sprintf("%d", innerRange.GetStartLine())
 			}
-			_ = tml.Fprintf(w, "  <dim>- %s:%s (%s)\n", niceFilename, lineInfo, metadata.Reference())
+			key := tml.Sprintf("<italic>%s<dim>:%s (%s)", niceFilename, lineInfo, metadata.Reference())
+			count := causeMap[key]
+			causeMap[key] = count + 1
+		}
+		for cause, count := range causeMap {
+			if count > 1 {
+				_ = tml.Fprintf(w, "  <dim>- %s <italic>%d instances\n", cause, count)
+			} else {
+				_ = tml.Fprintf(w, "  <dim>- %s\n", cause)
+			}
 		}
 		_ = tml.Fprintf(
 			w,
-			"<dim>%s</dim>\n",
+			"<darkgrey>%s</darkgrey>\n",
 			strings.Repeat("─", width),
 		)
 	}
@@ -259,7 +266,7 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 
 	_ = tml.Fprintf(
 		w,
-		"\n<dim>%s</dim>\n\n\n",
+		"\n<darkgrey>%s</darkgrey>\n\n\n",
 		strings.Repeat("─", width),
 	)
 }
@@ -285,82 +292,89 @@ func printMetadata(w io.Writer, result scan.Result, links []string, isRego bool)
 	}
 }
 
-func printCodeLine(w io.Writer, i int, code string) {
-	_ = tml.Fprintf(
-		w,
-		"<dim>%5d</dim>  <dim>│</dim> %s\n",
-		i,
-		code,
-	)
-}
-
 // nolint
 func highlightCode(b formatters.ConfigurableFormatter, result scan.Result) error {
 
-	srcFS := result.Metadata().Range().GetFS()
-	if srcFS == nil {
-		return fmt.Errorf("code unavailable: no filesystem provided")
-	}
-
-	innerRange := result.Range()
-	outerRange := innerRange
-	if !innerRange.IsMultiLine() {
-		metadata := result.Metadata()
-		if parent := metadata.Parent(); parent != nil {
-			outerRange = parent.Range()
-		}
-	}
-
-	base := b.BaseDir()
-	if len(base) >= 2 && base[0] != '/' && base[1] == ':' {
-		base += "/"
-	}
-
-	fullPath := innerRange.GetLocalFilename()
-	if innerRange.GetSourcePrefix() == "" || strings.HasPrefix(innerRange.GetSourcePrefix(), ".") {
-		fullPath = filepath.ToSlash(filepath.Join(filepath.ToSlash(base), filepath.ToSlash(innerRange.GetLocalFilename())))
-		if strings.HasPrefix(fullPath, "/") {
-			fullPath = fullPath[1:]
-		} else if len(fullPath) > 2 && fullPath[1] == ':' {
-			fullPath = fullPath[3:]
-		}
-	}
-
-	content, err := fs.ReadFile(srcFS, fullPath)
+	code, err := result.GetCode(true)
 	if err != nil {
 		return err
 	}
 
-	hasAnnotation := result.Annotation() != ""
-
 	w := b.Writer()
 
-	for i, bodyString := range strings.Split(string(content), "\n") {
+	lines := code.Lines()
 
-		line := i + 1
+	if len(lines) == 0 {
+		return nil
+	}
 
-		// this line is outside the range, skip it
-		if line < outerRange.GetStartLine() || line > outerRange.GetEndLine() {
-			continue
-		}
+	hasOuter := !lines[0].IsCause || !lines[len(lines)-1].IsCause
 
-		// if we're not rendering json, we have an annotation, and we're rendering the line to show the annotation on,
-		// render the line with the annotation afterwards
-		if !strings.HasSuffix(outerRange.GetFilename(), ".json") && hasAnnotation && line == innerRange.GetStartLine() {
-			printCodeLine(w, line, tml.Sprintf("<red>%s</red>        <italic>%s", bodyString, result.Annotation()))
-			continue
-		}
+	for _, line := range lines {
 
 		// if we're rendering the actual issue lines, use red
-		if i+1 >= innerRange.GetStartLine() && i < innerRange.GetEndLine() {
-			if result.Status() == scan.StatusPassed {
-				printCodeLine(w, line, tml.Sprintf("<green>%s", bodyString))
+		if line.IsCause && result.Status() != scan.StatusPassed {
+
+			// print line number
+			_ = tml.Fprintf(
+				w,
+				"<red>%5d  ",
+				line.Number,
+			)
+
+			if !hasOuter {
+				_ = tml.Fprintf(w, " ")
+			} else if code.IsCauseMultiline() {
+				switch {
+				case line.FirstCause:
+					_ = tml.Fprintf(w, "<red>┌</red>")
+				case line.LastCause:
+					_ = tml.Fprintf(w, "<red>└</red>")
+				default:
+					_ = tml.Fprintf(w, "<red>│</red>")
+
+				}
 			} else {
-				printCodeLine(w, line, tml.Sprintf("<red>%s", bodyString))
+				_ = tml.Fprintf(w, "<red>[</red>")
+			}
+			_ = tml.Fprintf(
+				w,
+				" %s",
+				line.Highlighted,
+			)
+			if line.Annotation != "" {
+				_ = tml.Fprintf(
+					w,
+					" <italic><dim>(%s)",
+					line.Annotation,
+				)
 			}
 		} else {
-			printCodeLine(w, line, tml.Sprintf("<yellow>%s", bodyString))
+			if line.Truncated {
+
+				placeholder := strings.Repeat(" ", 5-len(fmt.Sprintf("%d", line.Number))) + strings.Repeat(".", len(fmt.Sprintf("%d", line.Number)))
+
+				_ = tml.Fprintf(
+					w,
+					"<darkgrey>%s  ",
+					placeholder,
+				)
+			} else {
+				// print line number
+				_ = tml.Fprintf(
+					w,
+					"<darkgrey>%5d  ",
+					line.Number,
+				)
+				_ = tml.Fprintf(
+					w,
+					"  %s",
+					line.Highlighted,
+				)
+			}
+
 		}
+		_, _ = fmt.Fprintln(w, "")
 	}
 
 	return nil
