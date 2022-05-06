@@ -73,6 +73,7 @@ func outputFormat(w io.Writer, addExtension bool, baseFilename, format, fsRoot, 
 		WithColoursEnabled(!disableColours).
 		WithGroupingEnabled(!disableGrouping).
 		WithLinksFunc(gatherLinks).
+		WithFSRoot(fsRoot).
 		WithBaseDir(dir).
 		WithMetricsEnabled(!conciseOutput).
 		WithIncludeIgnored(includeIgnored).
@@ -104,11 +105,7 @@ func outputFormat(w io.Writer, addExtension bool, baseFilename, format, fsRoot, 
 		return "", fmt.Errorf("invalid format specified: '%s'", format)
 	}
 
-	if makeRelative {
-		results = results.RelativeTo(fsRoot, dir)
-	} else {
-		results = results.Absolute(fsRoot)
-	}
+	factory.WithRelativePaths(makeRelative)
 
 	var outputPath string
 	if baseFilename != "" {
