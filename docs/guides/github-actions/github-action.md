@@ -37,10 +37,10 @@ jobs:
 
     steps:
       - name: Clone repo
-        uses: actions/checkout@master
+        uses: actions/checkout@main
 
       - name: tfsec
-        uses: tfsec/tfsec-sarif-action@main
+        uses: tfsec/tfsec-sarif-action@master
         with:
           sarif_file: tfsec.sarif         
 
