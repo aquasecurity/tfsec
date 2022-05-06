@@ -159,7 +159,7 @@ func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]options.Scanner
 		options.ScannerWithPolicyNamespaces("custom"),
 		scanner.ScannerWithDownloadsAllowed(!noModuleDownloads),
 		scanner.ScannerWithRegoOnly(regoOnly),
-		scanner.ScannerWithEmbeddedLibraries(true),
+		options.ScannerWithEmbeddedPolicies(true),
 	)
 
 	if len(excludePaths) > 0 {
