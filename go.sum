@@ -229,6 +229,8 @@ github.com/aquasecurity/defsec v0.53.2-0.20220506152716-6c2acd8929ec h1:L4vlFnf4
 github.com/aquasecurity/defsec v0.53.2-0.20220506152716-6c2acd8929ec/go.mod h1:2PoWBy92rfT55Y/hb2NiP5EDcpECtVelxliCchYgH9M=
 github.com/aquasecurity/defsec v0.53.2 h1:ULvas2SZypNkptk7bx9o8Av5rb7lv0CCsTEi9OMDaHs=
 github.com/aquasecurity/defsec v0.53.2/go.mod h1:2PoWBy92rfT55Y/hb2NiP5EDcpECtVelxliCchYgH9M=
+github.com/aquasecurity/defsec v0.54.0 h1:kTURp/htUkHSCWmmHi3g4/58xkcAyytDEKhyi4SMrEM=
+github.com/aquasecurity/defsec v0.54.0/go.mod h1:2PoWBy92rfT55Y/hb2NiP5EDcpECtVelxliCchYgH9M=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/circbuf v0.0.0-20190214190532-5111143e8da2/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6/go.mod h1:grANhF5doyWs3UAsr3K4I6qtAmlQcZDesFNEHPZAzj8=
