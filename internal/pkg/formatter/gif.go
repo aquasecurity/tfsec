@@ -8,7 +8,7 @@ import (
 	"github.com/liamg/gifwrap/pkg/ascii"
 )
 
-func GifWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableFormatter, results scan.Results) error {
+func GifWithMetrics(metrics scanner.Metrics, theme string, withColours bool) func(b formatters.ConfigurableFormatter, results scan.Results) error {
 	return func(b formatters.ConfigurableFormatter, results scan.Results) error {
 
 		failCount := len(results.GetFailed())
@@ -24,6 +24,6 @@ func GifWithMetrics(metrics scanner.Metrics) func(b formatters.ConfigurableForma
 			_ = renderer.PlayOnce()
 		}
 
-		return DefaultWithMetrics(metrics, false)(b, results)
+		return DefaultWithMetrics(metrics, false, theme, withColours)(b, results)
 	}
 }
