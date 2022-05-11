@@ -17,7 +17,7 @@ import (
 
 var severityFormat map[severity.Severity]string
 
-func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool, codeTheme string) func(b formatters.ConfigurableFormatter, results scan.Results) error {
+func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool, codeTheme string, withColours bool) func(b formatters.ConfigurableFormatter, results scan.Results) error {
 	return func(b formatters.ConfigurableFormatter, results scan.Results) error {
 
 		// we initialise the map here so we respect the colour-ignore options
@@ -53,7 +53,7 @@ func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool, codeTheme s
 
 		_, _ = fmt.Fprintln(b.Writer(), "")
 		for _, group := range groups {
-			printResult(b, group, codeTheme)
+			printResult(b, group, codeTheme, withColours)
 		}
 
 		if !conciseOutput {
@@ -137,7 +137,7 @@ func getOccurrences(first scan.Result, baseDir string) []simpleLocation {
 }
 
 // nolint
-func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult, theme string) {
+func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult, theme string, withColours bool) {
 
 	first := group.Results()[0]
 
@@ -216,7 +216,7 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 			strings.Repeat("─", width),
 		)
 
-		if err := highlightCode(b, first, theme); err != nil {
+		if err := highlightCode(b, first, theme, withColours); err != nil {
 			_, _ = fmt.Fprintf(w, tml.Sprintf("  <red><bold>Failed to render code:</bold> %s", err))
 		}
 
@@ -293,7 +293,7 @@ func printMetadata(w io.Writer, result scan.Result, links []string, isRego bool)
 }
 
 // nolint
-func highlightCode(b formatters.ConfigurableFormatter, result scan.Result, theme string) error {
+func highlightCode(b formatters.ConfigurableFormatter, result scan.Result, theme string, withColours bool) error {
 
 	codeOpts := []scan.CodeOption{
 		scan.OptionCodeWithTruncation(true),
@@ -325,6 +325,11 @@ func highlightCode(b formatters.ConfigurableFormatter, result scan.Result, theme
 
 	for i, line := range lines {
 
+		outputCode := line.Highlighted
+		if !withColours {
+			outputCode = line.Content
+		}
+
 		// if we're rendering the actual issue lines, use red
 		if line.IsCause && result.Status() != scan.StatusPassed {
 
@@ -353,9 +358,9 @@ func highlightCode(b formatters.ConfigurableFormatter, result scan.Result, theme
 			_ = tml.Fprintf(
 				w,
 				" %s",
-				line.Highlighted,
+				outputCode,
 			)
-			if line.Annotation != "" {
+			if line.Annotation != "" && !code.IsCauseMultiline() {
 				_ = tml.Fprintf(
 					w,
 					" <italic><dim>(%s)",
@@ -382,7 +387,7 @@ func highlightCode(b formatters.ConfigurableFormatter, result scan.Result, theme
 				_ = tml.Fprintf(
 					w,
 					"  %s",
-					line.Highlighted,
+					outputCode,
 				)
 			}
 

@@ -85,7 +85,7 @@ func outputFormat(w io.Writer, addExtension bool, baseFilename, format, fsRoot, 
 	switch strings.ToLower(format) {
 	case "lovely", "default":
 		alsoStdout = true
-		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics, conciseOutput, codeTheme))
+		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics, conciseOutput, codeTheme, !disableColours))
 	case "json":
 		factory.AsJSON()
 		makeRelative = false
@@ -96,11 +96,11 @@ func outputFormat(w io.Writer, addExtension bool, baseFilename, format, fsRoot, 
 	case "junit":
 		factory.AsJUnit()
 	case "text":
-		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics, conciseOutput, codeTheme)).WithColoursEnabled(false)
+		factory.WithCustomFormatterFunc(formatter.DefaultWithMetrics(metrics, conciseOutput, codeTheme, !disableColours)).WithColoursEnabled(false)
 	case "sarif":
 		factory.AsSARIF()
 	case "gif":
-		factory.WithCustomFormatterFunc(formatter.GifWithMetrics(metrics, codeTheme))
+		factory.WithCustomFormatterFunc(formatter.GifWithMetrics(metrics, codeTheme, !disableColours))
 	default:
 		return "", fmt.Errorf("invalid format specified: '%s'", format)
 	}
