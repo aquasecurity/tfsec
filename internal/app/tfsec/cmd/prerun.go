@@ -20,6 +20,7 @@ func prerun(cmd *cobra.Command, args []string) error {
 	// disable colour if running on windows - colour formatting doesn't work
 	if disableColours || (runtime.GOOS == "windows" && os.Getenv("TERM") == "") {
 		tml.DisableFormatting()
+		disableColours = true // set this to prevent syntax highlighting later
 	} else {
 		tml.EnableFormatting()
 	}
