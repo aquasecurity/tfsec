@@ -17,7 +17,7 @@ import (
 
 var severityFormat map[severity.Severity]string
 
-func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b formatters.ConfigurableFormatter, results scan.Results) error {
+func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool, codeTheme string) func(b formatters.ConfigurableFormatter, results scan.Results) error {
 	return func(b formatters.ConfigurableFormatter, results scan.Results) error {
 
 		// we initialise the map here so we respect the colour-ignore options
@@ -53,7 +53,7 @@ func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool) func(b form
 
 		_, _ = fmt.Fprintln(b.Writer(), "")
 		for _, group := range groups {
-			printResult(b, group)
+			printResult(b, group, codeTheme)
 		}
 
 		if !conciseOutput {
@@ -137,7 +137,7 @@ func getOccurrences(first scan.Result, baseDir string) []simpleLocation {
 }
 
 // nolint
-func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult) {
+func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult, theme string) {
 
 	first := group.Results()[0]
 
@@ -216,7 +216,7 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 			strings.Repeat("─", width),
 		)
 
-		if err := highlightCode(b, first); err != nil {
+		if err := highlightCode(b, first, theme); err != nil {
 			_, _ = fmt.Fprintf(w, tml.Sprintf("  <red><bold>Failed to render code:</bold> %s", err))
 		}
 
@@ -293,9 +293,22 @@ func printMetadata(w io.Writer, result scan.Result, links []string, isRego bool)
 }
 
 // nolint
-func highlightCode(b formatters.ConfigurableFormatter, result scan.Result) error {
+func highlightCode(b formatters.ConfigurableFormatter, result scan.Result, theme string) error {
 
-	code, err := result.GetCode()
+	codeOpts := []scan.CodeOption{
+		scan.OptionCodeWithTruncation(true),
+	}
+
+	switch theme {
+	case "dark":
+		codeOpts = append(codeOpts, scan.OptionCodeWithDarkTheme())
+	case "light":
+		codeOpts = append(codeOpts, scan.OptionCodeWithLightTheme())
+	default:
+		codeOpts = append(codeOpts, scan.OptionCodeWithTheme(theme))
+	}
+
+	code, err := result.GetCode(codeOpts...)
 	if err != nil {
 		return err
 	}

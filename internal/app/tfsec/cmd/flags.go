@@ -54,6 +54,7 @@ var regoPolicyDir string
 var printRegoInput bool
 var noModuleDownloads bool
 var regoOnly bool
+var codeTheme string
 
 func configureFlags(cmd *cobra.Command) {
 
@@ -91,6 +92,7 @@ func configureFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&printRegoInput, "print-rego-input", false, "Print a JSON representation of the input supplied to rego policies.")
 	cmd.Flags().BoolVar(&noModuleDownloads, "no-module-downloads", false, "Do not download remote modules.")
 	cmd.Flags().BoolVar(&regoOnly, "rego-only", false, "Run rego policies exclusively.")
+	cmd.Flags().StringVar(&codeTheme, "code-theme", "dark", "Theme for annotated code. Either 'light' or 'dark'.")
 
 	_ = cmd.Flags().MarkHidden("allow-checks-to-panic")
 }
