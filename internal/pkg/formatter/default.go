@@ -295,14 +295,14 @@ func printMetadata(w io.Writer, result scan.Result, links []string, isRego bool)
 // nolint
 func highlightCode(b formatters.ConfigurableFormatter, result scan.Result) error {
 
-	code, err := result.GetCode(true)
+	code, err := result.GetCode()
 	if err != nil {
 		return err
 	}
 
 	w := b.Writer()
 
-	lines := code.Lines()
+	lines := code.Lines
 
 	if len(lines) == 0 {
 		return nil
@@ -310,7 +310,7 @@ func highlightCode(b formatters.ConfigurableFormatter, result scan.Result) error
 
 	hasOuter := !lines[0].IsCause || !lines[len(lines)-1].IsCause
 
-	for _, line := range lines {
+	for i, line := range lines {
 
 		// if we're rendering the actual issue lines, use red
 		if line.IsCause && result.Status() != scan.StatusPassed {
@@ -326,9 +326,9 @@ func highlightCode(b formatters.ConfigurableFormatter, result scan.Result) error
 				_ = tml.Fprintf(w, " ")
 			} else if code.IsCauseMultiline() {
 				switch {
-				case line.FirstCause:
+				case line.FirstCause || i == 0:
 					_ = tml.Fprintf(w, "<red>┌</red>")
-				case line.LastCause:
+				case line.LastCause || i == len(lines)-1:
 					_ = tml.Fprintf(w, "<red>└</red>")
 				default:
 					_ = tml.Fprintf(w, "<red>│</red>")
