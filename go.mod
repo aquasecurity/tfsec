@@ -8,7 +8,7 @@ require (
 	github.com/aquasecurity/defsec v0.57.8
 	github.com/hashicorp/go-version v1.4.0
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
-	github.com/liamg/clinch v1.5.6
+	github.com/liamg/clinch v1.6.1
 	github.com/liamg/gifwrap v0.0.6
 	github.com/liamg/tml v0.6.0
 	github.com/owenrumney/squealer v1.0.1-0.20220510063705-c0be93f0edea
