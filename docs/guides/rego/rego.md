@@ -22,7 +22,7 @@ deny[res] {
     bucket := input.aws.s3.buckets[_]
     bucket.name.value == "insecure-bucket"
     msg := "Bucket name should not be 'insecure-bucket'"
-    res := defsec.result(msg, bucket.name)
+    res := result.new(msg, bucket.name)
 }
 ```
 
