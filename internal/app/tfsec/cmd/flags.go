@@ -165,6 +165,7 @@ func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]options.Scanner
 	)
 
 	if len(excludePaths) > 0 {
+		excludePaths = explodeGlob(excludePaths, fsRoot, dir)
 		scannerOptions = append(scannerOptions, scanner.ScannerWithResultsFilter(excludeFunc(excludePaths)))
 	}
 
@@ -217,6 +218,24 @@ func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]options.Scanner
 	}
 
 	return applyConfigFiles(scannerOptions, dir)
+}
+
+func explodeGlob(paths []string, root string, dir string) []string {
+	var exploded []string
+
+	for _, path := range paths {
+		if !strings.Contains(path, "*") {
+			exploded = append(exploded, path)
+			continue
+		}
+		if globPaths, err := filepath.Glob(filepath.Join(dir, path)); err == nil {
+			for _, globPath := range globPaths {
+				exploded = append(exploded, strings.TrimPrefix(globPath, root))
+			}
+		}
+	}
+
+	return exploded
 }
 
 func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.ScannerOption, error) {
