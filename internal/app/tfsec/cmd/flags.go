@@ -55,6 +55,7 @@ var printRegoInput bool
 var noModuleDownloads bool
 var regoOnly bool
 var codeTheme string
+var noCode bool
 
 func configureFlags(cmd *cobra.Command) {
 
@@ -93,6 +94,7 @@ func configureFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&noModuleDownloads, "no-module-downloads", false, "Do not download remote modules.")
 	cmd.Flags().BoolVar(&regoOnly, "rego-only", false, "Run rego policies exclusively.")
 	cmd.Flags().StringVar(&codeTheme, "code-theme", "dark", "Theme for annotated code. Either 'light' or 'dark'.")
+	cmd.Flags().BoolVar(&noCode, "no-code", false, "Don't include the code snippets in the output.")
 
 	_ = cmd.Flags().MarkHidden("allow-checks-to-panic")
 }
