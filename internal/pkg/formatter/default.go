@@ -17,7 +17,7 @@ import (
 
 var severityFormat map[severity.Severity]string
 
-func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool, codeTheme string, withColours bool) func(b formatters.ConfigurableFormatter, results scan.Results) error {
+func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool, codeTheme string, withColours bool, noCode bool) func(b formatters.ConfigurableFormatter, results scan.Results) error {
 	return func(b formatters.ConfigurableFormatter, results scan.Results) error {
 
 		// we initialise the map here so we respect the colour-ignore options
@@ -53,7 +53,7 @@ func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool, codeTheme s
 
 		_, _ = fmt.Fprintln(b.Writer(), "")
 		for _, group := range groups {
-			printResult(b, group, codeTheme, withColours)
+			printResult(b, group, codeTheme, withColours, noCode)
 		}
 
 		if !conciseOutput {
@@ -137,7 +137,8 @@ func getOccurrences(first scan.Result, baseDir string) []simpleLocation {
 }
 
 // nolint
-func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult, theme string, withColours bool) {
+func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedResult, theme string, withColours bool,
+	noCode bool) {
 
 	first := group.Results()[0]
 
@@ -210,21 +211,23 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 			)
 		}
 
-		_ = tml.Fprintf(
-			w,
-			"<darkgrey>%s</darkgrey>\n",
-			strings.Repeat("─", width),
-		)
+		if !noCode {
+			_ = tml.Fprintf(
+				w,
+				"<darkgrey>%s</darkgrey>\n",
+				strings.Repeat("─", width),
+			)
 
-		if err := highlightCode(b, first, theme, withColours); err != nil {
-			_, _ = fmt.Fprintf(w, tml.Sprintf("  <red><bold>Failed to render code:</bold> %s", err))
+			if err := highlightCode(b, first, theme, withColours); err != nil {
+				_, _ = fmt.Fprintf(w, tml.Sprintf("  <red><bold>Failed to render code:</bold> %s", err))
+			}
+
+			_ = tml.Fprintf(
+				w,
+				"<darkgrey>%s</darkgrey>\n",
+				strings.Repeat("─", width),
+			)
 		}
-
-		_ = tml.Fprintf(
-			w,
-			"<darkgrey>%s</darkgrey>\n",
-			strings.Repeat("─", width),
-		)
 	}
 
 	if group.Len() > 1 {
