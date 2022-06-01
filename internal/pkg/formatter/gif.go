@@ -24,6 +24,6 @@ func GifWithMetrics(metrics scanner.Metrics, theme string, withColours bool) fun
 			_ = renderer.PlayOnce()
 		}
 
-		return DefaultWithMetrics(metrics, false, theme, withColours)(b, results)
+		return DefaultWithMetrics(metrics, false, theme, withColours, false)(b, results)
 	}
 }
