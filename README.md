@@ -206,7 +206,7 @@ When you click through the alerts for the branch, you get more information about
 
 ![github security alerts](scanningalert.png)
 
-For more information about adding security alerts, check
+For more information about adding security alerts, check [the GitHub documentation](https://docs.github.com/en/code-security/repository-security-advisories/about-github-security-advisories-for-repositories)
 
 ## Support for older terraform versions
 
