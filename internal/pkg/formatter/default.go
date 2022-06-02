@@ -20,6 +20,11 @@ var severityFormat map[severity.Severity]string
 func DefaultWithMetrics(metrics scanner.Metrics, conciseOutput bool, codeTheme string, withColours bool, noCode bool) func(b formatters.ConfigurableFormatter, results scan.Results) error {
 	return func(b formatters.ConfigurableFormatter, results scan.Results) error {
 
+		// turn on no-code if consise output required
+		if conciseOutput {
+			noCode = true
+		}
+
 		// we initialise the map here so we respect the colour-ignore options
 		severityFormat = map[severity.Severity]string{
 			severity.Low:      tml.Sprintf("<white>%s</white>", severity.Low),
@@ -211,13 +216,12 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 			)
 		}
 
+		_ = tml.Fprintf(
+			w,
+			"<darkgrey>%s</darkgrey>\n",
+			strings.Repeat("─", width),
+		)
 		if !noCode {
-			_ = tml.Fprintf(
-				w,
-				"<darkgrey>%s</darkgrey>\n",
-				strings.Repeat("─", width),
-			)
-
 			if err := highlightCode(b, first, theme, withColours); err != nil {
 				_, _ = fmt.Fprintf(w, tml.Sprintf("  <red><bold>Failed to render code:</bold> %s", err))
 			}
