@@ -13,7 +13,7 @@ require (
 	github.com/liamg/tml v0.6.0
 	github.com/owenrumney/squealer v1.0.1-0.20220510063705-c0be93f0edea
 	github.com/spf13/cobra v1.4.0
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.7.2
 	github.com/zclconf/go-cty v1.10.0
 	gopkg.in/yaml.v2 v2.4.0
 )
