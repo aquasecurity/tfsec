@@ -3,6 +3,9 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -35,6 +38,7 @@ var excludePaths []string
 var outputFlag string
 var customCheckDir string
 var configFile string
+var configFileUrl string
 var conciseOutput bool
 var excludeDownloaded bool
 var includePassed bool
@@ -77,6 +81,7 @@ func configureFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&outputFlag, "out", "O", "", "Set output file. This filename will have a format descriptor appended if multiple formats are specified with --format")
 	cmd.Flags().StringVar(&customCheckDir, "custom-check-dir", "", "Explicitly the custom checks dir location")
 	cmd.Flags().StringVar(&configFile, "config-file", "", "Config file to use during run")
+	cmd.Flags().StringVar(&configFileUrl, "config-file-url", "", "Config file to download from a remote location. Must be json or yaml")
 	cmd.Flags().BoolVar(&debug, "debug", false, "Enable debug logging (same as verbose)")
 	cmd.Flags().BoolVar(&debug, "verbose", false, "Enable verbose logging (same as debug)")
 	cmd.Flags().BoolVar(&conciseOutput, "concise-output", false, "Reduce the amount of output and no statistics")
@@ -241,6 +246,12 @@ func explodeGlob(paths []string, root string, dir string) []string {
 }
 
 func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.ScannerOption, error) {
+	if configFileUrl != "" {
+		if remoteConfigDownloaded() {
+			defer func() { _ = os.Remove(configFile) }()
+		}
+	}
+
 	if configFile == "" {
 		configDir := filepath.Join(dir, ".tfsec")
 		for _, filename := range []string{"config.json", "config.yml", "config.yaml"} {
@@ -251,6 +262,7 @@ func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.Sc
 			}
 		}
 	}
+
 	if configFile != "" {
 		if conf, err := config.LoadConfig(configFile); err == nil {
 			if !minVersionSatisfied(conf) {
@@ -277,4 +289,26 @@ func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.Sc
 		return nil, fmt.Errorf("failed to load custom checks from %s: %w", customCheckDir, err)
 	}
 	return options, nil
+}
+
+func remoteConfigDownloaded() bool {
+	tempFile := filepath.Join(os.TempDir(), filepath.Base(configFileUrl))
+
+	/* #nosec */
+	resp, err := http.Get(configFileUrl)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		return false
+	}
+	defer func() { _ = resp.Body.Close() }()
+
+	configContent, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return false
+	}
+
+	if err := ioutil.WriteFile(tempFile, configContent, os.ModePerm); err != nil {
+		return false
+	}
+	configFile = tempFile
+	return true
 }
