@@ -470,3 +470,23 @@ func Test_Flag_RegoOnly(t *testing.T) {
 	assert.Len(t, results, 1)
 	assert.Equal(t, 1, exit)
 }
+
+func Test_Flag_ConfigFileUrl(t *testing.T) {
+	configFileUrl := "https://raw.githubusercontent.com/aquasecurity/tfsec/master/_examples/with_config_overrides/.tfsec/config.yml"
+	out, err, exit := runWithArgs("./testdata/with_config_overrides", "--config-file-url", configFileUrl)
+	assert.Equal(t, "", err)
+	result := parseLovely(t, out)
+	assertResultsContain(t, result, "aws-s3-specify-public-access-block")
+	assert.Len(t, result, 1)
+	assert.Equal(t, 1, exit)
+}
+
+func Test_Flag_ConfigFileUrlNotFound(t *testing.T) {
+	configFileUrl := "https://raw.githubusercontent.com/aquasecurity/tfsec/master/_examples/with_config_overrides/.tfsec/config_not_found.yml"
+	out, err, exit := runWithArgs("./testdata/with_config_overrides", "--config-file-url", configFileUrl)
+	assert.Equal(t, "", err)
+	result := parseLovely(t, out)
+	assertResultsContain(t, result, "aws-s3-specify-public-access-block")
+	assert.Len(t, result, 9)
+	assert.Equal(t, 1, exit)
+}
