@@ -294,8 +294,9 @@ func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.Sc
 func remoteConfigDownloaded() bool {
 	tempFile := filepath.Join(os.TempDir(), filepath.Base(configFileUrl))
 
+	/* #nosec */
 	resp, err := http.Get(configFileUrl)
-	if resp.StatusCode != http.StatusOK {
+	if err != nil || resp.StatusCode != http.StatusOK {
 		return false
 	}
 	defer func() { _ = resp.Body.Close() }()
