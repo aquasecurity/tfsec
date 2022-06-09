@@ -1,4 +1,4 @@
-name: tfsec release
+name: tfsec snapshot build
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: releasing tfsec
+    name: building snapshot tfsec
     runs-on: ubuntu-latest
 
     steps:
