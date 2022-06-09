@@ -490,3 +490,23 @@ func Test_Flag_ConfigFileUrlNotFound(t *testing.T) {
 	assert.Len(t, result, 9)
 	assert.Equal(t, 1, exit)
 }
+
+func Test_Flag_CustomCheckUrlNotFound(t *testing.T) {
+	customCheckUrl := "https://raw.githubusercontent.com/aquasecurity/tfsec/master/_examples/custom/.tfsec/custom_tfchecks_not_found.yaml"
+	out, err, exit := runWithArgs("./testdata/custom_url", "--custom-check-url", customCheckUrl)
+	assert.Equal(t, "", err)
+	result := parseLovely(t, out)
+	assertResultsContain(t, result, "aws-s3-specify-public-access-block")
+	assert.Len(t, result, 43)
+	assert.Equal(t, 1, exit)
+}
+
+func Test_Flag_CustomCheckUrl(t *testing.T) {
+	customCheckUrl := "https://raw.githubusercontent.com/aquasecurity/tfsec/master/_examples/custom/.tfsec/custom_tfchecks.yaml"
+	out, err, exit := runWithArgs("./testdata/custom_url", "--custom-check-url", customCheckUrl)
+	assert.Equal(t, "", err)
+	result := parseLovely(t, out)
+	assertResultsContain(t, result, "aws-s3-specify-public-access-block")
+	assert.Len(t, result, 55)
+	assert.Equal(t, 1, exit)
+}

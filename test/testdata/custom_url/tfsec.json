@@ -1,0 +1,6 @@
+{
+  "severity_overrides": {
+    "CUS002": "HIGH",
+    "AWS025": "WARNING"
+  }
+}
