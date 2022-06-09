@@ -67,13 +67,11 @@ dockers:
   - image_templates: ["aquasec/{{ .ProjectName }}:{{ .Tag }}-arm64v8"]
     ids:
       - tfsec
-    goarch: arm64v8
+    goarch: arm64
     dockerfile: Dockerfile
     use: buildx
     build_flag_templates:
-      - --build-arg
-      - --no-cache
-      - --platform=linux/arm64
+      - --platform=linux/arm64/v8
   - image_templates: ["aquasec/{{ .ProjectName }}-alpine:{{ .Tag }}-amd64"]
     ids:
       - tfsec
@@ -88,9 +86,7 @@ dockers:
     dockerfile: Dockerfile
     use: buildx
     build_flag_templates:
-      - --platform=linux/arm64
-      - --build-arg
-      - --no-cache
+      - --platform=linux/arm64/v8
   - image_templates: ["aquasec/{{ .ProjectName }}-scratch:{{ .Tag }}-amd64"]
     ids:
       - tfsec
@@ -104,7 +100,7 @@ dockers:
     dockerfile: Dockerfile.scratch
     use: buildx
     build_flag_templates:
-      - --platform=linux/arm64
+      - --platform=linux/arm64/v8
   - image_templates: ["aquasec/{{ .ProjectName }}-ci:{{ .Tag }}-amd64"]
     ids:
       - tfsec
@@ -118,7 +114,7 @@ dockers:
     dockerfile: Dockerfile.ci
     use: buildx
     build_flag_templates:
-      - --platform=linux/arm64
+      - --platform=linux/arm64/v8
 
 docker_manifests:
   - name_template: "aquasec/{{ .ProjectName }}:{{ .Tag }}"

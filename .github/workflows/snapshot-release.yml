@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    paths-ignore:
+    - '*.md'
 
 jobs:
   build:
@@ -38,7 +41,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Release
+      - name: Release dry run
         uses: goreleaser/goreleaser-action@v3
         with:
           version: latest
