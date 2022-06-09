@@ -22,6 +22,13 @@ Custom checks are defined as json files which sit in the `.tfsec` folder in the 
 The default location for custom checks can be overridden, this is done using the `--custom-check-dir` to specify another location to load the checks from instead.
 This is useful when global checks are to applied to the terraform under test.
 
+### Downloading remote check file
+A custom check file can be downloaded from remote locations using the `--custom-check-url`. This must be an HTTP location to a file with either a `json` or `yaml` extension
+
+```
+tfsec --custom-check-url https://github.com/myorg/tfsecconfig/custom_tfchecks.json .
+```
+
 ### What does a check file look like?
 Check files are simply json, this ensures that checks can be put together without requiring Go knowledge or being able to build a new release of tfsec to include your custom code.
 
