@@ -3,7 +3,7 @@ FROM alpine:latest
 # install git
 RUN apk add --no-cache git
 
-COPY tfsec /tfsec
+COPY tfsec /usr/bin/tfsec
 
 ## use a non-privileged user
 RUN adduser -D tfsec
