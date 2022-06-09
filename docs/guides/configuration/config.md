@@ -16,6 +16,12 @@ The config file can also be set with the `--config-file` option:
 tfsec --config-file tfsec.yml
 ```
 
+Config files can be downloaded from remote locations using the `--config-file-url`. This must be a HTTP location to a file with either a `json` or `yaml` extension
+
+```
+tfsec --config-file-url https://github.com/myorg/tfsecconfig/config.json .
+```
+
 ## Minimum Severity
 
 You can specify the minimum severity of result that should be reported. By default, every severity is reported. You must use one of CRITICAL, HIGH, MEDIUM, LOW.
