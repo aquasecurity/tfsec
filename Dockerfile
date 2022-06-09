@@ -1,13 +1,10 @@
-FROM alpine:3.16.0
+FROM alpine:latest
 
 # install git
 RUN apk add --no-cache git
 
-# work somewhere where we can write
-COPY tfsec /usr/bin/tfsec
-RUN chmod a+x /usr/bin/tfsec
 
-# use a non-privileged user
+## use a non-privileged user
 RUN adduser -D tfsec
 USER tfsec
 
