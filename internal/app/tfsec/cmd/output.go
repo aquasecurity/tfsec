@@ -66,6 +66,7 @@ func gatherLinks(result scan.Result) []string {
     return append(docsLink, links...)
 }
 
+// nolint
 func outputFormat(w io.Writer, addExtension bool, baseFilename, format, fsRoot, dir string, results scan.Results, metrics scanner.Metrics) (string, error) {
 
     factory := formatters.New().
