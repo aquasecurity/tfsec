@@ -66,6 +66,7 @@ func gatherLinks(result scan.Result) []string {
 	return append(docsLink, links...)
 }
 
+// nolint
 func outputFormat(w io.Writer, addExtension bool, baseFilename, format, fsRoot, dir string, results scan.Results, metrics scanner.Metrics) (string, error) {
 
 	factory := formatters.New().
@@ -102,6 +103,10 @@ func outputFormat(w io.Writer, addExtension bool, baseFilename, format, fsRoot, 
 		factory.AsSARIF()
 	case "gif":
 		factory.WithCustomFormatterFunc(formatter.GifWithMetrics(metrics, codeTheme, !disableColours))
+	case "markdown":
+		factory.WithCustomFormatterFunc(formatter.Markdown())
+	case "html":
+		factory.WithCustomFormatterFunc(formatter.HTML())
 	default:
 		return "", fmt.Errorf("invalid format specified: '%s'", format)
 	}
