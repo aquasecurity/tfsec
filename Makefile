@@ -70,4 +70,4 @@ mkdocs-serve:
 .PHONY: update-defsec
 update-defsec:
 	go get github.com/aquasecurity/defsec@latest
-
+	go mod tidy
