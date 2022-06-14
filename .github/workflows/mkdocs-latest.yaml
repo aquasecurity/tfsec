@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: |
           git clone https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git
-          cd mkdocs-material-insiders && git tags
+          cd mkdocs-material-insiders && git tag
           #pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git
           #pip install -r docs/requirements.txt
         env:
