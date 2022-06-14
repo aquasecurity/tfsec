@@ -1,6 +1,5 @@
 name: Deploy the latest documentation
 on:
-  pull_request:
   workflow_dispatch:
     inputs:
       version:
@@ -24,9 +23,19 @@ jobs:
           python-version: 3.x
       - name: Install dependencies
         run: |
-          git clone https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git
-          cd mkdocs-material-insiders && git tag
-          #pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git
-          #pip install -r docs/requirements.txt
+          pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git@8.3.3-insiders-4.17.2
+          pip install -r docs/requirements.txt
         env:
           GH_TOKEN: ${{ secrets.MKDOCS_AQUA_BOT }}
+      - name: Configure the git user
+        run: |
+          git config user.name "owenrumney"
+          git config user.email "owen.rumney@aquasec.com"
+      - name: Deploy the latest documents from new tag push
+        if: ${{ github.event.inputs.version == '' }}
+        run: |
+          VERSION=$(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
+          mike deploy --push --update-aliases $VERSION latest
+      - name: Deploy the latest documents from manual trigger
+        if: ${{ github.event.inputs.version != '' }}
+        run: mike deploy --push --update-aliases ${{ github.event.inputs.version }} latest
