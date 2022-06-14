@@ -1,4 +1,4 @@
 mike
 mkdocs-macros-plugin
 mkdocs-include-markdown-plugin
-mkdocs-material
+mkdocs-material==8.3.3
