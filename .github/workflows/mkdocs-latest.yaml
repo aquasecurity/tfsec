@@ -1,5 +1,6 @@
 name: Deploy the latest documentation
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       version:
@@ -23,8 +24,10 @@ jobs:
           python-version: 3.x
       - name: Install dependencies
         run: |
-          pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git@8.3.3+insiders-4.17.2
-          pip install -r docs/requirements.txt
+          git clone https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git
+          cd mkdocs-material-insiders && git tags
+          #pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git
+          #pip install -r docs/requirements.txt
         env:
           GH_TOKEN: ${{ secrets.MKDOCS_AQUA_BOT }}
       - name: Configure the git user
