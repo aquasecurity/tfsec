@@ -35,7 +35,7 @@ func printResultsTableMarkdown(b formatters.ConfigurableFormatter, title string,
 	if len(results) == 0 {
 		return
 	}
-	_, _ = fmt.Fprintf(b.Writer(), "## %d %s\n", len(results), title)
+	_, _ = fmt.Fprintf(b.Writer(), "## %s: %d issue(s)\n", title, len(results))
 	_, _ = fmt.Fprintf(b.Writer(), "| # | ID | Severity | Title | Location | Description |\n")
 	_, _ = fmt.Fprintf(b.Writer(), "|---|----|----------|-------|----------|-------------|\n")
 	for i, result := range results {
@@ -47,7 +47,7 @@ func printResultsTableMarkdown(b formatters.ConfigurableFormatter, title string,
 		_, _ = fmt.Fprintf(
 			b.Writer(),
 			"| %d | `%s` | *%s* | _%s_ | `%s` | %s |\n",
-			i,
+			i+1,
 			result.Rule().LongID(),
 			result.Severity(),
 			result.Rule().Summary,
