@@ -20,8 +20,8 @@ Steps to reproduce the behavior:
 **Expected behavior**
 <!-- A clear and concise description of what you expected to happen. -->
 
-**Screenshots/Output**
-<!-- If applicable, add screenshots/output to help explain your problem. -->
+**Output of your tfsec command with --debug flag**
+<!-- If applicable, add screenshots/output to help explain your problem. Remove sensitive info first! -->
 
 **System Info**
 <!-- complete the following -->
