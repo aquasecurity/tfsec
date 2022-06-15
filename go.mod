@@ -5,14 +5,13 @@ go 1.18
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.5
 	github.com/Masterminds/semver v1.5.0
-	github.com/aquasecurity/defsec v0.68.0
+	github.com/aquasecurity/defsec v0.68.1
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/go-version v1.5.0
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/liamg/clinch v1.6.1
 	github.com/liamg/gifwrap v0.0.6
 	github.com/liamg/tml v0.6.0
-	github.com/owenrumney/squealer v1.0.1-0.20220510063705-c0be93f0edea
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.7.2
 	github.com/zclconf/go-cty v1.10.0
@@ -70,6 +69,7 @@ require (
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/open-policy-agent/opa v0.41.0 // indirect
+	github.com/owenrumney/squealer v1.0.1-0.20220510063705-c0be93f0edea // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0 // indirect
