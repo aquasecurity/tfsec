@@ -84,7 +84,7 @@ func printResultsTableHTML(b formatters.ConfigurableFormatter, title string, res
 		return scoreI > scoreJ
 	})
 
-	_, _ = fmt.Fprintf(b.Writer(), "    <h2>%d %s</h2>\n", len(results), title)
+	_, _ = fmt.Fprintf(b.Writer(), "    <h2>%s: %d issue(s)</h2>\n", title, len(results))
 	_, _ = fmt.Fprintf(b.Writer(), `    <table class="pure-table">
       <thead>
         <tr><th> # </th><th> ID </th><th> Severity </th><th> Title </th><th> Location </th><th> Description </th></tr>
@@ -112,7 +112,7 @@ func printResultsTableHTML(b formatters.ConfigurableFormatter, title string, res
           <td>%s</td>
         </tr>
 `,
-			i,
+			i+1,
 			href,
 			result.Rule().LongID(),
 			result.Severity(),
