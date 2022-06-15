@@ -261,6 +261,7 @@ func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.Sc
 			path := filepath.Join(configDir, filename)
 			if _, err := os.Stat(path); err == nil {
 				configFile = path
+				logger.Log("Found default config file at %s", configFile)
 				break
 			}
 		}
@@ -268,6 +269,7 @@ func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.Sc
 
 	if configFile != "" {
 		if conf, err := config.LoadConfig(configFile); err == nil {
+			logger.Log("Loaded config file at %s", configFile)
 			if !minVersionSatisfied(conf) {
 				return nil, fmt.Errorf("minimum tfsec version requirement not satisfied")
 			}
@@ -283,6 +285,8 @@ func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.Sc
 			if len(conf.ExcludedChecks) > 0 {
 				options = append(options, scanner.ScannerWithExcludedRules(append(conf.ExcludedChecks, excludedRuleIDs)))
 			}
+		} else {
+			logger.Log("Failed to load config file: %s", err)
 		}
 	}
 

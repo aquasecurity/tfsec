@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/Masterminds/semver"
+	debugging "github.com/aquasecurity/defsec/pkg/debug"
 	"github.com/aquasecurity/defsec/pkg/extrafs"
 	scanner "github.com/aquasecurity/defsec/pkg/scanners/terraform"
 	"github.com/aquasecurity/defsec/pkg/scanners/terraform/executor"
@@ -32,6 +33,8 @@ func (e ExitCodeError) Code() int {
 	return e.code
 }
 
+var logger debugging.Logger
+
 func Root() *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:               "tfsec [directory]",
@@ -42,6 +45,13 @@ func Root() *cobra.Command {
 		Args:              cobra.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
+			if debug {
+				logger = debugging.New(cmd.ErrOrStderr(), "cmd")
+				debugging.LogSystemInfo(cmd.ErrOrStderr(), version.Version)
+			}
+
+			logger.Log("Command args=%#v", args)
+
 			// we handle our own errors, and usage does not need to be shown if we've got this far
 			cmd.SilenceUsage = true
 
@@ -49,6 +59,8 @@ func Root() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			logger.Log("Determined path dir=%s", dir)
 
 			if len(tfvarsPaths) == 0 && unusedTfvarsPresent(dir) {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "WARNING: A tfvars file was found but not automatically used. Did you mean to specify the --tfvars-file flag?\n")
@@ -59,9 +71,8 @@ func Root() *cobra.Command {
 				return err
 			}
 
-			if debug {
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Paths: args=%s dir=%s root=%s rel=%s\n", args, dir, root, rel)
-			}
+			logger.Log("Determined path root=%s", root)
+			logger.Log("Determined path rel=%s", rel)
 
 			options, err := configureOptions(cmd, root, dir)
 			if err != nil {
@@ -87,16 +98,15 @@ func Root() *cobra.Command {
 				return nil
 			}
 
+			exitCode := getDetailedExitCode(metrics)
+			logger.Log("Exit code based on results: %d", exitCode)
+
 			formats := strings.Split(format, ",")
 			if err := output(cmd, outputFlag, formats, root, rel, results, metrics); err != nil {
 				return fmt.Errorf("failed to write output: %w", err)
 			}
 
-			exitCode := getDetailedExitCode(metrics)
 			if exitCode != 0 && !softFail {
-				if debug {
-					_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Exit code: %d\n", exitCode)
-				}
 				return &ExitCodeError{
 					code: exitCode,
 				}
