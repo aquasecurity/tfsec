@@ -7,7 +7,7 @@
 [![Docker Build](https://img.shields.io/docker/v/tfsec/tfsec?label=docker)](https://hub.docker.com/r/tfsec/tfsec)
 [![Homebrew](https://img.shields.io/badge/dynamic/json.svg?url=https://formulae.brew.sh/api/formula/tfsec.json&query=$.versions.stable&label=homebrew)](https://formulae.brew.sh/formula/tfsec)
 [![Chocolatey](https://img.shields.io/chocolatey/v/tfsec)](https://chocolatey.org/packages/tfsec)
-[![AUR version](https://img.shields.io/aur/version/tfsec)](https://aur.archlinux.org/packages/tfsec)
+[![AUR version](https://img.shields.io/aur/version/tfsec-bin)](https://aur.archlinux.org/packages/tfsec-bin)
 [![VScode Extension](https://img.shields.io/visual-studio-marketplace/v/tfsec.tfsec?label=vscode)](https://marketplace.visualstudio.com/items?itemName=tfsec.tfsec)
 
 tfsec uses static analysis of your terraform code to spot potential misconfigurations.
