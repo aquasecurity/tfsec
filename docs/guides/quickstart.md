@@ -44,5 +44,5 @@ This page only covers the basics of what `tfsec` can do - much more is achievabl
 
 
 [Terraform]: https://www.terraform.io
-[GitHub Action]: ../configuration/github-actions/github-action
+[GitHub Action]: ../github-actions/github-action
 [Parameters]: ../usage
