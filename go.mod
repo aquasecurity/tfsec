@@ -13,7 +13,7 @@ require (
 	github.com/liamg/gifwrap v0.0.6
 	github.com/liamg/tml v0.6.0
 	github.com/spf13/cobra v1.4.0
-	github.com/stretchr/testify v1.7.2
+	github.com/stretchr/testify v1.7.3
 	github.com/zclconf/go-cty v1.10.0
 	gopkg.in/yaml.v2 v2.4.0
 )
