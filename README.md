@@ -111,6 +111,10 @@ A Visual Studio Code extension is being developed to integrate with tfsec result
 
 If you want to run tfsec on your repository as a GitHub Action, you can use [https://github.com/aquasecurity/tfsec-pr-commenter-action](https://github.com/aquasecurity/tfsec-pr-commenter-action).
 
+## Use as an Azure DevOps Pipelines Task
+
+You can now install the [official tfsec task](https://marketplace.visualstudio.com/items?itemName=AquaSecurityOfficial.tfsec-official). Please raise any issues/feature requests on the [task repository](https://github.com/aquasecurity/tfsec-azure-pipelines-task).
+
 ## Ignoring Warnings
 
 You may wish to ignore some warnings. If you'd like to do so, you can
