@@ -17,6 +17,7 @@ type Config struct {
 	SeverityOverrides      map[string]string `json:"severity_overrides,omitempty" yaml:"severity_overrides,omitempty"`
 	ExcludedChecks         []string          `json:"exclude,omitempty" yaml:"exclude,omitempty"`
 	IncludedChecks         []string          `json:"include,omitempty" yaml:"include,omitempty"`
+	ExcludeIgnores         []string          `json:"exclude_ignores,omitempty" yaml:"exclude_ignores,omitempty"`
 	MinimumRequiredVersion string            `json:"min_required_version" yaml:"min_required_version,omitempty"`
 }
 
