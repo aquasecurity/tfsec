@@ -94,7 +94,7 @@ func Root() *cobra.Command {
 				for _, result := range results {
 					statistics = executor.AddStatisticsCount(statistics, result)
 				}
-				return statistics.PrintStatisticsTable("lovely", cmd.ErrOrStderr())
+				return statistics.PrintStatisticsTable(format, cmd.ErrOrStderr())
 			}
 
 			exitCode := getDetailedExitCode(metrics)
