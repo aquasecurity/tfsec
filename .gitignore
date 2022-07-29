@@ -2,6 +2,7 @@
 /tfsec-docs
 /bin
 /.idea
+vendor/
 
 # ignore windows compiled binary
 /tfsec.exe
