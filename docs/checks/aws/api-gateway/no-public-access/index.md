@@ -26,6 +26,10 @@ The following example will fail the aws-api-gateway-no-public-access check.
 	
  }
 
+ resource "aws_api_gateway_resource" "MyDemoResource" {
+	rest_api_id      = aws_api_gateway_rest_api.MyDemoAPI.id
+ }
+
  resource "aws_api_gateway_method" "bad_example" {
    rest_api_id   = aws_api_gateway_rest_api.MyDemoAPI.id
    resource_id   = aws_api_gateway_resource.MyDemoResource.id
@@ -44,6 +48,10 @@ The following example will pass the aws-api-gateway-no-public-access check.
 
  resource "aws_api_gateway_rest_api" "MyDemoAPI" {
 	
+ }
+
+ resource "aws_api_gateway_resource" "MyDemoResource" {
+	rest_api_id      = aws_api_gateway_rest_api.MyDemoAPI.id
  }
 
  resource "aws_api_gateway_method" "good_example" {

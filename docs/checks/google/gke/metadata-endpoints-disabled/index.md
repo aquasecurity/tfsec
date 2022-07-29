@@ -29,9 +29,11 @@ The following example will fail the google-gke-metadata-endpoints-disabled check
 ```terraform
 
  resource "google_container_cluster" "bad_example" {
- 	metadata {
-     disable-legacy-endpoints = false
-   }
+    node_config {
+      metadata = {
+        disable-legacy-endpoints = false
+      }
+    }
  }
 ```
 
@@ -43,9 +45,11 @@ The following example will pass the google-gke-metadata-endpoints-disabled check
 ```terraform
 
  resource "google_container_cluster" "good_example" {
- 	metadata {
-     disable-legacy-endpoints = true
-   }
+    node_config {
+      metadata = {
+        disable-legacy-endpoints = true
+      }
+    }
  }
 ```
 

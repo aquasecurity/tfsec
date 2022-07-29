@@ -1,29 +1,29 @@
 ---
-title: Unencrypted SQS queue.
+title: SQS queue should be encrypted with a CMK.
 ---
 
-# Unencrypted SQS queue.
+# SQS queue should be encrypted with a CMK.
 
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation
 
-Queues should be encrypted to protect queue contents.
+Queues should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific queues.
 
 ### Possible Impact
-The SQS queue messages could be read if compromised
+The SQS queue messages could be read if compromised. Key management is very limited when using default keys.
 
 ### Suggested Resolution
-Turn on SQS Queue encryption
+Encrypt SQS Queue with a customer-managed key
 
 
 ### Insecure Example
 
-The following example will fail the aws-sqs-enable-queue-encryption check.
+The following example will fail the aws-sqs-queue-encryption-use-cmk check.
 ```terraform
 
  resource "aws_sqs_queue" "bad_example" {
- 	# no key specified
+	kms_master_key_id = "alias/aws/sqs"
  }
  
 ```
@@ -32,7 +32,7 @@ The following example will fail the aws-sqs-enable-queue-encryption check.
 
 ### Secure Example
 
-The following example will pass the aws-sqs-enable-queue-encryption check.
+The following example will pass the aws-sqs-queue-encryption-use-cmk check.
 ```terraform
 
  resource "aws_sqs_queue" "good_example" {

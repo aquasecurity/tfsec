@@ -1,29 +1,29 @@
 ---
-title: Unencrypted SNS topic.
+title: SNS topic not encrypted with CMK.
 ---
 
-# Unencrypted SNS topic.
+# SNS topic not encrypted with CMK.
 
 ### Default Severity: <span class="severity high">high</span>
 
 ### Explanation
 
-Topics should be encrypted to protect their contents.
+Topics should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular key management.
 
 ### Possible Impact
-The SNS topic messages could be read if compromised
+Key management very limited when using default keys.
 
 ### Suggested Resolution
-Turn on SNS Topic encryption
+Use a CMK for SNS Topic encryption
 
 
 ### Insecure Example
 
-The following example will fail the aws-sns-enable-topic-encryption check.
+The following example will fail the aws-sns-topic-encryption-use-cmk check.
 ```terraform
 
  resource "aws_sns_topic" "bad_example" {
- 	# no key id specified
+    kms_master_key_id = "alias/aws/sns"
  }
  
 ```
@@ -32,7 +32,7 @@ The following example will fail the aws-sns-enable-topic-encryption check.
 
 ### Secure Example
 
-The following example will pass the aws-sns-enable-topic-encryption check.
+The following example will pass the aws-sns-topic-encryption-use-cmk check.
 ```terraform
 
  resource "aws_sns_topic" "good_example" {

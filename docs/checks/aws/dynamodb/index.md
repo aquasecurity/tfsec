@@ -7,7 +7,7 @@ title: dynamodb
 ## Checks
 
 
-- [enable-at-rest-encryption](enable-at-rest-encryption) DAX Cluster should always encrypt data at rest
+- [enable-at-rest-encryption](enable-at-rest-encryption) DAX Cluster and tables should always encrypt data at rest
 
 - [enable-recovery](enable-recovery) Point in time recovery should be enabled to protect DynamoDB table
 

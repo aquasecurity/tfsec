@@ -38,6 +38,7 @@ The following example will fail the aws-api-gateway-enable-cache-encryption chec
    settings {
      metrics_enabled = true
      logging_level   = "INFO"
+     caching_enabled = true
      cache_data_encrypted = false
    }
  }
@@ -67,6 +68,7 @@ The following example will pass the aws-api-gateway-enable-cache-encryption chec
    settings {
      metrics_enabled = true
      logging_level   = "INFO"
+     caching_enabled = true
      cache_data_encrypted = true
    }
  }
