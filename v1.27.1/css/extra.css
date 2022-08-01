@@ -1,0 +1,24 @@
+.severity {
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.critical {
+    background: red;
+    color: white;
+}
+
+.high {
+    background: orangered;
+    color: white;
+}
+
+.medium {
+    background: orange;
+    color: white;
+}
+
+.low {
+    background: darkgray;
+    color: white;
+}
