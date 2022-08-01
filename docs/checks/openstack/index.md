@@ -9,4 +9,6 @@ title: openstack
 
 - [compute](compute)
 
+- [networking](networking)
+
 

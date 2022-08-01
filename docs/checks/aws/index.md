@@ -11,8 +11,6 @@ title: aws
 
 - [athena](athena)
 
-- [autoscaling](autoscaling)
-
 - [cloudfront](cloudfront)
 
 - [cloudtrail](cloudtrail)
@@ -26,8 +24,6 @@ title: aws
 - [documentdb](documentdb)
 
 - [dynamodb](dynamodb)
-
-- [ebs](ebs)
 
 - [ec2](ec2)
 
@@ -44,6 +40,8 @@ title: aws
 - [elasticache](elasticache)
 
 - [elb](elb)
+
+- [emr](emr)
 
 - [iam](iam)
 
@@ -70,8 +68,6 @@ title: aws
 - [sqs](sqs)
 
 - [ssm](ssm)
-
-- [vpc](vpc)
 
 - [workspaces](workspaces)
 

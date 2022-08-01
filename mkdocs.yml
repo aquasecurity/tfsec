@@ -83,9 +83,23 @@ nav:
       - enable-volume-encryption: checks/aws/ebs/enable-volume-encryption/index.md
       - encryption-customer-key: checks/aws/ebs/encryption-customer-key/index.md
     - ec2:
+      - add-description-to-security-group: checks/aws/ec2/add-description-to-security-group/index.md
+      - add-description-to-security-group-rule: checks/aws/ec2/add-description-to-security-group-rule/index.md
       - enable-at-rest-encryption: checks/aws/ec2/enable-at-rest-encryption/index.md
+      - enable-launch-config-at-rest-encryption: checks/aws/ec2/enable-launch-config-at-rest-encryption/index.md
+      - enable-volume-encryption: checks/aws/ec2/enable-volume-encryption/index.md
       - enforce-http-token-imds: checks/aws/ec2/enforce-http-token-imds/index.md
+      - enforce-launch-config-http-token-imds: checks/aws/ec2/enforce-launch-config-http-token-imds/index.md
+      - no-default-vpc: checks/aws/ec2/no-default-vpc/index.md
+      - no-excessive-port-access: checks/aws/ec2/no-excessive-port-access/index.md
+      - no-public-egress-sgr: checks/aws/ec2/no-public-egress-sgr/index.md
+      - no-public-ingress-acl: checks/aws/ec2/no-public-ingress-acl/index.md
+      - no-public-ingress-sgr: checks/aws/ec2/no-public-ingress-sgr/index.md
+      - no-public-ip: checks/aws/ec2/no-public-ip/index.md
+      - no-secrets-in-launch-template-user-data: checks/aws/ec2/no-secrets-in-launch-template-user-data/index.md
       - no-secrets-in-user-data: checks/aws/ec2/no-secrets-in-user-data/index.md
+      - no-sensitive-info: checks/aws/ec2/no-sensitive-info/index.md
+      - volume-encryption-customer-key: checks/aws/ec2/volume-encryption-customer-key/index.md
     - ecr:
       - enable-image-scans: checks/aws/ecr/enable-image-scans/index.md
       - enforce-immutable-repository: checks/aws/ecr/enforce-immutable-repository/index.md
@@ -118,10 +132,17 @@ nav:
       - drop-invalid-headers: checks/aws/elb/drop-invalid-headers/index.md
       - http-not-used: checks/aws/elb/http-not-used/index.md
       - use-secure-tls-policy: checks/aws/elb/use-secure-tls-policy/index.md
+    - emr:
+      - enable-at-rest-encryption: checks/aws/emr/enable-at-rest-encryption/index.md
+      - enable-in-transit-encryption: checks/aws/emr/enable-in-transit-encryption/index.md
+      - enable-local-disk-encryption: checks/aws/emr/enable-local-disk-encryption/index.md
     - iam:
+      - enforce-group-mfa: checks/aws/iam/enforce-group-mfa/index.md
       - enforce-mfa: checks/aws/iam/enforce-mfa/index.md
       - no-password-reuse: checks/aws/iam/no-password-reuse/index.md
       - no-policy-wildcards: checks/aws/iam/no-policy-wildcards/index.md
+      - no-root-access-keys: checks/aws/iam/no-root-access-keys/index.md
+      - no-user-attached-policies: checks/aws/iam/no-user-attached-policies/index.md
       - require-lowercase-in-passwords: checks/aws/iam/require-lowercase-in-passwords/index.md
       - require-numbers-in-passwords: checks/aws/iam/require-numbers-in-passwords/index.md
       - require-symbols-in-passwords: checks/aws/iam/require-symbols-in-passwords/index.md
@@ -171,9 +192,11 @@ nav:
       - specify-public-access-block: checks/aws/s3/specify-public-access-block/index.md
     - sns:
       - enable-topic-encryption: checks/aws/sns/enable-topic-encryption/index.md
+      - topic-encryption-use-cmk: checks/aws/sns/topic-encryption-use-cmk/index.md
     - sqs:
       - enable-queue-encryption: checks/aws/sqs/enable-queue-encryption/index.md
       - no-wildcards-in-policy-documents: checks/aws/sqs/no-wildcards-in-policy-documents/index.md
+      - queue-encryption-use-cmk: checks/aws/sqs/queue-encryption-use-cmk/index.md
     - ssm:
       - avoid-leaks-via-http: checks/aws/ssm/avoid-leaks-via-http/index.md
       - secret-use-customer-key: checks/aws/ssm/secret-use-customer-key/index.md
@@ -363,6 +386,10 @@ nav:
       - no-plaintext-password: checks/openstack/compute/no-plaintext-password/index.md
       - no-public-access: checks/openstack/compute/no-public-access/index.md
     - openstack: checks/openstack/home.md
+    - networking:
+      - describe-security-group: checks/openstack/networking/describe-security-group/index.md
+      - no-public-egress: checks/openstack/networking/no-public-egress/index.md
+      - no-public-ingress: checks/openstack/networking/no-public-ingress/index.md
   - oracle:
     - compute:
       - no-public-ip: checks/oracle/compute/no-public-ip/index.md

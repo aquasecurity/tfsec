@@ -7,11 +7,15 @@ title: iam
 ## Checks
 
 
-- [enforce-mfa](enforce-mfa) IAM Groups should have MFA enforcement activated.
+- [enforce-group-mfa](enforce-group-mfa) IAM groups should have MFA enforcement activated.
 
 - [no-password-reuse](no-password-reuse) IAM Password policy should prevent password reuse.
 
 - [no-policy-wildcards](no-policy-wildcards) IAM policy should avoid use of wildcards and instead apply the principle of least privilege
+
+- [no-root-access-keys](no-root-access-keys) The root user has complete access to all services and resources in an AWS account. AWS Access Keys provide programmatic access to a given account.
+
+- [no-user-attached-policies](no-user-attached-policies) IAM policies should not be granted directly to users.
 
 - [require-lowercase-in-passwords](require-lowercase-in-passwords) IAM Password policy should have requirement for at least one lowercase character.
 

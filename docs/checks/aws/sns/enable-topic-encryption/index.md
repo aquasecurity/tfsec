@@ -8,7 +8,7 @@ title: Unencrypted SNS topic.
 
 ### Explanation
 
-Queues should be encrypted with customer managed KMS keys and not default AWS managed keys, in order to allow granular control over access to specific queues.
+Topics should be encrypted to protect their contents.
 
 ### Possible Impact
 The SNS topic messages could be read if compromised

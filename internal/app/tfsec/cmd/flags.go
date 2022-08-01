@@ -33,6 +33,7 @@ var format string
 var softFail bool
 var filterResults string
 var excludedRuleIDs string
+var excludeIgnoresIDs string
 var tfvarsPaths []string
 var excludePaths []string
 var outputFlag string
@@ -74,6 +75,7 @@ func configureFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&migrateIgnores, "migrate-ignores", false, "Migrate ignore codes to the new ID structure")
 	cmd.Flags().StringVarP(&format, "format", "f", "lovely", "Select output format: lovely, json, csv, checkstyle, junit, sarif, text, markdown, html, gif. To use multiple formats, separate with a comma and specify a base output filename with --out. A file will be written for each type. The first format will additionally be written stdout.")
 	cmd.Flags().StringVarP(&excludedRuleIDs, "exclude", "e", "", "Provide comma-separated list of rule IDs to exclude from run.")
+	cmd.Flags().StringVarP(&excludeIgnoresIDs, "exclude-ignores", "E", "", "Provide comma-separated list of ignored rule to exclude from run.")
 	cmd.Flags().StringVar(&filterResults, "filter-results", "", "Filter results to return specific checks only (supports comma-delimited input).")
 	cmd.Flags().BoolVarP(&softFail, "soft-fail", "s", false, "Runs checks but suppresses error code")
 	cmd.Flags().StringSliceVar(&tfvarsPaths, "tfvars-file", nil, "Path to .tfvars file, can be used multiple times and evaluated in order of specification")
@@ -216,6 +218,10 @@ func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]options.Scanner
 		scannerOptions = append(scannerOptions, scanner.ScannerWithExcludedRules(strings.Split(excludedRuleIDs, ",")))
 	}
 
+	if excludeIgnoresIDs != "" {
+		scannerOptions = append(scannerOptions, scanner.ScannerWithExcludeIgnores(strings.Split(excludeIgnoresIDs, ",")))
+	}
+
 	if debug {
 		scannerOptions = append(scannerOptions, options.ScannerWithDebug(cmd.ErrOrStderr()))
 	}
@@ -284,6 +290,9 @@ func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.Sc
 			}
 			if len(conf.ExcludedChecks) > 0 {
 				options = append(options, scanner.ScannerWithExcludedRules(append(conf.ExcludedChecks, excludedRuleIDs)))
+			}
+			if len(conf.ExcludeIgnores) > 0 {
+				options = append(options, scanner.ScannerWithExcludeIgnores(append(conf.ExcludeIgnores, excludeIgnoresIDs)))
 			}
 		} else {
 			logger.Log("Failed to load config file: %s", err)
