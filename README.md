@@ -60,7 +60,7 @@ scoop install tfsec
 Bash script (Linux):
 
 ```console
-curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/install_linux.sh | bash
+curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
 ```
 
 You can also grab the binary for your system from the [releases page](https://github.com/aquasecurity/tfsec/releases).
