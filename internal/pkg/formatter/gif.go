@@ -19,7 +19,7 @@ func GifWithMetrics(metrics scanner.Metrics, theme string, withColours bool) fun
 			gifSrc = "https://i.giphy.com/media/A1SxC5HRrD3MY/source.gif"
 		}
 
-		if renderer, err := ascii.FromURL(gifSrc); err == nil {
+		if renderer, err := ascii.FromURL(gifSrc, true); err == nil {
 			renderer.SetFill(true)
 			_ = renderer.PlayOnce()
 		}
