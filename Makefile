@@ -16,6 +16,7 @@ test:
 .PHONY: build
 build:
 	./scripts/build.sh
+	
 
 .PHONY: generate-docs
 generate-docs:
