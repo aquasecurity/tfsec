@@ -93,7 +93,7 @@ func printResultsTableHTML(b formatters.ConfigurableFormatter, title string, res
 `)
 	for i, result := range results {
 		desc := strings.ReplaceAll(result.Description(), "\n", "<br>")
-		location := fmt.Sprintf("%s:%d", b.Path(result), result.Range().GetStartLine())
+		location := fmt.Sprintf("%s:%d", b.Path(result, result.Metadata()), result.Range().GetStartLine())
 		if result.Range().GetEndLine() > result.Range().GetStartLine() {
 			location = fmt.Sprintf("%s-%d", location, result.Range().GetEndLine())
 		}

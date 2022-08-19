@@ -181,7 +181,7 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 	}
 
 	via := getOccurrences(first, b.BaseDir())
-	filename := b.Path(first)
+	filename := b.Path(first, first.Metadata())
 
 	_ = tml.Fprintf(
 		w,
@@ -239,7 +239,7 @@ func printResult(b formatters.ConfigurableFormatter, group formatters.GroupedRes
 		causeMap := make(map[string]int)
 		for _, result := range group.Results() {
 
-			niceFilename := b.Path(result)
+			niceFilename := b.Path(result, result.Metadata())
 
 			m := result.Metadata()
 			metadata := &m
