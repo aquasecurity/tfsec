@@ -34,7 +34,7 @@ case "$(uname -s)" in
     ;;
 esac
 checksum_file="tfsec_checksums.txt"
-download_path="/tmp/tfsec"
+download_path=$(mktemp -d -t tfsec.XXXXXXXXXX)
 
 echo "remote_filename=$remote_filename"
 echo "local_filename=$local_filename"
@@ -67,7 +67,7 @@ fi
 echo "Downloaded successfully"
 
 echo "Validate checksum"
-curl --fail --silent -L -o "/tmp/${checksum_file}" "https://github.com/aquasecurity/tfsec/releases/download/${version}/${checksum_file}"
+curl --fail --silent -L -o "${download_path}/${checksum_file}" "https://github.com/aquasecurity/tfsec/releases/download/${version}/${checksum_file}"
 checksum_dl_val=$?
 if [ $checksum_dl_val -ne 0 ]; then
   echo "Failed to download checksum file ${checksum_file}"
@@ -76,7 +76,7 @@ fi
 
 pushd $PWD > /dev/null
 cd $download_path
-sha256sum -c "/tmp/${checksum_file}" --quiet --ignore-missing
+sha256sum -c $checksum_file --quiet --ignore-missing
 shasum_val=$?
 popd > /dev/null
 
@@ -91,8 +91,8 @@ echo -e "\n\n===================================================="
 mv "${download_path}/${remote_filename}" "${download_path}/${local_filename}"
 if [[ $remote_filename == *"windows"* ]]; then
   dest="${TFSEC_INSTALL_PATH:-/bin}/"
-  echo "Installing /tmp/${local_filename} to ${dest}..."
-  mv "${download_path}${local_filename}" "$dest"
+  echo "Installing ${local_filename} to ${dest}..."
+  mv "${download_path}/${local_filename}" "$dest"
   retVal=$?
   if [ $retVal -ne 0 ]; then
     echo "Failed to install tfsec"
@@ -119,7 +119,6 @@ else
 fi
 
 echo "Cleaning downloaded files..."
-rm -f "/tmp/${checksum_file}"
 rm -rf "${download_path}"
 
 echo -e "\n\n===================================================="
