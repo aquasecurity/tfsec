@@ -5,6 +5,7 @@ on:
 
 jobs:
   triage:
+    name: "Triage issues"
     runs-on: ubuntu-latest
     steps:
     - uses: github/issue-labeler@v2.5
@@ -12,4 +13,3 @@ jobs:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         configuration-path: .github/labeler.yml
         enable-versioned-regex: 0
-
