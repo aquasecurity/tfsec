@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: releasing tfsec
+    name: Create GHCR release
     runs-on: ubuntu-latest
 
     steps:
@@ -17,15 +17,9 @@ jobs:
 
       - uses: actions/setup-go@v3
         with:
-          stable: "false"
-          go-version: "1.18"
-      - run: go version
-
-      - uses: actions/setup-go@v3
-        with:
-          stable: "false"
-          go-version: "1.18"
-      - run: go version
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: go.sum
 
       - name: Import GPG key
         id: import_gpg
