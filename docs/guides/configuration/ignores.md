@@ -1,6 +1,6 @@
-## Ignoring Warnings
+## Ignoring Issues
 
-You may wish to ignore some warnings. If you'd like to do so, you can
+You may wish to ignore some issues. If you'd like to do so, you can
 simply add a comment containing `tfsec:ignore:<rule>` to the offending
 line in your templates. If the problem refers to a block of code, such
 as a multiline string, you can add the comment on the line above the
@@ -36,6 +36,17 @@ resource "aws_s3_bucket" "my-bucket" {
   bucket = "foobar"
   acl    = "private"
 }
+```
+
+### Ignoring Module Issues
+
+Issues within third-party modules cannot be ignored with the above method, as you might not have access to modify the module source code. In this situation you can add ignore rules above the module block where the module is imported, for example:
+
+```hcl
+#tfsec:ignore:AWS052:exp:2022-01-01
+module "db" {
+  source = "terraform-aws-modules/rds/aws"
+  ...
 ```
 
 ### Expiration Date
