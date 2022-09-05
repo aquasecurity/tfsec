@@ -117,6 +117,7 @@ This can be achieved in the config file using the `min_required_version` setting
 {
   "min_required_version": "v1.1.2"
 }
+```
 
 or in yaml
 
