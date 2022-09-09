@@ -9,6 +9,8 @@ title: github
 
 - [actions](actions)
 
+- [branch_protections](branch_protections)
+
 - [repositories](repositories)
 
 

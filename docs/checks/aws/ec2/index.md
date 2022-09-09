@@ -33,6 +33,8 @@ title: ec2
 
 - [no-public-ip](no-public-ip) Launch configuration should not have a public IP address.
 
+- [no-public-ip-subnet](no-public-ip-subnet) Instances in a subnet should not receive a public IP address by default.
+
 - [no-secrets-in-launch-template-user-data](no-secrets-in-launch-template-user-data) User data for EC2 instances must not contain sensitive AWS keys
 
 - [no-secrets-in-user-data](no-secrets-in-user-data) User data for EC2 instances must not contain sensitive AWS keys

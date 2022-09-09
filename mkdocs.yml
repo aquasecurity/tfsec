@@ -65,6 +65,9 @@ nav:
       - enable-all-regions: checks/aws/cloudtrail/enable-all-regions/index.md
       - enable-at-rest-encryption: checks/aws/cloudtrail/enable-at-rest-encryption/index.md
       - enable-log-validation: checks/aws/cloudtrail/enable-log-validation/index.md
+      - ensure-cloudwatch-integration: checks/aws/cloudtrail/ensure-cloudwatch-integration/index.md
+      - no-public-log-access: checks/aws/cloudtrail/no-public-log-access/index.md
+      - require-bucket-access-logging: checks/aws/cloudtrail/require-bucket-access-logging/index.md
     - cloudwatch:
       - log-group-customer-key: checks/aws/cloudwatch/log-group-customer-key/index.md
     - codebuild:
@@ -96,6 +99,7 @@ nav:
       - no-public-ingress-acl: checks/aws/ec2/no-public-ingress-acl/index.md
       - no-public-ingress-sgr: checks/aws/ec2/no-public-ingress-sgr/index.md
       - no-public-ip: checks/aws/ec2/no-public-ip/index.md
+      - no-public-ip-subnet: checks/aws/ec2/no-public-ip-subnet/index.md
       - no-secrets-in-launch-template-user-data: checks/aws/ec2/no-secrets-in-launch-template-user-data/index.md
       - no-secrets-in-user-data: checks/aws/ec2/no-secrets-in-user-data/index.md
       - no-sensitive-info: checks/aws/ec2/no-sensitive-info/index.md
@@ -300,6 +304,8 @@ nav:
   - github:
     - actions:
       - no-plain-text-action-secrets: checks/github/actions/no-plain-text-action-secrets/index.md
+    - branch_protections:
+      - require_signed_commits: checks/github/branch_protections/require_signed_commits/index.md
     - github: checks/github/home.md
     - repositories:
       - enable_vulnerability_alerts: checks/github/repositories/enable_vulnerability_alerts/index.md
