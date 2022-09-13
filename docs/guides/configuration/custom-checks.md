@@ -104,6 +104,15 @@ The check contains up of the following attributes;
 | errorMessage   | The error message that should be displayed in cases where the check fails                              |
 | relatedLinks   | A list of related links for the check to be displayed in cases where the check fails                   |
 
+Optionally, you can use your own provider name and service
+
+> :warning: care should be taken not to mask existing checks. It is suggested that the provider shouldn't be one of the built in ones or should include the `custom` designator.
+
+| Attribute | Description                                            |
+|:----------|:-------------------------------------------------------|
+| provider  | The name of the service the custom check is addressing      |
+| service   | The name of the service the custom check is addressing |
+
 
 The `MatchSpec` is the what will define the check itself - this is fairly basic and is made up of the following attributes
 
