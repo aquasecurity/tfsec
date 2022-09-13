@@ -119,6 +119,8 @@ type MatchSpec struct {
 // Check specifies the check definition represented in json/yaml
 type Check struct {
 	Code            string            `json:"code" yaml:"code"`
+	Provider        string            `json:"provider,omitempty" yaml:"provider,omitempty"`
+	Service         string            `json:"service,omitempty" yaml:"service,omitempty"`
 	Description     string            `json:"description" yaml:"description"`
 	RequiredTypes   []string          `json:"requiredTypes" yaml:"requiredTypes"`
 	RequiredLabels  []string          `json:"requiredLabels" yaml:"requiredLabels"`

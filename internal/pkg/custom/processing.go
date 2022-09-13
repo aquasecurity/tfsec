@@ -5,10 +5,10 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/aquasecurity/defsec/pkg/providers"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/gocty"
 
-	"github.com/aquasecurity/defsec/pkg/providers"
 	"github.com/aquasecurity/defsec/pkg/rules"
 	"github.com/aquasecurity/defsec/pkg/scan"
 	"github.com/aquasecurity/defsec/pkg/terraform"
@@ -230,14 +230,25 @@ var AttrMatchFunctions = map[CheckAction]func(*terraform.Attribute, *MatchSpec, 
 
 func ProcessFoundChecks(checks ChecksFile) {
 	for _, customCheck := range checks.Checks {
+		provider := providers.CustomProvider
+		service := "custom"
+
+		if customCheck.Service != "" {
+			service = customCheck.Service
+		}
+
+		if customCheck.Provider != "" {
+			provider = providers.Provider(customCheck.Provider)
+		}
+
 		func(customCheck Check) {
 			rules.Register(scan.Rule{
-				Service:    "custom",
+				Service:    service,
 				ShortCode:  customCheck.Code,
 				Summary:    customCheck.Description,
 				Impact:     customCheck.Impact,
 				Resolution: customCheck.Resolution,
-				Provider:   providers.CustomProvider,
+				Provider:   provider,
 				Links:      customCheck.RelatedLinks,
 				Severity:   customCheck.Severity,
 				CustomChecks: scan.CustomChecks{
