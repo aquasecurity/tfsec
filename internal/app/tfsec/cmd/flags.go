@@ -288,8 +288,8 @@ func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.Sc
 			if len(conf.IncludedChecks) > 0 {
 				options = append(options, scanner.ScannerWithIncludedRules(conf.IncludedChecks))
 			}
-			if len(conf.ExcludedChecks) > 0 {
-				options = append(options, scanner.ScannerWithExcludedRules(append(conf.ExcludedChecks, excludedRuleIDs)))
+			if len(conf.GetValidExcludedChecks()) > 0 {
+				options = append(options, scanner.ScannerWithExcludedRules(append(conf.GetValidExcludedChecks(), excludedRuleIDs)))
 			}
 			if len(conf.ExcludeIgnores) > 0 {
 				options = append(options, scanner.ScannerWithExcludeIgnores(append(conf.ExcludeIgnores, excludeIgnoresIDs)))
