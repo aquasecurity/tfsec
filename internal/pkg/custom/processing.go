@@ -61,6 +61,13 @@ var matchFunctions = map[CheckAction]func(*terraform.Block, *MatchSpec, *customC
 		}
 		return !attribute.Contains(processMatchValueVariables(spec.MatchValue, customCtx.variables))
 	},
+	OnlyContains: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
+		attribute := b.GetAttribute(spec.Name)
+		if attribute.IsNil() {
+			return spec.IgnoreUndefined
+		}
+		return attribute.OnlyContains(processMatchValueVariables(spec.MatchValue, customCtx.variables))
+	},
 	Equals: func(b *terraform.Block, spec *MatchSpec, customCtx *customContext) bool {
 		attribute := b.GetAttribute(spec.Name)
 		if attribute.IsNil() {
