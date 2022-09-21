@@ -274,6 +274,32 @@ matchSpec:
   value: kms:*
 ```
 
+##### onlyContains
+The `onlyContains` check action ensures that a slice value only contains acceptable values.
+
+For example. if you want to ensure that the `tags` only contain `CostCentre` and `Environment` you might use the following `MatchSpec`:
+
+```json
+"matchSpec" : {
+  "name": "tags",
+  "action": "onlyContains",
+  "value": [
+    "Environment:prod",
+    "CostCentre:engineering"
+  ]
+]
+}
+```
+
+```yaml
+matchSpec:
+  name: tags
+  action: onlyContains
+  value:
+    - Environment:prod
+    - CostCentre:engineering
+```
+
 ##### equals 
 The `equals` check action passes if the checked attribute equals specified value. 
 The core primitive types are supported, if the subject attribute is a Boolean, the `MatchSpec` value will attempt to be cast to a Boolean for comparison.
