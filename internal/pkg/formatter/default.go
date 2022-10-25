@@ -122,7 +122,7 @@ func getOccurrences(first scan.Result, baseDir string) []simpleLocation {
 				via = append(via, simpleLocation{
 					filename:   parentRelative,
 					lineInfo:   parentLineInfo,
-					moduleName: mod.Reference().String(),
+					moduleName: mod.Reference(),
 				})
 			}
 		} else {
@@ -133,7 +133,7 @@ func getOccurrences(first scan.Result, baseDir string) []simpleLocation {
 			via = append(via, simpleLocation{
 				filename:   parentRange.GetFilename(),
 				lineInfo:   parentLineInfo,
-				moduleName: mod.Reference().String(),
+				moduleName: mod.Reference(),
 			})
 		}
 

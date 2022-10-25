@@ -162,6 +162,23 @@ resource "aws_dynamodb_table" "example" {
 }
 `
 
+func assertResultsContainID(t *testing.T, scanResults scan.Results, id string) {
+	for _, result := range scanResults {
+		if result.Rule().ShortCode == id {
+			return
+		}
+	}
+	t.Fatalf("Expected results to contain %s", id)
+}
+
+func assertResultsDoNotContainID(t *testing.T, scanResults scan.Results, id string) {
+	for _, result := range scanResults {
+		if result.Rule().AVDID == id {
+			t.Fatalf("Expected results not to contain %s", id)
+		}
+	}
+}
+
 func TestRequiresPresenceWithResourcePresent(t *testing.T) {
 	scanResults := scanTerraform(t, `
 resource "aws_vpc" "main" {
@@ -180,7 +197,7 @@ resource "aws_flow_log" "example" {
   vpc_id          = aws_vpc.example.id
 }
 `)
-	assert.Len(t, scanResults.GetFailed(), 0)
+	assertResultsDoNotContainID(t, scanResults, "DP006")
 }
 
 func TestRequiresPresenceWithResourceMissing(t *testing.T) {
@@ -194,7 +211,7 @@ resource "aws_vpc" "main" {
   }
 }
 `)
-	assert.Len(t, scanResults, 1)
+	assertResultsContainID(t, scanResults, "DP006")
 }
 
 func TestRequiresPresenceWithSubMatchFailing(t *testing.T) {
@@ -214,7 +231,7 @@ resource "aws_flow_log" "example" {
   vpc_id          = aws_vpc.example.id
 }
 `)
-	assert.Len(t, scanResults, 1)
+	assertResultsContainID(t, scanResults, "DP006")
 }
 
 func TestOrMatchFunction(t *testing.T) {

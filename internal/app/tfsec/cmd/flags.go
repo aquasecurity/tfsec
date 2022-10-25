@@ -140,9 +140,6 @@ func excludeFunc(excludePaths []string) func(results scan.Results) scan.Results 
 	return func(results scan.Results) scan.Results {
 		for i, result := range results {
 			rng := result.Range()
-			if rng == nil {
-				continue
-			}
 			for _, exclude := range excludePaths {
 				exclude = fmt.Sprintf("%c%s%[1]c", filepath.Separator, filepath.Clean(exclude))
 				if strings.Contains(
@@ -172,7 +169,7 @@ func configureOptions(cmd *cobra.Command, fsRoot, dir string) ([]options.Scanner
 		scanner.ScannerWithAlternativeIDProvider(legacy.FindIDs),
 		options.ScannerWithPolicyNamespaces("custom"),
 		scanner.ScannerWithDownloadsAllowed(!noModuleDownloads),
-		scanner.ScannerWithRegoOnly(regoOnly),
+		options.ScannerWithRegoOnly(regoOnly),
 		options.ScannerWithEmbeddedPolicies(true),
 	)
 
