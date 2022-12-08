@@ -25,6 +25,7 @@ theme:
 nav:
 - HOME: index.md
 - Guides:
+  - Migration: guides/trivy.md
   - Installation: guides/installation.md
   - Signature Verification: guides/signing.md
   - Quick Start: guides/quickstart.md
