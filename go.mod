@@ -102,7 +102,7 @@ require (
 )
 
 require (
-	github.com/liamg/memoryfs v1.4.3
+	github.com/liamg/memoryfs v1.5.0
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/owenrumney/go-sarif/v2 v2.1.2
 	github.com/rivo/uniseg v0.2.0 // indirect
