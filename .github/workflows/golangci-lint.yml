@@ -24,6 +24,6 @@ jobs:
           cache: true
           cache-dependency-path: go.sum
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3.2.0
+        uses: golangci/golangci-lint-action@v3.3.1
         with:
           args: --timeout 3m --verbose
