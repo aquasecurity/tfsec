@@ -15,22 +15,25 @@ arch=$(get_machine_arch)
 
 echo "arch=$arch"
 
-remote_filename="tfsec"
 local_filename="tfsec"
 case "$(uname -s)" in
   Darwin*)
-    remote_filename+="-darwin-${arch}"
+    remote_filename="$local_filename-darwin-${arch}"
+    checkgen_filename="$local_filename-checkgen-darwin-${arch}"
     ;;
   MINGW64*)
-    remote_filename+="-windows-${arch}"
+    remote_filename="$local_filename-windows-${arch}"
+    checkgen_filename+="$local_filename-checkgen-windows-${arch}"
     local_filename+=".exe"
     ;;
   MSYS_NT*)
-    remote_filename+="-windows-${arch}"
+    remote_filename+="$local_filename-windows-${arch}"
+    checkgen_filename+="$local_filename-checkgen-windows-${arch}"
     local_filename+=".exe"
     ;;
   *)
-    remote_filename+="-linux-${arch}"
+    remote_filename+="$local_filename-linux-${arch}"
+    checkgen_filename+="$local_filename-checkgen-linux-${arch}"
     ;;
 esac
 checksum_file="tfsec_checksums.txt"
@@ -38,6 +41,7 @@ download_path=$(mktemp -d -t tfsec.XXXXXXXXXX)
 
 echo "remote_filename=$remote_filename"
 echo "local_filename=$local_filename"
+echo "checkgen_filename=$checkgen_filename"
 
 mkdir -p $download_path
 
@@ -58,25 +62,25 @@ fi
 
 echo "Downloading tfsec $version"
 
-curl --fail --silent -L -o "${download_path}/${remote_filename}" "https://github.com/aquasecurity/tfsec/releases/download/${version}/${remote_filename}"
-tfsec_dl_status=$?
-if [ $tfsec_dl_status -ne 0 ]; then
-  echo "Failed to download ${remote_filename}"
-  exit $tfsec_dl_status
-fi
-echo "Downloaded successfully"
+download_file() {
+  echo "Downloading $3..."
+  curl --fail --silent -L -o "$1/$3" "https://github.com/aquasecurity/tfsec/releases/download/$2/$3"
+  dl_status=$?
+  if [ $dl_status -ne 0 ]; then
+    echo "Failed to download $3"
+    exit $dl_status
+  fi
+  echo "Downloaded file \"$3\" successfully"
+}
 
-echo "Validate checksum"
-curl --fail --silent -L -o "${download_path}/${checksum_file}" "https://github.com/aquasecurity/tfsec/releases/download/${version}/${checksum_file}"
-checksum_dl_val=$?
-if [ $checksum_dl_val -ne 0 ]; then
-  echo "Failed to download checksum file ${checksum_file}"
-  exit $checksum_dl_val
-fi
+download_file ${download_path} ${version} ${remote_filename}
+download_file ${download_path} ${version} ${checkgen_filename}
+download_file ${download_path} ${version} ${checksum_file}
 
 pushd $PWD > /dev/null
 cd $download_path
-sha256sum -c $checksum_file --quiet --ignore-missing
+cat ${checksum_file} | grep ${checkgen_filename} > checksum.txt
+sha256sum -c checksum.txt --quiet
 shasum_val=$?
 popd > /dev/null
 
