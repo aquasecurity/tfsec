@@ -64,13 +64,16 @@ echo "Downloading tfsec $version"
 
 download_file() {
   echo "Downloading $3..."
-  curl --fail --silent -L -o "$1/$3" "https://github.com/aquasecurity/tfsec/releases/download/$2/$3"
+  local download_path=${1:?Download path no supplied}   
+  local version=${2:?No version supplied}
+  local file=${3:?File to download not supplied}
+  curl --fail --silent -L -o "${download_path}/${file}" "https://github.com/aquasecurity/tfsec/releases/download/${version}/${file}"
   dl_status=$?
   if [ $dl_status -ne 0 ]; then
-    echo "Failed to download $3"
+    echo "Failed to download ${file}"
     exit $dl_status
   fi
-  echo "Downloaded file \"$3\" successfully"
+  echo "Downloaded file \"${file}\" successfully"
 }
 
 download_file ${download_path} ${version} ${remote_filename}
