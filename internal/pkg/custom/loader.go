@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -58,7 +57,7 @@ func loadCustomChecks(customCheckDir string) error {
 
 func LoadCheckFile(checkFilePath string) (ChecksFile, error) {
 	var checks ChecksFile
-	checkFileContent, err := ioutil.ReadFile(checkFilePath)
+	checkFileContent, err := os.ReadFile(checkFilePath)
 	if err != nil {
 		return checks, err
 	}
