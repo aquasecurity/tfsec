@@ -3,7 +3,6 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -29,7 +28,7 @@ func LoadConfig(configFilePath string) (*Config, error) {
 		return nil, fmt.Errorf("failed to access config file '%s': %w", configFilePath, err)
 	}
 
-	configFileContent, err := ioutil.ReadFile(configFilePath)
+	configFileContent, err := os.ReadFile(configFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config file '%s': %w", configFilePath, err)
 	}

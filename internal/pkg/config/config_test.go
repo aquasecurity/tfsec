@@ -2,7 +2,6 @@ package config_test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -141,12 +140,12 @@ func TestWarningIsRewrittenAsMedium(t *testing.T) {
 }
 
 func load(t *testing.T, filename, content string) *config.Config {
-	dir, err := ioutil.TempDir("", "")
+	dir, err := os.MkdirTemp("", "")
 	require.NoError(t, err)
 
 	configFileName := fmt.Sprintf("%s/%s", dir, filename)
 
-	err = ioutil.WriteFile(configFileName, []byte(content), os.ModePerm)
+	err = os.WriteFile(configFileName, []byte(content), os.ModePerm)
 	require.NoError(t, err)
 
 	c, err := config.LoadConfig(configFileName)

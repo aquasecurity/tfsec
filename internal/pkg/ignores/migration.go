@@ -3,7 +3,6 @@ package ignores
 import (
 	"fmt"
 	"io/fs"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -99,7 +98,7 @@ func migrateFile(file string, legacyMapping map[string]string) (MigrationStatist
 	legacyIgnoreRegex := regexp.MustCompile(`tfsec:ignore:([A-Z]{3}\d{3})`)
 
 	fmt.Printf("Running migrations for file: %s\n", file)
-	content, err := ioutil.ReadFile(file)
+	content, err := os.ReadFile(file)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +123,7 @@ func migrateFile(file string, legacyMapping map[string]string) (MigrationStatist
 		})
 	}
 
-	if err := ioutil.WriteFile(file, []byte(contentString), fs.ModeAppend); err != nil {
+	if err := os.WriteFile(file, []byte(contentString), fs.ModeAppend); err != nil {
 		return nil, err
 	}
 	return stats, nil

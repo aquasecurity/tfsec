@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -330,7 +329,7 @@ func remoteConfigDownloaded() bool {
 		return false
 	}
 
-	if err := ioutil.WriteFile(tempFile, configContent, os.ModePerm); err != nil {
+	if err := os.WriteFile(tempFile, configContent, os.ModePerm); err != nil {
 		return false
 	}
 	configFile = tempFile
@@ -338,7 +337,7 @@ func remoteConfigDownloaded() bool {
 }
 
 func remoteCustomCheckDownloaded() bool {
-	customTempDir, err := ioutil.TempDir(os.TempDir(), fmt.Sprintf("tfsec_custom_check_%s", uuid.NewString()))
+	customTempDir, err := os.MkdirTemp(os.TempDir(), fmt.Sprintf("tfsec_custom_check_%s", uuid.NewString()))
 	if err != nil {
 		return false
 	}
@@ -356,7 +355,7 @@ func remoteCustomCheckDownloaded() bool {
 		return false
 	}
 
-	if err := ioutil.WriteFile(tempFile, customCheckContent, os.ModePerm); err != nil {
+	if err := os.WriteFile(tempFile, customCheckContent, os.ModePerm); err != nil {
 		return false
 	}
 	customCheckDir = customTempDir

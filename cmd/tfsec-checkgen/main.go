@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -61,16 +60,16 @@ var validateCmd = &cobra.Command{
 }
 
 func scanTestFile(testFile string) (scan.Results, error) {
-	source, err := ioutil.ReadFile(testFile)
+	source, err := os.ReadFile(testFile)
 	if err != nil {
 		return nil, err
 	}
-	dir, err := ioutil.TempDir(os.TempDir(), "tfsec")
+	dir, err := os.MkdirTemp(os.TempDir(), "tfsec")
 	if err != nil {
 		return nil, err
 	}
 	path := filepath.Join(dir, "test.tf")
-	if err := ioutil.WriteFile(path, source, 0600); err != nil {
+	if err := os.WriteFile(path, source, 0600); err != nil {
 		return nil, err
 	}
 	scnr := terraform.New()
@@ -317,7 +316,7 @@ checks:%s
 `, output[:len(output)-1])
 		}
 
-		err := ioutil.WriteFile(fileAns.Filepath, []byte(output), 0600)
+		err := os.WriteFile(fileAns.Filepath, []byte(output), 0600)
 		if err != nil {
 			fmt.Println(err.Error())
 			os.Exit(1)
