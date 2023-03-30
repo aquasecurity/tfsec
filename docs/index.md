@@ -25,6 +25,10 @@ Going forward we want to encourage the tfsec community to transition over to Tri
 3. Commercially supported by Aqua as well as by a the passionate Trivy community.
 tfsec will continue to remain available for the time being, although our engineering attention will be directed at Trivy going forward.
 
+## tfsec to Trivy migration guide
+
+For further information on how Trivy compares to tfsec and moving from tfsec to Trivy, do have a look at the [migration guide.](../tfsec-to-trivy-migration-guide.md)
+
 ## tfsec
 
 `tfsec` is a static analysis security scanner for your Terraform code.
