@@ -58,6 +58,7 @@ var IDs = map[string]string{
 	"AWS083": "aws-elb-drop-invalid-headers",
 	"AWS004": "aws-elb-http-not-used",
 	"AWS010": "aws-elb-use-secure-tls-policy",
+	"AWS097": "aws-iam-block-kms-policy-wildcard",
 	"AWS037": "aws-iam-no-password-reuse",
 	"AWS099": "aws-iam-no-policy-wildcards",
 	"AWS042": "aws-iam-require-lowercase-in-passwords",
