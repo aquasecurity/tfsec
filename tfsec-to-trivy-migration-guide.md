@@ -1,14 +1,7 @@
 # Migrating from tfsec to Trivy
-Overtime we've taken [Trivy][trivy] to be the go-to scanning tool for a vareity of things. This also includes terraform scanning.
+Overtime we've taken [Trivy][trivy] to be the go-to scanning tool for a vareity of things. This also includes terraform scanning. For further information, have a look at the announcement ["tfsec is joining the Trivy family".](https://github.com/aquasecurity/tfsec/discussions/1994)
 
-This section describes some differences between Trivy and tfsec.
-
-| Feature              | Trivy                                                  | tfsec                |
-|----------------------|--------------------------------------------------------|----------------------|
-| Policy Distribution  | Embedded and Updated via Registry                      | Embedded             |
-| Custom Policies      | Rego                                                   | Rego, JSON, and YAML |
-| Supported Formats    | Dockerfile, JSON, YAML, Terraform, CloudFormation etc. | Terraform  Only      |
-
+### Main differences between Trivy and tfsec
 
 Trivy's design keeps misconfiguration up to date automatically. New misconfiguration are updated in Trivy by pulling from the Container Registry. The embedded misconfiguration in Trivy are only used if Trivy cannot pull from the remote registry. See the [following documentation](https://aquasecurity.github.io/trivy/v0.41/docs/scanner/misconfiguration/policy/builtin/#policy-distribution) for further details.
 

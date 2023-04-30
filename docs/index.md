@@ -9,9 +9,6 @@ hide:
 <br/>
 <br/>
 
-???+ warning
-     📣 All of our scanning-related efforts have moved to one place, and that is Trivy. Please look at the [migration guide](https://aquasecurity.github.io/trivy/latest/tutorials/tfsec/migration/) and the Trivy [docs](https://aquasecurity.github.io/trivy/latest/) for further information.
-
 ## 📣 tfsec to Trivy Migration
 
 As part of our goal to provide a comprehensive open source security solution for all, we have been consolidating all of our scanning-related efforts in one place, and that is [Trivy](https://github.com/aquasecurity/trivy). 
@@ -27,7 +24,7 @@ tfsec will continue to remain available for the time being, although our enginee
 
 ## tfsec to Trivy migration guide
 
-For further information on how Trivy compares to tfsec and moving from tfsec to Trivy, do have a look at the [migration guide.](../tfsec-to-trivy-migration-guide.md)
+For further information on how Trivy compares to tfsec and moving from tfsec to Trivy, do have a look at the [migration guide.](https://github.com/aquasecurity/tfsec/tfsec-to-trivy-migration-guide.md)
 
 ## tfsec
 
