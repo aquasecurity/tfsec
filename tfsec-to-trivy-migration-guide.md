@@ -54,7 +54,7 @@ The documentation can be found in Trivy under the [following link.](https://aqua
 
 **Does Trivy support junit?**
 
-Currenlty, Trivy does not support junit. It is tough to maintain several formats on our end. We wanted to maintain basic formats like JSON only.
+Currently, Trivy does not support junit. It is tough to maintain several formats on our end. We wanted to maintain basic formats like JSON only.
 
 For more information, please [see the following issue.](https://github.com/aquasecurity/trivy/issues/3753)
 
