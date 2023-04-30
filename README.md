@@ -27,7 +27,10 @@ Going forward we want to encourage the tfsec community to transition over to Tri
 3. Commercially supported by Aqua as well as by a the passionate Trivy community.
 tfsec will continue to remain available for the time being, although our engineering attention will be directed at Trivy going forward.
 
-## Features
+## Overview
+
+tfsec uses static analysis of your terraform code to spot potential misconfigurations.
+### Features
 
 - :cloud: Checks for misconfigurations across all major (and some minor) cloud providers
 - :no_entry: Hundreds of built-in rules
