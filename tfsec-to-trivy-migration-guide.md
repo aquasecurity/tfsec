@@ -54,9 +54,9 @@ The documentation can be found in Trivy under the [following link.](https://aqua
 
 **Does Trivy support junit?**
 
-Currently, Trivy does not support junit. It is tough to maintain several formats on our end. We wanted to maintain basic formats like JSON only.
+Yes, Trivy supports different report templates. These can either be set, loaded through a file or by providing a default template such as for JUnit. 
 
-For more information, please [see the following issue.](https://github.com/aquasecurity/trivy/issues/3753)
+For more information, please [the documentation.](https://aquasecurity.github.io/trivy/v0.41/docs/configuration/reporting/#junit)
 
 **Does Trivy support multiple outputs?**
 
