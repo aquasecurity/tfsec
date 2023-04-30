@@ -1,5 +1,3 @@
-
-
 <p align="center">
   <img width="354" src=".github/images/tfsec_worded.png">
 </p>
@@ -30,6 +28,7 @@ tfsec will continue to remain available for the time being, although our enginee
 ## Overview
 
 tfsec uses static analysis of your terraform code to spot potential misconfigurations.
+
 ### Features
 
 - :cloud: Checks for misconfigurations across all major (and some minor) cloud providers
