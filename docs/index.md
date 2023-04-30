@@ -9,7 +9,7 @@ hide:
 <br/>
 <br/>
 
-???+ danger
+???+ warning
      📣 All of our scanning-related efforts have moved to one place, and that is Trivy. Please look at the [migration guide](https://aquasecurity.github.io/trivy/latest/tutorials/tfsec/migration/) and the Trivy [docs](https://aquasecurity.github.io/trivy/latest/) for further information.
 
 ## 📣 tfsec to Trivy Migration
