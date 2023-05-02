@@ -24,7 +24,7 @@ tfsec will continue to remain available for the time being, although our enginee
 
 ## tfsec to Trivy migration guide
 
-For further information on how Trivy compares to tfsec and moving from tfsec to Trivy, do have a look at the [migration guide.](https://github.com/aquasecurity/tfsec/tfsec-to-trivy-migration-guide.md)
+For further information on how Trivy compares to tfsec and moving from tfsec to Trivy, do have a look at the [migration guide.](https://github.com/aquasecurity/tfsec/blob/master/tfsec-to-trivy-migration-guide.md)
 
 ## tfsec
 
