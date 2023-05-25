@@ -11,7 +11,7 @@ title: BigQuery datasets should only be accessible within the organisation
 Using 'allAuthenticatedUsers' provides any GCP user - even those outside of your organisation - access to your BigQuery dataset.
 
 ### Possible Impact
-Exposure of sensitive data to the public iniernet
+Exposure of sensitive data to the public internet
 
 ### Suggested Resolution
 Configure access permissions with higher granularity
