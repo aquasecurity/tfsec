@@ -133,6 +133,7 @@
 | digitalocean-spaces-acl-no-public-read | digitalocean | spaces | Spaces bucket or bucket object has public read acl set |
 | digitalocean-spaces-versioning-enabled | digitalocean | spaces | Spaces buckets should have versioning enabled |
 | digitalocean-spaces-disable-force-destroy | digitalocean | spaces | Force destroy is enabled on Spaces bucket which is dangerous |
+| enable-iam-auth | aws | rds | Instance does not have IAM Authentication enabled |
 | google-compute-disk-encryption-customer-keys | google | compute | Encrypted compute disk with unmanaged keys. |
 | google-compute-no-public-ingres | google | compute | An inbound firewall rule allows traffic from /0. |
 | google-compute-no-public-egress | google | compute | An outbound firewall rule allows traffic to /0. |
