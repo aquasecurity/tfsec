@@ -44,6 +44,7 @@ nav:
   - aws:
     - api-gateway:
       - enable-access-logging: checks/aws/api-gateway/enable-access-logging/index.md
+      - enable-cache: checks/aws/api-gateway/enable-cache/index.md
       - enable-cache-encryption: checks/aws/api-gateway/enable-cache-encryption/index.md
       - enable-tracing: checks/aws/api-gateway/enable-tracing/index.md
       - no-public-access: checks/aws/api-gateway/no-public-access/index.md
@@ -104,6 +105,7 @@ nav:
       - no-secrets-in-launch-template-user-data: checks/aws/ec2/no-secrets-in-launch-template-user-data/index.md
       - no-secrets-in-user-data: checks/aws/ec2/no-secrets-in-user-data/index.md
       - no-sensitive-info: checks/aws/ec2/no-sensitive-info/index.md
+      - require-vpc-flow-logs-for-all-vpcs: checks/aws/ec2/require-vpc-flow-logs-for-all-vpcs/index.md
       - volume-encryption-customer-key: checks/aws/ec2/volume-encryption-customer-key/index.md
     - ecr:
       - enable-image-scans: checks/aws/ecr/enable-image-scans/index.md
@@ -167,6 +169,7 @@ nav:
       - enable-general-logging: checks/aws/mq/enable-general-logging/index.md
       - no-public-access: checks/aws/mq/no-public-access/index.md
     - msk:
+      - enable-at-rest-encryption: checks/aws/msk/enable-at-rest-encryption/index.md
       - enable-in-transit-encryption: checks/aws/msk/enable-in-transit-encryption/index.md
       - enable-logging: checks/aws/msk/enable-logging/index.md
     - neptune:
@@ -318,6 +321,7 @@ nav:
       - disk-encryption-customer-key: checks/google/compute/disk-encryption-customer-key/index.md
       - disk-encryption-no-plaintext-key: checks/google/compute/disk-encryption-no-plaintext-key/index.md
       - enable-shielded-vm-im: checks/google/compute/enable-shielded-vm-im/index.md
+      - enable-shielded-vm-sb: checks/google/compute/enable-shielded-vm-sb/index.md
       - enable-shielded-vm-vtpm: checks/google/compute/enable-shielded-vm-vtpm/index.md
       - enable-vpc-flow-logs: checks/google/compute/enable-vpc-flow-logs/index.md
       - no-default-service-account: checks/google/compute/no-default-service-account/index.md
@@ -354,6 +358,7 @@ nav:
       - use-rbac-permissions: checks/google/gke/use-rbac-permissions/index.md
       - use-service-account: checks/google/gke/use-service-account/index.md
     - iam:
+      - no-conditions-workload-identity-pool-provider: checks/google/iam/no-conditions-workload-identity-pool-provider/index.md
       - no-default-network: checks/google/iam/no-default-network/index.md
       - no-folder-level-default-service-account-assignment: checks/google/iam/no-folder-level-default-service-account-assignment/index.md
       - no-folder-level-service-account-impersonation: checks/google/iam/no-folder-level-service-account-impersonation/index.md
@@ -381,6 +386,7 @@ nav:
       - pg-log-lock-waits: checks/google/sql/pg-log-lock-waits/index.md
       - pg-no-min-statement-logging: checks/google/sql/pg-no-min-statement-logging/index.md
     - storage:
+      - bucket-encryption-customer-key: checks/google/storage/bucket-encryption-customer-key/index.md
       - enable-ubla: checks/google/storage/enable-ubla/index.md
       - no-public-access: checks/google/storage/no-public-access/index.md
   - kubernetes:
@@ -388,6 +394,31 @@ nav:
     - network:
       - no-public-egress: checks/kubernetes/network/no-public-egress/index.md
       - no-public-ingress: checks/kubernetes/network/no-public-ingress/index.md
+  - nifcloud:
+    - computing:
+      - add-description-to-security-group: checks/nifcloud/computing/add-description-to-security-group/index.md
+      - add-description-to-security-group-rule: checks/nifcloud/computing/add-description-to-security-group-rule/index.md
+      - add-security-group-to-instance: checks/nifcloud/computing/add-security-group-to-instance/index.md
+      - no-common-private-instance: checks/nifcloud/computing/no-common-private-instance/index.md
+      - no-public-ingress-sgr: checks/nifcloud/computing/no-public-ingress-sgr/index.md
+    - nifcloud: checks/nifcloud/home.md
+    - nas:
+      - add-description-to-nas-security-group: checks/nifcloud/nas/add-description-to-nas-security-group/index.md
+      - no-common-private-nas-instance: checks/nifcloud/nas/no-common-private-nas-instance/index.md
+      - no-public-ingress-nas-sgr: checks/nifcloud/nas/no-public-ingress-nas-sgr/index.md
+    - network:
+      - add-security-group-to-router: checks/nifcloud/network/add-security-group-to-router/index.md
+      - add-security-group-to-vpn-gateway: checks/nifcloud/network/add-security-group-to-vpn-gateway/index.md
+      - http-not-used: checks/nifcloud/network/http-not-used/index.md
+      - no-common-private-elb: checks/nifcloud/network/no-common-private-elb/index.md
+      - no-common-private-router: checks/nifcloud/network/no-common-private-router/index.md
+      - use-secure-tls-policy: checks/nifcloud/network/use-secure-tls-policy/index.md
+    - rdb:
+      - add-description-to-db-security-group: checks/nifcloud/rdb/add-description-to-db-security-group/index.md
+      - no-common-private-db-instance: checks/nifcloud/rdb/no-common-private-db-instance/index.md
+      - no-public-db-access: checks/nifcloud/rdb/no-public-db-access/index.md
+      - no-public-ingress-db-sgr: checks/nifcloud/rdb/no-public-ingress-db-sgr/index.md
+      - specify-backup-retention: checks/nifcloud/rdb/specify-backup-retention/index.md
   - openstack:
     - compute:
       - no-plaintext-password: checks/openstack/compute/no-plaintext-password/index.md

@@ -50,7 +50,7 @@ The following example will fail the google-compute-no-ip-forwarding check.
 The following example will pass the google-compute-no-ip-forwarding check.
 ```terraform
 
- resource "google_compute_instance" "bad_example" {
+ resource "google_compute_instance" "good_example" {
    name         = "test"
    machine_type = "e2-medium"
    zone         = "us-central1-a"

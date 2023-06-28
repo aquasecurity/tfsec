@@ -37,7 +37,7 @@ The following example will pass the aws-elb-use-secure-tls-policy check.
 ```terraform
 
  resource "aws_alb_listener" "good_example" {
- 	ssl_policy = "ELBSecurityPolicy-TLS-1-2-2017-01"
+ 	ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
  	protocol = "HTTPS"
  }
  

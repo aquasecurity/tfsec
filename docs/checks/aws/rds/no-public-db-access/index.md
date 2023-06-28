@@ -25,7 +25,7 @@ The following example will fail the aws-rds-no-public-db-access check.
  resource "aws_db_instance" "bad_example" {
  	publicly_accessible = true
  }
- 
+
 ```
 
 
@@ -38,7 +38,7 @@ The following example will pass the aws-rds-no-public-db-access check.
  resource "aws_db_instance" "good_example" {
  	publicly_accessible = false
  }
- 
+
 ```
 
 

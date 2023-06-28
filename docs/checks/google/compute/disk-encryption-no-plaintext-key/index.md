@@ -22,7 +22,7 @@ Reference a managed key rather than include the key in raw format.
 The following example will fail the google-compute-disk-encryption-no-plaintext-key check.
 ```terraform
 
- resource "google_compute_disk" "good_example" {
+ resource "google_compute_disk" "bad_example" {
  	disk_encryption_key {
  		raw_key="b2ggbm8gdGhpcyBpcyBiYWQ="
  	}

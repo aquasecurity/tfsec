@@ -56,6 +56,14 @@ func getSortedFileContents() []*FileContent {
 		if r.Rule().Terraform == nil {
 			continue
 		}
+		var badExample string
+		if len(r.Rule().Terraform.BadExamples) > 0 {
+			badExample = r.Rule().Terraform.BadExamples[0]
+		}
+		var goodExample string
+		if len(r.Rule().Terraform.GoodExamples) > 0 {
+			goodExample = r.Rule().Terraform.GoodExamples[0]
+		}
 		provider := string(r.Rule().Provider)
 		checkMap[provider] = append(checkMap[provider], templateObject{
 			ID:          r.Rule().LongID(),
@@ -67,8 +75,8 @@ func getSortedFileContents() []*FileContent {
 			Explanation: r.Rule().Explanation,
 			Impact:      r.Rule().Impact,
 			Resolution:  r.Rule().Resolution,
-			BadExample:  r.Rule().Terraform.BadExamples[0],
-			GoodExample: r.Rule().Terraform.GoodExamples[0],
+			BadExample:  badExample,
+			GoodExample: goodExample,
 			Links:       append(r.Rule().Terraform.Links, r.Rule().Links...),
 		})
 	}

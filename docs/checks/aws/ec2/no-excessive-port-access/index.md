@@ -1,8 +1,8 @@
 ---
-title: An ingress Network ACL rule allows ALL ports.
+title: An Network ACL rule allows ALL ports.
 ---
 
-# An ingress Network ACL rule allows ALL ports.
+# An Network ACL rule allows ALL ports.
 
 ### Default Severity: <span class="severity critical">critical</span>
 
@@ -11,7 +11,7 @@ title: An ingress Network ACL rule allows ALL ports.
 Ensure access to specific required ports is allowed, and nothing else.
 
 ### Possible Impact
-All ports exposed for egressing data
+All ports exposed for ingressing/egressing data
 
 ### Suggested Resolution
 Set specific allowed ports

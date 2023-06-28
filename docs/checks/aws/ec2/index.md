@@ -23,7 +23,7 @@ title: ec2
 
 - [no-default-vpc](no-default-vpc) AWS best practice to not use the default VPC for workflows
 
-- [no-excessive-port-access](no-excessive-port-access) An ingress Network ACL rule allows ALL ports.
+- [no-excessive-port-access](no-excessive-port-access) An Network ACL rule allows ALL ports.
 
 - [no-public-egress-sgr](no-public-egress-sgr) An egress security group rule allows traffic to /0.
 
@@ -40,6 +40,8 @@ title: ec2
 - [no-secrets-in-user-data](no-secrets-in-user-data) User data for EC2 instances must not contain sensitive AWS keys
 
 - [no-sensitive-info](no-sensitive-info) Ensure all data stored in the launch configuration EBS is securely encrypted
+
+- [require-vpc-flow-logs-for-all-vpcs](require-vpc-flow-logs-for-all-vpcs) VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet "Rejects" for VPCs.
 
 - [volume-encryption-customer-key](volume-encryption-customer-key) EBS volume encryption should use Customer Managed Keys
 

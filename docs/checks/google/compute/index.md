@@ -13,6 +13,8 @@ title: compute
 
 - [enable-shielded-vm-im](enable-shielded-vm-im) Instances should have Shielded VM integrity monitoring enabled
 
+- [enable-shielded-vm-sb](enable-shielded-vm-sb) Instances should have Shielded VM secure boot enabled
+
 - [enable-shielded-vm-vtpm](enable-shielded-vm-vtpm) Instances should have Shielded VM VTPM enabled
 
 - [enable-vpc-flow-logs](enable-vpc-flow-logs) VPC flow logs should be enabled for all subnetworks

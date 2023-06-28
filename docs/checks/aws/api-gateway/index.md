@@ -9,6 +9,8 @@ title: api-gateway
 
 - [enable-access-logging](enable-access-logging) API Gateway stages for V1 and V2 should have access logging enabled
 
+- [enable-cache](enable-cache) Ensure that response caching is enabled for your Amazon API Gateway REST APIs.
+
 - [enable-cache-encryption](enable-cache-encryption) API Gateway must have cache enabled
 
 - [enable-tracing](enable-tracing) API Gateway must have X-Ray tracing enabled
