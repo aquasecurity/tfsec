@@ -1,8 +1,8 @@
 ---
-title: Security threat alerts go to subcription owners and co-administrators
+title: Security threat alerts go to subscription owners and co-administrators
 ---
 
-# Security threat alerts go to subcription owners and co-administrators
+# Security threat alerts go to subscription owners and co-administrators
 
 ### Default Severity: <span class="severity low">low</span>
 
