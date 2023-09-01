@@ -23,8 +23,6 @@ title: gke
 
 - [enable-stackdriver-monitoring](enable-stackdriver-monitoring) Stackdriver Monitoring should be enabled
 
-- [enforce-pod-security-policy](enforce-pod-security-policy) Pod security policy enforcement not defined.
-
 - [metadata-endpoints-disabled](metadata-endpoints-disabled) Legacy metadata endpoints enabled.
 
 - [no-legacy-authentication](no-legacy-authentication) Legacy client authentication methods utilized.
