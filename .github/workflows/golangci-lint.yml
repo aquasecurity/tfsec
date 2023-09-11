@@ -23,7 +23,8 @@ jobs:
           go-version-file: go.mod
           cache: true
           cache-dependency-path: go.sum
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3.3.1
+      - uses: golangci/golangci-lint-action@v3
         with:
-          args: --timeout 3m --verbose
+          version: v1.48
+          skip-cache: true
+          args: --timeout 10m --verbose
