@@ -29,7 +29,7 @@ title: database
 
 - [threat-alert-email-set](threat-alert-email-set) At least one email address is set for threat alerts
 
-- [threat-alert-email-to-owner](threat-alert-email-to-owner) Security threat alerts go to subcription owners and co-administrators
+- [threat-alert-email-to-owner](threat-alert-email-to-owner) Security threat alerts go to subscription owners and co-administrators
 
 
 
