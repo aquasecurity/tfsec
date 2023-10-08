@@ -1,5 +1,5 @@
 # Migrating from tfsec to Trivy
-Overtime we've taken [Trivy][trivy] to be the go-to scanning tool for a vareity of things. This also includes terraform scanning. For further information, have a look at the announcement ["tfsec is joining the Trivy family".](https://github.com/aquasecurity/tfsec/discussions/1994)
+Overtime we've taken [Trivy][trivy] to be the go-to scanning tool for a variety of things. This also includes terraform scanning. For further information, have a look at the announcement ["tfsec is joining the Trivy family".](https://github.com/aquasecurity/tfsec/discussions/1994)
 
 ### Main differences between Trivy and tfsec
 
