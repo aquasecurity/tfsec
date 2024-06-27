@@ -1,5 +1,5 @@
 # Moving towards configuration scanning with Trivy
-Overtime we've taken [trivy][trivy] to be the go-to scanning tool for a vareity of things. This also includes terraform scanning.
+Overtime we've taken [trivy][trivy] to be the go-to scanning tool for a variety of things. This also includes terraform scanning.
 
 This section describes some differences between Trivy and tfsec.
 
