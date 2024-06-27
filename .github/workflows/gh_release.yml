@@ -42,7 +42,7 @@ jobs:
       - name: Release
         uses: goreleaser/goreleaser-action@v4
         with:
-          version: latest
-          args: release --rm-dist -f .goreleaser_github.yml
+          version: v1.25.1
+          args: release --clean -f .goreleaser_github.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
