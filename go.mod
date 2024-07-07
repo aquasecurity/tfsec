@@ -3,7 +3,7 @@ module github.com/aquasecurity/tfsec
 go 1.19
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.3.6
+	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/Masterminds/semver v1.5.0
 	github.com/aquasecurity/defsec v0.84.1
 	github.com/google/uuid v1.3.0
