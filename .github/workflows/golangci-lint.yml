@@ -18,13 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-          cache: true
-          cache-dependency-path: go.sum
-      - uses: golangci/golangci-lint-action@v3
+      - uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.52
-          skip-cache: true
-          args: --timeout 10m --verbose
+          version: v1.63
+          args: --verbose

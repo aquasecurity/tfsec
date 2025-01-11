@@ -2,25 +2,23 @@
 linters:
   disable-all: true
   enable:
-    - deadcode
+    - bodyclose
+    - contextcheck
+    - copyloopvar
+    - cyclop
+    - durationcheck
     - errcheck
+    - errname
+    - errorlint
+    - gocritic
+    - gofmt
+    - goimports
+    - gosec
     - gosimple
     - govet
     - ineffassign
     - staticcheck
-    - structcheck
     - unused
-    - varcheck
-    - bodyclose
-    - contextcheck
-    - cyclop
-    - durationcheck
-    - errname
-    - errorlint
-    - exportloopref
-    - goimports
-    - gosec
-    - gocritic
 
 linters-settings: 
   cyclop:
@@ -28,9 +26,16 @@ linters-settings:
   gocritic:
     disabled-checks:
       - singleCaseSwitch
+  gosec:
+    excludes:
+      - G115
+      - G306
 
 issues:
   exclude-rules:
     - path: "."
       linters:
         - typecheck
+
+run:
+  timeout: 10m
