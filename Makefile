@@ -43,7 +43,7 @@ typos:
 
 .PHONY: quality
 quality:
-	which golangci-lint || go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.52.2
+	which golangci-lint || go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.63.4
 	golangci-lint run
 
 .PHONY: fix-typos
