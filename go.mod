@@ -11,7 +11,7 @@ require (
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/liamg/clinch v1.6.6
 	github.com/liamg/gifwrap v0.0.7
-	github.com/liamg/tml v0.6.0
+	github.com/liamg/tml v0.7.0
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.19.0
