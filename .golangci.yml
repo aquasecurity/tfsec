@@ -1,6 +1,13 @@
+---
+version: "2"
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
 
 linters:
-  disable-all: true
+  default: none
   enable:
     - bodyclose
     - contextcheck
@@ -11,31 +18,30 @@ linters:
     - errname
     - errorlint
     - gocritic
-    - gofmt
-    - goimports
     - gosec
-    - gosimple
     - govet
     - ineffassign
     - staticcheck
     - unused
 
-linters-settings: 
-  cyclop:
-    max-complexity: 15
-  gocritic:
-    disabled-checks:
-      - singleCaseSwitch
-  gosec:
-    excludes:
-      - G115
-      - G306
+  settings:
+    cyclop:
+      max-complexity: 15
+    gocritic:
+      disabled-checks:
+        - singleCaseSwitch
+    gosec:
+      excludes:
+        - G115
+        - G306
 
-issues:
-  exclude-rules:
-    - path: "."
-      linters:
-        - typecheck
+  exclusions:
+    generated: strict
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
 
 run:
   timeout: 10m
