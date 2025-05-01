@@ -107,7 +107,7 @@
 | azure-storage-queue-services-logging-enabled | azure | storage | When using Queue Services for a storage account, logging should be enabled. |
 | azure-network-ssh-blocked-from-internet | azure | network | SSH access should not be accessible from the Internet, should be blocked on port 22 |
 | azure-database-enable-audit | azure | database | Auditing should be enabled on Azure SQL Databases |
-| azure-database-retention-period-set | azure | database | Database auditing rentention period should be longer than 90 days |
+| azure-database-retention-period-set | azure | database | Database auditing retention period should be longer than 90 days |
 | azure-keyvault-specify-network-acl | azure | keyvault | Key vault should have the network acl block specified |
 | azure-keyvault-no-purge | azure | keyvault | Key vault should have purge protection enabled |
 | azure-keyvault-content-type-for-secret | azure | keyvault | Key vault Secret should have a content type set |

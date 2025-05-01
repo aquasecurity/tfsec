@@ -23,7 +23,7 @@ title: database
 
 - [postgres-configuration-log-connections](postgres-configuration-log-connections) Ensure server parameter 'log_connections' is set to 'ON' for PostgreSQL Database Server
 
-- [retention-period-set](retention-period-set) Database auditing rentention period should be longer than 90 days
+- [retention-period-set](retention-period-set) Database auditing retention period should be longer than 90 days
 
 - [secure-tls-policy](secure-tls-policy) Databases should have the minimum TLS set for connections
 
