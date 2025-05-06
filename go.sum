@@ -504,8 +504,8 @@ github.com/liamg/jfather v0.0.7/go.mod h1:xXBGiBoiZ6tmHhfy5Jzw8sugzajwYdi6VosIpB
 github.com/liamg/memoryfs v1.6.0 h1:jAFec2HI1PgMTem5gR7UT8zi9u4BfG5jorCRlLH06W8=
 github.com/liamg/memoryfs v1.6.0/go.mod h1:z7mfqXFQS8eSeBBsFjYLlxYRMRyiPktytvYCYTb3BSk=
 github.com/liamg/tml v0.3.0/go.mod h1:0h4EAV/zBOsqI91EWONedjRpO8O0itjGJVd+wG5eC+E=
-github.com/liamg/tml v0.6.0 h1:yOC/Q9p9Io3J11U9LdYVIwpRTnTE1GPMNFLrygkmE2Y=
-github.com/liamg/tml v0.6.0/go.mod h1:0h4EAV/zBOsqI91EWONedjRpO8O0itjGJVd+wG5eC+E=
+github.com/liamg/tml v0.7.0 h1:0cVok661KuQy659aFpXpem8mXUDroREuWc1p/+y7hfU=
+github.com/liamg/tml v0.7.0/go.mod h1:Vuzs4Dn44Awoyd0MLl2EuJR++l1NlFqU6BJk0oxVYX4=
 github.com/lucasb-eyer/go-colorful v1.2.0 h1:1nnpGOrhyZZuNyfu1QjKiUICQ74+3FNCN69Aj6K7nkY=
 github.com/lucasb-eyer/go-colorful v1.2.0/go.mod h1:R4dSotOR9KMtayYi1e77YzuveK+i7ruzyGqttikkLy0=
 github.com/magiconair/properties v1.8.7 h1:IeQXZAiQcpL9mgcAe1Nu6cX9LLw6ExEHKjN0VQdvPDY=
