@@ -2,7 +2,7 @@ module github.com/aquasecurity/tfsec
 
 go 1.23.0
 
-toolchain go1.24.1
+toolchain go1.24.3
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
@@ -89,7 +89,7 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
-	github.com/open-policy-agent/opa v0.68.0 // indirect
+	github.com/open-policy-agent/opa v1.5.0 // indirect
 	github.com/owenrumney/squealer v1.1.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
