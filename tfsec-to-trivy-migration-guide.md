@@ -85,6 +85,6 @@ Alternatively, it is possible to skip files, using this flag `--skip-files`.
 
 We welcome any feedback if you find features that today are not available with Trivy misconfigration scanning that are available in tfsec. 
 
-For further information on scanning terraform with Trivy, do have a look at the [Trivy Terraform Guide](https://aquasecurity.github.io/trivy/latest/tutorials/terraform/scannig/).
+For further information on scanning Terraform with Trivy, do have a look at the [Trivy Terraform Guide](https://trivy.dev/latest/tutorials/misconfiguration/terraform/).
 
 [trivy]: https://github.com/aquasecurity/trivy
