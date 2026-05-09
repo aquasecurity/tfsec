@@ -311,10 +311,10 @@ func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.Sc
 				options = append(options, scanner.ScannerWithIncludedRules(conf.IncludedChecks))
 			}
 			if len(conf.GetValidExcludedChecks()) > 0 {
-				options = append(options, scanner.ScannerWithExcludedRules(append(conf.GetValidExcludedChecks(), excludedRuleIDs)))
+				options = append(options, scanner.ScannerWithExcludedRules(append(conf.GetValidExcludedChecks(), splitRuleIDs(excludedRuleIDs)...)))
 			}
 			if len(conf.ExcludeIgnores) > 0 {
-				options = append(options, scanner.ScannerWithExcludeIgnores(append(conf.ExcludeIgnores, excludeIgnoresIDs)))
+				options = append(options, scanner.ScannerWithExcludeIgnores(append(conf.ExcludeIgnores, splitRuleIDs(excludeIgnoresIDs)...)))
 			}
 		} else {
 			logger.Log("Failed to load config file: %s", err)
@@ -322,6 +322,13 @@ func applyConfigFiles(options []options.ScannerOption, dir string) ([]options.Sc
 	}
 
 	return configureCustomChecks(options, dir)
+}
+
+func splitRuleIDs(ruleIDs string) []string {
+	if ruleIDs == "" {
+		return nil
+	}
+	return strings.Split(ruleIDs, ",")
 }
 
 func configureCustomChecks(options []options.ScannerOption, dir string) ([]options.ScannerOption, error) {

@@ -330,6 +330,20 @@ func Test_Flag_ConfigFile(t *testing.T) {
 	assert.Equal(t, 1, exit)
 }
 
+func Test_Flag_ConfigFile_WithMultipleCliExcludes(t *testing.T) {
+	out, err, exit := runWithArgs(
+		"./testdata/fail",
+		"--config-file", "./testdata/config/config.yml",
+		"--exclude", "aws-s3-block-public-acls,aws-s3-block-public-policy",
+	)
+	results := parseLovely(t, out)
+	assertResultsNotContain(t, results, "aws-s3-enable-versioning")
+	assertResultsNotContain(t, results, "aws-s3-block-public-acls")
+	assertResultsNotContain(t, results, "aws-s3-block-public-policy")
+	assert.Equal(t, "", err)
+	assert.Equal(t, 1, exit)
+}
+
 func Test_Flag_Debug(t *testing.T) {
 	// use json to ensure all debug goes to stderr and does not break json format
 	for _, flag := range []string{"--debug", "--verbose"} {
