@@ -1,6 +1,6 @@
 resource "azurerm_storage_account" "storage_accounts" {
-    name = var.name
-    
+    name            = var.name
+    min_tls_version = "TLS1_2"
 }
 
 module "storage_container" {
