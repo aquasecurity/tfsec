@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	"text/template"
+	"html/template"
 )
 
 func generateIndexPages(fileContents []*FileContent) error {
