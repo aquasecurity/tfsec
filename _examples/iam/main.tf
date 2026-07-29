@@ -14,7 +14,7 @@ resource "aws_iam_policy" "policy" {
           "s3:ListAllMyBuckets"
         ],
         "Effect": "Allow",
-        "Resource": "*"
+        "Resource": "arn:aws:s3:::*"
       },
       {
         "Action": [
