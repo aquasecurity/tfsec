@@ -5,8 +5,9 @@ resource "aws_security_group_rule" "my-rule" {
 }
 
 resource "aws_alb_listener" "my-alb-listener"{
-    port     = "80"
-    protocol = "HTTP"
+    port       = "80"
+    protocol   = "HTTPS"
+    ssl_policy = "ELBSecurityPolicy-TLS13-1-2-Res-2021-06"
 }
 
 resource "aws_db_security_group" "my-group" {
