@@ -14,10 +14,14 @@ resource "aws_iam_policy" "policy" {
           "s3:ListAllMyBuckets"
         ],
         "Effect": "Allow",
-        "Resource": "*"
+        "Resource": "arn:aws:s3:::*"
       },
       {
-        "Action": [        "s3:*"      ],
+        "Action": [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ],
         "Effect": "Allow",
         "Resource": "my-bucket"
       }
