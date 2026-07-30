@@ -7,6 +7,16 @@ resource "aws_security_group_rule" "my-rule" {
 resource "aws_alb_listener" "my-alb-listener"{
     port     = "80"
     protocol = "HTTP"
+
+    default_action {
+        type = "redirect"
+
+        redirect {
+            port        = "443"
+            protocol    = "HTTPS"
+            status_code = "HTTP_301"
+        }
+    }
 }
 
 resource "aws_db_security_group" "my-group" {
