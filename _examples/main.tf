@@ -7,6 +7,16 @@ resource "aws_security_group_rule" "my-rule" {
 resource "aws_alb_listener" "my-alb-listener" {
   port     = "80"
   protocol = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
 }
 
 resource "aws_db_security_group" "my-group" {
@@ -45,7 +55,12 @@ resource "aws_api_gateway_domain_name" "valid_security_policy" {
   security_policy = "TLS_1_2"
 }
 
-#tfsec:ignore:AWS092
+resource "aws_kms_key" "dynamodb_table" {
+  description             = "KMS key for DynamoDB table encryption"
+  deletion_window_in_days = 10
+  enable_key_rotation     = true
+}
+
 resource "aws_dynamodb_table" "bad_example" {
   name             = "example"
   hash_key         = "TestTableHashKey"
@@ -60,6 +75,11 @@ resource "aws_dynamodb_table" "bad_example" {
 
   point_in_time_recovery {
     enabled = true
+  }
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_key.dynamodb_table.arn
   }
 }
 
