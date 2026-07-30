@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"text/template"
+	"html/template"
 
 	"github.com/aquasecurity/defsec/pkg/providers"
 )
