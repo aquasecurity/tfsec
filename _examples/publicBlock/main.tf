@@ -2,7 +2,7 @@ resource "aws_s3_bucket" "dodgyBucket" {
    
    bucket = "mybucket"
    
-   acl    = "authenticated-read"
+   acl    = "private"
 
    server_side_encryption_configuration {
      rule {
