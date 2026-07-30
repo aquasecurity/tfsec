@@ -17,7 +17,11 @@ resource "aws_iam_policy" "policy" {
         "Resource": "*"
       },
       {
-        "Action": [        "s3:*"      ],
+        "Action": [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ],
         "Effect": "Allow",
         "Resource": "my-bucket"
       }
