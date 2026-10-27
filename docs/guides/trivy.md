@@ -28,7 +28,7 @@ $ trivy --tf-vars <vars.tf> <dir>
 ```
 ### With tfsec
 ```shell
-$ tfsec <dir> --tf-vars-file <vars.tf>
+$ tfsec <dir> --tfvars-file <vars.tf>
 ```
 
 ## Report formats

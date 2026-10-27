@@ -25,7 +25,7 @@ $ trivy --tf-vars <vars.tf> <dir>
 ```
 #### With tfsec
 ```shell
-$ tfsec <dir> --tf-vars-file <vars.tf>
+$ tfsec <dir> --tfvars-file <vars.tf>
 ```
 
 The documentation can be found in Trivy under the [following link.](https://aquasecurity.github.io/trivy/v0.41/docs/scanner/misconfiguration/#terraform-value-overrides)
